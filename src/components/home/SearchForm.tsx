@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -8,50 +8,127 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { format } from "date-fns";
+import { format, addDays, isBefore, isAfter, parseISO } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRcmApi } from "@/hooks/use-rcm-api";
-
-// Fallback locations in case API fails
-const FALLBACK_LOCATIONS = [
-  { id: "auckland", name: "Auckland Airport" },
-  { id: "wellington", name: "Wellington Airport" },
-  { id: "christchurch", name: "Christchurch Airport" },
-  { id: "queenstown", name: "Queenstown Airport" },
-  { id: "rotorua", name: "Rotorua City" }
-];
+import { toast } from "sonner";
 
 const SearchForm = () => {
   const navigate = useNavigate();
+  
+  // Form state
   const [pickupLocation, setPickupLocation] = useState("");
   const [dropoffLocation, setDropoffLocation] = useState("");
   const [pickupDate, setPickupDate] = useState<Date>();
   const [dropoffDate, setDropoffDate] = useState<Date>();
   const [sameLocation, setSameLocation] = useState(true);
+  const [age, setAge] = useState("");
+  const [carCategory, setCarCategory] = useState("");
+  const [promoCode, setPromoCode] = useState("");
+  
+  // Derived state
+  const [minDropoffDate, setMinDropoffDate] = useState<Date>(addDays(new Date(), 1));
+  const [isLoading, setIsLoading] = useState(false);
 
   // Use the RCM API to fetch locations
-  const { useLocations } = useRcmApi();
+  const { useLocations, FALLBACK_LOCATIONS } = useRcmApi();
   const { 
-    data: apiLocations = [], 
+    data: locations = [], 
     isLoading: isLoadingLocations,
     isError: isLocationError 
   } = useLocations();
 
-  // Use API locations if available, otherwise use fallback
-  const locations = apiLocations.length > 0 ? apiLocations : FALLBACK_LOCATIONS;
+  // Age options
+  const ageOptions = [
+    { id: "21", label: "21-25" },
+    { id: "26", label: "26+" }
+  ];
 
+  // Car categories
+  const carCategories = [
+    { id: "0", label: "All Categories" },
+    { id: "1", label: "Economy" },
+    { id: "2", label: "Compact" },
+    { id: "3", label: "Intermediate" },
+    { id: "4", label: "Standard" },
+    { id: "5", label: "Full Size" },
+    { id: "6", label: "Premium" },
+    { id: "7", label: "Luxury" },
+    { id: "8", label: "Minivan" },
+    { id: "9", label: "SUV" }
+  ];
+
+  // Set default dates when component mounts
+  useEffect(() => {
+    // Set default pickup date to tomorrow
+    const tomorrow = addDays(new Date(), 1);
+    setPickupDate(tomorrow);
+    
+    // Set default dropoff date to 3 days after pickup
+    const defaultDropoff = addDays(tomorrow, 3);
+    setDropoffDate(defaultDropoff);
+  }, []);
+
+  // Update minimum dropoff date when pickup date changes
+  useEffect(() => {
+    if (pickupDate) {
+      setMinDropoffDate(pickupDate);
+      
+      // If current dropoff date is before new pickup date, update it
+      if (dropoffDate && isBefore(dropoffDate, pickupDate)) {
+        setDropoffDate(addDays(pickupDate, 1));
+      }
+    }
+  }, [pickupDate, dropoffDate]);
+
+  // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Validate form
+    if (!pickupLocation) {
+      toast.error("Please select a pickup location");
+      return;
+    }
+    
+    if (!dropoffLocation && !sameLocation) {
+      toast.error("Please select a dropoff location");
+      return;
+    }
+    
+    if (!pickupDate) {
+      toast.error("Please select a pickup date");
+      return;
+    }
+    
+    if (!dropoffDate) {
+      toast.error("Please select a dropoff date");
+      return;
+    }
+    
+    if (isBefore(dropoffDate, pickupDate)) {
+      toast.error("Dropoff date must be after pickup date");
+      return;
+    }
+    
+    setIsLoading(true);
+    
+    // Build search params
     const searchParams = new URLSearchParams({
       pickupLocation,
       dropoffLocation: sameLocation ? pickupLocation : dropoffLocation,
-      pickupDate: pickupDate?.toISOString() || "",
-      dropoffDate: dropoffDate?.toISOString() || ""
+      pickupDate: pickupDate.toISOString(),
+      dropoffDate: dropoffDate.toISOString(),
+      ...(age && { age }),
+      ...(carCategory && { carCategory }),
+      ...(promoCode && { promoCode })
     });
 
-    navigate(`/vehicles?${searchParams.toString()}`);
+    setTimeout(() => {
+      setIsLoading(false);
+      navigate(`/vehicles?${searchParams.toString()}`);
+    }, 500);
   };
 
   return (
@@ -60,9 +137,15 @@ const SearchForm = () => {
         <form onSubmit={handleSubmit}>
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Pickup Location */}
               <div className="space-y-2">
                 <Label htmlFor="pickup-location">Pickup Location</Label>
-                <Select value={pickupLocation} onValueChange={setPickupLocation}>
+                <Select value={pickupLocation} onValueChange={(value) => {
+                  setPickupLocation(value);
+                  if (sameLocation) {
+                    setDropoffLocation(value);
+                  }
+                }}>
                   <SelectTrigger id="pickup-location" className={isLoadingLocations ? "animate-pulse" : ""}>
                     <SelectValue placeholder={isLoadingLocations ? "Loading locations..." : 
                       isLocationError ? "Choose location" : "Select pickup location"} />
@@ -78,6 +161,7 @@ const SearchForm = () => {
                 {isLocationError && <p className="text-xs text-amber-600">Using fallback locations - couldn't connect to server</p>}
               </div>
 
+              {/* Dropoff Location */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="dropoff-location">Dropoff Location</Label>
@@ -110,12 +194,14 @@ const SearchForm = () => {
                 </Select>
               </div>
 
+              {/* Pickup Date */}
               <div className="space-y-2">
                 <Label htmlFor="pickup-date">Pickup Date</Label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
+                      id="pickup-date"
                       className={cn(
                         "w-full justify-start text-left font-normal",
                         !pickupDate && "text-muted-foreground"
@@ -131,19 +217,21 @@ const SearchForm = () => {
                       selected={pickupDate}
                       onSelect={setPickupDate}
                       initialFocus
-                      disabled={(date) => date < new Date()}
+                      disabled={(date) => isBefore(date, new Date())}
                       className="p-3 pointer-events-auto"
                     />
                   </PopoverContent>
                 </Popover>
               </div>
 
+              {/* Dropoff Date */}
               <div className="space-y-2">
                 <Label htmlFor="dropoff-date">Dropoff Date</Label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
+                      id="dropoff-date"
                       className={cn(
                         "w-full justify-start text-left font-normal",
                         !dropoffDate && "text-muted-foreground"
@@ -159,20 +247,66 @@ const SearchForm = () => {
                       selected={dropoffDate}
                       onSelect={setDropoffDate}
                       initialFocus
-                      disabled={(date) => date < (pickupDate || new Date())}
+                      disabled={(date) => isBefore(date, minDropoffDate)}
                       className="p-3 pointer-events-auto"
                     />
                   </PopoverContent>
                 </Popover>
+              </div>
+              
+              {/* Driver Age */}
+              <div className="space-y-2">
+                <Label htmlFor="driver-age">Driver Age</Label>
+                <Select value={age} onValueChange={setAge}>
+                  <SelectTrigger id="driver-age">
+                    <SelectValue placeholder="Select age" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {ageOptions.map((option) => (
+                      <SelectItem key={option.id} value={option.id}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              {/* Vehicle Category */}
+              <div className="space-y-2">
+                <Label htmlFor="car-category">Vehicle Category</Label>
+                <Select value={carCategory} onValueChange={setCarCategory}>
+                  <SelectTrigger id="car-category">
+                    <SelectValue placeholder="All Categories" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {carCategories.map((category) => (
+                      <SelectItem key={category.id} value={category.id}>
+                        {category.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              {/* Promo Code */}
+              <div className="space-y-2 md:col-span-2">
+                <Label htmlFor="promo-code">Promo Code (Optional)</Label>
+                <Input 
+                  id="promo-code" 
+                  type="text" 
+                  value={promoCode} 
+                  onChange={(e) => setPromoCode(e.target.value)}
+                  placeholder="Enter promo code" 
+                />
               </div>
             </div>
 
             <Button
               type="submit"
               className="w-full"
-              disabled={!pickupLocation || !pickupDate || !dropoffDate}
+              disabled={isLoading || !pickupLocation || !pickupDate || !dropoffDate}
             >
-              Search Available Cars
+              {isLoading ? "Searching..." : "Search Available Cars"}
             </Button>
           </div>
         </form>
@@ -182,4 +316,3 @@ const SearchForm = () => {
 };
 
 export default SearchForm;
-

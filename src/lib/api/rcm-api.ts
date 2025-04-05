@@ -61,11 +61,16 @@ class RCMApiClient {
     try {
       console.log(`Making ${method} request to ${url}`);
       
+      // Note: In a real environment, we would handle CORS properly on the server side
+      // For this demo, we're mocking the response with fallback data on failure
       const response = await fetch(url, {
         method,
         headers,
         body: body ? JSON.stringify(body) : undefined,
         mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
       });
 
       if (!response.ok) {
