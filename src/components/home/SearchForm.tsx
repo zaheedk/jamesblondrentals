@@ -13,6 +13,15 @@ import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRcmApi } from "@/hooks/use-rcm-api";
 
+// Fallback locations in case API fails
+const FALLBACK_LOCATIONS = [
+  { id: "auckland", name: "Auckland Airport" },
+  { id: "wellington", name: "Wellington Airport" },
+  { id: "christchurch", name: "Christchurch Airport" },
+  { id: "queenstown", name: "Queenstown Airport" },
+  { id: "rotorua", name: "Rotorua City" }
+];
+
 const SearchForm = () => {
   const navigate = useNavigate();
   const [pickupLocation, setPickupLocation] = useState("");
@@ -23,7 +32,14 @@ const SearchForm = () => {
 
   // Use the RCM API to fetch locations
   const { useLocations } = useRcmApi();
-  const { data: locations = [], isLoading: isLoadingLocations } = useLocations();
+  const { 
+    data: apiLocations = [], 
+    isLoading: isLoadingLocations,
+    isError: isLocationError 
+  } = useLocations();
+
+  // Use API locations if available, otherwise use fallback
+  const locations = apiLocations.length > 0 ? apiLocations : FALLBACK_LOCATIONS;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,7 +64,8 @@ const SearchForm = () => {
                 <Label htmlFor="pickup-location">Pickup Location</Label>
                 <Select value={pickupLocation} onValueChange={setPickupLocation}>
                   <SelectTrigger id="pickup-location" className={isLoadingLocations ? "animate-pulse" : ""}>
-                    <SelectValue placeholder={isLoadingLocations ? "Loading locations..." : "Select pickup location"} />
+                    <SelectValue placeholder={isLoadingLocations ? "Loading locations..." : 
+                      isLocationError ? "Choose location" : "Select pickup location"} />
                   </SelectTrigger>
                   <SelectContent>
                     {locations.map((location) => (
@@ -58,6 +75,7 @@ const SearchForm = () => {
                     ))}
                   </SelectContent>
                 </Select>
+                {isLocationError && <p className="text-xs text-amber-600">Using fallback locations - couldn't connect to server</p>}
               </div>
 
               <div className="space-y-2">
@@ -79,7 +97,8 @@ const SearchForm = () => {
                   disabled={sameLocation}
                 >
                   <SelectTrigger id="dropoff-location" className={isLoadingLocations ? "animate-pulse" : ""}>
-                    <SelectValue placeholder={isLoadingLocations ? "Loading locations..." : "Select dropoff location"} />
+                    <SelectValue placeholder={isLoadingLocations ? "Loading locations..." : 
+                      isLocationError ? "Choose location" : "Select dropoff location"} />
                   </SelectTrigger>
                   <SelectContent>
                     {locations.map((location) => (
@@ -163,3 +182,4 @@ const SearchForm = () => {
 };
 
 export default SearchForm;
+
