@@ -1,4 +1,3 @@
-
 import { useState, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { rcmApi } from '@/lib/api/rcm-api';
@@ -8,6 +7,7 @@ import type {
   RCMBookingRequest, 
   RCMAvailabilityRequest 
 } from '@/lib/api/rcm-api-types';
+import { toast } from 'sonner';
 
 export function useRcmApi() {
   const queryClient = useQueryClient();
@@ -17,6 +17,12 @@ export function useRcmApi() {
     return useQuery({
       queryKey: ['locations'],
       queryFn: () => rcmApi.getLocations(),
+      onError: (error) => {
+        console.error('Location fetch error:', error);
+        toast.error('Failed to load locations. Using fallback locations.', {
+          description: error instanceof Error ? error.message : 'Unknown error occurred'
+        });
+      }
     });
   };
   
