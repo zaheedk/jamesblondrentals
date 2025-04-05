@@ -59,14 +59,18 @@ class RCMApiClient {
     const headers = this.createHeaders(method, endpoint, body);
 
     try {
+      console.log(`Making ${method} request to ${url}`);
+      
       const response = await fetch(url, {
         method,
         headers,
         body: body ? JSON.stringify(body) : undefined,
+        mode: 'cors',
       });
 
       if (!response.ok) {
         const error = await response.json().catch(() => ({}));
+        console.error(`API error: ${response.status} ${response.statusText}`, error);
         throw new Error(error.message || `API request failed: ${response.status}`);
       }
 
