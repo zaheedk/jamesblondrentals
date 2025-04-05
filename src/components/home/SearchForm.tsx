@@ -11,7 +11,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { locations } from "@/lib/mock-data";
+import { useRcmApi } from "@/hooks/use-rcm-api";
 
 const SearchForm = () => {
   const navigate = useNavigate();
@@ -20,6 +20,10 @@ const SearchForm = () => {
   const [pickupDate, setPickupDate] = useState<Date>();
   const [dropoffDate, setDropoffDate] = useState<Date>();
   const [sameLocation, setSameLocation] = useState(true);
+
+  // Use the RCM API to fetch locations
+  const { useLocations } = useRcmApi();
+  const { data: locations = [], isLoading: isLoadingLocations } = useLocations();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,13 +47,13 @@ const SearchForm = () => {
               <div className="space-y-2">
                 <Label htmlFor="pickup-location">Pickup Location</Label>
                 <Select value={pickupLocation} onValueChange={setPickupLocation}>
-                  <SelectTrigger id="pickup-location">
-                    <SelectValue placeholder="Select pickup location" />
+                  <SelectTrigger id="pickup-location" className={isLoadingLocations ? "animate-pulse" : ""}>
+                    <SelectValue placeholder={isLoadingLocations ? "Loading locations..." : "Select pickup location"} />
                   </SelectTrigger>
                   <SelectContent>
                     {locations.map((location) => (
-                      <SelectItem key={location} value={location}>
-                        {location}
+                      <SelectItem key={location.id} value={location.id}>
+                        {location.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -74,13 +78,13 @@ const SearchForm = () => {
                   onValueChange={setDropoffLocation}
                   disabled={sameLocation}
                 >
-                  <SelectTrigger id="dropoff-location">
-                    <SelectValue placeholder="Select dropoff location" />
+                  <SelectTrigger id="dropoff-location" className={isLoadingLocations ? "animate-pulse" : ""}>
+                    <SelectValue placeholder={isLoadingLocations ? "Loading locations..." : "Select dropoff location"} />
                   </SelectTrigger>
                   <SelectContent>
                     {locations.map((location) => (
-                      <SelectItem key={location} value={location}>
-                        {location}
+                      <SelectItem key={location.id} value={location.id}>
+                        {location.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
