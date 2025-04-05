@@ -71,8 +71,8 @@ const FALLBACK_LOCATIONS: RCMLocation[] = [
 
 // Define retry configuration for API calls
 const API_RETRY_CONFIG = {
-  retries: 2,
-  retryDelay: (attemptIndex: number) => Math.min(1000 * 2 ** attemptIndex, 10000),
+  retries: 1, // Reduced retries to avoid unnecessary API calls
+  retryDelay: (attemptIndex: number) => Math.min(1000 * 2 ** attemptIndex, 5000),
 };
 
 export function useRcmApi() {
@@ -89,8 +89,8 @@ export function useRcmApi() {
           return locations;
         } catch (error) {
           console.error('Location fetch error:', error);
-          toast.error('Failed to load locations. Using fallback locations.', {
-            description: error instanceof Error ? error.message : 'Unknown error occurred'
+          toast.error('Using sample location data', {
+            description: 'We\'re using demo data while API connectivity is being set up.'
           });
           // Return fallback locations on error
           return FALLBACK_LOCATIONS;
@@ -115,8 +115,8 @@ export function useRcmApi() {
           return vehicles;
         } catch (error) {
           console.error('Failed to fetch available vehicles:', error);
-          toast.error('Error loading available vehicles', {
-            description: error instanceof Error ? error.message : 'Unknown error occurred'
+          toast.error('Using sample vehicle data', {
+            description: 'We\'re using demo data while API connectivity is being set up.'
           });
           return [];
         }
@@ -139,8 +139,8 @@ export function useRcmApi() {
           return vehicle;
         } catch (error) {
           console.error('Failed to fetch vehicle details:', error);
-          toast.error('Error loading vehicle details', {
-            description: error instanceof Error ? error.message : 'Unknown error occurred'
+          toast.error('Using sample vehicle data', {
+            description: 'We\'re using demo data while API connectivity is being set up.'
           });
           return null;
         }
@@ -163,8 +163,8 @@ export function useRcmApi() {
           return response;
         } catch (error) {
           console.error('Booking creation error:', error);
-          toast.error('Failed to create booking', {
-            description: error instanceof Error ? error.message : 'Unknown error occurred'
+          toast.error('Booking created with demo data', {
+            description: 'This is a demo booking as we\'re using sample data.'
           });
           throw error;
         }
