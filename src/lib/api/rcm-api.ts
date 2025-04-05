@@ -16,6 +16,9 @@ const API_CONFIG: RCMApiConfig = {
   apiUrl: "https://apis.rentalcarmanager.com/booking/v3.2/"
 };
 
+// CORS Proxy URL - will prepend to API calls
+const CORS_PROXY_URL = "https://corsproxy.io/?";
+
 /**
  * RCM API Client for handling all API requests
  */
@@ -52,25 +55,22 @@ class RCMApiClient {
   }
 
   /**
-   * Makes an authenticated API request
+   * Makes an authenticated API request through a CORS proxy
    */
   private async request<T>(method: string, endpoint: string, body?: any): Promise<T> {
-    const url = `${this.config.apiUrl}${endpoint}`;
+    const apiUrl = `${this.config.apiUrl}${endpoint}`;
+    const proxyUrl = `${CORS_PROXY_URL}${encodeURIComponent(apiUrl)}`;
     const headers = this.createHeaders(method, endpoint, body);
 
     try {
-      console.log(`Making ${method} request to ${url}`);
+      console.log(`Making ${method} request to ${apiUrl} via CORS proxy`);
       
-      // Note: In a real environment, we would handle CORS properly on the server side
-      // For this demo, we're mocking the response with fallback data on failure
-      const response = await fetch(url, {
+      const response = await fetch(proxyUrl, {
         method,
         headers,
         body: body ? JSON.stringify(body) : undefined,
         mode: 'cors',
         cache: 'no-cache',
-        credentials: 'omit',
-        referrerPolicy: 'no-referrer'
       });
 
       if (!response.ok) {
