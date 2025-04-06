@@ -36,6 +36,8 @@ export const LocationSelect = ({
   // Set default to Kelston when locations are loaded
   useEffect(() => {
     if (locations.length > 0 && !value) {
+      console.log("LocationSelect: Looking for Kelston in", locations.map(loc => loc.name));
+      
       const kelstonLocation = locations.find(loc => 
         loc.name.toLowerCase().includes('kelston')
       );
@@ -43,6 +45,13 @@ export const LocationSelect = ({
       if (kelstonLocation) {
         console.log(`Setting default location to Kelston:`, kelstonLocation.id);
         onValueChange(String(kelstonLocation.id));
+      } else {
+        console.log("Kelston location not found, setting to first available location");
+        // If Kelston isn't found, set to first location as fallback
+        if (locations[0]) {
+          console.log(`Setting default location to first available:`, locations[0].id);
+          onValueChange(String(locations[0].id));
+        }
       }
     }
   }, [locations, value, onValueChange]);
