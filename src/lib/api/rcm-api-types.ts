@@ -72,7 +72,7 @@ export interface RCMLocationDetail {
   isdropoffavailable: boolean;
   isdefault: boolean;
   minimumbookingday: number;
-  noticerequired_numberofdays: number;
+  noticerequired_numberofdays: number; // This is the number of days notice required
   officeopeningtime: string;
   officeclosingtime: string;
 }

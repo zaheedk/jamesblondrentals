@@ -114,25 +114,22 @@ const SearchForm = () => {
     });
   }, []);
 
-  // Set default dates when component mounts
+  // Set default dates when component loads
   useEffect(() => {
-    setTomorrowAsDefaultDates();
+    if (!pickupDate) {
+      // Get today's date as default
+      const today = new Date();
+      setPickupDate(today);
+      
+      // Default dropoff date is 3 days after pickup
+      const defaultDropoff = addDays(today, 3);
+      setDropoffDate(defaultDropoff);
+    }
   }, []);
 
-  // Helper to set tomorrow as default dates
-  const setTomorrowAsDefaultDates = () => {
-    // Set default pickup date to tomorrow
-    const tomorrow = addDays(new Date(), 1);
-    setPickupDate(tomorrow);
-    
-    // Set default dropoff date to 3 days after pickup
-    const defaultDropoff = addDays(tomorrow, 3);
-    setDropoffDate(defaultDropoff);
-  };
-
-  // Update minimum pickup date when pickup location changes
+  // Update minimum pickup date when pickup location changes or when location details load
   useEffect(() => {
-    if (pickupLocation) {
+    if (pickupLocation && locationDetails.length > 0) {
       const selectedLocationDetail = locationDetails.find(
         loc => String(loc.id) === pickupLocation
       );
@@ -143,8 +140,9 @@ const SearchForm = () => {
         
         // Calculate the minimum pickup date based on notice period
         let newMinPickupDate = new Date();
+        
         if (requiredNoticeDays > 0) {
-          // If notice is required, calculate the minimum date based on hours
+          // If notice is required, add the required number of days
           const hoursRequired = requiredNoticeDays * 24;
           newMinPickupDate = addHours(new Date(), hoursRequired);
         }
@@ -162,7 +160,7 @@ const SearchForm = () => {
           }
         }
         
-        console.log(`Location ${pickupLocation} requires ${requiredNoticeDays} days notice (${requiredNoticeDays * 24} hours)`);
+        console.log(`Location ${pickupLocation} requires ${requiredNoticeDays} days notice`);
       }
     }
   }, [pickupLocation, locationDetails]);
