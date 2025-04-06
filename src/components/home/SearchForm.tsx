@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -32,7 +33,7 @@ const SearchForm = () => {
   const [apiKey, setApiKey] = useState("");
   const [apiSecret, setApiSecret] = useState("");
   const [apiUrl, setApiUrl] = useState("https://apis.rentalcarmanager.com/booking/v3.2/");
-  const [useMockData, setUseMockData] = useState(true);
+  const [useMockData, setUseMockData] = useState(false);
   const [showApiDialog, setShowApiDialog] = useState(false);
   
   // Derived state
@@ -96,7 +97,7 @@ const SearchForm = () => {
         apiKey,
         apiSecret,
         apiUrl,
-        useMockData, // Use the mock data setting
+        useMockData,
       });
       
       toast.success("API settings updated", {

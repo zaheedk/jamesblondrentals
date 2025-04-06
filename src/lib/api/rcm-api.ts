@@ -17,8 +17,8 @@ const DEFAULT_CONFIG: RCMApiConfig = {
   apiUrl: "https://apis.rentalcarmanager.com/booking/v3.2"
 };
 
-// Set to true to use mock data by default
-let USE_MOCK_DATA = true;
+// Set to false to use actual API by default
+let USE_MOCK_DATA = false;
 
 /**
  * RCM API Client for handling all API requests
@@ -111,6 +111,7 @@ class RCMApiClient {
    * Makes an API request with the correct format
    */
   private async request<T>(method: string, requestMethod: string, body?: any): Promise<T> {
+    // Don't use mock data by default
     if (USE_MOCK_DATA) {
       console.log(`Using mock data for ${requestMethod} request`);
       return this.getMockData<T>(requestMethod);
@@ -158,8 +159,8 @@ class RCMApiClient {
     } catch (error) {
       console.error('RCM API request failed:', error);
       
-      // If we're not already using mock data, fall back to it now
-      if (!USE_MOCK_DATA) {
+      // If we specifically want to fall back to mock data, do it here
+      if (!USE_MOCK_DATA && error instanceof Error && error.message.includes('fallback')) {
         console.warn('Falling back to mock data due to API request failure');
         return this.getMockData<T>(requestMethod);
       }
@@ -176,6 +177,7 @@ class RCMApiClient {
 
   /**
    * Returns mock data for development and testing
+   * Only used if USE_MOCK_DATA is true or if API fails with fallback flag
    */
   private getMockData<T>(endpoint: string): T {
     if (endpoint === 'locations') {
