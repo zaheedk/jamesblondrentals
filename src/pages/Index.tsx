@@ -5,8 +5,20 @@ import Hero from "@/components/home/Hero";
 import FeaturedVehicles from "@/components/home/FeaturedVehicles";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import { useEffect } from "react";
+import { useRcmApi } from "@/hooks/use-rcm-api";
 
 const Index = () => {
+  const { initializeApi } = useRcmApi();
+  
+  useEffect(() => {
+    // Initialize the API with proxy mode enabled
+    initializeApi({ 
+      useProxy: true,
+      // If you have other API configuration, add it here
+    });
+  }, [initializeApi]);
+
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />

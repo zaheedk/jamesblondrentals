@@ -1,4 +1,3 @@
-
 import { generateSignature } from './rcm-signature';
 import type { 
   RCMApiConfig,
@@ -6,35 +5,47 @@ import type {
   RCMLocation,
   RCMBookingRequest,
   RCMBookingResponse,
-  RCMAvailabilityRequest
+  RCMAvailabilityRequest,
+  RCMStep1Response,
+  RCMConfigInit
 } from './rcm-api-types';
 
 // API Configuration
-const API_CONFIG: RCMApiConfig = {
+const DEFAULT_CONFIG: RCMApiConfig = {
   apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
   apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
   apiUrl: "https://apis.rentalcarmanager.com/booking/v3.2/"
 };
 
-// CORS Proxy options - we'll try multiple if needed
-const CORS_PROXIES = [
-  "https://api.allorigins.win/raw?url=",
-  "https://corsproxy.io/?",
-  "https://cors-anywhere.herokuapp.com/"
-];
-
 // Set to true to bypass actual API calls and use mock data
-const USE_MOCK_DATA = true;
+let USE_MOCK_DATA = true;
 
 /**
  * RCM API Client for handling all API requests
  */
 class RCMApiClient {
   private config: RCMApiConfig;
-  private currentProxyIndex = 0;
+  private useProxy: boolean = false;
 
   constructor(config: RCMApiConfig) {
     this.config = config;
+  }
+
+  /**
+   * Initialize or update API configuration
+   */
+  initialize(config: RCMConfigInit): void {
+    if (config.apiKey) this.config.apiKey = config.apiKey;
+    if (config.apiSecret) this.config.apiSecret = config.apiSecret;
+    if (config.apiUrl) this.config.apiUrl = config.apiUrl;
+    if (config.useProxy !== undefined) this.useProxy = config.useProxy;
+    
+    // Set mock data to false if we have proper configuration
+    if (config.apiKey && config.apiSecret) {
+      USE_MOCK_DATA = false;
+    }
+    
+    console.log('RCM API initialized with new configuration');
   }
 
   /**
@@ -63,16 +74,8 @@ class RCMApiClient {
   }
 
   /**
-   * Gets the next CORS proxy to try
-   */
-  private getNextProxy(): string {
-    const proxy = CORS_PROXIES[this.currentProxyIndex];
-    this.currentProxyIndex = (this.currentProxyIndex + 1) % CORS_PROXIES.length;
-    return proxy;
-  }
-
-  /**
-   * Makes an authenticated API request through a CORS proxy
+   * Makes an authenticated API request
+   * If useProxy is true, sends the request to a local proxy endpoint
    */
   private async request<T>(method: string, endpoint: string, body?: any): Promise<T> {
     if (USE_MOCK_DATA) {
@@ -80,32 +83,135 @@ class RCMApiClient {
       return this.getMockData<T>(endpoint);
     }
 
-    const apiUrl = `${this.config.apiUrl}${endpoint}`;
-    const proxyUrl = `${this.getNextProxy()}${encodeURIComponent(apiUrl)}`;
-    const headers = this.createHeaders(method, endpoint, body);
-
     try {
-      console.log(`Making ${method} request to ${apiUrl} via CORS proxy ${proxyUrl}`);
-      
-      const response = await fetch(proxyUrl, {
-        method,
-        headers,
-        body: body ? JSON.stringify(body) : undefined,
-        mode: 'cors',
-        cache: 'no-cache',
-      });
+      if (this.useProxy) {
+        // Use a proxy endpoint pattern similar to your jQuery code
+        console.log(`Making ${method} request to /api/RentalCarManagerApi/${endpoint}`);
+        
+        const response = await fetch(`/api/RentalCarManagerApi/${endpoint}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ method: endpoint }),
+        });
 
-      if (!response.ok) {
-        const error = await response.json().catch(() => ({}));
-        console.error(`API error: ${response.status} ${response.statusText}`, error);
-        throw new Error(error.message || `API request failed: ${response.status}`);
+        if (!response.ok) {
+          throw new Error(`Proxy API request failed: ${response.status}`);
+        }
+
+        const jsonResponse = await response.json();
+        return jsonResponse.data ? JSON.parse(jsonResponse.data) : jsonResponse;
+      } else {
+        // Direct API call with authentication
+        const apiUrl = `${this.config.apiUrl}${endpoint}`;
+        console.log(`Making ${method} request to ${apiUrl}`);
+        
+        const headers = this.createHeaders(method, endpoint, body);
+        
+        const response = await fetch(apiUrl, {
+          method,
+          headers,
+          body: body ? JSON.stringify(body) : undefined,
+          mode: 'cors',
+          cache: 'no-cache',
+        });
+
+        if (!response.ok) {
+          const error = await response.json().catch(() => ({}));
+          console.error(`API error: ${response.status} ${response.statusText}`, error);
+          throw new Error(error.message || `API request failed: ${response.status}`);
+        }
+
+        return await response.json();
       }
-
-      return await response.json();
     } catch (error) {
       console.error('RCM API request failed:', error);
       throw error;
     }
+  }
+
+  /**
+   * Get Step1 data (locations, driver ages, categories, etc.)
+   * This is similar to your RCMapiGetStep1 jQuery function
+   */
+  async getStep1(): Promise<RCMStep1Response> {
+    if (USE_MOCK_DATA) {
+      return {
+        status: "OK",
+        results: {
+          locations: [
+            {
+              id: "auckland",
+              location: "Auckland Airport",
+              address: "Auckland International Airport",
+              city: "Auckland",
+              state: "Auckland",
+              country: "New Zealand", 
+              postcode: "2022",
+              latitude: -36.9992,
+              longitude: 174.7870,
+              ispickupavailable: true,
+              isdropoffavailable: true,
+              isdefault: true
+            },
+            {
+              id: "wellington",
+              location: "Wellington Airport",
+              address: "Wellington International Airport",
+              city: "Wellington",
+              state: "Wellington",
+              country: "New Zealand",
+              postcode: "6022",
+              latitude: -41.3272, 
+              longitude: 174.8076,
+              ispickupavailable: true,
+              isdropoffavailable: true,
+              isdefault: false
+            },
+            {
+              id: "christchurch",
+              location: "Christchurch Airport",
+              address: "Christchurch International Airport",
+              city: "Christchurch",
+              state: "Canterbury",
+              country: "New Zealand",
+              postcode: "8053",
+              latitude: -43.4864,
+              longitude: 172.5369,
+              ispickupavailable: true,
+              isdropoffavailable: true,
+              isdefault: false
+            }
+          ],
+          officetimes: [
+            { id: "1", locationid: "auckland", day: "Monday", opentime: "07:00", closetime: "22:00" },
+            { id: "2", locationid: "auckland", day: "Tuesday", opentime: "07:00", closetime: "22:00" }
+          ],
+          driverages: [
+            { id: "21", driverage: "21-25", isdefault: false },
+            { id: "26", driverage: "26+", isdefault: true }
+          ],
+          categorytypes: [
+            { id: "0", vehiclecategorytype: "All Categories" },
+            { id: "1", vehiclecategorytype: "Economy" },
+            { id: "2", vehiclecategorytype: "Compact" },
+            { id: "3", vehiclecategorytype: "Intermediate" },
+            { id: "4", vehiclecategorytype: "Standard" },
+            { id: "5", vehiclecategorytype: "Full Size" },
+            { id: "6", vehiclecategorytype: "Premium" },
+            { id: "7", vehiclecategorytype: "Luxury" },
+            { id: "8", vehiclecategorytype: "Minivan" },
+            { id: "9", vehiclecategorytype: "SUV" }
+          ]
+        }
+      };
+    }
+    
+    return this.request<RCMStep1Response>(
+      this.useProxy ? 'POST' : 'GET', 
+      this.useProxy ? 'RCMapiGetStep1' : 'step1'
+    );
   }
 
   /**
@@ -269,7 +375,21 @@ class RCMApiClient {
    * Get all available locations
    */
   async getLocations(): Promise<RCMLocation[]> {
-    return this.request<RCMLocation[]>('GET', 'locations');
+    const step1Data = await this.getStep1();
+    if (step1Data.status === "OK" && step1Data.results?.locations) {
+      return step1Data.results.locations.map(loc => ({
+        id: loc.id,
+        name: loc.location,
+        address: loc.address || "",
+        city: loc.city || "",
+        state: loc.state || "",
+        country: loc.country || "",
+        postcode: loc.postcode || "",
+        latitude: loc.latitude || 0,
+        longitude: loc.longitude || 0
+      }));
+    }
+    throw new Error("Failed to retrieve locations");
   }
 
   /**
@@ -302,4 +422,4 @@ class RCMApiClient {
 }
 
 // Export a singleton instance
-export const rcmApi = new RCMApiClient(API_CONFIG);
+export const rcmApi = new RCMApiClient(DEFAULT_CONFIG);

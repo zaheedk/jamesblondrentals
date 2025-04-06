@@ -1,4 +1,3 @@
-
 import { useState, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { rcmApi } from '@/lib/api/rcm-api';
@@ -6,7 +5,8 @@ import type {
   RCMVehicle, 
   RCMLocation, 
   RCMBookingRequest, 
-  RCMAvailabilityRequest 
+  RCMAvailabilityRequest,
+  RCMConfigInit
 } from '@/lib/api/rcm-api-types';
 import { toast } from 'sonner';
 
@@ -78,15 +78,41 @@ const API_RETRY_CONFIG = {
 export function useRcmApi() {
   const queryClient = useQueryClient();
   
-  // Get all locations with fallback mechanism
+  // Initialize API with configuration
+  const initializeApi = (config: RCMConfigInit) => {
+    rcmApi.initialize(config);
+    // Invalidate all location queries to force refetch with new config
+    return queryClient.invalidateQueries({ queryKey: ['locations'] });
+  };
+  
+  // Get all locations with step1 API call
   const useLocations = () => {
     return useQuery({
       queryKey: ['locations'],
       queryFn: async () => {
         try {
-          const locations = await rcmApi.getLocations();
-          console.log('Locations loaded successfully:', locations.length);
-          return locations;
+          const response = await rcmApi.getStep1();
+          console.log('Step1 API response:', response);
+          
+          if (response.status === "OK" && response.results?.locations) {
+            // Transform the API response to match our expected format
+            const locations = response.results.locations.map(loc => ({
+              id: loc.id,
+              name: loc.location,
+              address: loc.address || "",
+              city: loc.city || "",
+              state: loc.state || "",
+              country: loc.country || "",
+              postcode: loc.postcode || "",
+              latitude: loc.latitude || 0,
+              longitude: loc.longitude || 0
+            }));
+            
+            console.log('Locations loaded successfully:', locations.length);
+            return locations;
+          } else {
+            throw new Error("Invalid location data received");
+          }
         } catch (error) {
           console.error('Location fetch error:', error);
           toast.error('Using sample location data', {
@@ -96,8 +122,83 @@ export function useRcmApi() {
           return FALLBACK_LOCATIONS;
         }
       },
-      retry: API_RETRY_CONFIG.retries,
-      retryDelay: API_RETRY_CONFIG.retryDelay,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      refetchOnWindowFocus: false
+    });
+  };
+  
+  // Get office hours
+  const useOfficeHours = () => {
+    return useQuery({
+      queryKey: ['officeHours'],
+      queryFn: async () => {
+        try {
+          const response = await rcmApi.getStep1();
+          if (response.status === "OK" && response.results?.officetimes) {
+            return response.results.officetimes;
+          }
+          return [];
+        } catch (error) {
+          console.error('Office hours fetch error:', error);
+          return [];
+        }
+      },
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      refetchOnWindowFocus: false
+    });
+  };
+  
+  // Get driver ages
+  const useDriverAges = () => {
+    return useQuery({
+      queryKey: ['driverAges'],
+      queryFn: async () => {
+        try {
+          const response = await rcmApi.getStep1();
+          if (response.status === "OK" && response.results?.driverages) {
+            return Array.from(response.results.driverages);
+          }
+          return [];
+        } catch (error) {
+          console.error('Driver ages fetch error:', error);
+          return [
+            { id: "21", driverage: "21-25", isdefault: false },
+            { id: "26", driverage: "26+", isdefault: true }
+          ];
+        }
+      },
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      refetchOnWindowFocus: false
+    });
+  };
+  
+  // Get vehicle categories
+  const useVehicleCategories = () => {
+    return useQuery({
+      queryKey: ['vehicleCategories'],
+      queryFn: async () => {
+        try {
+          const response = await rcmApi.getStep1();
+          if (response.status === "OK" && response.results?.categorytypes) {
+            return Array.from(response.results.categorytypes);
+          }
+          return [];
+        } catch (error) {
+          console.error('Vehicle categories fetch error:', error);
+          return [
+            { id: "0", vehiclecategorytype: "All Categories" },
+            { id: "1", vehiclecategorytype: "Economy" },
+            { id: "2", vehiclecategorytype: "Compact" },
+            { id: "3", vehiclecategorytype: "Intermediate" },
+            { id: "4", vehiclecategorytype: "Standard" },
+            { id: "5", vehiclecategorytype: "Full Size" },
+            { id: "6", vehiclecategorytype: "Premium" },
+            { id: "7", vehiclecategorytype: "Luxury" },
+            { id: "8", vehiclecategorytype: "Minivan" },
+            { id: "9", vehiclecategorytype: "SUV" }
+          ];
+        }
+      },
       staleTime: 5 * 60 * 1000, // 5 minutes
       refetchOnWindowFocus: false
     });
@@ -176,7 +277,11 @@ export function useRcmApi() {
   };
 
   return {
+    initializeApi,
     useLocations,
+    useOfficeHours,
+    useDriverAges,
+    useVehicleCategories,
     useAvailableVehicles,
     useVehicleDetails,
     useCreateBooking,

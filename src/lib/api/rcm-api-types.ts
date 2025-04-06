@@ -32,6 +32,51 @@ export interface RCMLocation {
   longitude: number;
 }
 
+// New interfaces for Step1 response
+export interface RCMDriverAge {
+  id: string;
+  driverage: string;
+  isdefault: boolean;
+}
+
+export interface RCMVehicleCategory {
+  id: string;
+  vehiclecategorytype: string;
+}
+
+export interface RCMOfficeTime {
+  id: string;
+  locationid: string;
+  day: string;
+  opentime: string;
+  closetime: string;
+}
+
+export interface RCMStep1Results {
+  locations: {
+    id: string;
+    location: string;
+    address?: string;
+    city?: string;
+    state?: string;
+    country?: string;
+    postcode?: string;
+    latitude?: number;
+    longitude?: number;
+    ispickupavailable: boolean;
+    isdropoffavailable: boolean;
+    isdefault: boolean;
+  }[];
+  officetimes: RCMOfficeTime[];
+  driverages: RCMDriverAge[];
+  categorytypes: RCMVehicleCategory[];
+}
+
+export interface RCMStep1Response {
+  status: string;
+  results: RCMStep1Results;
+}
+
 export interface RCMBookingRequest {
   pickupLocationId: string;
   dropoffLocationId: string;
@@ -68,4 +113,11 @@ export interface RCMApiConfig {
   apiKey: string;
   apiSecret: string;
   apiUrl: string;
+}
+
+export interface RCMConfigInit {
+  apiUrl?: string;
+  apiKey?: string;
+  apiSecret?: string;
+  useProxy?: boolean;
 }

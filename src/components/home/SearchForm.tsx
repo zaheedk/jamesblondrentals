@@ -31,33 +31,28 @@ const SearchForm = () => {
   const [minDropoffDate, setMinDropoffDate] = useState<Date>(addDays(new Date(), 1));
   const [isLoading, setIsLoading] = useState(false);
 
-  // Use the RCM API to fetch locations
-  const { useLocations, FALLBACK_LOCATIONS } = useRcmApi();
+  // Use the RCM API to fetch data
+  const { 
+    useLocations, 
+    useDriverAges,
+    useVehicleCategories
+  } = useRcmApi();
+  
   const { 
     data: locations = [], 
     isLoading: isLoadingLocations,
     isError: isLocationError 
   } = useLocations();
-
-  // Age options
-  const ageOptions = [
-    { id: "21", label: "21-25" },
-    { id: "26", label: "26+" }
-  ];
-
-  // Car categories
-  const carCategories = [
-    { id: "0", label: "All Categories" },
-    { id: "1", label: "Economy" },
-    { id: "2", label: "Compact" },
-    { id: "3", label: "Intermediate" },
-    { id: "4", label: "Standard" },
-    { id: "5", label: "Full Size" },
-    { id: "6", label: "Premium" },
-    { id: "7", label: "Luxury" },
-    { id: "8", label: "Minivan" },
-    { id: "9", label: "SUV" }
-  ];
+  
+  const {
+    data: driverAges = [],
+    isLoading: isLoadingAges
+  } = useDriverAges();
+  
+  const {
+    data: carCategories = [],
+    isLoading: isLoadingCategories
+  } = useVehicleCategories();
 
   // Set default dates when component mounts
   useEffect(() => {
@@ -258,13 +253,13 @@ const SearchForm = () => {
               <div className="space-y-2">
                 <Label htmlFor="driver-age">Driver Age</Label>
                 <Select value={age} onValueChange={setAge}>
-                  <SelectTrigger id="driver-age">
+                  <SelectTrigger id="driver-age" className={isLoadingAges ? "animate-pulse" : ""}>
                     <SelectValue placeholder="Select age" />
                   </SelectTrigger>
                   <SelectContent>
-                    {ageOptions.map((option) => (
+                    {driverAges.map((option) => (
                       <SelectItem key={option.id} value={option.id}>
-                        {option.label}
+                        {option.driverage === "26" ? "26+" : option.driverage}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -275,13 +270,13 @@ const SearchForm = () => {
               <div className="space-y-2">
                 <Label htmlFor="car-category">Vehicle Category</Label>
                 <Select value={carCategory} onValueChange={setCarCategory}>
-                  <SelectTrigger id="car-category">
+                  <SelectTrigger id="car-category" className={isLoadingCategories ? "animate-pulse" : ""}>
                     <SelectValue placeholder="All Categories" />
                   </SelectTrigger>
                   <SelectContent>
                     {carCategories.map((category) => (
                       <SelectItem key={category.id} value={category.id}>
-                        {category.label}
+                        {category.vehiclecategorytype}
                       </SelectItem>
                     ))}
                   </SelectContent>
