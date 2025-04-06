@@ -60,33 +60,6 @@ const SearchForm = () => {
     useLocationDetails
   } = useRcmApi();
   
-  const { 
-    data: locations = [], 
-    isLoading: isLoadingLocations,
-    isError: isLocationError,
-    refetch: refetchLocations
-  } = useLocations();
-  
-  const {
-    data: driverAges = [],
-    isLoading: isLoadingAges
-  } = useDriverAges();
-  
-  const {
-    data: carCategories = [],
-    isLoading: isLoadingCategories
-  } = useVehicleCategories();
-
-  const {
-    data: officeHours = [],
-    isLoading: isLoadingOfficeHours
-  } = useOfficeHours();
-  
-  const {
-    data: locationDetails = [],
-    isLoading: isLoadingLocationDetails
-  } = useLocationDetails();
-
   // Initialize API on component mount - now without settings dialog
   useEffect(() => {
     initializeApi({
@@ -216,6 +189,13 @@ const SearchForm = () => {
     
     console.log(`Finding hours for location ${locationId} on day ${apiDayOfWeek} (JS day: ${jsDay})`);
     
+    // Get the required notice period for this location
+    const selectedLocationDetail = locationDetails.find(
+      loc => String(loc.id) === String(locationId)
+    );
+    
+    const requiredNoticeDays = selectedLocationDetail?.noticerequired_numberofdays || 0;
+    
     // Find office hours for the selected location and day
     const locationOfficeHours = officeHours.filter(
       time => {
@@ -232,11 +212,11 @@ const SearchForm = () => {
       const locationDetail = locationDetails.find(loc => String(loc.id) === String(locationId));
       if (locationDetail) {
         console.log(`Using default hours for ${locationId}: ${locationDetail.officeopeningtime} - ${locationDetail.officeclosingtime}`);
-        return generateTimeOptions(locationDetail.officeopeningtime, locationDetail.officeclosingtime, date);
+        return generateTimeOptions(locationDetail.officeopeningtime, locationDetail.officeclosingtime, date, requiredNoticeDays);
       }
       
       // Return default office hours if none found
-      return generateTimeOptions("09:00", "17:00", date);
+      return generateTimeOptions("09:00", "17:00", date, requiredNoticeDays);
     }
     
     // Get the first match
@@ -257,23 +237,43 @@ const SearchForm = () => {
     
     // Handle special case for 24-hour locations
     if (startTime === "00:00" && (endTime === "00:00" || endTime === "24:00")) {
-      return generate24HourOptions(date);
+      return generate24HourOptions(date, requiredNoticeDays);
     }
     
-    return generateTimeOptions(startTime, endTime, date);
+    return generateTimeOptions(startTime, endTime, date, requiredNoticeDays);
   };
 
   // Generate time options for 24-hour operations
-  const generate24HourOptions = (date: Date): string[] => {
+  const generate24HourOptions = (date: Date, requiredNoticeDays: number): string[] => {
     const options: string[] = [];
     const now = new Date();
     const isToday = isSameDay(date, now);
+    const isTomorrow = isSameDay(date, addDays(now, 1));
+    
+    // For notice periods, calculate the earliest allowed time
+    let earliestAllowedTime: Date;
+    if (requiredNoticeDays > 0) {
+      // For 1 day notice, ensure it's at least 24 hours from now
+      earliestAllowedTime = addHours(now, requiredNoticeDays * 24);
+    } else {
+      earliestAllowedTime = new Date(now);
+    }
     
     // Generate times in 30-minute intervals for a full 24 hours
     for (let hour = 0; hour < 24; hour++) {
       for (let minute of [0, 30]) {
+        // Create a test date for this time slot
+        const testDate = new Date(date);
+        testDate.setHours(hour, minute, 0, 0);
+        
         // Skip times in the past if the date is today
         if (isToday && (hour < now.getHours() || (hour === now.getHours() && minute <= now.getMinutes()))) {
+          continue;
+        }
+        
+        // Skip times that don't provide enough notice
+        if ((isToday || (isTomorrow && requiredNoticeDays >= 1)) && 
+            isBefore(testDate, earliestAllowedTime)) {
           continue;
         }
         
@@ -287,10 +287,22 @@ const SearchForm = () => {
   };
 
   // Generate time options in 30-minute intervals between open and close times
-  const generateTimeOptions = (openTime: string, closeTime: string, date: Date): string[] => {
+  const generateTimeOptions = (openTime: string, closeTime: string, date: Date, requiredNoticeDays: number): string[] => {
     if (!openTime || !closeTime) return [];
     
     const options: string[] = [];
+    const now = new Date();
+    const isToday = isSameDay(date, now);
+    const isTomorrow = isSameDay(date, addDays(now, 1));
+    
+    // For notice periods, calculate the earliest allowed time
+    let earliestAllowedTime: Date;
+    if (requiredNoticeDays > 0) {
+      // For 1 day notice, ensure it's at least 24 hours from now
+      earliestAllowedTime = addHours(now, requiredNoticeDays * 24);
+    } else {
+      earliestAllowedTime = new Date(now);
+    }
     
     // Parse times (expecting format like "09:00" or "17:30")
     const [openHour, openMinute] = openTime.split(':').map(Number);
@@ -303,8 +315,7 @@ const SearchForm = () => {
     let startInMinutes = openHour * 60 + openMinute;
     
     // Check if date is today and adjust startInMinutes to current time (rounded up to next 30 min)
-    const now = new Date();
-    if (isSameDay(date, now)) {
+    if (isToday) {
       const currentMinutes = now.getHours() * 60 + now.getMinutes();
       // Round up to next 30-min slot
       const roundedCurrentMinutes = Math.ceil((currentMinutes + 1) / 30) * 30;
@@ -315,6 +326,17 @@ const SearchForm = () => {
     for (let minutes = startInMinutes; minutes < closingInMinutes; minutes += 30) {
       const hour = Math.floor(minutes / 60) % 24;
       const minute = minutes % 60;
+      
+      // Create a test date for this time slot
+      const testDate = new Date(date);
+      testDate.setHours(hour, minute, 0, 0);
+      
+      // Skip times that don't provide enough notice
+      if ((isToday || (isTomorrow && requiredNoticeDays >= 1)) && 
+          isBefore(testDate, earliestAllowedTime)) {
+        continue;
+      }
+      
       const formattedHour = hour.toString().padStart(2, '0');
       const formattedMinute = minute.toString().padStart(2, '0');
       options.push(`${formattedHour}:${formattedMinute}`);
@@ -391,7 +413,10 @@ const SearchForm = () => {
         const hoursRequired = requiredNoticeDays * 24;
         const minAllowedDate = addHours(new Date(), hoursRequired);
         
-        if (isBefore(pickupDate, minAllowedDate)) {
+        const pickupDateTime = combineDateTime(pickupDate, pickupTime);
+        const pickupDateObj = new Date(pickupDateTime);
+        
+        if (isBefore(pickupDateObj, minAllowedDate)) {
           toast.error(`This location requires ${requiredNoticeDays} day(s) advance notice for bookings`);
           return;
         }
