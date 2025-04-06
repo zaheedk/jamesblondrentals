@@ -56,10 +56,17 @@ const SearchForm = () => {
   
   // Get data from hooks
   const { 
-    data: locations = [], 
+    data: locationsData = [], 
     isLoading: isLoadingLocations, 
     error: locationError 
   } = useLocations();
+  
+  // Convert any numeric IDs to strings to match RCMLocation type
+  const locations = locationsData.map(loc => ({
+    ...loc,
+    id: String(loc.id)
+  }));
+  
   const { 
     data: driverAges = [], 
     isLoading: isLoadingAges 
@@ -73,8 +80,14 @@ const SearchForm = () => {
     isLoading: isLoadingOfficeHours 
   } = useOfficeHours();
   const { 
-    data: locationDetails = [] 
+    data: locationDetailsData = [] 
   } = useLocationDetails();
+  
+  // Convert any numeric IDs to strings for locationDetails as well
+  const locationDetails = locationDetailsData.map(loc => ({
+    ...loc,
+    id: String(loc.id)
+  }));
   
   // Determine if there was a location error
   const isLocationError = !!locationError;
@@ -96,9 +109,11 @@ const SearchForm = () => {
 
   // Set default dates and location when component loads
   useEffect(() => {
+    // Get today's date as default
+    const today = new Date();
+    
+    // Only set dates if they haven't been set already
     if (!pickupDate) {
-      // Get today's date as default
-      const today = new Date();
       setPickupDate(today);
       
       // Default dropoff date is 3 days after pickup
@@ -106,9 +121,12 @@ const SearchForm = () => {
       setDropoffDate(defaultDropoff);
     }
     
-    // Default to Kelston location
+    // Force set the locations to Kelston on initial render
     setPickupLocation(DEFAULT_LOCATION_ID);
     setDropoffLocation(DEFAULT_LOCATION_ID);
+    
+    // Log for debugging
+    console.log(`Setting default location to: ${DEFAULT_LOCATION_ID}`);
   }, []);
 
   // Update minimum pickup date when pickup location changes or when location details load
