@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -8,8 +7,9 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { format, addDays, isBefore, isAfter, parseISO } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRcmApi } from "@/hooks/use-rcm-api";
 import { toast } from "sonner";
@@ -27,12 +27,19 @@ const SearchForm = () => {
   const [carCategory, setCarCategory] = useState("");
   const [promoCode, setPromoCode] = useState("");
   
+  // API Configuration state
+  const [apiKey, setApiKey] = useState("");
+  const [apiSecret, setApiSecret] = useState("");
+  const [apiUrl, setApiUrl] = useState("https://apis.rentalcarmanager.com/booking/v3.2/");
+  const [showApiDialog, setShowApiDialog] = useState(false);
+  
   // Derived state
   const [minDropoffDate, setMinDropoffDate] = useState<Date>(addDays(new Date(), 1));
   const [isLoading, setIsLoading] = useState(false);
 
   // Use the RCM API to fetch data
   const { 
+    initializeApi,
     useLocations, 
     useDriverAges,
     useVehicleCategories
@@ -41,7 +48,8 @@ const SearchForm = () => {
   const { 
     data: locations = [], 
     isLoading: isLoadingLocations,
-    isError: isLocationError 
+    isError: isLocationError,
+    refetch: refetchLocations
   } = useLocations();
   
   const {
@@ -76,6 +84,33 @@ const SearchForm = () => {
       }
     }
   }, [pickupDate, dropoffDate]);
+
+  // Handle API configuration submission
+  const handleApiConfigSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    try {
+      await initializeApi({
+        apiKey,
+        apiSecret,
+        apiUrl,
+        useProxy: false // Make direct calls to the API
+      });
+      
+      toast.success("API connection successful", {
+        description: "API credentials updated successfully."
+      });
+      
+      // Refetch the locations to verify the connection
+      refetchLocations();
+      setShowApiDialog(false);
+    } catch (error) {
+      console.error("API configuration error:", error);
+      toast.error("API Connection Error", {
+        description: "Failed to initialize API with provided credentials."
+      });
+    }
+  };
 
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
@@ -129,6 +164,59 @@ const SearchForm = () => {
   return (
     <Card className="shadow-lg border-0">
       <CardContent className="p-6">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-semibold">Find Your Vehicle</h3>
+          <Dialog open={showApiDialog} onOpenChange={setShowApiDialog}>
+            <DialogTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-8 w-8" title="API Settings">
+                <Settings className="h-4 w-4" />
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>RCM API Configuration</DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleApiConfigSubmit} className="space-y-4 pt-4">
+                <div className="space-y-2">
+                  <Label htmlFor="api-url">API URL</Label>
+                  <Input
+                    id="api-url"
+                    value={apiUrl}
+                    onChange={(e) => setApiUrl(e.target.value)}
+                    placeholder="https://apis.rentalcarmanager.com/booking/v3.2/"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="api-key">API Key</Label>
+                  <Input
+                    id="api-key"
+                    value={apiKey}
+                    onChange={(e) => setApiKey(e.target.value)}
+                    placeholder="Enter your API key"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="api-secret">API Secret</Label>
+                  <Input
+                    id="api-secret"
+                    type="password"
+                    value={apiSecret}
+                    onChange={(e) => setApiSecret(e.target.value)}
+                    placeholder="Enter your API secret"
+                    required
+                  />
+                </div>
+                <Button type="submit" className="w-full">Connect API</Button>
+                <p className="text-xs text-gray-500">
+                  Enter your RCM API credentials to connect to their service directly.
+                </p>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </div>
+
         <form onSubmit={handleSubmit}>
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

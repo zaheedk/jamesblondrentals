@@ -1,4 +1,3 @@
-
 import { generateSignature } from './rcm-signature';
 import type { 
   RCMApiConfig,
@@ -26,7 +25,7 @@ let USE_MOCK_DATA = false;
  */
 class RCMApiClient {
   private config: RCMApiConfig;
-  private useProxy: boolean = true; // Set to true by default to use proxy mode
+  private useProxy: boolean = false; // Set to false by default
 
   constructor(config: RCMApiConfig) {
     this.config = config;
@@ -76,7 +75,6 @@ class RCMApiClient {
 
   /**
    * Makes an authenticated API request
-   * If useProxy is true, sends the request to a local proxy endpoint
    */
   private async request<T>(method: string, endpoint: string, body?: any): Promise<T> {
     if (USE_MOCK_DATA) {
@@ -85,47 +83,27 @@ class RCMApiClient {
     }
 
     try {
-      if (this.useProxy) {
-        // Use a proxy endpoint pattern similar to your jQuery code
-        console.log(`Making ${method} request to /api/RentalCarManagerApi/${endpoint}`);
-        
-        const response = await fetch(`/api/RentalCarManagerApi/${endpoint}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ method: endpoint }),
-        });
+      // Direct API call to RCM API
+      const apiUrl = `${this.config.apiUrl}${endpoint}`;
+      console.log(`Making ${method} request to ${apiUrl}`);
+      
+      const headers = this.createHeaders(method, endpoint, body);
+      
+      const response = await fetch(apiUrl, {
+        method,
+        headers,
+        body: body ? JSON.stringify(body) : undefined,
+        mode: 'cors',
+        cache: 'no-cache',
+      });
 
-        if (!response.ok) {
-          throw new Error(`Proxy API request failed: ${response.status}`);
-        }
-
-        const jsonResponse = await response.json();
-        return jsonResponse.data ? JSON.parse(jsonResponse.data) : jsonResponse;
-      } else {
-        // Direct API call with authentication
-        const apiUrl = `${this.config.apiUrl}${endpoint}`;
-        console.log(`Making ${method} request to ${apiUrl}`);
-        
-        const headers = this.createHeaders(method, endpoint, body);
-        
-        const response = await fetch(apiUrl, {
-          method,
-          headers,
-          body: body ? JSON.stringify(body) : undefined,
-          mode: 'cors',
-          cache: 'no-cache',
-        });
-
-        if (!response.ok) {
-          const error = await response.json().catch(() => ({}));
-          console.error(`API error: ${response.status} ${response.statusText}`, error);
-          throw new Error(error.message || `API request failed: ${response.status}`);
-        }
-
-        return await response.json();
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        console.error(`API error: ${response.status} ${response.statusText}`, error);
+        throw new Error(error.message || `API request failed: ${response.status}`);
       }
+
+      return await response.json();
     } catch (error) {
       console.error('RCM API request failed:', error);
       throw error;
@@ -134,7 +112,6 @@ class RCMApiClient {
 
   /**
    * Get Step1 data (locations, driver ages, categories, etc.)
-   * This is similar to your RCMapiGetStep1 jQuery function
    */
   async getStep1(): Promise<RCMStep1Response> {
     if (USE_MOCK_DATA) {
@@ -209,10 +186,7 @@ class RCMApiClient {
       };
     }
     
-    return this.request<RCMStep1Response>(
-      this.useProxy ? 'POST' : 'GET', 
-      this.useProxy ? 'RCMapiGetStep1' : 'step1'
-    );
+    return this.request<RCMStep1Response>('GET', 'step1');
   }
 
   /**

@@ -117,7 +117,7 @@ export function useRcmApi() {
         } catch (error) {
           console.error('Location fetch error:', error);
           toast.error('API Connection Error', {
-            description: 'Make sure the proxy endpoints are set up on your server.'
+            description: 'Failed to connect to RCM API. Check your API settings.'
           });
           // Return fallback locations on error
           return FALLBACK_LOCATIONS;
@@ -218,7 +218,7 @@ export function useRcmApi() {
         } catch (error) {
           console.error('Failed to fetch available vehicles:', error);
           toast.error('API Connection Error', {
-            description: 'Unable to fetch vehicles. Make sure the proxy API endpoints are configured.'
+            description: 'Failed to fetch vehicles. Check your API credentials.'
           });
           return [];
         }
@@ -241,8 +241,8 @@ export function useRcmApi() {
           return vehicle;
         } catch (error) {
           console.error('Failed to fetch vehicle details:', error);
-          toast.error('Using sample vehicle data', {
-            description: 'We\'re using demo data while API connectivity is being set up.'
+          toast.error('API Connection Error', {
+            description: 'Failed to fetch vehicle details. Check your API settings.'
           });
           return null;
         }
@@ -266,7 +266,7 @@ export function useRcmApi() {
         } catch (error) {
           console.error('Booking creation error:', error);
           toast.error('API Connection Error', {
-            description: 'Unable to create booking. Make sure the proxy API endpoints are configured.'
+            description: 'Failed to create booking. Check your API credentials.'
           });
           throw error;
         }
