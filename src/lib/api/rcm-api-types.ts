@@ -45,28 +45,40 @@ export interface RCMVehicleCategory {
 }
 
 export interface RCMOfficeTime {
-  id: string;
-  locationid: string;
-  day: string;
-  opentime: string;
-  closetime: string;
+  locationid: string | number;
+  day?: string;
+  dayofweek?: number;
+  openingtime: string;
+  closingtime: string;
+  startpickup?: string;
+  endpickup?: string;
+  startdropoff?: string;
+  enddropoff?: string;
+  startdate?: string;
+  enddate?: string;
+}
+
+export interface RCMLocationDetail {
+  id: string | number;
+  location: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  postcode?: string;
+  latitude?: number;
+  longitude?: number;
+  ispickupavailable: boolean;
+  isdropoffavailable: boolean;
+  isdefault: boolean;
+  minimumbookingday: number;
+  noticerequired_numberofdays: number;
+  officeopeningtime: string;
+  officeclosingtime: string;
 }
 
 export interface RCMStep1Results {
-  locations: {
-    id: string;
-    location: string;
-    address?: string;
-    city?: string;
-    state?: string;
-    country?: string;
-    postcode?: string;
-    latitude?: number;
-    longitude?: number;
-    ispickupavailable: boolean;
-    isdropoffavailable: boolean;
-    isdefault: boolean;
-  }[];
+  locations: RCMLocationDetail[];
   officetimes: RCMOfficeTime[];
   driverages: RCMDriverAge[];
   categorytypes: RCMVehicleCategory[];

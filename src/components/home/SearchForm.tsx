@@ -9,17 +9,29 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { format, addDays, isBefore, isAfter, parseISO, isValid } from "date-fns";
+import { format, addDays, isBefore, isAfter, parseISO, isValid, getDay } from "date-fns";
 import { CalendarIcon, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRcmApi } from "@/hooks/use-rcm-api";
 import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
+import { RCMLocationDetail, RCMOfficeTime } from "@/lib/api/rcm-api-types";
 
 // Production API credentials
 const DEFAULT_API_KEY = "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq";
 const DEFAULT_API_SECRET = "tsdavpoP51o6AcLIdorqgtFJ0ullAimg";
 const DEFAULT_API_URL = "https://apis.rentalcarmanager.com/booking/v3.2/";
+
+// Map JavaScript day numbers (0-6, Sunday-Saturday) to API dayofweek (1-7, Monday-Sunday)
+const JS_TO_API_DAY_MAP: { [key: number]: number } = {
+  0: 7, // Sunday -> 7
+  1: 1, // Monday -> 1
+  2: 2, // Tuesday -> 2
+  3: 3, // Wednesday -> 3
+  4: 4, // Thursday -> 4
+  5: 5, // Friday -> 5
+  6: 6, // Saturday -> 6
+};
 
 const SearchForm = () => {
   const navigate = useNavigate();
@@ -48,6 +60,7 @@ const SearchForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [pickupTimeOptions, setPickupTimeOptions] = useState<string[]>([]);
   const [dropoffTimeOptions, setDropoffTimeOptions] = useState<string[]>([]);
+  const [minPickupDate, setMinPickupDate] = useState<Date>(new Date());
 
   // Use the RCM API to fetch data
   const { 
@@ -55,7 +68,8 @@ const SearchForm = () => {
     useLocations, 
     useDriverAges,
     useVehicleCategories,
-    useOfficeHours
+    useOfficeHours,
+    useLocationDetails
   } = useRcmApi();
   
   const { 
@@ -79,6 +93,11 @@ const SearchForm = () => {
     data: officeHours = [],
     isLoading: isLoadingOfficeHours
   } = useOfficeHours();
+  
+  const {
+    data: locationDetails = [],
+    isLoading: isLoadingLocationDetails
+  } = useLocationDetails();
 
   // Initialize API on component mount
   useEffect(() => {
@@ -94,6 +113,11 @@ const SearchForm = () => {
 
   // Set default dates when component mounts
   useEffect(() => {
+    setTomorrowAsDefaultDates();
+  }, []);
+
+  // Helper to set tomorrow as default dates
+  const setTomorrowAsDefaultDates = () => {
     // Set default pickup date to tomorrow
     const tomorrow = addDays(new Date(), 1);
     setPickupDate(tomorrow);
@@ -101,7 +125,39 @@ const SearchForm = () => {
     // Set default dropoff date to 3 days after pickup
     const defaultDropoff = addDays(tomorrow, 3);
     setDropoffDate(defaultDropoff);
-  }, []);
+  };
+
+  // Update minimum pickup date when pickup location changes
+  useEffect(() => {
+    if (pickupLocation) {
+      const selectedLocationDetail = locationDetails.find(
+        loc => String(loc.id) === pickupLocation
+      );
+      
+      if (selectedLocationDetail) {
+        // Get the required notice period in days
+        const requiredNoticeDays = selectedLocationDetail.noticerequired_numberofdays || 0;
+        
+        // Calculate the minimum pickup date based on notice period
+        const newMinPickupDate = addDays(new Date(), requiredNoticeDays);
+        setMinPickupDate(newMinPickupDate);
+        
+        // If current pickup date is before minimum, update it
+        if (pickupDate && isBefore(pickupDate, newMinPickupDate)) {
+          const newPickupDate = newMinPickupDate;
+          setPickupDate(newPickupDate);
+          
+          // Also update dropoff date if needed
+          const newMinDropoffDate = addDays(newPickupDate, 1);
+          if (dropoffDate && isBefore(dropoffDate, newMinDropoffDate)) {
+            setDropoffDate(newMinDropoffDate);
+          }
+        }
+        
+        console.log(`Location ${pickupLocation} requires ${requiredNoticeDays} days notice`);
+      }
+    }
+  }, [pickupLocation, locationDetails]);
 
   // Update minimum dropoff date when pickup date changes
   useEffect(() => {
@@ -113,73 +169,137 @@ const SearchForm = () => {
         setDropoffDate(addDays(pickupDate, 1));
       }
     }
-  }, [pickupDate, dropoffDate]);
+  }, [pickupDate]);
 
   // Update time options when location or date changes
   useEffect(() => {
     if (pickupLocation && pickupDate && isValid(pickupDate)) {
-      const options = getLocationTimeOptions(pickupLocation, pickupDate);
+      const options = getLocationTimeOptions(pickupLocation, pickupDate, 'pickup');
       setPickupTimeOptions(options);
       
       // Set default pickup time to first available time
       if (options.length > 0 && !pickupTime) {
         setPickupTime(options[0]);
+      } else if (options.length > 0 && pickupTime && !options.includes(pickupTime)) {
+        // If current time is not in new options, set to first available
+        setPickupTime(options[0]);
+      } else if (options.length === 0) {
+        setPickupTime("");
       }
     }
   }, [pickupLocation, pickupDate]);
 
+  // Update dropoff time options when location/date changes
   useEffect(() => {
-    if ((sameLocation ? pickupLocation : dropoffLocation) && dropoffDate && isValid(dropoffDate)) {
-      const locationId = sameLocation ? pickupLocation : dropoffLocation;
-      const options = getLocationTimeOptions(locationId, dropoffDate);
+    const selectedLocation = sameLocation ? pickupLocation : dropoffLocation;
+    
+    if (selectedLocation && dropoffDate && isValid(dropoffDate)) {
+      const options = getLocationTimeOptions(selectedLocation, dropoffDate, 'dropoff');
       setDropoffTimeOptions(options);
       
       // Set default dropoff time to first available time
       if (options.length > 0 && !dropoffTime) {
         setDropoffTime(options[0]);
+      } else if (options.length > 0 && dropoffTime && !options.includes(dropoffTime)) {
+        // If current time is not in new options, set to first available
+        setDropoffTime(options[0]);
+      } else if (options.length === 0) {
+        setDropoffTime("");
       }
     }
   }, [dropoffLocation, dropoffDate, sameLocation, pickupLocation]);
 
   // Helper function to get office hours for a specific location and day
-  const getLocationTimeOptions = (locationId: string, date: Date): string[] => {
+  const getLocationTimeOptions = (locationId: string, date: Date, type: 'pickup' | 'dropoff'): string[] => {
     if (!date || !isValid(date) || !locationId) return [];
 
-    const day = format(date, 'EEEE').toLowerCase(); // Gets day name like 'monday'
+    const jsDay = getDay(date);
+    const apiDayOfWeek = JS_TO_API_DAY_MAP[jsDay];
+    
+    console.log(`Finding hours for location ${locationId} on day ${apiDayOfWeek} (JS day: ${jsDay})`);
     
     // Find office hours for the selected location and day
     const locationOfficeHours = officeHours.filter(
-      time => String(time.locationid) === locationId && time.day.toLowerCase() === day
+      time => {
+        const locIdMatches = String(time.locationid) === String(locationId);
+        const dayMatches = time.dayofweek === apiDayOfWeek;
+        return locIdMatches && dayMatches;
+      }
     );
     
     if (locationOfficeHours.length === 0) {
-      console.log(`No office hours found for location ${locationId} on ${day}`);
+      console.log(`No office hours found for location ${locationId} on day ${apiDayOfWeek}`);
+      
+      // Try to get default hours from location details as fallback
+      const locationDetail = locationDetails.find(loc => String(loc.id) === String(locationId));
+      if (locationDetail) {
+        console.log(`Using default hours for ${locationId}: ${locationDetail.officeopeningtime} - ${locationDetail.officeclosingtime}`);
+        return generateTimeOptions(locationDetail.officeopeningtime, locationDetail.officeclosingtime);
+      }
+      
       // Return default office hours if none found
       return generateTimeOptions("09:00", "17:00");
     }
     
-    // Get the first match (should be only one per location per day)
+    // Get the first match
     const hours = locationOfficeHours[0];
     
-    console.log(`Office hours for location ${locationId} on ${day}:`, hours);
-    return generateTimeOptions(hours.opentime, hours.closetime);
+    let startTime, endTime;
+    
+    if (type === 'pickup') {
+      startTime = hours.startpickup || hours.openingtime;
+      endTime = hours.endpickup || hours.closingtime;
+    } else { // dropoff
+      startTime = hours.startdropoff || hours.openingtime;
+      endTime = hours.enddropoff || hours.closingtime;
+    }
+    
+    console.log(`Office hours for ${type} at location ${locationId} on day ${apiDayOfWeek}:`, 
+      `${startTime} - ${endTime}`);
+    
+    // Handle special case for 24-hour locations
+    if (startTime === "00:00" && (endTime === "00:00" || endTime === "24:00")) {
+      return generate24HourOptions();
+    }
+    
+    return generateTimeOptions(startTime, endTime);
+  };
+
+  // Generate time options for 24-hour operations
+  const generate24HourOptions = (): string[] => {
+    const options: string[] = [];
+    
+    // Generate times in 30-minute intervals for a full 24 hours
+    for (let hour = 0; hour < 24; hour++) {
+      for (let minute of [0, 30]) {
+        const formattedHour = hour.toString().padStart(2, '0');
+        const formattedMinute = minute.toString().padStart(2, '0');
+        options.push(`${formattedHour}:${formattedMinute}`);
+      }
+    }
+    
+    return options;
   };
 
   // Generate time options in 30-minute intervals between open and close times
   const generateTimeOptions = (openTime: string, closeTime: string): string[] => {
+    if (!openTime || !closeTime) return [];
+    
     const options: string[] = [];
     
     // Parse times (expecting format like "09:00" or "17:30")
     const [openHour, openMinute] = openTime.split(':').map(Number);
     const [closeHour, closeMinute] = closeTime.split(':').map(Number);
     
+    // Handle special case for midnight closing (00:00)
+    const closingInMinutes = closeTime === "00:00" ? 24 * 60 : closeHour * 60 + closeMinute;
+    
     // Convert to minutes for easier calculation
     const openInMinutes = openHour * 60 + openMinute;
-    const closeInMinutes = closeHour * 60 + closeMinute;
     
     // Generate times in 30-minute intervals
-    for (let minutes = openInMinutes; minutes < closeInMinutes; minutes += 30) {
-      const hour = Math.floor(minutes / 60);
+    for (let minutes = openInMinutes; minutes < closingInMinutes; minutes += 30) {
+      const hour = Math.floor(minutes / 60) % 24;
       const minute = minutes % 60;
       const formattedHour = hour.toString().padStart(2, '0');
       const formattedMinute = minute.toString().padStart(2, '0');
@@ -266,6 +386,21 @@ const SearchForm = () => {
       return;
     }
     
+    // Ensure the selected times respect the required notice period
+    const selectedLocation = locationDetails.find(
+      loc => String(loc.id) === pickupLocation
+    );
+    
+    if (selectedLocation) {
+      const requiredNoticeDays = selectedLocation.noticerequired_numberofdays || 0;
+      const minAllowedDate = addDays(new Date(), requiredNoticeDays);
+      
+      if (isBefore(pickupDate, minAllowedDate)) {
+        toast.error(`This location requires ${requiredNoticeDays} day(s) advance notice for bookings`);
+        return;
+      }
+    }
+    
     setIsLoading(true);
     
     // Create full ISO date strings with the selected dates and times
@@ -300,6 +435,33 @@ const SearchForm = () => {
     newDate.setHours(hours, minutes, 0, 0);
     
     return newDate.toISOString();
+  };
+
+  // Helper to disable past dates and respect notice period requirements
+  const disablePastDates = (date: Date) => {
+    // Always disable dates in the past
+    if (isBefore(date, new Date())) {
+      return true;
+    }
+    
+    // If a pickup location is selected, respect its notice requirement
+    if (pickupLocation) {
+      const selectedLocation = locationDetails.find(
+        loc => String(loc.id) === pickupLocation
+      );
+      
+      if (selectedLocation) {
+        const requiredNoticeDays = selectedLocation.noticerequired_numberofdays || 0;
+        const minAllowedDate = addDays(new Date(), requiredNoticeDays);
+        
+        // Disable dates that don't provide enough notice
+        if (isBefore(date, minAllowedDate)) {
+          return true;
+        }
+      }
+    }
+    
+    return false;
   };
 
   return (
@@ -470,7 +632,7 @@ const SearchForm = () => {
                       selected={pickupDate}
                       onSelect={setPickupDate}
                       initialFocus
-                      disabled={(date) => isBefore(date, new Date())}
+                      disabled={disablePastDates}
                       className="p-3 pointer-events-auto"
                     />
                   </PopoverContent>

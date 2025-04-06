@@ -7,7 +7,8 @@ import type {
   RCMLocation, 
   RCMBookingRequest, 
   RCMAvailabilityRequest,
-  RCMConfigInit
+  RCMConfigInit,
+  RCMOfficeTime
 } from '@/lib/api/rcm-api-types';
 import { toast } from 'sonner';
 
@@ -140,6 +141,7 @@ export function useRcmApi() {
         try {
           const response = await rcmApi.getStep1();
           if (response.status === "OK" && response.results?.officetimes) {
+            console.log('Office hours loaded:', response.results.officetimes.length);
             return response.results.officetimes;
           }
           return [];
@@ -149,6 +151,27 @@ export function useRcmApi() {
         }
       },
       staleTime: 5 * 60 * 1000, // 5 minutes
+      refetchOnWindowFocus: false
+    });
+  };
+  
+  // Get location details by ID to access advanced properties
+  const useLocationDetails = () => {
+    return useQuery({
+      queryKey: ['locationDetails'],
+      queryFn: async () => {
+        try {
+          const response = await rcmApi.getStep1();
+          if (response.status === "OK" && response.results?.locations) {
+            return response.results.locations;
+          }
+          return [];
+        } catch (error) {
+          console.error('Location details fetch error:', error);
+          return [];
+        }
+      },
+      staleTime: 5 * 60 * 1000,
       refetchOnWindowFocus: false
     });
   };
@@ -292,6 +315,7 @@ export function useRcmApi() {
     useAvailableVehicles,
     useVehicleDetails,
     useCreateBooking,
+    useLocationDetails,
     FALLBACK_LOCATIONS
   };
 }
