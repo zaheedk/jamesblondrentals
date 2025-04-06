@@ -129,21 +129,40 @@ export const generate24HourOptions = (date: Date, requiredNoticeDays: number): s
   // Calculate the earliest allowed date considering notice period
   let earliestAllowedDate: Date | null = null;
   if (requiredNoticeDays > 0) {
-    earliestAllowedDate = addDays(now, requiredNoticeDays);
+    // Use startOfDay to ensure we're comparing full days
+    earliestAllowedDate = addDays(startOfDay(now), requiredNoticeDays);
     console.log(`Required notice: ${requiredNoticeDays} days, earliest allowed time: ${earliestAllowedDate.toISOString()}`);
   }
   
   // Check if the selected date meets notice requirements
   const selectedDateStartOfDay = startOfDay(new Date(date));
-  const earliestAllowedStartOfDay = earliestAllowedDate ? startOfDay(new Date(earliestAllowedDate)) : null;
+  let earliestAllowedStartOfDay = null;
   
-  if (earliestAllowedStartOfDay && isBefore(selectedDateStartOfDay, earliestAllowedStartOfDay)) {
-    console.log(`Selected date ${selectedDateStartOfDay.toISOString()} is before earliest allowed date ${earliestAllowedStartOfDay.toISOString()}, no times available`);
-    return [];
+  if (earliestAllowedDate) {
+    earliestAllowedStartOfDay = startOfDay(new Date(earliestAllowedDate));
+    
+    console.log(`Comparing: selected date ${selectedDateStartOfDay.toISOString()} with earliest allowed date ${earliestAllowedStartOfDay.toISOString()}`);
+    
+    // Compare days only (not exact timestamps)
+    if (selectedDateStartOfDay.getTime() < earliestAllowedStartOfDay.getTime()) {
+      console.log(`Selected date ${selectedDateStartOfDay.toISOString()} is before earliest allowed date ${earliestAllowedStartOfDay.toISOString()}, no times available`);
+      return [];
+    }
+  }
+  
+  // For same day as the notice period, we might need to limit available times
+  let minAllowedHour = 0;
+  if (earliestAllowedDate && isSameDay(date, earliestAllowedDate)) {
+    minAllowedHour = earliestAllowedDate.getHours();
   }
   
   // Generate times in 30-minute intervals for a full 24 hours
   for (let hour = 0; hour < 24; hour++) {
+    // Skip hours before the minimum allowed hour when date is the same as earliest allowed date
+    if (earliestAllowedDate && isSameDay(date, earliestAllowedDate) && hour < minAllowedHour) {
+      continue;
+    }
+    
     for (let minute of [0, 30]) {
       // Create a test date for this time slot
       const testDate = new Date(date);
@@ -152,14 +171,6 @@ export const generate24HourOptions = (date: Date, requiredNoticeDays: number): s
       // Skip times in the past if the date is today
       if (isToday && isBefore(testDate, now)) {
         continue;
-      }
-      
-      // If we have a notice requirement and it's exactly the earliest allowed day,
-      // only show times that meet the notice requirement
-      if (earliestAllowedDate && isSameDay(date, earliestAllowedDate)) {
-        if (isBefore(testDate, earliestAllowedDate)) {
-          continue;
-        }
       }
       
       const formattedHour = hour.toString().padStart(2, '0');
@@ -186,17 +197,25 @@ export const generateTimeOptions = (openTime: string, closeTime: string, date: D
   // Calculate the earliest allowed date considering notice period
   let earliestAllowedDate: Date | null = null;
   if (requiredNoticeDays > 0) {
-    earliestAllowedDate = addDays(now, requiredNoticeDays);
+    // Use startOfDay to ensure we're comparing full days
+    earliestAllowedDate = addDays(startOfDay(now), requiredNoticeDays);
     console.log(`Required notice: ${requiredNoticeDays} days, earliest allowed time: ${earliestAllowedDate.toISOString()}`);
   }
   
-  // Check if the selected date meets notice requirements
+  // Check if the selected date meets notice requirements using startOfDay to compare days only
   const selectedDateStartOfDay = startOfDay(new Date(date));
-  const earliestAllowedStartOfDay = earliestAllowedDate ? startOfDay(new Date(earliestAllowedDate)) : null;
+  let earliestAllowedStartOfDay = null;
   
-  if (earliestAllowedStartOfDay && isBefore(selectedDateStartOfDay, earliestAllowedStartOfDay)) {
-    console.log(`Selected date ${selectedDateStartOfDay.toISOString()} is before earliest allowed date ${earliestAllowedStartOfDay.toISOString()}, no times available`);
-    return [];
+  if (earliestAllowedDate) {
+    earliestAllowedStartOfDay = startOfDay(new Date(earliestAllowedDate));
+    
+    console.log(`Comparing: selected date ${selectedDateStartOfDay.toISOString()} with earliest allowed date ${earliestAllowedStartOfDay.toISOString()}`);
+    
+    // Compare days only (not exact timestamps)
+    if (selectedDateStartOfDay.getTime() < earliestAllowedStartOfDay.getTime()) {
+      console.log(`Selected date ${selectedDateStartOfDay.toISOString()} is before earliest allowed date ${earliestAllowedStartOfDay.toISOString()}, no times available`);
+      return [];
+    }
   }
   
   // Parse times (expecting format like "09:00" or "17:30")
@@ -223,8 +242,7 @@ export const generateTimeOptions = (openTime: string, closeTime: string, date: D
     startInMinutes = Math.max(startInMinutes, roundedCurrentMinutes);
   }
   
-  // If we have a notice requirement and it's exactly the earliest allowed day,
-  // only show times after the notice period
+  // For same day as the notice period, we might need to limit available times
   if (earliestAllowedDate && isSameDay(date, earliestAllowedDate)) {
     const earliestMinutes = earliestAllowedDate.getHours() * 60 + earliestAllowedDate.getMinutes();
     // Round up to next 30-min slot

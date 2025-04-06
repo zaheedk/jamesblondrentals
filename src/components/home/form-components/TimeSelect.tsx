@@ -1,7 +1,7 @@
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Clock } from "lucide-react";
+import { Clock, ClockAlert } from "lucide-react";
 
 interface TimeSelectProps {
   id: string;
@@ -29,6 +29,7 @@ export const TimeSelect = ({
   
   // Determine the message to show based on the component state
   let selectMessage = "Select time";
+  let showNoticeWarning = false;
   
   if (isLoading) {
     selectMessage = "Loading times...";
@@ -41,6 +42,7 @@ export const TimeSelect = ({
   } else if (timeOptions.length === 0) {
     // If there are no time options but the component is not disabled, explain why
     selectMessage = "No times available - check notice requirements";
+    showNoticeWarning = true;
     console.log(`Warning: ${id} has no time options but is not disabled`);
   }
   
@@ -55,8 +57,12 @@ export const TimeSelect = ({
         }}
         disabled={disabled || timeOptions.length === 0}
       >
-        <SelectTrigger id={id} className="flex items-center">
-          <Clock className="mr-2 h-4 w-4 opacity-70" />
+        <SelectTrigger id={id} className={`flex items-center ${showNoticeWarning ? 'border-orange-400' : ''}`}>
+          {showNoticeWarning ? (
+            <ClockAlert className="mr-2 h-4 w-4 text-orange-500" />
+          ) : (
+            <Clock className="mr-2 h-4 w-4 opacity-70" />
+          )}
           <SelectValue placeholder={selectMessage} />
         </SelectTrigger>
         <SelectContent className="bg-white z-50">
