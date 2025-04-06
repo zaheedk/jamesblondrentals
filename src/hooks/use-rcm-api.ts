@@ -26,6 +26,17 @@ const FALLBACK_LOCATIONS: RCMLocation[] = [
     longitude: 174.6594
   },
   { 
+    id: "626", 
+    name: "Wellington CBD",
+    address: "123 Willis Street",
+    city: "Wellington",
+    state: "Wellington",
+    country: "New Zealand",
+    postcode: "6011",
+    latitude: -41.2889,
+    longitude: 174.7772
+  },
+  { 
     id: "auckland", 
     name: "Auckland Airport",
     address: "Auckland International Airport",

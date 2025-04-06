@@ -65,6 +65,7 @@ export const getLocationTimeOptions = (
   );
   
   const requiredNoticeDays = selectedLocationDetail?.noticerequired_numberofdays || 0;
+  console.log(`Location ${locationId} requires ${requiredNoticeDays} days notice`);
   
   // Find office hours for the selected location and day
   const locationOfficeHours = officeHours.filter(
@@ -86,6 +87,7 @@ export const getLocationTimeOptions = (
     }
     
     // Return default office hours if none found
+    console.log(`Using hardcoded default hours for ${locationId}: 09:00 - 17:00`);
     return generateTimeOptions("09:00", "17:00", date, requiredNoticeDays);
   }
   

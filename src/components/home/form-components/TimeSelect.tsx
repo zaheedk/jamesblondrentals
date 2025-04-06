@@ -28,7 +28,10 @@ export const TimeSelect = ({
       <Label htmlFor={id}>{label}</Label>
       <Select 
         value={time} 
-        onValueChange={onTimeChange}
+        onValueChange={(value) => {
+          console.log(`Setting ${id} time to:`, value);
+          onTimeChange(value);
+        }}
         disabled={disabled || timeOptions.length === 0}
       >
         <SelectTrigger id={id}>
@@ -39,7 +42,7 @@ export const TimeSelect = ({
             "Select time"
           } />
         </SelectTrigger>
-        <SelectContent className="bg-white">
+        <SelectContent className="bg-white z-50">
           {timeOptions.map(time => (
             <SelectItem key={time} value={time}>
               {time}

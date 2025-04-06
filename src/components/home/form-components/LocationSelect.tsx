@@ -51,7 +51,7 @@ export const LocationSelect = ({
               placeholder || `Select ${label.toLowerCase()}`}
           </SelectValue>
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="z-50 bg-white">
           {locations.map((location) => (
             <SelectItem key={location.id} value={String(location.id)}>
               {location.name}
