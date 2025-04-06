@@ -17,8 +17,8 @@ const DEFAULT_CONFIG: RCMApiConfig = {
   apiUrl: "https://apis.rentalcarmanager.com/booking/v3.2/"
 };
 
-// Set to true to bypass actual API calls and use mock data
-let USE_MOCK_DATA = true;
+// Set to false to enable actual API calls
+let USE_MOCK_DATA = false;
 
 /**
  * RCM API Client for handling all API requests
