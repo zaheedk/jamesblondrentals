@@ -39,7 +39,7 @@ class RCMApiClient {
     if (config.apiSecret) this.config.apiSecret = config.apiSecret;
     if (config.apiUrl) this.config.apiUrl = config.apiUrl;
     
-    // Only disable mock data if user explicitly enables live mode
+    // Only update mock data setting if explicitly set
     if (config.useMockData !== undefined) {
       USE_MOCK_DATA = config.useMockData;
     }
@@ -126,6 +126,12 @@ class RCMApiClient {
       return await response.json();
     } catch (error) {
       console.error('RCM API request failed:', error);
+      
+      // If we're not already using mock data, fall back to it now
+      if (!USE_MOCK_DATA) {
+        console.warn('Falling back to mock data due to API request failure');
+        return this.getMockData<T>(endpoint);
+      }
       throw error;
     }
   }

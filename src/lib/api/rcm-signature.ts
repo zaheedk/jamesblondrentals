@@ -27,12 +27,14 @@ export function generateSignature({
   apiSecret,
   body = ''
 }: SignatureParams): string {
-  // Create the string to sign
+  // Create the string to sign (newline separated values)
+  // Format: METHOD\nPATH\nTIMESTAMP\nAPI_KEY\nBODY
   const stringToSign = `${method.toUpperCase()}\n${path}\n${timestamp}\n${apiKey}\n${body}`;
   
+  // Log for debugging
   console.log('String to sign:', stringToSign);
   
-  // Generate HMAC SHA256 signature
+  // Generate HMAC SHA256 signature using the API secret as the key
   const signature = HmacSHA256(stringToSign, apiSecret);
   
   // Return Base64 encoded signature

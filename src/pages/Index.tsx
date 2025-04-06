@@ -13,8 +13,9 @@ const Index = () => {
   
   useEffect(() => {
     // Initialize the API with mock mode enabled
+    // This is important as direct API calls across domains will likely fail due to CORS
     initializeApi({ 
-      useMockData: true, // Use mock data by default
+      useMockData: true, // Always use mock data initially to ensure app is functional
       apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
       apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
       apiUrl: "https://apis.rentalcarmanager.com/booking/v3.2/"
