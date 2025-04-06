@@ -102,7 +102,7 @@ const SearchForm = () => {
       toast.success("API settings updated", {
         description: useMockData 
           ? "Using mock data - no API connection needed"
-          : "Note: Direct API connections may fail due to CORS restrictions"
+          : "Using Vite proxy to avoid CORS restrictions"
       });
       
       // Refetch the locations to verify the connection
@@ -225,8 +225,8 @@ const SearchForm = () => {
                   {useMockData ? "Use Demo Data" : "Connect to API with HMAC Auth"}
                 </Button>
                 {!useMockData && (
-                  <p className="text-xs text-red-500 font-medium">
-                    Warning: Direct API calls may fail due to CORS restrictions. Consider using a backend proxy.
+                  <p className="text-xs text-green-600 font-medium">
+                    Using Vite development proxy to avoid CORS restrictions.
                   </p>
                 )}
                 <p className="text-xs text-gray-500">

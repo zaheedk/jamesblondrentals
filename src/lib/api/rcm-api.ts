@@ -72,6 +72,8 @@ class RCMApiClient {
 
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
+    headers.append('X-RCM-API-Key', this.config.apiKey);
+    headers.append('X-RCM-Signature', signature);
     
     // Log request details for debugging
     console.log('RCM API Request:', {
@@ -86,11 +88,22 @@ class RCMApiClient {
 
   /**
    * Builds the correct API URL with the API key format
+   * For direct calls: https://apis.rentalcarmanager.com/booking/v3.2/[API_KEY]?apikey=[API_KEY]
+   * For proxied calls: /api/rcm/booking/v3.2/[API_KEY]?apikey=[API_KEY]
    */
-  private buildApiUrl(endpoint: string): string {
-    // Format: https://apis.rentalcarmanager.com/booking/v3.2/[API_KEY]?apikey=[API_KEY]
+  private buildApiUrl(): string {
+    // Use the proxy URL if we're not using mock data and are in browser environment
+    if (!USE_MOCK_DATA && typeof window !== 'undefined') {
+      const baseUrl = '/api/rcm';
+      const apiPath = this.config.apiUrl.replace(/^https?:\/\/[^\/]+/, '');
+      const url = `${baseUrl}${apiPath}/${this.config.apiKey}?apikey=${this.config.apiKey}`;
+      console.log('Built proxied API URL:', url);
+      return url;
+    }
+    
+    // Otherwise use the direct URL (for mock data or non-browser environments)
     const url = `${this.config.apiUrl}/${this.config.apiKey}?apikey=${this.config.apiKey}`;
-    console.log('Built API URL:', url);
+    console.log('Built direct API URL:', url);
     return url;
   }
 
@@ -105,13 +118,13 @@ class RCMApiClient {
 
     try {
       // Build the URL with API key
-      const apiUrl = this.buildApiUrl(requestMethod);
+      const apiUrl = this.buildApiUrl();
       console.log(`Making ${method} request to ${apiUrl}`);
       
-      // Create headers
+      // Create headers with auth tokens
       const headers = this.createHeaders(method, { method: requestMethod, ...body });
       
-      // Create request body
+      // Create request body with method field
       const requestBody = JSON.stringify({ method: requestMethod, ...body });
       console.log('Request body:', requestBody);
       
@@ -120,8 +133,7 @@ class RCMApiClient {
         method,
         headers,
         body: requestBody,
-        mode: 'cors',
-        cache: 'no-cache',
+        credentials: 'same-origin', // Important for cookies if needed
       });
 
       // Handle non-OK responses
@@ -140,7 +152,9 @@ class RCMApiClient {
       }
 
       // Parse and return the response
-      return await response.json();
+      const responseData = await response.json();
+      console.log('API response:', responseData);
+      return responseData;
     } catch (error) {
       console.error('RCM API request failed:', error);
       
