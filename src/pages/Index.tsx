@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Hero from "@/components/home/Hero";
@@ -13,7 +12,6 @@ const Index = () => {
   
   useEffect(() => {
     // Initialize the API with mock mode enabled
-    // This is important as direct API calls across domains will likely fail due to CORS
     initializeApi({ 
       useMockData: true, // Always use mock data initially to ensure app is functional
       apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",

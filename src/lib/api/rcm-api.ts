@@ -1,4 +1,3 @@
-
 import { generateSignature } from './rcm-signature';
 import type { 
   RCMApiConfig,
@@ -46,6 +45,7 @@ class RCMApiClient {
     
     if (config.useMockData !== undefined) {
       USE_MOCK_DATA = config.useMockData;
+      console.log('Mock data mode:', USE_MOCK_DATA);
     }
     
     this.initialized = true;
@@ -196,64 +196,119 @@ class RCMApiClient {
    * Only used if USE_MOCK_DATA is true or if API fails with fallback flag
    */
   private getMockData<T>(endpoint: string): T {
-    if (endpoint === 'locations') {
-      return [
-        { 
-          id: "auckland", 
-          name: "Auckland Airport",
-          address: "Auckland International Airport",
-          city: "Auckland",
-          state: "Auckland",
-          country: "New Zealand",
-          postcode: "2022",
-          latitude: -36.9992,
-          longitude: 174.7870
-        },
-        { 
-          id: "wellington", 
-          name: "Wellington Airport",
-          address: "Wellington International Airport",
-          city: "Wellington",
-          state: "Wellington",
-          country: "New Zealand",
-          postcode: "6022",
-          latitude: -41.3272,
-          longitude: 174.8076
-        },
-        { 
-          id: "christchurch", 
-          name: "Christchurch Airport",
-          address: "Christchurch International Airport",
-          city: "Christchurch",
-          state: "Canterbury",
-          country: "New Zealand",
-          postcode: "8053",
-          latitude: -43.4864,
-          longitude: 172.5369
-        },
-        { 
-          id: "queenstown", 
-          name: "Queenstown Airport",
-          address: "Queenstown Airport",
-          city: "Queenstown",
-          state: "Otago",
-          country: "New Zealand",
-          postcode: "9300",
-          latitude: -45.0210,
-          longitude: 168.7393
-        },
-        { 
-          id: "rotorua", 
-          name: "Rotorua City",
-          address: "1106 Arawa Street",
-          city: "Rotorua",
-          state: "Bay of Plenty",
-          country: "New Zealand",
-          postcode: "3010",
-          latitude: -38.1368,
-          longitude: 176.2497
+    console.log('Getting mock data for endpoint:', endpoint);
+    
+    if (endpoint === 'step1') {
+      // Mock Step1 response
+      return {
+        status: "OK",
+        results: {
+          locations: [
+            {
+              id: "625",
+              location: "Kelston",
+              address: "3075 Great North Road",
+              city: "Auckland",
+              state: "Auckland",
+              country: "New Zealand",
+              postcode: "0602",
+              ispickupavailable: true,
+              isdropoffavailable: true, 
+              isdefault: true,
+              minimumbookingday: 1,
+              noticerequired_numberofdays: 0
+            },
+            {
+              id: "626",
+              location: "Auckland City",
+              address: "123 Queen Street",
+              city: "Auckland",
+              state: "Auckland",
+              country: "New Zealand",
+              postcode: "1010",
+              ispickupavailable: true,
+              isdropoffavailable: true,
+              isdefault: false,
+              minimumbookingday: 1,
+              noticerequired_numberofdays: 0
+            },
+            {
+              id: "627",
+              location: "Auckland Airport",
+              address: "Auckland International Terminal",
+              city: "Auckland",
+              state: "Auckland", 
+              country: "New Zealand",
+              postcode: "2022",
+              ispickupavailable: true,
+              isdropoffavailable: true,
+              isdefault: false,
+              minimumbookingday: 1,
+              noticerequired_numberofdays: 0
+            }
+          ],
+          officetimes: [
+            {
+              locationid: "625",
+              dayofweek: 1, // Monday
+              openingtime: "08:00",
+              closingtime: "17:00"
+            },
+            {
+              locationid: "625", 
+              dayofweek: 2, // Tuesday
+              openingtime: "08:00",
+              closingtime: "17:00"
+            },
+            {
+              locationid: "625",
+              dayofweek: 3, // Wednesday
+              openingtime: "08:00", 
+              closingtime: "17:00"
+            },
+            {
+              locationid: "625",
+              dayofweek: 4, // Thursday
+              openingtime: "08:00",
+              closingtime: "17:00"
+            },
+            {
+              locationid: "625",
+              dayofweek: 5, // Friday
+              openingtime: "08:00",
+              closingtime: "17:00"
+            },
+            {
+              locationid: "625", 
+              dayofweek: 6, // Saturday
+              openingtime: "09:00",
+              closingtime: "16:00"
+            },
+            {
+              locationid: "627",
+              dayofweek: 1, // Monday
+              openingtime: "07:00",
+              closingtime: "22:00"
+            }
+          ],
+          driverages: [
+            { id: "21", driverage: "21-25", isdefault: false },
+            { id: "26", driverage: "26+", isdefault: true }
+          ],
+          categorytypes: [
+            { id: "0", vehiclecategorytype: "All Categories" },
+            { id: "1", vehiclecategorytype: "Economy" },
+            { id: "2", vehiclecategorytype: "Compact" },
+            { id: "3", vehiclecategorytype: "Intermediate" },
+            { id: "4", vehiclecategorytype: "Standard" },
+            { id: "5", vehiclecategorytype: "Full Size" },
+            { id: "6", vehiclecategorytype: "Premium" },
+            { id: "7", vehiclecategorytype: "Luxury" },
+            { id: "8", vehiclecategorytype: "Minivan" },
+            { id: "9", vehiclecategorytype: "SUV" }
+          ]
         }
-      ] as unknown as T;
+      } as unknown as T;
     } 
     else if (endpoint.includes('vehicles/available')) {
       // Mock vehicle data

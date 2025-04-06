@@ -15,6 +15,17 @@ import { toast } from 'sonner';
 // Fallback locations in case the API call fails
 const FALLBACK_LOCATIONS: RCMLocation[] = [
   { 
+    id: "625", 
+    name: "Kelston",
+    address: "3075 Great North Road",
+    city: "Auckland",
+    state: "Auckland",
+    country: "New Zealand",
+    postcode: "0602",
+    latitude: -36.9087,
+    longitude: 174.6594
+  },
+  { 
     id: "auckland", 
     name: "Auckland Airport",
     address: "Auckland International Airport",
@@ -122,7 +133,7 @@ export function useRcmApi() {
         } catch (error) {
           console.error('Location fetch error:', error);
           toast.error('API Connection Error', {
-            description: 'Failed to connect to RCM API. Check your API settings.'
+            description: 'Failed to connect to RCM API. Using fallback locations.'
           });
           // Return fallback locations on error
           return FALLBACK_LOCATIONS;

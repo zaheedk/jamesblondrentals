@@ -98,17 +98,18 @@ const SearchForm = () => {
       apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
       apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
       apiUrl: "https://apis.rentalcarmanager.com/booking/v3.2",
-      useMockData: false
+      useMockData: true // Set to true to ensure we get data while fixing API issues
     }).catch(error => {
       console.error('Failed to initialize API:', error);
       toast.error("Error connecting to booking system", {
         description: "Please try again later"
       });
     });
-  }, []);
+  }, [initializeApi]);
 
   // Set default dates and location when component loads
   useEffect(() => {
+    console.log('Setting default locations and dates');
     // Get today's date as default
     const today = new Date();
     
@@ -119,6 +120,7 @@ const SearchForm = () => {
       // Default dropoff date is 3 days after pickup
       const defaultDropoff = addDays(today, 3);
       setDropoffDate(defaultDropoff);
+      console.log('Default dates set', { today, defaultDropoff });
     }
     
     // Force set the locations to Kelston on initial render
@@ -145,7 +147,6 @@ const SearchForm = () => {
         
         if (requiredNoticeDays > 0) {
           // If notice is required, add the required number of days
-          const hoursRequired = requiredNoticeDays * 24;
           newMinPickupDate = addDays(new Date(), requiredNoticeDays);
         }
         
@@ -165,7 +166,7 @@ const SearchForm = () => {
         console.log(`Location ${pickupLocation} requires ${requiredNoticeDays} days notice`);
       }
     }
-  }, [pickupLocation, locationDetails]);
+  }, [pickupLocation, locationDetails, pickupDate, dropoffDate]);
 
   // Update minimum dropoff date when pickup date changes
   useEffect(() => {
@@ -177,7 +178,7 @@ const SearchForm = () => {
         setDropoffDate(addDays(pickupDate, 1));
       }
     }
-  }, [pickupDate]);
+  }, [pickupDate, dropoffDate]);
 
   // Update time options when location or date changes
   useEffect(() => {
@@ -195,7 +196,7 @@ const SearchForm = () => {
         setPickupTime("");
       }
     }
-  }, [pickupLocation, pickupDate, officeHours, locationDetails]);
+  }, [pickupLocation, pickupDate, officeHours, locationDetails, pickupTime]);
 
   // Update dropoff time options when location/date changes
   useEffect(() => {
@@ -215,7 +216,7 @@ const SearchForm = () => {
         setDropoffTime("");
       }
     }
-  }, [dropoffLocation, dropoffDate, sameLocation, pickupLocation, officeHours, locationDetails]);
+  }, [dropoffLocation, dropoffDate, sameLocation, pickupLocation, officeHours, locationDetails, dropoffTime]);
 
   // Helper functions to get display text for dropdowns
   const getDriverAgeName = (ageId: string) => {
@@ -356,7 +357,7 @@ const SearchForm = () => {
                 </div>
                 <LocationSelect
                   id="dropoff-location"
-                  label="Dropoff Location"
+                  label=""
                   locations={locations}
                   value={sameLocation ? pickupLocation : dropoffLocation}
                   onValueChange={setDropoffLocation}
@@ -414,7 +415,7 @@ const SearchForm = () => {
                 label="Driver Age"
                 value={age}
                 onValueChange={setAge}
-                options={driverAges.map(age => ({ id: age.id, name: age.driverage }))}
+                options={driverAges.map(age => ({ id: String(age.id), name: age.driverage }))}
                 getOptionName={getDriverAgeName}
                 isLoading={isLoadingAges}
                 placeholder="Select age"
@@ -426,7 +427,7 @@ const SearchForm = () => {
                 label="Vehicle Category"
                 value={carCategory}
                 onValueChange={setCarCategory}
-                options={carCategories.map(category => ({ id: category.id, name: category.vehiclecategorytype }))}
+                options={carCategories.map(category => ({ id: String(category.id), name: category.vehiclecategorytype }))}
                 getOptionName={getCategoryName}
                 isLoading={isLoadingCategories}
                 placeholder="All Categories"

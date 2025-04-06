@@ -39,7 +39,7 @@ export const TimeSelect = ({
             "Select time"
           } />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="bg-white">
           {timeOptions.map(time => (
             <SelectItem key={time} value={time}>
               {time}

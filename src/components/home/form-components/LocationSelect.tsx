@@ -34,7 +34,7 @@ export const LocationSelect = ({
 
   return (
     <div className="space-y-2">
-      <Label htmlFor={id}>{label}</Label>
+      {label && <Label htmlFor={id}>{label}</Label>}
       <Select 
         value={value} 
         onValueChange={(value) => {
