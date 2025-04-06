@@ -1,3 +1,4 @@
+
 import { generateSignature } from './rcm-signature';
 import type { 
   RCMApiConfig,
@@ -25,7 +26,7 @@ let USE_MOCK_DATA = false;
  */
 class RCMApiClient {
   private config: RCMApiConfig;
-  private useProxy: boolean = false;
+  private useProxy: boolean = true; // Set to true by default to use proxy mode
 
   constructor(config: RCMApiConfig) {
     this.config = config;

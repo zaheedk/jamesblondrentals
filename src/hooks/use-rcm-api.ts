@@ -1,3 +1,4 @@
+
 import { useState, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { rcmApi } from '@/lib/api/rcm-api';
@@ -115,8 +116,8 @@ export function useRcmApi() {
           }
         } catch (error) {
           console.error('Location fetch error:', error);
-          toast.error('Using sample location data', {
-            description: 'We\'re using demo data while API connectivity is being set up.'
+          toast.error('API Connection Error', {
+            description: 'Make sure the proxy endpoints are set up on your server.'
           });
           // Return fallback locations on error
           return FALLBACK_LOCATIONS;
@@ -216,8 +217,8 @@ export function useRcmApi() {
           return vehicles;
         } catch (error) {
           console.error('Failed to fetch available vehicles:', error);
-          toast.error('Using sample vehicle data', {
-            description: 'We\'re using demo data while API connectivity is being set up.'
+          toast.error('API Connection Error', {
+            description: 'Unable to fetch vehicles. Make sure the proxy API endpoints are configured.'
           });
           return [];
         }
@@ -264,8 +265,8 @@ export function useRcmApi() {
           return response;
         } catch (error) {
           console.error('Booking creation error:', error);
-          toast.error('Booking created with demo data', {
-            description: 'This is a demo booking as we\'re using sample data.'
+          toast.error('API Connection Error', {
+            description: 'Unable to create booking. Make sure the proxy API endpoints are configured.'
           });
           throw error;
         }
