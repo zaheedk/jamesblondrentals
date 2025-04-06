@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { format, addDays, isBefore, isAfter, parseISO } from "date-fns";
+import { format, addDays, isBefore, isAfter, parseISO, isValid } from "date-fns";
 import { CalendarIcon, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRcmApi } from "@/hooks/use-rcm-api";
@@ -29,6 +29,8 @@ const SearchForm = () => {
   const [dropoffLocation, setDropoffLocation] = useState("");
   const [pickupDate, setPickupDate] = useState<Date>();
   const [dropoffDate, setDropoffDate] = useState<Date>();
+  const [pickupTime, setPickupTime] = useState("");
+  const [dropoffTime, setDropoffTime] = useState("");
   const [sameLocation, setSameLocation] = useState(true);
   const [age, setAge] = useState("");
   const [carCategory, setCarCategory] = useState("");
@@ -44,13 +46,16 @@ const SearchForm = () => {
   // Derived state
   const [minDropoffDate, setMinDropoffDate] = useState<Date>(addDays(new Date(), 1));
   const [isLoading, setIsLoading] = useState(false);
+  const [pickupTimeOptions, setPickupTimeOptions] = useState<string[]>([]);
+  const [dropoffTimeOptions, setDropoffTimeOptions] = useState<string[]>([]);
 
   // Use the RCM API to fetch data
   const { 
     initializeApi,
     useLocations, 
     useDriverAges,
-    useVehicleCategories
+    useVehicleCategories,
+    useOfficeHours
   } = useRcmApi();
   
   const { 
@@ -69,6 +74,11 @@ const SearchForm = () => {
     data: carCategories = [],
     isLoading: isLoadingCategories
   } = useVehicleCategories();
+
+  const {
+    data: officeHours = [],
+    isLoading: isLoadingOfficeHours
+  } = useOfficeHours();
 
   // Initialize API on component mount
   useEffect(() => {
@@ -105,25 +115,93 @@ const SearchForm = () => {
     }
   }, [pickupDate, dropoffDate]);
 
+  // Update time options when location or date changes
+  useEffect(() => {
+    if (pickupLocation && pickupDate && isValid(pickupDate)) {
+      const options = getLocationTimeOptions(pickupLocation, pickupDate);
+      setPickupTimeOptions(options);
+      
+      // Set default pickup time to first available time
+      if (options.length > 0 && !pickupTime) {
+        setPickupTime(options[0]);
+      }
+    }
+  }, [pickupLocation, pickupDate]);
+
+  useEffect(() => {
+    if ((sameLocation ? pickupLocation : dropoffLocation) && dropoffDate && isValid(dropoffDate)) {
+      const locationId = sameLocation ? pickupLocation : dropoffLocation;
+      const options = getLocationTimeOptions(locationId, dropoffDate);
+      setDropoffTimeOptions(options);
+      
+      // Set default dropoff time to first available time
+      if (options.length > 0 && !dropoffTime) {
+        setDropoffTime(options[0]);
+      }
+    }
+  }, [dropoffLocation, dropoffDate, sameLocation, pickupLocation]);
+
+  // Helper function to get office hours for a specific location and day
+  const getLocationTimeOptions = (locationId: string, date: Date): string[] => {
+    if (!date || !isValid(date) || !locationId) return [];
+
+    const day = format(date, 'EEEE').toLowerCase(); // Gets day name like 'monday'
+    
+    // Find office hours for the selected location and day
+    const locationOfficeHours = officeHours.filter(
+      time => String(time.locationid) === locationId && time.day.toLowerCase() === day
+    );
+    
+    if (locationOfficeHours.length === 0) {
+      console.log(`No office hours found for location ${locationId} on ${day}`);
+      // Return default office hours if none found
+      return generateTimeOptions("09:00", "17:00");
+    }
+    
+    // Get the first match (should be only one per location per day)
+    const hours = locationOfficeHours[0];
+    
+    console.log(`Office hours for location ${locationId} on ${day}:`, hours);
+    return generateTimeOptions(hours.opentime, hours.closetime);
+  };
+
+  // Generate time options in 30-minute intervals between open and close times
+  const generateTimeOptions = (openTime: string, closeTime: string): string[] => {
+    const options: string[] = [];
+    
+    // Parse times (expecting format like "09:00" or "17:30")
+    const [openHour, openMinute] = openTime.split(':').map(Number);
+    const [closeHour, closeMinute] = closeTime.split(':').map(Number);
+    
+    // Convert to minutes for easier calculation
+    const openInMinutes = openHour * 60 + openMinute;
+    const closeInMinutes = closeHour * 60 + closeMinute;
+    
+    // Generate times in 30-minute intervals
+    for (let minutes = openInMinutes; minutes < closeInMinutes; minutes += 30) {
+      const hour = Math.floor(minutes / 60);
+      const minute = minutes % 60;
+      const formattedHour = hour.toString().padStart(2, '0');
+      const formattedMinute = minute.toString().padStart(2, '0');
+      options.push(`${formattedHour}:${formattedMinute}`);
+    }
+    
+    return options;
+  };
+
   // Helper functions to get display text for dropdowns
   const getLocationName = (locationId: string) => {
-    // Converting to number since API returns locations with numeric IDs
-    const numericId = Number(locationId);
-    const location = locations.find(loc => loc.id === numericId || loc.id === locationId);
-    return location ? location.name || location.location : "";
+    const location = locations.find(loc => String(loc.id) === locationId);
+    return location ? location.name : "";
   };
 
   const getDriverAgeName = (ageId: string) => {
-    // Converting to number since API might return ages with numeric IDs
-    const numericId = Number(ageId);
-    const driverAge = driverAges.find(a => a.id === numericId || a.id === ageId);
+    const driverAge = driverAges.find(a => String(a.id) === ageId);
     return driverAge ? driverAge.driverage : "";
   };
 
   const getCategoryName = (categoryId: string) => {
-    // Converting to number since API might return categories with numeric IDs
-    const numericId = Number(categoryId);
-    const category = carCategories.find(c => c.id === numericId || c.id === categoryId);
+    const category = carCategories.find(c => String(c.id) === categoryId);
     return category ? category.vehiclecategorytype : "";
   };
 
@@ -173,6 +251,16 @@ const SearchForm = () => {
       return;
     }
     
+    if (!pickupTime) {
+      toast.error("Please select a pickup time");
+      return;
+    }
+    
+    if (!dropoffTime) {
+      toast.error("Please select a dropoff time");
+      return;
+    }
+    
     if (isBefore(dropoffDate, pickupDate)) {
       toast.error("Dropoff date must be after pickup date");
       return;
@@ -180,12 +268,16 @@ const SearchForm = () => {
     
     setIsLoading(true);
     
+    // Create full ISO date strings with the selected dates and times
+    const pickupDateTime = combineDateTime(pickupDate, pickupTime);
+    const dropoffDateTime = combineDateTime(dropoffDate, dropoffTime);
+    
     // Build search params
     const searchParams = new URLSearchParams({
       pickupLocation,
       dropoffLocation: sameLocation ? pickupLocation : dropoffLocation,
-      pickupDate: pickupDate.toISOString(),
-      dropoffDate: dropoffDate.toISOString(),
+      pickupDate: pickupDateTime,
+      dropoffDate: dropoffDateTime,
       ...(age && { age }),
       ...(carCategory && { carCategory }),
       ...(promoCode && { promoCode })
@@ -195,6 +287,19 @@ const SearchForm = () => {
       setIsLoading(false);
       navigate(`/vehicles?${searchParams.toString()}`);
     }, 500);
+  };
+
+  // Helper function to combine date and time into ISO string
+  const combineDateTime = (date: Date | undefined, time: string): string => {
+    if (!date || !isValid(date) || !time) {
+      return new Date().toISOString();
+    }
+    
+    const [hours, minutes] = time.split(':').map(Number);
+    const newDate = new Date(date);
+    newDate.setHours(hours, minutes, 0, 0);
+    
+    return newDate.toISOString();
   };
 
   return (
@@ -294,7 +399,7 @@ const SearchForm = () => {
                   <SelectContent>
                     {locations.map((location) => (
                       <SelectItem key={location.id} value={String(location.id)}>
-                        {location.name || location.location}
+                        {location.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -335,7 +440,7 @@ const SearchForm = () => {
                   <SelectContent>
                     {locations.map((location) => (
                       <SelectItem key={location.id} value={String(location.id)}>
-                        {location.name || location.location}
+                        {location.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -372,6 +477,33 @@ const SearchForm = () => {
                 </Popover>
               </div>
 
+              {/* Pickup Time */}
+              <div className="space-y-2">
+                <Label htmlFor="pickup-time">Pickup Time</Label>
+                <Select 
+                  value={pickupTime} 
+                  onValueChange={setPickupTime}
+                  disabled={!pickupLocation || !pickupDate || pickupTimeOptions.length === 0}
+                >
+                  <SelectTrigger id="pickup-time">
+                    <SelectValue placeholder={
+                      isLoadingOfficeHours ? "Loading times..." :
+                      !pickupLocation ? "Select location first" :
+                      !pickupDate ? "Select date first" :
+                      pickupTimeOptions.length === 0 ? "No times available" :
+                      "Select pickup time"
+                    } />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {pickupTimeOptions.map(time => (
+                      <SelectItem key={time} value={time}>
+                        {time}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
               {/* Dropoff Date */}
               <div className="space-y-2">
                 <Label htmlFor="dropoff-date">Dropoff Date</Label>
@@ -401,6 +533,37 @@ const SearchForm = () => {
                   </PopoverContent>
                 </Popover>
               </div>
+
+              {/* Dropoff Time */}
+              <div className="space-y-2">
+                <Label htmlFor="dropoff-time">Dropoff Time</Label>
+                <Select 
+                  value={dropoffTime} 
+                  onValueChange={setDropoffTime}
+                  disabled={
+                    !dropoffDate || 
+                    !(sameLocation ? pickupLocation : dropoffLocation) || 
+                    dropoffTimeOptions.length === 0
+                  }
+                >
+                  <SelectTrigger id="dropoff-time">
+                    <SelectValue placeholder={
+                      isLoadingOfficeHours ? "Loading times..." :
+                      !(sameLocation ? pickupLocation : dropoffLocation) ? "Select location first" :
+                      !dropoffDate ? "Select date first" :
+                      dropoffTimeOptions.length === 0 ? "No times available" :
+                      "Select dropoff time"
+                    } />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {dropoffTimeOptions.map(time => (
+                      <SelectItem key={time} value={time}>
+                        {time}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
               
               {/* Driver Age */}
               <div className="space-y-2">
@@ -417,7 +580,7 @@ const SearchForm = () => {
                   <SelectContent>
                     {driverAges.map((option) => (
                       <SelectItem key={option.id} value={String(option.id)}>
-                        {option.driverage === "26" ? "26+" : option.driverage}
+                        {option.driverage}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -462,7 +625,7 @@ const SearchForm = () => {
             <Button
               type="submit"
               className="w-full"
-              disabled={isLoading || !pickupLocation || !pickupDate || !dropoffDate}
+              disabled={isLoading || !pickupLocation || !pickupDate || !dropoffDate || !pickupTime || !dropoffTime}
             >
               {isLoading ? "Searching..." : "Search Available Cars"}
             </Button>

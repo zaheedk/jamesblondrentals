@@ -110,8 +110,7 @@ export function useRcmApi() {
               country: loc.country || "",
               postcode: loc.postcode || "",
               latitude: loc.latitude || 0,
-              longitude: loc.longitude || 0,
-              location: loc.location // Keep the original location name
+              longitude: loc.longitude || 0
             }));
             
             console.log('Locations loaded successfully:', locations.length);
