@@ -17,15 +17,14 @@ const DEFAULT_CONFIG: RCMApiConfig = {
   apiUrl: "https://apis.rentalcarmanager.com/booking/v3.2/"
 };
 
-// Set to false to enable actual API calls
-let USE_MOCK_DATA = false;
+// Set to true to use mock data by default
+let USE_MOCK_DATA = true;
 
 /**
  * RCM API Client for handling all API requests
  */
 class RCMApiClient {
   private config: RCMApiConfig;
-  private useProxy: boolean = false; // Set to false by default
 
   constructor(config: RCMApiConfig) {
     this.config = config;
@@ -38,14 +37,13 @@ class RCMApiClient {
     if (config.apiKey) this.config.apiKey = config.apiKey;
     if (config.apiSecret) this.config.apiSecret = config.apiSecret;
     if (config.apiUrl) this.config.apiUrl = config.apiUrl;
-    if (config.useProxy !== undefined) this.useProxy = config.useProxy;
     
-    // Set mock data to false if we have proper configuration
-    if (config.apiKey && config.apiSecret) {
-      USE_MOCK_DATA = false;
+    // Only disable mock data if user explicitly enables live mode
+    if (config.useMockData !== undefined) {
+      USE_MOCK_DATA = config.useMockData;
     }
     
-    console.log('RCM API initialized with new configuration');
+    console.log('RCM API initialized with new configuration, mock mode:', USE_MOCK_DATA);
   }
 
   /**

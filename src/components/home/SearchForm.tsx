@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,7 @@ import { CalendarIcon, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRcmApi } from "@/hooks/use-rcm-api";
 import { toast } from "sonner";
+import { Switch } from "@/components/ui/switch";
 
 const SearchForm = () => {
   const navigate = useNavigate();
@@ -31,6 +33,7 @@ const SearchForm = () => {
   const [apiKey, setApiKey] = useState("");
   const [apiSecret, setApiSecret] = useState("");
   const [apiUrl, setApiUrl] = useState("https://apis.rentalcarmanager.com/booking/v3.2/");
+  const [useMockData, setUseMockData] = useState(true);
   const [showApiDialog, setShowApiDialog] = useState(false);
   
   // Derived state
@@ -94,11 +97,13 @@ const SearchForm = () => {
         apiKey,
         apiSecret,
         apiUrl,
-        useProxy: false // Make direct calls to the API
+        useMockData, // Use the mock data setting
       });
       
-      toast.success("API connection successful", {
-        description: "API credentials updated successfully."
+      toast.success("API settings updated", {
+        description: useMockData 
+          ? "Using mock data - no API connection needed"
+          : "Live API connection configured successfully"
       });
       
       // Refetch the locations to verify the connection
@@ -106,8 +111,8 @@ const SearchForm = () => {
       setShowApiDialog(false);
     } catch (error) {
       console.error("API configuration error:", error);
-      toast.error("API Connection Error", {
-        description: "Failed to initialize API with provided credentials."
+      toast.error("API Settings Error", {
+        description: "Failed to apply API settings"
       });
     }
   };
@@ -177,40 +182,53 @@ const SearchForm = () => {
                 <DialogTitle>RCM API Configuration</DialogTitle>
               </DialogHeader>
               <form onSubmit={handleApiConfigSubmit} className="space-y-4 pt-4">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="use-mock">Use Demo Data</Label>
+                  <Switch 
+                    id="use-mock" 
+                    checked={useMockData} 
+                    onCheckedChange={setUseMockData}
+                  />
+                </div>
+                
                 <div className="space-y-2">
-                  <Label htmlFor="api-url">API URL</Label>
+                  <Label htmlFor="api-url">API URL {useMockData && "(not used in demo mode)"}</Label>
                   <Input
                     id="api-url"
                     value={apiUrl}
                     onChange={(e) => setApiUrl(e.target.value)}
                     placeholder="https://apis.rentalcarmanager.com/booking/v3.2/"
-                    required
+                    disabled={useMockData}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="api-key">API Key</Label>
+                  <Label htmlFor="api-key">API Key {useMockData && "(not used in demo mode)"}</Label>
                   <Input
                     id="api-key"
                     value={apiKey}
                     onChange={(e) => setApiKey(e.target.value)}
                     placeholder="Enter your API key"
-                    required
+                    disabled={useMockData}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="api-secret">API Secret</Label>
+                  <Label htmlFor="api-secret">API Secret {useMockData && "(not used in demo mode)"}</Label>
                   <Input
                     id="api-secret"
                     type="password"
                     value={apiSecret}
                     onChange={(e) => setApiSecret(e.target.value)}
                     placeholder="Enter your API secret"
-                    required
+                    disabled={useMockData}
                   />
                 </div>
-                <Button type="submit" className="w-full">Connect API</Button>
+                <Button type="submit" className="w-full">
+                  {useMockData ? "Use Demo Data" : "Connect to API"}
+                </Button>
                 <p className="text-xs text-gray-500">
-                  Enter your RCM API credentials to connect to their service directly.
+                  {useMockData 
+                    ? "Demo mode uses mock data for testing and demonstration purposes." 
+                    : "Enter your RCM API credentials to connect to the live service."}
                 </p>
               </form>
             </DialogContent>

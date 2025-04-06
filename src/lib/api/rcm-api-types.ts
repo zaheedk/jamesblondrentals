@@ -119,5 +119,5 @@ export interface RCMConfigInit {
   apiUrl?: string;
   apiKey?: string;
   apiSecret?: string;
-  useProxy?: boolean;
+  useMockData?: boolean;
 }

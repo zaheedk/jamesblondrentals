@@ -12,10 +12,9 @@ const Index = () => {
   const { initializeApi } = useRcmApi();
   
   useEffect(() => {
-    // Initialize the API with proxy mode enabled
+    // Initialize the API with mock mode enabled
     initializeApi({ 
-      useProxy: true,
-      // If you have other API configuration, add it here
+      useMockData: true, // Use mock data by default
     });
   }, [initializeApi]);
 
