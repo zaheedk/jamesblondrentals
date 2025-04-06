@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => ({
     proxy: {
       // Proxy API requests to RCM API
       '/api/rcm': {
-        target: 'https://apis.rentalcarmanager.com',
+        target: 'https://secure.rentalcarmanager.com',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/rcm/, ''),
         configure: (proxy, _options) => {

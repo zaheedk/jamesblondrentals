@@ -1,3 +1,4 @@
+
 import { generateSignature } from './rcm-signature';
 import type { 
   RCMApiConfig,
@@ -10,11 +11,11 @@ import type {
   RCMConfigInit
 } from './rcm-api-types';
 
-// API Configuration
+// API Configuration from Web.config file
 const DEFAULT_CONFIG: RCMApiConfig = {
-  apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
-  apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
-  apiUrl: "https://apis.rentalcarmanager.com/booking/v3.2"
+  apiKey: "MkFFZDhYcmhKTDhwR202OWM1QkJZWUc4SERWdzV6",
+  apiSecret: "PKBUA84eUssLED2uG6Rj8LZjkSBQv9",
+  apiUrl: "https://secure.rentalcarmanager.com/booking/v3.2"
 };
 
 // Set to false to use actual API by default
@@ -74,6 +75,7 @@ class RCMApiClient {
     headers.append('Content-Type', 'application/json');
     headers.append('X-RCM-API-Key', this.config.apiKey);
     headers.append('X-RCM-Signature', signature);
+    headers.append('X-RCM-Timestamp', timestamp);
     
     // Log request details for debugging
     console.log('RCM API Request:', {
@@ -88,7 +90,7 @@ class RCMApiClient {
 
   /**
    * Builds the correct API URL with the API key format
-   * For direct calls: https://apis.rentalcarmanager.com/booking/v3.2/[API_KEY]?apikey=[API_KEY]
+   * For direct calls: https://secure.rentalcarmanager.com/booking/v3.2/[API_KEY]?apikey=[API_KEY]
    * For proxied calls: /api/rcm/booking/v3.2/[API_KEY]?apikey=[API_KEY]
    */
   private buildApiUrl(): string {
@@ -155,6 +157,13 @@ class RCMApiClient {
       // Parse and return the response
       const responseData = await response.json();
       console.log('API response:', responseData);
+      
+      // Check for API errors in the response
+      if (responseData.status === "ERR") {
+        console.error('API returned error:', responseData.error);
+        throw new Error(responseData.error || 'Unknown API error');
+      }
+      
       return responseData;
     } catch (error) {
       console.error('RCM API request failed:', error);
