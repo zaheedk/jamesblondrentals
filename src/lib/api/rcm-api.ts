@@ -15,7 +15,7 @@ import type {
 const DEFAULT_CONFIG: RCMApiConfig = {
   apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
   apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
-  apiUrl: "https://apis.rentalcarmanager.com/booking/v3.2/"
+  apiUrl: "https://apis.rentalcarmanager.com/booking/v3.2"
 };
 
 // Set to true to use mock data by default
@@ -28,7 +28,11 @@ class RCMApiClient {
   private config: RCMApiConfig;
 
   constructor(config: RCMApiConfig) {
-    this.config = config;
+    // Ensure API URL doesn't end with a slash
+    this.config = {
+      ...config,
+      apiUrl: config.apiUrl.replace(/\/$/, '')
+    };
   }
 
   /**
@@ -37,14 +41,17 @@ class RCMApiClient {
   initialize(config: RCMConfigInit): void {
     if (config.apiKey) this.config.apiKey = config.apiKey;
     if (config.apiSecret) this.config.apiSecret = config.apiSecret;
-    if (config.apiUrl) this.config.apiUrl = config.apiUrl;
+    if (config.apiUrl) this.config.apiUrl = config.apiUrl.replace(/\/$/, '');
     
-    // Only update mock data setting if explicitly set
     if (config.useMockData !== undefined) {
       USE_MOCK_DATA = config.useMockData;
     }
     
-    console.log('RCM API initialized with new configuration, mock mode:', USE_MOCK_DATA);
+    console.log('RCM API initialized with config:', {
+      apiUrl: this.config.apiUrl,
+      apiKey: this.config.apiKey,
+      useMockData: USE_MOCK_DATA
+    });
   }
 
   /**
@@ -54,10 +61,13 @@ class RCMApiClient {
     const timestamp = new Date().toISOString();
     const requestBody = body ? JSON.stringify(body) : '';
     
+    // Normalize path for signature (remove base URL if present)
+    const normalizedPath = path.replace(this.config.apiUrl, '').replace(/^\/+/, '');
+    
     // Generate HMAC SHA256 signature
     const signature = generateSignature({
       method,
-      path,
+      path: normalizedPath,
       timestamp,
       apiKey: this.config.apiKey,
       apiSecret: this.config.apiSecret,
@@ -69,6 +79,14 @@ class RCMApiClient {
     headers.append('X-API-Key', this.config.apiKey);
     headers.append('X-Timestamp', timestamp);
     headers.append('X-Signature', signature);
+    
+    // Log request details for debugging
+    console.log('RCM API Request:', {
+      method,
+      path: normalizedPath,
+      timestamp,
+      signature
+    });
     
     return headers;
   }

@@ -12,7 +12,8 @@ interface SignatureParams {
 }
 
 /**
- * Generates HMACSHA256 signature for RCM API authentication
+ * Generates HMACSHA256 signature for RCM API authentication as per:
+ * https://support.rentalcarmanager.com/portal/en/kb/developer-s-support
  * 
  * The signature is created by:
  * 1. Constructing a string to sign with method, path, timestamp, apiKey, and body
@@ -27,16 +28,28 @@ export function generateSignature({
   apiSecret,
   body = ''
 }: SignatureParams): string {
-  // Create the string to sign (newline separated values)
+  // Create the string to sign exactly as per RCM docs
   // Format: METHOD\nPATH\nTIMESTAMP\nAPI_KEY\nBODY
-  const stringToSign = `${method.toUpperCase()}\n${path}\n${timestamp}\n${apiKey}\n${body}`;
+  // Note: The path must not include the base URL
+  const stringToSign = [
+    method.toUpperCase(),
+    path.startsWith('/') ? path.slice(1) : path,
+    timestamp,
+    apiKey,
+    body
+  ].join('\n');
   
   // Log for debugging
-  console.log('String to sign:', stringToSign);
+  console.log('RCM API - String to sign:', stringToSign);
   
   // Generate HMAC SHA256 signature using the API secret as the key
   const signature = HmacSHA256(stringToSign, apiSecret);
   
-  // Return Base64 encoded signature
-  return Base64.stringify(signature);
+  // Base64 encode the signature as required by RCM
+  const base64Signature = Base64.stringify(signature);
+  
+  // Log the final signature for debugging
+  console.log('RCM API - Generated signature:', base64Signature);
+  
+  return base64Signature;
 }
