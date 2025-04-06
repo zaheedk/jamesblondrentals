@@ -1,5 +1,5 @@
 
-import { addDays, addHours, getDay, isBefore, isSameDay } from "date-fns";
+import { addDays, addHours, getDay, isBefore, isSameDay, startOfDay } from "date-fns";
 import { RCMOfficeTime, RCMLocationDetail } from "@/lib/api/rcm-api-types";
 
 // Map JavaScript day numbers (0-6, Sunday-Saturday) to API dayofweek (1-7, Monday-Sunday)
@@ -15,7 +15,7 @@ export const JS_TO_API_DAY_MAP: { [key: number]: number } = {
 
 export const disablePastDates = (date: Date, locationId: string | undefined, locationDetails: RCMLocationDetail[]) => {
   // Always disable dates in the past
-  if (isBefore(date, new Date())) {
+  if (isBefore(date, startOfDay(new Date()))) {
     return true;
   }
   
@@ -29,9 +29,10 @@ export const disablePastDates = (date: Date, locationId: string | undefined, loc
       const requiredNoticeDays = selectedLocation?.noticerequired_numberofdays || 0;
       
       if (requiredNoticeDays > 0) {
-        // Calculate the minimum allowed date based on required notice hours
-        const hoursRequired = requiredNoticeDays * 24;
-        const minAllowedDate = addHours(new Date(), hoursRequired);
+        // Calculate the minimum allowed date based on required notice days
+        // Use startOfDay to ensure we're comparing full days, not hours
+        const minAllowedDate = addDays(startOfDay(new Date()), requiredNoticeDays);
+        console.log(`Location ${locationId} requires ${requiredNoticeDays} days notice. Min date: ${minAllowedDate.toISOString()}, Checking date: ${date.toISOString()}`);
         
         // Disable dates that don't provide enough notice
         if (isBefore(date, minAllowedDate)) {
