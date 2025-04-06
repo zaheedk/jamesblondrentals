@@ -1,4 +1,3 @@
-
 import { generateSignature } from './rcm-signature';
 import type { 
   RCMApiConfig,
@@ -13,9 +12,9 @@ import type {
 
 // API Configuration from Web.config file
 const DEFAULT_CONFIG: RCMApiConfig = {
-  apiKey: "MkFFZDhYcmhKTDhwR202OWM1QkJZWUc4SERWdzV6",
-  apiSecret: "PKBUA84eUssLED2uG6Rj8LZjkSBQv9",
-  apiUrl: "https://secure.rentalcarmanager.com/booking/v3.2"
+  apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
+  apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
+  apiUrl: "https://apis.rentalcarmanager.com/booking/v3.2"
 };
 
 // Set to false to use actual API by default
@@ -73,9 +72,7 @@ class RCMApiClient {
 
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    headers.append('X-RCM-API-Key', this.config.apiKey);
-    headers.append('X-RCM-Signature', signature);
-    headers.append('X-RCM-Timestamp', timestamp);
+    headers.append('signature', signature); // Changed from X-RCM-Signature to match Postman
     
     // Log request details for debugging
     console.log('RCM API Request:', {
@@ -90,8 +87,7 @@ class RCMApiClient {
 
   /**
    * Builds the correct API URL with the API key format
-   * For direct calls: https://secure.rentalcarmanager.com/booking/v3.2/[API_KEY]?apikey=[API_KEY]
-   * For proxied calls: /api/rcm/booking/v3.2/[API_KEY]?apikey=[API_KEY]
+   * Format: https://apis.rentalcarmanager.com/booking/v3.2/[API_KEY]?apikey=[API_KEY]
    */
   private buildApiUrl(): string {
     // Use the proxy URL if we're not using mock data and are in browser environment
@@ -125,17 +121,14 @@ class RCMApiClient {
       console.log(`Making ${method} request to ${apiUrl}`);
       
       // Create headers with auth tokens
-      const headers = this.createHeaders(method, { method: requestMethod, ...body });
-      
-      // Create request body with method field
-      const requestBody = JSON.stringify({ method: requestMethod, ...body });
-      console.log('Request body:', requestBody);
+      const requestBody = { method: requestMethod, ...body };
+      const headers = this.createHeaders(method, requestBody);
       
       // Make the request
       const response = await fetch(apiUrl, {
         method,
         headers,
-        body: requestBody,
+        body: JSON.stringify(requestBody), // Simplified to ensure consistent format
         credentials: 'same-origin', // Important for cookies if needed
       });
 
@@ -175,13 +168,6 @@ class RCMApiClient {
       }
       throw error;
     }
-  }
-
-  /**
-   * Get Step1 data (locations, driver ages, categories, etc.)
-   */
-  async getStep1(): Promise<RCMStep1Response> {
-    return this.request<RCMStep1Response>('POST', 'step1');
   }
 
   /**
@@ -340,6 +326,13 @@ class RCMApiClient {
     
     // Generic fallback
     return {} as T;
+  }
+
+  /**
+   * Get Step1 data (locations, driver ages, categories, etc.)
+   */
+  async getStep1(): Promise<RCMStep1Response> {
+    return this.request<RCMStep1Response>('POST', 'step1');
   }
 
   /**

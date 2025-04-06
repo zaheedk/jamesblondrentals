@@ -104,35 +104,6 @@ const SearchForm = () => {
     }
   }, [pickupDate, dropoffDate]);
 
-  // Handle API configuration submission
-  const handleApiConfigSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    try {
-      await initializeApi({
-        apiKey,
-        apiSecret,
-        apiUrl,
-        useMockData,
-      });
-      
-      toast.success("API settings updated", {
-        description: useMockData 
-          ? "Using mock data - no API connection needed"
-          : "Using Vite proxy to avoid CORS restrictions"
-      });
-      
-      // Refetch the locations to verify the connection
-      refetchLocations();
-      setShowApiDialog(false);
-    } catch (error) {
-      console.error("API configuration error:", error);
-      toast.error("API Settings Error", {
-        description: "Failed to apply API settings"
-      });
-    }
-  };
-
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
