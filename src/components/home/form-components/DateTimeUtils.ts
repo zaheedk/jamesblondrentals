@@ -1,5 +1,5 @@
 
-import { addDays, addHours, getDay, isBefore, isSameDay, startOfDay } from "date-fns";
+import { addDays, addHours, getDay, isBefore, isSameDay, startOfDay, setHours, setMinutes, isAfter } from "date-fns";
 import { RCMOfficeTime, RCMLocationDetail } from "@/lib/api/rcm-api-types";
 
 // Map JavaScript day numbers (0-6, Sunday-Saturday) to API dayofweek (1-7, Monday-Sunday)
@@ -126,17 +126,19 @@ export const generate24HourOptions = (date: Date, requiredNoticeDays: number): s
   
   console.log(`Generating 24-hour options for date: ${date.toISOString()}, today? ${isToday}, tomorrow? ${isTomorrow}, requiredNoticeDays: ${requiredNoticeDays}`);
   
-  // For notice periods, calculate the earliest allowed time
-  let earliestAllowedTime: Date | null = null;
+  // Calculate the earliest allowed date considering notice period
+  let earliestAllowedDate: Date | null = null;
   if (requiredNoticeDays > 0) {
-    // For notice days, ensure it's at least X days from now
-    earliestAllowedTime = addDays(new Date(), requiredNoticeDays);
-    console.log(`Required notice: ${requiredNoticeDays} days, earliest allowed time: ${earliestAllowedTime.toISOString()}`);
+    earliestAllowedDate = addDays(now, requiredNoticeDays);
+    console.log(`Required notice: ${requiredNoticeDays} days, earliest allowed time: ${earliestAllowedDate.toISOString()}`);
   }
   
-  // If date is before earliest allowed, return no options
-  if (earliestAllowedTime && isBefore(date, earliestAllowedTime)) {
-    console.log(`Selected date ${date.toISOString()} is before earliest allowed date ${earliestAllowedTime.toISOString()}, no times available`);
+  // Check if the selected date meets notice requirements
+  const selectedDateStartOfDay = startOfDay(new Date(date));
+  const earliestAllowedStartOfDay = earliestAllowedDate ? startOfDay(new Date(earliestAllowedDate)) : null;
+  
+  if (earliestAllowedStartOfDay && isBefore(selectedDateStartOfDay, earliestAllowedStartOfDay)) {
+    console.log(`Selected date ${selectedDateStartOfDay.toISOString()} is before earliest allowed date ${earliestAllowedStartOfDay.toISOString()}, no times available`);
     return [];
   }
   
@@ -148,15 +150,14 @@ export const generate24HourOptions = (date: Date, requiredNoticeDays: number): s
       testDate.setHours(hour, minute, 0, 0);
       
       // Skip times in the past if the date is today
-      if (isToday && testDate <= now) {
+      if (isToday && isBefore(testDate, now)) {
         continue;
       }
       
       // If we have a notice requirement and it's exactly the earliest allowed day,
-      // only show times after the notice period
-      if (earliestAllowedTime && isSameDay(date, earliestAllowedTime)) {
-        if (hour < earliestAllowedTime.getHours() || 
-            (hour === earliestAllowedTime.getHours() && minute < earliestAllowedTime.getMinutes())) {
+      // only show times that meet the notice requirement
+      if (earliestAllowedDate && isSameDay(date, earliestAllowedDate)) {
+        if (isBefore(testDate, earliestAllowedDate)) {
           continue;
         }
       }
@@ -182,17 +183,19 @@ export const generateTimeOptions = (openTime: string, closeTime: string, date: D
   
   console.log(`Generating time options between ${openTime}-${closeTime} for date: ${date.toISOString()}, today? ${isToday}, tomorrow? ${isTomorrow}`);
   
-  // For notice periods, calculate the earliest allowed time
-  let earliestAllowedTime: Date | null = null;
+  // Calculate the earliest allowed date considering notice period
+  let earliestAllowedDate: Date | null = null;
   if (requiredNoticeDays > 0) {
-    // For notice days, ensure it's at least X days from now
-    earliestAllowedTime = addDays(new Date(), requiredNoticeDays);
-    console.log(`Required notice: ${requiredNoticeDays} days, earliest allowed time: ${earliestAllowedTime.toISOString()}`);
+    earliestAllowedDate = addDays(now, requiredNoticeDays);
+    console.log(`Required notice: ${requiredNoticeDays} days, earliest allowed time: ${earliestAllowedDate.toISOString()}`);
   }
   
-  // If date is before earliest allowed, return no options
-  if (earliestAllowedTime && isBefore(date, earliestAllowedTime)) {
-    console.log(`Selected date ${date.toISOString()} is before earliest allowed date ${earliestAllowedTime.toISOString()}, no times available`);
+  // Check if the selected date meets notice requirements
+  const selectedDateStartOfDay = startOfDay(new Date(date));
+  const earliestAllowedStartOfDay = earliestAllowedDate ? startOfDay(new Date(earliestAllowedDate)) : null;
+  
+  if (earliestAllowedStartOfDay && isBefore(selectedDateStartOfDay, earliestAllowedStartOfDay)) {
+    console.log(`Selected date ${selectedDateStartOfDay.toISOString()} is before earliest allowed date ${earliestAllowedStartOfDay.toISOString()}, no times available`);
     return [];
   }
   
@@ -222,8 +225,8 @@ export const generateTimeOptions = (openTime: string, closeTime: string, date: D
   
   // If we have a notice requirement and it's exactly the earliest allowed day,
   // only show times after the notice period
-  if (earliestAllowedTime && isSameDay(date, earliestAllowedTime)) {
-    const earliestMinutes = earliestAllowedTime.getHours() * 60 + earliestAllowedTime.getMinutes();
+  if (earliestAllowedDate && isSameDay(date, earliestAllowedDate)) {
+    const earliestMinutes = earliestAllowedDate.getHours() * 60 + earliestAllowedDate.getMinutes();
     // Round up to next 30-min slot
     const roundedEarliestMinutes = Math.ceil(earliestMinutes / 30) * 30;
     startInMinutes = Math.max(startInMinutes, roundedEarliestMinutes);
@@ -255,4 +258,3 @@ export const combineDateTime = (date: Date | undefined, time: string): string =>
   
   return newDate.toISOString();
 };
-

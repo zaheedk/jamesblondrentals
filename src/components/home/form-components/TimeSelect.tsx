@@ -1,6 +1,7 @@
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { Clock } from "lucide-react";
 
 interface TimeSelectProps {
   id: string;
@@ -26,7 +27,20 @@ export const TimeSelect = ({
   // Add more debug logging to track the issue
   console.log(`TimeSelect: ${id} - options count: ${timeOptions.length}, disabled: ${disabled}, selected: ${time}`);
   
-  if (timeOptions.length === 0 && !disabled) {
+  // Determine the message to show based on the component state
+  let selectMessage = "Select time";
+  
+  if (isLoading) {
+    selectMessage = "Loading times...";
+  } else if (disabled) {
+    if (placeholder) {
+      selectMessage = placeholder;
+    } else {
+      selectMessage = "Select location and date first";
+    }
+  } else if (timeOptions.length === 0) {
+    // If there are no time options but the component is not disabled, explain why
+    selectMessage = "No times available - check notice requirements";
     console.log(`Warning: ${id} has no time options but is not disabled`);
   }
   
@@ -41,22 +55,29 @@ export const TimeSelect = ({
         }}
         disabled={disabled || timeOptions.length === 0}
       >
-        <SelectTrigger id={id}>
-          <SelectValue placeholder={
-            isLoading ? "Loading times..." :
-            disabled ? placeholder || "Select location and date first" :
-            timeOptions.length === 0 ? "No times available" :
-            "Select time"
-          } />
+        <SelectTrigger id={id} className="flex items-center">
+          <Clock className="mr-2 h-4 w-4 opacity-70" />
+          <SelectValue placeholder={selectMessage} />
         </SelectTrigger>
         <SelectContent className="bg-white z-50">
-          {timeOptions.map(time => (
-            <SelectItem key={time} value={time}>
-              {time}
-            </SelectItem>
-          ))}
+          {timeOptions.length > 0 ? (
+            timeOptions.map(time => (
+              <SelectItem key={time} value={time}>
+                {time}
+              </SelectItem>
+            ))
+          ) : (
+            <div className="py-2 px-2 text-sm text-muted-foreground">
+              No available times found
+            </div>
+          )}
         </SelectContent>
       </Select>
+      {timeOptions.length === 0 && !disabled && (
+        <p className="text-xs text-orange-600 mt-1">
+          Notice period required - please choose a later date
+        </p>
+      )}
     </div>
   );
 };
