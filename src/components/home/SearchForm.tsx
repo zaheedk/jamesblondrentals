@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -174,6 +175,22 @@ const SearchForm = () => {
     }, 500);
   };
 
+  // Helper functions to get display text for dropdowns
+  const getLocationName = (locationId: string) => {
+    const location = locations.find(loc => loc.id === locationId);
+    return location ? location.name : "";
+  };
+
+  const getDriverAgeName = (ageId: string) => {
+    const driverAge = driverAges.find(a => a.id === ageId);
+    return driverAge ? driverAge.driverage : "";
+  };
+
+  const getCategoryName = (categoryId: string) => {
+    const category = carCategories.find(c => c.id === categoryId);
+    return category ? category.vehiclecategorytype : "";
+  };
+
   return (
     <Card className="shadow-lg border-0">
       <CardContent className="p-6">
@@ -261,8 +278,11 @@ const SearchForm = () => {
                   }
                 }}>
                   <SelectTrigger id="pickup-location" className={isLoadingLocations ? "animate-pulse" : ""}>
-                    <SelectValue placeholder={isLoadingLocations ? "Loading locations..." : 
-                      isLocationError ? "Choose location" : "Select pickup location"} />
+                    <SelectValue>
+                      {pickupLocation ? getLocationName(pickupLocation) : 
+                        isLoadingLocations ? "Loading locations..." : 
+                        isLocationError ? "Choose location" : "Select pickup location"}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {locations.map((location) => (
@@ -295,8 +315,12 @@ const SearchForm = () => {
                   disabled={sameLocation}
                 >
                   <SelectTrigger id="dropoff-location" className={isLoadingLocations ? "animate-pulse" : ""}>
-                    <SelectValue placeholder={isLoadingLocations ? "Loading locations..." : 
-                      isLocationError ? "Choose location" : "Select dropoff location"} />
+                    <SelectValue>
+                      {(sameLocation ? pickupLocation : dropoffLocation) ? 
+                        getLocationName(sameLocation ? pickupLocation : dropoffLocation) : 
+                        isLoadingLocations ? "Loading locations..." : 
+                        isLocationError ? "Choose location" : "Select dropoff location"}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {locations.map((location) => (
@@ -373,7 +397,9 @@ const SearchForm = () => {
                 <Label htmlFor="driver-age">Driver Age</Label>
                 <Select value={age} onValueChange={setAge}>
                   <SelectTrigger id="driver-age" className={isLoadingAges ? "animate-pulse" : ""}>
-                    <SelectValue placeholder="Select age" />
+                    <SelectValue>
+                      {age ? getDriverAgeName(age) : "Select age"}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {driverAges.map((option) => (
@@ -390,7 +416,9 @@ const SearchForm = () => {
                 <Label htmlFor="car-category">Vehicle Category</Label>
                 <Select value={carCategory} onValueChange={setCarCategory}>
                   <SelectTrigger id="car-category" className={isLoadingCategories ? "animate-pulse" : ""}>
-                    <SelectValue placeholder="All Categories" />
+                    <SelectValue>
+                      {carCategory ? getCategoryName(carCategory) : "All Categories"}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {carCategories.map((category) => (
