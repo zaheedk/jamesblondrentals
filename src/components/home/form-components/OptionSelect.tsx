@@ -25,6 +25,13 @@ export const OptionSelect = ({
   placeholder = "Select option",
   defaultValue
 }: OptionSelectProps) => {
+  const formatOptionName = (name: string) => {
+    const numericAge = parseInt(name);
+    return (numericAge >= 26 && !isNaN(numericAge)) 
+      ? `${numericAge}+` 
+      : name;
+  };
+
   return (
     <div className="space-y-2">
       <Label htmlFor={id}>{label}</Label>
@@ -34,13 +41,13 @@ export const OptionSelect = ({
       }}>
         <SelectTrigger id={id} className={isLoading ? "animate-pulse" : ""}>
           <SelectValue>
-            {value ? getOptionName(value) : defaultValue || placeholder}
+            {value ? formatOptionName(getOptionName(value)) : defaultValue || placeholder}
           </SelectValue>
         </SelectTrigger>
         <SelectContent>
           {options.map((option) => (
             <SelectItem key={option.id} value={String(option.id)}>
-              {option.name}
+              {formatOptionName(option.name)}
             </SelectItem>
           ))}
         </SelectContent>
