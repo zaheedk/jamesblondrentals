@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Hero from "@/components/home/Hero";
@@ -11,9 +12,9 @@ const Index = () => {
   const { initializeApi } = useRcmApi();
   
   useEffect(() => {
-    // Initialize the API with mock mode enabled
+    // Initialize the API with real data mode
     initializeApi({ 
-      useMockData: true, // Always use mock data initially to ensure app is functional
+      useMockData: false, // Always use real API data
       apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
       apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
       apiUrl: "https://apis.rentalcarmanager.com/booking/v3.2/"

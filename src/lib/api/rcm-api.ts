@@ -17,9 +17,6 @@ const DEFAULT_CONFIG: RCMApiConfig = {
   apiUrl: "https://apis.rentalcarmanager.com/booking/v3.2"
 };
 
-// Set to false to use actual API by default
-let USE_MOCK_DATA = false;
-
 /**
  * RCM API Client for handling all API requests
  */
@@ -43,17 +40,11 @@ class RCMApiClient {
     if (config.apiSecret) this.config.apiSecret = config.apiSecret;
     if (config.apiUrl) this.config.apiUrl = config.apiUrl.replace(/\/$/, '');
     
-    if (config.useMockData !== undefined) {
-      USE_MOCK_DATA = config.useMockData;
-      console.log('Mock data mode:', USE_MOCK_DATA);
-    }
-    
     this.initialized = true;
     
     console.log('RCM API initialized with config:', {
       apiUrl: this.config.apiUrl,
-      apiKey: this.config.apiKey,
-      useMockData: USE_MOCK_DATA
+      apiKey: this.config.apiKey
     });
   }
 
@@ -107,8 +98,8 @@ class RCMApiClient {
    * Exactly as shown in the Postman collection
    */
   private buildApiUrl(): string {
-    // Use the proxy URL if we're not using mock data and are in browser environment
-    if (!USE_MOCK_DATA && typeof window !== 'undefined') {
+    // Use the proxy URL in browser environment
+    if (typeof window !== 'undefined') {
       const baseUrl = '/api/rcm';
       const apiPath = this.config.apiUrl.replace(/^https?:\/\/[^\/]+/, '');
       const url = `${baseUrl}${apiPath}/${this.config.apiKey}?apikey=${this.config.apiKey}`;
@@ -116,7 +107,7 @@ class RCMApiClient {
       return url;
     }
     
-    // Otherwise use the direct URL (for mock data or non-browser environments)
+    // Otherwise use the direct URL (for non-browser environments)
     const url = `${this.config.apiUrl}/${this.config.apiKey}?apikey=${this.config.apiKey}`;
     console.log('Built direct API URL:', url);
     return url;
@@ -127,12 +118,6 @@ class RCMApiClient {
    */
   private async request<T>(method: string, requestMethod: string, body?: any): Promise<T> {
     this.ensureInitialized();
-
-    // Don't use mock data by default
-    if (USE_MOCK_DATA) {
-      console.log(`Using mock data for ${requestMethod} request`);
-      return this.getMockData<T>(requestMethod);
-    }
 
     try {
       // Build the URL with API key
@@ -181,339 +166,8 @@ class RCMApiClient {
       return responseData;
     } catch (error) {
       console.error('RCM API request failed:', error);
-      
-      // If we specifically want to fall back to mock data, do it here
-      if (!USE_MOCK_DATA && error instanceof Error && error.message.includes('fallback')) {
-        console.warn('Falling back to mock data due to API request failure');
-        return this.getMockData<T>(requestMethod);
-      }
       throw error;
     }
-  }
-
-  /**
-   * Returns mock data for development and testing
-   * Only used if USE_MOCK_DATA is true or if API fails with fallback flag
-   */
-  private getMockData<T>(endpoint: string): T {
-    console.log('Getting mock data for endpoint:', endpoint);
-    
-    if (endpoint === 'step1') {
-      // Mock Step1 response
-      return {
-        status: "OK",
-        results: {
-          locations: [
-            {
-              id: "625",
-              location: "Kelston",
-              address: "3075 Great North Road",
-              city: "Auckland",
-              state: "Auckland",
-              country: "New Zealand",
-              postcode: "0602",
-              ispickupavailable: true,
-              isdropoffavailable: true, 
-              isdefault: true,
-              minimumbookingday: 1,
-              noticerequired_numberofdays: 0
-            },
-            {
-              id: "626",
-              location: "Wellington CBD",
-              address: "123 Willis Street",
-              city: "Wellington",
-              state: "Wellington",
-              country: "New Zealand",
-              postcode: "1010",
-              ispickupavailable: true,
-              isdropoffavailable: true,
-              isdefault: false,
-              minimumbookingday: 1,
-              noticerequired_numberofdays: 0
-            },
-            {
-              id: "wellington",
-              location: "Wellington Airport",
-              address: "Wellington International Terminal",
-              city: "Wellington",
-              state: "Wellington", 
-              country: "New Zealand",
-              postcode: "6022",
-              ispickupavailable: true,
-              isdropoffavailable: true,
-              isdefault: false,
-              minimumbookingday: 1,
-              noticerequired_numberofdays: 1
-            },
-            {
-              id: "christchurch",
-              location: "Christchurch Airport",
-              address: "Christchurch International Terminal",
-              city: "Christchurch",
-              state: "Canterbury", 
-              country: "New Zealand",
-              postcode: "8053",
-              ispickupavailable: true,
-              isdropoffavailable: true,
-              isdefault: false,
-              minimumbookingday: 1,
-              noticerequired_numberofdays: 1
-            },
-            {
-              id: "627",
-              location: "Auckland Airport",
-              address: "Auckland International Terminal",
-              city: "Auckland",
-              state: "Auckland", 
-              country: "New Zealand",
-              postcode: "2022",
-              ispickupavailable: true,
-              isdropoffavailable: true,
-              isdefault: false,
-              minimumbookingday: 1,
-              noticerequired_numberofdays: 0
-            }
-          ],
-          officetimes: [
-            {
-              locationid: "625",
-              dayofweek: 1, // Monday
-              openingtime: "08:00",
-              closingtime: "17:00"
-            },
-            {
-              locationid: "625", 
-              dayofweek: 2, // Tuesday
-              openingtime: "08:00",
-              closingtime: "17:00"
-            },
-            {
-              locationid: "625",
-              dayofweek: 3, // Wednesday
-              openingtime: "08:00", 
-              closingtime: "17:00"
-            },
-            {
-              locationid: "625",
-              dayofweek: 4, // Thursday
-              openingtime: "08:00",
-              closingtime: "17:00"
-            },
-            {
-              locationid: "625",
-              dayofweek: 5, // Friday
-              openingtime: "08:00",
-              closingtime: "17:00"
-            },
-            {
-              locationid: "625", 
-              dayofweek: 6, // Saturday
-              openingtime: "09:00",
-              closingtime: "16:00"
-            },
-            {
-              locationid: "627",
-              dayofweek: 1, // Monday
-              openingtime: "07:00",
-              closingtime: "22:00"
-            },
-            {
-              locationid: "wellington",
-              dayofweek: 1, // Monday
-              openingtime: "00:00",
-              closingtime: "00:00"
-            },
-            {
-              locationid: "wellington",
-              dayofweek: 2, // Tuesday
-              openingtime: "00:00",
-              closingtime: "00:00"
-            },
-            {
-              locationid: "wellington",
-              dayofweek: 3, // Wednesday
-              openingtime: "00:00",
-              closingtime: "00:00"
-            },
-            {
-              locationid: "wellington",
-              dayofweek: 4, // Thursday
-              openingtime: "00:00",
-              closingtime: "00:00"
-            },
-            {
-              locationid: "wellington",
-              dayofweek: 5, // Friday
-              openingtime: "00:00",
-              closingtime: "00:00"
-            },
-            {
-              locationid: "wellington",
-              dayofweek: 6, // Saturday
-              openingtime: "00:00",
-              closingtime: "00:00"
-            },
-            {
-              locationid: "wellington",
-              dayofweek: 7, // Sunday
-              openingtime: "00:00",
-              closingtime: "00:00"
-            },
-            {
-              locationid: "christchurch",
-              dayofweek: 1, // Monday
-              openingtime: "00:00",
-              closingtime: "00:00"
-            },
-            {
-              locationid: "christchurch",
-              dayofweek: 2, // Tuesday
-              openingtime: "00:00",
-              closingtime: "00:00"
-            },
-            {
-              locationid: "christchurch",
-              dayofweek: 3, // Wednesday
-              openingtime: "00:00",
-              closingtime: "00:00"
-            },
-            {
-              locationid: "christchurch",
-              dayofweek: 4, // Thursday
-              openingtime: "00:00",
-              closingtime: "00:00"
-            },
-            {
-              locationid: "christchurch",
-              dayofweek: 5, // Friday
-              openingtime: "00:00",
-              closingtime: "00:00"
-            },
-            {
-              locationid: "christchurch",
-              dayofweek: 6, // Saturday
-              openingtime: "00:00",
-              closingtime: "00:00"
-            },
-            {
-              locationid: "christchurch",
-              dayofweek: 7, // Sunday
-              openingtime: "00:00",
-              closingtime: "00:00"
-            }
-          ],
-          driverages: [
-            { id: "21", driverage: "21-25", isdefault: false },
-            { id: "26", driverage: "26+", isdefault: true }
-          ],
-          categorytypes: [
-            { id: "0", vehiclecategorytype: "All Categories" },
-            { id: "1", vehiclecategorytype: "Economy" },
-            { id: "2", vehiclecategorytype: "Compact" },
-            { id: "3", vehiclecategorytype: "Intermediate" },
-            { id: "4", vehiclecategorytype: "Standard" },
-            { id: "5", vehiclecategorytype: "Full Size" },
-            { id: "6", vehiclecategorytype: "Premium" },
-            { id: "7", vehiclecategorytype: "Luxury" },
-            { id: "8", vehiclecategorytype: "Minivan" },
-            { id: "9", vehiclecategorytype: "SUV" }
-          ]
-        }
-      } as unknown as T;
-    } 
-    else if (endpoint.includes('vehicles/available')) {
-      // Mock vehicle data
-      return [
-        {
-          id: "eco1",
-          name: "Toyota Corolla or similar",
-          description: "Comfortable and fuel efficient compact car",
-          make: "Toyota",
-          model: "Corolla",
-          year: 2023,
-          type: "Sedan",
-          category: "Economy",
-          transmission: "Automatic",
-          fuelType: "Petrol",
-          seats: 5,
-          luggage: 2,
-          price: 45,
-          available: true,
-          images: ["https://placehold.co/600x400?text=Toyota+Corolla"],
-          features: ["Air Conditioning", "Bluetooth", "Cruise Control"]
-        },
-        {
-          id: "suv1",
-          name: "Toyota RAV4 or similar",
-          description: "Spacious SUV perfect for adventure",
-          make: "Toyota",
-          model: "RAV4",
-          year: 2023,
-          type: "SUV",
-          category: "Standard SUV",
-          transmission: "Automatic",
-          fuelType: "Hybrid",
-          seats: 5,
-          luggage: 4,
-          price: 65,
-          available: true,
-          images: ["https://placehold.co/600x400?text=Toyota+RAV4"],
-          features: ["Air Conditioning", "Bluetooth", "Cruise Control", "Backup Camera", "Navigation"]
-        },
-        {
-          id: "lux1",
-          name: "BMW 3 Series or similar",
-          description: "Luxury sedan with premium features",
-          make: "BMW",
-          model: "3 Series",
-          year: 2023,
-          type: "Sedan",
-          category: "Luxury",
-          transmission: "Automatic",
-          fuelType: "Petrol",
-          seats: 5,
-          luggage: 3,
-          price: 85,
-          available: true,
-          images: ["https://placehold.co/600x400?text=BMW+3+Series"],
-          features: ["Leather Seats", "Bluetooth", "Cruise Control", "Backup Camera", "Navigation", "Heated Seats"]
-        }
-      ] as unknown as T;
-    }
-    else if (endpoint.includes('vehicles/')) {
-      // Mock single vehicle data
-      return {
-        id: "eco1",
-        name: "Toyota Corolla or similar",
-        description: "Comfortable and fuel efficient compact car",
-        make: "Toyota",
-        model: "Corolla",
-        year: 2023,
-        type: "Sedan",
-        category: "Economy",
-        transmission: "Automatic",
-        fuelType: "Petrol",
-        seats: 5,
-        luggage: 2,
-        price: 45,
-        available: true,
-        images: ["https://placehold.co/600x400?text=Toyota+Corolla"],
-        features: ["Air Conditioning", "Bluetooth", "Cruise Control"]
-      } as unknown as T;
-    }
-    else if (endpoint === 'bookings') {
-      // Mock booking response
-      return {
-        bookingId: "MOCK-" + Date.now(),
-        confirmationNumber: "MOCK" + Math.floor(Math.random() * 1000000),
-        totalAmount: 235.50,
-        status: "confirmed"
-      } as unknown as T;
-    }
-    
-    // Generic fallback
-    return {} as T;
   }
 
   /**
