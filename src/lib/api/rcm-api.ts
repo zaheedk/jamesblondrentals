@@ -1,4 +1,3 @@
-
 import { generateSignature } from './rcm-signature';
 import type { 
   RCMApiConfig,
@@ -57,17 +56,14 @@ class RCMApiClient {
   /**
    * Creates headers with authentication for API requests
    */
-  private createHeaders(method: string, path: string, body?: any): Headers {
+  private createHeaders(method: string, body?: any): Headers {
     const timestamp = new Date().toISOString();
-    const requestBody = body ? JSON.stringify(body) : '';
-    
-    // Normalize path for signature (remove base URL if present)
-    const normalizedPath = path.replace(this.config.apiUrl, '').replace(/^\/+/, '');
+    const requestBody = body ? JSON.stringify(body) : '{}';
     
     // Generate HMAC SHA256 signature
     const signature = generateSignature({
       method,
-      path: normalizedPath,
+      path: '', // Not used in actual signature generation
       timestamp,
       apiKey: this.config.apiKey,
       apiSecret: this.config.apiSecret,
@@ -76,51 +72,54 @@ class RCMApiClient {
 
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    headers.append('X-API-Key', this.config.apiKey);
-    headers.append('X-Timestamp', timestamp);
-    headers.append('X-Signature', signature);
     
     // Log request details for debugging
     console.log('RCM API Request:', {
       method,
-      path: normalizedPath,
       timestamp,
-      signature
+      signature,
+      body: requestBody
     });
     
     return headers;
   }
 
   /**
-   * Makes an authenticated API request
+   * Builds the correct API URL with the API key format
    */
-  private async request<T>(method: string, endpoint: string, body?: any): Promise<T> {
+  private buildApiUrl(endpoint: string): string {
+    // Format: https://apis.rentalcarmanager.com/booking/v3.2/[API_KEY]?apikey=[API_KEY]
+    const url = `${this.config.apiUrl}/${this.config.apiKey}?apikey=${this.config.apiKey}`;
+    console.log('Built API URL:', url);
+    return url;
+  }
+
+  /**
+   * Makes an API request with the correct format
+   */
+  private async request<T>(method: string, requestMethod: string, body?: any): Promise<T> {
     if (USE_MOCK_DATA) {
-      console.log(`Using mock data for ${endpoint} request`);
-      return this.getMockData<T>(endpoint);
+      console.log(`Using mock data for ${requestMethod} request`);
+      return this.getMockData<T>(requestMethod);
     }
 
     try {
-      // Full API URL
-      const apiUrl = `${this.config.apiUrl}${endpoint}`;
+      // Build the URL with API key
+      const apiUrl = this.buildApiUrl(requestMethod);
       console.log(`Making ${method} request to ${apiUrl}`);
       
-      // Create headers with HMAC SHA256 authentication
-      const headers = this.createHeaders(method, endpoint, body);
+      // Create headers
+      const headers = this.createHeaders(method, { method: requestMethod, ...body });
       
-      // Log the request details for debugging
-      console.log('Request headers:', {
-        'Content-Type': 'application/json',
-        'X-API-Key': this.config.apiKey,
-        'X-Timestamp': headers.get('X-Timestamp'),
-        'X-Signature': headers.get('X-Signature')
-      });
+      // Create request body
+      const requestBody = JSON.stringify({ method: requestMethod, ...body });
+      console.log('Request body:', requestBody);
       
       // Make the request
       const response = await fetch(apiUrl, {
         method,
         headers,
-        body: body ? JSON.stringify(body) : undefined,
+        body: requestBody,
         mode: 'cors',
         cache: 'no-cache',
       });
@@ -148,7 +147,7 @@ class RCMApiClient {
       // If we're not already using mock data, fall back to it now
       if (!USE_MOCK_DATA) {
         console.warn('Falling back to mock data due to API request failure');
-        return this.getMockData<T>(endpoint);
+        return this.getMockData<T>(requestMethod);
       }
       throw error;
     }
@@ -158,79 +157,7 @@ class RCMApiClient {
    * Get Step1 data (locations, driver ages, categories, etc.)
    */
   async getStep1(): Promise<RCMStep1Response> {
-    if (USE_MOCK_DATA) {
-      return {
-        status: "OK",
-        results: {
-          locations: [
-            {
-              id: "auckland",
-              location: "Auckland Airport",
-              address: "Auckland International Airport",
-              city: "Auckland",
-              state: "Auckland",
-              country: "New Zealand", 
-              postcode: "2022",
-              latitude: -36.9992,
-              longitude: 174.7870,
-              ispickupavailable: true,
-              isdropoffavailable: true,
-              isdefault: true
-            },
-            {
-              id: "wellington",
-              location: "Wellington Airport",
-              address: "Wellington International Airport",
-              city: "Wellington",
-              state: "Wellington",
-              country: "New Zealand",
-              postcode: "6022",
-              latitude: -41.3272, 
-              longitude: 174.8076,
-              ispickupavailable: true,
-              isdropoffavailable: true,
-              isdefault: false
-            },
-            {
-              id: "christchurch",
-              location: "Christchurch Airport",
-              address: "Christchurch International Airport",
-              city: "Christchurch",
-              state: "Canterbury",
-              country: "New Zealand",
-              postcode: "8053",
-              latitude: -43.4864,
-              longitude: 172.5369,
-              ispickupavailable: true,
-              isdropoffavailable: true,
-              isdefault: false
-            }
-          ],
-          officetimes: [
-            { id: "1", locationid: "auckland", day: "Monday", opentime: "07:00", closetime: "22:00" },
-            { id: "2", locationid: "auckland", day: "Tuesday", opentime: "07:00", closetime: "22:00" }
-          ],
-          driverages: [
-            { id: "21", driverage: "21-25", isdefault: false },
-            { id: "26", driverage: "26+", isdefault: true }
-          ],
-          categorytypes: [
-            { id: "0", vehiclecategorytype: "All Categories" },
-            { id: "1", vehiclecategorytype: "Economy" },
-            { id: "2", vehiclecategorytype: "Compact" },
-            { id: "3", vehiclecategorytype: "Intermediate" },
-            { id: "4", vehiclecategorytype: "Standard" },
-            { id: "5", vehiclecategorytype: "Full Size" },
-            { id: "6", vehiclecategorytype: "Premium" },
-            { id: "7", vehiclecategorytype: "Luxury" },
-            { id: "8", vehiclecategorytype: "Minivan" },
-            { id: "9", vehiclecategorytype: "SUV" }
-          ]
-        }
-      };
-    }
-    
-    return this.request<RCMStep1Response>('GET', 'step1');
+    return this.request<RCMStep1Response>('POST', 'step1');
   }
 
   /**
@@ -415,28 +342,21 @@ class RCMApiClient {
    * Get available vehicles based on location and dates
    */
   async getAvailableVehicles(params: RCMAvailabilityRequest): Promise<RCMVehicle[]> {
-    const queryString = new URLSearchParams({
-      pickupLocationId: params.pickupLocationId,
-      dropoffLocationId: params.dropoffLocationId,
-      pickupDate: params.pickupDate,
-      dropoffDate: params.dropoffDate
-    }).toString();
-    
-    return this.request<RCMVehicle[]>('GET', `vehicles/available?${queryString}`);
+    return this.request<RCMVehicle[]>('POST', 'vehicles/available', params);
   }
 
   /**
    * Get vehicle details by ID
    */
   async getVehicleById(vehicleId: string): Promise<RCMVehicle> {
-    return this.request<RCMVehicle>('GET', `vehicles/${vehicleId}`);
+    return this.request<RCMVehicle>('POST', 'vehicles/details', { id: vehicleId });
   }
 
   /**
    * Create a booking
    */
   async createBooking(bookingData: RCMBookingRequest): Promise<RCMBookingResponse> {
-    return this.request<RCMBookingResponse>('POST', 'bookings', bookingData);
+    return this.request<RCMBookingResponse>('POST', 'booking', bookingData);
   }
 }
 
