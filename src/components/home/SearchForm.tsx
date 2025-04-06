@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -449,7 +448,7 @@ const SearchForm = () => {
       );
       
       if (selectedLocation) {
-        const requiredNoticeDays = selectedLocationDetail?.noticerequired_numberofdays || 0;
+        const requiredNoticeDays = selectedLocation?.noticerequired_numberofdays || 0;
         
         if (requiredNoticeDays > 0) {
           // Calculate the minimum allowed date based on required notice hours
