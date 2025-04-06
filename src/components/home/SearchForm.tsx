@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -59,6 +60,31 @@ const SearchForm = () => {
     useOfficeHours,
     useLocationDetails
   } = useRcmApi();
+  
+  // Get data from hooks
+  const { 
+    data: locations = [], 
+    isLoading: isLoadingLocations, 
+    error: locationError 
+  } = useLocations();
+  const { 
+    data: driverAges = [], 
+    isLoading: isLoadingAges 
+  } = useDriverAges();
+  const { 
+    data: carCategories = [], 
+    isLoading: isLoadingCategories 
+  } = useVehicleCategories();
+  const { 
+    data: officeHours = [], 
+    isLoading: isLoadingOfficeHours 
+  } = useOfficeHours();
+  const { 
+    data: locationDetails = [] 
+  } = useLocationDetails();
+  
+  // Determine if there was a location error
+  const isLocationError = !!locationError;
   
   // Initialize API on component mount - now without settings dialog
   useEffect(() => {
