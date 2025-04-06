@@ -220,10 +220,10 @@ class RCMApiClient {
             },
             {
               id: "626",
-              location: "Auckland City",
-              address: "123 Queen Street",
-              city: "Auckland",
-              state: "Auckland",
+              location: "Wellington CBD",
+              address: "123 Willis Street",
+              city: "Wellington",
+              state: "Wellington",
               country: "New Zealand",
               postcode: "1010",
               ispickupavailable: true,
@@ -231,6 +231,34 @@ class RCMApiClient {
               isdefault: false,
               minimumbookingday: 1,
               noticerequired_numberofdays: 0
+            },
+            {
+              id: "wellington",
+              location: "Wellington Airport",
+              address: "Wellington International Terminal",
+              city: "Wellington",
+              state: "Wellington", 
+              country: "New Zealand",
+              postcode: "6022",
+              ispickupavailable: true,
+              isdropoffavailable: true,
+              isdefault: false,
+              minimumbookingday: 1,
+              noticerequired_numberofdays: 1
+            },
+            {
+              id: "christchurch",
+              location: "Christchurch Airport",
+              address: "Christchurch International Terminal",
+              city: "Christchurch",
+              state: "Canterbury", 
+              country: "New Zealand",
+              postcode: "8053",
+              ispickupavailable: true,
+              isdropoffavailable: true,
+              isdefault: false,
+              minimumbookingday: 1,
+              noticerequired_numberofdays: 1
             },
             {
               id: "627",
@@ -289,6 +317,90 @@ class RCMApiClient {
               dayofweek: 1, // Monday
               openingtime: "07:00",
               closingtime: "22:00"
+            },
+            {
+              locationid: "wellington",
+              dayofweek: 1, // Monday
+              openingtime: "00:00",
+              closingtime: "00:00"
+            },
+            {
+              locationid: "wellington",
+              dayofweek: 2, // Tuesday
+              openingtime: "00:00",
+              closingtime: "00:00"
+            },
+            {
+              locationid: "wellington",
+              dayofweek: 3, // Wednesday
+              openingtime: "00:00",
+              closingtime: "00:00"
+            },
+            {
+              locationid: "wellington",
+              dayofweek: 4, // Thursday
+              openingtime: "00:00",
+              closingtime: "00:00"
+            },
+            {
+              locationid: "wellington",
+              dayofweek: 5, // Friday
+              openingtime: "00:00",
+              closingtime: "00:00"
+            },
+            {
+              locationid: "wellington",
+              dayofweek: 6, // Saturday
+              openingtime: "00:00",
+              closingtime: "00:00"
+            },
+            {
+              locationid: "wellington",
+              dayofweek: 7, // Sunday
+              openingtime: "00:00",
+              closingtime: "00:00"
+            },
+            {
+              locationid: "christchurch",
+              dayofweek: 1, // Monday
+              openingtime: "00:00",
+              closingtime: "00:00"
+            },
+            {
+              locationid: "christchurch",
+              dayofweek: 2, // Tuesday
+              openingtime: "00:00",
+              closingtime: "00:00"
+            },
+            {
+              locationid: "christchurch",
+              dayofweek: 3, // Wednesday
+              openingtime: "00:00",
+              closingtime: "00:00"
+            },
+            {
+              locationid: "christchurch",
+              dayofweek: 4, // Thursday
+              openingtime: "00:00",
+              closingtime: "00:00"
+            },
+            {
+              locationid: "christchurch",
+              dayofweek: 5, // Friday
+              openingtime: "00:00",
+              closingtime: "00:00"
+            },
+            {
+              locationid: "christchurch",
+              dayofweek: 6, // Saturday
+              openingtime: "00:00",
+              closingtime: "00:00"
+            },
+            {
+              locationid: "christchurch",
+              dayofweek: 7, // Sunday
+              openingtime: "00:00",
+              closingtime: "00:00"
             }
           ],
           driverages: [
