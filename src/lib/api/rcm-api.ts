@@ -26,6 +26,7 @@ let USE_MOCK_DATA = false;
  */
 class RCMApiClient {
   private config: RCMApiConfig;
+  private initialized: boolean = false;
 
   constructor(config: RCMApiConfig) {
     // Ensure API URL doesn't end with a slash
@@ -47,6 +48,8 @@ class RCMApiClient {
       USE_MOCK_DATA = config.useMockData;
     }
     
+    this.initialized = true;
+    
     console.log('RCM API initialized with config:', {
       apiUrl: this.config.apiUrl,
       apiKey: this.config.apiKey,
@@ -55,9 +58,21 @@ class RCMApiClient {
   }
 
   /**
+   * Ensure the API is initialized before making requests
+   */
+  private ensureInitialized(): void {
+    if (!this.initialized) {
+      console.log('RCM API not explicitly initialized, using default config');
+      this.initialized = true;
+    }
+  }
+
+  /**
    * Creates headers with authentication for API requests based on the Postman collection
    */
   private createHeaders(method: string, body?: any): Headers {
+    this.ensureInitialized();
+
     const timestamp = new Date().toISOString();
     const requestBody = body ? JSON.stringify(body) : '{}';
     
@@ -111,6 +126,8 @@ class RCMApiClient {
    * Makes an API request with the correct format matching the Postman collection
    */
   private async request<T>(method: string, requestMethod: string, body?: any): Promise<T> {
+    this.ensureInitialized();
+
     // Don't use mock data by default
     if (USE_MOCK_DATA) {
       console.log(`Using mock data for ${requestMethod} request`);

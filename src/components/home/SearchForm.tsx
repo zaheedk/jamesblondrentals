@@ -8,19 +8,12 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { format, addDays, isBefore, isAfter, parseISO, isValid, getDay, addHours } from "date-fns";
-import { CalendarIcon, Settings } from "lucide-react";
+import { format, addDays, isBefore, isAfter, parseISO, isValid, getDay, addHours, isSameDay } from "date-fns";
+import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRcmApi } from "@/hooks/use-rcm-api";
 import { toast } from "sonner";
-import { Switch } from "@/components/ui/switch";
 import { RCMLocationDetail, RCMOfficeTime } from "@/lib/api/rcm-api-types";
-
-// Production API credentials
-const DEFAULT_API_KEY = "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq";
-const DEFAULT_API_SECRET = "tsdavpoP51o6AcLIdorqgtFJ0ullAimg";
-const DEFAULT_API_URL = "https://apis.rentalcarmanager.com/booking/v3.2/";
 
 // Default location ID - Kelston
 const DEFAULT_LOCATION_ID = "625";
@@ -50,13 +43,6 @@ const SearchForm = () => {
   const [age, setAge] = useState("");
   const [carCategory, setCarCategory] = useState("");
   const [promoCode, setPromoCode] = useState("");
-  
-  // API Configuration state
-  const [apiKey, setApiKey] = useState(DEFAULT_API_KEY);
-  const [apiSecret, setApiSecret] = useState(DEFAULT_API_SECRET);
-  const [apiUrl, setApiUrl] = useState(DEFAULT_API_URL);
-  const [useMockData, setUseMockData] = useState(false);
-  const [showApiDialog, setShowApiDialog] = useState(false);
   
   // Derived state
   const [minDropoffDate, setMinDropoffDate] = useState<Date>(addDays(new Date(), 1));
@@ -102,19 +88,22 @@ const SearchForm = () => {
     isLoading: isLoadingLocationDetails
   } = useLocationDetails();
 
-  // Initialize API on component mount
+  // Initialize API on component mount - now without settings dialog
   useEffect(() => {
     initializeApi({
-      apiKey,
-      apiSecret,
-      apiUrl,
-      useMockData
+      apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
+      apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
+      apiUrl: "https://apis.rentalcarmanager.com/booking/v3.2",
+      useMockData: false
     }).catch(error => {
       console.error('Failed to initialize API:', error);
+      toast.error("Error connecting to booking system", {
+        description: "Please try again later"
+      });
     });
   }, []);
 
-  // Set default dates when component loads
+  // Set default dates and location when component loads
   useEffect(() => {
     if (!pickupDate) {
       // Get today's date as default
@@ -125,6 +114,10 @@ const SearchForm = () => {
       const defaultDropoff = addDays(today, 3);
       setDropoffDate(defaultDropoff);
     }
+    
+    // Default to Kelston location
+    setPickupLocation(DEFAULT_LOCATION_ID);
+    setDropoffLocation(DEFAULT_LOCATION_ID);
   }, []);
 
   // Update minimum pickup date when pickup location changes or when location details load
@@ -240,11 +233,11 @@ const SearchForm = () => {
       const locationDetail = locationDetails.find(loc => String(loc.id) === String(locationId));
       if (locationDetail) {
         console.log(`Using default hours for ${locationId}: ${locationDetail.officeopeningtime} - ${locationDetail.officeclosingtime}`);
-        return generateTimeOptions(locationDetail.officeopeningtime, locationDetail.officeclosingtime);
+        return generateTimeOptions(locationDetail.officeopeningtime, locationDetail.officeclosingtime, date);
       }
       
       // Return default office hours if none found
-      return generateTimeOptions("09:00", "17:00");
+      return generateTimeOptions("09:00", "17:00", date);
     }
     
     // Get the first match
@@ -265,19 +258,26 @@ const SearchForm = () => {
     
     // Handle special case for 24-hour locations
     if (startTime === "00:00" && (endTime === "00:00" || endTime === "24:00")) {
-      return generate24HourOptions();
+      return generate24HourOptions(date);
     }
     
-    return generateTimeOptions(startTime, endTime);
+    return generateTimeOptions(startTime, endTime, date);
   };
 
   // Generate time options for 24-hour operations
-  const generate24HourOptions = (): string[] => {
+  const generate24HourOptions = (date: Date): string[] => {
     const options: string[] = [];
+    const now = new Date();
+    const isToday = isSameDay(date, now);
     
     // Generate times in 30-minute intervals for a full 24 hours
     for (let hour = 0; hour < 24; hour++) {
       for (let minute of [0, 30]) {
+        // Skip times in the past if the date is today
+        if (isToday && (hour < now.getHours() || (hour === now.getHours() && minute <= now.getMinutes()))) {
+          continue;
+        }
+        
         const formattedHour = hour.toString().padStart(2, '0');
         const formattedMinute = minute.toString().padStart(2, '0');
         options.push(`${formattedHour}:${formattedMinute}`);
@@ -288,7 +288,7 @@ const SearchForm = () => {
   };
 
   // Generate time options in 30-minute intervals between open and close times
-  const generateTimeOptions = (openTime: string, closeTime: string): string[] => {
+  const generateTimeOptions = (openTime: string, closeTime: string, date: Date): string[] => {
     if (!openTime || !closeTime) return [];
     
     const options: string[] = [];
@@ -301,10 +301,19 @@ const SearchForm = () => {
     const closingInMinutes = closeTime === "00:00" ? 24 * 60 : closeHour * 60 + closeMinute;
     
     // Convert to minutes for easier calculation
-    const openInMinutes = openHour * 60 + openMinute;
+    let startInMinutes = openHour * 60 + openMinute;
+    
+    // Check if date is today and adjust startInMinutes to current time (rounded up to next 30 min)
+    const now = new Date();
+    if (isSameDay(date, now)) {
+      const currentMinutes = now.getHours() * 60 + now.getMinutes();
+      // Round up to next 30-min slot
+      const roundedCurrentMinutes = Math.ceil((currentMinutes + 1) / 30) * 30;
+      startInMinutes = Math.max(startInMinutes, roundedCurrentMinutes);
+    }
     
     // Generate times in 30-minute intervals
-    for (let minutes = openInMinutes; minutes < closingInMinutes; minutes += 30) {
+    for (let minutes = startInMinutes; minutes < closingInMinutes; minutes += 30) {
       const hour = Math.floor(minutes / 60) % 24;
       const minute = minutes % 60;
       const formattedHour = hour.toString().padStart(2, '0');
@@ -329,27 +338,6 @@ const SearchForm = () => {
   const getCategoryName = (categoryId: string) => {
     const category = carCategories.find(c => String(c.id) === categoryId);
     return category ? category.vehiclecategorytype : "";
-  };
-
-  // Handle API config submission
-  const handleApiConfigSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    initializeApi({
-      apiKey,
-      apiSecret,
-      apiUrl,
-      useMockData
-    }).then(() => {
-      setShowApiDialog(false);
-      toast.success("API configuration updated", {
-        description: useMockData ? "Using demo data" : "Connected to RCM API"
-      });
-      // Refetch locations to test the connection
-      refetchLocations();
-    }).catch(error => {
-      console.error('Failed to update API config:', error);
-      toast.error("Failed to update API configuration");
-    });
   };
 
   // Handle form submission
@@ -461,7 +449,7 @@ const SearchForm = () => {
       );
       
       if (selectedLocation) {
-        const requiredNoticeDays = selectedLocation.noticerequired_numberofdays || 0;
+        const requiredNoticeDays = selectedLocationDetail?.noticerequired_numberofdays || 0;
         
         if (requiredNoticeDays > 0) {
           // Calculate the minimum allowed date based on required notice hours
@@ -484,73 +472,6 @@ const SearchForm = () => {
       <CardContent className="p-6">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold">Find Your Vehicle</h3>
-          <Dialog open={showApiDialog} onOpenChange={setShowApiDialog}>
-            <DialogTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8" title="API Settings">
-                <Settings className="h-4 w-4" />
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>RCM API Configuration (HMAC Auth)</DialogTitle>
-              </DialogHeader>
-              <form onSubmit={handleApiConfigSubmit} className="space-y-4 pt-4">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="use-mock">Use Demo Data</Label>
-                  <Switch 
-                    id="use-mock" 
-                    checked={useMockData} 
-                    onCheckedChange={setUseMockData}
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="api-url">API URL {useMockData && "(not used in demo mode)"}</Label>
-                  <Input
-                    id="api-url"
-                    value={apiUrl}
-                    onChange={(e) => setApiUrl(e.target.value)}
-                    placeholder="https://apis.rentalcarmanager.com/booking/v3.2/"
-                    disabled={useMockData}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="api-key">API Key {useMockData && "(not used in demo mode)"}</Label>
-                  <Input
-                    id="api-key"
-                    value={apiKey}
-                    onChange={(e) => setApiKey(e.target.value)}
-                    placeholder="Enter your API key"
-                    disabled={useMockData}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="api-secret">API Secret (for HMAC) {useMockData && "(not used in demo mode)"}</Label>
-                  <Input
-                    id="api-secret"
-                    type="password"
-                    value={apiSecret}
-                    onChange={(e) => setApiSecret(e.target.value)}
-                    placeholder="Enter your API secret for HMAC signing"
-                    disabled={useMockData}
-                  />
-                </div>
-                <Button type="submit" className="w-full">
-                  {useMockData ? "Use Demo Data" : "Connect to API with HMAC Auth"}
-                </Button>
-                {!useMockData && (
-                  <p className="text-xs text-green-600 font-medium">
-                    Using Vite development proxy to avoid CORS restrictions.
-                  </p>
-                )}
-                <p className="text-xs text-gray-500">
-                  {useMockData 
-                    ? "Demo mode uses mock data for testing and demonstration purposes." 
-                    : "API uses HMAC SHA256 authentication with your API key and secret."}
-                </p>
-              </form>
-            </DialogContent>
-          </Dialog>
         </div>
 
         <form onSubmit={handleSubmit}>
