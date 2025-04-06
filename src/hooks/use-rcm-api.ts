@@ -1,3 +1,4 @@
+
 import { useState, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { rcmApi } from '@/lib/api/rcm-api';
@@ -109,7 +110,8 @@ export function useRcmApi() {
               country: loc.country || "",
               postcode: loc.postcode || "",
               latitude: loc.latitude || 0,
-              longitude: loc.longitude || 0
+              longitude: loc.longitude || 0,
+              location: loc.location // Keep the original location name
             }));
             
             console.log('Locations loaded successfully:', locations.length);
@@ -160,6 +162,7 @@ export function useRcmApi() {
         try {
           const response = await rcmApi.getStep1();
           if (response.status === "OK" && response.results?.driverages) {
+            console.log('Driver ages data:', response.results.driverages);
             return Array.from(response.results.driverages);
           }
           return [];
@@ -184,6 +187,7 @@ export function useRcmApi() {
         try {
           const response = await rcmApi.getStep1();
           if (response.status === "OK" && response.results?.categorytypes) {
+            console.log('Vehicle categories data:', response.results.categorytypes);
             return Array.from(response.results.categorytypes);
           }
           return [];

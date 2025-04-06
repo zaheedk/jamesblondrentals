@@ -105,6 +105,28 @@ const SearchForm = () => {
     }
   }, [pickupDate, dropoffDate]);
 
+  // Helper functions to get display text for dropdowns
+  const getLocationName = (locationId: string) => {
+    // Converting to number since API returns locations with numeric IDs
+    const numericId = Number(locationId);
+    const location = locations.find(loc => loc.id === numericId || loc.id === locationId);
+    return location ? location.name || location.location : "";
+  };
+
+  const getDriverAgeName = (ageId: string) => {
+    // Converting to number since API might return ages with numeric IDs
+    const numericId = Number(ageId);
+    const driverAge = driverAges.find(a => a.id === numericId || a.id === ageId);
+    return driverAge ? driverAge.driverage : "";
+  };
+
+  const getCategoryName = (categoryId: string) => {
+    // Converting to number since API might return categories with numeric IDs
+    const numericId = Number(categoryId);
+    const category = carCategories.find(c => c.id === numericId || c.id === categoryId);
+    return category ? category.vehiclecategorytype : "";
+  };
+
   // Handle API config submission
   const handleApiConfigSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -173,22 +195,6 @@ const SearchForm = () => {
       setIsLoading(false);
       navigate(`/vehicles?${searchParams.toString()}`);
     }, 500);
-  };
-
-  // Helper functions to get display text for dropdowns
-  const getLocationName = (locationId: string) => {
-    const location = locations.find(loc => loc.id === locationId);
-    return location ? location.name : "";
-  };
-
-  const getDriverAgeName = (ageId: string) => {
-    const driverAge = driverAges.find(a => a.id === ageId);
-    return driverAge ? driverAge.driverage : "";
-  };
-
-  const getCategoryName = (categoryId: string) => {
-    const category = carCategories.find(c => c.id === categoryId);
-    return category ? category.vehiclecategorytype : "";
   };
 
   return (
@@ -272,6 +278,7 @@ const SearchForm = () => {
               <div className="space-y-2">
                 <Label htmlFor="pickup-location">Pickup Location</Label>
                 <Select value={pickupLocation} onValueChange={(value) => {
+                  console.log("Setting pickup location to:", value);
                   setPickupLocation(value);
                   if (sameLocation) {
                     setDropoffLocation(value);
@@ -286,8 +293,8 @@ const SearchForm = () => {
                   </SelectTrigger>
                   <SelectContent>
                     {locations.map((location) => (
-                      <SelectItem key={location.id} value={location.id}>
-                        {location.name}
+                      <SelectItem key={location.id} value={String(location.id)}>
+                        {location.name || location.location}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -311,7 +318,10 @@ const SearchForm = () => {
                 </div>
                 <Select 
                   value={sameLocation ? pickupLocation : dropoffLocation}
-                  onValueChange={setDropoffLocation}
+                  onValueChange={(value) => {
+                    console.log("Setting dropoff location to:", value);
+                    setDropoffLocation(value);
+                  }}
                   disabled={sameLocation}
                 >
                   <SelectTrigger id="dropoff-location" className={isLoadingLocations ? "animate-pulse" : ""}>
@@ -324,8 +334,8 @@ const SearchForm = () => {
                   </SelectTrigger>
                   <SelectContent>
                     {locations.map((location) => (
-                      <SelectItem key={location.id} value={location.id}>
-                        {location.name}
+                      <SelectItem key={location.id} value={String(location.id)}>
+                        {location.name || location.location}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -395,7 +405,10 @@ const SearchForm = () => {
               {/* Driver Age */}
               <div className="space-y-2">
                 <Label htmlFor="driver-age">Driver Age</Label>
-                <Select value={age} onValueChange={setAge}>
+                <Select value={age} onValueChange={(value) => {
+                  console.log("Setting age to:", value);
+                  setAge(value);
+                }}>
                   <SelectTrigger id="driver-age" className={isLoadingAges ? "animate-pulse" : ""}>
                     <SelectValue>
                       {age ? getDriverAgeName(age) : "Select age"}
@@ -403,7 +416,7 @@ const SearchForm = () => {
                   </SelectTrigger>
                   <SelectContent>
                     {driverAges.map((option) => (
-                      <SelectItem key={option.id} value={option.id}>
+                      <SelectItem key={option.id} value={String(option.id)}>
                         {option.driverage === "26" ? "26+" : option.driverage}
                       </SelectItem>
                     ))}
@@ -414,7 +427,10 @@ const SearchForm = () => {
               {/* Vehicle Category */}
               <div className="space-y-2">
                 <Label htmlFor="car-category">Vehicle Category</Label>
-                <Select value={carCategory} onValueChange={setCarCategory}>
+                <Select value={carCategory} onValueChange={(value) => {
+                  console.log("Setting car category to:", value);
+                  setCarCategory(value);
+                }}>
                   <SelectTrigger id="car-category" className={isLoadingCategories ? "animate-pulse" : ""}>
                     <SelectValue>
                       {carCategory ? getCategoryName(carCategory) : "All Categories"}
@@ -422,7 +438,7 @@ const SearchForm = () => {
                   </SelectTrigger>
                   <SelectContent>
                     {carCategories.map((category) => (
-                      <SelectItem key={category.id} value={category.id}>
+                      <SelectItem key={category.id} value={String(category.id)}>
                         {category.vehiclecategorytype}
                       </SelectItem>
                     ))}
