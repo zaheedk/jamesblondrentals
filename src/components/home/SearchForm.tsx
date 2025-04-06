@@ -23,8 +23,8 @@ const DEFAULT_LOCATION_ID = "625";
 const SearchForm = () => {
   const navigate = useNavigate();
   
-  const [pickupLocation, setPickupLocation] = useState(DEFAULT_LOCATION_ID);
-  const [dropoffLocation, setDropoffLocation] = useState(DEFAULT_LOCATION_ID);
+  const [pickupLocation, setPickupLocation] = useState("");
+  const [dropoffLocation, setDropoffLocation] = useState("");
   const [pickupDate, setPickupDate] = useState<Date>();
   const [dropoffDate, setDropoffDate] = useState<Date>();
   const [pickupTime, setPickupTime] = useState("");
@@ -98,7 +98,7 @@ const SearchForm = () => {
   }, [initializeApi]);
 
   useEffect(() => {
-    console.log('Setting default locations and dates');
+    console.log('Setting default dates');
     const today = new Date();
     
     if (!pickupDate) {
@@ -108,11 +108,6 @@ const SearchForm = () => {
       setDropoffDate(defaultDropoff);
       console.log('Default dates set', { today, defaultDropoff });
     }
-    
-    setPickupLocation(DEFAULT_LOCATION_ID);
-    setDropoffLocation(DEFAULT_LOCATION_ID);
-    
-    console.log(`Setting default location to: ${DEFAULT_LOCATION_ID}`);
   }, []);
 
   useEffect(() => {

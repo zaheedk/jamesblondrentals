@@ -2,6 +2,7 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { RCMLocation } from "@/lib/api/rcm-api-types";
+import { useEffect } from "react";
 
 interface LocationSelectProps {
   id: string;
@@ -31,6 +32,20 @@ export const LocationSelect = ({
     const location = locations.find(loc => String(loc.id) === locationId);
     return location ? location.name : "";
   };
+
+  // Set default to Kelston when locations are loaded
+  useEffect(() => {
+    if (locations.length > 0 && !value) {
+      const kelstonLocation = locations.find(loc => 
+        loc.name.toLowerCase().includes('kelston')
+      );
+      
+      if (kelstonLocation) {
+        console.log(`Setting default location to Kelston:`, kelstonLocation.id);
+        onValueChange(String(kelstonLocation.id));
+      }
+    }
+  }, [locations, value, onValueChange]);
 
   return (
     <div className="space-y-2">

@@ -23,7 +23,7 @@ export interface RCMVehicle {
 }
 
 export interface RCMLocation {
-  id: string;
+  id: string | number;
   name: string;
   address: string;
   city: string;
