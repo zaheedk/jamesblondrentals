@@ -23,6 +23,13 @@ export const TimeSelect = ({
   disabled,
   placeholder
 }: TimeSelectProps) => {
+  // Add more debug logging to track the issue
+  console.log(`TimeSelect: ${id} - options count: ${timeOptions.length}, disabled: ${disabled}, selected: ${time}`);
+  
+  if (timeOptions.length === 0 && !disabled) {
+    console.log(`Warning: ${id} has no time options but is not disabled`);
+  }
+  
   return (
     <div className="space-y-2">
       <Label htmlFor={id}>{label}</Label>

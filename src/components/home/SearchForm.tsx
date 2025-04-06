@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -19,13 +18,11 @@ import {
   combineDateTime 
 } from "./form-components/DateTimeUtils";
 
-// Default location ID - Kelston
 const DEFAULT_LOCATION_ID = "625";
 
 const SearchForm = () => {
   const navigate = useNavigate();
   
-  // Form state
   const [pickupLocation, setPickupLocation] = useState(DEFAULT_LOCATION_ID);
   const [dropoffLocation, setDropoffLocation] = useState(DEFAULT_LOCATION_ID);
   const [pickupDate, setPickupDate] = useState<Date>();
@@ -37,14 +34,12 @@ const SearchForm = () => {
   const [carCategory, setCarCategory] = useState("");
   const [promoCode, setPromoCode] = useState("");
   
-  // Derived state
   const [minDropoffDate, setMinDropoffDate] = useState<Date>(addDays(new Date(), 1));
   const [isLoading, setIsLoading] = useState(false);
   const [pickupTimeOptions, setPickupTimeOptions] = useState<string[]>([]);
   const [dropoffTimeOptions, setDropoffTimeOptions] = useState<string[]>([]);
   const [minPickupDate, setMinPickupDate] = useState<Date>(new Date());
 
-  // Use the RCM API to fetch data
   const { 
     initializeApi,
     useLocations, 
@@ -54,14 +49,12 @@ const SearchForm = () => {
     useLocationDetails
   } = useRcmApi();
   
-  // Get data from hooks
   const { 
     data: locationsData = [], 
     isLoading: isLoadingLocations, 
     error: locationError 
   } = useLocations();
   
-  // Convert any numeric IDs to strings to match RCMLocation type
   const locations = locationsData.map(loc => ({
     ...loc,
     id: String(loc.id)
@@ -83,22 +76,19 @@ const SearchForm = () => {
     data: locationDetailsData = [] 
   } = useLocationDetails();
   
-  // Convert any numeric IDs to strings for locationDetails as well
   const locationDetails = locationDetailsData.map(loc => ({
     ...loc,
     id: String(loc.id)
   }));
   
-  // Determine if there was a location error
   const isLocationError = !!locationError;
   
-  // Initialize API on component mount - now without settings dialog
   useEffect(() => {
     initializeApi({
       apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
       apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
       apiUrl: "https://apis.rentalcarmanager.com/booking/v3.2",
-      useMockData: true // Set to true to ensure we get data while fixing API issues
+      useMockData: true
     }).catch(error => {
       console.error('Failed to initialize API:', error);
       toast.error("Error connecting to booking system", {
@@ -107,31 +97,24 @@ const SearchForm = () => {
     });
   }, [initializeApi]);
 
-  // Set default dates and location when component loads
   useEffect(() => {
     console.log('Setting default locations and dates');
-    // Get today's date as default
     const today = new Date();
     
-    // Only set dates if they haven't been set already
     if (!pickupDate) {
       setPickupDate(today);
       
-      // Default dropoff date is 3 days after pickup
       const defaultDropoff = addDays(today, 3);
       setDropoffDate(defaultDropoff);
       console.log('Default dates set', { today, defaultDropoff });
     }
     
-    // Force set the locations to Kelston on initial render
     setPickupLocation(DEFAULT_LOCATION_ID);
     setDropoffLocation(DEFAULT_LOCATION_ID);
     
-    // Log for debugging
     console.log(`Setting default location to: ${DEFAULT_LOCATION_ID}`);
   }, []);
 
-  // Update minimum pickup date when pickup location changes or when location details load
   useEffect(() => {
     if (pickupLocation && locationDetails.length > 0) {
       const selectedLocationDetail = locationDetails.find(
@@ -139,66 +122,63 @@ const SearchForm = () => {
       );
       
       if (selectedLocationDetail) {
-        // Get the required notice period in days
         const requiredNoticeDays = selectedLocationDetail.noticerequired_numberofdays || 0;
         
-        // Calculate the minimum pickup date based on notice period
         let newMinPickupDate = new Date();
         
         if (requiredNoticeDays > 0) {
-          // If notice is required, add the required number of days
           newMinPickupDate = addDays(new Date(), requiredNoticeDays);
+          console.log(`Location ${pickupLocation} requires ${requiredNoticeDays} days notice. Min pickup date set to ${newMinPickupDate.toISOString()}`);
         }
         
         setMinPickupDate(newMinPickupDate);
         
-        // If current pickup date is before minimum, update it
         if (pickupDate && isBefore(pickupDate, newMinPickupDate)) {
-          setPickupDate(new Date(newMinPickupDate));
+          const updatedDate = new Date(newMinPickupDate);
+          console.log(`Current pickup date ${pickupDate.toISOString()} is before min date ${newMinPickupDate.toISOString()}, updating to ${updatedDate.toISOString()}`);
+          setPickupDate(updatedDate);
           
-          // Also update dropoff date if needed
-          const newMinDropoffDate = addDays(newMinPickupDate, 1);
+          const newMinDropoffDate = addDays(updatedDate, 1);
           if (dropoffDate && isBefore(dropoffDate, newMinDropoffDate)) {
             setDropoffDate(newMinDropoffDate);
           }
         }
-        
-        console.log(`Location ${pickupLocation} requires ${requiredNoticeDays} days notice`);
       }
     }
   }, [pickupLocation, locationDetails, pickupDate, dropoffDate]);
 
-  // Update minimum dropoff date when pickup date changes
   useEffect(() => {
     if (pickupDate) {
       setMinDropoffDate(pickupDate);
       
-      // If current dropoff date is before new pickup date, update it
       if (dropoffDate && isBefore(dropoffDate, pickupDate)) {
         setDropoffDate(addDays(pickupDate, 1));
       }
     }
   }, [pickupDate, dropoffDate]);
 
-  // Update time options when location or date changes
   useEffect(() => {
     if (pickupLocation && pickupDate) {
+      console.log(`Fetching pickup time options for location ${pickupLocation} on ${pickupDate.toISOString()}`);
       const options = getLocationTimeOptions(pickupLocation, pickupDate, 'pickup', officeHours, locationDetails);
+      console.log(`Got ${options.length} pickup time options`);
       setPickupTimeOptions(options);
       
-      // Set default pickup time to first available time
       if (options.length > 0 && !pickupTime) {
+        console.log(`Setting default pickup time to ${options[0]}`);
         setPickupTime(options[0]);
       } else if (options.length > 0 && pickupTime && !options.includes(pickupTime)) {
-        // If current time is not in new options, set to first available
+        console.log(`Current pickup time ${pickupTime} not available, updating to ${options[0]}`);
         setPickupTime(options[0]);
       } else if (options.length === 0) {
+        console.log(`No pickup times available for location ${pickupLocation} on ${pickupDate.toISOString()}, clearing pickup time`);
         setPickupTime("");
       }
+    } else {
+      console.log(`Cannot fetch pickup times - location: ${pickupLocation}, date: ${pickupDate ? pickupDate.toISOString() : 'none'}`);
     }
   }, [pickupLocation, pickupDate, officeHours, locationDetails, pickupTime]);
 
-  // Update dropoff time options when location/date changes
   useEffect(() => {
     const selectedLocation = sameLocation ? pickupLocation : dropoffLocation;
     
@@ -206,19 +186,19 @@ const SearchForm = () => {
       const options = getLocationTimeOptions(selectedLocation, dropoffDate, 'dropoff', officeHours, locationDetails);
       setDropoffTimeOptions(options);
       
-      // Set default dropoff time to first available time
       if (options.length > 0 && !dropoffTime) {
+        console.log(`Setting default dropoff time to ${options[0]}`);
         setDropoffTime(options[0]);
       } else if (options.length > 0 && dropoffTime && !options.includes(dropoffTime)) {
-        // If current time is not in new options, set to first available
+        console.log(`Current dropoff time ${dropoffTime} not available, updating to ${options[0]}`);
         setDropoffTime(options[0]);
       } else if (options.length === 0) {
+        console.log(`No dropoff times available for location ${selectedLocation} on ${dropoffDate.toISOString()}, clearing dropoff time`);
         setDropoffTime("");
       }
     }
   }, [dropoffLocation, dropoffDate, sameLocation, pickupLocation, officeHours, locationDetails, dropoffTime]);
 
-  // Helper functions to get display text for dropdowns
   const getDriverAgeName = (ageId: string) => {
     const driverAge = driverAges.find(a => String(a.id) === ageId);
     return driverAge ? driverAge.driverage : "";
@@ -229,11 +209,9 @@ const SearchForm = () => {
     return category ? category.vehiclecategorytype : "";
   };
 
-  // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate form
     if (!pickupLocation) {
       toast.error("Please select a pickup location");
       return;
@@ -269,7 +247,6 @@ const SearchForm = () => {
       return;
     }
     
-    // Ensure the selected times respect the required notice period
     const selectedLocation = locationDetails.find(
       loc => String(loc.id) === pickupLocation
     );
@@ -294,11 +271,9 @@ const SearchForm = () => {
     
     setIsLoading(true);
     
-    // Create full ISO date strings with the selected dates and times
     const pickupDateTime = combineDateTime(pickupDate, pickupTime);
     const dropoffDateTime = combineDateTime(dropoffDate, dropoffTime);
     
-    // Build search params
     const searchParams = new URLSearchParams({
       pickupLocation,
       dropoffLocation: sameLocation ? pickupLocation : dropoffLocation,
@@ -325,7 +300,6 @@ const SearchForm = () => {
         <form onSubmit={handleSubmit}>
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Pickup Location */}
               <LocationSelect 
                 id="pickup-location"
                 label="Pickup Location"
@@ -341,7 +315,6 @@ const SearchForm = () => {
                 hasError={isLocationError}
               />
 
-              {/* Dropoff Location */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="dropoff-location">Dropoff Location</Label>
@@ -367,7 +340,6 @@ const SearchForm = () => {
                 />
               </div>
 
-              {/* Pickup Date */}
               <DateSelect
                 id="pickup-date"
                 label="Pickup Date"
@@ -376,7 +348,6 @@ const SearchForm = () => {
                 disableDate={(date) => disablePastDates(date, pickupLocation, locationDetails)}
               />
 
-              {/* Pickup Time */}
               <TimeSelect
                 id="pickup-time"
                 label="Pickup Time"
@@ -388,7 +359,6 @@ const SearchForm = () => {
                 placeholder={!pickupLocation ? "Select location first" : !pickupDate ? "Select date first" : undefined}
               />
 
-              {/* Dropoff Date */}
               <DateSelect
                 id="dropoff-date"
                 label="Dropoff Date"
@@ -397,7 +367,6 @@ const SearchForm = () => {
                 disableDate={(date) => isBefore(date, minDropoffDate)}
               />
 
-              {/* Dropoff Time */}
               <TimeSelect
                 id="dropoff-time"
                 label="Dropoff Time"
@@ -409,7 +378,6 @@ const SearchForm = () => {
                 placeholder={!(sameLocation ? pickupLocation : dropoffLocation) ? "Select location first" : !dropoffDate ? "Select date first" : undefined}
               />
               
-              {/* Driver Age */}
               <OptionSelect
                 id="driver-age"
                 label="Driver Age"
@@ -421,7 +389,6 @@ const SearchForm = () => {
                 placeholder="Select age"
               />
               
-              {/* Vehicle Category */}
               <OptionSelect
                 id="car-category"
                 label="Vehicle Category"
@@ -434,7 +401,6 @@ const SearchForm = () => {
                 defaultValue="All Categories"
               />
               
-              {/* Promo Code */}
               <div className="space-y-2 md:col-span-2">
                 <Label htmlFor="promo-code">Promo Code (Optional)</Label>
                 <Input 
