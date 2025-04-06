@@ -2,7 +2,7 @@
 // RCM API type definitions
 
 export interface RCMVehicle {
-  id: string;
+  id: string | number;
   name: string;
   description: string;
   make: string;
@@ -12,11 +12,13 @@ export interface RCMVehicle {
   category: string;
   transmission: string;
   fuelType: string;
+  fuelConsumption?: string;
+  passengers?: number;
   seats: number;
   luggage: number;
-  price: number;
-  images: string[];
-  features: string[];
+  price: number | string;
+  images: Array<string | { url: string }>;
+  features: string[] | string;
   available: boolean;
 }
 
@@ -118,7 +120,9 @@ export interface RCMAvailabilityRequest {
   pickupLocationId: string;
   dropoffLocationId: string;
   pickupDate: string; // ISO date string
-  dropoffDate: string; // ISO date string;
+  dropoffDate: string; // ISO date string
+  pickupTime: string;
+  dropoffTime: string;
 }
 
 export interface RCMApiConfig {

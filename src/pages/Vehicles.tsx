@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -53,32 +54,35 @@ const Vehicles = () => {
         // If we have search params, use them
         if (pickupLocation && pickupDateStr && dropoffDateStr) {
           const vehiclesData = await rcmApi.getAvailableVehicles({
-            pickupLocation,
+            pickupLocationId: pickupLocation,
             pickupDate: pickupDateStr,
             pickupTime,
-            dropoffLocation: dropoffLocation || pickupLocation,
+            dropoffLocationId: dropoffLocation || pickupLocation,
             dropoffDate: dropoffDateStr,
             dropoffTime,
           });
           
           // Transform API data to match our Vehicle interface
-          const mappedVehicles = vehiclesData.map(v => ({
-            id: parseInt(v.id),
+          const mappedVehicles: Vehicle[] = vehiclesData.map(v => ({
+            id: parseInt(v.id.toString()),
             make: v.make || "Unknown",
             model: v.model || "Vehicle",
             year: v.year || new Date().getFullYear(),
             type: (v.category?.toLowerCase() as VehicleType) || "economy",
-            price: parseFloat(v.price) || 50,
+            price: parseFloat(v.price?.toString()) || 50,
             priceUnit: "day",
             seats: v.passengers || 4,
-            transmission: v.transmission?.toLowerCase() === "a" ? "automatic" : "manual",
-            fuelType: v.fuelType?.toLowerCase() || "gasoline",
+            transmission: (v.transmission?.toLowerCase() === "a" ? "automatic" : "manual") as "automatic" | "manual",
+            fuelType: (v.fuelType?.toLowerCase() || "gasoline") as "gasoline" | "diesel" | "electric" | "hybrid",
             fuelEfficiency: v.fuelConsumption || "35 mpg",
             available: true,
             location: pickupLocation,
-            features: v.features?.split(',').map(f => f.trim()) || ["Air Conditioning", "Power Steering"],
-            images: v.images?.length ? v.images.map(img => img.url) : ["/placeholder.svg"],
-            description: v.description || `${v.make} ${v.model} with ${v.passengers} seats and ${v.transmission === "A" ? "automatic" : "manual"} transmission.`,
+            features: typeof v.features === 'string' ? v.features.split(',').map(f => f.trim()) : 
+              (Array.isArray(v.features) ? v.features : ["Air Conditioning", "Power Steering"]),
+            images: Array.isArray(v.images) && v.images.length > 0 ? 
+              v.images.map(img => typeof img === 'string' ? img : (img as any).url || "/placeholder.svg") : 
+              ["/placeholder.svg"],
+            description: v.description || `${v.make} ${v.model} with ${v.passengers || 4} seats and ${v.transmission === "A" ? "automatic" : "manual"} transmission.`,
           }));
           
           setVehicles(mappedVehicles);
@@ -95,32 +99,35 @@ const Vehicles = () => {
             dropoffDate.setDate(dropoffDate.getDate() + 3);
             
             const vehiclesData = await rcmApi.getAvailableVehicles({
-              pickupLocation: defaultLocation.id.toString(),
+              pickupLocationId: defaultLocation.id.toString(),
               pickupDate: pickupDate.toISOString().split('T')[0],
               pickupTime: "10:00",
-              dropoffLocation: defaultLocation.id.toString(),
+              dropoffLocationId: defaultLocation.id.toString(),
               dropoffDate: dropoffDate.toISOString().split('T')[0],
               dropoffTime: "10:00",
             });
             
             // Transform API data to match our Vehicle interface
-            const mappedVehicles = vehiclesData.map(v => ({
-              id: parseInt(v.id),
+            const mappedVehicles: Vehicle[] = vehiclesData.map(v => ({
+              id: parseInt(v.id.toString()),
               make: v.make || "Unknown",
               model: v.model || "Vehicle",
               year: v.year || new Date().getFullYear(),
               type: (v.category?.toLowerCase() as VehicleType) || "economy",
-              price: parseFloat(v.price) || 50,
+              price: parseFloat(v.price?.toString()) || 50,
               priceUnit: "day",
               seats: v.passengers || 4,
-              transmission: v.transmission?.toLowerCase() === "a" ? "automatic" : "manual",
-              fuelType: v.fuelType?.toLowerCase() || "gasoline",
+              transmission: (v.transmission?.toLowerCase() === "a" ? "automatic" : "manual") as "automatic" | "manual",
+              fuelType: (v.fuelType?.toLowerCase() || "gasoline") as "gasoline" | "diesel" | "electric" | "hybrid",
               fuelEfficiency: v.fuelConsumption || "35 mpg",
               available: true,
               location: defaultLocation.location || "Main Location",
-              features: v.features?.split(',').map(f => f.trim()) || ["Air Conditioning", "Power Steering"],
-              images: v.images?.length ? v.images.map(img => img.url) : ["/placeholder.svg"],
-              description: v.description || `${v.make} ${v.model} with ${v.passengers} seats and ${v.transmission === "A" ? "automatic" : "manual"} transmission.`,
+              features: typeof v.features === 'string' ? v.features.split(',').map(f => f.trim()) : 
+                (Array.isArray(v.features) ? v.features : ["Air Conditioning", "Power Steering"]),
+              images: Array.isArray(v.images) && v.images.length > 0 ? 
+                v.images.map(img => typeof img === 'string' ? img : (img as any).url || "/placeholder.svg") : 
+                ["/placeholder.svg"],
+              description: v.description || `${v.make} ${v.model} with ${v.passengers || 4} seats and ${v.transmission === "A" ? "automatic" : "manual"} transmission.`,
             }));
             
             setVehicles(mappedVehicles);

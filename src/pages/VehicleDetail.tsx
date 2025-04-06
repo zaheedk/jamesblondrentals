@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -41,26 +42,28 @@ const VehicleDetail = () => {
           
           if (vehicleData) {
             const mappedVehicle: Vehicle = {
-              id: parseInt(vehicleData.id),
+              id: parseInt(vehicleData.id.toString()),
               make: vehicleData.make || "Unknown",
               model: vehicleData.model || "Vehicle",
               year: vehicleData.year || new Date().getFullYear(),
               type: (vehicleData.category?.toLowerCase() as any) || "economy",
-              price: parseFloat(vehicleData.price) || 50,
+              price: parseFloat(vehicleData.price?.toString()) || 50,
               priceUnit: "day",
               seats: vehicleData.passengers || 4,
-              transmission: vehicleData.transmission?.toLowerCase() === "a" ? "automatic" : "manual",
-              fuelType: vehicleData.fuelType?.toLowerCase() || "gasoline",
+              transmission: (vehicleData.transmission?.toLowerCase() === "a" ? "automatic" : "manual") as "automatic" | "manual",
+              fuelType: (vehicleData.fuelType?.toLowerCase() || "gasoline") as "gasoline" | "diesel" | "electric" | "hybrid",
               fuelEfficiency: vehicleData.fuelConsumption || "35 mpg",
               available: true,
               location: pickupLocation || "Main Location",
-              features: vehicleData.features?.split(',').map(f => f.trim()) || 
-                ["Air Conditioning", "Power Steering", "Bluetooth", "USB Port"],
-              images: vehicleData.images?.length ? 
-                vehicleData.images.map(img => img.url) : 
+              features: typeof vehicleData.features === 'string' ? 
+                vehicleData.features.split(',').map(f => f.trim()) : 
+                (Array.isArray(vehicleData.features) ? vehicleData.features : 
+                ["Air Conditioning", "Power Steering", "Bluetooth", "USB Port"]),
+              images: Array.isArray(vehicleData.images) && vehicleData.images.length > 0 ? 
+                vehicleData.images.map(img => typeof img === 'string' ? img : (img as any).url || "/placeholder.svg") : 
                 ["/placeholder.svg"],
               description: vehicleData.description || 
-                `${vehicleData.make} ${vehicleData.model} with ${vehicleData.passengers} seats and ${vehicleData.transmission === "A" ? "automatic" : "manual"} transmission.`,
+                `${vehicleData.make} ${vehicleData.model} with ${vehicleData.passengers || 4} seats and ${vehicleData.transmission === "A" ? "automatic" : "manual"} transmission.`,
             };
             
             setVehicle(mappedVehicle);
@@ -73,10 +76,10 @@ const VehicleDetail = () => {
         
         if (pickupLocation && pickupDate && dropoffDate) {
           const vehiclesData = await rcmApi.getAvailableVehicles({
-            pickupLocation,
+            pickupLocationId: pickupLocation,
             pickupDate,
             pickupTime,
-            dropoffLocation,
+            dropoffLocationId: dropoffLocation,
             dropoffDate,
             dropoffTime,
           });
@@ -85,26 +88,28 @@ const VehicleDetail = () => {
           
           if (foundVehicle) {
             const mappedVehicle: Vehicle = {
-              id: parseInt(foundVehicle.id),
+              id: parseInt(foundVehicle.id.toString()),
               make: foundVehicle.make || "Unknown",
               model: foundVehicle.model || "Vehicle",
               year: foundVehicle.year || new Date().getFullYear(),
               type: (foundVehicle.category?.toLowerCase() as any) || "economy",
-              price: parseFloat(foundVehicle.price) || 50,
+              price: parseFloat(foundVehicle.price?.toString()) || 50,
               priceUnit: "day",
               seats: foundVehicle.passengers || 4,
-              transmission: foundVehicle.transmission?.toLowerCase() === "a" ? "automatic" : "manual",
-              fuelType: foundVehicle.fuelType?.toLowerCase() || "gasoline",
+              transmission: (foundVehicle.transmission?.toLowerCase() === "a" ? "automatic" : "manual") as "automatic" | "manual",
+              fuelType: (foundVehicle.fuelType?.toLowerCase() || "gasoline") as "gasoline" | "diesel" | "electric" | "hybrid",
               fuelEfficiency: foundVehicle.fuelConsumption || "35 mpg",
               available: true,
               location: pickupLocation,
-              features: foundVehicle.features?.split(',').map(f => f.trim()) || 
-                ["Air Conditioning", "Power Steering", "Bluetooth", "USB Port"],
-              images: foundVehicle.images?.length ? 
-                foundVehicle.images.map(img => img.url) : 
+              features: typeof foundVehicle.features === 'string' ? 
+                foundVehicle.features.split(',').map(f => f.trim()) : 
+                (Array.isArray(foundVehicle.features) ? foundVehicle.features : 
+                ["Air Conditioning", "Power Steering", "Bluetooth", "USB Port"]),
+              images: Array.isArray(foundVehicle.images) && foundVehicle.images.length > 0 ? 
+                foundVehicle.images.map(img => typeof img === 'string' ? img : (img as any).url || "/placeholder.svg") : 
                 ["/placeholder.svg"],
               description: foundVehicle.description || 
-                `${foundVehicle.make} ${foundVehicle.model} with ${foundVehicle.passengers} seats and ${foundVehicle.transmission === "A" ? "automatic" : "manual"} transmission.`,
+                `${foundVehicle.make} ${foundVehicle.model} with ${foundVehicle.passengers || 4} seats and ${foundVehicle.transmission === "A" ? "automatic" : "manual"} transmission.`,
             };
             
             setVehicle(mappedVehicle);
@@ -125,10 +130,10 @@ const VehicleDetail = () => {
             const returnStr = returnDate.toISOString().split('T')[0];
             
             const vehiclesData = await rcmApi.getAvailableVehicles({
-              pickupLocation: defaultLocation.id.toString(),
+              pickupLocationId: defaultLocation.id.toString(),
               pickupDate: todayStr,
               pickupTime: "10:00",
-              dropoffLocation: defaultLocation.id.toString(),
+              dropoffLocationId: defaultLocation.id.toString(),
               dropoffDate: returnStr,
               dropoffTime: "10:00",
             });
@@ -137,26 +142,28 @@ const VehicleDetail = () => {
             
             if (foundVehicle) {
               const mappedVehicle: Vehicle = {
-                id: parseInt(foundVehicle.id),
+                id: parseInt(foundVehicle.id.toString()),
                 make: foundVehicle.make || "Unknown",
                 model: foundVehicle.model || "Vehicle",
                 year: foundVehicle.year || new Date().getFullYear(),
                 type: (foundVehicle.category?.toLowerCase() as any) || "economy",
-                price: parseFloat(foundVehicle.price) || 50,
+                price: parseFloat(foundVehicle.price?.toString()) || 50,
                 priceUnit: "day",
                 seats: foundVehicle.passengers || 4,
-                transmission: foundVehicle.transmission?.toLowerCase() === "a" ? "automatic" : "manual",
-                fuelType: foundVehicle.fuelType?.toLowerCase() || "gasoline",
+                transmission: (foundVehicle.transmission?.toLowerCase() === "a" ? "automatic" : "manual") as "automatic" | "manual",
+                fuelType: (foundVehicle.fuelType?.toLowerCase() || "gasoline") as "gasoline" | "diesel" | "electric" | "hybrid",
                 fuelEfficiency: foundVehicle.fuelConsumption || "35 mpg",
                 available: true,
                 location: defaultLocation.location || "Main Location",
-                features: foundVehicle.features?.split(',').map(f => f.trim()) || 
-                  ["Air Conditioning", "Power Steering", "Bluetooth", "USB Port"],
-                images: foundVehicle.images?.length ? 
-                  foundVehicle.images.map(img => img.url) : 
+                features: typeof foundVehicle.features === 'string' ? 
+                  foundVehicle.features.split(',').map(f => f.trim()) : 
+                  (Array.isArray(foundVehicle.features) ? foundVehicle.features : 
+                  ["Air Conditioning", "Power Steering", "Bluetooth", "USB Port"]),
+                images: Array.isArray(foundVehicle.images) && foundVehicle.images.length > 0 ? 
+                  foundVehicle.images.map(img => typeof img === 'string' ? img : (img as any).url || "/placeholder.svg") : 
                   ["/placeholder.svg"],
                 description: foundVehicle.description || 
-                  `${foundVehicle.make} ${foundVehicle.model} with ${foundVehicle.passengers} seats and ${foundVehicle.transmission === "A" ? "automatic" : "manual"} transmission.`,
+                  `${foundVehicle.make} ${foundVehicle.model} with ${foundVehicle.passengers || 4} seats and ${foundVehicle.transmission === "A" ? "automatic" : "manual"} transmission.`,
               };
               
               setVehicle(mappedVehicle);
