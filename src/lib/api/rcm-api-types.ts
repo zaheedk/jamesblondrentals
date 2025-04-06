@@ -118,7 +118,7 @@ export interface RCMAvailabilityRequest {
   pickupLocationId: string;
   dropoffLocationId: string;
   pickupDate: string; // ISO date string
-  dropoffDate: string; // ISO date string
+  dropoffDate: string; // ISO date string;
 }
 
 export interface RCMApiConfig {

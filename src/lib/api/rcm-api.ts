@@ -347,7 +347,7 @@ class RCMApiClient {
     const step1Data = await this.getStep1();
     if (step1Data.status === "OK" && step1Data.results?.locations) {
       return step1Data.results.locations.map(loc => ({
-        id: loc.id,
+        id: String(loc.id), // Convert id to string to match RCMLocation type
         name: loc.location,
         address: loc.address || "",
         city: loc.city || "",

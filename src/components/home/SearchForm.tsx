@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { format, addDays, isBefore, isAfter, parseISO, isValid, getDay } from "date-fns";
+import { format, addDays, isBefore, isAfter, parseISO, isValid, getDay, addHours } from "date-fns";
 import { CalendarIcon, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRcmApi } from "@/hooks/use-rcm-api";
@@ -21,6 +21,9 @@ import { RCMLocationDetail, RCMOfficeTime } from "@/lib/api/rcm-api-types";
 const DEFAULT_API_KEY = "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq";
 const DEFAULT_API_SECRET = "tsdavpoP51o6AcLIdorqgtFJ0ullAimg";
 const DEFAULT_API_URL = "https://apis.rentalcarmanager.com/booking/v3.2/";
+
+// Default location ID - Kelston
+const DEFAULT_LOCATION_ID = "625";
 
 // Map JavaScript day numbers (0-6, Sunday-Saturday) to API dayofweek (1-7, Monday-Sunday)
 const JS_TO_API_DAY_MAP: { [key: number]: number } = {
@@ -37,8 +40,8 @@ const SearchForm = () => {
   const navigate = useNavigate();
   
   // Form state
-  const [pickupLocation, setPickupLocation] = useState("");
-  const [dropoffLocation, setDropoffLocation] = useState("");
+  const [pickupLocation, setPickupLocation] = useState(DEFAULT_LOCATION_ID);
+  const [dropoffLocation, setDropoffLocation] = useState(DEFAULT_LOCATION_ID);
   const [pickupDate, setPickupDate] = useState<Date>();
   const [dropoffDate, setDropoffDate] = useState<Date>();
   const [pickupTime, setPickupTime] = useState("");
@@ -139,22 +142,27 @@ const SearchForm = () => {
         const requiredNoticeDays = selectedLocationDetail.noticerequired_numberofdays || 0;
         
         // Calculate the minimum pickup date based on notice period
-        const newMinPickupDate = addDays(new Date(), requiredNoticeDays);
+        let newMinPickupDate = new Date();
+        if (requiredNoticeDays > 0) {
+          // If notice is required, calculate the minimum date based on hours
+          const hoursRequired = requiredNoticeDays * 24;
+          newMinPickupDate = addHours(new Date(), hoursRequired);
+        }
+        
         setMinPickupDate(newMinPickupDate);
         
         // If current pickup date is before minimum, update it
         if (pickupDate && isBefore(pickupDate, newMinPickupDate)) {
-          const newPickupDate = newMinPickupDate;
-          setPickupDate(newPickupDate);
+          setPickupDate(new Date(newMinPickupDate));
           
           // Also update dropoff date if needed
-          const newMinDropoffDate = addDays(newPickupDate, 1);
+          const newMinDropoffDate = addDays(newMinPickupDate, 1);
           if (dropoffDate && isBefore(dropoffDate, newMinDropoffDate)) {
             setDropoffDate(newMinDropoffDate);
           }
         }
         
-        console.log(`Location ${pickupLocation} requires ${requiredNoticeDays} days notice`);
+        console.log(`Location ${pickupLocation} requires ${requiredNoticeDays} days notice (${requiredNoticeDays * 24} hours)`);
       }
     }
   }, [pickupLocation, locationDetails]);
@@ -393,11 +401,15 @@ const SearchForm = () => {
     
     if (selectedLocation) {
       const requiredNoticeDays = selectedLocation.noticerequired_numberofdays || 0;
-      const minAllowedDate = addDays(new Date(), requiredNoticeDays);
       
-      if (isBefore(pickupDate, minAllowedDate)) {
-        toast.error(`This location requires ${requiredNoticeDays} day(s) advance notice for bookings`);
-        return;
+      if (requiredNoticeDays > 0) {
+        const hoursRequired = requiredNoticeDays * 24;
+        const minAllowedDate = addHours(new Date(), hoursRequired);
+        
+        if (isBefore(pickupDate, minAllowedDate)) {
+          toast.error(`This location requires ${requiredNoticeDays} day(s) advance notice for bookings`);
+          return;
+        }
       }
     }
     
@@ -452,11 +464,16 @@ const SearchForm = () => {
       
       if (selectedLocation) {
         const requiredNoticeDays = selectedLocation.noticerequired_numberofdays || 0;
-        const minAllowedDate = addDays(new Date(), requiredNoticeDays);
         
-        // Disable dates that don't provide enough notice
-        if (isBefore(date, minAllowedDate)) {
-          return true;
+        if (requiredNoticeDays > 0) {
+          // Calculate the minimum allowed date based on required notice hours
+          const hoursRequired = requiredNoticeDays * 24;
+          const minAllowedDate = addHours(new Date(), hoursRequired);
+          
+          // Disable dates that don't provide enough notice
+          if (isBefore(date, minAllowedDate)) {
+            return true;
+          }
         }
       }
     }
