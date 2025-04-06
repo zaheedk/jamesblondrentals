@@ -1,38 +1,250 @@
 
 import { useState, useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { CheckCircle, ChevronLeft, ChevronRight, MapPin, Users, Gauge, Fuel, Calendar } from "lucide-react";
-import { vehicles } from "@/lib/mock-data";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Vehicle } from "@/lib/types";
+import { useRcmApi } from "@/hooks/use-rcm-api";
 
 const VehicleDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const { rcmApi } = useRcmApi();
+  
   const [vehicle, setVehicle] = useState<Vehicle | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [error, setError] = useState<string | null>(null);
+
+  // Get rental parameters from URL if any
+  const pickupLocation = searchParams.get("pickupLocation") || "";
+  const dropoffLocation = searchParams.get("dropoffLocation") || pickupLocation;
+  const pickupDate = searchParams.get("pickupDate") || "";
+  const dropoffDate = searchParams.get("dropoffDate") || "";
+  const pickupTime = searchParams.get("pickupTime") || "10:00";
+  const dropoffTime = searchParams.get("dropoffTime") || "10:00";
   
   useEffect(() => {
-    const vehicleId = Number(id);
-    const foundVehicle = vehicles.find(v => v.id === vehicleId);
-    
-    if (foundVehicle) {
-      setVehicle(foundVehicle);
-    }
-  }, [id]);
+    const fetchVehicleDetails = async () => {
+      if (!id) return;
+      
+      try {
+        setIsLoading(true);
+        setError(null);
+        
+        // First try to get vehicle details directly
+        try {
+          const vehicleData = await rcmApi.getVehicleById(id);
+          
+          if (vehicleData) {
+            // Transform API data to match our Vehicle interface
+            const mappedVehicle: Vehicle = {
+              id: parseInt(vehicleData.id),
+              make: vehicleData.make || "Unknown",
+              model: vehicleData.model || "Vehicle",
+              year: vehicleData.year || new Date().getFullYear(),
+              type: (vehicleData.category?.toLowerCase() as any) || "economy",
+              price: parseFloat(vehicleData.price) || 50,
+              priceUnit: "day",
+              seats: vehicleData.passengers || 4,
+              transmission: vehicleData.transmission?.toLowerCase() === "a" ? "automatic" : "manual",
+              fuelType: vehicleData.fuelType?.toLowerCase() || "gasoline",
+              fuelEfficiency: vehicleData.fuelConsumption || "35 mpg",
+              available: true,
+              location: pickupLocation || "Main Location",
+              features: vehicleData.features?.split(',').map(f => f.trim()) || 
+                ["Air Conditioning", "Power Steering", "Bluetooth", "USB Port"],
+              images: vehicleData.images?.length ? 
+                vehicleData.images.map(img => img.url) : 
+                ["/placeholder.svg"],
+              description: vehicleData.description || 
+                `${vehicleData.make} ${vehicleData.model} with ${vehicleData.passengers} seats and ${vehicleData.transmission === "A" ? "automatic" : "manual"} transmission.`,
+            };
+            
+            setVehicle(mappedVehicle);
+            return;
+          }
+        } catch (detailError) {
+          console.error("Could not fetch vehicle by ID:", detailError);
+          // Continue to fallback method
+        }
+        
+        // Fallback: If we couldn't get the vehicle directly, get all available vehicles
+        // and filter for the one we want
+        if (pickupLocation && pickupDate && dropoffDate) {
+          const vehiclesData = await rcmApi.getAvailableVehicles({
+            pickupLocation,
+            pickupDate,
+            pickupTime,
+            dropoffLocation,
+            dropoffDate,
+            dropoffTime,
+          });
+          
+          const foundVehicle = vehiclesData.find(v => v.id === id);
+          
+          if (foundVehicle) {
+            // Transform API data to match our Vehicle interface
+            const mappedVehicle: Vehicle = {
+              id: parseInt(foundVehicle.id),
+              make: foundVehicle.make || "Unknown",
+              model: foundVehicle.model || "Vehicle",
+              year: foundVehicle.year || new Date().getFullYear(),
+              type: (foundVehicle.category?.toLowerCase() as any) || "economy",
+              price: parseFloat(foundVehicle.price) || 50,
+              priceUnit: "day",
+              seats: foundVehicle.passengers || 4,
+              transmission: foundVehicle.transmission?.toLowerCase() === "a" ? "automatic" : "manual",
+              fuelType: foundVehicle.fuelType?.toLowerCase() || "gasoline",
+              fuelEfficiency: foundVehicle.fuelConsumption || "35 mpg",
+              available: true,
+              location: pickupLocation,
+              features: foundVehicle.features?.split(',').map(f => f.trim()) || 
+                ["Air Conditioning", "Power Steering", "Bluetooth", "USB Port"],
+              images: foundVehicle.images?.length ? 
+                foundVehicle.images.map(img => img.url) : 
+                ["/placeholder.svg"],
+              description: foundVehicle.description || 
+                `${foundVehicle.make} ${foundVehicle.model} with ${foundVehicle.passengers} seats and ${foundVehicle.transmission === "A" ? "automatic" : "manual"} transmission.`,
+            };
+            
+            setVehicle(mappedVehicle);
+          } else {
+            setError("Vehicle not found with the given parameters.");
+          }
+        } else {
+          // If we don't have search params, we need to get Step1 data to use default location
+          const step1Data = await rcmApi.getStep1();
+          
+          if (step1Data.status === "OK" && step1Data.results?.locations?.length) {
+            const defaultLocation = step1Data.results.locations[0];
+            
+            // Get today's date and add 3 days for return
+            const today = new Date();
+            const returnDate = new Date();
+            returnDate.setDate(returnDate.getDate() + 3);
+            
+            const todayStr = today.toISOString().split('T')[0];
+            const returnStr = returnDate.toISOString().split('T')[0];
+            
+            const vehiclesData = await rcmApi.getAvailableVehicles({
+              pickupLocation: defaultLocation.id.toString(),
+              pickupDate: todayStr,
+              pickupTime: "10:00",
+              dropoffLocation: defaultLocation.id.toString(),
+              dropoffDate: returnStr,
+              dropoffTime: "10:00",
+            });
+            
+            const foundVehicle = vehiclesData.find(v => v.id === id);
+            
+            if (foundVehicle) {
+              // Transform API data to match our Vehicle interface
+              const mappedVehicle: Vehicle = {
+                id: parseInt(foundVehicle.id),
+                make: foundVehicle.make || "Unknown",
+                model: foundVehicle.model || "Vehicle",
+                year: foundVehicle.year || new Date().getFullYear(),
+                type: (foundVehicle.category?.toLowerCase() as any) || "economy",
+                price: parseFloat(foundVehicle.price) || 50,
+                priceUnit: "day",
+                seats: foundVehicle.passengers || 4,
+                transmission: foundVehicle.transmission?.toLowerCase() === "a" ? "automatic" : "manual",
+                fuelType: foundVehicle.fuelType?.toLowerCase() || "gasoline",
+                fuelEfficiency: foundVehicle.fuelConsumption || "35 mpg",
+                available: true,
+                location: defaultLocation.location || "Main Location",
+                features: foundVehicle.features?.split(',').map(f => f.trim()) || 
+                  ["Air Conditioning", "Power Steering", "Bluetooth", "USB Port"],
+                images: foundVehicle.images?.length ? 
+                  foundVehicle.images.map(img => img.url) : 
+                  ["/placeholder.svg"],
+                description: foundVehicle.description || 
+                  `${foundVehicle.make} ${foundVehicle.model} with ${foundVehicle.passengers} seats and ${foundVehicle.transmission === "A" ? "automatic" : "manual"} transmission.`,
+              };
+              
+              setVehicle(mappedVehicle);
+            } else {
+              setError("Vehicle not found.");
+            }
+          }
+        }
+        
+      } catch (error) {
+        console.error("Error fetching vehicle:", error);
+        setError("Failed to load vehicle details. Please try again later.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchVehicleDetails();
+  }, [id, rcmApi, pickupLocation, dropoffLocation, pickupDate, dropoffDate, pickupTime, dropoffTime]);
   
-  if (!vehicle) {
+  const nextImage = () => {
+    if (vehicle && vehicle.images.length > 1) {
+      setCurrentImageIndex((prev) =>
+        prev === vehicle.images.length - 1 ? 0 : prev + 1
+      );
+    }
+  };
+  
+  const prevImage = () => {
+    if (vehicle && vehicle.images.length > 1) {
+      setCurrentImageIndex((prev) =>
+        prev === 0 ? vehicle.images.length - 1 : prev - 1
+      );
+    }
+  };
+  
+  const handleBookNow = () => {
+    let bookingUrl = `/booking?vehicleId=${vehicle?.id}`;
+    
+    // Add rental parameters if available
+    if (pickupLocation) bookingUrl += `&pickupLocation=${pickupLocation}`;
+    if (dropoffLocation) bookingUrl += `&dropoffLocation=${dropoffLocation}`;
+    if (pickupDate) bookingUrl += `&pickupDate=${pickupDate}`;
+    if (dropoffDate) bookingUrl += `&dropoffDate=${dropoffDate}`;
+    if (pickupTime) bookingUrl += `&pickupTime=${pickupTime}`;
+    if (dropoffTime) bookingUrl += `&dropoffTime=${dropoffTime}`;
+    
+    navigate(bookingUrl);
+  };
+  
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <Navbar />
+        <div className="container mx-auto px-4 py-16 flex justify-center">
+          <div className="animate-pulse space-y-8 w-full max-w-4xl">
+            <div className="h-80 bg-gray-200 rounded-lg"></div>
+            <div className="space-y-4">
+              <div className="h-8 bg-gray-200 rounded w-1/3"></div>
+              <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+            </div>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+  
+  // Show error state
+  if (error || !vehicle) {
     return (
       <div className="flex flex-col min-h-screen">
         <Navbar />
         <div className="container mx-auto px-4 py-16 text-center">
           <h1 className="text-2xl font-bold mb-4">Vehicle not found</h1>
-          <p className="mb-6">The vehicle you're looking for doesn't exist or has been removed.</p>
+          <p className="mb-6">{error || "The vehicle you're looking for doesn't exist or has been removed."}</p>
           <Button asChild>
             <Link to="/vehicles">Browse All Vehicles</Link>
           </Button>
@@ -41,22 +253,6 @@ const VehicleDetail = () => {
       </div>
     );
   }
-  
-  const nextImage = () => {
-    setCurrentImageIndex((prev) =>
-      prev === vehicle.images.length - 1 ? 0 : prev + 1
-    );
-  };
-  
-  const prevImage = () => {
-    setCurrentImageIndex((prev) =>
-      prev === 0 ? vehicle.images.length - 1 : prev - 1
-    );
-  };
-  
-  const handleBookNow = () => {
-    navigate(`/booking?vehicleId=${vehicle.id}`);
-  };
   
   return (
     <div className="flex flex-col min-h-screen">
@@ -75,7 +271,7 @@ const VehicleDetail = () => {
             <div className="lg:col-span-2">
               <div className="relative rounded-lg overflow-hidden aspect-video shadow-lg">
                 <img
-                  src={vehicle.images[currentImageIndex]}
+                  src={vehicle.images[currentImageIndex] || "/placeholder.svg"}
                   alt={`${vehicle.make} ${vehicle.model}`}
                   className="w-full h-full object-cover"
                 />

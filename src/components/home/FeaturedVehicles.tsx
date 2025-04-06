@@ -1,13 +1,73 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import VehicleCard from "../vehicles/VehicleCard";
-import { vehicles } from "@/lib/mock-data";
 import { Vehicle, VehicleType } from "@/lib/types";
+import { useRcmApi } from "@/hooks/use-rcm-api";
 
 const FeaturedVehicles = () => {
   const [activeCategory, setActiveCategory] = useState<VehicleType | "all">("all");
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { rcmApi } = useRcmApi();
+  
+  useEffect(() => {
+    const fetchVehicles = async () => {
+      try {
+        setIsLoading(true);
+        // Get default location from Step1 data
+        const step1Data = await rcmApi.getStep1();
+        
+        if (step1Data.status === "OK" && step1Data.results?.locations?.length) {
+          const defaultLocation = step1Data.results.locations[0];
+          
+          // Get today's date and add 3 days for return
+          const pickupDate = new Date();
+          const dropoffDate = new Date();
+          dropoffDate.setDate(dropoffDate.getDate() + 3);
+          
+          const vehiclesData = await rcmApi.getAvailableVehicles({
+            pickupLocation: defaultLocation.id.toString(),
+            pickupDate: pickupDate.toISOString().split('T')[0],
+            pickupTime: "10:00",
+            dropoffLocation: defaultLocation.id.toString(),
+            dropoffDate: dropoffDate.toISOString().split('T')[0],
+            dropoffTime: "10:00",
+          });
+          
+          // Transform API data to match our Vehicle interface
+          const mappedVehicles = vehiclesData.map(v => ({
+            id: parseInt(v.id),
+            make: v.make || "Unknown",
+            model: v.model || "Vehicle",
+            year: v.year || new Date().getFullYear(),
+            type: (v.category?.toLowerCase() as VehicleType) || "economy",
+            price: parseFloat(v.price) || 50,
+            priceUnit: "day",
+            seats: v.passengers || 4,
+            transmission: v.transmission?.toLowerCase() === "a" ? "automatic" : "manual",
+            fuelType: v.fuelType?.toLowerCase() || "gasoline",
+            fuelEfficiency: v.fuelConsumption || "35 mpg",
+            available: true,
+            location: defaultLocation.location || "Main Location",
+            features: v.features?.split(',').map(f => f.trim()) || ["Air Conditioning", "Power Steering"],
+            images: v.images?.length ? v.images.map(img => img.url) : ["/placeholder.svg"],
+            description: v.description || `${v.make} ${v.model} with ${v.passengers} seats and ${v.transmission === "A" ? "automatic" : "manual"} transmission.`,
+          }));
+          
+          setVehicles(mappedVehicles);
+        }
+      } catch (error) {
+        console.error("Error fetching vehicles:", error);
+        setVehicles([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchVehicles();
+  }, [rcmApi]);
   
   const categories: { label: string; value: VehicleType | "all" }[] = [
     { label: "All", value: "all" },
@@ -53,11 +113,23 @@ const FeaturedVehicles = () => {
         ))}
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredVehicles.map((vehicle) => (
-          <VehicleCard key={vehicle.id} vehicle={vehicle} showDetails={true} />
-        ))}
-      </div>
+      {isLoading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="rounded-lg shadow animate-pulse bg-gray-200 h-80"></div>
+          ))}
+        </div>
+      ) : vehicles.length === 0 ? (
+        <div className="text-center py-12">
+          <p className="text-gray-600">No vehicles available. Please check back later.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredVehicles.map((vehicle) => (
+            <VehicleCard key={vehicle.id} vehicle={vehicle} showDetails={true} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

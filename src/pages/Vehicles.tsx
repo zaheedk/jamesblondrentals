@@ -8,9 +8,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import VehicleCard from "@/components/vehicles/VehicleCard";
-import { vehicles } from "@/lib/mock-data";
 import { Vehicle, VehicleType } from "@/lib/types";
 import { Input } from "@/components/ui/input";
+import { useRcmApi } from "@/hooks/use-rcm-api";
 import {
   Select,
   SelectContent,
@@ -21,7 +21,10 @@ import {
 
 const Vehicles = () => {
   const [searchParams] = useSearchParams();
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { rcmApi } = useRcmApi();
   
   // Filter states
   const [vehicleType, setVehicleType] = useState<VehicleType | "all">("all");
@@ -40,15 +43,104 @@ const Vehicles = () => {
   const dropoffLocation = searchParams.get("dropoffLocation") || "";
   const pickupDateStr = searchParams.get("pickupDate") || "";
   const dropoffDateStr = searchParams.get("dropoffDate") || "";
+  const pickupTime = searchParams.get("pickupTime") || "10:00";
+  const dropoffTime = searchParams.get("dropoffTime") || "10:00";
+
+  useEffect(() => {
+    const fetchVehicles = async () => {
+      try {
+        setIsLoading(true);
+        
+        // If we have search params, use them
+        if (pickupLocation && pickupDateStr && dropoffDateStr) {
+          const vehiclesData = await rcmApi.getAvailableVehicles({
+            pickupLocation,
+            pickupDate: pickupDateStr,
+            pickupTime,
+            dropoffLocation: dropoffLocation || pickupLocation,
+            dropoffDate: dropoffDateStr,
+            dropoffTime,
+          });
+          
+          // Transform API data to match our Vehicle interface
+          const mappedVehicles = vehiclesData.map(v => ({
+            id: parseInt(v.id),
+            make: v.make || "Unknown",
+            model: v.model || "Vehicle",
+            year: v.year || new Date().getFullYear(),
+            type: (v.category?.toLowerCase() as VehicleType) || "economy",
+            price: parseFloat(v.price) || 50,
+            priceUnit: "day",
+            seats: v.passengers || 4,
+            transmission: v.transmission?.toLowerCase() === "a" ? "automatic" : "manual",
+            fuelType: v.fuelType?.toLowerCase() || "gasoline",
+            fuelEfficiency: v.fuelConsumption || "35 mpg",
+            available: true,
+            location: pickupLocation,
+            features: v.features?.split(',').map(f => f.trim()) || ["Air Conditioning", "Power Steering"],
+            images: v.images?.length ? v.images.map(img => img.url) : ["/placeholder.svg"],
+            description: v.description || `${v.make} ${v.model} with ${v.passengers} seats and ${v.transmission === "A" ? "automatic" : "manual"} transmission.`,
+          }));
+          
+          setVehicles(mappedVehicles);
+        } else {
+          // Get default location and dates if no search params
+          const step1Data = await rcmApi.getStep1();
+          
+          if (step1Data.status === "OK" && step1Data.results?.locations?.length) {
+            const defaultLocation = step1Data.results.locations[0];
+            
+            // Get today's date and add 3 days for return
+            const pickupDate = new Date();
+            const dropoffDate = new Date();
+            dropoffDate.setDate(dropoffDate.getDate() + 3);
+            
+            const vehiclesData = await rcmApi.getAvailableVehicles({
+              pickupLocation: defaultLocation.id.toString(),
+              pickupDate: pickupDate.toISOString().split('T')[0],
+              pickupTime: "10:00",
+              dropoffLocation: defaultLocation.id.toString(),
+              dropoffDate: dropoffDate.toISOString().split('T')[0],
+              dropoffTime: "10:00",
+            });
+            
+            // Transform API data to match our Vehicle interface
+            const mappedVehicles = vehiclesData.map(v => ({
+              id: parseInt(v.id),
+              make: v.make || "Unknown",
+              model: v.model || "Vehicle",
+              year: v.year || new Date().getFullYear(),
+              type: (v.category?.toLowerCase() as VehicleType) || "economy",
+              price: parseFloat(v.price) || 50,
+              priceUnit: "day",
+              seats: v.passengers || 4,
+              transmission: v.transmission?.toLowerCase() === "a" ? "automatic" : "manual",
+              fuelType: v.fuelType?.toLowerCase() || "gasoline",
+              fuelEfficiency: v.fuelConsumption || "35 mpg",
+              available: true,
+              location: defaultLocation.location || "Main Location",
+              features: v.features?.split(',').map(f => f.trim()) || ["Air Conditioning", "Power Steering"],
+              images: v.images?.length ? v.images.map(img => img.url) : ["/placeholder.svg"],
+              description: v.description || `${v.make} ${v.model} with ${v.passengers} seats and ${v.transmission === "A" ? "automatic" : "manual"} transmission.`,
+            }));
+            
+            setVehicles(mappedVehicles);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching vehicles:", error);
+        setVehicles([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchVehicles();
+  }, [rcmApi, pickupLocation, dropoffLocation, pickupDateStr, dropoffDateStr, pickupTime, dropoffTime]);
 
   useEffect(() => {
     // Apply filters
     let results = [...vehicles];
-    
-    // Filter by location if specified
-    if (pickupLocation) {
-      results = results.filter(vehicle => vehicle.location === pickupLocation);
-    }
     
     // Filter by vehicle type
     if (vehicleType !== "all") {
@@ -86,15 +178,12 @@ const Vehicles = () => {
     
     setFilteredVehicles(results);
   }, [
+    vehicles,
     vehicleType,
     priceRange,
     searchTerm,
     transmission,
     fuelTypes,
-    pickupLocation,
-    dropoffLocation,
-    pickupDateStr,
-    dropoffDateStr,
   ]);
 
   const handleFuelTypeChange = (type: keyof typeof fuelTypes) => {
@@ -248,7 +337,13 @@ const Vehicles = () => {
 
             {/* Vehicle Grid */}
             <div className="lg:w-3/4">
-              {filteredVehicles.length === 0 ? (
+              {isLoading ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="rounded-lg shadow animate-pulse bg-gray-200 h-80"></div>
+                  ))}
+                </div>
+              ) : filteredVehicles.length === 0 ? (
                 <div className="text-center py-12">
                   <h3 className="text-xl font-semibold mb-2">No vehicles match your criteria</h3>
                   <p className="text-gray-600">Try adjusting your filters to find more options</p>
