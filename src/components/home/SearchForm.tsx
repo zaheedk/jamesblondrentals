@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -202,7 +201,12 @@ const SearchForm = () => {
 
   const getDriverAgeName = (ageId: string) => {
     const driverAge = driverAges.find(a => String(a.id) === ageId);
-    return driverAge ? driverAge.driverage : "";
+    const ageName = driverAge ? driverAge.driverage : "";
+    
+    const numericAge = parseInt(ageName);
+    return (numericAge >= 26 && !isNaN(numericAge)) 
+      ? `${numericAge}+` 
+      : ageName;
   };
 
   const getCategoryName = (categoryId: string) => {
