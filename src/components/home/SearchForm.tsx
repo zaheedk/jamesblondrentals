@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -103,7 +102,7 @@ const SearchForm = () => {
       toast.success("API settings updated", {
         description: useMockData 
           ? "Using mock data - no API connection needed"
-          : "Live API connection configured successfully"
+          : "Live API connection with HMAC authentication configured"
       });
       
       // Refetch the locations to verify the connection
@@ -179,7 +178,7 @@ const SearchForm = () => {
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>RCM API Configuration</DialogTitle>
+                <DialogTitle>RCM API Configuration (HMAC Auth)</DialogTitle>
               </DialogHeader>
               <form onSubmit={handleApiConfigSubmit} className="space-y-4 pt-4">
                 <div className="flex items-center justify-between">
@@ -212,23 +211,23 @@ const SearchForm = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="api-secret">API Secret {useMockData && "(not used in demo mode)"}</Label>
+                  <Label htmlFor="api-secret">API Secret (for HMAC) {useMockData && "(not used in demo mode)"}</Label>
                   <Input
                     id="api-secret"
                     type="password"
                     value={apiSecret}
                     onChange={(e) => setApiSecret(e.target.value)}
-                    placeholder="Enter your API secret"
+                    placeholder="Enter your API secret for HMAC signing"
                     disabled={useMockData}
                   />
                 </div>
                 <Button type="submit" className="w-full">
-                  {useMockData ? "Use Demo Data" : "Connect to API"}
+                  {useMockData ? "Use Demo Data" : "Connect to API with HMAC Auth"}
                 </Button>
                 <p className="text-xs text-gray-500">
                   {useMockData 
                     ? "Demo mode uses mock data for testing and demonstration purposes." 
-                    : "Enter your RCM API credentials to connect to the live service."}
+                    : "API uses HMAC SHA256 authentication with your API key and secret."}
                 </p>
               </form>
             </DialogContent>

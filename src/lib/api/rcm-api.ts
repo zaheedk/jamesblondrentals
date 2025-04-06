@@ -1,3 +1,4 @@
+
 import { generateSignature } from './rcm-signature';
 import type { 
   RCMApiConfig,
@@ -53,6 +54,7 @@ class RCMApiClient {
     const timestamp = new Date().toISOString();
     const requestBody = body ? JSON.stringify(body) : '';
     
+    // Generate HMAC SHA256 signature
     const signature = generateSignature({
       method,
       path,
@@ -81,12 +83,22 @@ class RCMApiClient {
     }
 
     try {
-      // Direct API call to RCM API
+      // Full API URL
       const apiUrl = `${this.config.apiUrl}${endpoint}`;
       console.log(`Making ${method} request to ${apiUrl}`);
       
+      // Create headers with HMAC SHA256 authentication
       const headers = this.createHeaders(method, endpoint, body);
       
+      // Log the request details for debugging
+      console.log('Request headers:', {
+        'Content-Type': 'application/json',
+        'X-API-Key': this.config.apiKey,
+        'X-Timestamp': headers.get('X-Timestamp'),
+        'X-Signature': headers.get('X-Signature')
+      });
+      
+      // Make the request
       const response = await fetch(apiUrl, {
         method,
         headers,
@@ -95,12 +107,22 @@ class RCMApiClient {
         cache: 'no-cache',
       });
 
+      // Handle non-OK responses
       if (!response.ok) {
-        const error = await response.json().catch(() => ({}));
-        console.error(`API error: ${response.status} ${response.statusText}`, error);
-        throw new Error(error.message || `API request failed: ${response.status}`);
+        const errorText = await response.text();
+        let errorData;
+        
+        try {
+          errorData = JSON.parse(errorText);
+        } catch (e) {
+          errorData = { message: errorText || `API request failed: ${response.status}` };
+        }
+        
+        console.error(`API error: ${response.status} ${response.statusText}`, errorData);
+        throw new Error(errorData.message || `API request failed: ${response.status}`);
       }
 
+      // Parse and return the response
       return await response.json();
     } catch (error) {
       console.error('RCM API request failed:', error);

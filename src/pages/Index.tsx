@@ -15,6 +15,9 @@ const Index = () => {
     // Initialize the API with mock mode enabled
     initializeApi({ 
       useMockData: true, // Use mock data by default
+      apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
+      apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
+      apiUrl: "https://apis.rentalcarmanager.com/booking/v3.2/"
     });
   }, [initializeApi]);
 

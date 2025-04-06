@@ -1,4 +1,3 @@
-
 import { useState, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { rcmApi } from '@/lib/api/rcm-api';
@@ -80,11 +79,15 @@ export function useRcmApi() {
   const queryClient = useQueryClient();
   
   // Initialize API with configuration
-  const initializeApi = (config: RCMConfigInit) => {
+  const initializeApi = useCallback((config: RCMConfigInit) => {
     rcmApi.initialize(config);
+    console.log('API initialized with config:', {
+      ...config,
+      apiSecret: config.apiSecret ? '******' : undefined
+    });
     // Invalidate all location queries to force refetch with new config
     return queryClient.invalidateQueries({ queryKey: ['locations'] });
-  };
+  }, [queryClient]);
   
   // Get all locations with step1 API call
   const useLocations = () => {

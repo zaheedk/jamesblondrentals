@@ -1,5 +1,4 @@
 
-import { createHmac } from 'crypto-js';
 import HmacSHA256 from 'crypto-js/hmac-sha256';
 import Base64 from 'crypto-js/enc-base64';
 
@@ -14,6 +13,11 @@ interface SignatureParams {
 
 /**
  * Generates HMACSHA256 signature for RCM API authentication
+ * 
+ * The signature is created by:
+ * 1. Constructing a string to sign with method, path, timestamp, apiKey, and body
+ * 2. Creating an HMAC SHA256 hash of this string using the API secret
+ * 3. Base64 encoding the resulting hash
  */
 export function generateSignature({
   method,
@@ -25,6 +29,8 @@ export function generateSignature({
 }: SignatureParams): string {
   // Create the string to sign
   const stringToSign = `${method.toUpperCase()}\n${path}\n${timestamp}\n${apiKey}\n${body}`;
+  
+  console.log('String to sign:', stringToSign);
   
   // Generate HMAC SHA256 signature
   const signature = HmacSHA256(stringToSign, apiSecret);
