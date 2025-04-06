@@ -104,6 +104,27 @@ const SearchForm = () => {
     }
   }, [pickupDate, dropoffDate]);
 
+  // Handle API config submission
+  const handleApiConfigSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    initializeApi({
+      apiKey,
+      apiSecret,
+      apiUrl,
+      useMockData
+    }).then(() => {
+      setShowApiDialog(false);
+      toast.success("API configuration updated", {
+        description: useMockData ? "Using demo data" : "Connected to RCM API"
+      });
+      // Refetch locations to test the connection
+      refetchLocations();
+    }).catch(error => {
+      console.error('Failed to update API config:', error);
+      toast.error("Failed to update API configuration");
+    });
+  };
+
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

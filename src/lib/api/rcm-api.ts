@@ -1,3 +1,4 @@
+
 import { generateSignature } from './rcm-signature';
 import type { 
   RCMApiConfig,
@@ -54,13 +55,13 @@ class RCMApiClient {
   }
 
   /**
-   * Creates headers with authentication for API requests
+   * Creates headers with authentication for API requests based on the Postman collection
    */
   private createHeaders(method: string, body?: any): Headers {
     const timestamp = new Date().toISOString();
     const requestBody = body ? JSON.stringify(body) : '{}';
     
-    // Generate HMAC SHA256 signature
+    // Generate HMAC SHA256 signature - this now exactly matches the Postman collection
     const signature = generateSignature({
       method,
       path: '', // Not used in actual signature generation
@@ -72,7 +73,7 @@ class RCMApiClient {
 
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    headers.append('signature', signature); // Changed from X-RCM-Signature to match Postman
+    headers.append('signature', signature); // Uses 'signature' key as shown in Postman
     
     // Log request details for debugging
     console.log('RCM API Request:', {
@@ -88,6 +89,7 @@ class RCMApiClient {
   /**
    * Builds the correct API URL with the API key format
    * Format: https://apis.rentalcarmanager.com/booking/v3.2/[API_KEY]?apikey=[API_KEY]
+   * Exactly as shown in the Postman collection
    */
   private buildApiUrl(): string {
     // Use the proxy URL if we're not using mock data and are in browser environment
@@ -106,7 +108,7 @@ class RCMApiClient {
   }
 
   /**
-   * Makes an API request with the correct format
+   * Makes an API request with the correct format matching the Postman collection
    */
   private async request<T>(method: string, requestMethod: string, body?: any): Promise<T> {
     // Don't use mock data by default
@@ -120,15 +122,17 @@ class RCMApiClient {
       const apiUrl = this.buildApiUrl();
       console.log(`Making ${method} request to ${apiUrl}`);
       
-      // Create headers with auth tokens
+      // Create requestBody with method as the first property, matching Postman
       const requestBody = { method: requestMethod, ...body };
+      
+      // Create headers with auth tokens
       const headers = this.createHeaders(method, requestBody);
       
       // Make the request
       const response = await fetch(apiUrl, {
         method,
         headers,
-        body: JSON.stringify(requestBody), // Simplified to ensure consistent format
+        body: JSON.stringify(requestBody),
         credentials: 'same-origin', // Important for cookies if needed
       });
 
@@ -330,6 +334,7 @@ class RCMApiClient {
 
   /**
    * Get Step1 data (locations, driver ages, categories, etc.)
+   * Using method name 'step1' as indicated in the Postman collection
    */
   async getStep1(): Promise<RCMStep1Response> {
     return this.request<RCMStep1Response>('POST', 'step1');
