@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -16,10 +15,10 @@ import { useRcmApi } from "@/hooks/use-rcm-api";
 import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
 
-// Default API credentials from the Web.config file
-const DEFAULT_API_KEY = "MkFFZDhYcmhKTDhwR202OWM1QkJZWUc4SERWdzV6";
-const DEFAULT_API_SECRET = "PKBUA84eUssLED2uG6Rj8LZjkSBQv9";
-const DEFAULT_API_URL = "https://secure.rentalcarmanager.com/booking/v3.2/";
+// Production API credentials
+const DEFAULT_API_KEY = "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq";
+const DEFAULT_API_SECRET = "tsdavpoP51o6AcLIdorqgtFJ0ullAimg";
+const DEFAULT_API_URL = "https://apis.rentalcarmanager.com/booking/v3.2/";
 
 const SearchForm = () => {
   const navigate = useNavigate();
@@ -183,35 +182,6 @@ const SearchForm = () => {
     }, 500);
   };
 
-  // Handle API configuration submission
-  const handleApiConfigSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    try {
-      await initializeApi({
-        apiKey,
-        apiSecret,
-        apiUrl,
-        useMockData,
-      });
-      
-      toast.success("API settings updated", {
-        description: useMockData 
-          ? "Using mock data - no API connection needed"
-          : "Using Vite proxy to avoid CORS restrictions"
-      });
-      
-      // Refetch the locations to verify the connection
-      refetchLocations();
-      setShowApiDialog(false);
-    } catch (error) {
-      console.error("API configuration error:", error);
-      toast.error("API Settings Error", {
-        description: "Failed to apply API settings"
-      });
-    }
-  };
-
   return (
     <Card className="shadow-lg border-0">
       <CardContent className="p-6">
@@ -243,7 +213,7 @@ const SearchForm = () => {
                     id="api-url"
                     value={apiUrl}
                     onChange={(e) => setApiUrl(e.target.value)}
-                    placeholder="https://secure.rentalcarmanager.com/booking/v3.2/"
+                    placeholder="https://apis.rentalcarmanager.com/booking/v3.2/"
                     disabled={useMockData}
                   />
                 </div>
