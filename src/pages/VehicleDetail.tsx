@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -22,7 +21,6 @@ const VehicleDetail = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
-  // Get rental parameters from URL if any
   const pickupLocation = searchParams.get("pickupLocation") || "";
   const dropoffLocation = searchParams.get("dropoffLocation") || pickupLocation;
   const pickupDate = searchParams.get("pickupDate") || "";
@@ -38,12 +36,10 @@ const VehicleDetail = () => {
         setIsLoading(true);
         setError(null);
         
-        // First try to get vehicle details directly
         try {
           const vehicleData = await rcmApi.getVehicleById(id);
           
           if (vehicleData) {
-            // Transform API data to match our Vehicle interface
             const mappedVehicle: Vehicle = {
               id: parseInt(vehicleData.id),
               make: vehicleData.make || "Unknown",
@@ -75,8 +71,6 @@ const VehicleDetail = () => {
           // Continue to fallback method
         }
         
-        // Fallback: If we couldn't get the vehicle directly, get all available vehicles
-        // and filter for the one we want
         if (pickupLocation && pickupDate && dropoffDate) {
           const vehiclesData = await rcmApi.getAvailableVehicles({
             pickupLocation,
@@ -90,7 +84,6 @@ const VehicleDetail = () => {
           const foundVehicle = vehiclesData.find(v => v.id === id);
           
           if (foundVehicle) {
-            // Transform API data to match our Vehicle interface
             const mappedVehicle: Vehicle = {
               id: parseInt(foundVehicle.id),
               make: foundVehicle.make || "Unknown",
@@ -119,13 +112,11 @@ const VehicleDetail = () => {
             setError("Vehicle not found with the given parameters.");
           }
         } else {
-          // If we don't have search params, we need to get Step1 data to use default location
           const step1Data = await rcmApi.getStep1();
           
           if (step1Data.status === "OK" && step1Data.results?.locations?.length) {
             const defaultLocation = step1Data.results.locations[0];
             
-            // Get today's date and add 3 days for return
             const today = new Date();
             const returnDate = new Date();
             returnDate.setDate(returnDate.getDate() + 3);
@@ -145,7 +136,6 @@ const VehicleDetail = () => {
             const foundVehicle = vehiclesData.find(v => v.id === id);
             
             if (foundVehicle) {
-              // Transform API data to match our Vehicle interface
               const mappedVehicle: Vehicle = {
                 id: parseInt(foundVehicle.id),
                 make: foundVehicle.make || "Unknown",
@@ -206,7 +196,6 @@ const VehicleDetail = () => {
   const handleBookNow = () => {
     let bookingUrl = `/booking?vehicleId=${vehicle?.id}`;
     
-    // Add rental parameters if available
     if (pickupLocation) bookingUrl += `&pickupLocation=${pickupLocation}`;
     if (dropoffLocation) bookingUrl += `&dropoffLocation=${dropoffLocation}`;
     if (pickupDate) bookingUrl += `&pickupDate=${pickupDate}`;
@@ -217,7 +206,6 @@ const VehicleDetail = () => {
     navigate(bookingUrl);
   };
   
-  // Show loading state
   if (isLoading) {
     return (
       <div className="flex flex-col min-h-screen">
@@ -237,7 +225,6 @@ const VehicleDetail = () => {
     );
   }
   
-  // Show error state
   if (error || !vehicle) {
     return (
       <div className="flex flex-col min-h-screen">
@@ -267,7 +254,6 @@ const VehicleDetail = () => {
           </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Vehicle Images Section */}
             <div className="lg:col-span-2">
               <div className="relative rounded-lg overflow-hidden aspect-video shadow-lg">
                 <img
@@ -397,7 +383,6 @@ const VehicleDetail = () => {
               </div>
             </div>
             
-            {/* Booking Summary Section */}
             <div>
               <div className="bg-gray-50 rounded-lg p-6 shadow-sm sticky top-24">
                 <div className="flex items-center justify-between mb-4">
