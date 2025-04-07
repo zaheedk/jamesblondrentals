@@ -75,10 +75,11 @@ const Vehicles = () => {
     dropoffdate: dropoffDate,
     dropofftime: dropoffTime,
     ageid: getValidAgeId(),
-    ...(carCategory !== "0" ? { vehiclecategorytypeid: carCategory } : {})
+    ...(carCategory && carCategory !== "0" ? { vehiclecategorytypeid: carCategory } : {})
   } : null;
 
   console.log("Step2Params:", step2Params);
+  console.log("Car Category Selected:", carCategory);
 
   const { data: step2Data, isLoading: isLoadingStep2, error: step2Error } = useStep2Vehicles(step2Params);
 

@@ -26,7 +26,7 @@ export const OptionSelect = ({
   isLoading,
   placeholder = "Select option",
   defaultValue,
-  allOptionId = 0,
+  allOptionId = "0",
   allOptionLabel = "All Categories"
 }: OptionSelectProps) => {
   const formatOptionName = (name: string) => {
