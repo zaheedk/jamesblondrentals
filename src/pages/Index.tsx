@@ -7,17 +7,27 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { useEffect } from "react";
 import { useRcmApi } from "@/hooks/use-rcm-api";
+import { toast } from "sonner";
 
 const Index = () => {
   const { initializeApi } = useRcmApi();
   
   useEffect(() => {
-    // Initialize the API with real data mode
+    // Initialize the API with mock data mode enabled to ensure the app works
     initializeApi({ 
-      useMockData: false, // Always use real API data
+      useMockData: true, // Use mock data by default to ensure the app works
       apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
       apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
       apiUrl: "https://apis.rentalcarmanager.com/booking/v3.2/"
+    }).catch(error => {
+      console.error('API initialization error:', error);
+      toast.error('Error connecting to booking API', {
+        description: 'Using mock data instead'
+      });
+    });
+    
+    toast.info('Using mock data mode', {
+      description: 'Connected to API in mock data mode for demonstration purposes'
     });
   }, [initializeApi]);
 

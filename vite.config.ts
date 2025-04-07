@@ -14,7 +14,7 @@ export default defineConfig(({ mode }) => ({
       '/api/rcm': {
         target: 'https://apis.rentalcarmanager.com',
         changeOrigin: true,
-        secure: false, // Allow self-signed certificates
+        secure: true, // Changed to true to properly handle SSL
         rewrite: (path) => path.replace(/^\/api\/rcm/, ''),
         configure: (proxy, _options) => {
           proxy.on('error', (err, _req, _res) => {
