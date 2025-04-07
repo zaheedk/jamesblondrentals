@@ -7,7 +7,8 @@ import type {
   RCMBookingRequest, 
   RCMAvailabilityRequest,
   RCMConfigInit,
-  RCMStep2Request
+  RCMStep2Request,
+  RCMDriverAge
 } from '@/lib/api/rcm-api-types';
 import { toast } from 'sonner';
 
@@ -121,11 +122,11 @@ export function useRcmApi() {
     });
   };
   
-  // Get driver ages
+  // Get driver ages with better error handling
   const useDriverAges = () => {
     return useQuery({
       queryKey: ['driverAges'],
-      queryFn: async () => {
+      queryFn: async (): Promise<RCMDriverAge[]> => {
         try {
           const response = await rcmApi.getStep1();
           if (response.status === "OK" && response.results?.driverages) {
@@ -135,6 +136,9 @@ export function useRcmApi() {
           throw new Error("No driver ages data received");
         } catch (error) {
           console.error('Driver ages fetch error:', error);
+          toast.error('Failed to load driver ages', {
+            description: 'This may affect vehicle availability search.'
+          });
           throw error;
         }
       },
@@ -179,7 +183,7 @@ export function useRcmApi() {
         try {
           console.log('Fetching Step2 vehicles with params:', params);
           
-          // Validate that ageid is present
+          // Validate that ageid is present and not empty
           if (!params.ageid) {
             console.error('Missing required ageid parameter for Step2 API call');
             toast.error('API Parameter Error', {
@@ -194,7 +198,7 @@ export function useRcmApi() {
           if (response.status === "OK") {
             return response;
           } else {
-            throw new Error("Failed to fetch available vehicles");
+            throw new Error(response.error || "Failed to fetch available vehicles");
           }
         } catch (error) {
           console.error('Failed to fetch available vehicles:', error);
@@ -204,7 +208,7 @@ export function useRcmApi() {
           throw error;
         }
       },
-      enabled: !!params,
+      enabled: !!params && !!params.ageid, // Only run if we have params AND a valid age ID
       retry: API_RETRY_CONFIG.retries,
       retryDelay: API_RETRY_CONFIG.retryDelay,
     });

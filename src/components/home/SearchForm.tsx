@@ -19,7 +19,6 @@ import {
 } from "./form-components/DateTimeUtils";
 
 const DEFAULT_LOCATION_ID = "625";
-const DEFAULT_AGE_ID = "1";
 
 const SearchForm = () => {
   const navigate = useNavigate();
@@ -195,14 +194,21 @@ const SearchForm = () => {
     }
   }, [dropoffLocation, dropoffDate, sameLocation, pickupLocation, officeHours, locationDetails, dropoffTime]);
 
+  const getDefaultAgeId = () => {
+    if (!driverAges?.length) return "";
+    const defaultAge = driverAges.find(a => a.isdefault) || driverAges[0];
+    return defaultAge ? String(defaultAge.id) : "";
+  };
+
+  useEffect(() => {
+    if (driverAges?.length && !age) {
+      setAge(getDefaultAgeId());
+    }
+  }, [driverAges]);
+
   const getDriverAgeName = (ageId: string) => {
-    const driverAge = driverAges.find(a => String(a.id) === ageId);
-    const ageName = driverAge ? driverAge.driverage : "";
-    
-    const numericAge = parseInt(ageName);
-    return (numericAge >= 26 && !isNaN(numericAge)) 
-      ? `${numericAge}+` 
-      : ageName;
+    const ageObj = driverAges?.find(a => String(a.id) === ageId);
+    return ageObj ? ageObj.driverage : "";
   };
 
   const getCategoryName = (categoryId: string) => {
@@ -216,7 +222,7 @@ const SearchForm = () => {
     return format(date, 'dd/MM/yyyy');
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!pickupLocation) {
@@ -224,68 +230,24 @@ const SearchForm = () => {
       return;
     }
     
-    if (!dropoffLocation && !sameLocation) {
-      toast.error("Please select a dropoff location");
+    if (!pickupDate || !dropoffDate) {
+      toast.error("Please select both pickup and drop-off dates");
       return;
     }
     
-    if (!pickupDate) {
-      toast.error("Please select a pickup date");
+    if (!pickupTime || !dropoffTime) {
+      toast.error("Please select both pickup and drop-off times");
       return;
     }
-    
-    if (!dropoffDate) {
-      toast.error("Please select a dropoff date");
-      return;
-    }
-    
-    if (!pickupTime) {
-      toast.error("Please select a pickup time");
-      return;
-    }
-    
-    if (!dropoffTime) {
-      toast.error("Please select a dropoff time");
-      return;
-    }
-    
-    if (isBefore(dropoffDate, pickupDate)) {
-      toast.error("Dropoff date must be after pickup date");
-      return;
-    }
-    
-    const selectedLocation = locationDetails.find(
-      loc => String(loc.id) === pickupLocation
-    );
-    
-    if (selectedLocation) {
-      const requiredNoticeDays = selectedLocation.noticerequired_numberofdays || 0;
-      
-      if (requiredNoticeDays > 0) {
-        const hoursRequired = requiredNoticeDays * 24;
-        const minAllowedDate = new Date();
-        minAllowedDate.setDate(minAllowedDate.getDate() + requiredNoticeDays);
-        
-        const pickupDateTime = combineDateTime(pickupDate, pickupTime);
-        const pickupDateObj = new Date(pickupDateTime);
-        
-        if (isBefore(pickupDateObj, minAllowedDate)) {
-          toast.error(`This location requires ${requiredNoticeDays} day(s) advance notice for bookings`);
-          return;
-        }
-      }
-    }
-    
-    setIsLoading(true);
     
     const formattedPickupDate = formatDateForApi(pickupDate!);
     const formattedDropoffDate = formatDateForApi(dropoffDate!);
     
-    const ageParam = age || DEFAULT_AGE_ID;
+    const ageParam = age || getDefaultAgeId();
     
     const searchParams = new URLSearchParams({
       pickupLocation,
-      dropoffLocation: sameLocation ? pickupLocation : dropoffLocation,
+      dropoffLocation: dropoffLocation || pickupLocation,
       pickupDate: formattedPickupDate,
       dropoffDate: formattedDropoffDate,
       pickupTime,
@@ -294,7 +256,7 @@ const SearchForm = () => {
       carCategory,
       ...(promoCode && { promoCode })
     });
-
+    
     console.log("Navigating to vehicles with params:", searchParams.toString());
     navigate(`/vehicles?${searchParams.toString()}`);
   };
@@ -306,7 +268,7 @@ const SearchForm = () => {
           <h3 className="text-lg font-semibold">Find Your Vehicle</h3>
         </div>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSearch}>
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <LocationSelect 

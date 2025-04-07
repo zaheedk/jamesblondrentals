@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -20,6 +19,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
 interface RcmVehicleWithPricing {
   vehicle: RCMAvailableCar;
@@ -32,7 +33,7 @@ const Vehicles = () => {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { rcmApi, useStep2Vehicles } = useRcmApi();
+  const { useDriverAges, useStep2Vehicles } = useRcmApi();
   
   const [vehicleType, setVehicleType] = useState<VehicleType | "all">("all");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 500]);
@@ -55,16 +56,25 @@ const Vehicles = () => {
   const carCategory = searchParams.get("carCategory") || "all";
   const promoCode = searchParams.get("promoCode") || "";
 
-  // Updated: Always include ageid parameter as it's required by the API
-  const step2Params = pickupLocation ? {
+  const { data: driverAges, isLoading: isLoadingAges, error: driverAgesError } = useDriverAges();
+  
+  const getValidAgeId = () => {
+    if (age && driverAges?.some(driverAge => String(driverAge.id) === age)) {
+      return age;
+    }
+    
+    const defaultAge = driverAges?.find(a => a.isdefault) || driverAges?.[0];
+    return defaultAge ? String(defaultAge.id) : "";
+  };
+
+  const step2Params = pickupLocation && driverAges?.length ? {
     pickuplocationid: pickupLocation,
     pickupdate: pickupDate,
     pickuptime: pickupTime,
     dropofflocationid: dropoffLocation || pickupLocation,
     dropoffdate: dropoffDate,
     dropofftime: dropoffTime,
-    ageid: age || "1", // Always include ageid, use default "1" if not provided
-    // Only include vehiclecategorytypeid if carCategory exists and is NOT "all"
+    ageid: getValidAgeId(),
     ...(carCategory && carCategory !== "all" ? { vehiclecategorytypeid: carCategory } : {}),
     ...(promoCode && { campaigncode: promoCode })
   } : null;
@@ -74,6 +84,10 @@ const Vehicles = () => {
   const { data: step2Data, isLoading: isLoadingStep2, error: step2Error } = useStep2Vehicles(step2Params);
 
   useEffect(() => {
+    if (!driverAges?.length) {
+      return;
+    }
+
     if (step2Data?.status === "OK" && step2Data.results) {
       setIsLoading(false);
       
@@ -146,7 +160,7 @@ const Vehicles = () => {
         description: "Please try another search or contact support."
       });
     }
-  }, [step2Data, step2Error]);
+  }, [step2Data, step2Error, driverAges]);
 
   useEffect(() => {
     let results = [...vehicles];
@@ -201,6 +215,8 @@ const Vehicles = () => {
     }));
   };
 
+  const hasApiError = driverAgesError || step2Error;
+
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
@@ -228,6 +244,17 @@ const Vehicles = () => {
                 />
               </div>
             </div>
+            
+            {hasApiError && (
+              <Alert variant="destructive" className="mt-4">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>API Connection Error</AlertTitle>
+                <AlertDescription>
+                  We encountered a problem connecting to the reservation system. 
+                  This may be due to invalid search parameters.
+                </AlertDescription>
+              </Alert>
+            )}
           </div>
         </div>
 
@@ -343,7 +370,7 @@ const Vehicles = () => {
             </aside>
 
             <div className="lg:w-3/4">
-              {isLoading || isLoadingStep2 ? (
+              {isLoading || isLoadingAges || isLoadingStep2 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {[1, 2, 3, 4].map((i) => (
                     <div key={i} className="rounded-lg shadow animate-pulse bg-gray-200 h-80"></div>
