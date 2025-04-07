@@ -152,9 +152,7 @@ class RCMApiClient {
         console.error("Non-JSON response received:", contentType);
         const text = await response.text();
         console.error("Response text:", text);
-        
-        console.log("Falling back to mock data due to non-JSON response");
-        return this.getMockResponse<T>(requestMethod, body);
+        throw new Error(`API returned non-JSON response: ${text}`);
       }
 
       // Handle non-OK responses
@@ -169,8 +167,7 @@ class RCMApiClient {
         }
         
         console.error(`API error: ${response.status} ${response.statusText}`, errorData);
-        console.log("Falling back to mock data due to API error");
-        return this.getMockResponse<T>(requestMethod, body);
+        throw new Error(`API error: ${response.status} ${response.statusText}`);
       }
 
       // Parse and return the response
@@ -180,14 +177,20 @@ class RCMApiClient {
       // Check for API errors in the response
       if (responseData.status === "ERR") {
         console.error('API returned error:', responseData.error);
-        console.log("Falling back to mock data due to API status error");
-        return this.getMockResponse<T>(requestMethod, body);
+        throw new Error(`API error: ${responseData.error || 'Unknown error'}`);
       }
       
       return responseData;
     } catch (error) {
       console.error('RCM API request failed:', error);
-      console.log("Falling back to mock data due to exception");
+      
+      // If we're not using mock data, throw the error
+      if (!this.useMockData) {
+        throw error;
+      }
+      
+      // Fall back to mock data only if useMockData is true
+      console.log("Falling back to mock data due to error");
       return this.getMockResponse<T>(requestMethod, body);
     }
   }
