@@ -178,6 +178,16 @@ export function useRcmApi() {
         
         try {
           console.log('Fetching Step2 vehicles with params:', params);
+          
+          // Validate that ageid is present
+          if (!params.ageid) {
+            console.error('Missing required ageid parameter for Step2 API call');
+            toast.error('API Parameter Error', {
+              description: 'Missing required driver age parameter'
+            });
+            throw new Error('Missing required ageid parameter');
+          }
+          
           const response = await rcmApi.getStep2(params);
           console.log('Step2 response:', response);
           

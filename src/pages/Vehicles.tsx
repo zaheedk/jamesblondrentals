@@ -52,10 +52,10 @@ const Vehicles = () => {
   const pickupTime = searchParams.get("pickupTime") || "";
   const dropoffTime = searchParams.get("dropoffTime") || "";
   const age = searchParams.get("age") || "";
-  const carCategory = searchParams.get("carCategory") || "all"; // Ensure it defaults to "all"
+  const carCategory = searchParams.get("carCategory") || "all";
   const promoCode = searchParams.get("promoCode") || "";
 
-  // Fix: Checking specifically for "all" value in carCategory parameter
+  // Updated: Always include ageid parameter as it's required by the API
   const step2Params = pickupLocation ? {
     pickuplocationid: pickupLocation,
     pickupdate: pickupDate,
@@ -63,7 +63,7 @@ const Vehicles = () => {
     dropofflocationid: dropoffLocation || pickupLocation,
     dropoffdate: dropoffDate,
     dropofftime: dropoffTime,
-    ...(age && { ageid: age }),
+    ageid: age || "1", // Always include ageid, use default "1" if not provided
     // Only include vehiclecategorytypeid if carCategory exists and is NOT "all"
     ...(carCategory && carCategory !== "all" ? { vehiclecategorytypeid: carCategory } : {}),
     ...(promoCode && { campaigncode: promoCode })

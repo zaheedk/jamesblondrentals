@@ -19,6 +19,7 @@ import {
 } from "./form-components/DateTimeUtils";
 
 const DEFAULT_LOCATION_ID = "625";
+const DEFAULT_AGE_ID = "1";
 
 const SearchForm = () => {
   const navigate = useNavigate();
@@ -205,7 +206,6 @@ const SearchForm = () => {
   };
 
   const getCategoryName = (categoryId: string) => {
-    // Handle "all" specially
     if (categoryId === "all") return "All Categories";
     
     const category = carCategories.find(c => String(c.id) === categoryId);
@@ -281,6 +281,8 @@ const SearchForm = () => {
     const formattedPickupDate = formatDateForApi(pickupDate!);
     const formattedDropoffDate = formatDateForApi(dropoffDate!);
     
+    const ageParam = age || DEFAULT_AGE_ID;
+    
     const searchParams = new URLSearchParams({
       pickupLocation,
       dropoffLocation: sameLocation ? pickupLocation : dropoffLocation,
@@ -288,7 +290,7 @@ const SearchForm = () => {
       dropoffDate: formattedDropoffDate,
       pickupTime,
       dropoffTime,
-      ...(age && { age }),
+      age: ageParam,
       carCategory,
       ...(promoCode && { promoCode })
     });
