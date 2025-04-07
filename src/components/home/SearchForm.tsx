@@ -370,7 +370,7 @@ const SearchForm = () => {
                 isLoading={isLoadingCategories}
                 placeholder="All Categories"
                 defaultValue="All Categories"
-                allOptionId={0}
+                allOptionId="0"
                 allOptionLabel="All Categories"
               />
               

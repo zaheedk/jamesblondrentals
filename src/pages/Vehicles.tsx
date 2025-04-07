@@ -75,7 +75,7 @@ const Vehicles = () => {
     dropoffdate: dropoffDate,
     dropofftime: dropoffTime,
     ageid: getValidAgeId(),
-    ...(carCategory && carCategory !== "0" ? { vehiclecategorytypeid: Number(carCategory) } : {})
+    ...(carCategory !== "0" ? { vehiclecategorytypeid: carCategory } : {})
   } : null;
 
   console.log("Step2Params:", step2Params);
