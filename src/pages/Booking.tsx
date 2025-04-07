@@ -27,15 +27,15 @@ const Booking = () => {
   const [selectedInsuranceId, setSelectedInsuranceId] = useState<string | number | null>(null);
   const [selectedExtras, setSelectedExtras] = useState<Map<string | number, number>>(new Map());
   
-  // Get vehicle and booking details from URL params
-  const vehicleId = searchParams.get("vehicleId");
-  const pickupLocationId = searchParams.get("pickupLocationId");
-  const dropoffLocationId = searchParams.get("dropoffLocationId");
-  const pickupDate = searchParams.get("pickupDate");
-  const pickupTime = searchParams.get("pickupTime");
-  const dropoffDate = searchParams.get("dropoffDate");
-  const dropoffTime = searchParams.get("dropoffTime");
-  const ageId = searchParams.get("ageId");
+  // Get params using correct case to match ASP.NET variable names
+  const vehicleId = searchParams.get("vehicleId") || searchParams.get("vehiclecategoryid");
+  const pickupLocationId = searchParams.get("pickupLocationId") || searchParams.get("PickupLocationID");
+  const dropoffLocationId = searchParams.get("dropoffLocationId") || searchParams.get("DropOffLocationID");
+  const pickupDate = searchParams.get("pickupDate") || searchParams.get("PickupDate");
+  const pickupTime = searchParams.get("pickupTime") || searchParams.get("PickupTime");
+  const dropoffDate = searchParams.get("dropoffDate") || searchParams.get("ReturnDate");
+  const dropoffTime = searchParams.get("dropoffTime") || searchParams.get("ReturnTime");
+  const ageId = searchParams.get("ageId") || searchParams.get("Age");
   const vehicleName = searchParams.get("vehicleName");
   const basePriceStr = searchParams.get("basePrice");
   const basePrice = basePriceStr ? parseFloat(basePriceStr) : 0;
@@ -71,7 +71,19 @@ const Booking = () => {
     }
 
     try {
-      // Construct Step3 parameters
+      // Log available parameters for debugging
+      console.log("Available URL parameters:", {
+        vehicleId,
+        pickupLocationId,
+        dropoffLocationId,
+        pickupDate,
+        pickupTime,
+        dropoffDate, 
+        dropoffTime,
+        ageId
+      });
+
+      // Construct Step3 parameters - matching the casing from the ASP.NET code
       const params: RCMStep3Request = {
         vehiclecategoryid: vehicleId!,
         pickuplocationid: pickupLocationId!,
