@@ -27,20 +27,49 @@ const Booking = () => {
   const [selectedInsuranceId, setSelectedInsuranceId] = useState<string | number | null>(null);
   const [selectedExtras, setSelectedExtras] = useState<Map<string | number, number>>(new Map());
   
-  // Get params using correct case to match ASP.NET variable names
-  const vehicleId = searchParams.get("vehicleId") || searchParams.get("vehiclecategoryid");
-  const pickupLocationId = searchParams.get("pickupLocationId") || searchParams.get("PickupLocationID");
-  const dropoffLocationId = searchParams.get("dropoffLocationId") || searchParams.get("DropOffLocationID");
-  const pickupDate = searchParams.get("pickupDate") || searchParams.get("PickupDate");
-  const pickupTime = searchParams.get("pickupTime") || searchParams.get("PickupTime");
-  const dropoffDate = searchParams.get("dropoffDate") || searchParams.get("ReturnDate");
-  const dropoffTime = searchParams.get("dropoffTime") || searchParams.get("ReturnTime");
-  const ageId = searchParams.get("ageId") || searchParams.get("Age");
-  const vehicleName = searchParams.get("vehicleName");
-  const basePriceStr = searchParams.get("basePrice");
+  // Get params from URL with all possible case variations
+  const getParam = (name: string): string | null => {
+    // Try different case variations
+    const variations = [
+      name, 
+      name.toLowerCase(), 
+      name.toUpperCase(), 
+      name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()
+    ];
+    
+    for (const variant of variations) {
+      const value = searchParams.get(variant);
+      if (value) return value;
+    }
+    return null;
+  };
+  
+  const vehicleId = getParam("vehicleId") || getParam("vehiclecategoryid");
+  const pickupLocationId = getParam("pickupLocationId") || getParam("PickupLocationID");
+  const dropoffLocationId = getParam("dropoffLocationId") || getParam("DropOffLocationID");
+  const pickupDate = getParam("pickupDate") || getParam("PickupDate");
+  const pickupTime = getParam("pickupTime") || getParam("PickupTime");
+  const dropoffDate = getParam("dropoffDate") || getParam("ReturnDate");
+  const dropoffTime = getParam("dropoffTime") || getParam("ReturnTime");
+  const ageId = getParam("ageId") || getParam("Age");
+  const vehicleName = getParam("vehicleName");
+  const basePriceStr = getParam("basePrice");
   const basePrice = basePriceStr ? parseFloat(basePriceStr) : 0;
-  const pickupLocationName = searchParams.get("pickupLocationName");
-  const dropoffLocationName = searchParams.get("dropoffLocationName");
+  const pickupLocationName = getParam("pickupLocationName");
+  const dropoffLocationName = getParam("dropoffLocationName");
+  
+  console.log("URL Parameters:", {
+    vehicleId,
+    pickupLocationId,
+    dropoffLocationId,
+    pickupDate,
+    pickupTime,
+    dropoffDate,
+    dropoffTime,
+    ageId,
+    vehicleName,
+    basePrice
+  });
   
   // Calculate number of days for KM charges calculation
   const numberOfDays = pickupDate && dropoffDate ? 
