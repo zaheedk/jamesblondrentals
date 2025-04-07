@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -11,6 +10,8 @@ import VehicleCard from "@/components/vehicles/VehicleCard";
 import { Vehicle, VehicleType } from "@/lib/types";
 import { Input } from "@/components/ui/input";
 import { useRcmApi } from "@/hooks/use-rcm-api";
+import { RCMAvailableCar, RCMMandatoryFee, RCMSeasonalRate } from "@/lib/api/rcm-api-types";
+import { toast } from "sonner";
 import {
   Select,
   SelectContent,
@@ -19,16 +20,22 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+interface RcmVehicleWithPricing {
+  vehicle: RCMAvailableCar;
+  seasonalRates: RCMSeasonalRate[];
+  mandatoryFee: RCMMandatoryFee | null;
+}
+
 const Vehicles = () => {
   const [searchParams] = useSearchParams();
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { rcmApi } = useRcmApi();
+  const { rcmApi, useStep2Vehicles } = useRcmApi();
   
   // Filter states
   const [vehicleType, setVehicleType] = useState<VehicleType | "all">("all");
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 200]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 500]);
   const [searchTerm, setSearchTerm] = useState("");
   const [transmission, setTransmission] = useState<"all" | "automatic" | "manual">("all");
   const [fuelTypes, setFuelTypes] = useState({
@@ -41,108 +48,98 @@ const Vehicles = () => {
   // Get search params
   const pickupLocation = searchParams.get("pickupLocation") || "";
   const dropoffLocation = searchParams.get("dropoffLocation") || "";
-  const pickupDateStr = searchParams.get("pickupDate") || "";
-  const dropoffDateStr = searchParams.get("dropoffDate") || "";
-  const pickupTime = searchParams.get("pickupTime") || "10:00";
-  const dropoffTime = searchParams.get("dropoffTime") || "10:00";
+  const pickupDate = searchParams.get("pickupDate") || "";
+  const dropoffDate = searchParams.get("dropoffDate") || "";
+  const pickupTime = searchParams.get("pickupTime") || "";
+  const dropoffTime = searchParams.get("dropoffTime") || "";
+  const age = searchParams.get("age") || "";
+  const carCategory = searchParams.get("carCategory") || "";
+  const promoCode = searchParams.get("promoCode") || "";
+
+  // Prepare API request parameters
+  const step2Params = pickupLocation ? {
+    pickuplocationid: pickupLocation,
+    pickupdate: pickupDate,
+    pickuptime: pickupTime,
+    dropofflocationid: dropoffLocation || pickupLocation,
+    dropoffdate: dropoffDate,
+    dropofftime: dropoffTime,
+    ...(age && { ageid: age }),
+    ...(carCategory && { vehiclecategorytypeid: carCategory }),
+    ...(promoCode && { campaigncode: promoCode })
+  } : null;
+
+  // Fetch vehicles using the step2 API
+  const { data: step2Data, isLoading: isLoadingStep2, error: step2Error } = useStep2Vehicles(step2Params);
 
   useEffect(() => {
-    const fetchVehicles = async () => {
-      try {
-        setIsLoading(true);
+    if (step2Data?.status === "OK" && step2Data.results) {
+      setIsLoading(false);
+      
+      const { availablecars, seasonalrates, mandatoryfees } = step2Data.results;
+      
+      // Map RCM vehicles to our Vehicle interface
+      const mappedVehicles: Vehicle[] = availablecars.map(car => {
+        // Find corresponding seasonal rates and mandatory fees
+        const carRates = seasonalrates.filter(rate => 
+          String(rate.vehiclecategoryid) === String(car.vehiclecategoryid)
+        );
         
-        // If we have search params, use them
-        if (pickupLocation && pickupDateStr && dropoffDateStr) {
-          const vehiclesData = await rcmApi.getAvailableVehicles({
-            pickupLocationId: pickupLocation,
-            pickupDate: pickupDateStr,
-            pickupTime,
-            dropoffLocationId: dropoffLocation || pickupLocation,
-            dropoffDate: dropoffDateStr,
-            dropoffTime,
-          });
-          
-          // Transform API data to match our Vehicle interface
-          const mappedVehicles: Vehicle[] = vehiclesData.map(v => ({
-            id: parseInt(v.id.toString()),
-            make: v.make || "Unknown",
-            model: v.model || "Vehicle",
-            year: v.year || new Date().getFullYear(),
-            type: (v.category?.toLowerCase() as VehicleType) || "economy",
-            price: parseFloat(v.price?.toString()) || 50,
-            priceUnit: "day",
-            seats: v.passengers || 4,
-            transmission: (v.transmission?.toLowerCase() === "a" ? "automatic" : "manual") as "automatic" | "manual",
-            fuelType: (v.fuelType?.toLowerCase() || "gasoline") as "gasoline" | "diesel" | "electric" | "hybrid",
-            fuelEfficiency: v.fuelConsumption || "35 mpg",
-            available: true,
-            location: pickupLocation,
-            features: typeof v.features === 'string' ? v.features.split(',').map(f => f.trim()) : 
-              (Array.isArray(v.features) ? v.features : ["Air Conditioning", "Power Steering"]),
-            images: Array.isArray(v.images) && v.images.length > 0 ? 
-              v.images.map(img => typeof img === 'string' ? img : (img as any).url || "/placeholder.svg") : 
-              ["/placeholder.svg"],
-            description: v.description || `${v.make} ${v.model} with ${v.passengers || 4} seats and ${v.transmission === "A" ? "automatic" : "manual"} transmission.`,
-          }));
-          
-          setVehicles(mappedVehicles);
-        } else {
-          // Get default location and dates if no search params
-          const step1Data = await rcmApi.getStep1();
-          
-          if (step1Data.status === "OK" && step1Data.results?.locations?.length) {
-            const defaultLocation = step1Data.results.locations[0];
-            
-            // Get today's date and add 3 days for return
-            const pickupDate = new Date();
-            const dropoffDate = new Date();
-            dropoffDate.setDate(dropoffDate.getDate() + 3);
-            
-            const vehiclesData = await rcmApi.getAvailableVehicles({
-              pickupLocationId: defaultLocation.id.toString(),
-              pickupDate: pickupDate.toISOString().split('T')[0],
-              pickupTime: "10:00",
-              dropoffLocationId: defaultLocation.id.toString(),
-              dropoffDate: dropoffDate.toISOString().split('T')[0],
-              dropoffTime: "10:00",
-            });
-            
-            // Transform API data to match our Vehicle interface
-            const mappedVehicles: Vehicle[] = vehiclesData.map(v => ({
-              id: parseInt(v.id.toString()),
-              make: v.make || "Unknown",
-              model: v.model || "Vehicle",
-              year: v.year || new Date().getFullYear(),
-              type: (v.category?.toLowerCase() as VehicleType) || "economy",
-              price: parseFloat(v.price?.toString()) || 50,
-              priceUnit: "day",
-              seats: v.passengers || 4,
-              transmission: (v.transmission?.toLowerCase() === "a" ? "automatic" : "manual") as "automatic" | "manual",
-              fuelType: (v.fuelType?.toLowerCase() || "gasoline") as "gasoline" | "diesel" | "electric" | "hybrid",
-              fuelEfficiency: v.fuelConsumption || "35 mpg",
-              available: true,
-              location: defaultLocation.location || "Main Location",
-              features: typeof v.features === 'string' ? v.features.split(',').map(f => f.trim()) : 
-                (Array.isArray(v.features) ? v.features : ["Air Conditioning", "Power Steering"]),
-              images: Array.isArray(v.images) && v.images.length > 0 ? 
-                v.images.map(img => typeof img === 'string' ? img : (img as any).url || "/placeholder.svg") : 
-                ["/placeholder.svg"],
-              description: v.description || `${v.make} ${v.model} with ${v.passengers || 4} seats and ${v.transmission === "A" ? "automatic" : "manual"} transmission.`,
-            }));
-            
-            setVehicles(mappedVehicles);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching vehicles:", error);
-        setVehicles([]);
-      } finally {
-        setIsLoading(false);
+        const mandatoryFee = mandatoryfees.find(fee => 
+          String(fee.vehiclecategoryid) === String(car.vehiclecategoryid) && 
+          String(fee.vehiclecategorytypeid) === String(car.vehiclecategorytypeid)
+        );
+        
+        const feeAmount = mandatoryFee ? Number(mandatoryFee.totalfeeamount) : 0;
+        
+        // Create a vehicle object with the required fields
+        return {
+          id: Number(car.vehiclecategoryid),
+          make: car.vehiclecategory.split(' ')[0] || "Unknown",
+          model: car.vehiclecategory.split(' ').slice(1).join(' ') || "Vehicle",
+          year: new Date().getFullYear(),
+          type: String(car.vehiclecategorytypeid) as VehicleType,
+          price: car.totalrateafterdiscount + feeAmount,
+          priceUnit: "total",
+          seats: car.numberofadults + car.numberofchildren,
+          transmission: "automatic", // Not provided in step2 API, defaulting to automatic
+          fuelType: "gasoline", // Not provided in step2 API, defaulting to gasoline
+          fuelEfficiency: "N/A", // Not provided in step2 API
+          available: car.available === 1,
+          location: pickupLocation,
+          features: [
+            `${car.numberofadults} Adults`,
+            `${car.numberofchildren} Children`,
+            `${car.numberoflargecases} Large Cases`,
+            `${car.numberofsmallcases} Small Cases`
+          ],
+          images: [car.imageurl],
+          description: [car.vehicledescription1, car.vehicledescription2, car.vehicledescription3]
+            .filter(Boolean)
+            .join(' '),
+          dailyRate: carRates.length > 0 ? carRates[0].dailyrateafterdiscount : 0,
+          totalDays: carRates.length > 0 ? carRates[0].numberofdays : 1,
+          discountAmount: car.totaldiscountamount
+        };
+      });
+      
+      setVehicles(mappedVehicles);
+      
+      // Update price range based on available vehicles
+      if (mappedVehicles.length > 0) {
+        const prices = mappedVehicles.map(v => v.price as number);
+        const minPrice = Math.floor(Math.min(...prices));
+        const maxPrice = Math.ceil(Math.max(...prices));
+        setPriceRange([minPrice, maxPrice]);
       }
-    };
-
-    fetchVehicles();
-  }, [rcmApi, pickupLocation, dropoffLocation, pickupDateStr, dropoffDateStr, pickupTime, dropoffTime]);
+    } else if (step2Error) {
+      setIsLoading(false);
+      console.error("Error fetching vehicles:", step2Error);
+      toast.error("Failed to load vehicles", { 
+        description: "Please try another search or contact support."
+      });
+    }
+  }, [step2Data, step2Error]);
 
   useEffect(() => {
     // Apply filters
@@ -211,8 +208,8 @@ const Vehicles = () => {
                 {pickupLocation && (
                   <p className="text-gray-600">
                     Location: {pickupLocation}
-                    {pickupDateStr && dropoffDateStr && (
-                      <> | {new Date(pickupDateStr).toLocaleDateString()} - {new Date(dropoffDateStr).toLocaleDateString()}</>
+                    {pickupDate && dropoffDate && (
+                      <> | {pickupDate} - {dropoffDate}</>
                     )}
                   </p>
                 )}
@@ -266,8 +263,8 @@ const Vehicles = () => {
                       <span>${priceRange[1]}</span>
                     </div>
                     <Slider
-                      defaultValue={[0, 200]}
-                      max={200}
+                      defaultValue={[0, 500]}
+                      max={500}
                       step={10}
                       minStepsBetweenThumbs={1}
                       className="mt-2"
@@ -343,7 +340,7 @@ const Vehicles = () => {
 
             {/* Vehicle Grid */}
             <div className="lg:w-3/4">
-              {isLoading ? (
+              {isLoading || isLoadingStep2 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {[1, 2, 3, 4].map((i) => (
                     <div key={i} className="rounded-lg shadow animate-pulse bg-gray-200 h-80"></div>

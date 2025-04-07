@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { addDays, isBefore } from "date-fns";
+import { addDays, isBefore, format } from "date-fns";
 import { toast } from "sonner";
 import { useRcmApi } from "@/hooks/use-rcm-api";
 
@@ -209,6 +209,10 @@ const SearchForm = () => {
     return category ? category.vehiclecategorytype : "";
   };
 
+  const formatDateForApi = (date: Date): string => {
+    return format(date, 'dd/MM/yyyy');
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -271,23 +275,22 @@ const SearchForm = () => {
     
     setIsLoading(true);
     
-    const pickupDateTime = combineDateTime(pickupDate, pickupTime);
-    const dropoffDateTime = combineDateTime(dropoffDate, dropoffTime);
+    const formattedPickupDate = formatDateForApi(pickupDate!);
+    const formattedDropoffDate = formatDateForApi(dropoffDate!);
     
     const searchParams = new URLSearchParams({
       pickupLocation,
       dropoffLocation: sameLocation ? pickupLocation : dropoffLocation,
-      pickupDate: pickupDateTime,
-      dropoffDate: dropoffDateTime,
+      pickupDate: formattedPickupDate,
+      dropoffDate: formattedDropoffDate,
+      pickupTime,
+      dropoffTime,
       ...(age && { age }),
       ...(carCategory && { carCategory }),
       ...(promoCode && { promoCode })
     });
 
-    setTimeout(() => {
-      setIsLoading(false);
-      navigate(`/vehicles?${searchParams.toString()}`);
-    }, 500);
+    navigate(`/vehicles?${searchParams.toString()}`);
   };
 
   return (

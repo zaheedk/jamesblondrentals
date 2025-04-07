@@ -6,7 +6,8 @@ import type {
   RCMLocation, 
   RCMBookingRequest, 
   RCMAvailabilityRequest,
-  RCMConfigInit
+  RCMConfigInit,
+  RCMStep2Request
 } from '@/lib/api/rcm-api-types';
 import { toast } from 'sonner';
 
@@ -168,6 +169,37 @@ export function useRcmApi() {
     });
   };
   
+  // Get available vehicles with Step2 API call
+  const useStep2Vehicles = (params: RCMStep2Request | null) => {
+    return useQuery({
+      queryKey: ['step2Vehicles', params],
+      queryFn: async () => {
+        if (!params) return null;
+        
+        try {
+          console.log('Fetching Step2 vehicles with params:', params);
+          const response = await rcmApi.getStep2(params);
+          console.log('Step2 response:', response);
+          
+          if (response.status === "OK") {
+            return response;
+          } else {
+            throw new Error("Failed to fetch available vehicles");
+          }
+        } catch (error) {
+          console.error('Failed to fetch available vehicles:', error);
+          toast.error('API Connection Error', {
+            description: 'Failed to fetch vehicles. Please try again.'
+          });
+          throw error;
+        }
+      },
+      enabled: !!params,
+      retry: API_RETRY_CONFIG.retries,
+      retryDelay: API_RETRY_CONFIG.retryDelay,
+    });
+  };
+  
   // Get available vehicles based on search criteria
   const useAvailableVehicles = (params: RCMAvailabilityRequest | null) => {
     return useQuery({
@@ -250,6 +282,7 @@ export function useRcmApi() {
     useAvailableVehicles,
     useVehicleDetails,
     useCreateBooking,
-    useLocationDetails
+    useLocationDetails,
+    useStep2Vehicles
   };
 }

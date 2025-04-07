@@ -1,21 +1,25 @@
-
 export interface Vehicle {
   id: number;
   make: string;
   model: string;
   year: number;
   type: VehicleType;
-  price: number;
-  priceUnit: string;
+  price: number | string;
+  priceUnit: "day" | "hour" | "week" | "total";
   seats: number;
   transmission: "automatic" | "manual";
   fuelType: "gasoline" | "diesel" | "electric" | "hybrid";
   fuelEfficiency: string;
-  features: string[];
-  images: string[];
   available: boolean;
   location: string;
+  features: string[];
+  images: string[];
   description: string;
+  
+  // New properties for RCM vehicles
+  dailyRate?: number;
+  totalDays?: number;
+  discountAmount?: number;
 }
 
 export type VehicleType = "economy" | "compact" | "midsize" | "suv" | "luxury" | "van" | "convertible";

@@ -91,6 +91,73 @@ export interface RCMStep1Response {
   results: RCMStep1Results;
 }
 
+// New Step2 response interfaces
+export interface RCMSeasonalRate {
+  vehiclecategoryid: number | string;
+  dailyratebeforediscount: number;
+  dailyrateafterdiscount: number;
+  discountrate: number;
+  discounttype: string;
+  numberofdays: number;
+  numberofhours: number;
+  rateperiod: string;
+}
+
+export interface RCMLocationFee {
+  vehiclecategorytypeid: number | string;
+  currencysymbol: string;
+  currencyname: string;
+}
+
+export interface RCMMandatoryFee {
+  vehiclecategoryid: number | string;
+  vehiclecategorytypeid: number | string;
+  totalfeeamount: number;
+}
+
+export interface RCMAvailableCar {
+  vehiclecategoryid: number | string;
+  vehiclecategorytypeid: number | string;
+  vehiclecategory: string;
+  vehicledescription1: string;
+  vehicledescription2: string;
+  vehicledescription3: string;
+  imageurl: string;
+  totalrateafterdiscount: number;
+  totaldiscountamount: number;
+  avgrate: number;
+  numberofdays: string;
+  numberofadults: number;
+  numberofchildren: number;
+  numberoflargecases: number;
+  numberofsmallcases: number;
+  available: number;
+}
+
+export interface RCMStep2Results {
+  availablecars: RCMAvailableCar[];
+  seasonalrates: RCMSeasonalRate[];
+  locationfees: RCMLocationFee[];
+  mandatoryfees: RCMMandatoryFee[];
+}
+
+export interface RCMStep2Response {
+  status: string;
+  results: RCMStep2Results;
+}
+
+export interface RCMStep2Request {
+  vehiclecategorytypeid?: number | string;
+  pickuplocationid: string | number;
+  pickupdate: string;
+  pickuptime: string;
+  dropofflocationid: string | number;
+  dropoffdate: string;
+  dropofftime: string;
+  ageid?: string | number;
+  campaigncode?: string;
+}
+
 export interface RCMBookingRequest {
   pickupLocationId: string;
   dropoffLocationId: string;

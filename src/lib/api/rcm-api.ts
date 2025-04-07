@@ -7,7 +7,9 @@ import type {
   RCMBookingResponse,
   RCMAvailabilityRequest,
   RCMStep1Response,
-  RCMConfigInit
+  RCMConfigInit,
+  RCMStep2Request,
+  RCMStep2Response
 } from './rcm-api-types';
 
 // API Configuration from Web.config file
@@ -218,6 +220,15 @@ class RCMApiClient {
    */
   async createBooking(bookingData: RCMBookingRequest): Promise<RCMBookingResponse> {
     return this.request<RCMBookingResponse>('POST', 'booking', bookingData);
+  }
+
+  /**
+   * Get Step2 data (available vehicles)
+   * Using method name 'step2' as indicated in the provided code
+   */
+  async getStep2(params: RCMStep2Request): Promise<RCMStep2Response> {
+    console.log('Fetching Step2 data with params:', params);
+    return this.request<RCMStep2Response>('POST', 'step2', params);
   }
 }
 
