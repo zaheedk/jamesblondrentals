@@ -64,7 +64,7 @@ const Vehicles = () => {
     dropoffdate: dropoffDate,
     dropofftime: dropoffTime,
     ...(age && { ageid: age }),
-    ...(carCategory && carCategory !== "" && { vehiclecategorytypeid: carCategory }),
+    ...(carCategory && carCategory !== "all" && carCategory !== "" && { vehiclecategorytypeid: carCategory }),
     ...(promoCode && { campaigncode: promoCode })
   } : null;
 

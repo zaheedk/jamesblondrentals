@@ -206,6 +206,9 @@ const SearchForm = () => {
   };
 
   const getCategoryName = (categoryId: string) => {
+    // Handle "all" specially
+    if (categoryId === "all") return "All Categories";
+    
     const category = carCategories.find(c => String(c.id) === categoryId);
     return category ? category.vehiclecategorytype : "";
   };

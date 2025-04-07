@@ -49,7 +49,7 @@ export const OptionSelect = ({
         </SelectTrigger>
         <SelectContent>
           {options.length > 0 && (
-            <SelectItem key="all" value="">
+            <SelectItem key="all" value="all">
               {defaultValue || "All Categories"}
             </SelectItem>
           )}
