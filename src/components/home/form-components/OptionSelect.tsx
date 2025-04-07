@@ -55,7 +55,7 @@ export const OptionSelect = ({
         </SelectTrigger>
         <SelectContent>
           {options.length > 0 && (
-            <SelectItem key="all" value={String(allOptionId)}>
+            <SelectItem key="all" value="0">
               {allOptionLabel}
             </SelectItem>
           )}

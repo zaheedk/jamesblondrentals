@@ -371,6 +371,7 @@ const SearchForm = () => {
                 placeholder="All Categories"
                 defaultValue="All Categories"
                 allOptionId={0}
+                allOptionLabel="All Categories"
               />
               
               <div className="space-y-2 md:col-span-2">

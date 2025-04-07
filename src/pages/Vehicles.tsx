@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -76,8 +75,7 @@ const Vehicles = () => {
     dropoffdate: dropoffDate,
     dropofftime: dropoffTime,
     ageid: getValidAgeId(),
-    ...(carCategory && carCategory !== "0" ? { vehiclecategorytypeid: Number(carCategory) } : {}),
-    ...(promoCode && { campaigncode: promoCode })
+    ...(carCategory && carCategory !== "0" ? { vehiclecategorytypeid: Number(carCategory) } : {})
   } : null;
 
   console.log("Step2Params:", step2Params);
