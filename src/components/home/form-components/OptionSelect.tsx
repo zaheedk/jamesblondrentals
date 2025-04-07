@@ -12,7 +12,7 @@ interface OptionSelectProps {
   isLoading: boolean;
   defaultValue?: string;
   placeholder?: string;
-  allOptionId?: string;
+  allOptionId?: string | number;
   allOptionLabel?: string;
 }
 
@@ -26,7 +26,7 @@ export const OptionSelect = ({
   isLoading,
   placeholder = "Select option",
   defaultValue,
-  allOptionId = "0",
+  allOptionId = 0,
   allOptionLabel = "All Categories"
 }: OptionSelectProps) => {
   const formatOptionName = (name: string) => {
@@ -55,7 +55,7 @@ export const OptionSelect = ({
         </SelectTrigger>
         <SelectContent>
           {options.length > 0 && (
-            <SelectItem key="all" value={allOptionId}>
+            <SelectItem key="all" value={String(allOptionId)}>
               {allOptionLabel}
             </SelectItem>
           )}
