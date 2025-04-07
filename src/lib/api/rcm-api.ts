@@ -1,3 +1,4 @@
+
 import { generateSignature } from './rcm-signature';
 import type { 
   RCMApiConfig,
@@ -81,6 +82,7 @@ class RCMApiClient {
 
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
+    headers.append('Accept', 'application/json');
     headers.append('signature', signature); // Uses 'signature' key as shown in Postman
     
     // Log request details for debugging
@@ -139,6 +141,15 @@ class RCMApiClient {
         body: JSON.stringify(requestBody),
         credentials: 'same-origin', // Important for cookies if needed
       });
+
+      // Check if response is JSON
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.indexOf("application/json") === -1) {
+        console.error("Non-JSON response received:", contentType);
+        const text = await response.text();
+        console.error("Response text:", text);
+        throw new Error(`API returned non-JSON response: ${response.status} ${response.statusText}`);
+      }
 
       // Handle non-OK responses
       if (!response.ok) {
