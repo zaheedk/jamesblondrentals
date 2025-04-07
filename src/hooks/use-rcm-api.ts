@@ -8,11 +8,11 @@ import type {
   RCMAvailabilityRequest,
   RCMConfigInit,
   RCMStep2Request,
-  RCMDriverAge
+  RCMDriverAge,
+  RCMStep3Request
 } from '@/lib/api/rcm-api-types';
 import { toast } from 'sonner';
 
-// Define retry configuration for API calls
 const API_RETRY_CONFIG = {
   retries: 2,
   retryDelay: (attemptIndex: number) => Math.min(1000 * 2 ** attemptIndex, 5000),
@@ -21,18 +21,15 @@ const API_RETRY_CONFIG = {
 export function useRcmApi() {
   const queryClient = useQueryClient();
   
-  // Initialize API with configuration
   const initializeApi = useCallback((config: RCMConfigInit) => {
     rcmApi.initialize(config);
     console.log('API initialized with config:', {
       ...config,
       apiSecret: config.apiSecret ? '******' : undefined
     });
-    // Invalidate all location queries to force refetch with new config
     return queryClient.invalidateQueries({ queryKey: ['locations'] });
   }, [queryClient]);
   
-  // Get all locations with step1 API call
   const useLocations = () => {
     return useQuery({
       queryKey: ['locations'],
@@ -42,7 +39,6 @@ export function useRcmApi() {
           console.log('Step1 API response:', response);
           
           if (response.status === "OK" && response.results?.locations) {
-            // Transform the API response to match our expected format
             const locations = response.results.locations.map(loc => ({
               id: loc.id,
               name: loc.location,
@@ -68,14 +64,13 @@ export function useRcmApi() {
           throw error;
         }
       },
-      staleTime: 5 * 60 * 1000, // 5 minutes
+      staleTime: 5 * 60 * 1000,
       refetchOnWindowFocus: false,
       retry: API_RETRY_CONFIG.retries,
       retryDelay: API_RETRY_CONFIG.retryDelay,
     });
   };
   
-  // Get office hours
   const useOfficeHours = () => {
     return useQuery({
       queryKey: ['officeHours'],
@@ -92,14 +87,13 @@ export function useRcmApi() {
           throw error;
         }
       },
-      staleTime: 5 * 60 * 1000, // 5 minutes
+      staleTime: 5 * 60 * 1000,
       refetchOnWindowFocus: false,
       retry: API_RETRY_CONFIG.retries,
       retryDelay: API_RETRY_CONFIG.retryDelay,
     });
   };
   
-  // Get location details by ID to access advanced properties
   const useLocationDetails = () => {
     return useQuery({
       queryKey: ['locationDetails'],
@@ -122,7 +116,6 @@ export function useRcmApi() {
     });
   };
   
-  // Get driver ages with better error handling
   const useDriverAges = () => {
     return useQuery({
       queryKey: ['driverAges'],
@@ -142,14 +135,13 @@ export function useRcmApi() {
           throw error;
         }
       },
-      staleTime: 5 * 60 * 1000, // 5 minutes
+      staleTime: 5 * 60 * 1000,
       refetchOnWindowFocus: false,
       retry: API_RETRY_CONFIG.retries,
       retryDelay: API_RETRY_CONFIG.retryDelay,
     });
   };
   
-  // Get vehicle categories
   const useVehicleCategories = () => {
     return useQuery({
       queryKey: ['vehicleCategories'],
@@ -166,14 +158,13 @@ export function useRcmApi() {
           throw error;
         }
       },
-      staleTime: 5 * 60 * 1000, // 5 minutes
+      staleTime: 5 * 60 * 1000,
       refetchOnWindowFocus: false,
       retry: API_RETRY_CONFIG.retries,
       retryDelay: API_RETRY_CONFIG.retryDelay,
     });
   };
   
-  // Get available vehicles with Step2 API call
   const useStep2Vehicles = (params: RCMStep2Request | null) => {
     return useQuery({
       queryKey: ['step2Vehicles', params],
@@ -183,7 +174,6 @@ export function useRcmApi() {
         try {
           console.log('Fetching Step2 vehicles with params:', params);
           
-          // Validate that ageid is present and not empty
           if (!params.ageid) {
             console.error('Missing required ageid parameter for Step2 API call');
             toast.error('API Parameter Error', {
@@ -208,13 +198,12 @@ export function useRcmApi() {
           throw error;
         }
       },
-      enabled: !!params && !!params.ageid, // Only run if we have params AND a valid age ID
+      enabled: !!params && !!params.ageid,
       retry: API_RETRY_CONFIG.retries,
       retryDelay: API_RETRY_CONFIG.retryDelay,
     });
   };
   
-  // Get available vehicles based on search criteria
   const useAvailableVehicles = (params: RCMAvailabilityRequest | null) => {
     return useQuery({
       queryKey: ['availableVehicles', params],
@@ -238,7 +227,6 @@ export function useRcmApi() {
     });
   };
   
-  // Get vehicle details by ID
   const useVehicleDetails = (vehicleId: string | null) => {
     return useQuery({
       queryKey: ['vehicleDetails', vehicleId],
@@ -262,7 +250,37 @@ export function useRcmApi() {
     });
   };
   
-  // Create booking mutation
+  const useStep3Details = (params: RCMStep3Request | null) => {
+    return useQuery({
+      queryKey: ['step3Details', params],
+      queryFn: async () => {
+        if (!params) return null;
+        
+        try {
+          console.log('Fetching Step3 details with params:', params);
+          
+          const response = await rcmApi.getStep3(params);
+          console.log('Step3 response:', response);
+          
+          if (response.status === "OK") {
+            return response;
+          } else {
+            throw new Error(response.error || "Failed to fetch vehicle extras");
+          }
+        } catch (error) {
+          console.error('Failed to fetch vehicle extras:', error);
+          toast.error('API Connection Error', {
+            description: 'Failed to fetch vehicle extras. Please try again.'
+          });
+          throw error;
+        }
+      },
+      enabled: !!params,
+      retry: API_RETRY_CONFIG.retries,
+      retryDelay: API_RETRY_CONFIG.retryDelay,
+    });
+  };
+  
   const useCreateBooking = () => {
     return useMutation({
       mutationFn: async (bookingData: RCMBookingRequest) => {
@@ -297,6 +315,7 @@ export function useRcmApi() {
     useVehicleDetails,
     useCreateBooking,
     useLocationDetails,
-    useStep2Vehicles
+    useStep2Vehicles,
+    useStep3Details
   };
 }

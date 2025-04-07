@@ -9,7 +9,9 @@ import type {
   RCMStep1Response,
   RCMConfigInit,
   RCMStep2Request,
-  RCMStep2Response
+  RCMStep2Response,
+  RCMStep3Request,
+  RCMStep3Response
 } from './rcm-api-types';
 
 // API Configuration from Web.config file
@@ -250,6 +252,16 @@ class RCMApiClient {
     // to indicate "All Categories" rather than removing it entirely
 
     return this.request<RCMStep2Response>('POST', 'step2', params);
+  }
+
+  /**
+   * Get Step3 data (insurance options, km charges, extras)
+   * Using method name 'step3' as indicated in the API documentation
+   */
+  async getStep3(params: RCMStep3Request): Promise<RCMStep3Response> {
+    console.log('Fetching Step3 data with params:', params);
+    
+    return this.request<RCMStep3Response>('POST', 'step3', params);
   }
 }
 

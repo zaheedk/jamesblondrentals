@@ -1,4 +1,3 @@
-
 // RCM API type definitions
 
 export interface RCMVehicle {
@@ -191,6 +190,63 @@ export interface RCMAvailabilityRequest {
   dropoffDate: string; // ISO date string
   pickupTime: string;
   dropoffTime: string;
+}
+
+export interface RCMInsuranceOption {
+  id: string | number;
+  name: string;
+  description: string;
+  totalinsuranceamount: number;
+  isdefault: boolean;
+}
+
+export interface RCMKmCharge {
+  id: string | number;
+  name: string;
+  mileagedesc: string;
+  dailyrate: number;
+  numberofkmsfree: number;
+  feeforeachadditionalkm: number;
+  isdefault: boolean;
+}
+
+export interface RCMExtra {
+  id: string | number;
+  name: string;
+  description: string;
+  maxquantity: number;
+  unitprice: number;
+  totalextraamount: number;
+  isdefault: boolean;
+}
+
+export interface RCMStep3Request {
+  vehiclecategoryid: string | number;
+  pickuplocationid: string | number;
+  pickupdate: string;
+  pickuptime: string;
+  dropofflocationid: string | number;
+  dropoffdate: string;
+  dropofftime: string;
+  ageid: string | number;
+  campaigncode?: string;
+}
+
+export interface RCMStep3Results {
+  insuranceoptions: RCMInsuranceOption[];
+  kmcharges: RCMKmCharge[];
+  extras: RCMExtra[];
+  locationfees: {
+    vehiclecategoryid: string | number;
+    currencysymbol: string;
+    currencyname: string;
+  };
+}
+
+export interface RCMStep3Response {
+  status: string;
+  results: RCMStep3Results;
+  error?: string;
 }
 
 export interface RCMApiConfig {
