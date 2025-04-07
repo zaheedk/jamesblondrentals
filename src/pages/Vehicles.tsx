@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -55,7 +54,6 @@ const Vehicles = () => {
   const carCategory = searchParams.get("carCategory") || "";
   const promoCode = searchParams.get("promoCode") || "";
 
-  // Prepare API request parameters - now correctly handling when carCategory is empty
   const step2Params = pickupLocation ? {
     pickuplocationid: pickupLocation,
     pickupdate: pickupDate,
@@ -64,7 +62,7 @@ const Vehicles = () => {
     dropoffdate: dropoffDate,
     dropofftime: dropoffTime,
     ...(age && { ageid: age }),
-    ...(carCategory && carCategory !== "all" && carCategory !== "" && { vehiclecategorytypeid: carCategory }),
+    ...(carCategory && carCategory !== "all" && { vehiclecategorytypeid: carCategory }),
     ...(promoCode && { campaigncode: promoCode })
   } : null;
 
@@ -75,6 +73,9 @@ const Vehicles = () => {
       setIsLoading(false);
       
       const { availablecars, seasonalrates, mandatoryfees } = step2Data.results;
+      
+      console.log("Available cars count:", availablecars.length);
+      console.log("First available car:", availablecars[0]);
       
       const mappedVehicles: Vehicle[] = availablecars.map(car => {
         const carRates = seasonalrates.filter(rate => 
@@ -125,6 +126,11 @@ const Vehicles = () => {
         const minPrice = Math.floor(Math.min(...prices));
         const maxPrice = Math.ceil(Math.max(...prices));
         setPriceRange([minPrice, maxPrice]);
+      } else {
+        console.log("No vehicles found in the response");
+        toast.info("No vehicles found", {
+          description: "Try adjusting your search criteria"
+        });
       }
     } else if (step2Error) {
       setIsLoading(false);

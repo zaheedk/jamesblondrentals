@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -32,7 +31,7 @@ const SearchForm = () => {
   const [dropoffTime, setDropoffTime] = useState("");
   const [sameLocation, setSameLocation] = useState(true);
   const [age, setAge] = useState("");
-  const [carCategory, setCarCategory] = useState("");
+  const [carCategory, setCarCategory] = useState("all");
   const [promoCode, setPromoCode] = useState("");
   
   const [minDropoffDate, setMinDropoffDate] = useState<Date>(addDays(new Date(), 1));
@@ -290,11 +289,11 @@ const SearchForm = () => {
       pickupTime,
       dropoffTime,
       ...(age && { age }),
-      // Only include carCategory if it has a value
-      ...(carCategory && carCategory !== "" && { carCategory }),
+      carCategory,
       ...(promoCode && { promoCode })
     });
 
+    console.log("Navigating to vehicles with params:", searchParams.toString());
     navigate(`/vehicles?${searchParams.toString()}`);
   };
 

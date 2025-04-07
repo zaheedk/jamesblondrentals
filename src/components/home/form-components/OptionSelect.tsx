@@ -32,6 +32,8 @@ export const OptionSelect = ({
       : name;
   };
 
+  console.log(`OptionSelect ${id} rendering with value:`, value);
+
   return (
     <div className="space-y-2">
       <Label htmlFor={id}>{label}</Label>
