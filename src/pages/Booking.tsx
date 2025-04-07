@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Separator } from "@/components/ui/separator";
 import { RCMStep3Request, RCMStep3Response, RCMInsuranceOption } from "@/lib/api/rcm-api-types";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
 const Booking = () => {
   const navigate = useNavigate();
@@ -19,6 +21,7 @@ const Booking = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [bookingDetails, setBookingDetails] = useState<any>(null);
   const [step3Params, setStep3Params] = useState<RCMStep3Request | null>(null);
+  const [paramError, setParamError] = useState<string | null>(null);
   
   // State for selected options
   const [selectedInsuranceId, setSelectedInsuranceId] = useState<string | number | null>(null);
@@ -45,8 +48,30 @@ const Booking = () => {
   
   // Fetch Step3 data
   useEffect(() => {
-    if (vehicleId && pickupLocationId && dropoffLocationId && pickupDate && 
-        pickupTime && dropoffDate && dropoffTime && ageId) {
+    // Validate required parameters
+    let missingParams = [];
+    if (!vehicleId) missingParams.push("vehicleId");
+    if (!pickupLocationId) missingParams.push("pickupLocationId");
+    if (!dropoffLocationId) missingParams.push("dropoffLocationId");
+    if (!pickupDate) missingParams.push("pickupDate");
+    if (!pickupTime) missingParams.push("pickupTime");
+    if (!dropoffDate) missingParams.push("dropoffDate");
+    if (!dropoffTime) missingParams.push("dropoffTime");
+    if (!ageId) missingParams.push("ageId");
+    
+    if (missingParams.length > 0) {
+      const errorMsg = `Missing required parameters: ${missingParams.join(", ")}`;
+      setParamError(errorMsg);
+      console.error(errorMsg);
+      toast.error("Missing required booking parameters", {
+        description: "Please return to the vehicle search page and try again."
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      // Construct Step3 parameters
       const params: RCMStep3Request = {
         vehiclecategoryid: vehicleId,
         pickuplocationid: pickupLocationId,
@@ -58,6 +83,7 @@ const Booking = () => {
         ageid: ageId
       };
       
+      console.log("Step3 params:", params);
       setStep3Params(params);
       
       setBookingDetails({
@@ -74,11 +100,14 @@ const Booking = () => {
         ageId,
         basePrice
       });
-    } else {
-      toast.error("Missing required booking parameters", {
+      setParamError(null);
+    } catch (error) {
+      console.error("Error setting up Step3 params:", error);
+      setParamError("Error setting up booking parameters");
+      toast.error("Error setting up booking parameters", {
         description: "Please return to the vehicle search page and try again."
       });
-      navigate("/vehicles");
+      setIsLoading(false);
     }
   }, [vehicleId, pickupLocationId, dropoffLocationId, pickupDate, pickupTime, dropoffDate, dropoffTime, ageId]);
   
@@ -220,6 +249,24 @@ const Booking = () => {
     navigate(`/customer-details?${params.toString()}`);
   };
 
+  if (paramError) {
+    return (
+      <div className="container mx-auto p-4">
+        <h1 className="text-2xl font-bold mb-6">Booking Options</h1>
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Missing Parameters</AlertTitle>
+          <AlertDescription>
+            {paramError}. Please return to vehicle selection.
+          </AlertDescription>
+        </Alert>
+        <Button className="mt-4" onClick={() => navigate("/vehicles")}>
+          Return to Vehicle Selection
+        </Button>
+      </div>
+    );
+  }
+
   if (isStep3Loading) {
     return (
       <div className="container mx-auto p-4">
@@ -235,7 +282,13 @@ const Booking = () => {
     return (
       <div className="container mx-auto p-4">
         <h1 className="text-2xl font-bold mb-6">Error loading booking options</h1>
-        <p className="text-red-500">There was an error loading the booking options. Please try again later.</p>
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>API Error</AlertTitle>
+          <AlertDescription>
+            There was an error loading the booking options. This may be due to invalid parameters.
+          </AlertDescription>
+        </Alert>
         <Button className="mt-4" onClick={() => navigate("/vehicles")}>
           Return to Vehicle Selection
         </Button>

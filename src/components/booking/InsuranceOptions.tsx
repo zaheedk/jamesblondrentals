@@ -18,6 +18,18 @@ const InsuranceOptions = ({
   onSelectInsurance,
   currencySymbol
 }: InsuranceOptionsProps) => {
+  // Check if we have valid insurance options
+  if (!insuranceOptions || insuranceOptions.length === 0) {
+    return (
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold">Insurance Options</h3>
+        <Card className="p-4">
+          <div className="text-sm text-muted-foreground italic">No insurance options available</div>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-semibold">Insurance Options</h3>
