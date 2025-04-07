@@ -31,7 +31,7 @@ const SearchForm = () => {
   const [dropoffTime, setDropoffTime] = useState("");
   const [sameLocation, setSameLocation] = useState(true);
   const [age, setAge] = useState("");
-  const [carCategory, setCarCategory] = useState("all");
+  const [carCategory, setCarCategory] = useState("0");
   const [promoCode, setPromoCode] = useState("");
   
   const [minDropoffDate, setMinDropoffDate] = useState<Date>(addDays(new Date(), 1));
@@ -212,7 +212,7 @@ const SearchForm = () => {
   };
 
   const getCategoryName = (categoryId: string) => {
-    if (categoryId === "all") return "All Categories";
+    if (categoryId === "0") return "All Categories";
     
     const category = carCategories.find(c => String(c.id) === categoryId);
     return category ? category.vehiclecategorytype : "";
@@ -370,6 +370,7 @@ const SearchForm = () => {
                 isLoading={isLoadingCategories}
                 placeholder="All Categories"
                 defaultValue="All Categories"
+                allOptionId="0"
               />
               
               <div className="space-y-2 md:col-span-2">

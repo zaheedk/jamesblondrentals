@@ -53,7 +53,7 @@ const Vehicles = () => {
   const pickupTime = searchParams.get("pickupTime") || "";
   const dropoffTime = searchParams.get("dropoffTime") || "";
   const age = searchParams.get("age") || "";
-  const carCategory = searchParams.get("carCategory") || "all";
+  const carCategory = searchParams.get("carCategory") || "0";
   const promoCode = searchParams.get("promoCode") || "";
 
   const { data: driverAges, isLoading: isLoadingAges, error: driverAgesError } = useDriverAges();
@@ -75,7 +75,7 @@ const Vehicles = () => {
     dropoffdate: dropoffDate,
     dropofftime: dropoffTime,
     ageid: getValidAgeId(),
-    ...(carCategory && carCategory !== "all" ? { vehiclecategorytypeid: carCategory } : {}),
+    ...(carCategory && carCategory !== "0" ? { vehiclecategorytypeid: carCategory } : {}),
     ...(promoCode && { campaigncode: promoCode })
   } : null;
 

@@ -12,6 +12,8 @@ interface OptionSelectProps {
   isLoading: boolean;
   defaultValue?: string;
   placeholder?: string;
+  allOptionId?: string;
+  allOptionLabel?: string;
 }
 
 export const OptionSelect = ({
@@ -23,7 +25,9 @@ export const OptionSelect = ({
   getOptionName,
   isLoading,
   placeholder = "Select option",
-  defaultValue
+  defaultValue,
+  allOptionId = "0",
+  allOptionLabel = "All Categories"
 }: OptionSelectProps) => {
   const formatOptionName = (name: string) => {
     const numericAge = parseInt(name);
@@ -51,8 +55,8 @@ export const OptionSelect = ({
         </SelectTrigger>
         <SelectContent>
           {options.length > 0 && (
-            <SelectItem key="all" value="all">
-              {defaultValue || "All Categories"}
+            <SelectItem key="all" value={allOptionId}>
+              {allOptionLabel}
             </SelectItem>
           )}
           {options.map((option) => (
