@@ -76,7 +76,8 @@ const Vehicles = () => {
     dropoffdate: dropoffDate,
     dropofftime: dropoffTime,
     ageid: getValidAgeId(),
-    ...(carCategory && carCategory !== "0" ? { vehiclecategorytypeid: carCategory } : {})
+    // Always include vehiclecategorytypeid, even if it's "0"
+    vehiclecategorytypeid: carCategory
   } : null;
 
   // Enhanced logging
@@ -402,4 +403,3 @@ const Vehicles = () => {
 };
 
 export default Vehicles;
-

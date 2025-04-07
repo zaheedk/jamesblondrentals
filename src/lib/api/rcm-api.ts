@@ -1,4 +1,3 @@
-
 import { generateSignature } from './rcm-signature';
 import type { 
   RCMApiConfig,
@@ -247,14 +246,10 @@ class RCMApiClient {
       console.log('No vehicle category type ID in request - using all categories');
     }
     
-    // Make sure to strip out any vehiclecategorytypeid that's "0"
-    const cleanParams = { ...params };
-    if (cleanParams.vehiclecategorytypeid === "0" || cleanParams.vehiclecategorytypeid === 0) {
-      delete cleanParams.vehiclecategorytypeid;
-      console.log('Removed "0" vehiclecategorytypeid from request to show all categories');
-    }
-    
-    return this.request<RCMStep2Response>('POST', 'step2', cleanParams);
+    // We'll no longer strip out the "0" value, since we want to explicitly pass it
+    // to indicate "All Categories" rather than removing it entirely
+
+    return this.request<RCMStep2Response>('POST', 'step2', params);
   }
 }
 
