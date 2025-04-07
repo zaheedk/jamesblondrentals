@@ -1,3 +1,4 @@
+
 import { generateSignature } from './rcm-signature';
 import type { 
   RCMApiConfig,
@@ -238,13 +239,22 @@ class RCMApiClient {
    */
   async getStep2(params: RCMStep2Request): Promise<RCMStep2Response> {
     console.log('Fetching Step2 data with params:', params);
+    
     // Log specifically the category ID for debugging
     if ('vehiclecategorytypeid' in params) {
       console.log('Vehicle category type ID:', params.vehiclecategorytypeid, 'Type:', typeof params.vehiclecategorytypeid);
     } else {
       console.log('No vehicle category type ID in request - using all categories');
     }
-    return this.request<RCMStep2Response>('POST', 'step2', params);
+    
+    // Make sure to strip out any vehiclecategorytypeid that's "0"
+    const cleanParams = { ...params };
+    if (cleanParams.vehiclecategorytypeid === "0" || cleanParams.vehiclecategorytypeid === 0) {
+      delete cleanParams.vehiclecategorytypeid;
+      console.log('Removed "0" vehiclecategorytypeid from request to show all categories');
+    }
+    
+    return this.request<RCMStep2Response>('POST', 'step2', cleanParams);
   }
 }
 

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -67,6 +68,7 @@ const Vehicles = () => {
     return defaultAge ? String(defaultAge.id) : "";
   };
 
+  // Create API parameters, making sure to completely omit vehiclecategorytypeid when "0" is selected
   const step2Params = pickupLocation && driverAges?.length ? {
     pickuplocationid: pickupLocation,
     pickupdate: pickupDate,
@@ -75,6 +77,7 @@ const Vehicles = () => {
     dropoffdate: dropoffDate,
     dropofftime: dropoffTime,
     ageid: getValidAgeId(),
+    // Completely omit the parameter when carCategory is "0"
     ...(carCategory && carCategory !== "0" ? { vehiclecategorytypeid: carCategory } : {})
   } : null;
 
