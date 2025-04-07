@@ -144,6 +144,7 @@ export interface RCMStep2Results {
 export interface RCMStep2Response {
   status: string;
   results: RCMStep2Results;
+  error?: string; // Adding optional error property
 }
 
 export interface RCMStep2Request {
