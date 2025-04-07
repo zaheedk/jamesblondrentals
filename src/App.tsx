@@ -29,7 +29,12 @@ const App = () => {
             <Route path="/booking" element={<Booking />} />
             <Route path="/customer-details" element={<div className="container mx-auto p-4 text-center py-12">
               <h1 className="text-2xl font-bold mb-4">Customer Details Page</h1>
-              <p className="text-muted-foreground">This page is coming soon</p>
+              <p className="text-muted-foreground mb-4">This page is coming soon</p>
+              <div className="flex justify-center">
+                <a href="/" className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/80">
+                  Return to Home
+                </a>
+              </div>
             </div>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

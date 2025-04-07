@@ -48,7 +48,7 @@ const Booking = () => {
   
   // Fetch Step3 data
   useEffect(() => {
-    // Validate required parameters
+    // Validate required parameters immediately when component mounts
     let missingParams = [];
     if (!vehicleId) missingParams.push("vehicleId");
     if (!pickupLocationId) missingParams.push("pickupLocationId");
@@ -73,14 +73,14 @@ const Booking = () => {
     try {
       // Construct Step3 parameters
       const params: RCMStep3Request = {
-        vehiclecategoryid: vehicleId,
-        pickuplocationid: pickupLocationId,
-        pickupdate: pickupDate,
-        pickuptime: pickupTime,
-        dropofflocationid: dropoffLocationId,
-        dropoffdate: dropoffDate,
-        dropofftime: dropoffTime,
-        ageid: ageId
+        vehiclecategoryid: vehicleId!,
+        pickuplocationid: pickupLocationId!,
+        pickupdate: pickupDate!,
+        pickuptime: pickupTime!,
+        dropofflocationid: dropoffLocationId!,
+        dropoffdate: dropoffDate!,
+        dropofftime: dropoffTime!,
+        ageid: ageId!
       };
       
       console.log("Step3 params:", params);
@@ -93,9 +93,9 @@ const Booking = () => {
         pickupLocationName: pickupLocationName || "Pickup Location",
         dropoffLocationId,
         dropoffLocationName: dropoffLocationName || "Dropoff Location",
-        pickupDate: new Date(pickupDate),
+        pickupDate: new Date(pickupDate!),
         pickupTime,
-        dropoffDate: new Date(dropoffDate),
+        dropoffDate: new Date(dropoffDate!),
         dropoffTime,
         ageId,
         basePrice
@@ -253,8 +253,8 @@ const Booking = () => {
     return (
       <div className="container mx-auto p-4">
         <h1 className="text-2xl font-bold mb-6">Booking Options</h1>
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
+        <Alert variant="destructive" className="mb-4">
+          <AlertCircle className="h-4 w-4 mr-2" />
           <AlertTitle>Missing Parameters</AlertTitle>
           <AlertDescription>
             {paramError}. Please return to vehicle selection.
@@ -282,8 +282,8 @@ const Booking = () => {
     return (
       <div className="container mx-auto p-4">
         <h1 className="text-2xl font-bold mb-6">Error loading booking options</h1>
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
+        <Alert variant="destructive" className="mb-4">
+          <AlertCircle className="h-4 w-4 mr-2" />
           <AlertTitle>API Error</AlertTitle>
           <AlertDescription>
             There was an error loading the booking options. This may be due to invalid parameters.
