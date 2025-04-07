@@ -33,7 +33,6 @@ const Vehicles = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { rcmApi, useStep2Vehicles } = useRcmApi();
   
-  // Filter states
   const [vehicleType, setVehicleType] = useState<VehicleType | "all">("all");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 500]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -45,7 +44,6 @@ const Vehicles = () => {
     hybrid: false,
   });
 
-  // Get search params
   const pickupLocation = searchParams.get("pickupLocation") || "";
   const dropoffLocation = searchParams.get("dropoffLocation") || "";
   const pickupDate = searchParams.get("pickupDate") || "";
@@ -56,7 +54,6 @@ const Vehicles = () => {
   const carCategory = searchParams.get("carCategory") || "";
   const promoCode = searchParams.get("promoCode") || "";
 
-  // Prepare API request parameters
   const step2Params = pickupLocation ? {
     pickuplocationid: pickupLocation,
     pickupdate: pickupDate,
@@ -69,7 +66,6 @@ const Vehicles = () => {
     ...(promoCode && { campaigncode: promoCode })
   } : null;
 
-  // Fetch vehicles using the step2 API
   const { data: step2Data, isLoading: isLoadingStep2, error: step2Error } = useStep2Vehicles(step2Params);
 
   useEffect(() => {
@@ -78,9 +74,7 @@ const Vehicles = () => {
       
       const { availablecars, seasonalrates, mandatoryfees } = step2Data.results;
       
-      // Map RCM vehicles to our Vehicle interface
       const mappedVehicles: Vehicle[] = availablecars.map(car => {
-        // Find corresponding seasonal rates and mandatory fees
         const carRates = seasonalrates.filter(rate => 
           String(rate.vehiclecategoryid) === String(car.vehiclecategoryid)
         );
@@ -92,7 +86,6 @@ const Vehicles = () => {
         
         const feeAmount = mandatoryFee ? Number(mandatoryFee.totalfeeamount) : 0;
         
-        // Create a vehicle object with the required fields
         return {
           id: Number(car.vehiclecategoryid),
           make: car.vehiclecategory.split(' ')[0] || "Unknown",
@@ -102,9 +95,9 @@ const Vehicles = () => {
           price: car.totalrateafterdiscount + feeAmount,
           priceUnit: "total",
           seats: car.numberofadults + car.numberofchildren,
-          transmission: "automatic", // Not provided in step2 API, defaulting to automatic
-          fuelType: "gasoline", // Not provided in step2 API, defaulting to gasoline
-          fuelEfficiency: "N/A", // Not provided in step2 API
+          transmission: "automatic",
+          fuelType: "gasoline",
+          fuelEfficiency: "N/A",
           available: car.available === 1,
           location: pickupLocation,
           features: [
@@ -125,7 +118,6 @@ const Vehicles = () => {
       
       setVehicles(mappedVehicles);
       
-      // Update price range based on available vehicles
       if (mappedVehicles.length > 0) {
         const prices = mappedVehicles.map(v => v.price as number);
         const minPrice = Math.floor(Math.min(...prices));
@@ -142,20 +134,20 @@ const Vehicles = () => {
   }, [step2Data, step2Error]);
 
   useEffect(() => {
-    // Apply filters
     let results = [...vehicles];
     
-    // Filter by vehicle type
     if (vehicleType !== "all") {
       results = results.filter(vehicle => vehicle.type === vehicleType);
     }
     
-    // Filter by price range
-    results = results.filter(
-      vehicle => vehicle.price >= priceRange[0] && vehicle.price <= priceRange[1]
-    );
+    results = results.filter(vehicle => {
+      const numericPrice = typeof vehicle.price === 'string' 
+        ? parseFloat(vehicle.price) 
+        : vehicle.price;
+        
+      return numericPrice >= priceRange[0] && numericPrice <= priceRange[1];
+    });
     
-    // Filter by search term
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
       results = results.filter(
@@ -165,12 +157,10 @@ const Vehicles = () => {
       );
     }
     
-    // Filter by transmission
     if (transmission !== "all") {
       results = results.filter(vehicle => vehicle.transmission === transmission);
     }
     
-    // Filter by fuel types
     const selectedFuelTypes = Object.entries(fuelTypes)
       .filter(([_, isSelected]) => isSelected)
       .map(([type]) => type);
@@ -228,7 +218,6 @@ const Vehicles = () => {
 
         <div className="container mx-auto px-4 py-8">
           <div className="flex flex-col lg:flex-row gap-8">
-            {/* Filters Sidebar */}
             <aside className="lg:w-1/4 space-y-6">
               <Card className="p-4">
                 <h2 className="font-bold text-lg mb-4">Filters</h2>
@@ -338,7 +327,6 @@ const Vehicles = () => {
               </Card>
             </aside>
 
-            {/* Vehicle Grid */}
             <div className="lg:w-3/4">
               {isLoading || isLoadingStep2 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
