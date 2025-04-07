@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -62,9 +63,12 @@ const Vehicles = () => {
     dropoffdate: dropoffDate,
     dropofftime: dropoffTime,
     ...(age && { ageid: age }),
+    // Only send vehiclecategorytypeid if carCategory has a value AND is not "all"
     ...(carCategory && carCategory !== "all" && { vehiclecategorytypeid: carCategory }),
     ...(promoCode && { campaigncode: promoCode })
   } : null;
+
+  console.log("Step2Params:", step2Params);
 
   const { data: step2Data, isLoading: isLoadingStep2, error: step2Error } = useStep2Vehicles(step2Params);
 
@@ -75,7 +79,9 @@ const Vehicles = () => {
       const { availablecars, seasonalrates, mandatoryfees } = step2Data.results;
       
       console.log("Available cars count:", availablecars.length);
-      console.log("First available car:", availablecars[0]);
+      if (availablecars.length > 0) {
+        console.log("First available car:", availablecars[0]);
+      }
       
       const mappedVehicles: Vehicle[] = availablecars.map(car => {
         const carRates = seasonalrates.filter(rate => 
