@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -286,7 +287,8 @@ const SearchForm = () => {
       pickupTime,
       dropoffTime,
       ...(age && { age }),
-      ...(carCategory && { carCategory }),
+      // Only include carCategory if it has a value
+      ...(carCategory && carCategory !== "" && { carCategory }),
       ...(promoCode && { promoCode })
     });
 

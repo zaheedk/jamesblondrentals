@@ -35,16 +35,24 @@ export const OptionSelect = ({
   return (
     <div className="space-y-2">
       <Label htmlFor={id}>{label}</Label>
-      <Select value={value} onValueChange={(value) => {
-        console.log(`Setting ${id} to:`, value);
-        onValueChange(value);
-      }}>
+      <Select 
+        value={value} 
+        onValueChange={(value) => {
+          console.log(`Setting ${id} to:`, value);
+          onValueChange(value);
+        }}
+      >
         <SelectTrigger id={id} className={isLoading ? "animate-pulse" : ""}>
           <SelectValue>
             {value ? formatOptionName(getOptionName(value)) : defaultValue || placeholder}
           </SelectValue>
         </SelectTrigger>
         <SelectContent>
+          {options.length > 0 && (
+            <SelectItem key="all" value="">
+              {defaultValue || "All Categories"}
+            </SelectItem>
+          )}
           {options.map((option) => (
             <SelectItem key={option.id} value={String(option.id)}>
               {formatOptionName(option.name)}

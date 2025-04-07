@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -54,6 +55,7 @@ const Vehicles = () => {
   const carCategory = searchParams.get("carCategory") || "";
   const promoCode = searchParams.get("promoCode") || "";
 
+  // Prepare API request parameters - now correctly handling when carCategory is empty
   const step2Params = pickupLocation ? {
     pickuplocationid: pickupLocation,
     pickupdate: pickupDate,
@@ -62,7 +64,7 @@ const Vehicles = () => {
     dropoffdate: dropoffDate,
     dropofftime: dropoffTime,
     ...(age && { ageid: age }),
-    ...(carCategory && { vehiclecategorytypeid: carCategory }),
+    ...(carCategory && carCategory !== "" && { vehiclecategorytypeid: carCategory }),
     ...(promoCode && { campaigncode: promoCode })
   } : null;
 
