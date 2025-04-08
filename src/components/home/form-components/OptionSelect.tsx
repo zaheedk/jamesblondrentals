@@ -8,7 +8,7 @@ interface OptionSelectProps {
   value: string;
   onValueChange: (value: string) => void;
   options: { id: string | number; name: string }[];
-  getOptionName: (id: string) => string;
+  getOptionName?: (id: string) => string;
   isLoading: boolean;
   defaultValue?: string;
   placeholder?: string;
@@ -36,6 +36,20 @@ export const OptionSelect = ({
       : name;
   };
 
+  // Default implementation of getOptionName if not provided
+  const getDisplayName = (id: string): string => {
+    if (!id) return "";
+    
+    // If custom getOptionName function is provided, use it
+    if (getOptionName) {
+      return getOptionName(id);
+    }
+    
+    // Default implementation: find the option by ID and return its name
+    const option = options.find(opt => String(opt.id) === id);
+    return option ? option.name : "";
+  };
+
   console.log(`OptionSelect ${id} rendering with value:`, value);
 
   return (
@@ -50,7 +64,7 @@ export const OptionSelect = ({
       >
         <SelectTrigger id={id} className={isLoading ? "animate-pulse" : ""}>
           <SelectValue>
-            {value ? formatOptionName(getOptionName(value)) : defaultValue || placeholder}
+            {value ? formatOptionName(getDisplayName(value)) : defaultValue || placeholder}
           </SelectValue>
         </SelectTrigger>
         <SelectContent>

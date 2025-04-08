@@ -222,21 +222,21 @@ const SearchForm = () => {
               value={selectedAgeId}
               onValueChange={setSelectedAgeId}
               isLoading={isDriverAgesLoading}
+              placeholder="Select driver age"
             />
             
             <OptionSelect
               id="vehicle-category"
               label="Vehicle Type (Optional)"
-              options={[
-                { id: "0", name: "All Categories" },
-                ...vehicleCategories.map(cat => ({
-                  id: String(cat.id),
-                  name: cat.vehiclecategorytype
-                }))
-              ]}
+              options={vehicleCategories.map(cat => ({
+                id: String(cat.id),
+                name: cat.vehiclecategorytype
+              }))}
               value={selectedCategoryId}
               onValueChange={setSelectedCategoryId}
               isLoading={isCategoriesLoading}
+              allOptionId="0"
+              allOptionLabel="All Categories"
             />
           </div>
         </CardContent>

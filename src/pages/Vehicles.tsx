@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useRcmApi } from "@/hooks/use-rcm-api";
@@ -55,7 +54,16 @@ const Vehicles = () => {
   
   useEffect(() => {
     if (pickupLocationId && dropoffLocationId && pickupDate && pickupTime && dropoffDate && dropoffTime && ageId) {
-      const params = {
+      const params: {
+        pickuplocationid: string;
+        pickupdate: string;
+        pickuptime: string;
+        dropofflocationid: string;
+        dropoffdate: string;
+        dropofftime: string;
+        ageid: string;
+        vehiclecategorytypeid?: string;
+      } = {
         pickuplocationid: pickupLocationId,
         pickupdate: pickupDate,
         pickuptime: pickupTime,

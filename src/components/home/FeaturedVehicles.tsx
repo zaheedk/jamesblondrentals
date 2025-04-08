@@ -5,10 +5,11 @@ import { Button } from "@/components/ui/button";
 import VehicleCard from "../vehicles/VehicleCard";
 import { Vehicle, VehicleType } from "@/lib/types";
 import { useRcmApi } from "@/hooks/use-rcm-api";
+import { RCMAvailableCar } from "@/lib/api/rcm-api-types";
 
 const FeaturedVehicles = () => {
   const [activeCategory, setActiveCategory] = useState<VehicleType | "all">("all");
-  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [vehicles, setVehicles] = useState<RCMAvailableCar[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { rcmApi } = useRcmApi();
   
@@ -36,30 +37,7 @@ const FeaturedVehicles = () => {
             dropoffTime: "10:00",
           });
           
-          // Transform API data to match our Vehicle interface
-          const mappedVehicles: Vehicle[] = vehiclesData.map(v => ({
-            id: parseInt(v.id.toString()),
-            make: v.make || "Unknown",
-            model: v.model || "Vehicle",
-            year: v.year || new Date().getFullYear(),
-            type: (v.category?.toLowerCase() as VehicleType) || "economy",
-            price: parseFloat(v.price?.toString()) || 50,
-            priceUnit: "day",
-            seats: v.passengers || 4,
-            transmission: (v.transmission?.toLowerCase() === "a" ? "automatic" : "manual") as "automatic" | "manual",
-            fuelType: (v.fuelType?.toLowerCase() || "gasoline") as "gasoline" | "diesel" | "electric" | "hybrid",
-            fuelEfficiency: v.fuelConsumption || "35 mpg",
-            available: true,
-            location: defaultLocation.location || "Main Location",
-            features: typeof v.features === 'string' ? v.features.split(',').map(f => f.trim()) : 
-              (Array.isArray(v.features) ? v.features : ["Air Conditioning", "Power Steering"]),
-            images: Array.isArray(v.images) && v.images.length > 0 ? 
-              v.images.map(img => typeof img === 'string' ? img : (img as any).url || "/placeholder.svg") : 
-              ["/placeholder.svg"],
-            description: v.description || `${v.make} ${v.model} with ${v.passengers || 4} seats and ${v.transmission === "A" ? "automatic" : "manual"} transmission.`,
-          }));
-          
-          setVehicles(mappedVehicles);
+          setVehicles(vehiclesData);
         }
       } catch (error) {
         console.error("Error fetching vehicles:", error);
@@ -81,9 +59,23 @@ const FeaturedVehicles = () => {
     { label: "Luxury", value: "luxury" }
   ];
   
-  const filteredVehicles = vehicles.filter(vehicle => 
-    activeCategory === "all" || vehicle.type === activeCategory
-  ).slice(0, 3);
+  // Filter vehicles based on active category
+  const filteredVehicles = activeCategory === "all" 
+    ? vehicles.slice(0, 3)
+    : vehicles
+        .filter(vehicle => {
+          // Try to match the category based on the vehicle category name
+          const categoryName = vehicle.vehiclecategory?.toLowerCase() || "";
+          return categoryName.includes(activeCategory);
+        })
+        .slice(0, 3);
+  
+  // Placeholder onBook function
+  const handleBookClick = () => {
+    console.log("Book button clicked - navigating to search form");
+    // In featured vehicles, we just navigate to the search form
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
   
   return (
     <div className="container mx-auto px-4 py-16">
@@ -129,7 +121,11 @@ const FeaturedVehicles = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredVehicles.map((vehicle) => (
-            <VehicleCard key={vehicle.id} vehicle={vehicle} showDetails={true} />
+            <VehicleCard 
+              key={vehicle.vehiclecategoryid} 
+              vehicle={vehicle} 
+              onBook={handleBookClick}
+            />
           ))}
         </div>
       )}
