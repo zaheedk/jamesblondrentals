@@ -1,161 +1,132 @@
 
 import { Link } from "react-router-dom";
-import { formatCurrency } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Fuel, Users, Gauge, DollarSign } from "lucide-react";
 import { Vehicle } from "@/lib/types";
 
 interface VehicleCardProps {
-  // Direct props
-  id?: string | number;
-  name?: string;
-  imageUrl?: string;
-  price?: number | string;
-  seats?: number;
-  luggage?: number;
-  transmission?: string;
-  features?: string[] | string;
-  category?: string;
-  currencySymbol?: string;
-  
-  // Search context parameters
-  searchContext?: {
-    pickupLocationId: string;
-    pickupLocationName?: string;
-    dropoffLocationId: string;
-    dropoffLocationName?: string;
-    pickupDate: string;
-    pickupTime: string;
-    dropoffDate: string;
-    dropoffTime: string;
-    ageId: string;
-  };
-  
-  // Alternative approach with vehicle object
-  vehicle?: Vehicle;
+  vehicle: Vehicle;
   showDetails?: boolean;
 }
 
-const VehicleCard = (props: VehicleCardProps) => {
-  // If we have a vehicle prop, extract data from it
-  const vehicle = props.vehicle;
-  
-  // Extract data prioritizing direct props, then falling back to vehicle object props
-  const {
-    id = vehicle?.id,
-    name = vehicle ? `${vehicle.make} ${vehicle.model}` : "Unknown Vehicle",
-    imageUrl = vehicle?.images?.[0] || "/placeholder.svg",
-    price = vehicle?.price || 0,
-    seats = vehicle?.seats || 4,
-    luggage = vehicle?.luggage || 2,
-    transmission = vehicle?.transmission || "automatic",
-    features = vehicle?.features || [],
-    category = vehicle?.type || "economy",
-    currencySymbol = "$",
-    searchContext = props.searchContext,
-    showDetails = props.showDetails
-  } = props;
-  
-  const featuresList = Array.isArray(features) 
-    ? features 
-    : typeof features === 'string' && features ? features.split(',') : [];
-  
-  // Build the detail link with all necessary parameters
-  const buildDetailLink = () => {
-    if (!searchContext) return `/vehicle/${id}`;
-    
-    const params = new URLSearchParams();
-    
-    // Add required booking parameters
-    params.append('vehicleId', id?.toString() || "0");
-    params.append('vehicleName', name);
-    params.append('basePrice', typeof price === 'string' ? price : price?.toString() || "0");
-    
-    // Add search context parameters
-    params.append('pickupLocationId', searchContext.pickupLocationId);
-    if (searchContext.pickupLocationName) {
-      params.append('pickupLocationName', searchContext.pickupLocationName);
-    }
-    params.append('dropoffLocationId', searchContext.dropoffLocationId);
-    if (searchContext.dropoffLocationName) {
-      params.append('dropoffLocationName', searchContext.dropoffLocationName);
-    }
-    params.append('pickupDate', searchContext.pickupDate);
-    params.append('pickupTime', searchContext.pickupTime);
-    params.append('dropoffDate', searchContext.dropoffDate);
-    params.append('dropoffTime', searchContext.dropoffTime);
-    params.append('ageId', searchContext.ageId);
-    
-    return `/vehicle/${id}?${params.toString()}`;
+const VehicleCard = ({ vehicle, showDetails = false }: VehicleCardProps) => {
+  // Format currency to display properly
+  const formatCurrency = (amount: number | string) => {
+    const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
+    return new Intl.NumberFormat('en-NZ', {
+      style: 'currency',
+      currency: 'NZD'
+    }).format(numAmount);
   };
 
   return (
-    <Card className="overflow-hidden flex flex-col h-full">
-      <div className="relative h-48 overflow-hidden">
-        <img 
-          src={imageUrl || "/placeholder.svg"} 
-          alt={name} 
-          className="w-full h-full object-cover transition-transform hover:scale-105"
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = "/placeholder.svg";
-          }}
+    <Card className="overflow-hidden hover:shadow-lg car-transition border-0 shadow">
+      <div className="aspect-video relative overflow-hidden">
+        <img
+          src={vehicle.images[0] || "/placeholder.svg"}
+          alt={`${vehicle.make} ${vehicle.model}`}
+          className="w-full h-full object-cover car-transition hover:scale-105"
         />
-        {category && (
-          <div className="absolute top-2 left-2">
-            <Badge variant="secondary" className="bg-white/80 text-black">
-              {category}
+        {!vehicle.available && (
+          <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
+            <Badge variant="destructive" className="text-lg py-2 px-4">
+              Sold Out
             </Badge>
           </div>
         )}
+        {vehicle.type && (
+          <Badge className="absolute top-3 right-3 capitalize">
+            {vehicle.type}
+          </Badge>
+        )}
       </div>
-      
-      <CardContent className="flex-grow pt-4">
-        <h3 className="text-lg font-bold tracking-tight">{name}</h3>
-        
-        <div className="grid grid-cols-3 gap-2 my-3 text-sm">
-          <div className="flex flex-col items-center justify-center p-2 bg-gray-50 rounded-md">
-            <span className="text-gray-500">Seats</span>
-            <span className="font-medium">{seats}</span>
-          </div>
-          <div className="flex flex-col items-center justify-center p-2 bg-gray-50 rounded-md">
-            <span className="text-gray-500">Luggage</span>
-            <span className="font-medium">{luggage}</span>
-          </div>
-          <div className="flex flex-col items-center justify-center p-2 bg-gray-50 rounded-md">
-            <span className="text-gray-500">Trans</span>
-            <span className="font-medium">{transmission === "automatic" ? "Auto" : "Manual"}</span>
+      <CardContent className="pt-6">
+        <div className="flex justify-between items-start mb-2">
+          <h3 className="text-xl font-bold">
+            {vehicle.make} {vehicle.model}
+          </h3>
+          <div className="text-right">
+            <span className="text-xl font-semibold text-primary">
+              {formatCurrency(vehicle.price)}
+            </span>
+            <span className="text-sm text-gray-500">
+              {vehicle.priceUnit === 'day' ? '/day' : ' total'}
+            </span>
           </div>
         </div>
         
-        {featuresList.length > 0 && (
-          <div className="mt-3">
-            <h4 className="text-xs font-medium text-gray-500 mb-1">Features</h4>
-            <div className="flex flex-wrap gap-1">
-              {featuresList.slice(0, 3).map((feature, idx) => (
-                <Badge key={idx} variant="outline" className="text-xs">
-                  {feature.trim()}
-                </Badge>
-              ))}
-              {featuresList.length > 3 && (
-                <Badge variant="outline" className="text-xs">
-                  +{featuresList.length - 3} more
-                </Badge>
-              )}
-            </div>
+        {vehicle.dailyRate && vehicle.totalDays && (
+          <div className="text-sm text-gray-600 mt-1">
+            <DollarSign className="inline h-4 w-4 mr-1" />
+            {formatCurrency(vehicle.dailyRate)}/day x {vehicle.totalDays} days
           </div>
+        )}
+        
+        {vehicle.discountAmount > 0 && (
+          <div className="text-sm text-amber-600 mt-1">
+            Includes {formatCurrency(vehicle.discountAmount)} in discounts
+          </div>
+        )}
+        
+        <div className="flex flex-wrap items-center text-sm text-gray-600 mt-3 gap-4">
+          <div className="flex items-center">
+            <Users className="mr-1 h-4 w-4" />
+            <span>{vehicle.seats} seats</span>
+          </div>
+          <div className="flex items-center">
+            <Gauge className="mr-1 h-4 w-4" />
+            <span>{vehicle.transmission}</span>
+          </div>
+          <div className="flex items-center">
+            <Fuel className="mr-1 h-4 w-4" />
+            <span>{vehicle.fuelType}</span>
+          </div>
+        </div>
+        
+        {vehicle.description && (
+          <p className="text-sm text-gray-600 mt-3 line-clamp-2">
+            {vehicle.description}
+          </p>
         )}
       </CardContent>
       
-      <CardFooter className="flex flex-col space-y-2 border-t pt-4">
-        <div className="w-full flex items-center justify-between">
-          <div className="font-bold text-lg">
-            {currencySymbol}{formatCurrency(price)}
-            <span className="text-xs font-normal text-gray-500">/day</span>
-          </div>
-          <Button asChild>
-            <Link to={buildDetailLink()}>View Details</Link>
-          </Button>
+      <CardFooter className="pt-0">
+        <div className="flex w-full">
+          {!vehicle.available ? (
+            <Button 
+              variant="secondary" 
+              className="w-full" 
+              disabled
+            >
+              Sold Out
+            </Button>
+          ) : showDetails ? (
+            <Button 
+              variant="default" 
+              className="w-full"
+              asChild
+            >
+              <Link to={`/vehicle/${vehicle.id}`}>View Details</Link>
+            </Button>
+          ) : (
+            <>
+              <Button 
+                variant="outline" 
+                className="w-1/2 mr-2"
+                asChild
+              >
+                <Link to={`/vehicle/${vehicle.id}`}>Details</Link>
+              </Button>
+              <Button 
+                className="w-1/2"
+                asChild
+              >
+                <Link to={`/booking?vehicleId=${vehicle.id}`}>Book Now</Link>
+              </Button>
+            </>
+          )}
         </div>
       </CardFooter>
     </Card>

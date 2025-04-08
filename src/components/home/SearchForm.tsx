@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -19,7 +18,7 @@ import {
   combineDateTime 
 } from "./form-components/DateTimeUtils";
 
-const DEFAULT_LOCATION_ID = "1"; // Changed to default Kelston location
+const DEFAULT_LOCATION_ID = "625";
 
 const SearchForm = () => {
   const navigate = useNavigate();
@@ -85,12 +84,11 @@ const SearchForm = () => {
   const isLocationError = !!locationError;
   
   useEffect(() => {
-    // Initialize API in the component with live data mode
     initializeApi({
       apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
       apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
       apiUrl: "https://apis.rentalcarmanager.com/booking/v3.2",
-      useMockData: false // Ensure we're using real data
+      useMockData: false
     }).catch(error => {
       console.error('Failed to initialize API:', error);
       toast.error("Error connecting to booking system", {
@@ -99,19 +97,16 @@ const SearchForm = () => {
     });
   }, [initializeApi]);
 
-  // Modified default date calculation to ensure future dates
   useEffect(() => {
     console.log('Setting default dates');
-    
-    // Set pickup date to tomorrow by default (to ensure it's in the future)
-    const tomorrow = addDays(new Date(), 1);
+    const today = new Date();
     
     if (!pickupDate) {
-      setPickupDate(tomorrow);
+      setPickupDate(today);
       
-      const defaultDropoff = addDays(tomorrow, 3);
+      const defaultDropoff = addDays(today, 3);
       setDropoffDate(defaultDropoff);
-      console.log('Default dates set', { tomorrow, defaultDropoff });
+      console.log('Default dates set', { today, defaultDropoff });
     }
   }, []);
 
@@ -124,15 +119,11 @@ const SearchForm = () => {
       if (selectedLocationDetail) {
         const requiredNoticeDays = selectedLocationDetail.noticerequired_numberofdays || 0;
         
-        let newMinPickupDate: Date;
+        let newMinPickupDate = new Date();
         
         if (requiredNoticeDays > 0) {
-          // Add required notice days to current date
           newMinPickupDate = addDays(new Date(), requiredNoticeDays);
           console.log(`Location ${pickupLocation} requires ${requiredNoticeDays} days notice. Min pickup date set to ${newMinPickupDate.toISOString()}`);
-        } else {
-          // If no notice required, still set to tomorrow to ensure it's in the future
-          newMinPickupDate = addDays(new Date(), 1);
         }
         
         setMinPickupDate(newMinPickupDate);
@@ -227,7 +218,6 @@ const SearchForm = () => {
     return category ? category.vehiclecategorytype : "";
   };
 
-  // Ensure dates are in DD/MM/YYYY format as required by the API
   const formatDateForApi = (date: Date): string => {
     return format(date, 'dd/MM/yyyy');
   };
@@ -247,11 +237,6 @@ const SearchForm = () => {
     
     if (!pickupTime || !dropoffTime) {
       toast.error("Please select both pickup and drop-off times");
-      return;
-    }
-    
-    if (pickupDate && isBefore(pickupDate, addDays(new Date(), 1))) {
-      toast.error("Pickup date must be at least tomorrow");
       return;
     }
     
@@ -275,21 +260,6 @@ const SearchForm = () => {
     console.log("Navigating to vehicles with params:", searchParams.toString());
     navigate(`/vehicles?${searchParams.toString()}`);
   };
-  
-  // Set default location if no location selected and data is loaded
-  useEffect(() => {
-    if (!pickupLocation && locations.length > 0) {
-      // Find the default location or use the first available one
-      const defaultLocation = locations.find(loc => loc.isdefault) || locations[0];
-      if (defaultLocation) {
-        console.log('Setting default location to:', defaultLocation.name);
-        setPickupLocation(defaultLocation.id);
-        if (sameLocation) {
-          setDropoffLocation(defaultLocation.id);
-        }
-      }
-    }
-  }, [locations, pickupLocation, sameLocation]);
 
   return (
     <Card className="shadow-lg border-0">

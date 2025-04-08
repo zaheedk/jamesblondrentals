@@ -1,4 +1,3 @@
-
 export interface Vehicle {
   id: number;
   make: string;
@@ -8,7 +7,6 @@ export interface Vehicle {
   price: number | string;
   priceUnit: "day" | "hour" | "week" | "total";
   seats: number;
-  luggage?: number; // Adding luggage property as optional
   transmission: "automatic" | "manual";
   fuelType: "gasoline" | "diesel" | "electric" | "hybrid";
   fuelEfficiency: string;

@@ -14,9 +14,8 @@ export const JS_TO_API_DAY_MAP: { [key: number]: number } = {
 };
 
 export const disablePastDates = (date: Date, locationId: string | undefined, locationDetails: RCMLocationDetail[]) => {
-  // Always disable today and dates in the past - API requires future dates
-  const tomorrow = startOfDay(addDays(new Date(), 1));
-  if (isBefore(date, tomorrow)) {
+  // Always disable dates in the past
+  if (isBefore(date, startOfDay(new Date()))) {
     return true;
   }
   

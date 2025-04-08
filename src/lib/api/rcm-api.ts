@@ -1,5 +1,4 @@
 import { generateSignature } from './rcm-signature';
-import { toast } from 'sonner';
 import type { 
   RCMApiConfig,
   RCMVehicle,
@@ -14,7 +13,6 @@ import type {
   RCMStep3Request,
   RCMStep3Response
 } from './rcm-api-types';
-import { mockStep1Data, mockStep2Data, mockStep3Data } from './rcm-mock-data';
 
 // API Configuration from Web.config file
 const DEFAULT_CONFIG: RCMApiConfig = {
@@ -29,7 +27,6 @@ const DEFAULT_CONFIG: RCMApiConfig = {
 class RCMApiClient {
   private config: RCMApiConfig;
   private initialized: boolean = false;
-  private useMockData: boolean = false; // Default to real API data
 
   constructor(config: RCMApiConfig) {
     // Ensure API URL doesn't end with a slash
@@ -46,14 +43,12 @@ class RCMApiClient {
     if (config.apiKey) this.config.apiKey = config.apiKey;
     if (config.apiSecret) this.config.apiSecret = config.apiSecret;
     if (config.apiUrl) this.config.apiUrl = config.apiUrl.replace(/\/$/, '');
-    if (config.useMockData !== undefined) this.useMockData = config.useMockData;
     
     this.initialized = true;
     
     console.log('RCM API initialized with config:', {
       apiUrl: this.config.apiUrl,
-      apiKey: this.config.apiKey,
-      useMockData: this.useMockData
+      apiKey: this.config.apiKey
     });
   }
 
@@ -108,17 +103,16 @@ class RCMApiClient {
    * Exactly as shown in the Postman collection
    */
   private buildApiUrl(): string {
-    // For development, use local proxy
-    if (window.location.hostname === 'localhost' || 
-        window.location.hostname.includes('preview') ||
-        window.location.hostname.includes('lovable')) {
-      const apiPath = `/api/rcm${this.config.apiUrl.replace(/^https?:\/\/[^\/]+/, '')}`;
-      const url = `${apiPath}/${this.config.apiKey}?apikey=${this.config.apiKey}`;
+    // Use the proxy URL in browser environment
+    if (typeof window !== 'undefined') {
+      const baseUrl = '/api/rcm';
+      const apiPath = this.config.apiUrl.replace(/^https?:\/\/[^\/]+/, '');
+      const url = `${baseUrl}${apiPath}/${this.config.apiKey}?apikey=${this.config.apiKey}`;
       console.log('Built proxied API URL:', url);
       return url;
     }
     
-    // For production, use direct URL
+    // Otherwise use the direct URL (for non-browser environments)
     const url = `${this.config.apiUrl}/${this.config.apiKey}?apikey=${this.config.apiKey}`;
     console.log('Built direct API URL:', url);
     return url;
@@ -129,12 +123,6 @@ class RCMApiClient {
    */
   private async request<T>(method: string, requestMethod: string, body?: any): Promise<T> {
     this.ensureInitialized();
-
-    // Only use mock data if explicitly configured to do so
-    if (this.useMockData) {
-      console.log(`Using mock data for ${requestMethod} request as configured`);
-      return this.getMockResponse<T>(requestMethod, body);
-    }
 
     try {
       // Build the URL with API key
@@ -161,7 +149,7 @@ class RCMApiClient {
         console.error("Non-JSON response received:", contentType);
         const text = await response.text();
         console.error("Response text:", text);
-        throw new Error(`Expected JSON response but got ${contentType}`);
+        throw new Error(`API returned non-JSON response: ${response.status} ${response.statusText}`);
       }
 
       // Handle non-OK responses
@@ -176,7 +164,7 @@ class RCMApiClient {
         }
         
         console.error(`API error: ${response.status} ${response.statusText}`, errorData);
-        throw new Error(errorData.message || `API request failed with status: ${response.status}`);
+        throw new Error(errorData.message || `API request failed: ${response.status}`);
       }
 
       // Parse and return the response
@@ -186,39 +174,13 @@ class RCMApiClient {
       // Check for API errors in the response
       if (responseData.status === "ERR") {
         console.error('API returned error:', responseData.error);
-        throw new Error(responseData.error || "API returned an error");
+        throw new Error(responseData.error || 'Unknown API error');
       }
       
       return responseData;
     } catch (error) {
       console.error('RCM API request failed:', error);
-      
-      // Only fall back to mock data in development mode
-      if (process.env.NODE_ENV === 'development') {
-        console.log("Running in development - falling back to mock data due to error");
-        toast.error('API error occurred', { description: 'Using fallback data for development' });
-        return this.getMockResponse<T>(requestMethod, body);
-      }
-      
-      // In production, we should not silently use mock data
       throw error;
-    }
-  }
-  
-  /**
-   * Returns mock data based on the request method
-   */
-  private getMockResponse<T>(requestMethod: string, body?: any): T {
-    switch(requestMethod) {
-      case 'step1':
-        return mockStep1Data as unknown as T;
-      case 'step2':
-        return mockStep2Data as unknown as T;
-      case 'step3':
-        return mockStep3Data as unknown as T;
-      default:
-        // For other methods, return a basic success response
-        return { status: "OK", results: {} } as unknown as T;
     }
   }
 
@@ -286,6 +248,9 @@ class RCMApiClient {
       console.log('No vehicle category type ID in request - using all categories');
     }
     
+    // We'll no longer strip out the "0" value, since we want to explicitly pass it
+    // to indicate "All Categories" rather than removing it entirely
+
     return this.request<RCMStep2Response>('POST', 'step2', params);
   }
 
