@@ -1,329 +1,401 @@
 
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Grid3X3, ListFilter } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useRcmApi } from "@/hooks/use-rcm-api";
-import VehicleCard from "@/components/vehicles/VehicleCard";
+import { Card } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
+import { Checkbox } from "@/components/ui/checkbox";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import { Separator } from "@/components/ui/separator";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { RCMStep2Request } from "@/lib/api/rcm-api-types";
+import VehicleCard from "@/components/vehicles/VehicleCard";
+import { Vehicle, VehicleType } from "@/lib/types";
+import { Input } from "@/components/ui/input";
+import { useRcmApi } from "@/hooks/use-rcm-api";
+import { RCMAvailableCar, RCMMandatoryFee, RCMSeasonalRate } from "@/lib/api/rcm-api-types";
 import { toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
+
+interface RcmVehicleWithPricing {
+  vehicle: RCMAvailableCar;
+  seasonalRates: RCMSeasonalRate[];
+  mandatoryFee: RCMMandatoryFee | null;
+}
 
 const Vehicles = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const { useLocations, useDriverAges, useVehicleCategories, useStep2Vehicles } = useRcmApi();
-  const [isGridView, setIsGridView] = useState(true);
-  const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
+  const [searchParams] = useSearchParams();
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { useDriverAges, useStep2Vehicles } = useRcmApi();
   
-  // Locations data
-  const { data: locations, isLoading: isLocationsLoading } = useLocations();
-  const { data: driverAges } = useDriverAges();
-  const { data: vehicleCategories } = useVehicleCategories();
+  const [vehicleType, setVehicleType] = useState<VehicleType | "all">("all");
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 500]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [transmission, setTransmission] = useState<"all" | "automatic" | "manual">("all");
+  const [fuelTypes, setFuelTypes] = useState({
+    gasoline: false,
+    diesel: false,
+    electric: false,
+    hybrid: false,
+  });
+
+  const pickupLocation = searchParams.get("pickupLocation") || "";
+  const dropoffLocation = searchParams.get("dropoffLocation") || "";
+  const pickupDate = searchParams.get("pickupDate") || "";
+  const dropoffDate = searchParams.get("dropoffDate") || "";
+  const pickupTime = searchParams.get("pickupTime") || "";
+  const dropoffTime = searchParams.get("dropoffTime") || "";
+  const age = searchParams.get("age") || "";
+  const carCategory = searchParams.get("carCategory") || "0";
+  const promoCode = searchParams.get("promoCode") || "";
+
+  const { data: driverAges, isLoading: isLoadingAges, error: driverAgesError } = useDriverAges();
   
-  // Search parameters
-  const pickupLocationId = searchParams.get("pickupLocationId") || searchParams.get("pickuplocationid") || "1";
-  const pickupLocationName = searchParams.get("pickupLocationName");
-  const dropoffLocationId = searchParams.get("dropoffLocationId") || searchParams.get("dropofflocationid") || pickupLocationId;
-  const dropoffLocationName = searchParams.get("dropoffLocationName");
-  
-  // Format date params correctly for the API (dd/MM/yyyy)
-  const formatDateForApi = (dateStr: string) => {
-    try {
-      const date = new Date(dateStr);
-      return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
-    } catch (e) {
-      console.error("Invalid date format:", dateStr);
-      const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      return `${tomorrow.getDate().toString().padStart(2, '0')}/${(tomorrow.getMonth() + 1).toString().padStart(2, '0')}/${tomorrow.getFullYear()}`;
+  const getValidAgeId = () => {
+    if (age && driverAges?.some(driverAge => String(driverAge.id) === age)) {
+      return age;
     }
+    
+    const defaultAge = driverAges?.find(a => a.isdefault) || driverAges?.[0];
+    return defaultAge ? String(defaultAge.id) : "";
   };
-  
-  // Get default dates if needed
-  const getDefaultPickupDate = () => {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    return tomorrow.toISOString().split('T')[0]; 
-  };
-  
-  const getDefaultDropoffDate = () => {
-    const afterTomorrow = new Date();
-    afterTomorrow.setDate(afterTomorrow.getDate() + 4);
-    return afterTomorrow.toISOString().split('T')[0];
-  };
-  
-  const pickupDateRaw = searchParams.get("pickupDate") || searchParams.get("pickupdate") || getDefaultPickupDate();
-  const pickupTime = searchParams.get("pickupTime") || searchParams.get("pickuptime") || "10:00";
-  const dropoffDateRaw = searchParams.get("dropoffDate") || searchParams.get("dropoffdate") || getDefaultDropoffDate();
-  const dropoffTime = searchParams.get("dropoffTime") || searchParams.get("dropofftime") || "10:00";
-  
-  // Format dates for API
-  const pickupDate = formatDateForApi(pickupDateRaw);
-  const dropoffDate = formatDateForApi(dropoffDateRaw);
-  
-  // Get driver age ID (from first available if not specified)
-  const [selectedAgeId, setSelectedAgeId] = useState<string | number>("4");
-  
-  // Set proper age ID when driverAges are loaded
-  useEffect(() => {
-    if (driverAges && driverAges.length > 0) {
-      const ageParam = searchParams.get("age");
-      if (ageParam) {
-        setSelectedAgeId(ageParam);
-      } else {
-        const defaultAge = driverAges.find(age => age.isdefault) || driverAges[0];
-        setSelectedAgeId(defaultAge.id);
-      }
-    }
-  }, [driverAges, searchParams]);
-  
-  // Log search parameters for debugging
-  console.log("Car Category Selected (raw):", categoryFilter);
-  console.log("Date formats - pickup:", pickupDate, "dropoff:", dropoffDate);
-  console.log("Selected age ID:", selectedAgeId, "Type:", typeof selectedAgeId);
-  
-  // Construct Step2 parameters
-  const step2Params: RCMStep2Request | null = selectedAgeId ? {
-    pickuplocationid: pickupLocationId,
+
+  const step2Params = pickupLocation && driverAges?.length ? {
+    pickuplocationid: pickupLocation,
     pickupdate: pickupDate,
     pickuptime: pickupTime,
-    dropofflocationid: dropoffLocationId,
+    dropofflocationid: dropoffLocation || pickupLocation,
     dropoffdate: dropoffDate,
     dropofftime: dropoffTime,
-    ageid: selectedAgeId
+    ageid: getValidAgeId(),
+    // Always include vehiclecategorytypeid, even if it's "0"
+    vehiclecategorytypeid: carCategory
   } : null;
-  
-  // Add category filter if selected
-  if (step2Params && categoryFilter && categoryFilter !== "0") {
-    step2Params.vehiclecategorytypeid = categoryFilter;
-  }
-  
-  console.log("Step2Params (full):", step2Params);
-  
-  // Fetch available vehicles
-  const { 
-    data: step2Data, 
-    isLoading: isVehiclesLoading, 
-    error: vehiclesError,
-    refetch: refetchVehicles
-  } = useStep2Vehicles(step2Params);
 
-  // Get pickup location name if not provided
-  const getPickupLocationName = () => {
-    if (pickupLocationName) return pickupLocationName;
-    if (locations) {
-      const location = locations.find(loc => loc.id.toString() === pickupLocationId);
-      return location ? location.name : "Selected Location";
-    }
-    return "Selected Location";
-  };
-  
-  // Get dropoff location name if not provided
-  const getDropoffLocationName = () => {
-    if (dropoffLocationName) return dropoffLocationName;
-    if (locations) {
-      const location = locations.find(loc => loc.id.toString() === dropoffLocationId);
-      return location ? location.name : "Selected Location";
-    }
-    return "Selected Location";
-  };
+  // Enhanced logging
+  console.log("Car Category Selected (raw):", carCategory);
+  console.log("Car Category Type:", typeof carCategory);
+  console.log("Step2Params (full):", JSON.stringify(step2Params, null, 2));
+  console.log("Step2Params vehiclecategorytypeid:", step2Params?.vehiclecategorytypeid);
 
-  // Update filter
-  const handleCategoryFilter = (categoryId: string) => {
-    setCategoryFilter(categoryId);
-    
-    // Update URL parameters
-    const newParams = new URLSearchParams(searchParams);
-    newParams.set("categoryId", categoryId);
-    setSearchParams(newParams);
-  };
-  
-  // Log available cars
+  const { data: step2Data, isLoading: isLoadingStep2, error: step2Error } = useStep2Vehicles(step2Params);
+
   useEffect(() => {
-    if (step2Data?.results?.availablecars) {
-      console.log("Available cars count:", step2Data.results.availablecars.length);
-      if (step2Data.results.availablecars.length > 0) {
-        console.log("First available car:", step2Data.results.availablecars[0]);
-      }
+    if (!driverAges?.length) {
+      return;
     }
-  }, [step2Data]);
+
+    if (step2Data?.status === "OK" && step2Data.results) {
+      setIsLoading(false);
+      
+      const { availablecars, seasonalrates, mandatoryfees } = step2Data.results;
+      
+      console.log("Available cars count:", availablecars.length);
+      if (availablecars.length > 0) {
+        console.log("First available car:", availablecars[0]);
+      }
+      
+      const mappedVehicles: Vehicle[] = availablecars.map(car => {
+        const carRates = seasonalrates.filter(rate => 
+          String(rate.vehiclecategoryid) === String(car.vehiclecategoryid)
+        );
+        
+        const mandatoryFee = mandatoryfees.find(fee => 
+          String(fee.vehiclecategoryid) === String(car.vehiclecategoryid) && 
+          String(fee.vehiclecategorytypeid) === String(car.vehiclecategorytypeid)
+        );
+        
+        const feeAmount = mandatoryFee ? Number(mandatoryFee.totalfeeamount) : 0;
+        
+        return {
+          id: Number(car.vehiclecategoryid),
+          make: car.vehiclecategory.split(' ')[0] || "Unknown",
+          model: car.vehiclecategory.split(' ').slice(1).join(' ') || "Vehicle",
+          year: new Date().getFullYear(),
+          type: String(car.vehiclecategorytypeid) as VehicleType,
+          price: car.totalrateafterdiscount + feeAmount,
+          priceUnit: "total",
+          seats: car.numberofadults + car.numberofchildren,
+          transmission: "automatic",
+          fuelType: "gasoline",
+          fuelEfficiency: "N/A",
+          available: car.available === 1,
+          location: pickupLocation,
+          features: [
+            `${car.numberofadults} Adults`,
+            `${car.numberofchildren} Children`,
+            `${car.numberoflargecases} Large Cases`,
+            `${car.numberofsmallcases} Small Cases`
+          ],
+          images: [car.imageurl],
+          description: [car.vehicledescription1, car.vehicledescription2, car.vehicledescription3]
+            .filter(Boolean)
+            .join(' '),
+          dailyRate: carRates.length > 0 ? carRates[0].dailyrateafterdiscount : 0,
+          totalDays: carRates.length > 0 ? carRates[0].numberofdays : 1,
+          discountAmount: car.totaldiscountamount
+        };
+      });
+      
+      setVehicles(mappedVehicles);
+      
+      if (mappedVehicles.length > 0) {
+        const prices = mappedVehicles.map(v => v.price as number);
+        const minPrice = Math.floor(Math.min(...prices));
+        const maxPrice = Math.ceil(Math.max(...prices));
+        setPriceRange([minPrice, maxPrice]);
+      } else {
+        console.log("No vehicles found in the response");
+        toast.info("No vehicles found", {
+          description: "Try adjusting your search criteria"
+        });
+      }
+    } else if (step2Error) {
+      setIsLoading(false);
+      console.error("Error fetching vehicles:", step2Error);
+      toast.error("Failed to load vehicles", { 
+        description: "Please try another search or contact support."
+      });
+    }
+  }, [step2Data, step2Error, driverAges]);
+
+  useEffect(() => {
+    let results = [...vehicles];
+    
+    if (vehicleType !== "all") {
+      results = results.filter(vehicle => vehicle.type === vehicleType);
+    }
+    
+    results = results.filter(vehicle => {
+      const numericPrice = typeof vehicle.price === 'string' 
+        ? parseFloat(vehicle.price) 
+        : vehicle.price;
+        
+      return numericPrice >= priceRange[0] && numericPrice <= priceRange[1];
+    });
+    
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      results = results.filter(
+        vehicle =>
+          vehicle.make.toLowerCase().includes(term) ||
+          vehicle.model.toLowerCase().includes(term)
+      );
+    }
+    
+    if (transmission !== "all") {
+      results = results.filter(vehicle => vehicle.transmission === transmission);
+    }
+    
+    const selectedFuelTypes = Object.entries(fuelTypes)
+      .filter(([_, isSelected]) => isSelected)
+      .map(([type]) => type);
+    
+    if (selectedFuelTypes.length > 0) {
+      results = results.filter(vehicle => selectedFuelTypes.includes(vehicle.fuelType));
+    }
+    
+    setFilteredVehicles(results);
+  }, [
+    vehicles,
+    vehicleType,
+    priceRange,
+    searchTerm,
+    transmission,
+    fuelTypes,
+  ]);
+
+  const handleFuelTypeChange = (type: keyof typeof fuelTypes) => {
+    setFuelTypes(prev => ({
+      ...prev,
+      [type]: !prev[type],
+    }));
+  };
+
+  const hasApiError = driverAgesError || step2Error;
 
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      <main className="flex-grow container mx-auto px-4 py-6">
-        <h1 className="text-2xl font-bold mb-6">Available Vehicles</h1>
-        
-        {/* Search Criteria Summary */}
-        <div className="bg-white rounded-lg p-4 mb-6 shadow-sm border">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div>
-              <h3 className="text-sm font-medium text-gray-500">Pickup</h3>
-              <p className="font-medium">{getPickupLocationName()}</p>
-              <p className="text-sm">{pickupDateRaw} {pickupTime}</p>
+      <main className="flex-grow">
+        <div className="bg-gray-50">
+          <div className="container mx-auto px-4 py-8">
+            <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+              <div>
+                <h1 className="text-3xl font-bold mb-2">Available Vehicles</h1>
+                {pickupLocation && (
+                  <p className="text-gray-600">
+                    Location: {pickupLocation}
+                    {pickupDate && dropoffDate && (
+                      <> | {pickupDate} - {dropoffDate}</>
+                    )}
+                  </p>
+                )}
+              </div>
+              <div className="w-full sm:w-64">
+                <Input
+                  placeholder="Search vehicles..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full"
+                />
+              </div>
             </div>
-            <div>
-              <h3 className="text-sm font-medium text-gray-500">Drop-off</h3>
-              <p className="font-medium">{getDropoffLocationName()}</p>
-              <p className="text-sm">{dropoffDateRaw} {dropoffTime}</p>
-            </div>
-            <div className="md:col-span-2 flex justify-end items-center space-x-2">
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button variant="outline" className="flex items-center gap-2">
-                    <ListFilter className="h-4 w-4" /> Filters
-                  </Button>
-                </SheetTrigger>
-                <SheetContent>
-                  <SheetHeader>
-                    <SheetTitle>Filter Vehicles</SheetTitle>
-                  </SheetHeader>
-                  <Separator className="my-4" />
-                  
-                  {/* Driver Age Selection */}
-                  <div className="space-y-4 mb-6">
-                    <h3 className="font-medium">Driver Age</h3>
-                    <div className="flex flex-col space-y-2">
-                      {driverAges && driverAges.map((age) => (
-                        <Button
-                          key={age.id}
-                          variant={selectedAgeId === age.id ? "default" : "outline"}
-                          onClick={() => setSelectedAgeId(age.id)}
-                          className="justify-start"
-                        >
-                          {age.driverage}
-                          {age.isdefault && <span className="ml-2 text-xs opacity-70">(Default)</span>}
-                        </Button>
-                      ))}
+            
+            {hasApiError && (
+              <Alert variant="destructive" className="mt-4">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>API Connection Error</AlertTitle>
+                <AlertDescription>
+                  We encountered a problem connecting to the reservation system. 
+                  This may be due to invalid search parameters.
+                </AlertDescription>
+              </Alert>
+            )}
+          </div>
+        </div>
+
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex flex-col lg:flex-row gap-8">
+            <aside className="lg:w-1/4 space-y-6">
+              <Card className="p-4">
+                <h2 className="font-bold text-lg mb-4">Filters</h2>
+
+                <div className="space-y-6">
+                  <div>
+                    <Label className="text-base">Vehicle Type</Label>
+                    <Select
+                      value={vehicleType}
+                      onValueChange={(value) => setVehicleType(value as VehicleType | "all")}
+                    >
+                      <SelectTrigger className="mt-2">
+                        <SelectValue placeholder="Select type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Types</SelectItem>
+                        <SelectItem value="economy">Economy</SelectItem>
+                        <SelectItem value="compact">Compact</SelectItem>
+                        <SelectItem value="midsize">Midsize</SelectItem>
+                        <SelectItem value="suv">SUV</SelectItem>
+                        <SelectItem value="luxury">Luxury</SelectItem>
+                        <SelectItem value="van">Van</SelectItem>
+                        <SelectItem value="convertible">Convertible</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label className="text-base">Price Range (per day)</Label>
+                    <div className="flex justify-between mt-2">
+                      <span>${priceRange[0]}</span>
+                      <span>${priceRange[1]}</span>
+                    </div>
+                    <Slider
+                      defaultValue={[0, 500]}
+                      max={500}
+                      step={10}
+                      minStepsBetweenThumbs={1}
+                      className="mt-2"
+                      onValueChange={(values) => setPriceRange(values as [number, number])}
+                    />
+                  </div>
+
+                  <div>
+                    <Label className="text-base">Transmission</Label>
+                    <Select
+                      value={transmission}
+                      onValueChange={(value) => setTransmission(value as "all" | "automatic" | "manual")}
+                    >
+                      <SelectTrigger className="mt-2">
+                        <SelectValue placeholder="Select type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Types</SelectItem>
+                        <SelectItem value="automatic">Automatic</SelectItem>
+                        <SelectItem value="manual">Manual</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label className="text-base">Fuel Type</Label>
+                    <div className="mt-2 space-y-2">
+                      <div className="flex items-center">
+                        <Checkbox
+                          id="gasoline"
+                          checked={fuelTypes.gasoline}
+                          onCheckedChange={() => handleFuelTypeChange("gasoline")}
+                        />
+                        <label htmlFor="gasoline" className="ml-2">
+                          Gasoline
+                        </label>
+                      </div>
+                      <div className="flex items-center">
+                        <Checkbox
+                          id="diesel"
+                          checked={fuelTypes.diesel}
+                          onCheckedChange={() => handleFuelTypeChange("diesel")}
+                        />
+                        <label htmlFor="diesel" className="ml-2">
+                          Diesel
+                        </label>
+                      </div>
+                      <div className="flex items-center">
+                        <Checkbox
+                          id="electric"
+                          checked={fuelTypes.electric}
+                          onCheckedChange={() => handleFuelTypeChange("electric")}
+                        />
+                        <label htmlFor="electric" className="ml-2">
+                          Electric
+                        </label>
+                      </div>
+                      <div className="flex items-center">
+                        <Checkbox
+                          id="hybrid"
+                          checked={fuelTypes.hybrid}
+                          onCheckedChange={() => handleFuelTypeChange("hybrid")}
+                        />
+                        <label htmlFor="hybrid" className="ml-2">
+                          Hybrid
+                        </label>
+                      </div>
                     </div>
                   </div>
-                  
-                  {/* Category Filter */}
-                  <div className="space-y-4">
-                    <h3 className="font-medium">Vehicle Category</h3>
-                    <div className="flex flex-col space-y-2">
-                      <Button
-                        variant={categoryFilter === "0" || !categoryFilter ? "default" : "outline"}
-                        onClick={() => handleCategoryFilter("0")}
-                        className="justify-start"
-                      >
-                        All Categories
-                      </Button>
-                      {vehicleCategories?.map((category) => (
-                        <Button
-                          key={category.id}
-                          variant={categoryFilter === category.id.toString() ? "default" : "outline"}
-                          onClick={() => handleCategoryFilter(category.id.toString())}
-                          className="justify-start"
-                        >
-                          {category.vehiclecategorytype}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-                </SheetContent>
-              </Sheet>
-              
-              <Button 
-                variant="ghost"
-                className="border"
-                onClick={() => setIsGridView(true)}
-                size="icon"
-                disabled={isGridView}
-              >
-                <Grid3X3 className="h-4 w-4" />
-              </Button>
-              <Button 
-                variant="ghost"
-                className="border"
-                onClick={() => setIsGridView(false)}
-                size="icon"
-                disabled={!isGridView}
-              >
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  width="16" 
-                  height="16" 
-                  viewBox="0 0 24 24" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  strokeWidth="2" 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round"
-                >
-                  <line x1="21" y1="6" x2="3" y2="6"></line>
-                  <line x1="21" y1="12" x2="3" y2="12"></line>
-                  <line x1="21" y1="18" x2="3" y2="18"></line>
-                </svg>
-              </Button>
+                </div>
+              </Card>
+            </aside>
+
+            <div className="lg:w-3/4">
+              {isLoading || isLoadingAges || isLoadingStep2 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="rounded-lg shadow animate-pulse bg-gray-200 h-80"></div>
+                  ))}
+                </div>
+              ) : filteredVehicles.length === 0 ? (
+                <div className="text-center py-12">
+                  <h3 className="text-xl font-semibold mb-2">No vehicles match your criteria</h3>
+                  <p className="text-gray-600">Try adjusting your filters to find more options</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+                  {filteredVehicles.map((vehicle) => (
+                    <VehicleCard key={vehicle.id} vehicle={vehicle} />
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
-        
-        {/* Loading State */}
-        {isVehiclesLoading && (
-          <div className="flex items-center justify-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-          </div>
-        )}
-        
-        {/* Error State */}
-        {vehiclesError && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-800">
-            <h3 className="font-medium">Error loading vehicles</h3>
-            <p>Please try again or adjust your search criteria.</p>
-            <Button 
-              variant="outline" 
-              className="mt-2"
-              onClick={() => refetchVehicles()}
-            >
-              Retry
-            </Button>
-          </div>
-        )}
-        
-        {/* No Results */}
-        {step2Data?.results?.availablecars && step2Data.results.availablecars.length === 0 && (
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-yellow-800">
-            <h3 className="font-medium">No vehicles available</h3>
-            <p>Please try different dates or locations.</p>
-          </div>
-        )}
-        
-        {/* Results Grid */}
-        {step2Data?.results?.availablecars && step2Data.results.availablecars.length > 0 && (
-          <div className={isGridView ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" : "space-y-6"}>
-            {step2Data.results.availablecars.map((car) => (
-              <VehicleCard
-                key={car.vehiclecategoryid}
-                id={car.vehiclecategoryid}
-                name={car.vehiclecategory}
-                imageUrl={car.imageurl || "/placeholder.svg"}
-                price={car.totalrateafterdiscount}
-                seats={car.numberofadults + car.numberofchildren}
-                luggage={car.numberoflargecases + car.numberofsmallcases}
-                transmission="Auto"
-                features={[]}
-                category={car.vehiclecategory}
-                currencySymbol="$"
-                searchContext={{
-                  pickupLocationId,
-                  pickupLocationName: getPickupLocationName(),
-                  dropoffLocationId,
-                  dropoffLocationName: getDropoffLocationName(),
-                  pickupDate: pickupDateRaw,
-                  pickupTime,
-                  dropoffDate: dropoffDateRaw,
-                  dropoffTime,
-                  ageId: selectedAgeId
-                }}
-              />
-            ))}
-          </div>
-        )}
       </main>
       <Footer />
     </div>

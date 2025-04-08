@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useRcmApi } from "@/hooks/use-rcm-api";
@@ -26,84 +27,20 @@ const Booking = () => {
   const [selectedInsuranceId, setSelectedInsuranceId] = useState<string | number | null>(null);
   const [selectedExtras, setSelectedExtras] = useState<Map<string | number, number>>(new Map());
   
-  // Get params from URL with all possible case and format variations
-  const getParam = (name: string): string | null => {
-    // Try different case variations and parameter names
-    const variations = [
-      name,
-      name.toLowerCase(),
-      name.toUpperCase(),
-      name.charAt(0).toUpperCase() + name.slice(1).toLowerCase(),
-      // Common alternative parameter names
-      name.replace('Id', 'ID'),
-      name.replace('locationId', 'LocationId'),
-      name.replace('date', 'Date'),
-      name.replace('time', 'Time'),
-    ];
-    
-    for (const variant of variations) {
-      const value = searchParams.get(variant);
-      if (value !== null) return value;
-    }
-    
-    // Try checking if the parameter is nested in a JSON object
-    const vehicleData = searchParams.get('vehicleData');
-    if (vehicleData) {
-      try {
-        const data = JSON.parse(vehicleData);
-        if (data[name] !== undefined) return String(data[name]);
-      } catch (e) {
-        console.error('Failed to parse vehicleData:', e);
-      }
-    }
-    
-    return null;
-  };
-  
-  // Try to fallback to alternative parameter names
-  const getParamWithFallbacks = (primaryName: string, fallbacks: string[]): string | null => {
-    const value = getParam(primaryName);
-    if (value !== null) return value;
-    
-    for (const fallback of fallbacks) {
-      const fallbackValue = getParam(fallback);
-      if (fallbackValue !== null) return fallbackValue;
-    }
-    
-    return null;
-  };
-  
-  // Get parameters with fallbacks
-  const vehicleId = getParamWithFallbacks("vehicleId", ["vehiclecategoryid", "vehicle_id", "id"]);
-  const pickupLocationId = getParamWithFallbacks("pickupLocationId", ["pickuplocationid", "pickup_location_id"]);
-  const dropoffLocationId = getParamWithFallbacks("dropoffLocationId", ["dropofflocationid", "dropoff_location_id", "returningLocationId"]);
-  const pickupDate = getParamWithFallbacks("pickupDate", ["pickupdate", "pickup_date", "startDate"]);
-  const pickupTime = getParamWithFallbacks("pickupTime", ["pickuptime", "pickup_time", "startTime"]);
-  const dropoffDate = getParamWithFallbacks("dropoffDate", ["dropoffdate", "dropoff_date", "returnDate", "endDate"]);
-  const dropoffTime = getParamWithFallbacks("dropoffTime", ["dropofftime", "dropoff_time", "returnTime", "endTime"]);
-  const ageId = getParamWithFallbacks("ageId", ["ageid", "age_id", "driverAgeId"]);
-  const vehicleName = getParamWithFallbacks("vehicleName", ["vehiclecategory", "vehicle_name", "name"]);
-  const basePriceStr = getParamWithFallbacks("basePrice", ["totalprice", "baseprice", "price", "totalrateafterdiscount"]);
+  // Get vehicle and booking details from URL params
+  const vehicleId = searchParams.get("vehicleId");
+  const pickupLocationId = searchParams.get("pickupLocationId");
+  const dropoffLocationId = searchParams.get("dropoffLocationId");
+  const pickupDate = searchParams.get("pickupDate");
+  const pickupTime = searchParams.get("pickupTime");
+  const dropoffDate = searchParams.get("dropoffDate");
+  const dropoffTime = searchParams.get("dropoffTime");
+  const ageId = searchParams.get("ageId");
+  const vehicleName = searchParams.get("vehicleName");
+  const basePriceStr = searchParams.get("basePrice");
   const basePrice = basePriceStr ? parseFloat(basePriceStr) : 0;
-  const pickupLocationName = getParamWithFallbacks("pickupLocationName", ["pickuplocation", "pickup_location"]);
-  const dropoffLocationName = getParamWithFallbacks("dropoffLocationName", ["dropofflocation", "dropoff_location", "returningLocation"]);
-  
-  // Debug logging for all parameters
-  console.log("URL Parameters:", {
-    vehicleId,
-    pickupLocationId,
-    dropoffLocationId,
-    pickupDate,
-    pickupTime,
-    dropoffDate,
-    dropoffTime,
-    ageId,
-    vehicleName,
-    basePrice
-  });
-  
-  // Check for debug mode - if set, we'll use hardcoded values for testing
-  const isDebugMode = searchParams.get('debug') === 'true';
+  const pickupLocationName = searchParams.get("pickupLocationName");
+  const dropoffLocationName = searchParams.get("dropoffLocationName");
   
   // Calculate number of days for KM charges calculation
   const numberOfDays = pickupDate && dropoffDate ? 
@@ -111,38 +48,6 @@ const Booking = () => {
   
   // Fetch Step3 data
   useEffect(() => {
-    // Debug mode uses default values for testing
-    if (isDebugMode) {
-      setStep3Params({
-        vehiclecategoryid: "1",
-        pickuplocationid: "1",
-        pickupdate: "08/04/2025",
-        pickuptime: "08:00",
-        dropofflocationid: "1",
-        dropoffdate: "10/04/2025",
-        dropofftime: "08:00",
-        ageid: "4"
-      });
-      
-      setBookingDetails({
-        vehicleId: "1",
-        vehicleName: "Debug Vehicle",
-        pickupLocationId: "1",
-        pickupLocationName: "Debug Location",
-        dropoffLocationId: "1",
-        dropoffLocationName: "Debug Location",
-        pickupDate: new Date("2025-04-08"),
-        pickupTime: "08:00",
-        dropoffDate: new Date("2025-04-10"),
-        dropoffTime: "08:00",
-        ageId: "4",
-        basePrice: 100
-      });
-      setIsLoading(false);
-      setParamError(null);
-      return;
-    }
-    
     // Validate required parameters immediately when component mounts
     let missingParams = [];
     if (!vehicleId) missingParams.push("vehicleId");
@@ -166,7 +71,7 @@ const Booking = () => {
     }
 
     try {
-      // Construct Step3 parameters - matching the casing from the API
+      // Construct Step3 parameters
       const params: RCMStep3Request = {
         vehiclecategoryid: vehicleId!,
         pickuplocationid: pickupLocationId!,
@@ -204,7 +109,7 @@ const Booking = () => {
       });
       setIsLoading(false);
     }
-  }, [vehicleId, pickupLocationId, dropoffLocationId, pickupDate, pickupTime, dropoffDate, dropoffTime, ageId, isDebugMode]);
+  }, [vehicleId, pickupLocationId, dropoffLocationId, pickupDate, pickupTime, dropoffDate, dropoffTime, ageId]);
   
   // Fetch step3 data from API
   const { data: step3Data, isLoading: isStep3Loading, error: step3Error } = useStep3Details(step3Params);
@@ -355,16 +260,9 @@ const Booking = () => {
             {paramError}. Please return to vehicle selection.
           </AlertDescription>
         </Alert>
-        <div className="flex gap-4 mt-4">
-          <Button onClick={() => navigate("/vehicles")}>
-            Return to Vehicle Selection
-          </Button>
-          {!isDebugMode && (
-            <Button variant="outline" onClick={() => navigate("/booking?debug=true")}>
-              Enter Debug Mode
-            </Button>
-          )}
-        </div>
+        <Button className="mt-4" onClick={() => navigate("/vehicles")}>
+          Return to Vehicle Selection
+        </Button>
       </div>
     );
   }
