@@ -10,6 +10,7 @@ import Footer from "@/components/layout/Footer";
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { RCMStep2Request } from "@/lib/api/rcm-api-types";
+import { toast } from "sonner";
 
 const Vehicles = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -27,34 +28,76 @@ const Vehicles = () => {
   const pickupLocationName = searchParams.get("pickupLocationName");
   const dropoffLocationId = searchParams.get("dropoffLocationId") || searchParams.get("dropofflocationid") || pickupLocationId;
   const dropoffLocationName = searchParams.get("dropoffLocationName");
-  const pickupDate = searchParams.get("pickupDate") || searchParams.get("pickupdate") || new Date().toLocaleDateString("en-US");
+  
+  // Format date params correctly for the API (dd/mm/yyyy)
+  const formatDateForApi = (dateStr: string) => {
+    try {
+      const date = new Date(dateStr);
+      return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
+    } catch (e) {
+      console.error("Invalid date format:", dateStr);
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      return `${tomorrow.getDate().toString().padStart(2, '0')}/${(tomorrow.getMonth() + 1).toString().padStart(2, '0')}/${tomorrow.getFullYear()}`;
+    }
+  };
+  
+  // Get default dates if needed
+  const getDefaultPickupDate = () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow.toISOString().split('T')[0]; 
+  };
+  
+  const getDefaultDropoffDate = () => {
+    const afterTomorrow = new Date();
+    afterTomorrow.setDate(afterTomorrow.getDate() + 4);
+    return afterTomorrow.toISOString().split('T')[0];
+  };
+  
+  const pickupDateRaw = searchParams.get("pickupDate") || searchParams.get("pickupdate") || getDefaultPickupDate();
   const pickupTime = searchParams.get("pickupTime") || searchParams.get("pickuptime") || "10:00";
-  const dropoffDate = searchParams.get("dropoffDate") || searchParams.get("dropoffdate") || new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toLocaleDateString("en-US");
+  const dropoffDateRaw = searchParams.get("dropoffDate") || searchParams.get("dropoffdate") || getDefaultDropoffDate();
   const dropoffTime = searchParams.get("dropoffTime") || searchParams.get("dropofftime") || "10:00";
-  const ageId = searchParams.get("ageId") || searchParams.get("ageid") || "1";
+  
+  // Format dates for API
+  const pickupDate = formatDateForApi(pickupDateRaw);
+  const dropoffDate = formatDateForApi(dropoffDateRaw);
+  
+  // Get driver age ID (from first available if not specified)
+  const [selectedAgeId, setSelectedAgeId] = useState<string>("1");
+  
+  // Set proper age ID when driverAges are loaded
+  useEffect(() => {
+    if (driverAges && driverAges.length > 0) {
+      const defaultAge = driverAges.find(age => age.isdefault) || driverAges[0];
+      setSelectedAgeId(defaultAge.id);
+    }
+  }, [driverAges]);
   
   // Log search parameters for debugging
   console.log("Car Category Selected (raw):", categoryFilter);
   console.log("Car Category Type:", typeof categoryFilter);
+  console.log("Date formats - pickup:", pickupDate, "dropoff:", dropoffDate);
+  console.log("Selected age ID:", selectedAgeId);
   
   // Construct Step2 parameters
-  const step2Params: RCMStep2Request = {
+  const step2Params: RCMStep2Request | null = selectedAgeId ? {
     pickuplocationid: pickupLocationId,
     pickupdate: pickupDate,
     pickuptime: pickupTime,
     dropofflocationid: dropoffLocationId,
     dropoffdate: dropoffDate,
     dropofftime: dropoffTime,
-    ageid: ageId
-  };
+    ageid: selectedAgeId
+  } : null;
   
   // Add category filter if selected
-  if (categoryFilter && categoryFilter !== "0") {
+  if (step2Params && categoryFilter && categoryFilter !== "0") {
     step2Params.vehiclecategorytypeid = categoryFilter;
   }
   
   console.log("Step2Params (full):", step2Params);
-  console.log("Step2Params vehiclecategorytypeid:", step2Params.vehiclecategorytypeid);
   
   // Fetch available vehicles
   const { 
@@ -116,12 +159,12 @@ const Vehicles = () => {
             <div>
               <h3 className="text-sm font-medium text-gray-500">Pickup</h3>
               <p className="font-medium">{getPickupLocationName()}</p>
-              <p className="text-sm">{pickupDate} {pickupTime}</p>
+              <p className="text-sm">{pickupDateRaw} {pickupTime}</p>
             </div>
             <div>
               <h3 className="text-sm font-medium text-gray-500">Drop-off</h3>
               <p className="font-medium">{getDropoffLocationName()}</p>
-              <p className="text-sm">{dropoffDate} {dropoffTime}</p>
+              <p className="text-sm">{dropoffDateRaw} {dropoffTime}</p>
             </div>
             <div className="md:col-span-2 flex justify-end items-center space-x-2">
               <Sheet>
@@ -135,6 +178,25 @@ const Vehicles = () => {
                     <SheetTitle>Filter Vehicles</SheetTitle>
                   </SheetHeader>
                   <Separator className="my-4" />
+                  
+                  {/* Driver Age Selection */}
+                  <div className="space-y-4 mb-6">
+                    <h3 className="font-medium">Driver Age</h3>
+                    <div className="flex flex-col space-y-2">
+                      {driverAges && driverAges.map((age) => (
+                        <Button
+                          key={age.id}
+                          variant={selectedAgeId === age.id ? "default" : "outline"}
+                          onClick={() => setSelectedAgeId(age.id)}
+                          className="justify-start"
+                        >
+                          {age.driverage}
+                          {age.isdefault && <span className="ml-2 text-xs opacity-70">(Default)</span>}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                  
                   {/* Category Filter */}
                   <div className="space-y-4">
                     <h3 className="font-medium">Vehicle Category</h3>
@@ -209,6 +271,13 @@ const Vehicles = () => {
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-800">
             <h3 className="font-medium">Error loading vehicles</h3>
             <p>Please try again or adjust your search criteria.</p>
+            <Button 
+              variant="outline" 
+              className="mt-2"
+              onClick={() => refetchVehicles()}
+            >
+              Retry
+            </Button>
           </div>
         )}
         
@@ -241,11 +310,11 @@ const Vehicles = () => {
                   pickupLocationName: getPickupLocationName(),
                   dropoffLocationId,
                   dropoffLocationName: getDropoffLocationName(),
-                  pickupDate,
+                  pickupDate: pickupDateRaw,
                   pickupTime,
-                  dropoffDate,
+                  dropoffDate: dropoffDateRaw,
                   dropoffTime,
-                  ageId
+                  ageId: selectedAgeId
                 }}
               />
             ))}
