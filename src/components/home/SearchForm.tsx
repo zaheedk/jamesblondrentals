@@ -1,401 +1,252 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { addDays, isBefore, format } from "date-fns";
-import { toast } from "sonner";
-import { useRcmApi } from "@/hooks/use-rcm-api";
 
-import { LocationSelect } from "./form-components/LocationSelect";
+import { useEffect, useState } from "react";
+import { useRcmApi } from "@/hooks/use-rcm-api";
+import { useNavigate } from "react-router-dom";
 import { DateSelect } from "./form-components/DateSelect";
 import { TimeSelect } from "./form-components/TimeSelect";
+import { LocationSelect } from "./form-components/LocationSelect";
 import { OptionSelect } from "./form-components/OptionSelect";
-import { 
-  disablePastDates, 
-  getLocationTimeOptions, 
-  combineDateTime 
-} from "./form-components/DateTimeUtils";
-
-const DEFAULT_LOCATION_ID = "625";
+import { Button } from "@/components/ui/button";
+import { addDays } from "date-fns";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { disablePastDates, getLocationTimeOptions } from "./form-components/DateTimeUtils";
+import { RCMLocation, RCMDriverAge } from "@/lib/api/rcm-api-types";
+import { toast } from "sonner";
 
 const SearchForm = () => {
   const navigate = useNavigate();
+  const { useLocations, useOfficeHours, useDriverAges, useVehicleCategories, useLocationDetails } = useRcmApi();
   
-  const [pickupLocation, setPickupLocation] = useState("");
-  const [dropoffLocation, setDropoffLocation] = useState("");
-  const [pickupDate, setPickupDate] = useState<Date>();
-  const [dropoffDate, setDropoffDate] = useState<Date>();
+  // Fetch API data
+  const { data: locations = [], isLoading: isLocationsLoading, error: locationsError } = useLocations();
+  const { data: officeHours = [], isLoading: isOfficeHoursLoading } = useOfficeHours();
+  const { data: locationDetails = [], isLoading: isLocationDetailsLoading } = useLocationDetails();
+  const { data: driverAges = [], isLoading: isDriverAgesLoading } = useDriverAges();
+  const { data: vehicleCategories = [], isLoading: isCategoriesLoading } = useVehicleCategories();
+  
+  // Form state
+  const [pickupLocationId, setPickupLocationId] = useState("");
+  const [dropoffLocationId, setDropoffLocationId] = useState("");
+  const [pickupDate, setPickupDate] = useState<Date | undefined>(addDays(new Date(), 1));
+  const [dropoffDate, setDropoffDate] = useState<Date | undefined>(addDays(new Date(), 3));
   const [pickupTime, setPickupTime] = useState("");
   const [dropoffTime, setDropoffTime] = useState("");
+  const [selectedAgeId, setSelectedAgeId] = useState("");
+  const [selectedCategoryId, setSelectedCategoryId] = useState("0"); // 0 means "All Categories"
   const [sameLocation, setSameLocation] = useState(true);
-  const [age, setAge] = useState("");
-  const [carCategory, setCarCategory] = useState("0");
-  const [promoCode, setPromoCode] = useState("");
   
-  const [minDropoffDate, setMinDropoffDate] = useState<Date>(addDays(new Date(), 1));
-  const [isLoading, setIsLoading] = useState(false);
-  const [pickupTimeOptions, setPickupTimeOptions] = useState<string[]>([]);
-  const [dropoffTimeOptions, setDropoffTimeOptions] = useState<string[]>([]);
-  const [minPickupDate, setMinPickupDate] = useState<Date>(new Date());
-
-  const { 
-    initializeApi,
-    useLocations, 
-    useDriverAges,
-    useVehicleCategories,
-    useOfficeHours,
-    useLocationDetails
-  } = useRcmApi();
-  
-  const { 
-    data: locationsData = [], 
-    isLoading: isLoadingLocations, 
-    error: locationError 
-  } = useLocations();
-  
-  const locations = locationsData.map(loc => ({
-    ...loc,
-    id: String(loc.id)
-  }));
-  
-  const { 
-    data: driverAges = [], 
-    isLoading: isLoadingAges 
-  } = useDriverAges();
-  const { 
-    data: carCategories = [], 
-    isLoading: isLoadingCategories 
-  } = useVehicleCategories();
-  const { 
-    data: officeHours = [], 
-    isLoading: isLoadingOfficeHours 
-  } = useOfficeHours();
-  const { 
-    data: locationDetailsData = [] 
-  } = useLocationDetails();
-  
-  const locationDetails = locationDetailsData.map(loc => ({
-    ...loc,
-    id: String(loc.id)
-  }));
-  
-  const isLocationError = !!locationError;
-  
-  useEffect(() => {
-    initializeApi({
-      apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
-      apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
-      apiUrl: "https://apis.rentalcarmanager.com/booking/v3.2",
-      useMockData: false
-    }).catch(error => {
-      console.error('Failed to initialize API:', error);
-      toast.error("Error connecting to booking system", {
-        description: "Please try again later"
-      });
-    });
-  }, [initializeApi]);
-
-  useEffect(() => {
-    console.log('Setting default dates');
-    const today = new Date();
+  // Derived state
+  const pickupTimeOptions = pickupLocationId && pickupDate
+    ? getLocationTimeOptions(pickupLocationId, pickupDate, 'pickup', officeHours, locationDetails)
+    : [];
     
-    if (!pickupDate) {
-      setPickupDate(today);
-      
-      const defaultDropoff = addDays(today, 3);
-      setDropoffDate(defaultDropoff);
-      console.log('Default dates set', { today, defaultDropoff });
-    }
-  }, []);
-
+  const dropoffTimeOptions = dropoffLocationId && dropoffDate
+    ? getLocationTimeOptions(dropoffLocationId, dropoffDate, 'dropoff', officeHours, locationDetails)
+    : [];
+  
+  // Update dropoff location when pickup location changes
   useEffect(() => {
-    if (pickupLocation && locationDetails.length > 0) {
-      const selectedLocationDetail = locationDetails.find(
-        loc => String(loc.id) === pickupLocation
-      );
-      
-      if (selectedLocationDetail) {
-        const requiredNoticeDays = selectedLocationDetail.noticerequired_numberofdays || 0;
-        
-        let newMinPickupDate = new Date();
-        
-        if (requiredNoticeDays > 0) {
-          newMinPickupDate = addDays(new Date(), requiredNoticeDays);
-          console.log(`Location ${pickupLocation} requires ${requiredNoticeDays} days notice. Min pickup date set to ${newMinPickupDate.toISOString()}`);
-        }
-        
-        setMinPickupDate(newMinPickupDate);
-        
-        if (pickupDate && isBefore(pickupDate, newMinPickupDate)) {
-          const updatedDate = new Date(newMinPickupDate);
-          console.log(`Current pickup date ${pickupDate.toISOString()} is before min date ${newMinPickupDate.toISOString()}, updating to ${updatedDate.toISOString()}`);
-          setPickupDate(updatedDate);
-          
-          const newMinDropoffDate = addDays(updatedDate, 1);
-          if (dropoffDate && isBefore(dropoffDate, newMinDropoffDate)) {
-            setDropoffDate(newMinDropoffDate);
-          }
-        }
+    if (sameLocation && pickupLocationId) {
+      setDropoffLocationId(pickupLocationId);
+    }
+  }, [pickupLocationId, sameLocation]);
+  
+  // Set default driver age when data is loaded
+  useEffect(() => {
+    if (driverAges.length > 0 && !selectedAgeId) {
+      const defaultAge = driverAges.find(age => age.isdefault);
+      if (defaultAge) {
+        console.log(`Setting default driver age: ${defaultAge.id} (${defaultAge.driverage})`);
+        setSelectedAgeId(defaultAge.id.toString());
+      } else {
+        console.log(`No default driver age found, using first: ${driverAges[0].id}`);
+        setSelectedAgeId(driverAges[0].id.toString());
       }
     }
-  }, [pickupLocation, locationDetails, pickupDate, dropoffDate]);
+  }, [driverAges, selectedAgeId]);
 
-  useEffect(() => {
-    if (pickupDate) {
-      setMinDropoffDate(pickupDate);
-      
-      if (dropoffDate && isBefore(dropoffDate, pickupDate)) {
-        setDropoffDate(addDays(pickupDate, 1));
-      }
-    }
-  }, [pickupDate, dropoffDate]);
-
-  useEffect(() => {
-    if (pickupLocation && pickupDate) {
-      console.log(`Fetching pickup time options for location ${pickupLocation} on ${pickupDate.toISOString()}`);
-      const options = getLocationTimeOptions(pickupLocation, pickupDate, 'pickup', officeHours, locationDetails);
-      console.log(`Got ${options.length} pickup time options`);
-      setPickupTimeOptions(options);
-      
-      if (options.length > 0 && !pickupTime) {
-        console.log(`Setting default pickup time to ${options[0]}`);
-        setPickupTime(options[0]);
-      } else if (options.length > 0 && pickupTime && !options.includes(pickupTime)) {
-        console.log(`Current pickup time ${pickupTime} not available, updating to ${options[0]}`);
-        setPickupTime(options[0]);
-      } else if (options.length === 0) {
-        console.log(`No pickup times available for location ${pickupLocation} on ${pickupDate.toISOString()}, clearing pickup time`);
-        setPickupTime("");
-      }
-    } else {
-      console.log(`Cannot fetch pickup times - location: ${pickupLocation}, date: ${pickupDate ? pickupDate.toISOString() : 'none'}`);
-    }
-  }, [pickupLocation, pickupDate, officeHours, locationDetails, pickupTime]);
-
-  useEffect(() => {
-    const selectedLocation = sameLocation ? pickupLocation : dropoffLocation;
-    
-    if (selectedLocation && dropoffDate) {
-      const options = getLocationTimeOptions(selectedLocation, dropoffDate, 'dropoff', officeHours, locationDetails);
-      setDropoffTimeOptions(options);
-      
-      if (options.length > 0 && !dropoffTime) {
-        console.log(`Setting default dropoff time to ${options[0]}`);
-        setDropoffTime(options[0]);
-      } else if (options.length > 0 && dropoffTime && !options.includes(dropoffTime)) {
-        console.log(`Current dropoff time ${dropoffTime} not available, updating to ${options[0]}`);
-        setDropoffTime(options[0]);
-      } else if (options.length === 0) {
-        console.log(`No dropoff times available for location ${selectedLocation} on ${dropoffDate.toISOString()}, clearing dropoff time`);
-        setDropoffTime("");
-      }
-    }
-  }, [dropoffLocation, dropoffDate, sameLocation, pickupLocation, officeHours, locationDetails, dropoffTime]);
-
-  const getDefaultAgeId = () => {
-    if (!driverAges?.length) return "";
-    const defaultAge = driverAges.find(a => a.isdefault) || driverAges[0];
-    return defaultAge ? String(defaultAge.id) : "";
+  // Helper to get location name by ID
+  const getLocationNameById = (id: string): string => {
+    const location = locations.find((loc) => String(loc.id) === id);
+    return location ? location.name : "";
   };
 
-  useEffect(() => {
-    if (driverAges?.length && !age) {
-      setAge(getDefaultAgeId());
-    }
-  }, [driverAges]);
-
-  const getDriverAgeName = (ageId: string) => {
-    const ageObj = driverAges?.find(a => String(a.id) === ageId);
-    return ageObj ? ageObj.driverage : "";
-  };
-
-  const getCategoryName = (categoryId: string) => {
-    if (categoryId === "0") return "All Categories";
-    
-    const category = carCategories.find(c => String(c.id) === categoryId);
-    return category ? category.vehiclecategorytype : "";
-  };
-
-  const formatDateForApi = (date: Date): string => {
-    return format(date, 'dd/MM/yyyy');
-  };
-
-  const handleSearch = (e: React.FormEvent) => {
+  // Handle form submission
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!pickupLocation) {
-      toast.error("Please select a pickup location");
+    if (!pickupLocationId || !dropoffLocationId || !pickupDate || !dropoffDate || !pickupTime || !dropoffTime || !selectedAgeId) {
+      toast.error("Please complete all fields", {
+        description: "All fields are required to search for vehicles."
+      });
       return;
     }
     
-    if (!pickupDate || !dropoffDate) {
-      toast.error("Please select both pickup and drop-off dates");
-      return;
-    }
-    
-    if (!pickupTime || !dropoffTime) {
-      toast.error("Please select both pickup and drop-off times");
-      return;
-    }
-    
-    const formattedPickupDate = formatDateForApi(pickupDate!);
-    const formattedDropoffDate = formatDateForApi(dropoffDate!);
-    
-    const ageParam = age || getDefaultAgeId();
-    
-    const searchParams = new URLSearchParams({
-      pickupLocation,
-      dropoffLocation: dropoffLocation || pickupLocation,
-      pickupDate: formattedPickupDate,
-      dropoffDate: formattedDropoffDate,
+    console.log("Search form submitted with values:", {
+      pickupLocationId,
+      pickupLocationName: getLocationNameById(pickupLocationId),
+      dropoffLocationId,
+      dropoffLocationName: getLocationNameById(dropoffLocationId),
+      pickupDate: pickupDate?.toISOString().split('T')[0],
       pickupTime,
+      dropoffDate: dropoffDate?.toISOString().split('T')[0],
       dropoffTime,
-      age: ageParam,
-      carCategory,
-      ...(promoCode && { promoCode })
+      ageId: selectedAgeId,
+      categoryId: selectedCategoryId
     });
     
-    console.log("Navigating to vehicles with params:", searchParams.toString());
+    // Build search parameters
+    const searchParams = new URLSearchParams();
+    searchParams.append("pickupLocationId", pickupLocationId);
+    searchParams.append("pickupLocationName", getLocationNameById(pickupLocationId));
+    searchParams.append("dropoffLocationId", dropoffLocationId);
+    searchParams.append("dropoffLocationName", getLocationNameById(dropoffLocationId));
+    searchParams.append("pickupDate", pickupDate?.toISOString().split('T')[0] || "");
+    searchParams.append("pickupTime", pickupTime);
+    searchParams.append("dropoffDate", dropoffDate?.toISOString().split('T')[0] || "");
+    searchParams.append("dropoffTime", dropoffTime);
+    searchParams.append("ageId", selectedAgeId);
+    searchParams.append("categoryId", selectedCategoryId);
+    
+    // Navigate to vehicles page
     navigate(`/vehicles?${searchParams.toString()}`);
   };
 
   return (
-    <Card className="shadow-lg border-0">
-      <CardContent className="p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold">Find Your Vehicle</h3>
-        </div>
-
-        <form onSubmit={handleSearch}>
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <LocationSelect 
-                id="pickup-location"
-                label="Pickup Location"
-                locations={locations}
-                value={pickupLocation}
-                onValueChange={(value) => {
-                  setPickupLocation(value);
-                  if (sameLocation) {
-                    setDropoffLocation(value);
-                  }
-                }}
-                isLoading={isLoadingLocations}
-                hasError={isLocationError}
+    <Card className="w-full max-w-4xl mx-auto">
+      <CardHeader>
+        <CardTitle>Find Your Perfect Vehicle</CardTitle>
+        <CardDescription>Search our fleet for your next adventure</CardDescription>
+      </CardHeader>
+      <form onSubmit={handleSubmit}>
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <LocationSelect
+              id="pickup-location"
+              label="Pick-up Location"
+              locations={locations as RCMLocation[]}
+              value={pickupLocationId}
+              onValueChange={setPickupLocationId}
+              isLoading={isLocationsLoading}
+              hasError={!!locationsError}
+            />
+            
+            <div className="space-y-4">
+              <LocationSelect
+                id="dropoff-location"
+                label="Drop-off Location"
+                locations={locations as RCMLocation[]}
+                value={dropoffLocationId}
+                onValueChange={setDropoffLocationId}
+                isLoading={isLocationsLoading}
+                hasError={!!locationsError}
+                disabled={sameLocation}
               />
-
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="dropoff-location">Dropoff Location</Label>
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
-                      className="mr-2"
-                      checked={sameLocation}
-                      onChange={() => setSameLocation(!sameLocation)}
-                    />
-                    <span className="text-sm">Same as pickup</span>
-                  </label>
-                </div>
-                <LocationSelect
-                  id="dropoff-location"
-                  label=""
-                  locations={locations}
-                  value={sameLocation ? pickupLocation : dropoffLocation}
-                  onValueChange={setDropoffLocation}
-                  isLoading={isLoadingLocations}
-                  hasError={isLocationError}
-                  disabled={sameLocation}
+              
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="same-location"
+                  checked={sameLocation}
+                  onChange={(e) => setSameLocation(e.target.checked)}
+                  className="rounded border-gray-300 text-primary focus:ring-primary"
                 />
+                <label htmlFor="same-location" className="text-sm text-gray-700">
+                  Return to same location
+                </label>
               </div>
-
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <DateSelect
                 id="pickup-date"
-                label="Pickup Date"
+                label="Pick-up Date"
                 date={pickupDate}
                 onDateChange={setPickupDate}
-                disableDate={(date) => disablePastDates(date, pickupLocation, locationDetails)}
+                disableDate={(date) => disablePastDates(date, pickupLocationId, locationDetails)}
               />
-
+              
               <TimeSelect
                 id="pickup-time"
-                label="Pickup Time"
+                label="Pick-up Time"
                 time={pickupTime}
                 onTimeChange={setPickupTime}
                 timeOptions={pickupTimeOptions}
-                isLoading={isLoadingOfficeHours}
-                disabled={!pickupLocation || !pickupDate || pickupTimeOptions.length === 0}
-                placeholder={!pickupLocation ? "Select location first" : !pickupDate ? "Select date first" : undefined}
+                isLoading={isOfficeHoursLoading || isLocationDetailsLoading}
+                disabled={!pickupLocationId || !pickupDate}
               />
-
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <DateSelect
                 id="dropoff-date"
-                label="Dropoff Date"
+                label="Drop-off Date"
                 date={dropoffDate}
                 onDateChange={setDropoffDate}
-                disableDate={(date) => isBefore(date, minDropoffDate)}
+                disableDate={(date) => {
+                  // Disable past dates and dates before pickup date
+                  if (pickupDate && date < pickupDate) return true;
+                  return disablePastDates(date, dropoffLocationId, locationDetails);
+                }}
               />
-
+              
               <TimeSelect
                 id="dropoff-time"
-                label="Dropoff Time"
+                label="Drop-off Time"
                 time={dropoffTime}
                 onTimeChange={setDropoffTime}
                 timeOptions={dropoffTimeOptions}
-                isLoading={isLoadingOfficeHours}
-                disabled={!dropoffDate || !(sameLocation ? pickupLocation : dropoffLocation) || dropoffTimeOptions.length === 0}
-                placeholder={!(sameLocation ? pickupLocation : dropoffLocation) ? "Select location first" : !dropoffDate ? "Select date first" : undefined}
+                isLoading={isOfficeHoursLoading || isLocationDetailsLoading}
+                disabled={!dropoffLocationId || !dropoffDate}
               />
-              
-              <OptionSelect
-                id="driver-age"
-                label="Driver Age"
-                value={age}
-                onValueChange={setAge}
-                options={driverAges.map(age => ({ id: String(age.id), name: age.driverage }))}
-                getOptionName={getDriverAgeName}
-                isLoading={isLoadingAges}
-                placeholder="Select age"
-              />
-              
-              <OptionSelect
-                id="car-category"
-                label="Vehicle Category"
-                value={carCategory}
-                onValueChange={setCarCategory}
-                options={carCategories.map(category => ({ id: String(category.id), name: category.vehiclecategorytype }))}
-                getOptionName={getCategoryName}
-                isLoading={isLoadingCategories}
-                placeholder="All Categories"
-                defaultValue="All Categories"
-                allOptionId="0"
-                allOptionLabel="All Categories"
-              />
-              
-              <div className="space-y-2 md:col-span-2">
-                <Label htmlFor="promo-code">Promo Code (Optional)</Label>
-                <Input 
-                  id="promo-code" 
-                  type="text" 
-                  value={promoCode} 
-                  onChange={(e) => setPromoCode(e.target.value)}
-                  placeholder="Enter promo code" 
-                />
-              </div>
             </div>
-
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isLoading || !pickupLocation || !pickupDate || !dropoffDate || !pickupTime || !dropoffTime}
-            >
-              {isLoading ? "Searching..." : "Search Available Cars"}
-            </Button>
           </div>
-        </form>
-      </CardContent>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <OptionSelect
+              id="driver-age"
+              label="Driver Age"
+              options={driverAges.map(age => ({
+                id: String(age.id),
+                name: `${age.driverage} years`
+              }))}
+              value={selectedAgeId}
+              onValueChange={setSelectedAgeId}
+              isLoading={isDriverAgesLoading}
+            />
+            
+            <OptionSelect
+              id="vehicle-category"
+              label="Vehicle Type (Optional)"
+              options={[
+                { id: "0", name: "All Categories" },
+                ...vehicleCategories.map(cat => ({
+                  id: String(cat.id),
+                  name: cat.vehiclecategorytype
+                }))
+              ]}
+              value={selectedCategoryId}
+              onValueChange={setSelectedCategoryId}
+              isLoading={isCategoriesLoading}
+            />
+          </div>
+        </CardContent>
+        
+        <CardFooter>
+          <Button type="submit" className="w-full" size="lg">
+            Search Vehicles
+          </Button>
+        </CardFooter>
+      </form>
     </Card>
   );
 };
