@@ -4,6 +4,7 @@ import { formatCurrency } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Vehicle } from "@/lib/types";
 
 interface VehicleCardProps {
   id: string | number;
@@ -29,21 +30,45 @@ interface VehicleCardProps {
     dropoffTime: string;
     ageId: string;
   };
+  
+  // Alternative approach with vehicle object
+  vehicle?: Vehicle;
+  showDetails?: boolean;
 }
 
-const VehicleCard = ({
-  id,
-  name,
-  imageUrl,
-  price,
-  seats,
-  luggage,
-  transmission,
-  features = [],
-  category,
-  currencySymbol = "$",
-  searchContext
-}: VehicleCardProps) => {
+const VehicleCard = (props: VehicleCardProps) => {
+  // Handle both approaches - direct props or vehicle object
+  const {
+    id,
+    name,
+    imageUrl,
+    price,
+    seats,
+    luggage,
+    transmission,
+    features = [],
+    category,
+    currencySymbol = "$",
+    searchContext,
+    vehicle,
+    showDetails
+  } = props.vehicle ? 
+    {
+      id: props.vehicle.id,
+      name: `${props.vehicle.make} ${props.vehicle.model}`,
+      imageUrl: props.vehicle.images[0] || "/placeholder.svg",
+      price: props.vehicle.price,
+      seats: props.vehicle.seats,
+      luggage: props.vehicle.luggage || 2,
+      transmission: props.vehicle.transmission,
+      features: props.vehicle.features,
+      category: props.vehicle.type,
+      currencySymbol: "$",
+      searchContext: props.searchContext,
+      showDetails: props.showDetails,
+      vehicle: props.vehicle
+    } : props;
+  
   const featuresList = Array.isArray(features) 
     ? features 
     : typeof features === 'string' && features ? features.split(',') : [];
