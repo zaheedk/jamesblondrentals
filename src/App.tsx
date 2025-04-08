@@ -4,7 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useState } from "react";
+import { createElement } from "react";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Vehicles from "./pages/Vehicles";
@@ -13,19 +13,19 @@ import Booking from "./pages/Booking";
 import CustomerDetails from "./pages/CustomerDetails";
 import BookingConfirmation from "./pages/BookingConfirmation";
 
+// Create a client with better error handling
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+    },
+  },
+});
+
 // Use function component syntax to ensure hooks work correctly
 const App = () => {
-  // Move QueryClient initialization inside the component
-  const [queryClient] = useState(() => new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: 1,
-        refetchOnWindowFocus: false,
-        staleTime: 5 * 60 * 1000, // 5 minutes
-      },
-    },
-  }));
-
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
