@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useRcmApi } from "@/hooks/use-rcm-api";
@@ -41,6 +42,25 @@ const Booking = () => {
   const pickupLocationName = searchParams.get("pickupLocationName");
   const dropoffLocationName = searchParams.get("dropoffLocationName");
   
+  // Log all parameters for debugging
+  useEffect(() => {
+    console.log("Booking Page - URL Parameters received:", {
+      vehicleId,
+      pickupLocationId,
+      dropoffLocationId,
+      pickupDate,
+      pickupTime, 
+      dropoffDate,
+      dropoffTime,
+      ageId,
+      vehicleName,
+      basePrice,
+      pickupLocationName,
+      dropoffLocationName
+    });
+  }, [vehicleId, pickupLocationId, dropoffLocationId, pickupDate, pickupTime, dropoffDate, dropoffTime, 
+      ageId, vehicleName, basePrice, pickupLocationName, dropoffLocationName]);
+  
   // Calculate number of days for KM charges calculation
   const numberOfDays = pickupDate && dropoffDate ? 
     differenceInDays(new Date(dropoffDate), new Date(pickupDate)) + 1 : 1;
@@ -63,19 +83,21 @@ const Booking = () => {
       .map(param => param.name);
     
     if (missingParams.length > 0) {
-      console.error(`Missing required parameters: ${missingParams.join(", ")}`);
+      console.error(`Missing required parameters for booking page:`, missingParams);
+      console.log(`Current URL parameters available:`, Object.fromEntries(searchParams));
       toast.error("Missing booking information", {
         description: "Redirecting you to the vehicle search page."
       });
       navigate("/vehicles");
     }
-  }, [vehicleId, pickupLocationId, dropoffLocationId, pickupDate, pickupTime, dropoffDate, dropoffTime, ageId, navigate]);
+  }, [vehicleId, pickupLocationId, dropoffLocationId, pickupDate, pickupTime, dropoffDate, dropoffTime, ageId, navigate, searchParams]);
   
   // Fetch Step3 data
   useEffect(() => {
     // Skip if already redirecting due to missing params
     if (!vehicleId || !pickupLocationId || !dropoffLocationId || !pickupDate || 
         !pickupTime || !dropoffDate || !dropoffTime || !ageId) {
+      console.log("Skipping Step3 API request - missing required parameters");
       return;
     }
 
@@ -92,7 +114,7 @@ const Booking = () => {
         ageid: ageId!
       };
       
-      console.log("Step3 params:", params);
+      console.log("Step3 params constructed successfully:", params);
       setStep3Params(params);
       
       setBookingDetails({
