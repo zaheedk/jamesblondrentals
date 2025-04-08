@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Grid3X3, ListFilter } from "lucide-react";
@@ -23,35 +22,42 @@ const Vehicles = () => {
   const { data: driverAges, isLoading: isDriverAgesLoading } = useDriverAges();
   const { data: vehicleCategories } = useVehicleCategories();
   
-  // Search parameters
-  const pickupLocationId = searchParams.get("pickupLocationId") || searchParams.get("pickuplocationid") || "1";
+  // Search parameters - ensure consistent parameter naming
+  const pickupLocationId = searchParams.get("pickupLocation") || searchParams.get("pickupLocationId") || "1";
   const pickupLocationName = searchParams.get("pickupLocationName");
-  const dropoffLocationId = searchParams.get("dropoffLocationId") || searchParams.get("dropofflocationid") || pickupLocationId;
+  const dropoffLocationId = searchParams.get("dropoffLocation") || searchParams.get("dropoffLocationId") || pickupLocationId;
   const dropoffLocationName = searchParams.get("dropoffLocationName");
-  const pickupDate = searchParams.get("pickupDate") || searchParams.get("pickupdate") || new Date().toLocaleDateString("en-US");
-  const pickupTime = searchParams.get("pickupTime") || searchParams.get("pickuptime") || "10:00";
-  const dropoffDate = searchParams.get("dropoffDate") || searchParams.get("dropoffdate") || new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toLocaleDateString("en-US");
-  const dropoffTime = searchParams.get("dropoffTime") || searchParams.get("dropofftime") || "10:00";
-  const ageIdFromParams = searchParams.get("ageId") || searchParams.get("ageid");
+  const pickupDate = searchParams.get("pickupDate") || new Date(Date.now() + 24 * 60 * 60 * 1000).toLocaleDateString("en-GB", {day: '2-digit', month: '2-digit', year: 'numeric'}).replace(/\//g, '/');
+  const pickupTime = searchParams.get("pickupTime") || "10:00";
+  const dropoffDate = searchParams.get("dropoffDate") || new Date(Date.now() + 4 * 24 * 60 * 60 * 1000).toLocaleDateString("en-GB", {day: '2-digit', month: '2-digit', year: 'numeric'}).replace(/\//g, '/');
+  const dropoffTime = searchParams.get("dropoffTime") || "10:00";
+  const ageId = searchParams.get("age");
+  
+  console.log("Search parameters:", {
+    pickupLocationId, dropoffLocationId, pickupDate, pickupTime, dropoffDate, dropoffTime, ageId
+  });
   
   // Get the default age ID from the driver ages data
   const [validAgeId, setValidAgeId] = useState<string | undefined>(undefined);
   
   useEffect(() => {
-    if (driverAges && driverAges.length > 0) {
-      // Try to find the default driver age
+    if (ageId) {
+      // If we have an age ID from the URL, use that
+      setValidAgeId(ageId);
+      console.log('Using age ID from URL:', ageId);
+    } else if (driverAges && driverAges.length > 0) {
+      // Otherwise, find a default
       const defaultAge = driverAges.find(age => age.isdefault);
-      // If no default, use the first one
       const firstAvailableAge = driverAges[0];
       
       const appropriateAgeId = defaultAge?.id || firstAvailableAge?.id;
       
       if (appropriateAgeId) {
-        console.log('Using driver age ID:', appropriateAgeId);
+        console.log('Using default driver age ID:', appropriateAgeId);
         setValidAgeId(appropriateAgeId.toString());
       }
     }
-  }, [driverAges]);
+  }, [driverAges, ageId]);
   
   // Log search parameters for debugging
   console.log("Car Category Selected (raw):", categoryFilter);
@@ -62,12 +68,13 @@ const Vehicles = () => {
   
   useEffect(() => {
     if (validAgeId) {
+      // Ensure we're using the correct parameter names expected by the API
       const params: RCMStep2Request = {
         pickuplocationid: pickupLocationId,
-        pickupdate: pickupDate,
+        pickupdate: pickupDate, // This should already be in DD/MM/YYYY format
         pickuptime: pickupTime,
         dropofflocationid: dropoffLocationId,
-        dropoffdate: dropoffDate,
+        dropoffdate: dropoffDate, // This should already be in DD/MM/YYYY format
         dropofftime: dropoffTime,
         ageid: validAgeId
       };
@@ -92,6 +99,19 @@ const Vehicles = () => {
     error: vehiclesError,
     refetch: refetchVehicles
   } = useStep2Vehicles(step2Params);
+
+  // Log available cars
+  useEffect(() => {
+    if (step2Data?.results?.availablecars) {
+      console.log("Available cars count:", step2Data.results.availablecars.length);
+      if (step2Data.results.availablecars.length > 0) {
+        console.log("First available car:", step2Data.results.availablecars[0]);
+      }
+    } else if (step2Data?.status === "ERR") {
+      console.error("API returned error:", step2Data.error);
+      toast.error("API Error", { description: step2Data.error });
+    }
+  }, [step2Data]);
 
   // Get pickup location name if not provided
   const getPickupLocationName = () => {
@@ -122,16 +142,6 @@ const Vehicles = () => {
     newParams.set("categoryId", categoryId);
     setSearchParams(newParams);
   };
-  
-  // Log available cars
-  useEffect(() => {
-    if (step2Data?.results?.availablecars) {
-      console.log("Available cars count:", step2Data.results.availablecars.length);
-      if (step2Data.results.availablecars.length > 0) {
-        console.log("First available car:", step2Data.results.availablecars[0]);
-      }
-    }
-  }, [step2Data]);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -245,7 +255,8 @@ const Vehicles = () => {
         {vehiclesError && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-800">
             <h3 className="font-medium">Error loading vehicles</h3>
-            <p>Please try again or adjust your search criteria.</p>
+            <p>The API returned an error: {vehiclesError instanceof Error ? vehiclesError.message : "Unknown error"}</p>
+            <p className="mt-2">Please try again or adjust your search criteria.</p>
           </div>
         )}
         
@@ -282,7 +293,7 @@ const Vehicles = () => {
                   pickupTime,
                   dropoffDate,
                   dropoffTime,
-                  ageId: validAgeId || "21" // Use our validated ageId
+                  ageId: validAgeId || "1" // Use our validated ageId
                 }}
               />
             ))}
