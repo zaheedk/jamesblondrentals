@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useRcmApi } from "@/hooks/use-rcm-api";
@@ -46,27 +45,37 @@ const Booking = () => {
   const numberOfDays = pickupDate && dropoffDate ? 
     differenceInDays(new Date(dropoffDate), new Date(pickupDate)) + 1 : 1;
   
-  // Fetch Step3 data
+  // Immediately redirect if accessing directly without parameters
   useEffect(() => {
-    // Validate required parameters immediately when component mounts
-    let missingParams = [];
-    if (!vehicleId) missingParams.push("vehicleId");
-    if (!pickupLocationId) missingParams.push("pickupLocationId");
-    if (!dropoffLocationId) missingParams.push("dropoffLocationId");
-    if (!pickupDate) missingParams.push("pickupDate");
-    if (!pickupTime) missingParams.push("pickupTime");
-    if (!dropoffDate) missingParams.push("dropoffDate");
-    if (!dropoffTime) missingParams.push("dropoffTime");
-    if (!ageId) missingParams.push("ageId");
+    const requiredParams = [
+      { name: "vehicleId", value: vehicleId },
+      { name: "pickupLocationId", value: pickupLocationId },
+      { name: "dropoffLocationId", value: dropoffLocationId },
+      { name: "pickupDate", value: pickupDate },
+      { name: "pickupTime", value: pickupTime },
+      { name: "dropoffDate", value: dropoffDate },
+      { name: "dropoffTime", value: dropoffTime },
+      { name: "ageId", value: ageId }
+    ];
+    
+    const missingParams = requiredParams
+      .filter(param => !param.value)
+      .map(param => param.name);
     
     if (missingParams.length > 0) {
-      const errorMsg = `Missing required parameters: ${missingParams.join(", ")}`;
-      setParamError(errorMsg);
-      console.error(errorMsg);
-      toast.error("Missing required booking parameters", {
-        description: "Please return to the vehicle search page and try again."
+      console.error(`Missing required parameters: ${missingParams.join(", ")}`);
+      toast.error("Missing booking information", {
+        description: "Redirecting you to the vehicle search page."
       });
-      setIsLoading(false);
+      navigate("/vehicles");
+    }
+  }, [vehicleId, pickupLocationId, dropoffLocationId, pickupDate, pickupTime, dropoffDate, dropoffTime, ageId, navigate]);
+  
+  // Fetch Step3 data
+  useEffect(() => {
+    // Skip if already redirecting due to missing params
+    if (!vehicleId || !pickupLocationId || !dropoffLocationId || !pickupDate || 
+        !pickupTime || !dropoffDate || !dropoffTime || !ageId) {
       return;
     }
 
@@ -101,6 +110,7 @@ const Booking = () => {
         basePrice
       });
       setParamError(null);
+      setIsLoading(false);
     } catch (error) {
       console.error("Error setting up Step3 params:", error);
       setParamError("Error setting up booking parameters");
@@ -109,7 +119,7 @@ const Booking = () => {
       });
       setIsLoading(false);
     }
-  }, [vehicleId, pickupLocationId, dropoffLocationId, pickupDate, pickupTime, dropoffDate, dropoffTime, ageId]);
+  }, [vehicleId, pickupLocationId, dropoffLocationId, pickupDate, pickupTime, dropoffDate, dropoffTime, ageId, vehicleName, pickupLocationName, dropoffLocationName, basePrice]);
   
   // Fetch step3 data from API
   const { data: step3Data, isLoading: isStep3Loading, error: step3Error } = useStep3Details(step3Params);
@@ -267,7 +277,7 @@ const Booking = () => {
     );
   }
 
-  if (isStep3Loading) {
+  if (isLoading || isStep3Loading) {
     return (
       <div className="container mx-auto p-4">
         <h1 className="text-2xl font-bold mb-6">Loading booking options...</h1>
