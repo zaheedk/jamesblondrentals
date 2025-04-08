@@ -29,7 +29,7 @@ const Vehicles = () => {
   const dropoffLocationId = searchParams.get("dropoffLocationId") || searchParams.get("dropofflocationid") || pickupLocationId;
   const dropoffLocationName = searchParams.get("dropoffLocationName");
   
-  // Format date params correctly for the API (dd/mm/yyyy)
+  // Format date params correctly for the API (dd/MM/yyyy)
   const formatDateForApi = (dateStr: string) => {
     try {
       const date = new Date(dateStr);
@@ -65,21 +65,25 @@ const Vehicles = () => {
   const dropoffDate = formatDateForApi(dropoffDateRaw);
   
   // Get driver age ID (from first available if not specified)
-  const [selectedAgeId, setSelectedAgeId] = useState<string>("1");
+  const [selectedAgeId, setSelectedAgeId] = useState<string | number>("4");
   
   // Set proper age ID when driverAges are loaded
   useEffect(() => {
     if (driverAges && driverAges.length > 0) {
-      const defaultAge = driverAges.find(age => age.isdefault) || driverAges[0];
-      setSelectedAgeId(defaultAge.id);
+      const ageParam = searchParams.get("age");
+      if (ageParam) {
+        setSelectedAgeId(ageParam);
+      } else {
+        const defaultAge = driverAges.find(age => age.isdefault) || driverAges[0];
+        setSelectedAgeId(defaultAge.id);
+      }
     }
-  }, [driverAges]);
+  }, [driverAges, searchParams]);
   
   // Log search parameters for debugging
   console.log("Car Category Selected (raw):", categoryFilter);
-  console.log("Car Category Type:", typeof categoryFilter);
   console.log("Date formats - pickup:", pickupDate, "dropoff:", dropoffDate);
-  console.log("Selected age ID:", selectedAgeId);
+  console.log("Selected age ID:", selectedAgeId, "Type:", typeof selectedAgeId);
   
   // Construct Step2 parameters
   const step2Params: RCMStep2Request | null = selectedAgeId ? {

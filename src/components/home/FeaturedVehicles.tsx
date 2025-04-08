@@ -41,6 +41,7 @@ const FeaturedVehicles = () => {
           const formattedDropoffDate = formatDateForApi(dropoffDate);
           
           console.log("Featured vehicles search with dates:", formattedPickupDate, formattedDropoffDate);
+          console.log("Using driver age ID:", defaultDriverAge.id);
           
           // Use Step2 API for consistency with the vehicles page
           const vehiclesData = await rcmApi.getStep2({
