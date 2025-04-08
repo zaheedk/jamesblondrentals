@@ -129,7 +129,19 @@ const FeaturedVehicles = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredVehicles.map((vehicle) => (
-            <VehicleCard key={vehicle.id} vehicle={vehicle} showDetails={true} />
+            <VehicleCard 
+              key={vehicle.id}
+              id={vehicle.id}
+              name={`${vehicle.make} ${vehicle.model}`}
+              imageUrl={vehicle.images[0]}
+              price={vehicle.price}
+              seats={vehicle.seats}
+              luggage={2}
+              transmission={vehicle.transmission}
+              features={vehicle.features}
+              category={vehicle.type}
+              currencySymbol="$"
+            />
           ))}
         </div>
       )}
