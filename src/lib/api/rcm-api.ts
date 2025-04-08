@@ -28,7 +28,7 @@ const DEFAULT_CONFIG: RCMApiConfig = {
 class RCMApiClient {
   private config: RCMApiConfig;
   private initialized: boolean = false;
-  private useMockData: boolean = true; // Default to mock data for reliability
+  private useMockData: boolean = false; // Default to real API data
 
   constructor(config: RCMApiConfig) {
     // Ensure API URL doesn't end with a slash
@@ -129,9 +129,9 @@ class RCMApiClient {
   private async request<T>(method: string, requestMethod: string, body?: any): Promise<T> {
     this.ensureInitialized();
 
-    // Return mock data if in mock mode
+    // Only use mock data if explicitly configured to do so
     if (this.useMockData) {
-      console.log(`Using mock data for ${requestMethod} request`);
+      console.log(`Using mock data for ${requestMethod} request as configured`);
       return this.getMockResponse<T>(requestMethod, body);
     }
 
@@ -160,11 +160,7 @@ class RCMApiClient {
         console.error("Non-JSON response received:", contentType);
         const text = await response.text();
         console.error("Response text:", text);
-        
-        // If we get an HTML response, it's likely a proxy or network issue
-        // Fall back to mock data
-        console.log("Detected HTML response instead of JSON, falling back to mock data");
-        return this.getMockResponse<T>(requestMethod, body);
+        throw new Error(`Expected JSON response but got ${contentType}`);
       }
 
       // Handle non-OK responses
@@ -179,9 +175,7 @@ class RCMApiClient {
         }
         
         console.error(`API error: ${response.status} ${response.statusText}`, errorData);
-        
-        // Fall back to mock data on error
-        return this.getMockResponse<T>(requestMethod, body);
+        throw new Error(errorData.message || `API request failed with status: ${response.status}`);
       }
 
       // Parse and return the response
@@ -191,18 +185,22 @@ class RCMApiClient {
       // Check for API errors in the response
       if (responseData.status === "ERR") {
         console.error('API returned error:', responseData.error);
-        
-        // Fall back to mock data on API error
-        return this.getMockResponse<T>(requestMethod, body);
+        throw new Error(responseData.error || "API returned an error");
       }
       
       return responseData;
     } catch (error) {
       console.error('RCM API request failed:', error);
       
-      // Always fall back to mock data on any error
-      console.log("Falling back to mock data due to error");
-      return this.getMockResponse<T>(requestMethod, body);
+      // Only fall back to mock data in development mode
+      if (process.env.NODE_ENV === 'development') {
+        console.log("Running in development - falling back to mock data due to error");
+        toast.error('API error occurred', { description: 'Using fallback data for development' });
+        return this.getMockResponse<T>(requestMethod, body);
+      }
+      
+      // In production, we should not silently use mock data
+      throw error;
     }
   }
   
