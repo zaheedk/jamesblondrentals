@@ -10,6 +10,7 @@ import Footer from "@/components/layout/Footer";
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { RCMStep2Request } from "@/lib/api/rcm-api-types";
+import { toast } from "sonner";
 
 const Vehicles = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -19,7 +20,7 @@ const Vehicles = () => {
   
   // Locations data
   const { data: locations, isLoading: isLocationsLoading } = useLocations();
-  const { data: driverAges } = useDriverAges();
+  const { data: driverAges, isLoading: isDriverAgesLoading } = useDriverAges();
   const { data: vehicleCategories } = useVehicleCategories();
   
   // Search parameters
@@ -31,30 +32,58 @@ const Vehicles = () => {
   const pickupTime = searchParams.get("pickupTime") || searchParams.get("pickuptime") || "10:00";
   const dropoffDate = searchParams.get("dropoffDate") || searchParams.get("dropoffdate") || new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toLocaleDateString("en-US");
   const dropoffTime = searchParams.get("dropoffTime") || searchParams.get("dropofftime") || "10:00";
-  const ageId = searchParams.get("ageId") || searchParams.get("ageid") || "1";
+  const ageIdFromParams = searchParams.get("ageId") || searchParams.get("ageid");
+  
+  // Get the default age ID from the driver ages data
+  const [validAgeId, setValidAgeId] = useState<string | undefined>(undefined);
+  
+  useEffect(() => {
+    if (driverAges && driverAges.length > 0) {
+      // Try to find the default driver age
+      const defaultAge = driverAges.find(age => age.isdefault);
+      // If no default, use the first one
+      const firstAvailableAge = driverAges[0];
+      
+      const appropriateAgeId = defaultAge?.id || firstAvailableAge?.id;
+      
+      if (appropriateAgeId) {
+        console.log('Using driver age ID:', appropriateAgeId);
+        setValidAgeId(appropriateAgeId.toString());
+      }
+    }
+  }, [driverAges]);
   
   // Log search parameters for debugging
   console.log("Car Category Selected (raw):", categoryFilter);
   console.log("Car Category Type:", typeof categoryFilter);
   
-  // Construct Step2 parameters
-  const step2Params: RCMStep2Request = {
-    pickuplocationid: pickupLocationId,
-    pickupdate: pickupDate,
-    pickuptime: pickupTime,
-    dropofflocationid: dropoffLocationId,
-    dropoffdate: dropoffDate,
-    dropofftime: dropoffTime,
-    ageid: ageId
-  };
+  // Construct Step2 parameters, but only if we have a valid age ID
+  const [step2Params, setStep2Params] = useState<RCMStep2Request | null>(null);
   
-  // Add category filter if selected
-  if (categoryFilter && categoryFilter !== "0") {
-    step2Params.vehiclecategorytypeid = categoryFilter;
-  }
-  
-  console.log("Step2Params (full):", step2Params);
-  console.log("Step2Params vehiclecategorytypeid:", step2Params.vehiclecategorytypeid);
+  useEffect(() => {
+    if (validAgeId) {
+      const params: RCMStep2Request = {
+        pickuplocationid: pickupLocationId,
+        pickupdate: pickupDate,
+        pickuptime: pickupTime,
+        dropofflocationid: dropoffLocationId,
+        dropoffdate: dropoffDate,
+        dropofftime: dropoffTime,
+        ageid: validAgeId
+      };
+      
+      // Add category filter if selected
+      if (categoryFilter && categoryFilter !== "0") {
+        params.vehiclecategorytypeid = categoryFilter;
+      }
+      
+      console.log("Creating Step2Params with valid ageid:", params);
+      setStep2Params(params);
+    } else {
+      console.log("Waiting for valid driver age ID before creating step2Params");
+    }
+  }, [pickupLocationId, pickupDate, pickupTime, dropoffLocationId, dropoffDate, dropoffTime, 
+      validAgeId, categoryFilter]);
   
   // Fetch available vehicles
   const { 
@@ -197,6 +226,14 @@ const Vehicles = () => {
           </div>
         </div>
         
+        {/* Driver Age Loading State */}
+        {isDriverAgesLoading && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-blue-800 mb-4">
+            <h3 className="font-medium">Loading driver age requirements...</h3>
+            <p>Please wait while we retrieve available options.</p>
+          </div>
+        )}
+        
         {/* Loading State */}
         {isVehiclesLoading && (
           <div className="flex items-center justify-center h-64">
@@ -245,7 +282,7 @@ const Vehicles = () => {
                   pickupTime,
                   dropoffDate,
                   dropoffTime,
-                  ageId
+                  ageId: validAgeId || "21" // Use our validated ageId
                 }}
               />
             ))}
