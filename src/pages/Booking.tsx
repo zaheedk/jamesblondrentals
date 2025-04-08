@@ -13,7 +13,6 @@ import { Separator } from "@/components/ui/separator";
 import { RCMStep3Request, RCMStep3Response, RCMInsuranceOption } from "@/lib/api/rcm-api-types";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
-import { validateUrlParams } from "@/lib/utils";
 
 const Booking = () => {
   const navigate = useNavigate();
@@ -59,18 +58,8 @@ const Booking = () => {
       pickupLocationName,
       dropoffLocationName
     });
-    
-    // Validate all required parameters
-    const requiredParams = [
-      "vehicleId", "pickupLocationId", "dropoffLocationId", 
-      "pickupDate", "pickupTime", "dropoffDate", "dropoffTime", "ageId"
-    ];
-    
-    const { isValid, missingParams } = validateUrlParams(searchParams, requiredParams);
-    console.log("Parameter validation result:", { isValid, missingParams });
-    
   }, [vehicleId, pickupLocationId, dropoffLocationId, pickupDate, pickupTime, dropoffDate, dropoffTime, 
-      ageId, vehicleName, basePrice, pickupLocationName, dropoffLocationName, searchParams]);
+      ageId, vehicleName, basePrice, pickupLocationName, dropoffLocationName]);
   
   // Calculate number of days for KM charges calculation
   const numberOfDays = pickupDate && dropoffDate ? 
