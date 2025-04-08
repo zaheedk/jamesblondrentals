@@ -7,13 +7,14 @@ import { Badge } from "@/components/ui/badge";
 import { Vehicle } from "@/lib/types";
 
 interface VehicleCardProps {
-  id: string | number;
-  name: string;
-  imageUrl: string;
-  price: number | string;
-  seats: number;
-  luggage: number;
-  transmission: string;
+  // Direct props
+  id?: string | number;
+  name?: string;
+  imageUrl?: string;
+  price?: number | string;
+  seats?: number;
+  luggage?: number;
+  transmission?: string;
   features?: string[] | string;
   category?: string;
   currencySymbol?: string;
@@ -37,37 +38,24 @@ interface VehicleCardProps {
 }
 
 const VehicleCard = (props: VehicleCardProps) => {
-  // Handle both approaches - direct props or vehicle object
+  // If we have a vehicle prop, extract data from it
+  const vehicle = props.vehicle;
+  
+  // Extract data prioritizing direct props, then falling back to vehicle object props
   const {
-    id,
-    name,
-    imageUrl,
-    price,
-    seats,
-    luggage,
-    transmission,
-    features = [],
-    category,
+    id = vehicle?.id,
+    name = vehicle ? `${vehicle.make} ${vehicle.model}` : "Unknown Vehicle",
+    imageUrl = vehicle?.images?.[0] || "/placeholder.svg",
+    price = vehicle?.price || 0,
+    seats = vehicle?.seats || 4,
+    luggage = vehicle?.luggage || 2,
+    transmission = vehicle?.transmission || "automatic",
+    features = vehicle?.features || [],
+    category = vehicle?.type || "economy",
     currencySymbol = "$",
-    searchContext,
-    vehicle,
-    showDetails
-  } = props.vehicle ? 
-    {
-      id: props.vehicle.id,
-      name: `${props.vehicle.make} ${props.vehicle.model}`,
-      imageUrl: props.vehicle.images[0] || "/placeholder.svg",
-      price: props.vehicle.price,
-      seats: props.vehicle.seats,
-      luggage: props.vehicle.luggage || 2,
-      transmission: props.vehicle.transmission,
-      features: props.vehicle.features,
-      category: props.vehicle.type,
-      currencySymbol: "$",
-      searchContext: props.searchContext,
-      showDetails: props.showDetails,
-      vehicle: props.vehicle
-    } : props;
+    searchContext = props.searchContext,
+    showDetails = props.showDetails
+  } = props;
   
   const featuresList = Array.isArray(features) 
     ? features 
@@ -80,9 +68,9 @@ const VehicleCard = (props: VehicleCardProps) => {
     const params = new URLSearchParams();
     
     // Add required booking parameters
-    params.append('vehicleId', id.toString());
+    params.append('vehicleId', id?.toString() || "0");
     params.append('vehicleName', name);
-    params.append('basePrice', typeof price === 'string' ? price : price.toString());
+    params.append('basePrice', typeof price === 'string' ? price : price?.toString() || "0");
     
     // Add search context parameters
     params.append('pickupLocationId', searchContext.pickupLocationId);
@@ -136,7 +124,7 @@ const VehicleCard = (props: VehicleCardProps) => {
           </div>
           <div className="flex flex-col items-center justify-center p-2 bg-gray-50 rounded-md">
             <span className="text-gray-500">Trans</span>
-            <span className="font-medium">{transmission}</span>
+            <span className="font-medium">{transmission === "automatic" ? "Auto" : "Manual"}</span>
           </div>
         </div>
         
