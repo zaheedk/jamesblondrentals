@@ -14,9 +14,18 @@ import { toast } from "sonner";
 
 const Vehicles = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { useLocations, useDriverAges, useVehicleCategories, useStep2Vehicles } = useRcmApi();
+  const { useLocations, useDriverAges, useVehicleCategories, useStep2Vehicles, initializeApi } = useRcmApi();
   const [isGridView, setIsGridView] = useState(true);
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
+  const [useMockData, setUseMockData] = useState(false);
+  
+  // Initialize API - enable mock data if no results
+  useEffect(() => {
+    initializeApi({
+      useMockData: useMockData
+    });
+    console.log("Vehicle search initialized with mock data:", useMockData);
+  }, [initializeApi, useMockData]);
   
   // Locations data
   const { data: locations, isLoading: isLocationsLoading } = useLocations();
@@ -147,17 +156,40 @@ const Vehicles = () => {
       console.log("Available cars count:", step2Data.results.availablecars.length);
       if (step2Data.results.availablecars.length > 0) {
         console.log("First available car:", step2Data.results.availablecars[0]);
+      } else {
+        console.log("No available cars found in API response");
       }
     } else {
-      console.log("No available cars in response or API response format unexpected");
+      console.log("No availablecars property in API response or unexpected format", step2Data);
     }
   }, [step2Data]);
+
+  // Toggle mock data
+  const toggleMockData = () => {
+    const newValue = !useMockData;
+    setUseMockData(newValue);
+    initializeApi({ useMockData: newValue }).then(() => {
+      refetchVehicles();
+      toast.success(`${newValue ? 'Mock' : 'Live'} data mode enabled`);
+    });
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
       <main className="flex-grow container mx-auto px-4 py-6">
-        <h1 className="text-2xl font-bold mb-6">Available Vehicles</h1>
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold">Available Vehicles</h1>
+          
+          {/* Debug Mode Toggle */}
+          <Button 
+            variant="outline" 
+            onClick={toggleMockData} 
+            className="text-xs"
+          >
+            {useMockData ? 'Using Mock Data' : 'Using Live API'}
+          </Button>
+        </div>
         
         {/* Search Criteria Summary */}
         <div className="bg-white rounded-lg p-4 mb-6 shadow-sm border">
@@ -265,6 +297,16 @@ const Vehicles = () => {
           </div>
         </div>
         
+        {/* Debug Info */}
+        {vehiclesError && (
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+            <h3 className="font-medium text-yellow-800">Debug Information:</h3>
+            <pre className="text-xs mt-2 bg-yellow-100 p-2 rounded overflow-auto max-h-32">
+              {JSON.stringify({ error: vehiclesError.message, params: step2Params }, null, 2)}
+            </pre>
+          </div>
+        )}
+        
         {/* Loading State */}
         {isVehiclesLoading && (
           <div className="flex items-center justify-center h-64">
@@ -284,6 +326,13 @@ const Vehicles = () => {
             >
               Retry
             </Button>
+            <Button 
+              variant="outline" 
+              className="mt-2 ml-2"
+              onClick={toggleMockData}
+            >
+              {useMockData ? 'Try Live API' : 'Try Mock Data'}
+            </Button>
           </div>
         )}
         
@@ -292,6 +341,22 @@ const Vehicles = () => {
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-yellow-800">
             <h3 className="font-medium">No vehicles available</h3>
             <p>Please try different dates or locations.</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Button 
+                variant="outline" 
+                onClick={() => refetchVehicles()}
+                size="sm"
+              >
+                Retry Search
+              </Button>
+              <Button 
+                variant="outline"
+                size="sm"
+                onClick={toggleMockData}
+              >
+                {useMockData ? 'Try Live API' : 'Try Mock Data'}
+              </Button>
+            </div>
           </div>
         )}
         
