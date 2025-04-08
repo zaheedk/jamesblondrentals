@@ -13,7 +13,7 @@ const FeaturedVehicles = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { rcmApi } = useRcmApi();
   
-  // Helper function to format dates for the API (dd/mm/yyyy)
+  // Helper function to format dates for the API (dd/MM/yyyy)
   const formatDateForApi = (date: Date) => {
     return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
   };
@@ -41,7 +41,7 @@ const FeaturedVehicles = () => {
           const formattedDropoffDate = formatDateForApi(dropoffDate);
           
           console.log("Featured vehicles search with dates:", formattedPickupDate, formattedDropoffDate);
-          console.log("Using driver age ID:", defaultDriverAge.id);
+          console.log("Using driver age ID:", defaultDriverAge.id, "Type:", typeof defaultDriverAge.id);
           
           // Use Step2 API for consistency with the vehicles page
           const vehiclesData = await rcmApi.getStep2({
@@ -51,8 +51,10 @@ const FeaturedVehicles = () => {
             dropofflocationid: defaultLocation.id.toString(),
             dropoffdate: formattedDropoffDate,
             dropofftime: "10:00",
-            ageid: defaultDriverAge.id
+            ageid: String(defaultDriverAge.id)
           });
+          
+          console.log("Step2 API response:", vehiclesData);
           
           if (vehiclesData.status === "OK" && vehiclesData.results?.availablecars) {
             // Transform API data to match our Vehicle interface
@@ -75,15 +77,22 @@ const FeaturedVehicles = () => {
               description: v.vehicledescription2 || `${v.vehiclecategory} with ${v.numberofadults + v.numberofchildren || 4} seats.`,
             }));
             
+            console.log("Mapped vehicles:", mappedVehicles.length);
             setVehicles(mappedVehicles);
           } else {
             console.error("No vehicles available in response:", vehiclesData);
             toast.error("Could not load featured vehicles");
             setVehicles([]);
           }
+        } else {
+          console.error("Invalid Step1 data:", step1Data);
+          toast.error("API connection error");
         }
       } catch (error) {
         console.error("Error fetching vehicles:", error);
+        toast.error("API connection error", {
+          description: "Failed to connect to the rental management system"
+        });
         setVehicles([]);
       } finally {
         setIsLoading(false);

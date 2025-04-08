@@ -65,7 +65,7 @@ const Vehicles = () => {
   const dropoffDate = formatDateForApi(dropoffDateRaw);
   
   // Get driver age ID (from first available if not specified)
-  const [selectedAgeId, setSelectedAgeId] = useState<string | number>("4");
+  const [selectedAgeId, setSelectedAgeId] = useState<string>("4");
   
   // Set proper age ID when driverAges are loaded
   useEffect(() => {
@@ -75,7 +75,7 @@ const Vehicles = () => {
         setSelectedAgeId(ageParam);
       } else {
         const defaultAge = driverAges.find(age => age.isdefault) || driverAges[0];
-        setSelectedAgeId(defaultAge.id);
+        setSelectedAgeId(String(defaultAge.id));
       }
     }
   }, [driverAges, searchParams]);
@@ -148,6 +148,8 @@ const Vehicles = () => {
       if (step2Data.results.availablecars.length > 0) {
         console.log("First available car:", step2Data.results.availablecars[0]);
       }
+    } else {
+      console.log("No available cars in response or API response format unexpected");
     }
   }, [step2Data]);
 
