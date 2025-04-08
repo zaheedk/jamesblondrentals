@@ -7,24 +7,20 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
- * Validates required URL parameters are present and logs any missing parameters
- * @param params The URL search params object
- * @param requiredParams Array of required parameter names
- * @returns Object with validation result and any missing parameters
+ * Formats a number as currency
+ * @param value - The value to format
+ * @param maximumFractionDigits - Maximum number of fraction digits to display
+ * @returns Formatted string with appropriate decimal places
  */
-export function validateUrlParams(
-  params: URLSearchParams, 
-  requiredParams: string[]
-): { isValid: boolean; missingParams: string[] } {
-  const missingParams = requiredParams.filter(param => !params.get(param));
+export function formatCurrency(value: number | string, maximumFractionDigits: number = 2): string {
+  // Convert string to number if needed
+  const numericValue = typeof value === 'string' ? parseFloat(value) : value;
   
-  if (missingParams.length > 0) {
-    console.error('Missing required URL parameters:', missingParams);
-    console.log('Available parameters:', Object.fromEntries(params));
+  // Check if the value is a valid number
+  if (isNaN(numericValue)) {
+    return '0.00';
   }
   
-  return {
-    isValid: missingParams.length === 0,
-    missingParams
-  };
+  // Format the number with appropriate decimal places
+  return numericValue.toFixed(maximumFractionDigits);
 }
