@@ -1,4 +1,3 @@
-
 import { generateSignature } from './rcm-signature';
 import type { 
   RCMApiConfig,
@@ -14,7 +13,6 @@ import type {
   RCMStep3Request,
   RCMStep3Response
 } from './rcm-api-types';
-import { mockStep1Data, mockStep2Data, mockStep3Data } from './rcm-mock-data';
 
 // API Configuration from Web.config file
 const DEFAULT_CONFIG: RCMApiConfig = {
@@ -29,7 +27,6 @@ const DEFAULT_CONFIG: RCMApiConfig = {
 class RCMApiClient {
   private config: RCMApiConfig;
   private initialized: boolean = false;
-  private useMockData: boolean = false;
 
   constructor(config: RCMApiConfig) {
     // Ensure API URL doesn't end with a slash
@@ -46,14 +43,12 @@ class RCMApiClient {
     if (config.apiKey) this.config.apiKey = config.apiKey;
     if (config.apiSecret) this.config.apiSecret = config.apiSecret;
     if (config.apiUrl) this.config.apiUrl = config.apiUrl.replace(/\/$/, '');
-    if (config.useMockData !== undefined) this.useMockData = config.useMockData;
     
     this.initialized = true;
     
     console.log('RCM API initialized with config:', {
       apiUrl: this.config.apiUrl,
-      apiKey: this.config.apiKey,
-      useMockData: this.useMockData
+      apiKey: this.config.apiKey
     });
   }
 
@@ -108,10 +103,18 @@ class RCMApiClient {
    * Exactly as shown in the Postman collection
    */
   private buildApiUrl(): string {
-    // Use direct URL for all environments since we're using a proxy
-    const apiPath = `/api/rcm${this.config.apiUrl.replace(/^https?:\/\/[^\/]+/, '')}`;
-    const url = `${apiPath}/${this.config.apiKey}?apikey=${this.config.apiKey}`;
-    console.log('Built proxied API URL:', url);
+    // Use the proxy URL in browser environment
+    if (typeof window !== 'undefined') {
+      const baseUrl = '/api/rcm';
+      const apiPath = this.config.apiUrl.replace(/^https?:\/\/[^\/]+/, '');
+      const url = `${baseUrl}${apiPath}/${this.config.apiKey}?apikey=${this.config.apiKey}`;
+      console.log('Built proxied API URL:', url);
+      return url;
+    }
+    
+    // Otherwise use the direct URL (for non-browser environments)
+    const url = `${this.config.apiUrl}/${this.config.apiKey}?apikey=${this.config.apiKey}`;
+    console.log('Built direct API URL:', url);
     return url;
   }
 
@@ -120,12 +123,6 @@ class RCMApiClient {
    */
   private async request<T>(method: string, requestMethod: string, body?: any): Promise<T> {
     this.ensureInitialized();
-
-    // Return mock data if in mock mode
-    if (this.useMockData) {
-      console.log(`Using mock data for ${requestMethod} request`);
-      return this.getMockResponse<T>(requestMethod, body);
-    }
 
     try {
       // Build the URL with API key
@@ -138,13 +135,6 @@ class RCMApiClient {
       // Create headers with auth tokens
       const headers = this.createHeaders(method, requestBody);
       
-      console.log('Full request details:', {
-        url: apiUrl,
-        method,
-        headers: Object.fromEntries(headers.entries()),
-        body: JSON.stringify(requestBody)
-      });
-      
       // Make the request
       const response = await fetch(apiUrl, {
         method,
@@ -153,17 +143,13 @@ class RCMApiClient {
         credentials: 'same-origin', // Important for cookies if needed
       });
 
-      console.log('API response status:', response.status, response.statusText);
-      
       // Check if response is JSON
       const contentType = response.headers.get("content-type");
-      console.log('Response content-type:', contentType);
-      
       if (contentType && contentType.indexOf("application/json") === -1) {
         console.error("Non-JSON response received:", contentType);
         const text = await response.text();
         console.error("Response text:", text);
-        throw new Error(`API returned non-JSON response: ${text}`);
+        throw new Error(`API returned non-JSON response: ${response.status} ${response.statusText}`);
       }
 
       // Handle non-OK responses
@@ -178,52 +164,23 @@ class RCMApiClient {
         }
         
         console.error(`API error: ${response.status} ${response.statusText}`, errorData);
-        throw new Error(`API error: ${response.status} ${response.statusText}`);
+        throw new Error(errorData.message || `API request failed: ${response.status}`);
       }
 
       // Parse and return the response
       const responseData = await response.json();
-      console.log('API response data:', JSON.stringify(responseData, null, 2));
+      console.log('API response:', responseData);
       
       // Check for API errors in the response
       if (responseData.status === "ERR") {
         console.error('API returned error:', responseData.error);
-        throw new Error(`API error: ${responseData.error || 'Unknown error'}`);
+        throw new Error(responseData.error || 'Unknown API error');
       }
       
       return responseData;
     } catch (error) {
       console.error('RCM API request failed:', error);
-      
-      // If we're not using mock data, throw the error
-      if (!this.useMockData) {
-        throw error;
-      }
-      
-      // Fall back to mock data only if useMockData is true
-      console.log("Falling back to mock data due to error");
-      return this.getMockResponse<T>(requestMethod, body);
-    }
-  }
-  
-  /**
-   * Returns mock data based on the request method
-   */
-  private getMockResponse<T>(requestMethod: string, body?: any): T {
-    console.log(`Generating mock response for method: ${requestMethod}`);
-    
-    switch(requestMethod) {
-      case 'step1':
-        return mockStep1Data as unknown as T;
-      case 'step2':
-        // Log that we're using mock data
-        console.log('Using mock Step2 data with params:', body);
-        return mockStep2Data as unknown as T;
-      case 'step3':
-        return mockStep3Data as unknown as T;
-      default:
-        // For other methods, return a basic success response
-        return { status: "OK", results: {} } as unknown as T;
+      throw error;
     }
   }
 
@@ -283,55 +240,18 @@ class RCMApiClient {
    */
   async getStep2(params: RCMStep2Request): Promise<RCMStep2Response> {
     console.log('Fetching Step2 data with params:', params);
-    console.log('Date format check - pickupdate:', params.pickupdate, 'dropoffdate:', params.dropoffdate);
-    
-    // Ensure ageid is a string
-    const sanitizedParams = {
-      ...params,
-      ageid: String(params.ageid)
-    };
-    
-    console.log('Driver age ID:', sanitizedParams.ageid, 'Type:', typeof sanitizedParams.ageid);
     
     // Log specifically the category ID for debugging
-    if ('vehiclecategorytypeid' in sanitizedParams) {
-      console.log('Vehicle category type ID:', sanitizedParams.vehiclecategorytypeid, 'Type:', typeof sanitizedParams.vehiclecategorytypeid);
+    if ('vehiclecategorytypeid' in params) {
+      console.log('Vehicle category type ID:', params.vehiclecategorytypeid, 'Type:', typeof params.vehiclecategorytypeid);
     } else {
       console.log('No vehicle category type ID in request - using all categories');
     }
     
-    // Try using mock data if we're getting no results
-    if (this.useMockData) {
-      console.log('Using mock data for step2 request');
-      return mockStep2Data as RCMStep2Response;
-    }
-    
-    try {
-      const result = await this.request<RCMStep2Response>('POST', 'step2', sanitizedParams);
-      
-      // Check if we got any cars in the results
-      if (result.results?.availablecars) {
-        console.log(`Received ${result.results.availablecars.length} cars from API`);
-        if (result.results.availablecars.length === 0) {
-          console.log('No cars available for these search parameters, trying mock data');
-          // If no cars found, maybe try using mock data
-          this.useMockData = true;
-          const mockResult = this.getMockResponse<RCMStep2Response>('step2', sanitizedParams);
-          this.useMockData = false;
-          console.log(`Mock data has ${mockResult.results?.availablecars?.length || 0} cars`);
-          
-          // Return the actual result, not mock data - we just logged mock for comparison
-          return result;
-        }
-      } else {
-        console.log('No availablecars array in API response');
-      }
-      
-      return result;
-    } catch (error) {
-      console.error('Error fetching Step2 data:', error);
-      throw error;
-    }
+    // We'll no longer strip out the "0" value, since we want to explicitly pass it
+    // to indicate "All Categories" rather than removing it entirely
+
+    return this.request<RCMStep2Response>('POST', 'step2', params);
   }
 
   /**

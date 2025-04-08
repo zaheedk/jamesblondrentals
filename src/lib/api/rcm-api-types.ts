@@ -147,14 +147,14 @@ export interface RCMStep2Response {
 }
 
 export interface RCMStep2Request {
-  vehiclecategorytypeid?: string;
+  vehiclecategorytypeid?: number | string;
   pickuplocationid: string | number;
   pickupdate: string;
   pickuptime: string;
   dropofflocationid: string | number;
   dropoffdate: string;
   dropofftime: string;
-  ageid: string;
+  ageid?: string | number;
   campaigncode?: string;
 }
 

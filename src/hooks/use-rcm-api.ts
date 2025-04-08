@@ -1,4 +1,3 @@
-
 import { useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { rcmApi } from '@/lib/api/rcm-api';
@@ -183,21 +182,10 @@ export function useRcmApi() {
             throw new Error('Missing required ageid parameter');
           }
           
-          // Ensure ageid is a string
-          const sanitizedParams = {
-            ...params,
-            ageid: String(params.ageid)
-          };
-          
-          console.log('Making API call with sanitized params:', sanitizedParams);
-          
-          const response = await rcmApi.getStep2(sanitizedParams);
-          console.log('Step2 API response:', response);
+          const response = await rcmApi.getStep2(params);
+          console.log('Step2 response:', response);
           
           if (response.status === "OK") {
-            if (!response.results?.availablecars || !Array.isArray(response.results.availablecars)) {
-              console.warn('No available cars in response or unexpected format:', response);
-            }
             return response;
           } else {
             throw new Error(response.error || "Failed to fetch available vehicles");

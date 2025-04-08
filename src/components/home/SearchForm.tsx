@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -85,12 +84,11 @@ const SearchForm = () => {
   const isLocationError = !!locationError;
   
   useEffect(() => {
-    // Initialize API in the component with live data mode
     initializeApi({
       apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
       apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
       apiUrl: "https://apis.rentalcarmanager.com/booking/v3.2",
-      useMockData: false // Ensure we're using real data
+      useMockData: false
     }).catch(error => {
       console.error('Failed to initialize API:', error);
       toast.error("Error connecting to booking system", {
