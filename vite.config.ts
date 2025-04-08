@@ -10,7 +10,7 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
     proxy: {
-      // Proxy API requests to RCM API
+      // Proxy API requests to RCM API directly
       '/api/rcm': {
         target: 'https://apis.rentalcarmanager.com',
         changeOrigin: true,
@@ -22,9 +22,6 @@ export default defineConfig(({ mode }) => ({
           });
           proxy.on('proxyReq', (proxyReq, req, _res) => {
             console.log('Sending Request to the Target:', req.method, req.url);
-            // Add additional required headers
-            proxyReq.setHeader('Accept', 'application/json');
-            proxyReq.setHeader('Content-Type', 'application/json');
           });
           proxy.on('proxyRes', (proxyRes, req, _res) => {
             console.log('Received Response from the Target:', proxyRes.statusCode, req.url);
