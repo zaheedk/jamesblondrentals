@@ -13,12 +13,13 @@ import type {
   RCMStep3Request,
   RCMStep3Response
 } from './rcm-api-types';
+import { toast } from 'sonner';
 
 // API Configuration from Web.config file
 const DEFAULT_CONFIG: RCMApiConfig = {
   apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
   apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
-  apiUrl: "https://apis.rentalcarmanager.com/booking/v3.2"
+  apiUrl: "/api/rcm/booking/v3.2" // Use the proxy URL
 };
 
 /**
@@ -27,6 +28,7 @@ const DEFAULT_CONFIG: RCMApiConfig = {
 class RCMApiClient {
   private config: RCMApiConfig;
   private initialized: boolean = false;
+  private useMockData: boolean = false;
 
   constructor(config: RCMApiConfig) {
     // Ensure API URL doesn't end with a slash
@@ -43,12 +45,14 @@ class RCMApiClient {
     if (config.apiKey) this.config.apiKey = config.apiKey;
     if (config.apiSecret) this.config.apiSecret = config.apiSecret;
     if (config.apiUrl) this.config.apiUrl = config.apiUrl.replace(/\/$/, '');
+    this.useMockData = config.useMockData || false;
     
     this.initialized = true;
     
     console.log('RCM API initialized with config:', {
       apiUrl: this.config.apiUrl,
-      apiKey: this.config.apiKey
+      apiKey: this.config.apiKey,
+      useMockData: this.useMockData
     });
   }
 
@@ -71,7 +75,7 @@ class RCMApiClient {
     const timestamp = new Date().toISOString();
     const requestBody = body ? JSON.stringify(body) : '{}';
     
-    // Generate HMAC SHA256 signature - this now exactly matches the Postman collection
+    // Generate HMAC SHA256 signature
     const signature = generateSignature({
       method,
       path: '', // Not used in actual signature generation
@@ -84,7 +88,7 @@ class RCMApiClient {
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     headers.append('Accept', 'application/json');
-    headers.append('signature', signature); // Uses 'signature' key as shown in Postman
+    headers.append('signature', signature); 
     
     // Log request details for debugging
     console.log('RCM API Request:', {
@@ -99,23 +103,44 @@ class RCMApiClient {
 
   /**
    * Builds the correct API URL with the API key format
-   * Format: https://apis.rentalcarmanager.com/booking/v3.2/[API_KEY]?apikey=[API_KEY]
-   * Exactly as shown in the Postman collection
+   * Format: /api/rcm/booking/v3.2/[API_KEY]?apikey=[API_KEY]
    */
   private buildApiUrl(): string {
-    // Use the proxy URL in browser environment
-    if (typeof window !== 'undefined') {
-      const baseUrl = '/api/rcm';
-      const apiPath = this.config.apiUrl.replace(/^https?:\/\/[^\/]+/, '');
-      const url = `${baseUrl}${apiPath}/${this.config.apiKey}?apikey=${this.config.apiKey}`;
-      console.log('Built proxied API URL:', url);
-      return url;
-    }
-    
-    // Otherwise use the direct URL (for non-browser environments)
     const url = `${this.config.apiUrl}/${this.config.apiKey}?apikey=${this.config.apiKey}`;
-    console.log('Built direct API URL:', url);
+    console.log('Built API URL:', url);
     return url;
+  }
+
+  // Mock data for testing when API is not available
+  private getMockData(method: string): any {
+    if (method === 'step1') {
+      return {
+        status: "OK",
+        results: {
+          locations: [
+            { id: "1", location: "Downtown Office", address: "123 Main St", city: "San Francisco", state: "CA", country: "USA", postcode: "94105", latitude: 37.7749, longitude: -122.4194, ispickupavailable: true, isdropoffavailable: true, isdefault: true, minimumbookingday: 1, noticerequired_numberofdays: 0 },
+            { id: "2", location: "Airport Terminal", address: "SF International Airport", city: "San Francisco", state: "CA", country: "USA", postcode: "94128", latitude: 37.6213, longitude: -122.3790, ispickupavailable: true, isdropoffavailable: true, isdefault: false, minimumbookingday: 1, noticerequired_numberofdays: 0 }
+          ],
+          officetimes: [
+            { locationid: "1", dayofweek: 1, openingtime: "08:00", closingtime: "18:00", startpickup: "08:00", endpickup: "17:00", startdropoff: "08:00", enddropoff: "17:00" },
+            { locationid: "1", dayofweek: 2, openingtime: "08:00", closingtime: "18:00", startpickup: "08:00", endpickup: "17:00", startdropoff: "08:00", enddropoff: "17:00" }
+          ],
+          driverages: [
+            { id: "1", driverage: "21-24", isdefault: false },
+            { id: "2", driverage: "25-70", isdefault: true },
+            { id: "3", driverage: "71+", isdefault: false }
+          ],
+          categorytypes: [
+            { id: "1", vehiclecategorytype: "Economy" },
+            { id: "2", vehiclecategorytype: "Compact" },
+            { id: "3", vehiclecategorytype: "SUV" },
+            { id: "4", vehiclecategorytype: "Luxury" }
+          ]
+        }
+      };
+    }
+    // Add more mock responses for other methods as needed
+    return { status: "OK", error: "No mock data available for this method" };
   }
 
   /**
@@ -124,12 +149,18 @@ class RCMApiClient {
   private async request<T>(method: string, requestMethod: string, body?: any): Promise<T> {
     this.ensureInitialized();
 
+    // Return mock data if mock mode is enabled
+    if (this.useMockData) {
+      console.log('Using mock data for', requestMethod);
+      return this.getMockData(requestMethod) as T;
+    }
+
     try {
       // Build the URL with API key
       const apiUrl = this.buildApiUrl();
       console.log(`Making ${method} request to ${apiUrl}`);
       
-      // Create requestBody with method as the first property, matching Postman
+      // Create requestBody with method as the first property
       const requestBody = { method: requestMethod, ...body };
       
       // Create headers with auth tokens
@@ -149,6 +180,16 @@ class RCMApiClient {
         console.error("Non-JSON response received:", contentType);
         const text = await response.text();
         console.error("Response text:", text);
+        
+        // Use mock data as fallback when API returns non-JSON
+        if (this.useMockData === false) {
+          console.log("API returned non-JSON response, switching to mock data temporarily");
+          toast.error("API Connection Error", {
+            description: "Using mock data temporarily. Check API configuration."
+          });
+          return this.getMockData(requestMethod) as T;
+        }
+        
         throw new Error(`API returned non-JSON response: ${response.status} ${response.statusText}`);
       }
 
@@ -164,6 +205,16 @@ class RCMApiClient {
         }
         
         console.error(`API error: ${response.status} ${response.statusText}`, errorData);
+        
+        // Use mock data as fallback when API returns error
+        if (this.useMockData === false) {
+          console.log("API returned error, switching to mock data temporarily");
+          toast.error("API Connection Error", {
+            description: "Using mock data temporarily. Check API configuration."
+          });
+          return this.getMockData(requestMethod) as T;
+        }
+        
         throw new Error(errorData.message || `API request failed: ${response.status}`);
       }
 
@@ -180,6 +231,16 @@ class RCMApiClient {
       return responseData;
     } catch (error) {
       console.error('RCM API request failed:', error);
+      
+      // Use mock data as fallback when API call fails
+      if (this.useMockData === false) {
+        console.log("API request failed, switching to mock data temporarily");
+        toast.error("API Connection Error", {
+          description: "Using mock data temporarily. Check API configuration."
+        });
+        return this.getMockData(requestMethod) as T;
+      }
+      
       throw error;
     }
   }

@@ -22,11 +22,15 @@ export default defineConfig(({ mode }) => ({
           });
           proxy.on('proxyReq', (proxyReq, req, _res) => {
             console.log('Sending Request to the Target:', req.method, req.url);
-            // Add additional required headers
+            // Add required content-type header for JSON requests
+            proxyReq.setHeader('Content-Type', 'application/json');
             proxyReq.setHeader('Accept', 'application/json');
           });
           proxy.on('proxyRes', (proxyRes, req, _res) => {
             console.log('Received Response from the Target:', proxyRes.statusCode, req.url);
+            // Log response headers for debugging
+            const headers = proxyRes.headers;
+            console.log('Response headers:', headers);
           });
         },
       }
