@@ -1,3 +1,4 @@
+
 import { generateSignature } from './rcm-signature';
 import type { 
   RCMApiConfig,
@@ -136,6 +137,273 @@ class RCMApiClient {
             { id: "3", vehiclecategorytype: "SUV" },
             { id: "4", vehiclecategorytype: "Luxury" }
           ]
+        }
+      };
+    } else if (method === 'step2') {
+      return {
+        status: "OK",
+        results: {
+          availablecars: [
+            {
+              vehiclecategoryid: "101",
+              vehiclecategorytypeid: "1",
+              vehiclecategory: "Toyota Corolla",
+              vehicledescription1: "Fuel efficient compact car",
+              vehicledescription2: "Great for city driving",
+              vehicledescription3: "Automatic transmission",
+              imageurl: "https://images.unsplash.com/photo-1590362891991-f776e747a588?q=80&w=809&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+              totalrateafterdiscount: 199.99,
+              totaldiscountamount: 20,
+              avgrate: 66.66,
+              numberofdays: "3",
+              numberofadults: 4,
+              numberofchildren: 1,
+              numberoflargecases: 2,
+              numberofsmallcases: 3,
+              available: 1
+            },
+            {
+              vehiclecategoryid: "102",
+              vehiclecategorytypeid: "2",
+              vehiclecategory: "Honda Civic",
+              vehicledescription1: "Compact and reliable",
+              vehicledescription2: "Excellent fuel economy",
+              vehicledescription3: "Spacious interior",
+              imageurl: "https://images.unsplash.com/photo-1619767886558-efdc259cde1a?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+              totalrateafterdiscount: 219.99,
+              totaldiscountamount: 15,
+              avgrate: 73.33,
+              numberofdays: "3",
+              numberofadults: 4,
+              numberofchildren: 1,
+              numberoflargecases: 2,
+              numberofsmallcases: 3,
+              available: 1
+            },
+            {
+              vehiclecategoryid: "103",
+              vehiclecategorytypeid: "3",
+              vehiclecategory: "Toyota RAV4",
+              vehicledescription1: "Compact SUV with great storage",
+              vehicledescription2: "All-wheel drive available",
+              vehicledescription3: "Perfect for adventures",
+              imageurl: "https://images.unsplash.com/photo-1581540222194-0def2dda95b8?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+              totalrateafterdiscount: 299.99,
+              totaldiscountamount: 30,
+              avgrate: 100,
+              numberofdays: "3",
+              numberofadults: 5,
+              numberofchildren: 2,
+              numberoflargecases: 3,
+              numberofsmallcases: 4,
+              available: 1
+            },
+            {
+              vehiclecategoryid: "104",
+              vehiclecategorytypeid: "4",
+              vehiclecategory: "Mercedes C-Class",
+              vehicledescription1: "Luxury sedan with premium features",
+              vehicledescription2: "Leather seats and advanced technology",
+              vehicledescription3: "Smooth and comfortable ride",
+              imageurl: "https://images.unsplash.com/photo-1617469767053-d3b523a0b982?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+              totalrateafterdiscount: 399.99,
+              totaldiscountamount: 50,
+              avgrate: 133.33,
+              numberofdays: "3",
+              numberofadults: 4,
+              numberofchildren: 1,
+              numberoflargecases: 2,
+              numberofsmallcases: 2,
+              available: 1
+            },
+            {
+              vehiclecategoryid: "105",
+              vehiclecategorytypeid: "1",
+              vehiclecategory: "Nissan Versa",
+              vehicledescription1: "Budget-friendly economy car",
+              vehicledescription2: "Great fuel efficiency",
+              vehicledescription3: "Easy to park and maneuver",
+              imageurl: "https://images.unsplash.com/photo-1609752263419-84e2b5639f5a?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+              totalrateafterdiscount: 179.99,
+              totaldiscountamount: 10,
+              avgrate: 60,
+              numberofdays: "3",
+              numberofadults: 4,
+              numberofchildren: 0,
+              numberoflargecases: 1,
+              numberofsmallcases: 2,
+              available: 1
+            }
+          ],
+          seasonalrates: [
+            {
+              vehiclecategoryid: "101",
+              dailyratebeforediscount: 73.33,
+              dailyrateafterdiscount: 66.66,
+              discountrate: 10,
+              discounttype: "Percentage",
+              numberofdays: 3,
+              numberofhours: 72,
+              rateperiod: "Daily"
+            },
+            {
+              vehiclecategoryid: "102",
+              dailyratebeforediscount: 78.33,
+              dailyrateafterdiscount: 73.33,
+              discountrate: 7,
+              discounttype: "Percentage",
+              numberofdays: 3,
+              numberofhours: 72,
+              rateperiod: "Daily"
+            },
+            {
+              vehiclecategoryid: "103",
+              dailyratebeforediscount: 110,
+              dailyrateafterdiscount: 100,
+              discountrate: 10,
+              discounttype: "Percentage",
+              numberofdays: 3,
+              numberofhours: 72,
+              rateperiod: "Daily"
+            },
+            {
+              vehiclecategoryid: "104",
+              dailyratebeforediscount: 150,
+              dailyrateafterdiscount: 133.33,
+              discountrate: 12,
+              discounttype: "Percentage",
+              numberofdays: 3,
+              numberofhours: 72,
+              rateperiod: "Daily"
+            },
+            {
+              vehiclecategoryid: "105",
+              dailyratebeforediscount: 63.33,
+              dailyrateafterdiscount: 60,
+              discountrate: 5,
+              discounttype: "Percentage",
+              numberofdays: 3,
+              numberofhours: 72,
+              rateperiod: "Daily"
+            }
+          ],
+          locationfees: [
+            {
+              vehiclecategorytypeid: "1",
+              currencysymbol: "$",
+              currencyname: "USD"
+            },
+            {
+              vehiclecategorytypeid: "2",
+              currencysymbol: "$",
+              currencyname: "USD"
+            },
+            {
+              vehiclecategorytypeid: "3",
+              currencysymbol: "$",
+              currencyname: "USD"
+            },
+            {
+              vehiclecategorytypeid: "4",
+              currencysymbol: "$",
+              currencyname: "USD"
+            }
+          ],
+          mandatoryfees: [
+            {
+              vehiclecategoryid: "101",
+              vehiclecategorytypeid: "1",
+              totalfeeamount: 15
+            },
+            {
+              vehiclecategoryid: "102",
+              vehiclecategorytypeid: "2",
+              totalfeeamount: 18
+            },
+            {
+              vehiclecategoryid: "103",
+              vehiclecategorytypeid: "3",
+              totalfeeamount: 25
+            },
+            {
+              vehiclecategoryid: "104",
+              vehiclecategorytypeid: "4",
+              totalfeeamount: 35
+            },
+            {
+              vehiclecategoryid: "105",
+              vehiclecategorytypeid: "1",
+              totalfeeamount: 15
+            }
+          ]
+        }
+      };
+    } else if (method === 'step3') {
+      // Add step3 mock data here
+      return {
+        status: "OK",
+        results: {
+          insuranceoptions: [
+            {
+              id: "1",
+              name: "Basic Insurance",
+              description: "Covers basic liability",
+              totalinsuranceamount: 25,
+              isdefault: true
+            },
+            {
+              id: "2",
+              name: "Premium Insurance",
+              description: "Comprehensive coverage with no excess",
+              totalinsuranceamount: 45,
+              isdefault: false
+            }
+          ],
+          kmcharges: [
+            {
+              id: "1",
+              name: "Unlimited",
+              mileagedesc: "Unlimited kilometers",
+              dailyrate: 0,
+              numberofkmsfree: 0,
+              feeforeachadditionalkm: 0,
+              isdefault: true
+            },
+            {
+              id: "2",
+              name: "Limited",
+              mileagedesc: "200km per day",
+              dailyrate: -5,
+              numberofkmsfree: 200,
+              feeforeachadditionalkm: 0.25,
+              isdefault: false
+            }
+          ],
+          extras: [
+            {
+              id: "1",
+              name: "GPS",
+              description: "Navigation system",
+              maxquantity: 1,
+              unitprice: 10,
+              totalextraamount: 10,
+              isdefault: false
+            },
+            {
+              id: "2",
+              name: "Child Seat",
+              description: "Safety seat for children",
+              maxquantity: 3,
+              unitprice: 8,
+              totalextraamount: 8,
+              isdefault: false
+            }
+          ],
+          locationfees: {
+            vehiclecategoryid: "101",
+            currencysymbol: "$",
+            currencyname: "USD"
+          }
         }
       };
     }
@@ -328,3 +596,4 @@ class RCMApiClient {
 
 // Export a singleton instance
 export const rcmApi = new RCMApiClient(DEFAULT_CONFIG);
+
