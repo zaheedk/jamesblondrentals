@@ -1,3 +1,4 @@
+
 // RCM API type definitions
 
 export interface RCMVehicle {
@@ -221,7 +222,8 @@ export interface RCMExtra {
 }
 
 export interface RCMStep3Request {
-  vehiclecategoryid: string | number;
+  vehiclecategoryid: string | number; // Vehicle Category ID
+  vehiclecategorytypeid?: string | number; // Vehicle Category Type ID
   pickuplocationid: string | number;
   pickupdate: string;
   pickuptime: string;
