@@ -14,7 +14,6 @@ import type {
   RCMStep3Response
 } from './rcm-api-types';
 import { toast } from 'sonner';
-import { format } from 'date-fns';
 
 // API Configuration from Web.config file
 const DEFAULT_CONFIG: RCMApiConfig = {
@@ -22,22 +21,6 @@ const DEFAULT_CONFIG: RCMApiConfig = {
   apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
   apiUrl: "/api/rcm/booking/v3.2" // Use the proxy URL
 };
-
-/**
- * Format date for RCM API in DD/MM/YYYY format
- */
-export function formatDateForRcm(date: string | Date): string {
-  if (typeof date === 'string') {
-    // If already in format DD/MM/YYYY, return as is
-    if (/^\d{2}\/\d{2}\/\d{4}$/.test(date)) {
-      return date;
-    }
-    // Otherwise convert from ISO string
-    date = new Date(date);
-  }
-  
-  return format(date, 'dd/MM/yyyy');
-}
 
 /**
  * RCM API Client for handling all API requests
@@ -277,21 +260,17 @@ class RCMApiClient {
   async getStep2(params: RCMStep2Request): Promise<RCMStep2Response> {
     console.log('Fetching Step2 data with params:', params);
     
-    // Format dates to DD/MM/YYYY as expected by the API
-    const formattedParams = {
-      ...params,
-      pickupdate: formatDateForRcm(params.pickupdate),
-      dropoffdate: formatDateForRcm(params.dropoffdate)
-    };
-    
     // Log specifically the category ID for debugging
-    if ('vehiclecategorytypeid' in formattedParams) {
-      console.log('Vehicle category type ID:', formattedParams.vehiclecategorytypeid, 'Type:', typeof formattedParams.vehiclecategorytypeid);
+    if ('vehiclecategorytypeid' in params) {
+      console.log('Vehicle category type ID:', params.vehiclecategorytypeid, 'Type:', typeof params.vehiclecategorytypeid);
     } else {
       console.log('No vehicle category type ID in request - using all categories');
     }
+    
+    // We'll no longer strip out the "0" value, since we want to explicitly pass it
+    // to indicate "All Categories" rather than removing it entirely
 
-    return this.request<RCMStep2Response>('POST', 'step2', formattedParams);
+    return this.request<RCMStep2Response>('POST', 'step2', params);
   }
 
   /**
@@ -301,16 +280,7 @@ class RCMApiClient {
   async getStep3(params: RCMStep3Request): Promise<RCMStep3Response> {
     console.log('Fetching Step3 data with params:', params);
     
-    // Format dates to DD/MM/YYYY as expected by the API
-    const formattedParams = {
-      ...params,
-      pickupdate: formatDateForRcm(params.pickupdate),
-      dropoffdate: formatDateForRcm(params.dropoffdate)
-    };
-    
-    console.log('Step3 formatted params:', formattedParams);
-    
-    return this.request<RCMStep3Response>('POST', 'step3', formattedParams);
+    return this.request<RCMStep3Response>('POST', 'step3', params);
   }
 }
 

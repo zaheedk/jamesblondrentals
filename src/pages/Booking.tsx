@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useRcmApi } from "@/hooks/use-rcm-api";
 import { format, differenceInDays } from "date-fns";
-import { formatDateForRcm } from "@/lib/api/rcm-api";
 import InsuranceOptions from "@/components/booking/InsuranceOptions";
 import KmCharges from "@/components/booking/KmCharges";
 import ExtrasSelection from "@/components/booking/ExtrasSelection";
@@ -42,7 +41,6 @@ const Booking = () => {
   const basePrice = basePriceStr ? parseFloat(basePriceStr) : 0;
   const pickupLocationName = searchParams.get("pickupLocationName");
   const dropoffLocationName = searchParams.get("dropoffLocationName");
-  const vehicleCategoryTypeId = searchParams.get("vehicleCategoryTypeId") || "0";
   
   // Calculate number of days for KM charges calculation
   const numberOfDays = pickupDate && dropoffDate ? 
@@ -73,10 +71,9 @@ const Booking = () => {
     }
 
     try {
-      // Construct Step3 parameters according to API requirements
+      // Construct Step3 parameters
       const params: RCMStep3Request = {
-        vehiclecategoryid: vehicleId!, // Vehicle category ID is required
-        vehiclecategorytypeid: vehicleCategoryTypeId, // Vehicle category type ID is also required
+        vehiclecategoryid: vehicleId!,
         pickuplocationid: pickupLocationId!,
         pickupdate: pickupDate!,
         pickuptime: pickupTime!,
@@ -91,7 +88,6 @@ const Booking = () => {
       
       setBookingDetails({
         vehicleId,
-        vehicleCategoryTypeId,
         vehicleName: vehicleName || "Selected Vehicle",
         pickupLocationId,
         pickupLocationName: pickupLocationName || "Pickup Location",
@@ -113,7 +109,7 @@ const Booking = () => {
       });
       setIsLoading(false);
     }
-  }, [vehicleId, pickupLocationId, dropoffLocationId, pickupDate, pickupTime, dropoffDate, dropoffTime, ageId, vehicleCategoryTypeId]);
+  }, [vehicleId, pickupLocationId, dropoffLocationId, pickupDate, pickupTime, dropoffDate, dropoffTime, ageId]);
   
   // Fetch step3 data from API
   const { data: step3Data, isLoading: isStep3Loading, error: step3Error } = useStep3Details(step3Params);
@@ -220,7 +216,6 @@ const Booking = () => {
     const params = new URLSearchParams();
     params.append("vehicleId", vehicleId || "");
     params.append("vehicleName", vehicleName || "");
-    params.append("vehicleCategoryTypeId", vehicleCategoryTypeId || "0");
     params.append("pickupLocationId", pickupLocationId || "");
     params.append("pickupLocationName", pickupLocationName || "");
     params.append("dropoffLocationId", dropoffLocationId || "");
@@ -292,8 +287,6 @@ const Booking = () => {
           <AlertTitle>API Error</AlertTitle>
           <AlertDescription>
             There was an error loading the booking options. This may be due to invalid parameters.
-            <br />
-            Error: {step3Error instanceof Error ? step3Error.message : 'Unknown error'}
           </AlertDescription>
         </Alert>
         <Button className="mt-4" onClick={() => navigate("/vehicles")}>
