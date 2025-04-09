@@ -4,18 +4,18 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { createElement } from "react";
+import { createElement, useState } from "react";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Vehicles from "./pages/Vehicles";
 import VehicleDetail from "./pages/VehicleDetail";
 import Booking from "./pages/Booking";
 
-// Create a client
-const queryClient = new QueryClient();
-
 // Use function component syntax to ensure hooks work correctly
 const App = () => {
+  // Create a client inside the component function
+  const [queryClient] = useState(() => new QueryClient());
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
