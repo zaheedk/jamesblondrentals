@@ -87,12 +87,12 @@ const SearchForm = () => {
     initializeApi({
       apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
       apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
-      apiUrl: "https://apis.rentalcarmanager.com/booking/v3.2",
-      useMockData: false
+      apiUrl: "/api/rcm/booking/v3.2/",
+      useMockData: true
     }).catch(error => {
       console.error('Failed to initialize API:', error);
       toast.error("Error connecting to booking system", {
-        description: "Please try again later"
+        description: "Using mock data instead"
       });
     });
   }, [initializeApi]);
