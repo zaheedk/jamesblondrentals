@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useRcmApi } from "@/hooks/use-rcm-api";
@@ -26,43 +27,51 @@ const Vehicles = () => {
   
   // Extract search parameters
   useEffect(() => {
-    const vehicleCategoryTypeId = searchParams.get("vehicleCategoryTypeId");
-    const pickupLocationId = searchParams.get("pickuplocationid");
-    const dropoffLocationId = searchParams.get("dropofflocationid");
-    const pickupDate = searchParams.get("pickupdate");
-    const pickupTime = searchParams.get("pickuptime");
-    const dropoffDate = searchParams.get("dropoffdate");
-    const dropoffTime = searchParams.get("dropofftime");
-    const ageId = searchParams.get("ageid");
+    // Get parameters from URL - using the correct parameter names from the search form
+    const carCategory = searchParams.get("carCategory");
+    const pickupLocation = searchParams.get("pickupLocation");
+    const dropoffLocation = searchParams.get("dropoffLocation");
+    const pickupDate = searchParams.get("pickupDate");
+    const pickupTime = searchParams.get("pickupTime");
+    const dropoffDate = searchParams.get("dropoffDate");
+    const dropoffTime = searchParams.get("dropoffTime");
+    const age = searchParams.get("age");
     
-    if (!pickupLocationId || !dropoffLocationId || !pickupDate || !pickupTime || !dropoffDate || !dropoffTime || !ageId) {
+    console.log("URL Parameters:", { 
+      carCategory, pickupLocation, dropoffLocation, 
+      pickupDate, pickupTime, dropoffDate, dropoffTime, age 
+    });
+    
+    if (!pickupLocation || !dropoffLocation || !pickupDate || !pickupTime || !dropoffDate || !dropoffTime || !age) {
       setParamError("Missing required parameters. Please go back and fill in all the search criteria.");
       setIsLoading(false);
       return;
     }
     
-    setVehicleCategoryTypeId(vehicleCategoryTypeId);
-    setPickupLocationId(pickupLocationId);
-    setDropoffLocationId(dropoffLocationId);
+    setVehicleCategoryTypeId(carCategory);
+    setPickupLocationId(pickupLocation);
+    setDropoffLocationId(dropoffLocation);
     setPickupDate(pickupDate);
     setPickupTime(pickupTime);
     setDropoffDate(dropoffDate);
     setDropoffTime(dropoffTime);
-    setAgeId(ageId);
+    setAgeId(age);
     setIsLoading(false);
   }, [searchParams]);
   
   // Construct Step2 parameters
-  const step2Params = {
+  const step2Params = !isLoading && pickupLocationId ? {
     vehiclecategorytypeid: vehicleCategoryTypeId || "0",
-    pickuplocationid: pickupLocationId || "",
+    pickuplocationid: pickupLocationId,
     pickupdate: pickupDate || "",
     pickuptime: pickupTime || "",
-    dropofflocationid: dropoffLocationId || "",
+    dropofflocationid: dropoffLocationId || pickupLocationId,
     dropoffdate: dropoffDate || "",
     dropofftime: dropoffTime || "",
     ageid: ageId || ""
-  };
+  } : null;
+  
+  console.log("Step2 parameters:", step2Params);
   
   // Fetch available vehicles using the useStep2Vehicles hook
   const { data: step2Data, isLoading: isStep2Loading, error: step2Error } = useStep2Vehicles(step2Params);

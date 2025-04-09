@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -246,6 +245,7 @@ const SearchForm = () => {
     
     const ageParam = age || getDefaultAgeId();
     
+    // Updated to use the parameter names that the Vehicles page expects
     const searchParams = new URLSearchParams({
       pickupLocation,
       dropoffLocation: dropoffLocation || pickupLocation,
