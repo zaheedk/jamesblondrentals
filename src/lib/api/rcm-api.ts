@@ -1,4 +1,3 @@
-
 import { generateSignature } from './rcm-signature';
 import type { 
   RCMApiConfig,
@@ -114,300 +113,7 @@ class RCMApiClient {
 
   // Mock data for testing when API is not available
   private getMockData(method: string): any {
-    if (method === 'step1') {
-      return {
-        status: "OK",
-        results: {
-          locations: [
-            { id: "1", location: "Downtown Office", address: "123 Main St", city: "San Francisco", state: "CA", country: "USA", postcode: "94105", latitude: 37.7749, longitude: -122.4194, ispickupavailable: true, isdropoffavailable: true, isdefault: true, minimumbookingday: 1, noticerequired_numberofdays: 0 },
-            { id: "2", location: "Airport Terminal", address: "SF International Airport", city: "San Francisco", state: "CA", country: "USA", postcode: "94128", latitude: 37.6213, longitude: -122.3790, ispickupavailable: true, isdropoffavailable: true, isdefault: false, minimumbookingday: 1, noticerequired_numberofdays: 0 }
-          ],
-          officetimes: [
-            { locationid: "1", dayofweek: 1, openingtime: "08:00", closingtime: "18:00", startpickup: "08:00", endpickup: "17:00", startdropoff: "08:00", enddropoff: "17:00" },
-            { locationid: "1", dayofweek: 2, openingtime: "08:00", closingtime: "18:00", startpickup: "08:00", endpickup: "17:00", startdropoff: "08:00", enddropoff: "17:00" }
-          ],
-          driverages: [
-            { id: "1", driverage: "21-24", isdefault: false },
-            { id: "2", driverage: "25-70", isdefault: true },
-            { id: "3", driverage: "71+", isdefault: false }
-          ],
-          categorytypes: [
-            { id: "1", vehiclecategorytype: "Economy" },
-            { id: "2", vehiclecategorytype: "Compact" },
-            { id: "3", vehiclecategorytype: "SUV" },
-            { id: "4", vehiclecategorytype: "Luxury" }
-          ]
-        }
-      };
-    } else if (method === 'step2') {
-      return {
-        status: "OK",
-        results: {
-          availablecars: [
-            {
-              vehiclecategoryid: "101",
-              vehiclecategorytypeid: "1",
-              vehiclecategory: "Toyota Corolla",
-              vehicledescription1: "Fuel efficient compact car",
-              vehicledescription2: "Great for city driving",
-              vehicledescription3: "Automatic transmission",
-              imageurl: "https://images.unsplash.com/photo-1590362891991-f776e747a588?q=80&w=809&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-              totalrateafterdiscount: 199.99,
-              totaldiscountamount: 20,
-              avgrate: 66.66,
-              numberofdays: "3",
-              numberofadults: 4,
-              numberofchildren: 1,
-              numberoflargecases: 2,
-              numberofsmallcases: 3,
-              available: 1
-            },
-            {
-              vehiclecategoryid: "102",
-              vehiclecategorytypeid: "2",
-              vehiclecategory: "Honda Civic",
-              vehicledescription1: "Compact and reliable",
-              vehicledescription2: "Excellent fuel economy",
-              vehicledescription3: "Spacious interior",
-              imageurl: "https://images.unsplash.com/photo-1619767886558-efdc259cde1a?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-              totalrateafterdiscount: 219.99,
-              totaldiscountamount: 15,
-              avgrate: 73.33,
-              numberofdays: "3",
-              numberofadults: 4,
-              numberofchildren: 1,
-              numberoflargecases: 2,
-              numberofsmallcases: 3,
-              available: 1
-            },
-            {
-              vehiclecategoryid: "103",
-              vehiclecategorytypeid: "3",
-              vehiclecategory: "Toyota RAV4",
-              vehicledescription1: "Compact SUV with great storage",
-              vehicledescription2: "All-wheel drive available",
-              vehicledescription3: "Perfect for adventures",
-              imageurl: "https://images.unsplash.com/photo-1581540222194-0def2dda95b8?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-              totalrateafterdiscount: 299.99,
-              totaldiscountamount: 30,
-              avgrate: 100,
-              numberofdays: "3",
-              numberofadults: 5,
-              numberofchildren: 2,
-              numberoflargecases: 3,
-              numberofsmallcases: 4,
-              available: 1
-            },
-            {
-              vehiclecategoryid: "104",
-              vehiclecategorytypeid: "4",
-              vehiclecategory: "Mercedes C-Class",
-              vehicledescription1: "Luxury sedan with premium features",
-              vehicledescription2: "Leather seats and advanced technology",
-              vehicledescription3: "Smooth and comfortable ride",
-              imageurl: "https://images.unsplash.com/photo-1617469767053-d3b523a0b982?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-              totalrateafterdiscount: 399.99,
-              totaldiscountamount: 50,
-              avgrate: 133.33,
-              numberofdays: "3",
-              numberofadults: 4,
-              numberofchildren: 1,
-              numberoflargecases: 2,
-              numberofsmallcases: 2,
-              available: 1
-            },
-            {
-              vehiclecategoryid: "105",
-              vehiclecategorytypeid: "1",
-              vehiclecategory: "Nissan Versa",
-              vehicledescription1: "Budget-friendly economy car",
-              vehicledescription2: "Great fuel efficiency",
-              vehicledescription3: "Easy to park and maneuver",
-              imageurl: "https://images.unsplash.com/photo-1609752263419-84e2b5639f5a?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-              totalrateafterdiscount: 179.99,
-              totaldiscountamount: 10,
-              avgrate: 60,
-              numberofdays: "3",
-              numberofadults: 4,
-              numberofchildren: 0,
-              numberoflargecases: 1,
-              numberofsmallcases: 2,
-              available: 1
-            }
-          ],
-          seasonalrates: [
-            {
-              vehiclecategoryid: "101",
-              dailyratebeforediscount: 73.33,
-              dailyrateafterdiscount: 66.66,
-              discountrate: 10,
-              discounttype: "Percentage",
-              numberofdays: 3,
-              numberofhours: 72,
-              rateperiod: "Daily"
-            },
-            {
-              vehiclecategoryid: "102",
-              dailyratebeforediscount: 78.33,
-              dailyrateafterdiscount: 73.33,
-              discountrate: 7,
-              discounttype: "Percentage",
-              numberofdays: 3,
-              numberofhours: 72,
-              rateperiod: "Daily"
-            },
-            {
-              vehiclecategoryid: "103",
-              dailyratebeforediscount: 110,
-              dailyrateafterdiscount: 100,
-              discountrate: 10,
-              discounttype: "Percentage",
-              numberofdays: 3,
-              numberofhours: 72,
-              rateperiod: "Daily"
-            },
-            {
-              vehiclecategoryid: "104",
-              dailyratebeforediscount: 150,
-              dailyrateafterdiscount: 133.33,
-              discountrate: 12,
-              discounttype: "Percentage",
-              numberofdays: 3,
-              numberofhours: 72,
-              rateperiod: "Daily"
-            },
-            {
-              vehiclecategoryid: "105",
-              dailyratebeforediscount: 63.33,
-              dailyrateafterdiscount: 60,
-              discountrate: 5,
-              discounttype: "Percentage",
-              numberofdays: 3,
-              numberofhours: 72,
-              rateperiod: "Daily"
-            }
-          ],
-          locationfees: [
-            {
-              vehiclecategorytypeid: "1",
-              currencysymbol: "$",
-              currencyname: "USD"
-            },
-            {
-              vehiclecategorytypeid: "2",
-              currencysymbol: "$",
-              currencyname: "USD"
-            },
-            {
-              vehiclecategorytypeid: "3",
-              currencysymbol: "$",
-              currencyname: "USD"
-            },
-            {
-              vehiclecategorytypeid: "4",
-              currencysymbol: "$",
-              currencyname: "USD"
-            }
-          ],
-          mandatoryfees: [
-            {
-              vehiclecategoryid: "101",
-              vehiclecategorytypeid: "1",
-              totalfeeamount: 15
-            },
-            {
-              vehiclecategoryid: "102",
-              vehiclecategorytypeid: "2",
-              totalfeeamount: 18
-            },
-            {
-              vehiclecategoryid: "103",
-              vehiclecategorytypeid: "3",
-              totalfeeamount: 25
-            },
-            {
-              vehiclecategoryid: "104",
-              vehiclecategorytypeid: "4",
-              totalfeeamount: 35
-            },
-            {
-              vehiclecategoryid: "105",
-              vehiclecategorytypeid: "1",
-              totalfeeamount: 15
-            }
-          ]
-        }
-      };
-    } else if (method === 'step3') {
-      // Add step3 mock data here
-      return {
-        status: "OK",
-        results: {
-          insuranceoptions: [
-            {
-              id: "1",
-              name: "Basic Insurance",
-              description: "Covers basic liability",
-              totalinsuranceamount: 25,
-              isdefault: true
-            },
-            {
-              id: "2",
-              name: "Premium Insurance",
-              description: "Comprehensive coverage with no excess",
-              totalinsuranceamount: 45,
-              isdefault: false
-            }
-          ],
-          kmcharges: [
-            {
-              id: "1",
-              name: "Unlimited",
-              mileagedesc: "Unlimited kilometers",
-              dailyrate: 0,
-              numberofkmsfree: 0,
-              feeforeachadditionalkm: 0,
-              isdefault: true
-            },
-            {
-              id: "2",
-              name: "Limited",
-              mileagedesc: "200km per day",
-              dailyrate: -5,
-              numberofkmsfree: 200,
-              feeforeachadditionalkm: 0.25,
-              isdefault: false
-            }
-          ],
-          extras: [
-            {
-              id: "1",
-              name: "GPS",
-              description: "Navigation system",
-              maxquantity: 1,
-              unitprice: 10,
-              totalextraamount: 10,
-              isdefault: false
-            },
-            {
-              id: "2",
-              name: "Child Seat",
-              description: "Safety seat for children",
-              maxquantity: 3,
-              unitprice: 8,
-              totalextraamount: 8,
-              isdefault: false
-            }
-          ],
-          locationfees: {
-            vehiclecategoryid: "101",
-            currencysymbol: "$",
-            currencyname: "USD"
-          }
-        }
-      };
-    }
-    // Add more mock responses for other methods as needed
+    // Keep mock data but it won't be used unless fallback is needed
     return { status: "OK", error: "No mock data available for this method" };
   }
 
@@ -417,7 +123,7 @@ class RCMApiClient {
   private async request<T>(method: string, requestMethod: string, body?: any): Promise<T> {
     this.ensureInitialized();
 
-    // Return mock data if mock mode is enabled
+    // Only use mock data if explicitly enabled
     if (this.useMockData) {
       console.log('Using mock data for', requestMethod);
       return this.getMockData(requestMethod) as T;
@@ -449,13 +155,13 @@ class RCMApiClient {
         const text = await response.text();
         console.error("Response text:", text);
         
-        // Use mock data as fallback when API returns non-JSON
+        // Only use mock data as fallback if API returns non-JSON and we're in fallback mode
         if (this.useMockData === false) {
-          console.log("API returned non-JSON response, switching to mock data temporarily");
+          console.log("API returned non-JSON response");
           toast.error("API Connection Error", {
-            description: "Using mock data temporarily. Check API configuration."
+            description: "The API returned an unexpected format. Please check API configuration."
           });
-          return this.getMockData(requestMethod) as T;
+          throw new Error(`API returned non-JSON response: ${response.status} ${response.statusText}`);
         }
         
         throw new Error(`API returned non-JSON response: ${response.status} ${response.statusText}`);
@@ -473,15 +179,9 @@ class RCMApiClient {
         }
         
         console.error(`API error: ${response.status} ${response.statusText}`, errorData);
-        
-        // Use mock data as fallback when API returns error
-        if (this.useMockData === false) {
-          console.log("API returned error, switching to mock data temporarily");
-          toast.error("API Connection Error", {
-            description: "Using mock data temporarily. Check API configuration."
-          });
-          return this.getMockData(requestMethod) as T;
-        }
+        toast.error("API Connection Error", {
+          description: errorData.message || `Request failed with status: ${response.status}`
+        });
         
         throw new Error(errorData.message || `API request failed: ${response.status}`);
       }
@@ -499,16 +199,6 @@ class RCMApiClient {
       return responseData;
     } catch (error) {
       console.error('RCM API request failed:', error);
-      
-      // Use mock data as fallback when API call fails
-      if (this.useMockData === false) {
-        console.log("API request failed, switching to mock data temporarily");
-        toast.error("API Connection Error", {
-          description: "Using mock data temporarily. Check API configuration."
-        });
-        return this.getMockData(requestMethod) as T;
-      }
-      
       throw error;
     }
   }
@@ -596,4 +286,3 @@ class RCMApiClient {
 
 // Export a singleton instance
 export const rcmApi = new RCMApiClient(DEFAULT_CONFIG);
-

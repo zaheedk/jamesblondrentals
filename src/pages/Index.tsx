@@ -12,9 +12,9 @@ const Index = () => {
   const { initializeApi } = useRcmApi();
   
   useEffect(() => {
-    // Initialize the API with mock data mode enabled due to API connection issues
+    // Initialize the API with real connection (mock data disabled)
     initializeApi({ 
-      useMockData: true, // Use mock data to ensure the app works
+      useMockData: false, // Use real API connection
       apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
       apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
       apiUrl: "/api/rcm/booking/v3.2/"

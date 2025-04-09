@@ -14,7 +14,7 @@ export default defineConfig(({ mode }) => ({
       '/api/rcm': {
         target: 'https://apis.rentalcarmanager.com',
         changeOrigin: true,
-        secure: false, // Allow self-signed certificates
+        secure: true, // Enable secure connection for production
         rewrite: (path) => path.replace(/^\/api\/rcm/, ''),
         headers: {
           'Content-Type': 'application/json',
