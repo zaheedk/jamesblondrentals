@@ -1,436 +1,186 @@
 
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useRcmApi } from "@/hooks/use-rcm-api";
-import { parseISO, parse, differenceInDays, isValid, format } from "date-fns";
-import InsuranceOptions from "@/components/booking/InsuranceOptions";
-import KmCharges from "@/components/booking/KmCharges";
-import ExtrasSelection from "@/components/booking/ExtrasSelection";
-import BookingSummary from "@/components/booking/BookingSummary";
-import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-import { Separator } from "@/components/ui/separator";
-import { RCMStep3Request, RCMStep3Response, RCMInsuranceOption, RCMExtra, RCMOptionalFee } from "@/lib/api/rcm-api-types";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
-import { getBookingData, BookingSessionData } from "@/lib/booking-session";
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
+import { RCMInsuranceOption, RCMKmCharge, RCMExtra } from '@/lib/api/rcm-api-types';
+import { useRCMApi } from '@/hooks/use-rcm-api';
+import { BookingSessionData, getBookingData } from '@/lib/booking-session';
+import BookingSummary from '@/components/booking/BookingSummary';
+import InsuranceOptions from '@/components/booking/InsuranceOptions';
+import KmCharges from '@/components/booking/KmCharges';
+import ExtrasSelection from '@/components/booking/ExtrasSelection';
 
 const Booking = () => {
   const navigate = useNavigate();
-  const { rcmApi, useStep3Details } = useRcmApi();
-  const [isLoading, setIsLoading] = useState(true);
+  const { getStep3 } = useRCMApi();
+
+  // State for booking options
   const [bookingData, setBookingData] = useState<BookingSessionData | null>(null);
-  const [bookingDetails, setBookingDetails] = useState<any>(null);
-  const [step3Params, setStep3Params] = useState<RCMStep3Request | null>(null);
-  const [paramError, setParamError] = useState<string | null>(null);
-  const [numberOfDays, setNumberOfDays] = useState<number>(1);
+  const [insuranceOptions, setInsuranceOptions] = useState<RCMInsuranceOption[]>([]);
+  const [kmCharges, setKmCharges] = useState<RCMKmCharge[]>([]);
+  const [extras, setExtras] = useState<RCMExtra[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   
-  const [selectedInsuranceId, setSelectedInsuranceId] = useState<string | number | null>(null);
-  const [selectedExtras, setSelectedExtras] = useState<Map<string | number, number>>(new Map());
-  const [optionalExtras, setOptionalExtras] = useState<RCMExtra[]>([]);
-  
+  // Selected options state
+  const [selectedInsurance, setSelectedInsurance] = useState<RCMInsuranceOption | null>(null);
+  const [selectedKmCharge, setSelectedKmCharge] = useState<RCMKmCharge | null>(null);
+  const [selectedExtras, setSelectedExtras] = useState<{
+    id: string | number;
+    name: string;
+    quantity: number;
+    unitPrice: number;
+    totalPrice: number;
+  }[]>([]);
+
+  // Get booking data from session storage
   useEffect(() => {
     const data = getBookingData();
-    console.log('Retrieved booking data from session:', data);
-    setBookingData(data);
-
     if (!data) {
-      const errorMsg = 'Missing booking data. Please select a vehicle first.';
-      setParamError(errorMsg);
-      console.error(errorMsg);
-      toast.error("Missing booking data", {
-        description: "Please return to the vehicle search page and select a vehicle."
+      toast.error("No booking information found", {
+        description: "Please start a new booking.",
       });
-      setIsLoading(false);
+      navigate('/');
       return;
     }
+    
+    setBookingData(data);
+    
+    // Fetch step 3 data (options)
+    setIsLoading(true);
+    
+    getStep3({
+      vehiclecategoryid: data.vehicleId,
+      vehiclecategorytypeid: data.vehicleCategoryTypeId,
+      pickuplocationid: data.pickupLocationId,
+      pickupdate: data.pickupDate,
+      pickuptime: data.pickupTime,
+      dropofflocationid: data.dropoffLocationId,
+      dropoffdate: data.dropoffDate,
+      dropofftime: data.dropoffTime,
+      ageid: data.ageId,
+    })
+    .then((response) => {
+      if (response.status === "OK" && response.results) {
+        const { insuranceoptions, kmcharges, extras } = response.results;
+        
+        setInsuranceOptions(insuranceoptions || []);
+        setKmCharges(kmcharges || []);
+        setExtras(extras || []);
+        
+        // Set default selections
+        const defaultInsurance = insuranceoptions?.find(i => i.isdefault) || null;
+        setSelectedInsurance(defaultInsurance);
+        
+        const defaultKmCharge = kmcharges?.find(k => k.isdefault) || null;
+        setSelectedKmCharge(defaultKmCharge);
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching booking options:", error);
+      toast.error("Failed to load booking options", {
+        description: "Please try again later.",
+      });
+    })
+    .finally(() => {
+      setIsLoading(false);
+    });
+  }, [navigate, getStep3]);
 
-    try {
-      let pickupDateObj: Date;
-      let dropoffDateObj: Date;
-      
-      if (data.pickupDate) {
-        if (data.pickupDate.includes('T')) {
-          pickupDateObj = parseISO(data.pickupDate);
-        } else if (data.pickupDate.includes('/')) {
-          pickupDateObj = parse(data.pickupDate, 'dd/MM/yyyy', new Date());
-        } else {
-          pickupDateObj = new Date(data.pickupDate);
-        }
-        
-        if (!isValid(pickupDateObj)) {
-          throw new Error(`Invalid pickup date: ${data.pickupDate}`);
-        }
-      } else {
-        throw new Error("Pickup date is missing");
-      }
-      
-      if (data.dropoffDate) {
-        if (data.dropoffDate.includes('T')) {
-          dropoffDateObj = parseISO(data.dropoffDate);
-        } else if (data.dropoffDate.includes('/')) {
-          dropoffDateObj = parse(data.dropoffDate, 'dd/MM/yyyy', new Date());
-        } else {
-          dropoffDateObj = new Date(data.dropoffDate);
-        }
-        
-        if (!isValid(dropoffDateObj)) {
-          throw new Error(`Invalid dropoff date: ${data.dropoffDate}`);
-        }
-      } else {
-        throw new Error("Dropoff date is missing");
-      }
-      
-      const days = Math.max(differenceInDays(dropoffDateObj, pickupDateObj) || 1, 1);
-      setNumberOfDays(days);
-      
-      const formattedPickupDate = format(pickupDateObj, 'dd/MM/yyyy');
-      const formattedDropoffDate = format(dropoffDateObj, 'dd/MM/yyyy');
-      
-      console.group('Booking Data from Session Storage');
-      console.log('vehicleId:', data.vehicleId);
-      console.log('vehicleCategoryTypeId:', data.vehicleCategoryTypeId);
-      console.log('pickupLocationId:', data.pickupLocationId);
-      console.log('dropoffLocationId:', data.dropoffLocationId);
-      console.log('pickupDate:', data.pickupDate, '(Formatted:', formattedPickupDate, ')');
-      console.log('pickupTime:', data.pickupTime);
-      console.log('dropoffDate:', data.dropoffDate, '(Formatted:', formattedDropoffDate, ')');
-      console.log('dropoffTime:', data.dropoffTime);
-      console.log('ageId:', data.ageId);
-      console.log('vehicleName:', data.vehicleName);
-      console.log('basePrice:', data.basePrice);
-      console.log('Full Booking Data:', JSON.stringify(data, null, 2));
-      console.groupEnd();
-      
-      const params: RCMStep3Request = {
-        vehiclecategoryid: data.vehicleId,
-        vehiclecategorytypeid: data.vehicleCategoryTypeId,
-        pickuplocationid: data.pickupLocationId,
-        pickupdate: formattedPickupDate,
-        pickuptime: data.pickupTime,
-        dropofflocationid: data.dropoffLocationId,
-        dropoffdate: formattedDropoffDate,
-        dropofftime: data.dropoffTime,
-        ageid: data.ageId
-      };
-      
-      console.group('Step 3 Request Parameters');
-      console.log('Vehicle Category ID:', params.vehiclecategoryid);
-      console.log('Vehicle Category Type ID:', params.vehiclecategorytypeid);
-      console.log('Pickup Location ID:', params.pickuplocationid);
-      console.log('Pickup Date:', params.pickupdate);
-      console.log('Pickup Time:', params.pickuptime);
-      console.log('Dropoff Location ID:', params.dropofflocationid);
-      console.log('Dropoff Date:', params.dropoffdate);
-      console.log('Dropoff Time:', params.dropofftime);
-      console.log('Age ID:', params.ageid);
-      console.log('Full Request Object:', JSON.stringify(params, null, 2));
-      console.groupEnd();
-      
-      setStep3Params(params);
-      
-      setBookingDetails({
-        vehicleId: data.vehicleId,
-        vehicleName: data.vehicleName || "Selected Vehicle",
-        pickupLocationId: data.pickupLocationId,
-        pickupLocationName: data.pickupLocationName || "Pickup Location",
-        dropoffLocationId: data.dropoffLocationId,
-        dropoffLocationName: data.dropoffLocationName || "Dropoff Location",
-        pickupDate: pickupDateObj,
-        pickupTime: data.pickupTime,
-        dropoffDate: dropoffDateObj,
-        dropoffTime: data.dropoffTime,
-        ageId: data.ageId,
-        basePrice: data.basePrice
-      });
-      setParamError(null);
-      setIsLoading(false);
-    } catch (error) {
-      console.error("Error setting up Step3 params:", error);
-      setParamError(`Error setting up booking parameters: ${error instanceof Error ? error.message : 'Unknown error'}`);
-      toast.error("Error setting up booking parameters", {
-        description: "Please return to the vehicle search page and try again."
-      });
-      setIsLoading(false);
-    }
-  }, []);
-  
-  const { data: step3Data, isLoading: isStep3Loading, error: step3Error } = useStep3Details(step3Params);
-  
-  useEffect(() => {
-    console.group('Step 3 API Response');
-    console.log('Loading:', isStep3Loading);
-    console.log('Error:', step3Error);
-    console.log('Data:', step3Data);
-    if (step3Data?.results) {
-      console.log('Insurance Options:', step3Data.results.insuranceoptions?.length || 0);
-      console.log('Km Charges:', step3Data.results.kmcharges?.length || 0);
-      console.log('Extras:', step3Data.results.extras?.length || 0);
-      
-      if ((!step3Data.results.extras || step3Data.results.extras.length === 0) && 
-          step3Data.results.optionalfees && step3Data.results.optionalfees.length > 0) {
-        
-        // Filter out deposit and payment related extras
-        const filteredOptionalFees = step3Data.results.optionalfees.filter(fee => {
-          const lowerName = fee.name.toLowerCase();
-          return !lowerName.includes('deposit') && 
-                 !lowerName.includes('payment') && 
-                 !lowerName.includes('bond') &&
-                 !lowerName.includes('testbond');
-        });
-        
-        const mappedExtras: RCMExtra[] = filteredOptionalFees.map(fee => ({
-          id: fee.id,
-          name: fee.name,
-          description: fee.feedescription || '',
-          maxquantity: fee.qtyapply ? 10 : 1,
-          unitprice: fee.fees || 0,
-          totalextraamount: fee.totalfeeamount || 0,
-          isdefault: false,
-          type: fee.type
-        }));
-        
-        setOptionalExtras(mappedExtras);
-        console.log('Using filtered optional fees as extras:', mappedExtras.length);
-      }
-    }
-    console.groupEnd();
-    
-    if (step3Data?.results?.insuranceoptions) {
-      const defaultInsurance = step3Data.results.insuranceoptions.find(ins => ins.isdefault);
-      if (defaultInsurance) {
-        setSelectedInsuranceId(defaultInsurance.id);
-      } else if (step3Data.results.insuranceoptions.length > 0) {
-        setSelectedInsuranceId(step3Data.results.insuranceoptions[0].id);
-      }
-    }
-  }, [step3Data, isStep3Loading, step3Error]);
-  
-  useEffect(() => {
-    const availableExtras = step3Data?.results?.extras?.length > 0 
-      ? step3Data.results.extras 
-      : optionalExtras;
-      
-    if (availableExtras && availableExtras.length > 0) {
-      const newSelectedExtras = new Map<string | number, number>();
-      availableExtras.forEach(extra => {
-        if (extra.isdefault) {
-          newSelectedExtras.set(extra.id, 1);
-        }
-      });
-      setSelectedExtras(newSelectedExtras);
-    }
-  }, [step3Data, optionalExtras]);
-  
-  const handleInsuranceChange = (insuranceId: string | number) => {
-    setSelectedInsuranceId(insuranceId);
-  };
-  
-  const handleExtraChange = (extraId: string | number, quantity: number) => {
-    const updatedExtras = new Map(selectedExtras);
-    
-    if (quantity > 0) {
-      updatedExtras.set(extraId, quantity);
-    } else {
-      updatedExtras.delete(extraId);
-    }
-    
-    setSelectedExtras(updatedExtras);
-  };
-  
-  const getSelectedInsurance = () => {
-    if (!selectedInsuranceId || !step3Data?.results?.insuranceoptions) return null;
-    
-    const insurance = step3Data.results.insuranceoptions.find(
-      ins => ins.id.toString() === selectedInsuranceId.toString()
-    );
-    
-    return insurance ? {
-      id: insurance.id,
-      name: insurance.name,
-      price: insurance.totalinsuranceamount
-    } : null;
-  };
-  
-  const getSelectedExtrasDetails = () => {
-    const availableExtras = step3Data?.results?.extras?.length > 0 
-      ? step3Data.results.extras 
-      : optionalExtras;
-    
-    if (!availableExtras || availableExtras.length === 0) return [];
-    
-    return Array.from(selectedExtras.entries())
-      .map(([extraId, quantity]) => {
-        const extra = availableExtras.find(
-          e => e.id.toString() === extraId.toString()
-        );
-        
-        return extra ? {
-          id: extra.id,
-          name: extra.name,
-          quantity,
-          totalPrice: quantity * extra.unitprice
-        } : null;
-      })
-      .filter(Boolean) as { id: string | number; name: string; quantity: number; totalPrice: number }[];
-  };
-  
-  const getKmChargePrice = () => {
-    if (!step3Data?.results?.kmcharges) return 0;
-    
-    const defaultKmCharge = step3Data.results.kmcharges.find(km => km.isdefault);
-    if (!defaultKmCharge) return 0;
-    
-    return defaultKmCharge.dailyrate * numberOfDays;
-  };
-  
-  const getCurrencySymbol = () => {
-    return step3Data?.results?.locationfees?.currencysymbol || "$";
-  };
-  
-  // New function to get vehicle image
-  const getVehicleImageUrl = () => {
-    if (!bookingData?.vehicleImage) {
-      return '/placeholder.svg';
-    }
-    return bookingData.vehicleImage;
-  };
-  
-  const handleContinue = () => {
-    const selectedInsurance = getSelectedInsurance();
-    const selectedExtrasDetails = getSelectedExtrasDetails();
-    
-    if (!bookingData) {
-      toast.error("Missing booking data", {
-        description: "Please return to vehicle selection and try again."
-      });
-      return;
-    }
-    
-    const updatedBookingData = {
-      ...bookingData,
-      insuranceId: selectedInsurance?.id,
-      insuranceName: selectedInsurance?.name,
-      insurancePrice: selectedInsurance?.price,
-      extras: selectedExtrasDetails,
-      kmChargePrice: getKmChargePrice(),
-      totalPrice: (
-        bookingData.basePrice + 
-        (selectedInsurance?.price || 0) + 
-        selectedExtrasDetails.reduce((sum, extra) => sum + extra.totalPrice, 0) + 
-        getKmChargePrice()
-      )
-    };
-    
-    sessionStorage.setItem('rcm_booking_final', JSON.stringify(updatedBookingData));
+  // Handle proceeding to customer details page
+  const handleProceedToDetails = () => {
+    // In a real implementation, you might want to save these selections to session storage
+    // For now, we'll just navigate to the customer details page
     navigate('/customer-details');
   };
 
-  if (paramError) {
-    return (
-      <div className="container mx-auto p-4">
-        <h1 className="text-2xl font-bold mb-6">Booking Options</h1>
-        <Alert variant="destructive" className="mb-4">
-          <AlertCircle className="h-4 w-4 mr-2" />
-          <AlertTitle>Missing Parameters</AlertTitle>
-          <AlertDescription>
-            {paramError}. Please return to vehicle selection.
-          </AlertDescription>
-        </Alert>
-        <Button className="mt-4" onClick={() => navigate("/vehicles")}>
-          Return to Vehicle Selection
-        </Button>
-      </div>
-    );
-  }
-
-  if (isLoading || isStep3Loading) {
-    return (
-      <div className="container mx-auto p-4">
-        <h1 className="text-2xl font-bold mb-6">Loading booking options...</h1>
-        <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-        </div>
-      </div>
-    );
-  }
+  // Prepare booking summary data
+  const selectedInsuranceForSummary = selectedInsurance ? {
+    id: selectedInsurance.id,
+    name: selectedInsurance.name,
+    price: selectedInsurance.totalinsuranceamount
+  } : null;
   
-  if (step3Error) {
+  const selectedExtrasForSummary = selectedExtras.map(e => ({
+    id: e.id,
+    name: e.name,
+    quantity: e.quantity,
+    totalPrice: e.totalPrice
+  }));
+  
+  const kmChargePrice = selectedKmCharge ? selectedKmCharge.dailyrate : 0;
+
+  if (isLoading || !bookingData) {
     return (
-      <div className="container mx-auto p-4">
-        <h1 className="text-2xl font-bold mb-6">Error loading booking options</h1>
-        <Alert variant="destructive" className="mb-4">
-          <AlertCircle className="h-4 w-4 mr-2" />
-          <AlertTitle>API Error</AlertTitle>
-          <AlertDescription>
-            There was an error loading the booking options. This may be due to invalid parameters.
-            <p className="mt-2 text-xs overflow-auto max-h-32 bg-gray-100 p-2 rounded">
-              {step3Error instanceof Error ? step3Error.message : 'Unknown error'}
-            </p>
-          </AlertDescription>
-        </Alert>
-        <Button className="mt-4" onClick={() => navigate("/vehicles")}>
-          Return to Vehicle Selection
-        </Button>
+      <div className="container mx-auto px-4 py-8 text-center">
+        <div className="animate-pulse">Loading booking options...</div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-6">Booking Options</h1>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-6">Complete Your Booking</h1>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="md:col-span-2 space-y-6">
-          {step3Data?.results?.insuranceoptions && step3Data.results.insuranceoptions.length > 0 && (
-            <InsuranceOptions
-              insuranceOptions={step3Data.results.insuranceoptions}
-              selectedInsuranceId={selectedInsuranceId}
-              onSelectInsurance={handleInsuranceChange}
-              currencySymbol={getCurrencySymbol()}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Options Section */}
+        <div className="lg:col-span-2 space-y-8">
+          {/* Insurance Options */}
+          {insuranceOptions.length > 0 && (
+            <InsuranceOptions 
+              options={insuranceOptions}
+              selectedOption={selectedInsurance}
+              onSelectionChange={setSelectedInsurance}
             />
           )}
           
-          {step3Data?.results?.kmcharges && step3Data.results.kmcharges.length > 0 && (
-            <KmCharges
-              kmCharges={step3Data.results.kmcharges}
-              numberOfDays={numberOfDays}
-              currencySymbol={getCurrencySymbol()}
+          {/* Kilometer Charges */}
+          {kmCharges.length > 0 && (
+            <KmCharges 
+              options={kmCharges}
+              selectedOption={selectedKmCharge}
+              onSelectionChange={setSelectedKmCharge}
             />
           )}
           
-          <ExtrasSelection
-            extras={step3Data?.results?.extras?.length > 0 
-              ? step3Data.results.extras 
-              : optionalExtras}
-            selectedExtras={selectedExtras}
-            onExtraChange={handleExtraChange}
-            currencySymbol={getCurrencySymbol()}
-          />
+          {/* Extras Selection */}
+          {extras.length > 0 && (
+            <ExtrasSelection 
+              extras={extras}
+              selectedExtras={selectedExtras}
+              onExtrasChange={setSelectedExtras}
+            />
+          )}
           
-          <div className="pt-6">
-            <Button size="lg" onClick={handleContinue}>
+          {/* Navigation Buttons */}
+          <div className="flex justify-between pt-4">
+            <Button 
+              variant="outline" 
+              onClick={() => navigate(-1)}
+            >
+              Back
+            </Button>
+            <Button onClick={handleProceedToDetails}>
               Continue to Customer Details
             </Button>
           </div>
         </div>
         
-        <div className="md:col-span-1">
-          {bookingDetails && (
-            <BookingSummary
-              vehicleName={bookingDetails.vehicleName}
-              pickupLocation={bookingDetails.pickupLocationName}
-              dropoffLocation={bookingDetails.dropoffLocationName}
-              pickupDate={bookingDetails.pickupDate}
-              dropoffDate={bookingDetails.dropoffDate}
-              basePrice={bookingDetails.basePrice}
-              selectedInsurance={getSelectedInsurance()}
-              selectedExtras={getSelectedExtrasDetails()}
-              kmChargePrice={getKmChargePrice()}
-              currencySymbol={getCurrencySymbol()}
-              vehicleImageUrl={getVehicleImageUrl()}
-            />
-          )}
+        {/* Booking Summary */}
+        <div>
+          <BookingSummary
+            pickupLocation={bookingData.pickupLocationName || ""}
+            dropoffLocation={bookingData.dropoffLocationName || ""}
+            pickupDate={bookingData.pickupDate}
+            dropoffDate={bookingData.dropoffDate}
+            vehicleName={bookingData.vehicleName || ""}
+            basePrice={bookingData.basePrice}
+            selectedInsurance={selectedInsuranceForSummary}
+            selectedExtras={selectedExtrasForSummary}
+            kmChargePrice={kmChargePrice}
+            currencySymbol="$" // This should come from your API data ideally
+            vehicleImageUrl={bookingData.vehicleImage}
+          />
         </div>
       </div>
     </div>
