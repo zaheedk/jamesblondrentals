@@ -1,10 +1,11 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { addDays, isBefore, format } from "date-fns";
+import { addDays, isBefore, format, setHours, setMinutes, addHours } from "date-fns";
 import { toast } from "sonner";
 import { useRcmApi } from "@/hooks/use-rcm-api";
 
@@ -102,11 +103,27 @@ const SearchForm = () => {
     const today = new Date();
     
     if (!pickupDate) {
-      setPickupDate(today);
+      // Set pickup date to today + 1 hour, rounded to the next 30 min
+      const currentHour = today.getHours();
+      const currentMinute = today.getMinutes();
+      const roundedMinute = currentMinute < 30 ? 30 : 0;
+      const adjustedHour = currentMinute < 30 ? currentHour : currentHour + 1;
       
-      const defaultDropoff = addDays(today, 3);
+      const defaultPickup = new Date(today);
+      defaultPickup.setHours(adjustedHour, roundedMinute, 0, 0);
+      
+      // If it's late in the day, set to tomorrow morning
+      if (adjustedHour >= 18) {
+        defaultPickup.setDate(defaultPickup.getDate() + 1);
+        defaultPickup.setHours(9, 0, 0, 0);
+      }
+      
+      setPickupDate(defaultPickup);
+      
+      // Set dropoff date to pickup + 3 days, same time
+      const defaultDropoff = addDays(defaultPickup, 3);
       setDropoffDate(defaultDropoff);
-      console.log('Default dates set', { today, defaultDropoff });
+      console.log('Default dates set', { defaultPickup, defaultDropoff });
     }
   }, []);
 
@@ -144,13 +161,37 @@ const SearchForm = () => {
 
   useEffect(() => {
     if (pickupDate) {
-      setMinDropoffDate(pickupDate);
+      // Ensure dropoff date is at least the next day after pickup
+      const nextDay = new Date(pickupDate);
+      nextDay.setDate(nextDay.getDate() + 1);
+      setMinDropoffDate(nextDay);
       
-      if (dropoffDate && isBefore(dropoffDate, pickupDate)) {
-        setDropoffDate(addDays(pickupDate, 1));
+      if (dropoffDate && isBefore(dropoffDate, nextDay)) {
+        setDropoffDate(nextDay);
       }
     }
   }, [pickupDate, dropoffDate]);
+
+  // Handle changes to pickup time
+  useEffect(() => {
+    if (pickupDate && pickupTime && dropoffDate && isBefore(dropoffDate, pickupDate)) {
+      // If dropoff date is before pickup date, update it
+      setDropoffDate(addDays(pickupDate, 1));
+    } else if (pickupDate && pickupTime && dropoffDate && 
+              dropoffDate.getTime() === pickupDate.getTime() && dropoffTime) {
+      // If same day, ensure dropoff time is after pickup time
+      const [pHour, pMinute] = pickupTime.split(':').map(Number);
+      const [dHour, dMinute] = dropoffTime.split(':').map(Number);
+      
+      if (dHour < pHour || (dHour === pHour && dMinute <= pMinute)) {
+        // If dropoff time is before or equal to pickup time, set it to pickup time + 1 hour
+        const newHour = (pHour + 1) % 24;
+        const newDropoffTime = `${newHour.toString().padStart(2, '0')}:${pMinute.toString().padStart(2, '0')}`;
+        setDropoffTime(newDropoffTime);
+        console.log('Updated dropoff time to be after pickup time:', newDropoffTime);
+      }
+    }
+  }, [pickupDate, pickupTime, dropoffDate, dropoffTime]);
 
   useEffect(() => {
     if (pickupLocation && pickupDate) {
@@ -222,6 +263,44 @@ const SearchForm = () => {
     return format(date, 'dd/MM/yyyy');
   };
 
+  // Validate that the dropoff is after pickup
+  const validateDatesAndTimes = (): boolean => {
+    if (!pickupDate || !dropoffDate || !pickupTime || !dropoffTime) {
+      toast.error("Please select all dates and times");
+      return false;
+    }
+    
+    const [pHour, pMinute] = pickupTime.split(':').map(Number);
+    const [dHour, dMinute] = dropoffTime.split(':').map(Number);
+    
+    const pickupDateTime = new Date(pickupDate);
+    pickupDateTime.setHours(pHour, pMinute, 0, 0);
+    
+    const dropoffDateTime = new Date(dropoffDate);
+    dropoffDateTime.setHours(dHour, dMinute, 0, 0);
+    
+    if (dropoffDateTime <= pickupDateTime) {
+      toast.error("Drop-off time must be after pick-up time");
+      
+      // Adjust the dropoff date/time automatically
+      if (pickupDate.getDate() === dropoffDate.getDate() &&
+          pickupDate.getMonth() === dropoffDate.getMonth() &&
+          pickupDate.getFullYear() === dropoffDate.getFullYear()) {
+        // Same day - adjust time
+        const adjustedDropoffTime = addHours(pickupDateTime, 1);
+        setDropoffTime(`${String(adjustedDropoffTime.getHours()).padStart(2, '0')}:${String(adjustedDropoffTime.getMinutes()).padStart(2, '0')}`);
+      } else {
+        // Different day but still invalid - adjust date
+        const nextDay = addDays(pickupDate, 1);
+        setDropoffDate(nextDay);
+      }
+      
+      return false;
+    }
+    
+    return true;
+  };
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -237,6 +316,11 @@ const SearchForm = () => {
     
     if (!pickupTime || !dropoffTime) {
       toast.error("Please select both pickup and drop-off times");
+      return;
+    }
+    
+    // Validate that dropoff is after pickup
+    if (!validateDatesAndTimes()) {
       return;
     }
     
