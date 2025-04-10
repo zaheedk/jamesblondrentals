@@ -184,12 +184,13 @@ class RCMApiClient {
   }
 
   /**
-   * Makes an API request with the correct format matching the Postman collection
+   * Makes a generic API request with the correct format
+   * This allows for custom method calls that aren't pre-defined
    */
-  private async request<T>(method: string, requestMethod: string, body?: any): Promise<T> {
+  async request<T>(method: string, requestMethod: string, body?: any): Promise<T> {
     this.ensureInitialized();
 
-    // Only use mock data if explicitly enabled, NOT when API calls fail
+    // Only use mock data if explicitly enabled
     if (this.useMockData) {
       console.log('Using mock data because useMockData=true for:', requestMethod);
       return this.getMockData(requestMethod) as T;
@@ -198,7 +199,7 @@ class RCMApiClient {
     try {
       // Build the URL with API key
       const apiUrl = this.buildApiUrl();
-      console.log(`Making ${method} request to ${apiUrl}`);
+      console.log(`Making ${method} request to ${apiUrl} for method ${requestMethod}`);
       
       // Create requestBody with method as the first property
       const requestBody = { method: requestMethod, ...body };
@@ -220,9 +221,6 @@ class RCMApiClient {
         console.error("Non-JSON response received:", contentType);
         const text = await response.text();
         console.error("Response text:", text);
-        
-        // Don't set flag to use mock data anymore
-        // Instead, throw an error to be handled by the caller
         throw new Error("API returned non-JSON response");
       }
 
@@ -238,9 +236,6 @@ class RCMApiClient {
         }
         
         console.error(`API error: ${response.status} ${response.statusText}`, errorData);
-        
-        // Don't set flag to use mock data anymore
-        // Instead, throw an error to be handled by the caller
         throw new Error(errorData.message || `Request failed with status: ${response.status}`);
       }
 
@@ -257,9 +252,6 @@ class RCMApiClient {
       return responseData;
     } catch (error) {
       console.error('RCM API request failed:', error);
-      
-      // Don't set flag to use mock data anymore
-      // Don't fall back to mock data, instead throw the error to be handled by the caller
       throw error;
     }
   }

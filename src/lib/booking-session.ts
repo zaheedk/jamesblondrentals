@@ -1,4 +1,3 @@
-
 /**
  * Utility functions to manage booking data between pages using sessionStorage
  */
@@ -21,6 +20,8 @@ export interface BookingSessionData {
   // Payment related fields
   paymentAmount?: number;
   paymentType?: "deposit" | "full";
+  paymentStatus?: "Approved" | "Failed" | "Pending" | "Unknown";
+  transactionId?: string;
   // Insurance and optional fees
   insuranceId?: string;
   insuranceName?: string;

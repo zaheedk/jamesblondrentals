@@ -1,21 +1,32 @@
 
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { getBookingData } from "@/lib/booking-session";
+import { useNavigate, useLocation } from "react-router-dom";
+import { getBookingData, updateBookingData } from "@/lib/booking-session";
 import { toast } from "sonner";
 import { rcmApi } from "@/lib/api/rcm-api";
 
 const Payment = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
   const bookingData = getBookingData();
-
+  
+  // Get query parameters from URL
+  const queryParams = new URLSearchParams(location.search);
+  const windcaveResult = queryParams.get("result");
+  
   useEffect(() => {
     if (!bookingData) {
       toast.error("No booking information found", {
         description: "Please start a new booking.",
       });
       navigate("/");
+      return;
+    }
+    
+    // Check if we have a payment result from Windcave
+    if (windcaveResult) {
+      checkPaymentStatus(windcaveResult);
       return;
     }
     
@@ -75,7 +86,71 @@ const Payment = () => {
     };
 
     createPayment();
-  }, [navigate, bookingData]);
+  }, [navigate, bookingData, windcaveResult, location.search]);
+  
+  // Function to check payment status with Windcave
+  const checkPaymentStatus = async (windcaveResult: string) => {
+    try {
+      setIsLoading(true);
+      console.log('Checking payment status with result:', windcaveResult);
+      
+      // Get the reservation reference
+      const reservationRef = bookingData?.reservationRef || 
+                            bookingData?.bookingReference || 
+                            bookingData?.confirmationNumber || 
+                            bookingData?.reservationNo ||
+                            bookingData?.vehicleId;
+      
+      if (!reservationRef) {
+        throw new Error('No reservation reference found');
+      }
+      
+      const requestPayload = {
+        method: "getdpspayment",
+        reservationref: reservationRef,
+        result: windcaveResult
+      };
+      
+      console.log('Payment status check payload:', requestPayload);
+      
+      // Make API call to check payment status
+      const response = await rcmApi.request('POST', 'getdpspayment', requestPayload);
+      
+      console.log('Payment status check response:', response);
+      
+      if (response && response.results) {
+        // Store transaction ID in booking data
+        const transactionId = response.results.TransactionId || 'N/A';
+        updateBookingData({ 
+          transactionId: transactionId,
+          paymentStatus: response.results.Status || 'Unknown'
+        });
+        
+        // Navigate to success page with appropriate parameters
+        const params = new URLSearchParams();
+        params.append('result', response.results.Status === 'Approved' ? 'success' : 'failed');
+        params.append('txnId', transactionId);
+        
+        if (response.results.Status !== 'Approved') {
+          params.append('message', response.results.ResponseText || 'Payment failed');
+        }
+        
+        navigate(`/payment-success?${params.toString()}`);
+      } else {
+        throw new Error('Invalid payment status response');
+      }
+    } catch (error) {
+      console.error('Error checking payment status:', error);
+      
+      // Navigate to success page with error parameters
+      const params = new URLSearchParams();
+      params.append('result', 'failed');
+      params.append('error', 'true');
+      params.append('message', error instanceof Error ? error.message : 'Unknown payment error');
+      
+      navigate(`/payment-success?${params.toString()}`);
+    }
+  };
 
   // Provide a back button and retry option in case redirect doesn't happen
   const handleRetry = () => {
@@ -96,8 +171,8 @@ const Payment = () => {
           {isLoading ? (
             <div className="flex flex-col items-center py-8">
               <div className="w-12 h-12 border-4 border-t-blue-500 border-blue-200 rounded-full animate-spin mb-4"></div>
-              <p className="text-lg">Preparing secure payment...</p>
-              <p className="text-sm text-gray-500 mt-2">You will be redirected to our secure payment provider shortly.</p>
+              <p className="text-lg">Processing your payment...</p>
+              <p className="text-sm text-gray-500 mt-2">Please wait while we confirm your payment status.</p>
             </div>
           ) : (
             <div className="text-center py-8">
