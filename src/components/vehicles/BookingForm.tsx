@@ -34,11 +34,17 @@ export default function BookingForm({
   const handleBookNow = (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Determine vehicle category type ID from vehicle properties
+    // First check if vehicle.category exists, if not, use vehicle.type or default to '0'
+    const vehicleCategoryTypeId = vehicle.category?.toString() || 
+                                  vehicle.type?.toString() || 
+                                  '0';
+    
     // Save booking data to session storage
     saveBookingData({
       vehicleId: vehicle.id.toString(),
       vehicleName: `${vehicle.make} ${vehicle.model}`,
-      vehicleCategoryTypeId: vehicle.category?.toString() || '0', // Using category as vehicleCategoryTypeId
+      vehicleCategoryTypeId: vehicleCategoryTypeId,
       pickupLocationId,
       pickupLocationName,
       dropoffLocationId,
@@ -59,7 +65,7 @@ export default function BookingForm({
     <form onSubmit={handleBookNow}>
       <input type="hidden" name="vehicleId" value={vehicle.id} />
       <input type="hidden" name="vehicleName" value={`${vehicle.make} ${vehicle.model}`} />
-      <input type="hidden" name="vehicleCategoryTypeId" value={vehicle.category?.toString() || '0'} />
+      <input type="hidden" name="vehicleCategoryTypeId" value={vehicle.category?.toString() || vehicle.type?.toString() || '0'} />
       <input type="hidden" name="pickupLocationId" value={pickupLocationId} />
       <input type="hidden" name="pickupLocationName" value={pickupLocationName} />
       <input type="hidden" name="dropoffLocationId" value={dropoffLocationId} />

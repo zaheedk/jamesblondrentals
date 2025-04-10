@@ -1,8 +1,7 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRcmApi } from "@/hooks/use-rcm-api";
-import { format, differenceInDays } from "date-fns";
+import { format, differenceInDays, parse } from "date-fns";
 import InsuranceOptions from "@/components/booking/InsuranceOptions";
 import KmCharges from "@/components/booking/KmCharges";
 import ExtrasSelection from "@/components/booking/ExtrasSelection";
@@ -46,10 +45,21 @@ const Booking = () => {
     }
 
     try {
-      // Calculate number of days between pickup and dropoff
+      // Parse dates properly to ensure valid Date objects
       const pickupDateObj = new Date(data.pickupDate);
       const dropoffDateObj = new Date(data.dropoffDate);
-      const days = differenceInDays(dropoffDateObj, pickupDateObj) || 1;
+      
+      // Verify the dates are valid
+      if (isNaN(pickupDateObj.getTime()) || isNaN(dropoffDateObj.getTime())) {
+        console.error("Invalid date string:", { pickup: data.pickupDate, dropoff: data.dropoffDate });
+        toast.error("Invalid date format in booking data");
+        setParamError("Invalid date format in booking data");
+        setIsLoading(false);
+        return;
+      }
+      
+      // Calculate number of days between pickup and dropoff
+      const days = Math.max(differenceInDays(dropoffDateObj, pickupDateObj) || 1, 1);
       setNumberOfDays(days);
       
       // Log booking data for debugging
@@ -70,7 +80,7 @@ const Booking = () => {
       
       const params: RCMStep3Request = {
         vehiclecategoryid: data.vehicleId,
-        vehiclecategorytypeid: data.vehicleCategoryTypeId, // Added this field for the API
+        vehiclecategorytypeid: data.vehicleCategoryTypeId,
         pickuplocationid: data.pickupLocationId,
         pickupdate: data.pickupDate,
         pickuptime: data.pickupTime,
@@ -102,9 +112,9 @@ const Booking = () => {
         pickupLocationName: data.pickupLocationName || "Pickup Location",
         dropoffLocationId: data.dropoffLocationId,
         dropoffLocationName: data.dropoffLocationName || "Dropoff Location",
-        pickupDate: new Date(data.pickupDate),
+        pickupDate: pickupDateObj,
         pickupTime: data.pickupTime,
-        dropoffDate: new Date(data.dropoffDate),
+        dropoffDate: dropoffDateObj,
         dropoffTime: data.dropoffTime,
         ageId: data.ageId,
         basePrice: data.basePrice

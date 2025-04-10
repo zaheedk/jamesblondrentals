@@ -34,6 +34,27 @@ const BookingSummary = ({
     selectedExtras.reduce((sum, extra) => sum + extra.totalPrice, 0) + 
     kmChargePrice;
 
+  // Add validation for dates before formatting
+  const formatSafeDate = (date: Date | string | null | undefined): string => {
+    if (!date) return "Date not available";
+    
+    try {
+      // If it's a string, convert to Date first
+      const dateObj = typeof date === 'string' ? new Date(date) : date;
+      
+      // Check if date is valid before formatting
+      if (isNaN(dateObj.getTime())) {
+        console.error("Invalid date:", date);
+        return "Invalid date";
+      }
+      
+      return format(dateObj, "PPP p");
+    } catch (err) {
+      console.error("Error formatting date:", err, date);
+      return "Date format error";
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -48,13 +69,13 @@ const BookingSummary = ({
         <div className="space-y-2">
           <h4 className="font-medium">Pickup</h4>
           <p className="text-sm">{pickupLocation}</p>
-          <p className="text-sm">{format(pickupDate, "PPP p")}</p>
+          <p className="text-sm">{formatSafeDate(pickupDate)}</p>
         </div>
         
         <div className="space-y-2">
           <h4 className="font-medium">Drop-off</h4>
           <p className="text-sm">{dropoffLocation}</p>
-          <p className="text-sm">{format(dropoffDate, "PPP p")}</p>
+          <p className="text-sm">{formatSafeDate(dropoffDate)}</p>
         </div>
         
         <div className="border-t border-gray-200 my-4"></div>

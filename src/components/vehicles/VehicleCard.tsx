@@ -25,10 +25,22 @@ const VehicleCard = ({ vehicle }: VehicleCardProps) => {
   
   // Get the image URL correctly handling different data formats
   const getImageUrl = () => {
-    if (Array.isArray(vehicle.images) && vehicle.images.length > 0) {
-      const image = vehicle.images[0];
-      return typeof image === 'string' ? image : image.url || '/placeholder.svg';
+    if (!vehicle.images || !Array.isArray(vehicle.images) || vehicle.images.length === 0) {
+      return '/placeholder.svg';
     }
+    
+    const image = vehicle.images[0];
+    
+    // Check if the image is a string
+    if (typeof image === 'string') {
+      return image;
+    }
+    
+    // Check if the image is an object with a url property
+    if (image && typeof image === 'object' && 'url' in image) {
+      return image.url;
+    }
+    
     return '/placeholder.svg';
   };
   
@@ -50,7 +62,7 @@ const VehicleCard = ({ vehicle }: VehicleCardProps) => {
           </div>
           <div className="text-right">
             <div className="font-bold text-lg">
-              ${typeof vehicle.price === 'string' ? vehicle.price : vehicle.price.toFixed(2)}
+              ${typeof vehicle.price === 'string' ? vehicle.price : vehicle.price?.toFixed(2) || '0.00'}
             </div>
             <div className="text-xs text-gray-500">
               {vehicle.priceUnit === 'day' 
