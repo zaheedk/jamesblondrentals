@@ -18,6 +18,9 @@ export interface BookingSessionData {
   ageId: string;
   basePrice: number;
   vehicleImage?: string;
+  // Payment related fields
+  paymentAmount?: number;
+  paymentType?: "deposit" | "full";
   // Insurance and optional fees
   insuranceId?: string;
   insuranceName?: string;

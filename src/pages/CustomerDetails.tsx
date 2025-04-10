@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -198,7 +197,7 @@ const CustomerDetails = () => {
         const reservationNo = bookingResponse.results?.reservationno;
         
         if (reservationRef || (reservationNo && parseInt(String(reservationNo)) > 0)) {
-          navigate("/payment");
+          navigate("/payment-options");
         } else {
           toast.error("Booking unsuccessful", {
             description: "Please contact support: No reservation reference received"
