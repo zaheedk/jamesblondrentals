@@ -1,3 +1,4 @@
+
 /**
  * Utility functions to manage booking data between pages using sessionStorage
  */
@@ -22,6 +23,7 @@ export interface BookingSessionData {
   paymentType?: "deposit" | "full";
   paymentStatus?: "Approved" | "Failed" | "Pending" | "Unknown";
   transactionId?: string;
+  windcaveReservationRef?: string; // Adding this property to fix the type error
   // Insurance and optional fees
   insuranceId?: string;
   insuranceName?: string;

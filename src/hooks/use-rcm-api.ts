@@ -1,3 +1,4 @@
+
 import { useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { rcmApi } from '@/lib/api/rcm-api';
@@ -332,11 +333,14 @@ export function useRcmApi() {
             reservationref: reservationRef
           });
           
-          if (response.status === "OK") {
-            console.log('Booking details retrieved:', response);
-            return response.results;
+          // Fix the type assertion to handle the unknown type properly
+          const typedResponse = response as { status: string, results?: any, error?: string };
+          
+          if (typedResponse.status === "OK") {
+            console.log('Booking details retrieved:', typedResponse);
+            return typedResponse.results;
           } else {
-            throw new Error(response.error || "Failed to fetch booking details");
+            throw new Error(typedResponse.error || "Failed to fetch booking details");
           }
         } catch (error) {
           console.error('Failed to fetch booking details:', error);

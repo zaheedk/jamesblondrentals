@@ -87,10 +87,14 @@ const PaymentSuccess = () => {
             };
             
             const response = await rcmApi.request('POST', 'getreservation', requestPayload);
-            console.log("Booking details response:", response);
             
-            if (response && response.status === "OK" && response.results) {
-              const apiBookingDetails = mapApiResponseToBookingDetails(response.results, reservationRef);
+            // Fix the type assertion to handle the unknown type
+            const typedResponse = response as { status: string, results?: any };
+            
+            console.log("Booking details response:", typedResponse);
+            
+            if (typedResponse && typedResponse.status === "OK" && typedResponse.results) {
+              const apiBookingDetails = mapApiResponseToBookingDetails(typedResponse.results, reservationRef);
               setBookingDetails(apiBookingDetails);
             } else {
               throw new Error("Failed to fetch booking details");
@@ -99,12 +103,47 @@ const PaymentSuccess = () => {
             console.error("Error fetching booking details:", error);
             // Fall back to session data if API fetch fails
             if (sessionBookingData) {
-              setBookingDetails(sessionBookingData);
+              // Convert sessionBookingData to match BookingDetails type
+              const convertedDetails: BookingDetails = {
+                vehicleName: sessionBookingData.vehicleName || 'Vehicle',
+                pickupDate: sessionBookingData.pickupDate,
+                pickupTime: sessionBookingData.pickupTime, 
+                dropoffDate: sessionBookingData.dropoffDate,
+                dropoffTime: sessionBookingData.dropoffTime,
+                paymentAmount: sessionBookingData.paymentAmount || 0,
+                basePrice: sessionBookingData.basePrice || 0,
+                paymentType: sessionBookingData.paymentType,
+                customerFirstName: sessionBookingData.customerFirstName,
+                customerLastName: sessionBookingData.customerLastName,
+                customerEmail: sessionBookingData.customerEmail,
+                customerPhone: sessionBookingData.customerPhone,
+                customerDob: sessionBookingData.customerDob,
+                customerLicenseExpiry: sessionBookingData.customerLicenseExpiry,
+                customerAddress: sessionBookingData.customerAddress
+              };
+              setBookingDetails(convertedDetails);
             }
           }
         } else if (sessionBookingData) {
-          // Use session data if no reservation reference or it matches
-          setBookingDetails(sessionBookingData);
+          // Convert sessionBookingData to match BookingDetails type
+          const convertedDetails: BookingDetails = {
+            vehicleName: sessionBookingData.vehicleName || 'Vehicle',
+            pickupDate: sessionBookingData.pickupDate,
+            pickupTime: sessionBookingData.pickupTime, 
+            dropoffDate: sessionBookingData.dropoffDate,
+            dropoffTime: sessionBookingData.dropoffTime,
+            paymentAmount: sessionBookingData.paymentAmount || 0,
+            basePrice: sessionBookingData.basePrice || 0,
+            paymentType: sessionBookingData.paymentType,
+            customerFirstName: sessionBookingData.customerFirstName,
+            customerLastName: sessionBookingData.customerLastName,
+            customerEmail: sessionBookingData.customerEmail,
+            customerPhone: sessionBookingData.customerPhone,
+            customerDob: sessionBookingData.customerDob,
+            customerLicenseExpiry: sessionBookingData.customerLicenseExpiry,
+            customerAddress: sessionBookingData.customerAddress
+          };
+          setBookingDetails(convertedDetails);
         }
         
         setIsLoading(false);
