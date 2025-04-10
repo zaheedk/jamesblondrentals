@@ -10,10 +10,11 @@ import BookingSummary from '@/components/booking/BookingSummary';
 import InsuranceOptions from '@/components/booking/InsuranceOptions';
 import KmCharges from '@/components/booking/KmCharges';
 import ExtrasSelection from '@/components/booking/ExtrasSelection';
+import { differenceInDays, parseISO } from 'date-fns';
 
 const Booking = () => {
   const navigate = useNavigate();
-  const { getStep3 } = useRcmApi();
+  const { rcmApi } = useRcmApi();
 
   // State for booking options
   const [bookingData, setBookingData] = useState<BookingSessionData | null>(null);
@@ -33,6 +34,30 @@ const Booking = () => {
     totalPrice: number;
   }[]>([]);
 
+  // Calculate number of days for rental
+  const calculateNumberOfDays = () => {
+    if (!bookingData) return 1;
+    try {
+      const pickupDate = typeof bookingData.pickupDate === 'string' ? 
+        parseISO(bookingData.pickupDate.includes('/') ? 
+        bookingData.pickupDate.split('/').reverse().join('-') : 
+        bookingData.pickupDate) : 
+        new Date();
+
+      const dropoffDate = typeof bookingData.dropoffDate === 'string' ? 
+        parseISO(bookingData.dropoffDate.includes('/') ? 
+        bookingData.dropoffDate.split('/').reverse().join('-') : 
+        bookingData.dropoffDate) : 
+        new Date();
+
+      const daysDiff = differenceInDays(dropoffDate, pickupDate);
+      return daysDiff > 0 ? daysDiff : 1;
+    } catch (e) {
+      console.error('Error calculating rental days:', e);
+      return 1;
+    }
+  };
+
   // Get booking data from session storage
   useEffect(() => {
     const data = getBookingData();
@@ -49,7 +74,7 @@ const Booking = () => {
     // Fetch step 3 data (options)
     setIsLoading(true);
     
-    getStep3({
+    rcmApi.getStep3({
       vehiclecategoryid: data.vehicleId,
       vehiclecategorytypeid: data.vehicleCategoryTypeId,
       pickuplocationid: data.pickupLocationId,
@@ -85,13 +110,59 @@ const Booking = () => {
     .finally(() => {
       setIsLoading(false);
     });
-  }, [navigate, getStep3]);
+  }, [navigate, rcmApi]);
 
   // Handle proceeding to customer details page
   const handleProceedToDetails = () => {
     // In a real implementation, you might want to save these selections to session storage
     // For now, we'll just navigate to the customer details page
     navigate('/customer-details');
+  };
+
+  // Handle insurance selection
+  const handleInsuranceChange = (insuranceId: string | number) => {
+    const selected = insuranceOptions.find(i => i.id.toString() === insuranceId.toString()) || null;
+    setSelectedInsurance(selected);
+  };
+
+  // Handle km charge selection
+  const handleKmChargeChange = (kmChargeId: string | number) => {
+    const selected = kmCharges.find(k => k.id.toString() === kmChargeId.toString()) || null;
+    setSelectedKmCharge(selected);
+  };
+
+  // Handle extras selection
+  const handleExtrasChange = (extraId: string | number, quantity: number) => {
+    if (quantity <= 0) {
+      setSelectedExtras(prev => prev.filter(e => e.id.toString() !== extraId.toString()));
+      return;
+    }
+    
+    const extra = extras.find(e => e.id.toString() === extraId.toString());
+    if (!extra) return;
+    
+    setSelectedExtras(prev => {
+      const existingIndex = prev.findIndex(e => e.id.toString() === extraId.toString());
+      if (existingIndex >= 0) {
+        const updated = [...prev];
+        updated[existingIndex] = {
+          id: extra.id,
+          name: extra.name,
+          quantity: quantity,
+          unitPrice: extra.unitprice,
+          totalPrice: extra.unitprice * quantity
+        };
+        return updated;
+      } else {
+        return [...prev, {
+          id: extra.id,
+          name: extra.name,
+          quantity: quantity,
+          unitPrice: extra.unitprice,
+          totalPrice: extra.unitprice * quantity
+        }];
+      }
+    });
   };
 
   // Prepare booking summary data
@@ -108,7 +179,8 @@ const Booking = () => {
     totalPrice: e.totalPrice
   }));
   
-  const kmChargePrice = selectedKmCharge ? selectedKmCharge.dailyrate : 0;
+  const kmChargePrice = selectedKmCharge ? selectedKmCharge.dailyrate * calculateNumberOfDays() : 0;
+  const numberOfDays = calculateNumberOfDays();
 
   if (isLoading || !bookingData) {
     return (
@@ -129,8 +201,9 @@ const Booking = () => {
           {insuranceOptions.length > 0 && (
             <InsuranceOptions 
               insuranceOptions={insuranceOptions}
-              selectedInsurance={selectedInsurance}
-              onInsuranceChange={setSelectedInsurance}
+              selectedInsuranceId={selectedInsurance?.id || null}
+              onSelectInsurance={handleInsuranceChange}
+              currencySymbol="$"
             />
           )}
           
@@ -138,8 +211,8 @@ const Booking = () => {
           {kmCharges.length > 0 && (
             <KmCharges 
               kmCharges={kmCharges}
-              selectedKmCharge={selectedKmCharge}
-              onKmChargeChange={setSelectedKmCharge}
+              numberOfDays={numberOfDays}
+              currencySymbol="$"
             />
           )}
           
@@ -147,8 +220,9 @@ const Booking = () => {
           {extras.length > 0 && (
             <ExtrasSelection 
               extras={extras}
-              selectedExtras={selectedExtras}
-              onExtrasChange={setSelectedExtras}
+              selectedExtras={new Map(selectedExtras.map(e => [e.id, e.quantity]))}
+              onExtraChange={handleExtrasChange}
+              currencySymbol="$"
             />
           )}
           

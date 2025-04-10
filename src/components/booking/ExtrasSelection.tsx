@@ -55,7 +55,7 @@ const ExtrasSelection = ({
                 <div className="flex items-start gap-2">
                   <Checkbox 
                     id={`extra-${extra.id}`}
-                    checked={!!selectedExtras.get(extra.id)} 
+                    checked={selectedExtras.has(extra.id)} 
                     onCheckedChange={(checked) => handleCheckboxChange(extra.id, checked as boolean)}
                   />
                   <div>
