@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -6,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { RCMExtra, RCMOptionalFee } from "@/lib/api/rcm-api-types";
 import { AlertCircle, Info } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface ExtrasSelectionProps {
   extras: RCMExtra[];
@@ -31,17 +30,13 @@ const ExtrasSelection = ({
     onExtraChange(extraId, quantity);
   };
 
-  // Enhanced debugging output
-  console.log("Extras received in component:", extras);
-  console.log("Optional fees received:", optionalFees);
-  console.log("Selected extras:", [...selectedExtras.entries()]);
-  console.log("Extras type:", typeof extras);
-  console.log("Is extras an array:", Array.isArray(extras));
-  console.log("Optional fees type:", typeof optionalFees);
-  console.log("Is optional fees an array:", Array.isArray(optionalFees));
+  // Filter out Deposit and FullPayment optional fees
+  const filteredOptionalFees = optionalFees.filter(
+    fee => !["Deposit", "FullPayment"].includes(fee.name)
+  );
 
   // Show a message if no extras or optional fees
-  const hasNoAddons = (!extras || !extras.length) && (!optionalFees || !optionalFees.length);
+  const hasNoAddons = (!extras || !extras.length) && (!filteredOptionalFees || !filteredOptionalFees.length);
   
   if (hasNoAddons) {
     return (
@@ -64,7 +59,7 @@ const ExtrasSelection = ({
       <h3 className="text-lg font-semibold">Additional Extras</h3>
       
       {/* Display optional fees if available */}
-      {optionalFees && optionalFees.length > 0 && (
+      {filteredOptionalFees && filteredOptionalFees.length > 0 && (
         <Card className="p-4">
           <div className="mb-2">
             <div className="flex items-center gap-2 text-muted-foreground mb-2">
@@ -72,7 +67,7 @@ const ExtrasSelection = ({
               <span className="text-sm font-medium">Optional Fees</span>
             </div>
             <div className="space-y-4">
-              {optionalFees.map((fee) => (
+              {filteredOptionalFees.map((fee) => (
                 <div key={fee.id} className="flex items-start justify-between border-b border-gray-100 py-2 last:border-0">
                   <div className="flex items-start gap-2">
                     <Checkbox 

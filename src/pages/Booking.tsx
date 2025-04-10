@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -23,7 +22,6 @@ const Booking = () => {
   const [extras, setExtras] = useState<RCMExtra[]>([]);
   const [optionalFees, setOptionalFees] = useState<RCMOptionalFee[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [apiResponseDebug, setApiResponseDebug] = useState<any>(null);
   
   // Selected options state
   const [selectedInsurance, setSelectedInsurance] = useState<RCMInsuranceOption | null>(null);
@@ -77,18 +75,6 @@ const Booking = () => {
     // Fetch step 3 data (options)
     setIsLoading(true);
     
-    console.log("Fetching step 3 data with params:", {
-      vehiclecategoryid: data.vehicleId,
-      vehiclecategorytypeid: data.vehicleCategoryTypeId,
-      pickuplocationid: data.pickupLocationId,
-      pickupdate: data.pickupDate,
-      pickuptime: data.pickupTime,
-      dropofflocationid: data.dropoffLocationId,
-      dropoffdate: data.dropoffDate,
-      dropofftime: data.dropoffTime,
-      ageid: data.ageId,
-    });
-    
     rcmApi.getStep3({
       vehiclecategoryid: data.vehicleId,
       vehiclecategorytypeid: data.vehicleCategoryTypeId,
@@ -101,19 +87,8 @@ const Booking = () => {
       ageid: data.ageId,
     })
     .then((response) => {
-      console.log("Step 3 API response:", response);
-      setApiResponseDebug(response); // Store full response for debugging
-      
       if (response.status === "OK" && response.results) {
         const { insuranceoptions, kmcharges, extras, optionalfees } = response.results;
-        
-        // Enhanced debug logging for extras and optional fees
-        console.log("Raw extras from API:", extras);
-        console.log("Raw optional fees from API:", optionalfees);
-        console.log("Type of extras:", typeof extras);
-        console.log("Type of optional fees:", typeof optionalfees);
-        console.log("Is extras array?", Array.isArray(extras));
-        console.log("Is optional fees array?", Array.isArray(optionalfees));
         
         // Ensure we always have arrays, even if API returns null/undefined
         setInsuranceOptions(insuranceoptions || []);
@@ -121,12 +96,10 @@ const Booking = () => {
         
         // Create a safe copy of extras array
         const safeExtras = Array.isArray(extras) ? extras : [];
-        console.log("Safe extras array:", safeExtras);
         setExtras(safeExtras);
         
         // Create a safe copy of optional fees array
         const safeOptionalFees = Array.isArray(optionalfees) ? optionalfees : [];
-        console.log("Safe optional fees array:", safeOptionalFees);
         setOptionalFees(safeOptionalFees);
         
         // Set default selections
@@ -155,8 +128,6 @@ const Booking = () => {
 
   // Handle proceeding to customer details page
   const handleProceedToDetails = () => {
-    // In a real implementation, you might want to save these selections to session storage
-    // For now, we'll just navigate to the customer details page
     navigate('/customer-details');
   };
 
@@ -174,7 +145,6 @@ const Booking = () => {
 
   // Handle extras selection
   const handleExtrasChange = (extraId: string | number, quantity: number) => {
-    console.log("Handling extras change:", extraId, quantity);
     const newSelectedExtrasMap = new Map(selectedExtrasMap);
     
     if (quantity <= 0) {
@@ -183,14 +153,15 @@ const Booking = () => {
       newSelectedExtrasMap.set(extraId, quantity);
     }
     
-    console.log("Updated selected extras map:", [...newSelectedExtrasMap.entries()]);
     setSelectedExtrasMap(newSelectedExtrasMap);
     
     // Update the selectedExtras array for BookingSummary
     const updatedSelectedExtras = Array.from(newSelectedExtrasMap).map(([id, qty]) => {
       // Check in both extras and optionalFees arrays
       const extra = extras.find(e => e.id.toString() === id.toString());
-      const optionalFee = optionalFees.find(f => f.id.toString() === id.toString());
+      const optionalFee = optionalFees.filter(
+        fee => !["Deposit", "FullPayment"].includes(fee.name)
+      ).find(f => f.id.toString() === id.toString());
       
       if (extra) {
         return {
@@ -220,7 +191,6 @@ const Booking = () => {
       totalPrice: number;
     }[];
     
-    console.log("Updated selectedExtras array:", updatedSelectedExtras);
     setSelectedExtras(updatedSelectedExtras);
   };
 
@@ -245,24 +215,6 @@ const Booking = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">Complete Your Booking</h1>
-      
-      {/* Debug section - only in development */}
-      {process.env.NODE_ENV !== 'production' && (
-        <div className="mb-6 p-4 border border-gray-300 rounded-md bg-gray-50">
-          <h3 className="font-medium mb-2">Debug Information</h3>
-          <div className="space-y-2 text-sm">
-            <div><strong>Extras Array Length:</strong> {extras?.length || 0}</div>
-            <div><strong>Optional Fees Array Length:</strong> {optionalFees?.length || 0}</div>
-            <div><strong>API Status:</strong> {apiResponseDebug?.status}</div>
-            <details>
-              <summary className="cursor-pointer">Raw API Response</summary>
-              <pre className="mt-2 p-2 bg-gray-100 overflow-auto text-xs">
-                {JSON.stringify(apiResponseDebug, null, 2)}
-              </pre>
-            </details>
-          </div>
-        </div>
-      )}
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Options Section */}
@@ -321,7 +273,7 @@ const Booking = () => {
             selectedInsurance={selectedInsuranceForSummary}
             selectedExtras={selectedExtras}
             kmChargePrice={kmChargePrice}
-            currencySymbol="$" // This should come from your API data ideally
+            currencySymbol="$"
             vehicleImageUrl={bookingData.vehicleImage}
           />
         </div>
