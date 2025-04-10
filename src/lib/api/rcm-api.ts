@@ -37,7 +37,13 @@ const MOCK_STEP1_DATA: RCMStep1Response = {
         postcode: "2022",
         latitude: -36.999,
         longitude: 174.785,
-        noticerequired_numberofdays: 0
+        noticerequired_numberofdays: 0,
+        ispickupavailable: true,
+        isdropoffavailable: true,
+        isdefault: true,
+        minimumbookingday: 1,
+        officeopeningtime: "08:00",
+        officeclosingtime: "18:00"
       },
       {
         id: "626",
@@ -49,7 +55,13 @@ const MOCK_STEP1_DATA: RCMStep1Response = {
         postcode: "6022",
         latitude: -41.327,
         longitude: 174.805,
-        noticerequired_numberofdays: 0
+        noticerequired_numberofdays: 0,
+        ispickupavailable: true,
+        isdropoffavailable: true,
+        isdefault: false,
+        minimumbookingday: 1,
+        officeopeningtime: "08:00",
+        officeclosingtime: "18:00"
       }
     ],
     driverages: [
@@ -63,13 +75,13 @@ const MOCK_STEP1_DATA: RCMStep1Response = {
       { id: "4", vehiclecategorytype: "Luxury" }
     ],
     officetimes: [
-      { id: "1", day: "Monday", opening: "08:00", closing: "18:00" },
-      { id: "2", day: "Tuesday", opening: "08:00", closing: "18:00" },
-      { id: "3", day: "Wednesday", opening: "08:00", closing: "18:00" },
-      { id: "4", day: "Thursday", opening: "08:00", closing: "18:00" },
-      { id: "5", day: "Friday", opening: "08:00", closing: "18:00" },
-      { id: "6", day: "Saturday", opening: "09:00", closing: "16:00" },
-      { id: "7", day: "Sunday", opening: "09:00", closing: "16:00" }
+      { locationid: "625", dayofweek: 1, openingtime: "08:00", closingtime: "18:00" },
+      { locationid: "625", dayofweek: 2, openingtime: "08:00", closingtime: "18:00" },
+      { locationid: "625", dayofweek: 3, openingtime: "08:00", closingtime: "18:00" },
+      { locationid: "625", dayofweek: 4, openingtime: "08:00", closingtime: "18:00" },
+      { locationid: "625", dayofweek: 5, openingtime: "08:00", closingtime: "18:00" },
+      { locationid: "625", dayofweek: 6, openingtime: "09:00", closingtime: "16:00" },
+      { locationid: "625", dayofweek: 7, openingtime: "09:00", closingtime: "16:00" }
     ]
   }
 };
