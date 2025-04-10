@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Vehicle } from "@/lib/types";
 import { saveBookingData } from "@/lib/booking-session";
-import { parse, format } from "date-fns";
+import { parse, format, isAfter } from "date-fns";
+import { toast } from "sonner";
 
 interface BookingFormProps {
   vehicle: Vehicle;
@@ -41,6 +42,7 @@ export default function BookingForm({
     
     let formattedPickupDate = pickupDate;
     let formattedDropoffDate = dropoffDate;
+    let isValidBooking = true;
     
     try {
       if (pickupDate) {
@@ -79,13 +81,24 @@ export default function BookingForm({
       const pickupDateTime = parseDateTimeStrings(formattedPickupDate, pickupTime);
       const dropoffDateTime = parseDateTimeStrings(formattedDropoffDate, dropoffTime);
       
-      if (pickupDateTime && dropoffDateTime && dropoffDateTime <= pickupDateTime) {
+      if (pickupDateTime && dropoffDateTime && !isAfter(dropoffDateTime, pickupDateTime)) {
         console.error("Invalid date/time: dropoff must be after pickup");
-        throw new Error("Drop-off time must be after pick-up time");
+        toast.error("Invalid booking dates", {
+          description: "Drop-off time must be after pick-up time"
+        });
+        isValidBooking = false;
+        return;
       }
     } catch (error) {
       console.error("Error formatting dates:", error);
+      toast.error("Error with booking dates", {
+        description: "Please check your selected dates and try again"
+      });
+      isValidBooking = false;
+      return;
     }
+    
+    if (!isValidBooking) return;
     
     console.log("Booking form dates:", { 
       original: { pickupDate, dropoffDate },

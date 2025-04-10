@@ -1,10 +1,10 @@
-
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import VehicleCard from "../vehicles/VehicleCard";
 import { Vehicle, VehicleType } from "@/lib/types";
 import { useRcmApi } from "@/hooks/use-rcm-api";
+import { addDays, addHours } from "date-fns";
 
 const FeaturedVehicles = () => {
   const [activeCategory, setActiveCategory] = useState<VehicleType | "all">("all");
@@ -22,17 +22,34 @@ const FeaturedVehicles = () => {
         if (step1Data.status === "OK" && step1Data.results?.locations?.length) {
           const defaultLocation = step1Data.results.locations[0];
           
-          // Get today's date and add 3 days for return
-          const pickupDate = new Date();
-          const dropoffDate = new Date();
-          dropoffDate.setDate(dropoffDate.getDate() + 3);
+          // Get today's date and ensure proper time setup
+          const now = new Date();
+          
+          // Set pickup date as tomorrow at 10:00 AM to avoid "in the past" issues
+          const pickupDate = addDays(now, 1);
+          pickupDate.setHours(10, 0, 0, 0);
+          
+          // Set dropoff date as 3 days after pickup at 10:00 AM
+          const dropoffDate = addDays(pickupDate, 3);
+          dropoffDate.setHours(10, 0, 0, 0);
+          
+          // Format dates for API in ISO format
+          const pickupDateStr = pickupDate.toISOString().split('T')[0];
+          const dropoffDateStr = dropoffDate.toISOString().split('T')[0];
+          
+          console.log("Featured vehicles API request dates:", {
+            pickupDate: pickupDateStr,
+            pickupTime: "10:00",
+            dropoffDate: dropoffDateStr,
+            dropoffTime: "10:00",
+          });
           
           const vehiclesData = await rcmApi.getAvailableVehicles({
             pickupLocationId: defaultLocation.id.toString(),
-            pickupDate: pickupDate.toISOString().split('T')[0],
+            pickupDate: pickupDateStr,
             pickupTime: "10:00",
             dropoffLocationId: defaultLocation.id.toString(),
-            dropoffDate: dropoffDate.toISOString().split('T')[0],
+            dropoffDate: dropoffDateStr,
             dropoffTime: "10:00",
           });
           
