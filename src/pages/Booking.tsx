@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { RCMInsuranceOption, RCMKmCharge, RCMExtra } from '@/lib/api/rcm-api-types';
+import { RCMInsuranceOption, RCMKmCharge, RCMExtra, RCMOptionalFee } from '@/lib/api/rcm-api-types';
 import { useRcmApi } from '@/hooks/use-rcm-api';
 import { BookingSessionData, getBookingData } from '@/lib/booking-session';
 import BookingSummary from '@/components/booking/BookingSummary';
@@ -21,6 +21,7 @@ const Booking = () => {
   const [insuranceOptions, setInsuranceOptions] = useState<RCMInsuranceOption[]>([]);
   const [kmCharges, setKmCharges] = useState<RCMKmCharge[]>([]);
   const [extras, setExtras] = useState<RCMExtra[]>([]);
+  const [optionalFees, setOptionalFees] = useState<RCMOptionalFee[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [apiResponseDebug, setApiResponseDebug] = useState<any>(null);
   
@@ -104,13 +105,15 @@ const Booking = () => {
       setApiResponseDebug(response); // Store full response for debugging
       
       if (response.status === "OK" && response.results) {
-        const { insuranceoptions, kmcharges, extras } = response.results;
+        const { insuranceoptions, kmcharges, extras, optionalfees } = response.results;
         
-        // Enhanced debug logging for extras
+        // Enhanced debug logging for extras and optional fees
         console.log("Raw extras from API:", extras);
+        console.log("Raw optional fees from API:", optionalfees);
         console.log("Type of extras:", typeof extras);
+        console.log("Type of optional fees:", typeof optionalfees);
         console.log("Is extras array?", Array.isArray(extras));
-        console.log("Extras length:", extras ? extras.length : 'undefined');
+        console.log("Is optional fees array?", Array.isArray(optionalfees));
         
         // Ensure we always have arrays, even if API returns null/undefined
         setInsuranceOptions(insuranceoptions || []);
@@ -120,6 +123,11 @@ const Booking = () => {
         const safeExtras = Array.isArray(extras) ? extras : [];
         console.log("Safe extras array:", safeExtras);
         setExtras(safeExtras);
+        
+        // Create a safe copy of optional fees array
+        const safeOptionalFees = Array.isArray(optionalfees) ? optionalfees : [];
+        console.log("Safe optional fees array:", safeOptionalFees);
+        setOptionalFees(safeOptionalFees);
         
         // Set default selections
         const defaultInsurance = insuranceoptions?.find(i => i.isdefault) || null;
@@ -180,19 +188,30 @@ const Booking = () => {
     
     // Update the selectedExtras array for BookingSummary
     const updatedSelectedExtras = Array.from(newSelectedExtrasMap).map(([id, qty]) => {
+      // Check in both extras and optionalFees arrays
       const extra = extras.find(e => e.id.toString() === id.toString());
-      if (!extra) {
-        console.warn("Could not find extra with id:", id);
+      const optionalFee = optionalFees.find(f => f.id.toString() === id.toString());
+      
+      if (extra) {
+        return {
+          id: extra.id,
+          name: extra.name,
+          quantity: qty,
+          unitPrice: extra.unitprice,
+          totalPrice: extra.unitprice * qty
+        };
+      } else if (optionalFee) {
+        return {
+          id: optionalFee.id,
+          name: optionalFee.name,
+          quantity: 1, // Optional fees always have quantity 1
+          unitPrice: optionalFee.fees,
+          totalPrice: optionalFee.fees
+        };
+      } else {
+        console.warn("Could not find extra or optional fee with id:", id);
         return null;
       }
-      
-      return {
-        id: extra.id,
-        name: extra.name,
-        quantity: qty,
-        unitPrice: extra.unitprice,
-        totalPrice: extra.unitprice * qty
-      };
     }).filter(Boolean) as {
       id: string | number;
       name: string;
@@ -233,6 +252,7 @@ const Booking = () => {
           <h3 className="font-medium mb-2">Debug Information</h3>
           <div className="space-y-2 text-sm">
             <div><strong>Extras Array Length:</strong> {extras?.length || 0}</div>
+            <div><strong>Optional Fees Array Length:</strong> {optionalFees?.length || 0}</div>
             <div><strong>API Status:</strong> {apiResponseDebug?.status}</div>
             <details>
               <summary className="cursor-pointer">Raw API Response</summary>
@@ -272,6 +292,7 @@ const Booking = () => {
             selectedExtras={selectedExtrasMap}
             onExtraChange={handleExtrasChange}
             currencySymbol="$"
+            optionalFees={optionalFees}
           />
           
           {/* Navigation Buttons */}
