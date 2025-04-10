@@ -355,6 +355,9 @@ export interface RCMPaymentResponse {
     ReturnUrl?: string;
     RedirectUrl?: string;
     TransactionType?: string;
+    TransactionId?: string;
+    Status?: string;
+    ResponseText?: string;
   };
 }
 

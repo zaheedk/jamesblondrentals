@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { getBookingData, updateBookingData } from "@/lib/booking-session";
 import { toast } from "sonner";
 import { rcmApi } from "@/lib/api/rcm-api";
+import type { RCMPaymentResponse } from "@/lib/api/rcm-api-types";
 
 const Payment = () => {
   const navigate = useNavigate();
@@ -113,8 +114,8 @@ const Payment = () => {
       
       console.log('Payment status check payload:', requestPayload);
       
-      // Make API call to check payment status
-      const response = await rcmApi.request('POST', 'getdpspayment', requestPayload);
+      // Make API call to check payment status with proper typing
+      const response = await rcmApi.request<RCMPaymentResponse>('POST', 'getdpspayment', requestPayload);
       
       console.log('Payment status check response:', response);
       
