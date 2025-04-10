@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -94,6 +95,12 @@ const CustomerDetails = () => {
     try {
       console.log('Creating booking with data:', { bookingData, formData });
       
+      // Prepare optional fees array from selected extras
+      const optionalFees = bookingData.selectedExtras?.map(extra => ({
+        id: extra.id,
+        quantity: extra.quantity
+      })) || [];
+      
       const bookingRequest = {
         vehiclecategoryid: bookingData.vehicleId,
         vehiclecategorytypeid: bookingData.vehicleCategoryTypeId,
@@ -105,6 +112,11 @@ const CustomerDetails = () => {
         dropofftime: bookingData.dropoffTime,
         ageid: bookingData.ageId,
         bookingtype: 2, // 2=booking (not quote)
+        // Include insurance ID and extras kms ID
+        insuranceid: bookingData.insuranceId || "0",
+        extrakmsid: bookingData.extraKmsId || "0",
+        // Include optional fees (extras)
+        optionalfees: optionalFees,
         customer: {
           firstname: formData.firstName,
           lastname: formData.lastName,

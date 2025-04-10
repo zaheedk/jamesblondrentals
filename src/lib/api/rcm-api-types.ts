@@ -167,6 +167,12 @@ export interface RCMBookingRequest {
   dropofftime: string;
   ageid: string | number;
   bookingtype: number; // 1=quote, 2=booking
+  insuranceid?: string | number;
+  extrakmsid?: string | number;
+  optionalfees?: Array<{
+    id: string | number;
+    quantity: number;
+  }>;
   customer?: {
     firstname: string;
     lastname: string;
@@ -196,6 +202,9 @@ export interface RCMBookingRequest {
   emailoption?: number;
   newsletter?: number;
   transmission?: number;
+  refno?: string;
+  packageid?: string | number;
+  relocationspecialid?: string | number;
 }
 
 export interface RCMBookingResponseResults {

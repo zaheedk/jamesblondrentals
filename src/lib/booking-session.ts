@@ -18,6 +18,19 @@ export interface BookingSessionData {
   ageId: string;
   basePrice: number;
   vehicleImage?: string;
+  // Insurance and optional fees
+  insuranceId?: string;
+  insuranceName?: string;
+  insurancePrice?: number;
+  extraKmsId?: string;
+  extraKmsName?: string;
+  extraKmsPrice?: number;
+  selectedExtras?: Array<{
+    id: string;
+    name: string;
+    quantity: number;
+    price: number;
+  }>;
   // Booking reference fields
   reservationRef?: string;
   bookingReference?: string;

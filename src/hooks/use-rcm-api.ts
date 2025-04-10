@@ -1,3 +1,4 @@
+
 import { useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { rcmApi } from '@/lib/api/rcm-api';
@@ -285,10 +286,24 @@ export function useRcmApi() {
     return useMutation({
       mutationFn: async (bookingData: RCMBookingRequest) => {
         try {
+          console.log('Creating booking with data:', bookingData);
           const response = await rcmApi.createBooking(bookingData);
-          toast.success('Booking created successfully!', {
-            description: `Confirmation #: ${response.confirmationNumber}`
-          });
+          
+          if (response.status === "OK") {
+            toast.success('Booking created successfully!', {
+              description: response.confirmationNumber 
+                ? `Confirmation #: ${response.confirmationNumber}` 
+                : (response.results?.reservationref 
+                  ? `Reservation #: ${response.results.reservationref}` 
+                  : "Booking confirmed!")
+            });
+          } else {
+            toast.error('Booking failed', {
+              description: response.error || "Unknown error occurred"
+            });
+            throw new Error(response.error || "Failed to create booking");
+          }
+          
           return response;
         } catch (error) {
           console.error('Booking creation error:', error);

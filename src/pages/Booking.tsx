@@ -1,11 +1,10 @@
-
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { RCMInsuranceOption, RCMKmCharge, RCMExtra, RCMOptionalFee } from '@/lib/api/rcm-api-types';
 import { useRcmApi } from '@/hooks/use-rcm-api';
-import { BookingSessionData, getBookingData } from '@/lib/booking-session';
+import { BookingSessionData, getBookingData, updateBookingData } from '@/lib/booking-session';
 import BookingSummary from '@/components/booking/BookingSummary';
 import InsuranceOptions from '@/components/booking/InsuranceOptions';
 import KmCharges from '@/components/booking/KmCharges';
@@ -129,6 +128,45 @@ const Booking = () => {
 
   // Handle proceeding to customer details page
   const handleProceedToDetails = () => {
+    // Save selected options to session storage before navigating
+    const selectedExtrasArray = Array.from(selectedExtrasMap).map(([id, quantity]) => {
+      const extra = extras.find(e => e.id.toString() === id.toString());
+      const optionalFee = optionalFees.find(f => f.id.toString() === id.toString());
+      
+      if (extra) {
+        return {
+          id: id.toString(),
+          name: extra.name || extra.description || "Extra item",
+          quantity,
+          price: extra.unitprice || extra.totalextraamount || 0
+        };
+      } else if (optionalFee) {
+        return {
+          id: id.toString(),
+          name: optionalFee.name || "Optional fee",
+          quantity,
+          price: optionalFee.fees || 0
+        };
+      }
+      
+      return {
+        id: id.toString(),
+        name: "Unknown item",
+        quantity,
+        price: 0
+      };
+    });
+    
+    updateBookingData({
+      insuranceId: selectedInsurance?.id?.toString(),
+      insuranceName: selectedInsurance?.name || selectedInsurance?.description,
+      insurancePrice: selectedInsurance?.totalinsuranceamount,
+      extraKmsId: selectedKmCharge?.id?.toString(),
+      extraKmsName: selectedKmCharge?.name || selectedKmCharge?.mileagedesc,
+      extraKmsPrice: selectedKmCharge?.dailyrate,
+      selectedExtras: selectedExtrasArray
+    });
+    
     navigate('/customer-details');
   };
 
