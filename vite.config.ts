@@ -3,12 +3,6 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
-import type { IncomingMessage } from 'http';
-
-// Extend IncomingMessage type to include body
-interface ExtendedIncomingMessage extends IncomingMessage {
-  body?: any;
-}
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -16,11 +10,11 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
     proxy: {
-      // Proxy API requests to RCM API with improved configuration
+      // Proxy API requests to RCM API with improved logging and error handling
       '/api/rcm': {
         target: 'https://apis.rentalcarmanager.com',
         changeOrigin: true,
-        secure: true,
+        secure: true, 
         rewrite: (path) => path.replace(/^\/api\/rcm/, ''),
         headers: {
           'Content-Type': 'application/json',
@@ -32,20 +26,22 @@ export default defineConfig(({ mode }) => ({
           });
           proxy.on('proxyReq', (proxyReq, req, _res) => {
             console.log('Proxy request:', req.method, req.url);
-            console.log('Request headers:', proxyReq.getHeaders());
             
-            // Log request body for debugging if available
-            const extendedReq = req as ExtendedIncomingMessage;
-            if (extendedReq.body) {
-              console.log('Request body:', typeof extendedReq.body === 'object' ? JSON.stringify(extendedReq.body) : extendedReq.body);
+            // Log request body for debugging, only if available
+            // Using 'as any' to bypass TypeScript error since body is added by middleware
+            const reqWithBody = req as any;
+            if (reqWithBody.body) {
+              console.log('Request body:', reqWithBody.body);
             }
+            
+            // Log request headers for debugging
+            console.log('Request headers:', req.headers);
           });
           proxy.on('proxyRes', (proxyRes, req, _res) => {
             console.log('Proxy response:', proxyRes.statusCode, req.url);
-            console.log('Response headers:', proxyRes.headers);
             
-            // Log content-type to help debug response format issues
-            console.log('Response content-type:', proxyRes.headers['content-type']);
+            // Log response headers for debugging
+            console.log('Response headers:', proxyRes.headers);
           });
         }
       }

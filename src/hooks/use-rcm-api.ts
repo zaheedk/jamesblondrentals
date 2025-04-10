@@ -1,4 +1,5 @@
-import { useCallback, useState } from 'react';
+
+import { useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { rcmApi } from '@/lib/api/rcm-api';
 import type { 
@@ -20,31 +21,20 @@ const API_RETRY_CONFIG = {
 
 export function useRcmApi() {
   const queryClient = useQueryClient();
-  const [isApiEnabled, setIsApiEnabled] = useState(false);
   
   const initializeApi = useCallback((config: RCMConfigInit) => {
-    if (config.enableApi === true) {
-      rcmApi.initialize({
-        ...config,
-        useMockData: config.useMockData || false
-      });
-      setIsApiEnabled(true);
-      return queryClient.invalidateQueries({ queryKey: ['locations'] });
-    }
-    
-    setIsApiEnabled(false);
-    return Promise.resolve();
+    rcmApi.initialize(config);
+    console.log('API initialized with config:', {
+      ...config,
+      apiSecret: config.apiSecret ? '******' : undefined
+    });
+    return queryClient.invalidateQueries({ queryKey: ['locations'] });
   }, [queryClient]);
   
   const useLocations = () => {
     return useQuery({
       queryKey: ['locations'],
       queryFn: async () => {
-        if (!isApiEnabled) {
-          console.log('API is not enabled');
-          return [];
-        }
-        
         try {
           const response = await rcmApi.getStep1();
           console.log('Step1 API response:', response);
@@ -343,6 +333,7 @@ export function useRcmApi() {
             reservationref: reservationRef
           });
           
+          // Fix the type assertion to handle the unknown type properly
           const typedResponse = response as { status: string, results?: any, error?: string };
           
           if (typedResponse.status === "OK") {

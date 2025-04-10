@@ -1,10 +1,8 @@
-
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Vehicle } from "@/lib/types";
 import { saveBookingData } from "@/lib/booking-session";
-import { parse, format, isAfter } from "date-fns";
-import { toast } from "sonner";
+import { parse, format } from "date-fns";
 
 interface BookingFormProps {
   vehicle: Vehicle;
@@ -42,7 +40,6 @@ export default function BookingForm({
     
     let formattedPickupDate = pickupDate;
     let formattedDropoffDate = dropoffDate;
-    let isValidBooking = true;
     
     try {
       if (pickupDate) {
@@ -76,29 +73,9 @@ export default function BookingForm({
           formattedDropoffDate = format(parsedDate, 'dd/MM/yyyy');
         }
       }
-      
-      // Additional validation to ensure dropoff is after pickup
-      const pickupDateTime = parseDateTimeStrings(formattedPickupDate, pickupTime);
-      const dropoffDateTime = parseDateTimeStrings(formattedDropoffDate, dropoffTime);
-      
-      if (pickupDateTime && dropoffDateTime && !isAfter(dropoffDateTime, pickupDateTime)) {
-        console.error("Invalid date/time: dropoff must be after pickup");
-        toast.error("Invalid booking dates", {
-          description: "Drop-off time must be after pick-up time"
-        });
-        isValidBooking = false;
-        return;
-      }
     } catch (error) {
       console.error("Error formatting dates:", error);
-      toast.error("Error with booking dates", {
-        description: "Please check your selected dates and try again"
-      });
-      isValidBooking = false;
-      return;
     }
-    
-    if (!isValidBooking) return;
     
     console.log("Booking form dates:", { 
       original: { pickupDate, dropoffDate },
@@ -141,23 +118,6 @@ export default function BookingForm({
     }
     
     return '/placeholder.svg';
-  };
-  
-  // Helper function to parse date and time strings into a Date object
-  const parseDateTimeStrings = (dateStr: string, timeStr: string): Date | null => {
-    try {
-      const dateParts = dateStr.split('/');
-      if (dateParts.length !== 3) return null;
-      
-      const [day, month, year] = dateParts.map(Number);
-      const [hours, minutes] = timeStr.split(':').map(Number);
-      
-      const date = new Date(year, month - 1, day, hours, minutes);
-      return date;
-    } catch (error) {
-      console.error("Error parsing date time:", error);
-      return null;
-    }
   };
 
   return (

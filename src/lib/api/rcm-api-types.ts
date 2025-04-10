@@ -390,7 +390,9 @@ export interface RCMApiConfig {
   apiUrl: string;
 }
 
-export interface RCMConfigInit extends RCMApiConfig {
+export interface RCMConfigInit {
+  apiUrl?: string;
+  apiKey?: string;
+  apiSecret?: string;
   useMockData?: boolean;
-  enableApi?: boolean;
 }
