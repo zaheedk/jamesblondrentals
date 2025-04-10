@@ -1,133 +1,95 @@
 
-import { Link } from "react-router-dom";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import React from "react";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Fuel, Users, Gauge, DollarSign } from "lucide-react";
 import { Vehicle } from "@/lib/types";
+import { useSearchParams } from "react-router-dom";
+import BookingForm from "./BookingForm";
 
 interface VehicleCardProps {
   vehicle: Vehicle;
-  showDetails?: boolean;
 }
 
-const VehicleCard = ({ vehicle, showDetails = false }: VehicleCardProps) => {
-  // Format currency to display properly
-  const formatCurrency = (amount: number | string) => {
-    const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
-    return new Intl.NumberFormat('en-NZ', {
-      style: 'currency',
-      currency: 'NZD'
-    }).format(numAmount);
-  };
-
+const VehicleCard = ({ vehicle }: VehicleCardProps) => {
+  const [searchParams] = useSearchParams();
+  
+  const pickupLocation = searchParams.get("pickupLocation") || "";
+  const pickupLocationName = searchParams.get("pickupLocationName") || "";
+  const dropoffLocation = searchParams.get("dropoffLocation") || pickupLocation;
+  const dropoffLocationName = searchParams.get("dropoffLocationName") || pickupLocationName;
+  const pickupDate = searchParams.get("pickupDate") || "";
+  const dropoffDate = searchParams.get("dropoffDate") || "";
+  const pickupTime = searchParams.get("pickupTime") || "";
+  const dropoffTime = searchParams.get("dropoffTime") || "";
+  const age = searchParams.get("age") || "";
+  
   return (
-    <Card className="overflow-hidden hover:shadow-lg car-transition border-0 shadow">
-      <div className="aspect-video relative overflow-hidden">
-        <img
-          src={vehicle.images[0] || "/placeholder.svg"}
-          alt={`${vehicle.make} ${vehicle.model}`}
-          className="w-full h-full object-cover car-transition hover:scale-105"
-        />
-        {!vehicle.available && (
-          <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
-            <Badge variant="destructive" className="text-lg py-2 px-4">
-              Sold Out
-            </Badge>
+    <Card className="overflow-hidden shadow-md h-full flex flex-col">
+      <div 
+        className="h-48 bg-center bg-cover" 
+        style={{ 
+          backgroundImage: `url(${Array.isArray(vehicle.images) 
+            ? vehicle.images[0] 
+            : vehicle.images?.url || '/placeholder.svg'})` 
+        }}
+      />
+      <CardHeader className="pb-2">
+        <div className="flex justify-between items-start">
+          <div>
+            <h3 className="font-bold text-xl">{vehicle.make} {vehicle.model}</h3>
+            <div className="text-sm text-gray-500">
+              {vehicle.type && <Badge variant="outline" className="mr-2">{vehicle.type}</Badge>}
+              {vehicle.seats && <span className="mr-2">{vehicle.seats} seats</span>}
+              {vehicle.transmission && <span>{vehicle.transmission}</span>}
+            </div>
           </div>
-        )}
-        {vehicle.type && (
-          <Badge className="absolute top-3 right-3 capitalize">
-            {vehicle.type}
-          </Badge>
-        )}
-      </div>
-      <CardContent className="pt-6">
-        <div className="flex justify-between items-start mb-2">
-          <h3 className="text-xl font-bold">
-            {vehicle.make} {vehicle.model}
-          </h3>
           <div className="text-right">
-            <span className="text-xl font-semibold text-primary">
-              {formatCurrency(vehicle.price)}
-            </span>
-            <span className="text-sm text-gray-500">
-              {vehicle.priceUnit === 'day' ? '/day' : ' total'}
-            </span>
+            <div className="font-bold text-lg">
+              ${typeof vehicle.price === 'string' ? vehicle.price : vehicle.price.toFixed(2)}
+            </div>
+            <div className="text-xs text-gray-500">
+              {vehicle.priceUnit === 'daily' 
+                ? 'per day' 
+                : vehicle.priceUnit === 'total' 
+                  ? 'total' 
+                  : ''}
+            </div>
           </div>
         </div>
-        
-        {vehicle.dailyRate && vehicle.totalDays && (
-          <div className="text-sm text-gray-600 mt-1">
-            <DollarSign className="inline h-4 w-4 mr-1" />
-            {formatCurrency(vehicle.dailyRate)}/day x {vehicle.totalDays} days
-          </div>
-        )}
-        
-        {vehicle.discountAmount > 0 && (
-          <div className="text-sm text-amber-600 mt-1">
-            Includes {formatCurrency(vehicle.discountAmount)} in discounts
-          </div>
-        )}
-        
-        <div className="flex flex-wrap items-center text-sm text-gray-600 mt-3 gap-4">
-          <div className="flex items-center">
-            <Users className="mr-1 h-4 w-4" />
-            <span>{vehicle.seats} seats</span>
-          </div>
-          <div className="flex items-center">
-            <Gauge className="mr-1 h-4 w-4" />
-            <span>{vehicle.transmission}</span>
-          </div>
-          <div className="flex items-center">
-            <Fuel className="mr-1 h-4 w-4" />
-            <span>{vehicle.fuelType}</span>
-          </div>
+      </CardHeader>
+      <CardContent className="py-2 flex-grow">
+        <p className="text-sm text-gray-600 mb-3">
+          {vehicle.description?.substring(0, 120)}
+          {vehicle.description && vehicle.description.length > 120 ? '...' : ''}
+        </p>
+        <div className="grid grid-cols-2 gap-2 text-xs">
+          {vehicle.features && (Array.isArray(vehicle.features) ? vehicle.features : [vehicle.features]).slice(0, 4).map((feature, index) => (
+            <div key={index} className="flex items-center">
+              <span className="h-2 w-2 rounded-full bg-green-500 mr-1"></span>
+              <span className="text-gray-700">{feature}</span>
+            </div>
+          ))}
         </div>
-        
-        {vehicle.description && (
-          <p className="text-sm text-gray-600 mt-3 line-clamp-2">
-            {vehicle.description}
-          </p>
-        )}
       </CardContent>
-      
-      <CardFooter className="pt-0">
-        <div className="flex w-full">
-          {!vehicle.available ? (
-            <Button 
-              variant="secondary" 
-              className="w-full" 
-              disabled
-            >
-              Sold Out
-            </Button>
-          ) : showDetails ? (
-            <Button 
-              variant="default" 
-              className="w-full"
-              asChild
-            >
-              <Link to={`/vehicle/${vehicle.id}`}>View Details</Link>
-            </Button>
-          ) : (
-            <>
-              <Button 
-                variant="outline" 
-                className="w-1/2 mr-2"
-                asChild
-              >
-                <Link to={`/vehicle/${vehicle.id}`}>Details</Link>
-              </Button>
-              <Button 
-                className="w-1/2"
-                asChild
-              >
-                <Link to={`/booking?vehicleId=${vehicle.id}`}>Book Now</Link>
-              </Button>
-            </>
-          )}
-        </div>
+      <CardFooter className="pt-2">
+        {vehicle.available ? (
+          <BookingForm
+            vehicle={vehicle}
+            pickupLocationId={pickupLocation}
+            pickupLocationName={pickupLocationName}
+            dropoffLocationId={dropoffLocation}
+            dropoffLocationName={dropoffLocationName}
+            pickupDate={pickupDate}
+            dropoffDate={dropoffDate}
+            pickupTime={pickupTime}
+            dropoffTime={dropoffTime}
+            ageId={age}
+          />
+        ) : (
+          <div className="w-full p-2 bg-gray-100 text-gray-500 text-center rounded">
+            Not Available
+          </div>
+        )}
       </CardFooter>
     </Card>
   );

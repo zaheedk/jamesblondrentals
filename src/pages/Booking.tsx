@@ -1,6 +1,5 @@
-
 import { useState, useEffect } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useRcmApi } from "@/hooks/use-rcm-api";
 import { format, differenceInDays } from "date-fns";
 import InsuranceOptions from "@/components/booking/InsuranceOptions";
@@ -13,12 +12,13 @@ import { Separator } from "@/components/ui/separator";
 import { RCMStep3Request, RCMStep3Response, RCMInsuranceOption } from "@/lib/api/rcm-api-types";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import { getBookingData, BookingSessionData } from "@/lib/booking-session";
 
 const Booking = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
   const { rcmApi, useStep3Details } = useRcmApi();
   const [isLoading, setIsLoading] = useState(true);
+  const [bookingData, setBookingData] = useState<BookingSessionData | null>(null);
   const [bookingDetails, setBookingDetails] = useState<any>(null);
   const [step3Params, setStep3Params] = useState<RCMStep3Request | null>(null);
   const [paramError, setParamError] = useState<string | null>(null);
@@ -26,70 +26,48 @@ const Booking = () => {
   const [selectedInsuranceId, setSelectedInsuranceId] = useState<string | number | null>(null);
   const [selectedExtras, setSelectedExtras] = useState<Map<string | number, number>>(new Map());
   
-  const vehicleId = searchParams.get("vehicleId");
-  const pickupLocationId = searchParams.get("pickupLocationId");
-  const dropoffLocationId = searchParams.get("dropoffLocationId");
-  const pickupDate = searchParams.get("pickupDate");
-  const pickupTime = searchParams.get("pickupTime");
-  const dropoffDate = searchParams.get("dropoffDate");
-  const dropoffTime = searchParams.get("dropoffTime");
-  const ageId = searchParams.get("ageId");
-  const vehicleName = searchParams.get("vehicleName");
-  const basePriceStr = searchParams.get("basePrice");
-  const basePrice = basePriceStr ? parseFloat(basePriceStr) : 0;
-  const pickupLocationName = searchParams.get("pickupLocationName");
-  const dropoffLocationName = searchParams.get("dropoffLocationName");
-  
-  const numberOfDays = pickupDate && dropoffDate ? 
-    differenceInDays(new Date(dropoffDate), new Date(pickupDate)) + 1 : 1;
-  
   useEffect(() => {
-    let missingParams = [];
-    if (!vehicleId) missingParams.push("vehicleId");
-    if (!pickupLocationId) missingParams.push("pickupLocationId");
-    if (!dropoffLocationId) missingParams.push("dropoffLocationId");
-    if (!pickupDate) missingParams.push("pickupDate");
-    if (!pickupTime) missingParams.push("pickupTime");
-    if (!dropoffDate) missingParams.push("dropoffDate");
-    if (!dropoffTime) missingParams.push("dropoffTime");
-    if (!ageId) missingParams.push("ageId");
-    
-    if (missingParams.length > 0) {
-      const errorMsg = `Missing required parameters: ${missingParams.join(", ")}`;
+    // Get booking data from session storage
+    const data = getBookingData();
+    console.log('Retrieved booking data from session:', data);
+    setBookingData(data);
+
+    if (!data) {
+      const errorMsg = 'Missing booking data. Please select a vehicle first.';
       setParamError(errorMsg);
       console.error(errorMsg);
-      toast.error("Missing required booking parameters", {
-        description: "Please return to the vehicle search page and try again."
+      toast.error("Missing booking data", {
+        description: "Please return to the vehicle search page and select a vehicle."
       });
       setIsLoading(false);
       return;
     }
 
     try {
-      // Log detailed search parameters for debugging
-      console.group('Search Parameters from URL');
-      console.log('vehicleId:', vehicleId);
-      console.log('pickupLocationId:', pickupLocationId);
-      console.log('dropoffLocationId:', dropoffLocationId);
-      console.log('pickupDate:', pickupDate);
-      console.log('pickupTime:', pickupTime);
-      console.log('dropoffDate:', dropoffDate);
-      console.log('dropoffTime:', dropoffTime);
-      console.log('ageId:', ageId);
-      console.log('vehicleName:', vehicleName);
-      console.log('basePrice:', basePrice);
-      console.log('All Search Params:', Object.fromEntries(searchParams.entries()));
+      // Log booking data for debugging
+      console.group('Booking Data from Session Storage');
+      console.log('vehicleId:', data.vehicleId);
+      console.log('pickupLocationId:', data.pickupLocationId);
+      console.log('dropoffLocationId:', data.dropoffLocationId);
+      console.log('pickupDate:', data.pickupDate);
+      console.log('pickupTime:', data.pickupTime);
+      console.log('dropoffDate:', data.dropoffDate);
+      console.log('dropoffTime:', data.dropoffTime);
+      console.log('ageId:', data.ageId);
+      console.log('vehicleName:', data.vehicleName);
+      console.log('basePrice:', data.basePrice);
+      console.log('Full Booking Data:', JSON.stringify(data, null, 2));
       console.groupEnd();
       
       const params: RCMStep3Request = {
-        vehiclecategoryid: vehicleId!,
-        pickuplocationid: pickupLocationId!,
-        pickupdate: pickupDate!,
-        pickuptime: pickupTime!,
-        dropofflocationid: dropoffLocationId!,
-        dropoffdate: dropoffDate!,
-        dropofftime: dropoffTime!,
-        ageid: ageId!
+        vehiclecategoryid: data.vehicleId,
+        pickuplocationid: data.pickupLocationId,
+        pickupdate: data.pickupDate,
+        pickuptime: data.pickupTime,
+        dropofflocationid: data.dropoffLocationId,
+        dropoffdate: data.dropoffDate,
+        dropofftime: data.dropoffTime,
+        ageid: data.ageId
       };
       
       console.group('Step 3 Request Parameters');
@@ -107,18 +85,18 @@ const Booking = () => {
       setStep3Params(params);
       
       setBookingDetails({
-        vehicleId,
-        vehicleName: vehicleName || "Selected Vehicle",
-        pickupLocationId,
-        pickupLocationName: pickupLocationName || "Pickup Location",
-        dropoffLocationId,
-        dropoffLocationName: dropoffLocationName || "Dropoff Location",
-        pickupDate: new Date(pickupDate!),
-        pickupTime,
-        dropoffDate: new Date(dropoffDate!),
-        dropoffTime,
-        ageId,
-        basePrice
+        vehicleId: data.vehicleId,
+        vehicleName: data.vehicleName || "Selected Vehicle",
+        pickupLocationId: data.pickupLocationId,
+        pickupLocationName: data.pickupLocationName || "Pickup Location",
+        dropoffLocationId: data.dropoffLocationId,
+        dropoffLocationName: data.dropoffLocationName || "Dropoff Location",
+        pickupDate: new Date(data.pickupDate),
+        pickupTime: data.pickupTime,
+        dropoffDate: new Date(data.dropoffDate),
+        dropoffTime: data.dropoffTime,
+        ageId: data.ageId,
+        basePrice: data.basePrice
       });
       setParamError(null);
       setIsLoading(false);
@@ -130,7 +108,7 @@ const Booking = () => {
       });
       setIsLoading(false);
     }
-  }, [vehicleId, pickupLocationId, dropoffLocationId, pickupDate, pickupTime, dropoffDate, dropoffTime, ageId]);
+  }, []);
   
   const { data: step3Data, isLoading: isStep3Loading, error: step3Error } = useStep3Details(step3Params);
   
@@ -235,39 +213,32 @@ const Booking = () => {
     const selectedInsurance = getSelectedInsurance();
     const selectedExtrasDetails = getSelectedExtrasDetails();
     
-    const params = new URLSearchParams();
-    params.append("vehicleId", vehicleId || "");
-    params.append("vehicleName", vehicleName || "");
-    params.append("pickupLocationId", pickupLocationId || "");
-    params.append("pickupLocationName", pickupLocationName || "");
-    params.append("dropoffLocationId", dropoffLocationId || "");
-    params.append("dropoffLocationName", dropoffLocationName || "");
-    params.append("pickupDate", pickupDate || "");
-    params.append("pickupTime", pickupTime || "");
-    params.append("dropoffDate", dropoffDate || "");
-    params.append("dropoffTime", dropoffTime || "");
-    params.append("ageId", ageId || "");
-    params.append("basePrice", basePrice.toString());
-    
-    if (selectedInsurance) {
-      params.append("insuranceId", selectedInsurance.id.toString());
-      params.append("insuranceName", selectedInsurance.name);
-      params.append("insurancePrice", selectedInsurance.price.toString());
+    if (!bookingData) {
+      toast.error("Missing booking data", {
+        description: "Please return to vehicle selection and try again."
+      });
+      return;
     }
     
-    if (selectedExtrasDetails.length > 0) {
-      params.append("extras", JSON.stringify(selectedExtrasDetails));
-    }
+    // Save updated booking data with selections to session storage
+    const updatedBookingData = {
+      ...bookingData,
+      insuranceId: selectedInsurance?.id,
+      insuranceName: selectedInsurance?.name,
+      insurancePrice: selectedInsurance?.price,
+      extras: selectedExtrasDetails,
+      kmChargePrice: getKmChargePrice(),
+      totalPrice: (
+        bookingData.basePrice + 
+        (selectedInsurance?.price || 0) + 
+        selectedExtrasDetails.reduce((sum, extra) => sum + extra.totalPrice, 0) + 
+        getKmChargePrice()
+      )
+    };
     
-    params.append("kmChargePrice", getKmChargePrice().toString());
-    params.append("totalPrice", (
-      basePrice + 
-      (selectedInsurance?.price || 0) + 
-      selectedExtrasDetails.reduce((sum, extra) => sum + extra.totalPrice, 0) + 
-      getKmChargePrice()
-    ).toString());
-    
-    navigate(`/customer-details?${params.toString()}`);
+    // Save to session storage and navigate to customer details
+    sessionStorage.setItem('rcm_booking_final', JSON.stringify(updatedBookingData));
+    navigate('/customer-details');
   };
 
   if (paramError) {
