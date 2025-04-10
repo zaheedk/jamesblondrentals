@@ -478,8 +478,8 @@ class RCMApiClient {
     console.log('Creating booking with data:', bookingData);
     
     try {
-      // Change the method name from 'step4' to 'MakeBooking' to match the API expectations
-      const response = await this.request<RCMBookingResponse>('POST', 'MakeBooking', bookingData);
+      // Use 'booking' as the method name based on the provided example code
+      const response = await this.request<RCMBookingResponse>('POST', 'booking', bookingData);
       
       if (response.status === "OK") {
         console.log('Booking created successfully:', response);
