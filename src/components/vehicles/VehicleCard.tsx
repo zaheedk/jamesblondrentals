@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -23,7 +22,6 @@ const VehicleCard = ({ vehicle }: VehicleCardProps) => {
   const dropoffTime = searchParams.get("dropoffTime") || "";
   const age = searchParams.get("age") || "";
   
-  // Get the image URL correctly handling different data formats
   const getImageUrl = () => {
     if (!vehicle.images || !Array.isArray(vehicle.images) || vehicle.images.length === 0) {
       return '/placeholder.svg';
@@ -31,12 +29,10 @@ const VehicleCard = ({ vehicle }: VehicleCardProps) => {
     
     const image = vehicle.images[0];
     
-    // Check if the image is a string
     if (typeof image === 'string') {
       return image;
     }
     
-    // Check if the image is an object with url property
     if (image && typeof image === 'object' && 'url' in image) {
       return (image as {url: string}).url;
     }
@@ -44,11 +40,13 @@ const VehicleCard = ({ vehicle }: VehicleCardProps) => {
     return '/placeholder.svg';
   };
   
+  const imageUrl = getImageUrl();
+  
   return (
     <Card className="overflow-hidden shadow-md h-full flex flex-col">
       <div 
         className="h-48 bg-center bg-cover" 
-        style={{ backgroundImage: `url(${getImageUrl()})` }}
+        style={{ backgroundImage: `url(${imageUrl})` }}
       />
       <CardHeader className="pb-2">
         <div className="flex justify-between items-start">
@@ -101,6 +99,7 @@ const VehicleCard = ({ vehicle }: VehicleCardProps) => {
             pickupTime={pickupTime}
             dropoffTime={dropoffTime}
             ageId={age}
+            vehicleImageUrl={imageUrl}
           />
         ) : (
           <div className="w-full p-2 bg-gray-100 text-gray-500 text-center rounded">

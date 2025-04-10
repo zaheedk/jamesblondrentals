@@ -15,6 +15,7 @@ interface BookingFormProps {
   pickupTime: string;
   dropoffTime: string;
   ageId: string;
+  vehicleImageUrl?: string;
 }
 
 export default function BookingForm({ 
@@ -27,34 +28,28 @@ export default function BookingForm({
   dropoffDate,
   pickupTime,
   dropoffTime,
-  ageId
+  ageId,
+  vehicleImageUrl
 }: BookingFormProps) {
   const navigate = useNavigate();
   
   const handleBookNow = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Determine vehicle category type ID from vehicle properties
-    // Use type instead of category since category may not exist on Vehicle type
     const vehicleCategoryTypeId = vehicle.type?.toString() || '0';
     
-    // Format dates in dd/MM/yyyy format for API compatibility
     let formattedPickupDate = pickupDate;
     let formattedDropoffDate = dropoffDate;
     
     try {
-      // Parse and format dates appropriately
       if (pickupDate) {
         let parsedDate;
         
         if (pickupDate.includes('T')) {
-          // Handle ISO date format
           parsedDate = new Date(pickupDate);
         } else if (pickupDate.includes('/')) {
-          // Handle dd/MM/yyyy format
           parsedDate = parse(pickupDate, 'dd/MM/yyyy', new Date());
         } else {
-          // Handle other date formats
           parsedDate = new Date(pickupDate);
         }
         
@@ -67,13 +62,10 @@ export default function BookingForm({
         let parsedDate;
         
         if (dropoffDate.includes('T')) {
-          // Handle ISO date format
           parsedDate = new Date(dropoffDate);
         } else if (dropoffDate.includes('/')) {
-          // Handle dd/MM/yyyy format
           parsedDate = parse(dropoffDate, 'dd/MM/yyyy', new Date());
         } else {
-          // Handle other date formats
           parsedDate = new Date(dropoffDate);
         }
         
@@ -83,7 +75,6 @@ export default function BookingForm({
       }
     } catch (error) {
       console.error("Error formatting dates:", error);
-      // Keep original strings if formatting fails
     }
     
     console.log("Booking form dates:", { 
@@ -91,7 +82,6 @@ export default function BookingForm({
       formatted: { pickupDate: formattedPickupDate, dropoffDate: formattedDropoffDate }
     });
     
-    // Save booking data to session storage
     saveBookingData({
       vehicleId: vehicle.id.toString(),
       vehicleName: `${vehicle.make} ${vehicle.model}`,
@@ -105,11 +95,29 @@ export default function BookingForm({
       dropoffDate: formattedDropoffDate,
       dropoffTime,
       ageId,
-      basePrice: typeof vehicle.price === 'number' ? vehicle.price : parseFloat(vehicle.price || '0')
+      basePrice: typeof vehicle.price === 'number' ? vehicle.price : parseFloat(vehicle.price || '0'),
+      vehicleImage: vehicleImageUrl || getFirstVehicleImage(vehicle)
     });
     
-    // Navigate to the booking page
     navigate('/booking');
+  };
+
+  const getFirstVehicleImage = (vehicle: Vehicle): string => {
+    if (!vehicle.images || !Array.isArray(vehicle.images) || vehicle.images.length === 0) {
+      return '/placeholder.svg';
+    }
+    
+    const image = vehicle.images[0];
+    
+    if (typeof image === 'string') {
+      return image;
+    }
+    
+    if (image && typeof image === 'object' && 'url' in image) {
+      return (image as {url: string}).url;
+    }
+    
+    return '/placeholder.svg';
   };
 
   return (
@@ -127,6 +135,7 @@ export default function BookingForm({
       <input type="hidden" name="dropoffTime" value={dropoffTime} />
       <input type="hidden" name="ageId" value={ageId} />
       <input type="hidden" name="basePrice" value={vehicle.price?.toString() || '0'} />
+      <input type="hidden" name="vehicleImage" value={vehicleImageUrl || getFirstVehicleImage(vehicle)} />
       
       <Button type="submit" className="w-full">
         Book Now

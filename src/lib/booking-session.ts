@@ -1,4 +1,3 @@
-
 /**
  * Utility functions to manage booking data between pages using sessionStorage
  */
@@ -6,7 +5,7 @@
 export interface BookingSessionData {
   vehicleId: string;
   vehicleName?: string;
-  vehicleCategoryTypeId: string; // Added this field for step3 API call
+  vehicleCategoryTypeId: string;
   pickupLocationId: string;
   pickupLocationName?: string;
   dropoffLocationId: string;
@@ -17,6 +16,7 @@ export interface BookingSessionData {
   dropoffTime: string;
   ageId: string;
   basePrice: number;
+  vehicleImage?: string;
 }
 
 export const BOOKING_SESSION_KEY = 'rcm_booking_data';
