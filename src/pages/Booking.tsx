@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useRcmApi } from "@/hooks/use-rcm-api";
@@ -65,6 +66,21 @@ const Booking = () => {
     }
 
     try {
+      // Log detailed search parameters for debugging
+      console.group('Search Parameters from URL');
+      console.log('vehicleId:', vehicleId);
+      console.log('pickupLocationId:', pickupLocationId);
+      console.log('dropoffLocationId:', dropoffLocationId);
+      console.log('pickupDate:', pickupDate);
+      console.log('pickupTime:', pickupTime);
+      console.log('dropoffDate:', dropoffDate);
+      console.log('dropoffTime:', dropoffTime);
+      console.log('ageId:', ageId);
+      console.log('vehicleName:', vehicleName);
+      console.log('basePrice:', basePrice);
+      console.log('All Search Params:', Object.fromEntries(searchParams.entries()));
+      console.groupEnd();
+      
       const params: RCMStep3Request = {
         vehiclecategoryid: vehicleId!,
         pickuplocationid: pickupLocationId!,
@@ -88,7 +104,6 @@ const Booking = () => {
       console.log('Full Request Object:', JSON.stringify(params, null, 2));
       console.groupEnd();
       
-      console.log("Step3 params:", params);
       setStep3Params(params);
       
       setBookingDetails({
@@ -106,6 +121,7 @@ const Booking = () => {
         basePrice
       });
       setParamError(null);
+      setIsLoading(false);
     } catch (error) {
       console.error("Error setting up Step3 params:", error);
       setParamError("Error setting up booking parameters");
@@ -119,6 +135,18 @@ const Booking = () => {
   const { data: step3Data, isLoading: isStep3Loading, error: step3Error } = useStep3Details(step3Params);
   
   useEffect(() => {
+    // Log step3Data for debugging
+    console.group('Step 3 API Response');
+    console.log('Loading:', isStep3Loading);
+    console.log('Error:', step3Error);
+    console.log('Data:', step3Data);
+    if (step3Data?.results) {
+      console.log('Insurance Options:', step3Data.results.insuranceoptions?.length || 0);
+      console.log('Km Charges:', step3Data.results.kmcharges?.length || 0);
+      console.log('Extras:', step3Data.results.extras?.length || 0);
+    }
+    console.groupEnd();
+    
     if (step3Data?.results?.insuranceoptions) {
       const defaultInsurance = step3Data.results.insuranceoptions.find(ins => ins.isdefault);
       if (defaultInsurance) {
@@ -127,7 +155,7 @@ const Booking = () => {
         setSelectedInsuranceId(step3Data.results.insuranceoptions[0].id);
       }
     }
-  }, [step3Data]);
+  }, [step3Data, isStep3Loading, step3Error]);
   
   useEffect(() => {
     if (step3Data?.results?.extras) {
@@ -260,7 +288,7 @@ const Booking = () => {
     );
   }
 
-  if (isStep3Loading) {
+  if (isLoading || isStep3Loading) {
     return (
       <div className="container mx-auto p-4">
         <h1 className="text-2xl font-bold mb-6">Loading booking options...</h1>
