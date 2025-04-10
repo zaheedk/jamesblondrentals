@@ -129,7 +129,7 @@ const FeaturedVehicles = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredVehicles.map((vehicle) => (
-            <VehicleCard key={vehicle.id} vehicle={vehicle} showDetails={true} />
+            <VehicleCard key={vehicle.id} vehicle={vehicle} />
           ))}
         </div>
       )}
