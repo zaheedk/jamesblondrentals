@@ -10,11 +10,11 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
     proxy: {
-      // Proxy API requests to RCM API with improved logging and error handling
+      // Proxy API requests to RCM API with improved configuration
       '/api/rcm': {
         target: 'https://apis.rentalcarmanager.com',
         changeOrigin: true,
-        secure: true, 
+        secure: true,
         rewrite: (path) => path.replace(/^\/api\/rcm/, ''),
         headers: {
           'Content-Type': 'application/json',
@@ -26,22 +26,19 @@ export default defineConfig(({ mode }) => ({
           });
           proxy.on('proxyReq', (proxyReq, req, _res) => {
             console.log('Proxy request:', req.method, req.url);
+            console.log('Request headers:', proxyReq.getHeaders());
             
-            // Log request body for debugging, only if available
-            // Using 'as any' to bypass TypeScript error since body is added by middleware
-            const reqWithBody = req as any;
-            if (reqWithBody.body) {
-              console.log('Request body:', reqWithBody.body);
+            // Log request body for debugging if available
+            if (req.body) {
+              console.log('Request body:', typeof req.body === 'object' ? JSON.stringify(req.body) : req.body);
             }
-            
-            // Log request headers for debugging
-            console.log('Request headers:', req.headers);
           });
           proxy.on('proxyRes', (proxyRes, req, _res) => {
             console.log('Proxy response:', proxyRes.statusCode, req.url);
-            
-            // Log response headers for debugging
             console.log('Response headers:', proxyRes.headers);
+            
+            // Log content-type to help debug response format issues
+            console.log('Response content-type:', proxyRes.headers['content-type']);
           });
         }
       }
