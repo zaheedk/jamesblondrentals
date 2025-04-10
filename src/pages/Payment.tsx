@@ -1,9 +1,11 @@
+
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getBookingData, updateBookingData } from "@/lib/booking-session";
 import { toast } from "sonner";
 import { rcmApi } from "@/lib/api/rcm-api";
 import type { RCMPaymentResponse } from "@/lib/api/rcm-api-types";
+import moment from "moment";
 
 const Payment = () => {
   const navigate = useNavigate();
@@ -112,6 +114,7 @@ const Payment = () => {
         let paymentStatus: "Approved" | "Failed" | "Pending" | "Unknown" = "Unknown";
         if (response.results.Status === "Approved") {
           paymentStatus = "Approved";
+          await confirmPayment(response.results);
         } else if (response.results.Status === "Failed") {
           paymentStatus = "Failed";
         } else if (response.results.Status === "Pending") {
@@ -144,6 +147,59 @@ const Payment = () => {
       params.append('message', error instanceof Error ? error.message : 'Unknown payment error');
       
       navigate(`/payment-success?${params.toString()}`);
+    }
+  };
+
+  const confirmPayment = async (paymentInfo: any) => {
+    try {
+      console.log('Confirming payment with info:', paymentInfo);
+      
+      const reservationRef = bookingData?.reservationRef || 
+                            bookingData?.bookingReference || 
+                            bookingData?.confirmationNumber || 
+                            bookingData?.reservationNo ||
+                            bookingData?.vehicleId;
+      
+      if (!reservationRef) {
+        throw new Error('No reservation reference found');
+      }
+      
+      const requestPayload = {
+        method: "confirmpayment",
+        reservationref: reservationRef,
+        amount: paymentInfo.Amount,
+        success: true,
+        paytype: 'Windcave',
+        paydate: moment().format('DD/MM/YYYY'),
+        supplierid: 2,
+        transactid: paymentInfo.RebillingToken || '',
+        dpstxnref: paymentInfo.TransactionId,
+        paysource: 'Payment from website',
+        transtype: "Payment"
+      };
+      
+      console.log('Payment confirmation payload:', requestPayload);
+      
+      const response = await rcmApi.request('POST', 'confirmpayment', requestPayload);
+      
+      console.log('Payment confirmation response:', response);
+      
+      if (response.status !== "OK") {
+        console.error('Payment confirmation failed:', response.error);
+        toast.error("Payment Confirmation Error", {
+          description: "Payment was processed but confirmation failed. Please contact support.",
+        });
+      } else {
+        console.log('Payment confirmed successfully');
+      }
+      
+      return response;
+    } catch (error) {
+      console.error('Error confirming payment:', error);
+      toast.error("Payment Confirmation Error", {
+        description: "Please contact support with your booking reference.",
+      });
+      throw error;
     }
   };
 

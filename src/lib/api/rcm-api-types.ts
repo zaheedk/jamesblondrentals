@@ -358,7 +358,29 @@ export interface RCMPaymentResponse {
     TransactionId?: string;
     Status?: string;
     ResponseText?: string;
+    Amount?: string | number;
+    RebillingToken?: string;
   };
+}
+
+export interface RCMPaymentConfirmationRequest {
+  method: string;
+  reservationref: string;
+  amount: string | number;
+  success: boolean;
+  paytype: string;
+  paydate: string;
+  supplierid: number;
+  transactid: string;
+  dpstxnref: string;
+  paysource: string;
+  transtype: string;
+}
+
+export interface RCMPaymentConfirmationResponse {
+  status: string;
+  error?: string;
+  results?: any;
 }
 
 export interface RCMApiConfig {

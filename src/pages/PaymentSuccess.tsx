@@ -48,7 +48,7 @@ const PaymentSuccess = () => {
         description: "You cancelled the payment process."
       });
     } else {
-      // Assume success if no error parameters
+      // Payment was successful
       setPaymentStatus("success");
       // Only clear booking data on successful payment
       clearBookingData();
