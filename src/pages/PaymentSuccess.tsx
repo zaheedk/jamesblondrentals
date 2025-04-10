@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2 } from "lucide-react";
 import { getBookingData, clearBookingData } from "@/lib/booking-session";
+import { toast } from "sonner";
 
 const PaymentSuccess = () => {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ const PaymentSuccess = () => {
     
     if (!bookingData) {
       // If no booking data, redirect to home
+      toast.error("No booking information found");
       navigate("/");
       return;
     }
@@ -24,7 +26,7 @@ const PaymentSuccess = () => {
     // Clear booking data as we're done with it
     clearBookingData();
     
-    // Similar to window.onbeforeunload = null in the original code
+    // Clear the beforeunload handler that was set in the Payment page
     window.onbeforeunload = null;
   }, [navigate]);
   
