@@ -14,7 +14,7 @@ interface BookingSummaryProps {
   selectedExtras: { id: string | number; name: string; quantity: number; totalPrice: number }[];
   kmChargePrice: number;
   currencySymbol: string;
-  vehicleImageUrl?: string; // Added vehicleImageUrl prop
+  vehicleImageUrl?: string;
 }
 
 const BookingSummary = ({
@@ -28,8 +28,10 @@ const BookingSummary = ({
   selectedExtras,
   kmChargePrice,
   currencySymbol,
-  vehicleImageUrl // Added parameter
+  vehicleImageUrl
 }: BookingSummaryProps) => {
+  const [imageError, setImageError] = React.useState(false);
+  
   const totalPrice = 
     basePrice + 
     (selectedInsurance?.price || 0) + 
@@ -95,17 +97,28 @@ const BookingSummary = ({
   const formattedPickupDate = formatSafeDate(pickupDate);
   const formattedDropoffDate = formatSafeDate(dropoffDate);
 
+  // Function to handle image load errors
+  const handleImageError = () => {
+    console.log(`Image failed to load for vehicle: ${vehicleName}`);
+    setImageError(true);
+  };
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>Booking Summary</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Add vehicle image */}
+        {/* Vehicle image with error handling */}
         {vehicleImageUrl && (
-          <div className="w-full aspect-video bg-cover bg-center rounded-md mb-2"
-               style={{ backgroundImage: `url(${vehicleImageUrl})` }}
-          />
+          <div className="w-full aspect-video rounded-md mb-2 overflow-hidden">
+            <img
+              src={imageError ? '/placeholder.svg' : vehicleImageUrl}
+              alt={vehicleName}
+              className="w-full h-full object-cover"
+              onError={handleImageError}
+            />
+          </div>
         )}
         
         <div className="space-y-2">
