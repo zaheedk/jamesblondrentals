@@ -12,9 +12,9 @@ const Payment = () => {
   const [paymentUrl, setPaymentUrl] = useState("");
   const [error, setError] = useState<string | null>(null);
   
-  // For demo purposes, we'll use a placeholder payment URL
-  // In a real implementation, this would be generated from your payment provider
-  const DEMO_PAYMENT_URL = "https://example.com/payment";
+  // In a real implementation, you would generate this URL from your payment provider API
+  // For Windcave, this would be the URL returned from the payment creation API
+  const WINDCAVE_PAYMENT_URL = "https://sec.windcave.com/pxmi3/EF4054F622D6C4C1BCABA908582B2E191A35B4C818154175";
 
   useEffect(() => {
     // Get booking data from session
@@ -26,20 +26,20 @@ const Payment = () => {
     }
     
     // In a real implementation, you would:
-    // 1. Create a payment session with your payment provider
+    // 1. Call your backend API to create a payment session with Windcave
     // 2. Get the payment URL from the response
     // 3. Set the payment URL in the state
     
-    // For demo purposes, we'll simulate a payment URL after a delay
+    // For demo purposes, we'll simulate a Windcave payment URL after a delay
     const timer = setTimeout(() => {
-      setPaymentUrl(DEMO_PAYMENT_URL);
+      setPaymentUrl(WINDCAVE_PAYMENT_URL);
       setIsLoading(false);
     }, 1500);
     
     // Add event listener for payment messages
     window.addEventListener("message", handlePaymentMessage);
     
-    // Similar to window.onbeforeunload in your original code
+    // Prevent users from accidentally navigating away during payment
     window.onbeforeunload = () => {
       return "Are you sure you want to leave? Your booking is not completed yet.";
     };
@@ -53,24 +53,34 @@ const Payment = () => {
 
   // Function to handle payment messages from iframe
   const handlePaymentMessage = (event: MessageEvent) => {
-    // Check origin (replace with your payment provider's domain in production)
-    if (event.origin !== window.location.origin) return;
+    // For Windcave, you need to check the origin and data structure
+    // Replace with your actual Windcave domain in production
+    if (event.origin !== "https://sec.windcave.com") return;
     
     try {
-      // In a real implementation, you would verify the payment status
-      // For this demo, we'll simulate a successful payment
-      if (event.data && event.data.paymentStatus === "success") {
-        handlePaymentComplete();
-      } else if (event.data && event.data.paymentStatus === "failed") {
-        handlePaymentFailed();
+      // Check if the message contains Windcave result data
+      if (event.data && event.data.WindcaveResult) {
+        // Process Windcave payment result
+        checkPaymentStatus(event.data.WindcaveResult);
       }
     } catch (error) {
       console.error("Error processing payment message:", error);
     }
   };
 
+  // Function to check payment status with your backend
+  const checkPaymentStatus = (windcaveResult: any) => {
+    // In a real implementation, you would:
+    // 1. Call your backend API to verify the payment status
+    // 2. Handle success/failure based on the response
+    
+    // For demo purposes, we'll simulate a successful payment
+    console.log("Processing Windcave payment result:", windcaveResult);
+    handlePaymentComplete();
+  };
+
   const handlePaymentComplete = () => {
-    // For demo purposes - in production this would be handled by the payment provider's callbacks
+    // For demo purposes - in production this would be handled by verifying the payment status
     toast.success("Payment processed successfully");
     navigate("/payment-success");
   };
@@ -110,16 +120,19 @@ const Payment = () => {
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-16">
               <LoaderCircle className="h-10 w-10 text-primary animate-spin mb-4" />
-              <p className="text-lg">Preparing Payment Gateway...</p>
+              <p className="text-lg">Preparing Windcave Payment Gateway...</p>
             </div>
           ) : (
             <div className="space-y-6">
               <div className="border rounded-lg overflow-hidden h-[600px]">
                 <iframe 
                   src={paymentUrl}
-                  title="Payment Gateway"
+                  title="Windcave Payment Gateway"
                   className="w-full h-full"
-                  onLoad={() => console.log("Payment iframe loaded")}
+                  onLoad={() => console.log("Windcave payment iframe loaded")}
+                  // Allow necessary permissions for payment gateway
+                  allow="payment"
+                  sandbox="allow-forms allow-scripts allow-same-origin allow-top-navigation allow-popups"
                 />
               </div>
               
