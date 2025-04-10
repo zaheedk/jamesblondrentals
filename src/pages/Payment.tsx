@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { getBookingData, clearBookingData } from "@/lib/booking-session";
 import { LoaderCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 const Payment = () => {
   const navigate = useNavigate();
@@ -35,17 +36,51 @@ const Payment = () => {
       setIsLoading(false);
     }, 1500);
     
-    return () => clearTimeout(timer);
+    // Add event listener for payment messages
+    window.addEventListener("message", handlePaymentMessage);
+    
+    // Similar to window.onbeforeunload in your original code
+    window.onbeforeunload = () => {
+      return "Are you sure you want to leave? Your booking is not completed yet.";
+    };
+    
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("message", handlePaymentMessage);
+      window.onbeforeunload = null;
+    };
   }, []);
+
+  // Function to handle payment messages from iframe
+  const handlePaymentMessage = (event: MessageEvent) => {
+    // Check origin (replace with your payment provider's domain in production)
+    if (event.origin !== window.location.origin) return;
+    
+    try {
+      // In a real implementation, you would verify the payment status
+      // For this demo, we'll simulate a successful payment
+      if (event.data && event.data.paymentStatus === "success") {
+        handlePaymentComplete();
+      } else if (event.data && event.data.paymentStatus === "failed") {
+        handlePaymentFailed();
+      }
+    } catch (error) {
+      console.error("Error processing payment message:", error);
+    }
+  };
 
   const handlePaymentComplete = () => {
     // For demo purposes - in production this would be handled by the payment provider's callbacks
-    // Clear booking data as it's no longer needed
-    clearBookingData();
+    toast.success("Payment processed successfully");
     navigate("/payment-success");
+  };
+  
+  const handlePaymentFailed = () => {
+    toast.error("Payment failed. Please try again.");
   };
 
   const handleCancel = () => {
+    window.onbeforeunload = null;
     navigate(-1);
   };
 
