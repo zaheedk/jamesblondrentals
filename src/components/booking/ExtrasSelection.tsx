@@ -41,7 +41,9 @@ const ExtrasSelection = ({
         <Alert variant="default">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            {!extras ? "Unable to load extras for this vehicle." : "No additional extras are available for this vehicle."}
+            {extras === undefined || extras === null ? 
+              "Unable to load extras for this vehicle." : 
+              "No additional extras are available for this vehicle."}
           </AlertDescription>
         </Alert>
       </div>

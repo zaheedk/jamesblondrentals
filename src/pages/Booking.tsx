@@ -33,6 +33,7 @@ const Booking = () => {
     unitPrice: number;
     totalPrice: number;
   }[]>([]);
+  const [selectedExtrasMap, setSelectedExtrasMap] = useState(new Map<string | number, number>());
 
   // Calculate number of days for rental
   const calculateNumberOfDays = () => {
@@ -74,6 +75,18 @@ const Booking = () => {
     // Fetch step 3 data (options)
     setIsLoading(true);
     
+    console.log("Fetching step 3 data with params:", {
+      vehiclecategoryid: data.vehicleId,
+      vehiclecategorytypeid: data.vehicleCategoryTypeId,
+      pickuplocationid: data.pickupLocationId,
+      pickupdate: data.pickupDate,
+      pickuptime: data.pickupTime,
+      dropofflocationid: data.dropoffLocationId,
+      dropoffdate: data.dropoffDate,
+      dropofftime: data.dropoffTime,
+      ageid: data.ageId,
+    });
+    
     rcmApi.getStep3({
       vehiclecategoryid: data.vehicleId,
       vehiclecategorytypeid: data.vehicleCategoryTypeId,
@@ -86,8 +99,10 @@ const Booking = () => {
       ageid: data.ageId,
     })
     .then((response) => {
+      console.log("Step 3 API response:", response);
       if (response.status === "OK" && response.results) {
         const { insuranceoptions, kmcharges, extras } = response.results;
+        console.log("Received extras:", extras);
         
         setInsuranceOptions(insuranceoptions || []);
         setKmCharges(kmcharges || []);
@@ -133,36 +148,37 @@ const Booking = () => {
 
   // Handle extras selection
   const handleExtrasChange = (extraId: string | number, quantity: number) => {
+    const newSelectedExtrasMap = new Map(selectedExtrasMap);
+    
     if (quantity <= 0) {
-      setSelectedExtras(prev => prev.filter(e => e.id.toString() !== extraId.toString()));
-      return;
+      newSelectedExtrasMap.delete(extraId);
+    } else {
+      newSelectedExtrasMap.set(extraId, quantity);
     }
     
-    const extra = extras.find(e => e.id.toString() === extraId.toString());
-    if (!extra) return;
+    setSelectedExtrasMap(newSelectedExtrasMap);
     
-    setSelectedExtras(prev => {
-      const existingIndex = prev.findIndex(e => e.id.toString() === extraId.toString());
-      if (existingIndex >= 0) {
-        const updated = [...prev];
-        updated[existingIndex] = {
-          id: extra.id,
-          name: extra.name,
-          quantity: quantity,
-          unitPrice: extra.unitprice,
-          totalPrice: extra.unitprice * quantity
-        };
-        return updated;
-      } else {
-        return [...prev, {
-          id: extra.id,
-          name: extra.name,
-          quantity: quantity,
-          unitPrice: extra.unitprice,
-          totalPrice: extra.unitprice * quantity
-        }];
-      }
-    });
+    // Update the selectedExtras array for BookingSummary
+    const updatedSelectedExtras = Array.from(newSelectedExtrasMap).map(([id, qty]) => {
+      const extra = extras.find(e => e.id.toString() === id.toString());
+      if (!extra) return null;
+      
+      return {
+        id: extra.id,
+        name: extra.name,
+        quantity: qty,
+        unitPrice: extra.unitprice,
+        totalPrice: extra.unitprice * qty
+      };
+    }).filter(Boolean) as {
+      id: string | number;
+      name: string;
+      quantity: number;
+      unitPrice: number;
+      totalPrice: number;
+    }[];
+    
+    setSelectedExtras(updatedSelectedExtras);
   };
 
   // Prepare booking summary data
@@ -171,13 +187,6 @@ const Booking = () => {
     name: selectedInsurance.name,
     price: selectedInsurance.totalinsuranceamount
   } : null;
-  
-  const selectedExtrasForSummary = selectedExtras.map(e => ({
-    id: e.id,
-    name: e.name,
-    quantity: e.quantity,
-    totalPrice: e.totalPrice
-  }));
   
   const kmChargePrice = selectedKmCharge ? selectedKmCharge.dailyrate * calculateNumberOfDays() : 0;
   const numberOfDays = calculateNumberOfDays();
@@ -217,14 +226,12 @@ const Booking = () => {
           )}
           
           {/* Extras Selection */}
-          {extras.length > 0 && (
-            <ExtrasSelection 
-              extras={extras}
-              selectedExtras={new Map(selectedExtras.map(e => [e.id, e.quantity]))}
-              onExtraChange={handleExtrasChange}
-              currencySymbol="$"
-            />
-          )}
+          <ExtrasSelection 
+            extras={extras || []}
+            selectedExtras={selectedExtrasMap}
+            onExtraChange={handleExtrasChange}
+            currencySymbol="$"
+          />
           
           {/* Navigation Buttons */}
           <div className="flex justify-between pt-4">
@@ -250,7 +257,7 @@ const Booking = () => {
             vehicleName={bookingData.vehicleName || ""}
             basePrice={bookingData.basePrice}
             selectedInsurance={selectedInsuranceForSummary}
-            selectedExtras={selectedExtrasForSummary}
+            selectedExtras={selectedExtras}
             kmChargePrice={kmChargePrice}
             currencySymbol="$" // This should come from your API data ideally
             vehicleImageUrl={bookingData.vehicleImage}
