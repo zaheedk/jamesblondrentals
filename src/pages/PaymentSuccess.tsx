@@ -25,9 +25,6 @@ const PaymentSuccess = () => {
     
     // Clear booking data as we're done with it
     clearBookingData();
-    
-    // Clear the beforeunload handler that was set in the Payment page
-    window.onbeforeunload = null;
   }, [navigate]);
   
   if (!bookingDetails) {

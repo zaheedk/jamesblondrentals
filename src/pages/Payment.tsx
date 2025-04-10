@@ -13,7 +13,6 @@ const Payment = () => {
   const [error, setError] = useState<string | null>(null);
   
   // In a real implementation, this URL would come from your backend API
-  // For testing purposes, we're using a static URL
   const WINDCAVE_PAYMENT_URL = "https://sec.windcave.com/pxmi3/EF4054F622D6C4C1BCABA908582B2E191A35B4C818154175";
 
   useEffect(() => {
@@ -33,20 +32,10 @@ const Payment = () => {
     // For demo purposes, we'll simulate preparing a payment session after a delay
     const timer = setTimeout(() => {
       setIsLoading(false);
-      
-      // Set up the beforeunload event handler to warn users if they try to leave
-      window.onbeforeunload = (e) => {
-        // The message text isn't actually shown in modern browsers for security reasons
-        // but we need to return something for the dialog to appear
-        return "Are you sure you want to leave? Your payment is not completed yet.";
-      };
-      
     }, 1500);
     
     return () => {
       clearTimeout(timer);
-      // Clean up the beforeunload handler if the component unmounts
-      window.onbeforeunload = null;
     };
   }, []);
 
@@ -54,9 +43,7 @@ const Payment = () => {
   const handleRedirectToPayment = () => {
     try {
       toast.info("Redirecting to payment gateway...");
-      // Store any necessary payment data before redirecting
-      
-      // Redirect to Windcave payment page
+      // Immediately redirect to Windcave payment page
       window.location.href = WINDCAVE_PAYMENT_URL;
     } catch (error) {
       console.error("Error redirecting to payment gateway:", error);
@@ -65,15 +52,11 @@ const Payment = () => {
   };
 
   const handleCancel = () => {
-    // Remove the beforeunload handler before navigating away
-    window.onbeforeunload = null;
     navigate(-1);
   };
 
   // For demo purposes only
   const handleSimulateComplete = () => {
-    // Remove the beforeunload handler
-    window.onbeforeunload = null;
     toast.success("Payment processed successfully");
     navigate("/payment-success");
   };
