@@ -9,7 +9,6 @@ import { toast } from "sonner";
 const Payment = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
-  const [paymentUrl, setPaymentUrl] = useState("");
   const [error, setError] = useState<string | null>(null);
   
   // In a real implementation, you would generate this URL from your payment provider API
@@ -28,70 +27,35 @@ const Payment = () => {
     // In a real implementation, you would:
     // 1. Call your backend API to create a payment session with Windcave
     // 2. Get the payment URL from the response
-    // 3. Set the payment URL in the state
+    // 3. Redirect to the payment URL
     
-    // For demo purposes, we'll simulate a Windcave payment URL after a delay
+    // For demo purposes, we'll simulate preparing a Windcave payment session after a delay
     const timer = setTimeout(() => {
-      setPaymentUrl(WINDCAVE_PAYMENT_URL);
       setIsLoading(false);
     }, 1500);
     
-    // Add event listener for payment messages
-    window.addEventListener("message", handlePaymentMessage);
-    
-    // Prevent users from accidentally navigating away during payment
-    window.onbeforeunload = () => {
-      return "Are you sure you want to leave? Your booking is not completed yet.";
-    };
-    
     return () => {
       clearTimeout(timer);
-      window.removeEventListener("message", handlePaymentMessage);
-      window.onbeforeunload = null;
     };
   }, []);
 
-  // Function to handle payment messages from iframe
-  const handlePaymentMessage = (event: MessageEvent) => {
-    // For Windcave, you need to check the origin and data structure
-    // Replace with your actual Windcave domain in production
-    if (event.origin !== "https://sec.windcave.com") return;
+  // Function to handle redirect to Windcave payment page
+  const handleRedirectToPayment = () => {
+    // Store any necessary data in session before redirecting
+    // This ensures we can validate the payment when the user returns
     
-    try {
-      // Check if the message contains Windcave result data
-      if (event.data && event.data.WindcaveResult) {
-        // Process Windcave payment result
-        checkPaymentStatus(event.data.WindcaveResult);
-      }
-    } catch (error) {
-      console.error("Error processing payment message:", error);
-    }
-  };
-
-  // Function to check payment status with your backend
-  const checkPaymentStatus = (windcaveResult: any) => {
-    // In a real implementation, you would:
-    // 1. Call your backend API to verify the payment status
-    // 2. Handle success/failure based on the response
-    
-    // For demo purposes, we'll simulate a successful payment
-    console.log("Processing Windcave payment result:", windcaveResult);
-    handlePaymentComplete();
-  };
-
-  const handlePaymentComplete = () => {
-    // For demo purposes - in production this would be handled by verifying the payment status
-    toast.success("Payment processed successfully");
-    navigate("/payment-success");
-  };
-  
-  const handlePaymentFailed = () => {
-    toast.error("Payment failed. Please try again.");
+    // Redirect to Windcave payment page
+    window.location.href = WINDCAVE_PAYMENT_URL;
   };
 
   const handleCancel = () => {
-    window.onbeforeunload = null;
     navigate(-1);
+  };
+
+  // For demo purposes only
+  const handleSimulateComplete = () => {
+    toast.success("Payment processed successfully");
+    navigate("/payment-success");
   };
 
   if (error) {
@@ -124,16 +88,21 @@ const Payment = () => {
             </div>
           ) : (
             <div className="space-y-6">
-              <div className="border rounded-lg overflow-hidden h-[600px]">
-                <iframe 
-                  src={paymentUrl}
-                  title="Windcave Payment Gateway"
-                  className="w-full h-full"
-                  onLoad={() => console.log("Windcave payment iframe loaded")}
-                  // Allow necessary permissions for payment gateway
-                  allow="payment"
-                  sandbox="allow-forms allow-scripts allow-same-origin allow-top-navigation allow-popups"
-                />
+              <div className="bg-gray-50 p-6 rounded-lg border">
+                <h2 className="text-lg font-medium mb-4">Payment Information</h2>
+                <p className="mb-6">You will be redirected to Windcave's secure payment page to complete your transaction.</p>
+                
+                <div className="flex flex-col space-y-4">
+                  <p><span className="font-medium">Important:</span> Please do not close your browser during the payment process.</p>
+                  <p><span className="font-medium">Note:</span> After payment is complete, you will be redirected back to our website.</p>
+                </div>
+                
+                <Button 
+                  className="w-full mt-6"
+                  onClick={handleRedirectToPayment}
+                >
+                  Proceed to Payment
+                </Button>
               </div>
               
               {/* For demo purposes only - in production these would be handled by the payment provider */}
@@ -141,7 +110,7 @@ const Payment = () => {
                 <Button variant="outline" onClick={handleCancel}>
                   Cancel
                 </Button>
-                <Button onClick={handlePaymentComplete}>
+                <Button onClick={handleSimulateComplete}>
                   Simulate Payment Complete
                 </Button>
               </div>
