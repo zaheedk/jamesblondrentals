@@ -472,10 +472,25 @@ class RCMApiClient {
   }
 
   /**
-   * Create a booking
+   * Create a booking with the RCM API
    */
   async createBooking(bookingData: RCMBookingRequest): Promise<RCMBookingResponse> {
-    return this.request<RCMBookingResponse>('POST', 'booking', bookingData);
+    console.log('Creating booking with data:', bookingData);
+    
+    try {
+      const response = await this.request<RCMBookingResponse>('POST', 'step4', bookingData);
+      
+      if (response.status === "OK") {
+        console.log('Booking created successfully:', response);
+        return response;
+      } else {
+        console.error('API returned error:', response.error || 'Unknown error');
+        throw new Error(response.error || "Failed to create booking");
+      }
+    } catch (error) {
+      console.error('Booking creation error:', error);
+      throw error;
+    }
   }
 
   /**

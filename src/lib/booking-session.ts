@@ -1,3 +1,4 @@
+
 /**
  * Utility functions to manage booking data between pages using sessionStorage
  */
@@ -17,6 +18,10 @@ export interface BookingSessionData {
   ageId: string;
   basePrice: number;
   vehicleImage?: string;
+  // New fields for booking reference
+  reservationRef?: string;
+  bookingReference?: string;
+  confirmationNumber?: string;
 }
 
 export const BOOKING_SESSION_KEY = 'rcm_booking_data';
@@ -59,5 +64,22 @@ export const clearBookingData = (): void => {
     console.log('Booking data cleared from session');
   } catch (error) {
     console.error('Error clearing booking data from session:', error);
+  }
+};
+
+/**
+ * Update existing booking data with new data
+ */
+export const updateBookingData = (newData: Partial<BookingSessionData>): BookingSessionData | null => {
+  try {
+    const currentData = getBookingData();
+    if (!currentData) return null;
+    
+    const updatedData = { ...currentData, ...newData };
+    saveBookingData(updatedData);
+    return updatedData;
+  } catch (error) {
+    console.error('Error updating booking data:', error);
+    return null;
   }
 };

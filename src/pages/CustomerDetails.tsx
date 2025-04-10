@@ -23,8 +23,9 @@ import {
 } from "@/components/ui/popover";
 import { CalendarIcon, User, Mail, Phone, Plane } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { getBookingData } from "@/lib/booking-session";
+import { getBookingData, updateBookingData } from "@/lib/booking-session";
 import { toast } from "sonner";
+import { useRcmApi } from "@/hooks/use-rcm-api";
 
 const formSchema = z.object({
   firstName: z.string().min(2, {
@@ -56,8 +57,8 @@ const defaultValues: Partial<CustomerFormValues> = {
 const CustomerDetails = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  
   const bookingData = getBookingData();
+  const { rcmApi } = useRcmApi();
   
   React.useEffect(() => {
     if (!bookingData) {
@@ -73,19 +74,90 @@ const CustomerDetails = () => {
     defaultValues,
   });
 
-  const onSubmit = (data: CustomerFormValues) => {
-    setIsSubmitting(true);
-    
-    console.log("Form submitted:", data);
+  const formatDateForApi = (dateStr: string): string => {
+    try {
+      if (dateStr.includes('/')) {
+        return dateStr; // Already in the correct format
+      }
+      
+      const date = new Date(dateStr);
+      return format(date, 'dd/MM/yyyy');
+    } catch (error) {
+      console.error('Date formatting error:', error);
+      return dateStr; // Return as-is if formatting fails
+    }
+  };
+
+  const createBooking = async (formData: CustomerFormValues) => {
+    if (!bookingData) return null;
     
     try {
-      setTimeout(() => {
-        toast.success("Customer details saved", {
-          description: "Proceeding to payment.",
+      console.log('Creating booking with data:', { bookingData, formData });
+      
+      const bookingRequest = {
+        vehiclecategoryid: bookingData.vehicleId,
+        vehiclecategorytypeid: bookingData.vehicleCategoryTypeId,
+        pickuplocationid: bookingData.pickupLocationId,
+        pickupdate: formatDateForApi(bookingData.pickupDate),
+        pickuptime: bookingData.pickupTime,
+        dropofflocationid: bookingData.dropoffLocationId,
+        dropoffdate: formatDateForApi(bookingData.dropoffDate),
+        dropofftime: bookingData.dropoffTime,
+        ageid: bookingData.ageId,
+        bookingtype: 2, // 2=booking (not quote)
+        customer: {
+          firstname: formData.firstName,
+          lastname: formData.lastName,
+          email: formData.email,
+          mobile: formData.phone,
+          dateofbirth: formData.dateOfBirth ? format(formData.dateOfBirth, 'dd/MM/yyyy') : undefined
+        },
+        flightin: formData.flightNumber,
+        emailoption: 1 // 1=default behavior
+      };
+      
+      console.log('Sending booking request:', bookingRequest);
+      const response = await rcmApi.createBooking(bookingRequest);
+      
+      if (response.status === "OK") {
+        console.log('Booking created successfully:', response);
+        
+        const updatedData = updateBookingData({
+          reservationRef: response.reservationRef || response.bookingReference || undefined,
+          bookingReference: response.bookingReference,
+          confirmationNumber: response.confirmationNumber
         });
+        
+        toast.success("Booking created successfully", {
+          description: response.confirmationNumber 
+            ? `Confirmation #: ${response.confirmationNumber}` 
+            : "Proceeding to payment"
+        });
+        
+        return response;
+      } else {
+        throw new Error(response.error || "Failed to create booking");
+      }
+    } catch (error) {
+      console.error('Booking creation error:', error);
+      toast.error("Booking creation failed", {
+        description: error instanceof Error ? error.message : "An unexpected error occurred"
+      });
+      return null;
+    }
+  };
+
+  const onSubmit = async (data: CustomerFormValues) => {
+    setIsSubmitting(true);
+    
+    try {
+      const bookingResponse = await createBooking(data);
+      
+      if (bookingResponse) {
         navigate("/payment");
+      } else {
         setIsSubmitting(false);
-      }, 1500);
+      }
     } catch (error) {
       console.error("Error processing form:", error);
       toast.error("Something went wrong", {
@@ -253,7 +325,7 @@ const CustomerDetails = () => {
                   disabled={isSubmitting}
                   className="min-w-[120px]"
                 >
-                  {isSubmitting ? "Saving..." : "Complete Booking"}
+                  {isSubmitting ? "Processing..." : "Complete Booking"}
                 </Button>
               </div>
             </form>

@@ -157,28 +157,55 @@ export interface RCMStep2Request {
 }
 
 export interface RCMBookingRequest {
-  pickupLocationId: string;
-  dropoffLocationId: string;
-  pickupDate: string; // ISO date string
-  dropoffDate: string; // ISO date string
-  vehicleId: string;
-  customerDetails: {
-    firstName: string;
-    lastName: string;
+  vehiclecategoryid: string | number;
+  vehiclecategorytypeid: string | number;
+  pickuplocationid: string | number;
+  pickupdate: string;
+  pickuptime: string;
+  dropofflocationid: string | number;
+  dropoffdate: string;
+  dropofftime: string;
+  ageid: string | number;
+  bookingtype: number; // 1=quote, 2=booking
+  customer?: {
+    firstname: string;
+    lastname: string;
     email: string;
-    phone: string;
+    phone?: string;
+    mobile?: string;
+    dateofbirth?: string;
+    licenseno?: string;
+    licenseissued?: string;
+    licenseexpires?: string;
+    address?: string;
+    city?: string;
+    state?: string;
+    postcode?: string;
+    countryid?: string;
   };
-  extras?: {
-    id: string;
-    quantity: number;
-  }[];
+  campaigncode?: string;
+  referralid?: string;
+  foundusid?: string;
+  remark?: string;
+  numbertravelling?: string | number;
+  flightin?: string;
+  flightout?: string;
+  arrivalpoint?: string;
+  departurepoint?: string;
+  areaofuseid?: string;
+  emailoption?: number;
+  newsletter?: number;
+  transmission?: number;
 }
 
 export interface RCMBookingResponse {
-  bookingId: string;
-  confirmationNumber: string;
-  totalAmount: number;
   status: string;
+  bookingId?: string;
+  confirmationNumber?: string;
+  reservationRef?: string;
+  bookingReference?: string;
+  totalAmount?: number;
+  error?: string;
 }
 
 export interface RCMAvailabilityRequest {
