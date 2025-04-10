@@ -2,10 +2,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getBookingData, clearBookingData } from "@/lib/booking-session";
-import { LoaderCircle, CreditCard, AlertCircle, ExternalLink } from "lucide-react";
+import { LoaderCircle, CreditCard, AlertCircle, ExternalLink, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 const Payment = () => {
   const navigate = useNavigate();
@@ -15,6 +16,8 @@ const Payment = () => {
   const [showIframe, setShowIframe] = useState(false);
   const [iframeLoaded, setIframeLoaded] = useState(false);
   const [iframeError, setIframeError] = useState(false);
+  const [responseData, setResponseData] = useState<any>(null);
+  const [showResponseData, setShowResponseData] = useState(false);
   
   // Fallback URL for demo purposes
   const WINDCAVE_PAYMENT_URL = "https://sec.windcave.com/pxmi3/EF4054F622D6C4C1BCABA908582B2E191A35B4C818154175";
@@ -36,6 +39,14 @@ const Payment = () => {
         const baseUrl = window.location.origin;
         console.log('Base URL:', baseUrl);
         
+        // Capture request payload for display
+        const requestPayload = {
+          "method": "createdpspayment",
+          "reservationref": bookingData.vehicleId,
+          "amount": bookingData.basePrice,
+          "returnurl": `${baseUrl}/payment-success`
+        };
+        
         // In a real implementation, you would make an actual API call like this:
         /*
         const response = await fetch("/api/RentalCarManagerApi/CreatedpsPayment", {
@@ -43,12 +54,7 @@ const Payment = () => {
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify({
-            "method": "createdpspayment",
-            "reservationref": bookingData.vehicleId,
-            "amount": bookingData.basePrice,
-            "returnurl": `${baseUrl}/payment-success`
-          })
+          body: JSON.stringify(requestPayload)
         });
         const responseData = await response.json();
         */
@@ -59,12 +65,21 @@ const Payment = () => {
           const simulatedResponse = {
             data: JSON.stringify({
               status: "OK",
-              url: WINDCAVE_PAYMENT_URL
+              url: WINDCAVE_PAYMENT_URL,
+              transactionId: "TX" + Math.floor(Math.random() * 1000000),
+              merchantReference: "REF" + Math.floor(Math.random() * 1000000),
+              timestamp: new Date().toISOString()
             })
           };
           
           const data = JSON.parse(simulatedResponse.data);
           console.log('Payment session created:', data);
+          
+          // Save response data for display
+          setResponseData({
+            request: requestPayload,
+            response: data
+          });
           
           if (data.status === "OK") {
             setPaymentUrl(data.url);
@@ -83,6 +98,11 @@ const Payment = () => {
     
     simulateCreatePayment();
   }, []);
+
+  // Toggle response data display
+  const toggleResponseData = () => {
+    setShowResponseData(prev => !prev);
+  };
 
   // Direct redirect to Windcave payment page
   const handleRedirectToPayment = () => {
@@ -184,6 +204,57 @@ const Payment = () => {
             </div>
           ) : (
             <div className="space-y-6">
+              {responseData && (
+                <div className="bg-gray-50 p-4 rounded-lg border mb-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <h3 className="text-md font-medium flex items-center gap-2">
+                      <Info className="h-5 w-5 text-blue-500" />
+                      Payment Request/Response Data
+                    </h3>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={toggleResponseData}
+                    >
+                      {showResponseData ? "Hide Details" : "Show Details"}
+                    </Button>
+                  </div>
+                  
+                  {showResponseData && (
+                    <div className="space-y-4">
+                      <div>
+                        <h4 className="font-medium mb-2">Request Payload:</h4>
+                        <div className="bg-gray-100 p-3 rounded overflow-auto max-h-40">
+                          <pre className="text-xs">
+                            {JSON.stringify(responseData.request, null, 2)}
+                          </pre>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <h4 className="font-medium mb-2">Response Data:</h4>
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>Field</TableHead>
+                              <TableHead>Value</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {Object.entries(responseData.response).map(([key, value]) => (
+                              <TableRow key={key}>
+                                <TableCell className="font-medium">{key}</TableCell>
+                                <TableCell>{String(value)}</TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+              
               <div className="bg-gray-50 p-6 rounded-lg border">
                 <h2 className="text-lg font-medium mb-4 flex items-center gap-2">
                   <CreditCard className="h-5 w-5" />
