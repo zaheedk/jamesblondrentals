@@ -27,6 +27,10 @@ const Payment = () => {
       return;
     }
     
+    const reservationRef = bookingData.reservationRef || bookingData.bookingReference || bookingData.vehicleId;
+    
+    console.log('Using reservation reference:', reservationRef);
+    
     const createPayment = async () => {
       try {
         const returnUrl = encodeURIComponent(`${window.location.origin}/payment-success`);
@@ -34,7 +38,7 @@ const Payment = () => {
         
         const requestPayload = {
           "method": "createdpspayment",
-          "reservationref": bookingData.vehicleId,
+          "reservationref": reservationRef,
           "amount": bookingData.basePrice,
           "returnurl": returnUrl
         };
