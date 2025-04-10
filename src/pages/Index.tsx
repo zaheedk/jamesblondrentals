@@ -1,52 +1,19 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Hero from "@/components/home/Hero";
 import FeaturedVehicles from "@/components/home/FeaturedVehicles";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useEffect } from "react";
 import { useRcmApi } from "@/hooks/use-rcm-api";
 import { toast } from "sonner";
 import { useApiDiagnostics } from "@/hooks/use-api-diagnostics";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
 const Index = () => {
-  const { initializeApi, rcmApi } = useRcmApi();
-  const { runDiagnostics } = useApiDiagnostics();
-  const [apiConnectionFailed, setApiConnectionFailed] = useState(false);
-  
-  useEffect(() => {
-    // Initialize the API with real connection only (mock data disabled)
-    initializeApi({ 
-      useMockData: false, // Force real API connection only
-      apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
-      apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
-      apiUrl: "/api/rcm/booking/v3.2/"
-    }).then(() => {
-      // Run diagnostics to check API connectivity
-      runDiagnostics().then(result => {
-        console.log("API diagnostics result:", result);
-        if (!result.apiAccessible) {
-          toast.error("API Connection Failed", {
-            description: "Using demo data instead. Real bookings will not be processed."
-          });
-          setApiConnectionFailed(true);
-          
-          // Force enable mock data if API is not accessible
-          initializeApi({
-            useMockData: true,
-            apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
-            apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
-            apiUrl: "/api/rcm/booking/v3.2/"
-          });
-        }
-      });
-    }).catch(error => {
-      console.error("Failed to initialize API:", error);
-      setApiConnectionFailed(true);
-    });
-  }, [initializeApi, runDiagnostics]);
+  // Remove useRcmApi and related state management for automatic connection
+  const [apiConnectionFailed] = useState(false);
 
   return (
     <div className="flex flex-col min-h-screen">
