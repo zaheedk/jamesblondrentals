@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import VehicleCard from "../vehicles/VehicleCard";
 import { Vehicle, VehicleType } from "@/lib/types";
 import { useRcmApi } from "@/hooks/use-rcm-api";
-import { addDays, addHours } from "date-fns";
+import { addDays, formatISO, format } from "date-fns";
 
 const FeaturedVehicles = () => {
   const [activeCategory, setActiveCategory] = useState<VehicleType | "all">("all");
@@ -22,35 +22,40 @@ const FeaturedVehicles = () => {
         if (step1Data.status === "OK" && step1Data.results?.locations?.length) {
           const defaultLocation = step1Data.results.locations[0];
           
-          // Get today's date and ensure proper time setup
-          const now = new Date();
+          // Get current date and set to noon to avoid timezone issues
+          const today = new Date();
           
-          // Set pickup date as tomorrow at 10:00 AM to avoid "in the past" issues
-          const pickupDate = addDays(now, 1);
-          pickupDate.setHours(10, 0, 0, 0);
+          // Set pickup date as tomorrow at noon
+          const pickupDate = addDays(today, 1);
+          pickupDate.setHours(12, 0, 0, 0);
           
-          // Set dropoff date as 3 days after pickup at 10:00 AM
+          // Set dropoff date as 3 days after pickup at noon
           const dropoffDate = addDays(pickupDate, 3);
-          dropoffDate.setHours(10, 0, 0, 0);
+          dropoffDate.setHours(12, 0, 0, 0);
           
-          // Format dates for API in ISO format
-          const pickupDateStr = pickupDate.toISOString().split('T')[0];
-          const dropoffDateStr = dropoffDate.toISOString().split('T')[0];
+          // Format dates for API in dd/MM/yyyy format (what the API expects)
+          const pickupDateStr = format(pickupDate, 'dd/MM/yyyy');
+          const dropoffDateStr = format(dropoffDate, 'dd/MM/yyyy');
           
-          console.log("Featured vehicles API request dates:", {
+          console.log("Featured vehicles API request details:", {
+            pickupLocation: defaultLocation.id.toString(),
             pickupDate: pickupDateStr,
-            pickupTime: "10:00",
+            pickupTime: "12:00",
             dropoffDate: dropoffDateStr,
-            dropoffTime: "10:00",
+            dropoffTime: "12:00",
+            dateObjects: {
+              pickupDate: pickupDate.toISOString(),
+              dropoffDate: dropoffDate.toISOString()
+            }
           });
           
           const vehiclesData = await rcmApi.getAvailableVehicles({
             pickupLocationId: defaultLocation.id.toString(),
             pickupDate: pickupDateStr,
-            pickupTime: "10:00",
+            pickupTime: "12:00",
             dropoffLocationId: defaultLocation.id.toString(),
             dropoffDate: dropoffDateStr,
-            dropoffTime: "10:00",
+            dropoffTime: "12:00",
           });
           
           // Transform API data to match our Vehicle interface
