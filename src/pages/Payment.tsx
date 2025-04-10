@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getBookingData } from "@/lib/booking-session";
 import { toast } from "sonner";
+import { rcmApi } from "@/lib/api/rcm-api";
 
 const Payment = () => {
   const navigate = useNavigate();
@@ -35,27 +36,17 @@ const Payment = () => {
         console.log('Return URL (encoded):', returnUrl);
         
         const requestPayload = {
-          "method": "createdpspayment",
-          "reservationref": reservationRef,
-          "amount": bookingData.basePrice,
-          "returnurl": returnUrl
+          method: "createdpspayment",
+          reservationref: reservationRef,
+          amount: bookingData.basePrice,
+          returnurl: returnUrl
         };
 
         console.log('Payment request payload:', requestPayload);
 
-        const response = await fetch('/api/payment', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(requestPayload),
-        });
-
-        if (!response.ok) {
-          throw new Error(`Payment API error: ${response.status}`);
-        }
-
-        const paymentSession = await response.json();
+        // Use the RCM API client instead of direct fetch
+        const paymentSession = await rcmApi.createPaymentSession(requestPayload);
+        
         console.log('Payment session created:', paymentSession);
 
         if (paymentSession.status === "OK" && paymentSession.url) {
@@ -68,6 +59,14 @@ const Payment = () => {
         toast.error("Payment Error", {
           description: "Failed to create payment session. Please try again.",
         });
+        
+        // In case of error, add option to continue to success page for testing
+        if (process.env.NODE_ENV !== 'production') {
+          setTimeout(() => {
+            setIsLoading(false);
+            setPaymentUrl(null);
+          }, 1000);
+        }
       } finally {
         setIsLoading(false);
       }
@@ -97,6 +96,10 @@ const Payment = () => {
     }
   }, [paymentUrl]);
 
+  const handleManualContinue = () => {
+    navigate("/payment-success");
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto flex flex-col items-center">
@@ -120,12 +123,27 @@ const Payment = () => {
           ) : (
             <div className="text-center py-8">
               <p className="text-red-500 mb-4">Failed to load payment form.</p>
-              <button 
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                onClick={() => window.location.reload()}
-              >
-                Try Again
-              </button>
+              <div className="space-y-4">
+                <button 
+                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  onClick={() => window.location.reload()}
+                >
+                  Try Again
+                </button>
+                
+                {/* Add option to continue to success page for testing */}
+                {process.env.NODE_ENV !== 'production' && (
+                  <div>
+                    <p className="text-gray-600 my-4">For development/testing purposes:</p>
+                    <button 
+                      className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                      onClick={handleManualContinue}
+                    >
+                      Continue to Confirmation
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>

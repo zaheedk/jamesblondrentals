@@ -341,6 +341,19 @@ export interface RCMStep3Response {
   error?: string;
 }
 
+export interface RCMPaymentRequest {
+  method: string;
+  reservationref: string;
+  amount: number;
+  returnurl: string;
+}
+
+export interface RCMPaymentResponse {
+  status: string;
+  url?: string;
+  error?: string;
+}
+
 export interface RCMApiConfig {
   apiKey: string;
   apiSecret: string;

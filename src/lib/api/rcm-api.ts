@@ -11,7 +11,9 @@ import type {
   RCMStep2Request,
   RCMStep2Response,
   RCMStep3Request,
-  RCMStep3Response
+  RCMStep3Response,
+  RCMPaymentRequest,
+  RCMPaymentResponse
 } from './rcm-api-types';
 import { toast } from 'sonner';
 
@@ -423,6 +425,12 @@ class RCMApiClient {
           confirmationNumber: "MOCK" + Math.floor(Math.random() * 100000),
           bookingReference: "REF" + Math.floor(Math.random() * 100000)
         };
+      case 'createdpspayment':
+        return {
+          status: "OK",
+          paymentId: "MOCK_PAYMENT_ID",
+          paymentReference: "MOCK_PAYMENT_REF"
+        };
       default:
         return { status: "OK", message: "Mock data not available for this method", results: {} };
     }
@@ -490,6 +498,29 @@ class RCMApiClient {
       }
     } catch (error) {
       console.error('Booking creation error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Create a payment session with the RCM API
+   */
+  async createPaymentSession(paymentData: RCMPaymentRequest): Promise<RCMPaymentResponse> {
+    console.log('Creating payment session with data:', paymentData);
+    
+    try {
+      // Using 'createdpspayment' as the method name based on the provided example code
+      const response = await this.request<RCMPaymentResponse>('POST', 'createdpspayment', paymentData);
+      
+      if (response.status === "OK") {
+        console.log('Payment session created successfully:', response);
+        return response;
+      } else {
+        console.error('API returned error:', response.error || 'Unknown error');
+        throw new Error(response.error || "Failed to create payment session");
+      }
+    } catch (error) {
+      console.error('Payment session creation error:', error);
       throw error;
     }
   }
