@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getBookingData, clearBookingData } from "@/lib/booking-session";
-import { LoaderCircle, CreditCard, AlertCircle } from "lucide-react";
+import { LoaderCircle, CreditCard, AlertCircle, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -13,6 +13,8 @@ const Payment = () => {
   const [error, setError] = useState<string | null>(null);
   const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
   const [showIframe, setShowIframe] = useState(false);
+  const [iframeLoaded, setIframeLoaded] = useState(false);
+  const [iframeError, setIframeError] = useState(false);
   
   // Fallback URL for demo purposes
   const WINDCAVE_PAYMENT_URL = "https://sec.windcave.com/pxmi3/EF4054F622D6C4C1BCABA908582B2E191A35B4C818154175";
@@ -28,7 +30,6 @@ const Payment = () => {
     }
     
     // In a real implementation, this would call your backend API
-    // For demo purposes, we'll simulate the API call
     const simulateCreatePayment = async () => {
       try {
         // This simulates the code you provided
@@ -83,18 +84,7 @@ const Payment = () => {
     simulateCreatePayment();
   }, []);
 
-  // Show Windcave in an iframe
-  const showWindcaveIframe = () => {
-    if (!paymentUrl) {
-      toast.error("Payment URL not available");
-      return;
-    }
-    
-    setShowIframe(true);
-    toast.info("Loading payment form...");
-  };
-
-  // Redirect to Windcave payment page
+  // Direct redirect to Windcave payment page
   const handleRedirectToPayment = () => {
     try {
       if (!paymentUrl) {
@@ -103,10 +93,50 @@ const Payment = () => {
       }
       
       toast.info("Redirecting to payment gateway...");
-      window.location.href = paymentUrl;
+      // Use window.open to open in a new tab for better user experience
+      window.open(paymentUrl, "_blank", "noopener,noreferrer");
     } catch (error) {
       console.error("Error redirecting to payment gateway:", error);
       toast.error("Failed to redirect to payment gateway");
+    }
+  };
+  
+  // Open Windcave in a popup window
+  const openPaymentPopup = () => {
+    try {
+      if (!paymentUrl) {
+        toast.error("Payment URL not available");
+        return;
+      }
+      
+      const width = 800;
+      const height = 700;
+      const left = (window.innerWidth - width) / 2;
+      const top = (window.innerHeight - height) / 2;
+      
+      const popup = window.open(
+        paymentUrl,
+        "WindcavePayment",
+        `width=${width},height=${height},top=${top},left=${left},scrollbars=yes,resizable=yes`
+      );
+      
+      if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+        toast.error("Popup blocked by browser");
+        return;
+      }
+      
+      toast.info("Payment window opened");
+      
+      // Check if popup was closed
+      const checkPopupInterval = setInterval(() => {
+        if (popup.closed) {
+          clearInterval(checkPopupInterval);
+          toast.info("Payment window closed");
+        }
+      }, 1000);
+    } catch (error) {
+      console.error("Error opening payment popup:", error);
+      toast.error("Failed to open payment window");
     }
   };
 
@@ -152,26 +182,6 @@ const Payment = () => {
               <LoaderCircle className="h-10 w-10 text-primary animate-spin mb-4" />
               <p className="text-lg">Preparing Windcave Payment Gateway...</p>
             </div>
-          ) : showIframe ? (
-            <div className="space-y-4">
-              <div className="relative h-[600px] w-full border rounded-lg overflow-hidden">
-                <iframe 
-                  src={paymentUrl || ""}
-                  frameBorder="0" 
-                  id="paymentIFrame" 
-                  className="absolute inset-0 w-full h-full"
-                  title="Windcave Payment"
-                ></iframe>
-              </div>
-              <div className="flex justify-between pt-4">
-                <Button variant="outline" onClick={() => setShowIframe(false)}>
-                  Back
-                </Button>
-                <Button onClick={handleSimulateComplete}>
-                  Simulate Payment Complete
-                </Button>
-              </div>
-            </div>
           ) : (
             <div className="space-y-6">
               <div className="bg-gray-50 p-6 rounded-lg border">
@@ -185,33 +195,34 @@ const Payment = () => {
                   
                   <div className="grid md:grid-cols-2 gap-4 mt-4">
                     <div className="border rounded-lg p-4 bg-white">
-                      <h3 className="font-medium mb-2">Option 1: Embedded Payment Form</h3>
-                      <p className="text-sm mb-3">Complete your payment without leaving this page.</p>
+                      <h3 className="font-medium mb-2">Option 1: Payment in New Window</h3>
+                      <p className="text-sm mb-3">Complete your payment in a popup window.</p>
                       <Button 
-                        onClick={showWindcaveIframe}
+                        onClick={openPaymentPopup}
                         variant="outline"
                         className="w-full"
                       >
-                        Pay in Embedded Form
+                        <CreditCard className="mr-2 h-4 w-4" />
+                        Pay in Popup Window
                       </Button>
                     </div>
                     
                     <div className="border rounded-lg p-4 bg-white">
-                      <h3 className="font-medium mb-2">Option 2: Redirect to Payment Page</h3>
-                      <p className="text-sm mb-3">You will be redirected to Windcave's secure payment page.</p>
+                      <h3 className="font-medium mb-2">Option 2: Go to Payment Page</h3>
+                      <p className="text-sm mb-3">Open Windcave's secure payment page in a new tab.</p>
                       <Button 
                         onClick={handleRedirectToPayment}
                         className="w-full"
                       >
-                        <CreditCard className="mr-2 h-4 w-4" />
-                        Go to Payment Page
+                        <ExternalLink className="mr-2 h-4 w-4" />
+                        Open Payment Page
                       </Button>
                     </div>
                   </div>
                   
                   <Alert className="bg-blue-50 text-blue-800 border-blue-200 mt-4">
                     <div className="flex flex-col space-y-2">
-                      <p><span className="font-medium">Important:</span> After payment is complete, you will be redirected back to our website.</p>
+                      <p><span className="font-medium">Important:</span> After payment is complete, please return to this page.</p>
                     </div>
                   </Alert>
                 </div>
