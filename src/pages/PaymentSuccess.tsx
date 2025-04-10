@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -35,13 +34,23 @@ const PaymentSuccess = () => {
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [transactionId, setTransactionId] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  
+  const [windcaveResponseDetails, setWindcaveResponseDetails] = useState<{
+    amount?: number;
+    transactionDate?: string;
+    status?: string;
+    transactionId?: string;
+    cardDetails?: {
+      cardholder?: string;
+      payType?: string;
+      cardNumber?: string;
+    };
+  }>({});
+
   useEffect(() => {
     const fetchBookingDetails = async () => {
       try {
         setIsLoading(true);
         
-        // Get query parameters
         const queryParams = new URLSearchParams(location.search);
         const result = queryParams.get("result");
         const txnId = queryParams.get("txnId") || "N/A";
@@ -62,25 +71,19 @@ const PaymentSuccess = () => {
             description: "You cancelled the payment process."
           });
         } else {
-          // Payment was successful
           setPaymentStatus("success");
-          // Only clear booking data on successful payment
           clearBookingData();
           toast.success("Payment Successful", {
             description: "Your booking has been confirmed."
           });
         }
         
-        // Get booking data from session first
         const sessionBookingData = getBookingData();
         
-        // If we have a reservation reference from URL and it doesn't match the one in session,
-        // try to fetch details from API
         if (reservationRef && (!sessionBookingData || reservationRef !== sessionBookingData.reservationRef)) {
           console.log("Fetching booking details using reservation reference:", reservationRef);
           
           try {
-            // Create an API request to get booking details by reservation reference
             const requestPayload = {
               method: "getreservation",
               reservationref: reservationRef
@@ -88,7 +91,6 @@ const PaymentSuccess = () => {
             
             const response = await rcmApi.request('POST', 'getreservation', requestPayload);
             
-            // Fix the type assertion to handle the unknown type
             const typedResponse = response as { status: string, results?: any };
             
             console.log("Booking details response:", typedResponse);
@@ -101,9 +103,7 @@ const PaymentSuccess = () => {
             }
           } catch (error) {
             console.error("Error fetching booking details:", error);
-            // Fall back to session data if API fetch fails
             if (sessionBookingData) {
-              // Convert sessionBookingData to match BookingDetails type
               const convertedDetails: BookingDetails = {
                 vehicleName: sessionBookingData.vehicleName || 'Vehicle',
                 pickupDate: sessionBookingData.pickupDate,
@@ -125,7 +125,6 @@ const PaymentSuccess = () => {
             }
           }
         } else if (sessionBookingData) {
-          // Convert sessionBookingData to match BookingDetails type
           const convertedDetails: BookingDetails = {
             vehicleName: sessionBookingData.vehicleName || 'Vehicle',
             pickupDate: sessionBookingData.pickupDate,
@@ -146,6 +145,29 @@ const PaymentSuccess = () => {
           setBookingDetails(convertedDetails);
         }
         
+        const windcaveResponse = queryParams.get("windcaveResponse");
+        
+        if (windcaveResponse) {
+          try {
+            const parsedResponse = JSON.parse(decodeURIComponent(windcaveResponse));
+            console.log("Full Windcave Response:", parsedResponse);
+            
+            setWindcaveResponseDetails({
+              amount: parsedResponse.results?.Amount,
+              transactionDate: parsedResponse.results?.TransactionDate,
+              status: parsedResponse.results?.Status,
+              transactionId: parsedResponse.results?.TransactionId,
+              cardDetails: {
+                cardholder: parsedResponse.results?.Card?.Cardholder,
+                payType: parsedResponse.results?.Card?.PayType,
+                cardNumber: parsedResponse.results?.Card?.CardNumber
+              }
+            });
+          } catch (parseError) {
+            console.error("Error parsing Windcave response:", parseError);
+          }
+        }
+        
         setIsLoading(false);
       } catch (error) {
         console.error("Error in fetchBookingDetails:", error);
@@ -159,7 +181,6 @@ const PaymentSuccess = () => {
     fetchBookingDetails();
   }, [navigate, location]);
   
-  // Helper function to map API response to our booking details format
   const mapApiResponseToBookingDetails = (apiResponse: any, reservationRef: string): BookingDetails => {
     return {
       vehicleName: apiResponse.vehicleName || apiResponse.vehiclecategory || "Vehicle",
@@ -208,7 +229,6 @@ const PaymentSuccess = () => {
     );
   }
 
-  // Get customer details from booking data if available
   const customerDetails = {
     firstName: bookingDetails.customerFirstName || "Not provided",
     lastName: bookingDetails.customerLastName || "Not provided",
@@ -217,6 +237,29 @@ const PaymentSuccess = () => {
     dob: bookingDetails.customerDob || "Not provided",
     licenseExpiry: bookingDetails.customerLicenseExpiry || "Not provided",
     address: bookingDetails.customerAddress || "Not provided"
+  };
+
+  const renderWindcavePaymentDetails = () => {
+    if (!windcaveResponseDetails.status) return null;
+
+    return (
+      <div className="bg-gray-100 rounded-lg p-4 mt-4">
+        <h3 className="text-xl font-semibold mb-2">Payment Transaction Details</h3>
+        <div className="space-y-2">
+          <p><strong>Status:</strong> {windcaveResponseDetails.status}</p>
+          <p><strong>Amount:</strong> ${windcaveResponseDetails.amount?.toFixed(2)}</p>
+          <p><strong>Transaction ID:</strong> {windcaveResponseDetails.transactionId}</p>
+          <p><strong>Transaction Date:</strong> {windcaveResponseDetails.transactionDate}</p>
+          {windcaveResponseDetails.cardDetails && (
+            <div>
+              <h4 className="font-medium mt-2">Card Details</h4>
+              <p><strong>Cardholder:</strong> {windcaveResponseDetails.cardDetails.cardholder}</p>
+              <p><strong>Card Number:</strong> {windcaveResponseDetails.cardDetails.cardNumber}</p>
+            </div>
+          )}
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -321,6 +364,8 @@ const PaymentSuccess = () => {
             </Button>
           </>
         )}
+        
+        {renderWindcavePaymentDetails()}
       </div>
     </div>
   );
