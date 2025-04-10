@@ -42,7 +42,7 @@ const Payment = () => {
     
     const createPayment = async () => {
       try {
-        const returnUrl = encodeURIComponent(`${window.location.origin}/payment-success`);
+        const returnUrl = encodeURIComponent(`${window.location.origin}/payment`);
         console.log('Return URL (encoded):', returnUrl);
         
         const requestPayload = {
