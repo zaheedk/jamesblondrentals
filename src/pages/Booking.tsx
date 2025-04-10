@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { RCMInsuranceOption, RCMKmCharge, RCMExtra } from '@/lib/api/rcm-api-types';
-import { useRCMApi } from '@/hooks/use-rcm-api';
+import { useRcmApi } from '@/hooks/use-rcm-api';
 import { BookingSessionData, getBookingData } from '@/lib/booking-session';
 import BookingSummary from '@/components/booking/BookingSummary';
 import InsuranceOptions from '@/components/booking/InsuranceOptions';
@@ -13,7 +13,7 @@ import ExtrasSelection from '@/components/booking/ExtrasSelection';
 
 const Booking = () => {
   const navigate = useNavigate();
-  const { getStep3 } = useRCMApi();
+  const { getStep3 } = useRcmApi();
 
   // State for booking options
   const [bookingData, setBookingData] = useState<BookingSessionData | null>(null);
@@ -128,18 +128,18 @@ const Booking = () => {
           {/* Insurance Options */}
           {insuranceOptions.length > 0 && (
             <InsuranceOptions 
-              options={insuranceOptions}
-              selectedOption={selectedInsurance}
-              onSelectionChange={setSelectedInsurance}
+              insuranceOptions={insuranceOptions}
+              selectedInsurance={selectedInsurance}
+              onInsuranceChange={setSelectedInsurance}
             />
           )}
           
           {/* Kilometer Charges */}
           {kmCharges.length > 0 && (
             <KmCharges 
-              options={kmCharges}
-              selectedOption={selectedKmCharge}
-              onSelectionChange={setSelectedKmCharge}
+              kmCharges={kmCharges}
+              selectedKmCharge={selectedKmCharge}
+              onKmChargeChange={setSelectedKmCharge}
             />
           )}
           
