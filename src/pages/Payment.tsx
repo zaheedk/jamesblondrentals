@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getBookingData, updateBookingData } from "@/lib/booking-session";
@@ -122,12 +123,14 @@ const Payment = () => {
         
         updateBookingData({ 
           transactionId: transactionId,
-          paymentStatus: paymentStatus
+          paymentStatus: paymentStatus,
+          windcaveReservationRef: response.results.ReservationRef || reservationRef
         });
         
         const params = new URLSearchParams();
         params.append('result', response.results.Status === 'Approved' ? 'success' : 'failed');
         params.append('txnId', transactionId);
+        params.append('reservationRef', response.results.ReservationRef || reservationRef);
         
         if (response.results.Status !== 'Approved') {
           params.append('message', response.results.ResponseText || 'Payment failed');

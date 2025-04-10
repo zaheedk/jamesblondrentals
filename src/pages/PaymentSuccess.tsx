@@ -7,61 +7,164 @@ import { getBookingData, clearBookingData } from "@/lib/booking-session";
 import { toast } from "sonner";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { formatCurrency } from "@/lib/utils";
+import { rcmApi } from "@/lib/api/rcm-api";
+
+interface BookingDetails {
+  vehicleName: string;
+  pickupDate: string;
+  pickupTime: string;
+  dropoffDate: string;
+  dropoffTime: string;
+  paymentAmount: number;
+  basePrice: number;
+  paymentType?: string;
+  customerFirstName?: string;
+  customerLastName?: string;
+  customerEmail?: string;
+  customerPhone?: string;
+  customerDob?: string;
+  customerLicenseExpiry?: string;
+  customerAddress?: string;
+}
 
 const PaymentSuccess = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [bookingDetails, setBookingDetails] = useState<any>(null);
+  const [bookingDetails, setBookingDetails] = useState<BookingDetails | null>(null);
   const [paymentStatus, setPaymentStatus] = useState<"success" | "failed" | "pending">("pending");
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [transactionId, setTransactionId] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   
   useEffect(() => {
-    // Get booking data from session
-    const bookingData = getBookingData();
+    const fetchBookingDetails = async () => {
+      try {
+        setIsLoading(true);
+        
+        // Get query parameters
+        const queryParams = new URLSearchParams(location.search);
+        const result = queryParams.get("result");
+        const txnId = queryParams.get("txnId") || "N/A";
+        const reservationRef = queryParams.get("reservationRef");
+        
+        setTransactionId(txnId);
+        
+        if (result === "failed" || queryParams.get("error")) {
+          setPaymentStatus("failed");
+          setErrorMessage(queryParams.get("message") || "Your payment was not successful. Please try again.");
+          toast.error("Payment Failed", {
+            description: queryParams.get("message") || "Your payment was not successful. Please try again."
+          });
+        } else if (result === "cancelled") {
+          setPaymentStatus("failed");
+          setErrorMessage("You cancelled the payment process.");
+          toast.error("Payment Cancelled", {
+            description: "You cancelled the payment process."
+          });
+        } else {
+          // Payment was successful
+          setPaymentStatus("success");
+          // Only clear booking data on successful payment
+          clearBookingData();
+          toast.success("Payment Successful", {
+            description: "Your booking has been confirmed."
+          });
+        }
+        
+        // Get booking data from session first
+        const sessionBookingData = getBookingData();
+        
+        // If we have a reservation reference from URL and it doesn't match the one in session,
+        // try to fetch details from API
+        if (reservationRef && (!sessionBookingData || reservationRef !== sessionBookingData.reservationRef)) {
+          console.log("Fetching booking details using reservation reference:", reservationRef);
+          
+          try {
+            // Create an API request to get booking details by reservation reference
+            const requestPayload = {
+              method: "getreservation",
+              reservationref: reservationRef
+            };
+            
+            const response = await rcmApi.request('POST', 'getreservation', requestPayload);
+            console.log("Booking details response:", response);
+            
+            if (response && response.status === "OK" && response.results) {
+              const apiBookingDetails = mapApiResponseToBookingDetails(response.results, reservationRef);
+              setBookingDetails(apiBookingDetails);
+            } else {
+              throw new Error("Failed to fetch booking details");
+            }
+          } catch (error) {
+            console.error("Error fetching booking details:", error);
+            // Fall back to session data if API fetch fails
+            if (sessionBookingData) {
+              setBookingDetails(sessionBookingData);
+            }
+          }
+        } else if (sessionBookingData) {
+          // Use session data if no reservation reference or it matches
+          setBookingDetails(sessionBookingData);
+        }
+        
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error in fetchBookingDetails:", error);
+        setIsLoading(false);
+        toast.error("Error", {
+          description: "Failed to load booking details."
+        });
+      }
+    };
     
-    if (!bookingData) {
-      // If no booking data, redirect to home
-      toast.error("No booking information found");
-      navigate("/");
-      return;
-    }
-    
-    setBookingDetails(bookingData);
-    
-    // Parse URL parameters to determine payment status
-    const queryParams = new URLSearchParams(location.search);
-    const result = queryParams.get("result");
-    const txnId = queryParams.get("txnId") || "N/A";
-    setTransactionId(txnId);
-    
-    if (result === "failed" || queryParams.get("error")) {
-      setPaymentStatus("failed");
-      setErrorMessage(queryParams.get("message") || "Your payment was not successful. Please try again.");
-      toast.error("Payment Failed", {
-        description: queryParams.get("message") || "Your payment was not successful. Please try again."
-      });
-    } else if (result === "cancelled") {
-      setPaymentStatus("failed");
-      setErrorMessage("You cancelled the payment process.");
-      toast.error("Payment Cancelled", {
-        description: "You cancelled the payment process."
-      });
-    } else {
-      // Payment was successful
-      setPaymentStatus("success");
-      // Only clear booking data on successful payment
-      clearBookingData();
-      toast.success("Payment Successful", {
-        description: "Your booking has been confirmed."
-      });
-    }
+    fetchBookingDetails();
   }, [navigate, location]);
   
-  if (!bookingDetails) {
+  // Helper function to map API response to our booking details format
+  const mapApiResponseToBookingDetails = (apiResponse: any, reservationRef: string): BookingDetails => {
+    return {
+      vehicleName: apiResponse.vehicleName || apiResponse.vehiclecategory || "Vehicle",
+      pickupDate: apiResponse.pickupdate || "N/A",
+      pickupTime: apiResponse.pickuptime || "N/A",
+      dropoffDate: apiResponse.dropoffdate || "N/A",
+      dropoffTime: apiResponse.dropofftime || "N/A",
+      paymentAmount: parseFloat(apiResponse.totalamount) || 0,
+      basePrice: parseFloat(apiResponse.totalamount) || 0,
+      customerFirstName: apiResponse.firstname || "N/A",
+      customerLastName: apiResponse.lastname || "N/A",
+      customerEmail: apiResponse.email || "N/A",
+      customerPhone: apiResponse.phone || apiResponse.mobile || "N/A",
+      customerDob: apiResponse.dateofbirth || "N/A",
+      customerLicenseExpiry: apiResponse.licenseexpires || "N/A",
+      customerAddress: apiResponse.address || "N/A"
+    };
+  };
+  
+  if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
         <div className="w-12 h-12 border-4 border-t-blue-500 border-blue-200 rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+  
+  if (!bookingDetails) {
+    return (
+      <div className="container mx-auto px-4 py-8 text-center">
+        <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-8">
+          <h1 className="text-3xl font-bold mb-6">Booking Details Not Found</h1>
+          <p className="text-gray-600 mb-6">
+            We couldn't retrieve your booking details. If you've just completed a booking,
+            please contact customer support with your transaction ID.
+          </p>
+          <p className="text-gray-600 mb-6">Transaction ID: {transactionId}</p>
+          <Button 
+            onClick={() => navigate("/")}
+            className="w-full"
+          >
+            Return to Home
+          </Button>
+        </div>
       </div>
     );
   }

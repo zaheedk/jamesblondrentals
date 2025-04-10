@@ -1,4 +1,3 @@
-
 import { useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { rcmApi } from '@/lib/api/rcm-api';
@@ -319,6 +318,40 @@ export function useRcmApi() {
     });
   };
 
+  const useBookingDetails = (reservationRef: string | null) => {
+    return useQuery({
+      queryKey: ['bookingDetails', reservationRef],
+      queryFn: async () => {
+        if (!reservationRef) return null;
+        
+        try {
+          console.log('Fetching booking details for reservation:', reservationRef);
+          
+          const response = await rcmApi.request('POST', 'getreservation', {
+            method: 'getreservation',
+            reservationref: reservationRef
+          });
+          
+          if (response.status === "OK") {
+            console.log('Booking details retrieved:', response);
+            return response.results;
+          } else {
+            throw new Error(response.error || "Failed to fetch booking details");
+          }
+        } catch (error) {
+          console.error('Failed to fetch booking details:', error);
+          toast.error('API Connection Error', {
+            description: 'Failed to fetch booking details.'
+          });
+          throw error;
+        }
+      },
+      enabled: !!reservationRef,
+      retry: API_RETRY_CONFIG.retries,
+      retryDelay: API_RETRY_CONFIG.retryDelay,
+    });
+  };
+
   return {
     rcmApi,
     initializeApi,
@@ -331,6 +364,7 @@ export function useRcmApi() {
     useCreateBooking,
     useLocationDetails,
     useStep2Vehicles,
-    useStep3Details
+    useStep3Details,
+    useBookingDetails
   };
 }

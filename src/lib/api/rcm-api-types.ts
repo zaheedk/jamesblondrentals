@@ -360,6 +360,7 @@ export interface RCMPaymentResponse {
     ResponseText?: string;
     Amount?: string | number;
     RebillingToken?: string;
+    ReservationRef?: string;  // Added this field to store reservation reference
   };
 }
 
