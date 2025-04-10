@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRcmApi } from "@/hooks/use-rcm-api";
@@ -169,7 +170,16 @@ const Booking = () => {
       if ((!step3Data.results.extras || step3Data.results.extras.length === 0) && 
           step3Data.results.optionalfees && step3Data.results.optionalfees.length > 0) {
         
-        const mappedExtras: RCMExtra[] = step3Data.results.optionalfees.map(fee => ({
+        // Filter out deposit and payment related extras
+        const filteredOptionalFees = step3Data.results.optionalfees.filter(fee => {
+          const lowerName = fee.name.toLowerCase();
+          return !lowerName.includes('deposit') && 
+                 !lowerName.includes('payment') && 
+                 !lowerName.includes('bond') &&
+                 !lowerName.includes('testbond');
+        });
+        
+        const mappedExtras: RCMExtra[] = filteredOptionalFees.map(fee => ({
           id: fee.id,
           name: fee.name,
           description: fee.feedescription || '',
@@ -181,7 +191,7 @@ const Booking = () => {
         }));
         
         setOptionalExtras(mappedExtras);
-        console.log('Using optional fees as extras:', mappedExtras.length);
+        console.log('Using filtered optional fees as extras:', mappedExtras.length);
       }
     }
     console.groupEnd();
@@ -276,6 +286,14 @@ const Booking = () => {
   
   const getCurrencySymbol = () => {
     return step3Data?.results?.locationfees?.currencysymbol || "$";
+  };
+  
+  // New function to get vehicle image
+  const getVehicleImageUrl = () => {
+    if (!bookingData?.vehicleImage) {
+      return '/placeholder.svg';
+    }
+    return bookingData.vehicleImage;
   };
   
   const handleContinue = () => {
@@ -410,6 +428,7 @@ const Booking = () => {
               selectedExtras={getSelectedExtrasDetails()}
               kmChargePrice={getKmChargePrice()}
               currencySymbol={getCurrencySymbol()}
+              vehicleImageUrl={getVehicleImageUrl()}
             />
           )}
         </div>

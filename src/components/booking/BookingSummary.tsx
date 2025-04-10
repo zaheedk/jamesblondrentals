@@ -14,6 +14,7 @@ interface BookingSummaryProps {
   selectedExtras: { id: string | number; name: string; quantity: number; totalPrice: number }[];
   kmChargePrice: number;
   currencySymbol: string;
+  vehicleImageUrl?: string; // Added vehicleImageUrl prop
 }
 
 const BookingSummary = ({
@@ -26,7 +27,8 @@ const BookingSummary = ({
   selectedInsurance,
   selectedExtras,
   kmChargePrice,
-  currencySymbol
+  currencySymbol,
+  vehicleImageUrl // Added parameter
 }: BookingSummaryProps) => {
   const totalPrice = 
     basePrice + 
@@ -99,6 +101,13 @@ const BookingSummary = ({
         <CardTitle>Booking Summary</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
+        {/* Add vehicle image */}
+        {vehicleImageUrl && (
+          <div className="w-full aspect-video bg-cover bg-center rounded-md mb-2"
+               style={{ backgroundImage: `url(${vehicleImageUrl})` }}
+          />
+        )}
+        
         <div className="space-y-2">
           <h4 className="font-medium">Vehicle</h4>
           <p className="text-sm">{vehicleName}</p>
