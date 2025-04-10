@@ -1,13 +1,13 @@
 
 import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { format } from "date-fns";
+import { format, parse, isValid } from "date-fns";
 
 interface BookingSummaryProps {
   pickupLocation: string;
   dropoffLocation: string;
-  pickupDate: Date;
-  dropoffDate: Date;
+  pickupDate: Date | string;
+  dropoffDate: Date | string;
   vehicleName: string;
   basePrice: number;
   selectedInsurance: { id: string | number; name: string; price: number } | null;
@@ -39,16 +39,37 @@ const BookingSummary = ({
     if (!date) return "Date not available";
     
     try {
-      // If it's a string, convert to Date first
-      const dateObj = typeof date === 'string' ? new Date(date) : date;
-      
-      // Check if date is valid before formatting
-      if (isNaN(dateObj.getTime())) {
-        console.error("Invalid date:", date);
-        return "Invalid date";
+      // If it's already a valid Date object
+      if (date instanceof Date && !isNaN(date.getTime())) {
+        return format(date, "PPP p");
       }
       
-      return format(dateObj, "PPP p");
+      // If it's a string
+      if (typeof date === 'string') {
+        // Check if it's an ISO string
+        if (date.includes('T')) {
+          const dateObj = new Date(date);
+          if (isValid(dateObj)) {
+            return format(dateObj, "PPP p");
+          }
+        }
+        
+        // Check if it's in DD/MM/YYYY format
+        if (date.includes('/')) {
+          const parsedDate = parse(date, 'dd/MM/yyyy', new Date());
+          if (isValid(parsedDate)) {
+            return format(parsedDate, "PPP p");
+          }
+        }
+        
+        // Last attempt - try to parse as is
+        const fallbackDate = new Date(date);
+        if (isValid(fallbackDate)) {
+          return format(fallbackDate, "PPP p");
+        }
+      }
+      
+      return "Invalid date format";
     } catch (err) {
       console.error("Error formatting date:", err, date);
       return "Date format error";

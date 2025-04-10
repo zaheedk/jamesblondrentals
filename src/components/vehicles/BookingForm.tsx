@@ -1,8 +1,8 @@
-
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Vehicle } from "@/lib/types";
 import { saveBookingData } from "@/lib/booking-session";
+import { parse, format } from "date-fns";
 
 interface BookingFormProps {
   vehicle: Vehicle;
@@ -35,10 +35,28 @@ export default function BookingForm({
     e.preventDefault();
     
     // Determine vehicle category type ID from vehicle properties
-    // First check if vehicle.category exists, if not, use vehicle.type or default to '0'
-    const vehicleCategoryTypeId = vehicle.category?.toString() || 
-                                  vehicle.type?.toString() || 
-                                  '0';
+    // Use type instead of category since category may not exist on Vehicle type
+    const vehicleCategoryTypeId = vehicle.type?.toString() || '0';
+    
+    // Convert date strings to ISO format for better compatibility
+    let isoPickupDate = pickupDate;
+    let isoDropoffDate = dropoffDate;
+    
+    try {
+      // Parse date strings in DD/MM/YYYY format
+      if (pickupDate && pickupDate.includes('/')) {
+        const parsedDate = parse(pickupDate, 'dd/MM/yyyy', new Date());
+        isoPickupDate = parsedDate.toISOString();
+      }
+      
+      if (dropoffDate && dropoffDate.includes('/')) {
+        const parsedDate = parse(dropoffDate, 'dd/MM/yyyy', new Date());
+        isoDropoffDate = parsedDate.toISOString();
+      }
+    } catch (error) {
+      console.error("Error parsing dates:", error);
+      // Keep original strings if parsing fails
+    }
     
     // Save booking data to session storage
     saveBookingData({
@@ -49,9 +67,9 @@ export default function BookingForm({
       pickupLocationName,
       dropoffLocationId,
       dropoffLocationName,
-      pickupDate,
+      pickupDate: isoPickupDate,
       pickupTime,
-      dropoffDate,
+      dropoffDate: isoDropoffDate,
       dropoffTime,
       ageId,
       basePrice: typeof vehicle.price === 'number' ? vehicle.price : parseFloat(vehicle.price || '0')
@@ -65,7 +83,7 @@ export default function BookingForm({
     <form onSubmit={handleBookNow}>
       <input type="hidden" name="vehicleId" value={vehicle.id} />
       <input type="hidden" name="vehicleName" value={`${vehicle.make} ${vehicle.model}`} />
-      <input type="hidden" name="vehicleCategoryTypeId" value={vehicle.category?.toString() || vehicle.type?.toString() || '0'} />
+      <input type="hidden" name="vehicleCategoryTypeId" value={vehicle.type?.toString() || '0'} />
       <input type="hidden" name="pickupLocationId" value={pickupLocationId} />
       <input type="hidden" name="pickupLocationName" value={pickupLocationName} />
       <input type="hidden" name="dropoffLocationId" value={dropoffLocationId} />

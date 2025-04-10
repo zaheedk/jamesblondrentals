@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRcmApi } from "@/hooks/use-rcm-api";
-import { format, differenceInDays, parse } from "date-fns";
+import { parseISO, parse, differenceInDays, isValid } from "date-fns";
 import InsuranceOptions from "@/components/booking/InsuranceOptions";
 import KmCharges from "@/components/booking/KmCharges";
 import ExtrasSelection from "@/components/booking/ExtrasSelection";
@@ -28,7 +28,6 @@ const Booking = () => {
   const [selectedExtras, setSelectedExtras] = useState<Map<string | number, number>>(new Map());
   
   useEffect(() => {
-    // Get booking data from session storage
     const data = getBookingData();
     console.log('Retrieved booking data from session:', data);
     setBookingData(data);
@@ -45,32 +44,52 @@ const Booking = () => {
     }
 
     try {
-      // Parse dates properly to ensure valid Date objects
-      const pickupDateObj = new Date(data.pickupDate);
-      const dropoffDateObj = new Date(data.dropoffDate);
+      let pickupDateObj: Date;
+      let dropoffDateObj: Date;
       
-      // Verify the dates are valid
-      if (isNaN(pickupDateObj.getTime()) || isNaN(dropoffDateObj.getTime())) {
-        console.error("Invalid date string:", { pickup: data.pickupDate, dropoff: data.dropoffDate });
-        toast.error("Invalid date format in booking data");
-        setParamError("Invalid date format in booking data");
-        setIsLoading(false);
-        return;
+      if (data.pickupDate) {
+        if (data.pickupDate.includes('T')) {
+          pickupDateObj = parseISO(data.pickupDate);
+        } else if (data.pickupDate.includes('/')) {
+          pickupDateObj = parse(data.pickupDate, 'dd/MM/yyyy', new Date());
+        } else {
+          pickupDateObj = new Date(data.pickupDate);
+        }
+        
+        if (!isValid(pickupDateObj)) {
+          throw new Error(`Invalid pickup date: ${data.pickupDate}`);
+        }
+      } else {
+        throw new Error("Pickup date is missing");
       }
       
-      // Calculate number of days between pickup and dropoff
+      if (data.dropoffDate) {
+        if (data.dropoffDate.includes('T')) {
+          dropoffDateObj = parseISO(data.dropoffDate);
+        } else if (data.dropoffDate.includes('/')) {
+          dropoffDateObj = parse(data.dropoffDate, 'dd/MM/yyyy', new Date());
+        } else {
+          dropoffDateObj = new Date(data.dropoffDate);
+        }
+        
+        if (!isValid(dropoffDateObj)) {
+          throw new Error(`Invalid dropoff date: ${data.dropoffDate}`);
+        }
+      } else {
+        throw new Error("Dropoff date is missing");
+      }
+      
       const days = Math.max(differenceInDays(dropoffDateObj, pickupDateObj) || 1, 1);
       setNumberOfDays(days);
       
-      // Log booking data for debugging
       console.group('Booking Data from Session Storage');
       console.log('vehicleId:', data.vehicleId);
       console.log('vehicleCategoryTypeId:', data.vehicleCategoryTypeId);
       console.log('pickupLocationId:', data.pickupLocationId);
       console.log('dropoffLocationId:', data.dropoffLocationId);
-      console.log('pickupDate:', data.pickupDate);
+      console.log('pickupDate:', data.pickupDate, '(Parsed:', pickupDateObj.toISOString(), ')');
       console.log('pickupTime:', data.pickupTime);
-      console.log('dropoffDate:', data.dropoffDate);
+      console.log('dropoffDate:', data.dropoffDate, '(Parsed:', dropoffDateObj.toISOString(), ')');
       console.log('dropoffTime:', data.dropoffTime);
       console.log('ageId:', data.ageId);
       console.log('vehicleName:', data.vehicleName);
@@ -123,7 +142,7 @@ const Booking = () => {
       setIsLoading(false);
     } catch (error) {
       console.error("Error setting up Step3 params:", error);
-      setParamError("Error setting up booking parameters");
+      setParamError(`Error setting up booking parameters: ${error instanceof Error ? error.message : 'Unknown error'}`);
       toast.error("Error setting up booking parameters", {
         description: "Please return to the vehicle search page and try again."
       });
@@ -134,7 +153,6 @@ const Booking = () => {
   const { data: step3Data, isLoading: isStep3Loading, error: step3Error } = useStep3Details(step3Params);
   
   useEffect(() => {
-    // Log step3Data for debugging
     console.group('Step 3 API Response');
     console.log('Loading:', isStep3Loading);
     console.log('Error:', step3Error);
@@ -241,7 +259,6 @@ const Booking = () => {
       return;
     }
     
-    // Save updated booking data with selections to session storage
     const updatedBookingData = {
       ...bookingData,
       insuranceId: selectedInsurance?.id,
@@ -257,7 +274,6 @@ const Booking = () => {
       )
     };
     
-    // Save to session storage and navigate to customer details
     sessionStorage.setItem('rcm_booking_final', JSON.stringify(updatedBookingData));
     navigate('/customer-details');
   };
