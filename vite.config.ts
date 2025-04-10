@@ -27,9 +27,11 @@ export default defineConfig(({ mode }) => ({
           proxy.on('proxyReq', (proxyReq, req, _res) => {
             console.log('Proxy request:', req.method, req.url);
             
-            // Log request body for debugging
-            if (req.body) {
-              console.log('Request body:', req.body);
+            // Log request body for debugging, only if available
+            // Using 'as any' to bypass TypeScript error since body is added by middleware
+            const reqWithBody = req as any;
+            if (reqWithBody.body) {
+              console.log('Request body:', reqWithBody.body);
             }
             
             // Log request headers for debugging
