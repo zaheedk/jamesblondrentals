@@ -10,7 +10,7 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
     proxy: {
-      // Proxy API requests to RCM API
+      // Proxy API requests to RCM API with improved logging and error handling
       '/api/rcm': {
         target: 'https://apis.rentalcarmanager.com',
         changeOrigin: true,
@@ -26,9 +26,20 @@ export default defineConfig(({ mode }) => ({
           });
           proxy.on('proxyReq', (proxyReq, req, _res) => {
             console.log('Proxy request:', req.method, req.url);
+            
+            // Log request body for debugging
+            if (req.body) {
+              console.log('Request body:', req.body);
+            }
+            
+            // Log request headers for debugging
+            console.log('Request headers:', req.headers);
           });
           proxy.on('proxyRes', (proxyRes, req, _res) => {
             console.log('Proxy response:', proxyRes.statusCode, req.url);
+            
+            // Log response headers for debugging
+            console.log('Response headers:', proxyRes.headers);
           });
         }
       }

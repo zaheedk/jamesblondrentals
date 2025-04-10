@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -89,11 +88,11 @@ const SearchForm = () => {
       apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
       apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
       apiUrl: "/api/rcm/booking/v3.2/",
-      useMockData: false // Use real API data instead of mock data
+      useMockData: false // Force real API connection only
     }).catch(error => {
       console.error('Failed to initialize API:', error);
       toast.error("Error connecting to booking system", {
-        description: "Please try again or contact support"
+        description: "Please check your internet connection or try again later"
       });
     });
   }, [initializeApi]);

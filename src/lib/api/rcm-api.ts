@@ -22,7 +22,7 @@ const DEFAULT_CONFIG: RCMApiConfig = {
   apiUrl: "/api/rcm/booking/v3.2" // Use the proxy URL
 };
 
-// Mock data for use when API is unavailable
+// Mock data definitions remain but won't be used unless explicitly requested
 const MOCK_STEP1_DATA: RCMStep1Response = {
   status: "OK",
   results: {
@@ -110,8 +110,12 @@ class RCMApiClient {
     if (config.apiKey) this.config.apiKey = config.apiKey;
     if (config.apiSecret) this.config.apiSecret = config.apiSecret;
     if (config.apiUrl) this.config.apiUrl = config.apiUrl.replace(/\/$/, '');
-    this.useMockData = config.useMockData || false;
-    this.apiConnectionFailed = false; // Reset connection status on re-initialization
+    
+    // Only use mock data if explicitly requested, default to false
+    this.useMockData = config.useMockData === true;
+    
+    // Always reset the connection status on initialization
+    this.apiConnectionFailed = false;
     
     this.initialized = true;
     
@@ -183,9 +187,9 @@ class RCMApiClient {
   private async request<T>(method: string, requestMethod: string, body?: any): Promise<T> {
     this.ensureInitialized();
 
-    // Use mock data if explicitly enabled or if previous API calls failed
-    if (this.useMockData || this.apiConnectionFailed) {
-      console.log('Using mock data for', requestMethod);
+    // Only use mock data if explicitly enabled, NOT when API calls fail
+    if (this.useMockData) {
+      console.log('Using mock data because useMockData=true for:', requestMethod);
       return this.getMockData(requestMethod) as T;
     }
 
@@ -215,14 +219,9 @@ class RCMApiClient {
         const text = await response.text();
         console.error("Response text:", text);
         
-        // Set flag to use mock data in future calls
-        this.apiConnectionFailed = true;
-        
-        toast.error("API Connection Error", {
-          description: "Server returned HTML instead of JSON. Using test data for demonstration."
-        });
-        
-        return this.getMockData(requestMethod) as T;
+        // Don't set flag to use mock data anymore
+        // Instead, throw an error to be handled by the caller
+        throw new Error("API returned non-JSON response");
       }
 
       // Handle non-OK responses
@@ -238,13 +237,9 @@ class RCMApiClient {
         
         console.error(`API error: ${response.status} ${response.statusText}`, errorData);
         
-        // Set flag to use mock data for future calls
-        this.apiConnectionFailed = true;
-        toast.error("API Server Error", {
-          description: errorData.message || `Request failed with status: ${response.status}. Using test data.`
-        });
-        
-        return this.getMockData(requestMethod) as T;
+        // Don't set flag to use mock data anymore
+        // Instead, throw an error to be handled by the caller
+        throw new Error(errorData.message || `Request failed with status: ${response.status}`);
       }
 
       // Parse and return the response
@@ -261,14 +256,9 @@ class RCMApiClient {
     } catch (error) {
       console.error('RCM API request failed:', error);
       
-      // Set flag to use mock data for future calls
-      this.apiConnectionFailed = true;
-      
-      toast.error("API Connection Failed", {
-        description: "Unable to connect to booking API. Using test data for demonstration."
-      });
-      
-      return this.getMockData(requestMethod) as T;
+      // Don't set flag to use mock data anymore
+      // Don't fall back to mock data, instead throw the error to be handled by the caller
+      throw error;
     }
   }
 
