@@ -19,10 +19,13 @@ const Payment = () => {
       return;
     }
     
+    // Get the reservation reference with proper fallbacks
+    // Priority: reservationRef > bookingReference > confirmationNumber > reservationNo
     const reservationRef = bookingData.reservationRef || 
                           bookingData.bookingReference || 
                           bookingData.confirmationNumber || 
-                          bookingData.vehicleId;
+                          bookingData.reservationNo ||
+                          bookingData.vehicleId; // last resort fallback
     
     console.log('Using reservation reference:', reservationRef);
     

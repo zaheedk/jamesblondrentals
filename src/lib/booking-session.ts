@@ -18,10 +18,11 @@ export interface BookingSessionData {
   ageId: string;
   basePrice: number;
   vehicleImage?: string;
-  // New fields for booking reference
+  // Booking reference fields
   reservationRef?: string;
   bookingReference?: string;
   confirmationNumber?: string;
+  reservationNo?: string;
 }
 
 export const BOOKING_SESSION_KEY = 'rcm_booking_data';

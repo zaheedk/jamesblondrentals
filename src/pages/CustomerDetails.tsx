@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -113,7 +114,16 @@ const CustomerDetails = () => {
           dateofbirth: formData.dateOfBirth ? format(formData.dateOfBirth, 'dd/MM/yyyy') : undefined
         },
         flightin: formData.flightNumber,
-        emailoption: 1 // 1=default behavior
+        emailoption: 1, // 1=default behavior
+        referralid: "",
+        foundusid: "",
+        remark: "",
+        numbertravelling: 1, // Default value
+        arrivalpoint: "",
+        departurepoint: "",
+        areaofuseid: "",
+        newsletter: 0,
+        transmission: 0
       };
       
       console.log('Sending booking request:', bookingRequest);
@@ -122,11 +132,16 @@ const CustomerDetails = () => {
       if (response.status === "OK") {
         console.log('Booking created successfully:', response);
         
+        // Store all reference numbers from the response
         const updatedData = updateBookingData({
-          reservationRef: response.reservationRef || response.bookingReference || undefined,
-          bookingReference: response.bookingReference,
-          confirmationNumber: response.confirmationNumber
+          reservationRef: response.reservationRef || response.results?.reservationref,
+          bookingReference: response.bookingReference || response.results?.bookingref,
+          confirmationNumber: response.confirmationNumber || response.results?.confirmationno,
+          reservationNo: response.results?.reservationno?.toString()
         });
+        
+        // Log all the booking reference data
+        console.log('Updated booking data with references:', updatedData);
         
         toast.success("Booking created successfully", {
           description: response.confirmationNumber 
@@ -154,7 +169,16 @@ const CustomerDetails = () => {
       const bookingResponse = await createBooking(data);
       
       if (bookingResponse) {
-        navigate("/payment");
+        // Check reservation number to ensure booking was successful
+        const reservationNo = bookingResponse.results?.reservationno;
+        if (reservationNo && parseInt(reservationNo.toString()) > 0) {
+          navigate("/payment");
+        } else {
+          toast.error("Booking unsuccessful", {
+            description: "Please contact support with this message: ReservationNo <= 0"
+          });
+          setIsSubmitting(false);
+        }
       } else {
         setIsSubmitting(false);
       }
