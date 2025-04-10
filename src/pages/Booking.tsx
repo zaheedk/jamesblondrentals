@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useRcmApi } from "@/hooks/use-rcm-api";
@@ -23,11 +22,9 @@ const Booking = () => {
   const [step3Params, setStep3Params] = useState<RCMStep3Request | null>(null);
   const [paramError, setParamError] = useState<string | null>(null);
   
-  // State for selected options
   const [selectedInsuranceId, setSelectedInsuranceId] = useState<string | number | null>(null);
   const [selectedExtras, setSelectedExtras] = useState<Map<string | number, number>>(new Map());
   
-  // Get vehicle and booking details from URL params
   const vehicleId = searchParams.get("vehicleId");
   const pickupLocationId = searchParams.get("pickupLocationId");
   const dropoffLocationId = searchParams.get("dropoffLocationId");
@@ -42,13 +39,10 @@ const Booking = () => {
   const pickupLocationName = searchParams.get("pickupLocationName");
   const dropoffLocationName = searchParams.get("dropoffLocationName");
   
-  // Calculate number of days for KM charges calculation
   const numberOfDays = pickupDate && dropoffDate ? 
     differenceInDays(new Date(dropoffDate), new Date(pickupDate)) + 1 : 1;
   
-  // Fetch Step3 data
   useEffect(() => {
-    // Validate required parameters immediately when component mounts
     let missingParams = [];
     if (!vehicleId) missingParams.push("vehicleId");
     if (!pickupLocationId) missingParams.push("pickupLocationId");
@@ -71,7 +65,6 @@ const Booking = () => {
     }
 
     try {
-      // Construct Step3 parameters
       const params: RCMStep3Request = {
         vehiclecategoryid: vehicleId!,
         pickuplocationid: pickupLocationId!,
@@ -82,6 +75,18 @@ const Booking = () => {
         dropofftime: dropoffTime!,
         ageid: ageId!
       };
+      
+      console.group('Step 3 Request Parameters');
+      console.log('Vehicle Category ID:', params.vehiclecategoryid);
+      console.log('Pickup Location ID:', params.pickuplocationid);
+      console.log('Pickup Date:', params.pickupdate);
+      console.log('Pickup Time:', params.pickuptime);
+      console.log('Dropoff Location ID:', params.dropofflocationid);
+      console.log('Dropoff Date:', params.dropoffdate);
+      console.log('Dropoff Time:', params.dropofftime);
+      console.log('Age ID:', params.ageid);
+      console.log('Full Request Object:', JSON.stringify(params, null, 2));
+      console.groupEnd();
       
       console.log("Step3 params:", params);
       setStep3Params(params);
@@ -111,10 +116,8 @@ const Booking = () => {
     }
   }, [vehicleId, pickupLocationId, dropoffLocationId, pickupDate, pickupTime, dropoffDate, dropoffTime, ageId]);
   
-  // Fetch step3 data from API
   const { data: step3Data, isLoading: isStep3Loading, error: step3Error } = useStep3Details(step3Params);
   
-  // Set default insurance option when data is loaded
   useEffect(() => {
     if (step3Data?.results?.insuranceoptions) {
       const defaultInsurance = step3Data.results.insuranceoptions.find(ins => ins.isdefault);
@@ -126,7 +129,6 @@ const Booking = () => {
     }
   }, [step3Data]);
   
-  // Set default extras when data is loaded
   useEffect(() => {
     if (step3Data?.results?.extras) {
       const newSelectedExtras = new Map<string | number, number>();
@@ -139,12 +141,10 @@ const Booking = () => {
     }
   }, [step3Data]);
   
-  // Handle insurance selection
   const handleInsuranceChange = (insuranceId: string | number) => {
     setSelectedInsuranceId(insuranceId);
   };
   
-  // Handle extras selection
   const handleExtraChange = (extraId: string | number, quantity: number) => {
     const updatedExtras = new Map(selectedExtras);
     
@@ -157,7 +157,6 @@ const Booking = () => {
     setSelectedExtras(updatedExtras);
   };
   
-  // Get selected insurance details
   const getSelectedInsurance = () => {
     if (!selectedInsuranceId || !step3Data?.results?.insuranceoptions) return null;
     
@@ -172,7 +171,6 @@ const Booking = () => {
     } : null;
   };
   
-  // Get selected extras details
   const getSelectedExtrasDetails = () => {
     if (!step3Data?.results?.extras) return [];
     
@@ -192,7 +190,6 @@ const Booking = () => {
       .filter(Boolean) as { id: string | number; name: string; quantity: number; totalPrice: number }[];
   };
   
-  // Calculate KM charge price
   const getKmChargePrice = () => {
     if (!step3Data?.results?.kmcharges) return 0;
     
@@ -202,17 +199,14 @@ const Booking = () => {
     return defaultKmCharge.dailyrate * numberOfDays;
   };
   
-  // Get currency symbol
   const getCurrencySymbol = () => {
     return step3Data?.results?.locationfees?.currencysymbol || "$";
   };
   
-  // Handle continue to customer details
   const handleContinue = () => {
     const selectedInsurance = getSelectedInsurance();
     const selectedExtrasDetails = getSelectedExtrasDetails();
     
-    // Build URL parameters for next step
     const params = new URLSearchParams();
     params.append("vehicleId", vehicleId || "");
     params.append("vehicleName", vehicleName || "");
@@ -245,7 +239,6 @@ const Booking = () => {
       getKmChargePrice()
     ).toString());
     
-    // Navigate to customer details page
     navigate(`/customer-details?${params.toString()}`);
   };
 
