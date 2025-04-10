@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getBookingData, clearBookingData } from "@/lib/booking-session";
@@ -13,17 +12,12 @@ const Payment = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
-  const [showIframe, setShowIframe] = useState(false);
-  const [iframeLoaded, setIframeLoaded] = useState(false);
-  const [iframeError, setIframeError] = useState(false);
   const [responseData, setResponseData] = useState<any>(null);
   const [showResponseData, setShowResponseData] = useState(false);
   
-  // Fallback URL for demo purposes
   const WINDCAVE_PAYMENT_URL = "https://sec.windcave.com/pxmi3/EF4054F622D6C4C1BCABA908582B2E191A35B4C818154175";
 
   useEffect(() => {
-    // Get booking data from session
     const bookingData = getBookingData();
     
     if (!bookingData) {
@@ -32,36 +26,19 @@ const Payment = () => {
       return;
     }
     
-    // In a real implementation, this would call your backend API
     const simulateCreatePayment = async () => {
       try {
-        // This simulates the code you provided
-        const baseUrl = window.location.origin;
-        console.log('Base URL:', baseUrl);
+        const baseUrl = encodeURIComponent(window.location.origin);
+        console.log('Base URL (encoded):', baseUrl);
         
-        // Capture request payload for display
         const requestPayload = {
           "method": "createdpspayment",
           "reservationref": bookingData.vehicleId,
           "amount": bookingData.basePrice,
-          "returnurl": `${baseUrl}/payment-success`
+          "returnurl": `${window.location.origin}/payment-success`
         };
         
-        // In a real implementation, you would make an actual API call like this:
-        /*
-        const response = await fetch("/api/RentalCarManagerApi/CreatedpsPayment", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(requestPayload)
-        });
-        const responseData = await response.json();
-        */
-        
-        // For demo, we'll simulate a successful response
         setTimeout(() => {
-          // Simulate response with payment URL
           const simulatedResponse = {
             data: JSON.stringify({
               status: "OK",
@@ -75,14 +52,14 @@ const Payment = () => {
           const data = JSON.parse(simulatedResponse.data);
           console.log('Payment session created:', data);
           
-          // Save response data for display
           setResponseData({
             request: requestPayload,
             response: data
           });
           
           if (data.status === "OK") {
-            setPaymentUrl(data.url);
+            const validatedUrl = validatePaymentUrl(data.url);
+            setPaymentUrl(validatedUrl);
           } else {
             setError("Failed to create payment session");
           }
@@ -99,12 +76,21 @@ const Payment = () => {
     simulateCreatePayment();
   }, []);
 
-  // Toggle response data display
+  const validatePaymentUrl = (url: string): string => {
+    try {
+      new URL(url);
+      return url;
+    } catch (e) {
+      console.error("Invalid payment URL:", url, e);
+      toast.error("Invalid payment URL received from server");
+      return WINDCAVE_PAYMENT_URL;
+    }
+  };
+
   const toggleResponseData = () => {
     setShowResponseData(prev => !prev);
   };
 
-  // Direct redirect to Windcave payment page
   const handleRedirectToPayment = () => {
     try {
       if (!paymentUrl) {
@@ -113,15 +99,21 @@ const Payment = () => {
       }
       
       toast.info("Redirecting to payment gateway...");
-      // Use window.open to open in a new tab for better user experience
-      window.open(paymentUrl, "_blank", "noopener,noreferrer");
+      
+      const validUrl = validatePaymentUrl(paymentUrl);
+      
+      const newWindow = window.open(validUrl, "_blank", "noopener,noreferrer");
+      
+      if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+        toast.error("Popup was blocked by browser");
+        window.location.href = validUrl;
+      }
     } catch (error) {
       console.error("Error redirecting to payment gateway:", error);
       toast.error("Failed to redirect to payment gateway");
     }
   };
   
-  // Open Windcave in a popup window
   const openPaymentPopup = () => {
     try {
       if (!paymentUrl) {
@@ -129,25 +121,31 @@ const Payment = () => {
         return;
       }
       
+      const validUrl = validatePaymentUrl(paymentUrl);
+      
       const width = 800;
       const height = 700;
       const left = (window.innerWidth - width) / 2;
       const top = (window.innerHeight - height) / 2;
       
+      const popupFeatures = `width=${width},height=${height},top=${top},left=${left},scrollbars=yes,resizable=yes,status=yes,toolbar=no`;
+      console.log("Opening popup with URL:", validUrl);
+      console.log("Popup features:", popupFeatures);
+      
       const popup = window.open(
-        paymentUrl,
+        validUrl,
         "WindcavePayment",
-        `width=${width},height=${height},top=${top},left=${left},scrollbars=yes,resizable=yes`
+        popupFeatures
       );
       
       if (!popup || popup.closed || typeof popup.closed === 'undefined') {
         toast.error("Popup blocked by browser");
+        window.location.href = validUrl;
         return;
       }
       
       toast.info("Payment window opened");
       
-      // Check if popup was closed
       const checkPopupInterval = setInterval(() => {
         if (popup.closed) {
           clearInterval(checkPopupInterval);
@@ -164,10 +162,36 @@ const Payment = () => {
     navigate(-1);
   };
 
-  // For demo purposes only
   const handleSimulateComplete = () => {
     toast.success("Payment processed successfully");
     navigate("/payment-success");
+  };
+
+  const showDiagnosticInfo = () => {
+    const diagnosticInfo = {
+      userAgent: navigator.userAgent,
+      windowSize: {
+        innerWidth: window.innerWidth,
+        innerHeight: window.innerHeight
+      },
+      location: {
+        origin: window.location.origin,
+        pathname: window.location.pathname,
+        href: window.location.href
+      },
+      paymentUrl: paymentUrl
+    };
+    
+    console.log("Diagnostic info:", diagnosticInfo);
+    
+    setResponseData(prev => ({
+      ...prev,
+      diagnosticInfo
+    }));
+    
+    setShowResponseData(true);
+    
+    toast.info("Browser diagnostic information collected");
   };
 
   if (error) {
@@ -211,13 +235,22 @@ const Payment = () => {
                       <Info className="h-5 w-5 text-blue-500" />
                       Payment Request/Response Data
                     </h3>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      onClick={toggleResponseData}
-                    >
-                      {showResponseData ? "Hide Details" : "Show Details"}
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={showDiagnosticInfo}
+                      >
+                        Show Diagnostic Info
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={toggleResponseData}
+                      >
+                        {showResponseData ? "Hide Details" : "Show Details"}
+                      </Button>
+                    </div>
                   </div>
                   
                   {showResponseData && (
@@ -241,7 +274,7 @@ const Payment = () => {
                             </TableRow>
                           </TableHeader>
                           <TableBody>
-                            {Object.entries(responseData.response).map(([key, value]) => (
+                            {responseData.response && Object.entries(responseData.response).map(([key, value]) => (
                               <TableRow key={key}>
                                 <TableCell className="font-medium">{key}</TableCell>
                                 <TableCell>{String(value)}</TableCell>
@@ -250,6 +283,17 @@ const Payment = () => {
                           </TableBody>
                         </Table>
                       </div>
+                      
+                      {responseData.diagnosticInfo && (
+                        <div>
+                          <h4 className="font-medium mb-2">Diagnostic Information:</h4>
+                          <div className="bg-gray-100 p-3 rounded overflow-auto max-h-60">
+                            <pre className="text-xs">
+                              {JSON.stringify(responseData.diagnosticInfo, null, 2)}
+                            </pre>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -260,6 +304,13 @@ const Payment = () => {
                   <CreditCard className="h-5 w-5" />
                   Payment Information
                 </h2>
+                
+                <Alert className="mb-4 bg-amber-50 border-amber-200 text-amber-800">
+                  <div className="flex items-center">
+                    <AlertCircle className="h-4 w-4 mr-2" />
+                    <span>Windcave reported a "bad URL" error. This may be due to URL formatting or parameters.</span>
+                  </div>
+                </Alert>
                 
                 <div className="text-gray-700 space-y-4">
                   <p>You can complete your payment using one of the following methods:</p>
