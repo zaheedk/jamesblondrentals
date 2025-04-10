@@ -95,11 +95,13 @@ const CustomerDetails = () => {
     try {
       console.log('Creating booking with data:', { bookingData, formData });
       
-      // Prepare optional fees array from selected extras
+      // Prepare optional fees array from selected extras with required qty parameter
       const optionalFees = bookingData.selectedExtras?.map(extra => ({
         id: extra.id,
-        quantity: extra.quantity
+        qty: extra.quantity // Using the key 'qty' instead of 'quantity' as required by the API
       })) || [];
+      
+      console.log('Optional fees prepared for API:', optionalFees);
       
       const bookingRequest = {
         vehiclecategoryid: bookingData.vehicleId,
@@ -115,7 +117,7 @@ const CustomerDetails = () => {
         // Include insurance ID and extras kms ID
         insuranceid: bookingData.insuranceId || "0",
         extrakmsid: bookingData.extraKmsId || "0",
-        // Include optional fees (extras)
+        // Include optional fees (extras) with correct qty parameter
         optionalfees: optionalFees,
         customer: {
           firstname: formData.firstName,

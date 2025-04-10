@@ -1,3 +1,4 @@
+
 // RCM API type definitions
 
 export interface RCMVehicle {
@@ -171,7 +172,7 @@ export interface RCMBookingRequest {
   extrakmsid?: string | number;
   optionalfees?: Array<{
     id: string | number;
-    quantity: number;
+    qty: number; // Changed from 'quantity' to 'qty' to match API requirements
   }>;
   customer?: {
     firstname: string;
