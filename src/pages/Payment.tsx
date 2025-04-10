@@ -1,10 +1,9 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getBookingData, updateBookingData } from "@/lib/booking-session";
 import { toast } from "sonner";
 import { rcmApi } from "@/lib/api/rcm-api";
-import type { RCMPaymentResponse } from "@/lib/api/rcm-api-types";
+import type { RCMPaymentResponse, RCMPaymentConfirmationResponse } from "@/lib/api/rcm-api-types";
 import moment from "moment";
 
 const Payment = () => {
@@ -180,7 +179,7 @@ const Payment = () => {
       
       console.log('Payment confirmation payload:', requestPayload);
       
-      const response = await rcmApi.request('POST', 'confirmpayment', requestPayload);
+      const response = await rcmApi.request<RCMPaymentConfirmationResponse>('POST', 'confirmpayment', requestPayload);
       
       console.log('Payment confirmation response:', response);
       
