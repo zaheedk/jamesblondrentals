@@ -9,7 +9,7 @@ import BookingSummary from "@/components/booking/BookingSummary";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Separator } from "@/components/ui/separator";
-import { RCMStep3Request, RCMStep3Response, RCMInsuranceOption } from "@/lib/api/rcm-api-types";
+import { RCMStep3Request, RCMStep3Response, RCMInsuranceOption, RCMExtra } from "@/lib/api/rcm-api-types";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { getBookingData, BookingSessionData } from "@/lib/booking-session";
@@ -26,6 +26,7 @@ const Booking = () => {
   
   const [selectedInsuranceId, setSelectedInsuranceId] = useState<string | number | null>(null);
   const [selectedExtras, setSelectedExtras] = useState<Map<string | number, number>>(new Map());
+  const [optionalExtras, setOptionalExtras] = useState<RCMExtra[]>([]);
   
   useEffect(() => {
     const data = getBookingData();
@@ -164,6 +165,24 @@ const Booking = () => {
       console.log('Insurance Options:', step3Data.results.insuranceoptions?.length || 0);
       console.log('Km Charges:', step3Data.results.kmcharges?.length || 0);
       console.log('Extras:', step3Data.results.extras?.length || 0);
+      
+      if ((!step3Data.results.extras || step3Data.results.extras.length === 0) && 
+          step3Data.results.optionalfees && step3Data.results.optionalfees.length > 0) {
+        
+        const mappedExtras: RCMExtra[] = step3Data.results.optionalfees.map(fee => ({
+          id: fee.id,
+          name: fee.name,
+          description: fee.feedescription || '',
+          maxquantity: fee.qtyapply ? 10 : 1,
+          unitprice: fee.fees || 0,
+          totalextraamount: fee.totalfeeamount || 0,
+          isdefault: false,
+          type: fee.type
+        }));
+        
+        setOptionalExtras(mappedExtras);
+        console.log('Using optional fees as extras:', mappedExtras.length);
+      }
     }
     console.groupEnd();
     
@@ -178,16 +197,20 @@ const Booking = () => {
   }, [step3Data, isStep3Loading, step3Error]);
   
   useEffect(() => {
-    if (step3Data?.results?.extras) {
+    const availableExtras = step3Data?.results?.extras?.length > 0 
+      ? step3Data.results.extras 
+      : optionalExtras;
+      
+    if (availableExtras && availableExtras.length > 0) {
       const newSelectedExtras = new Map<string | number, number>();
-      step3Data.results.extras.forEach(extra => {
+      availableExtras.forEach(extra => {
         if (extra.isdefault) {
           newSelectedExtras.set(extra.id, 1);
         }
       });
       setSelectedExtras(newSelectedExtras);
     }
-  }, [step3Data]);
+  }, [step3Data, optionalExtras]);
   
   const handleInsuranceChange = (insuranceId: string | number) => {
     setSelectedInsuranceId(insuranceId);
@@ -220,11 +243,15 @@ const Booking = () => {
   };
   
   const getSelectedExtrasDetails = () => {
-    if (!step3Data?.results?.extras) return [];
+    const availableExtras = step3Data?.results?.extras?.length > 0 
+      ? step3Data.results.extras 
+      : optionalExtras;
+    
+    if (!availableExtras || availableExtras.length === 0) return [];
     
     return Array.from(selectedExtras.entries())
       .map(([extraId, quantity]) => {
-        const extra = step3Data.results.extras.find(
+        const extra = availableExtras.find(
           e => e.id.toString() === extraId.toString()
         );
         
@@ -354,14 +381,14 @@ const Booking = () => {
             />
           )}
           
-          {step3Data?.results?.extras && (
-            <ExtrasSelection
-              extras={step3Data.results.extras}
-              selectedExtras={selectedExtras}
-              onExtraChange={handleExtraChange}
-              currencySymbol={getCurrencySymbol()}
-            />
-          )}
+          <ExtrasSelection
+            extras={step3Data?.results?.extras?.length > 0 
+              ? step3Data.results.extras 
+              : optionalExtras}
+            selectedExtras={selectedExtras}
+            onExtraChange={handleExtraChange}
+            currencySymbol={getCurrencySymbol()}
+          />
           
           <div className="pt-6">
             <Button size="lg" onClick={handleContinue}>

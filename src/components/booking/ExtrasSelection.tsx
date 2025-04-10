@@ -94,9 +94,11 @@ const ExtrasSelection = ({
               </div>
             ))
           ) : (
-            <div className="text-center py-4 text-gray-600">
-              <p className="italic mb-2">No extras are available for this vehicle</p>
-              <p className="text-xs">Items like child seats, GPS units, or additional equipment would appear here if available.</p>
+            <div className="text-center py-6">
+              <p className="text-gray-500 mb-2">No additional extras are available for this vehicle.</p>
+              <p className="text-sm text-gray-400">
+                Try selecting a different vehicle or location that might offer extras like child seats, GPS, or camping equipment.
+              </p>
             </div>
           )}
         </div>

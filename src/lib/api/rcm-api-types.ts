@@ -1,4 +1,3 @@
-
 // RCM API type definitions
 
 export interface RCMVehicle {
@@ -214,11 +213,32 @@ export interface RCMKmCharge {
 export interface RCMExtra {
   id: string | number;
   name: string;
-  description: string;
-  maxquantity: number;
-  unitprice: number;
-  totalextraamount: number;
-  isdefault: boolean;
+  description?: string;
+  maxquantity: number;  // Maximum quantity allowed
+  unitprice: number;    // Price per unit
+  totalextraamount: number;  // Total amount for default quantity
+  isdefault: boolean;   // Whether selected by default
+  // Additional fields from the API response
+  vehiclecategorytypeid?: string | number;
+  vehiclecategoryid?: string | number;
+  locationid?: string | number;
+  displayorder?: number;
+  feegroupid?: number;
+  feegroupname?: string;
+  numberofdays?: number;
+  payagency?: boolean;
+  fees?: number;
+  type?: string;
+  maximumprice?: number;
+  stampduty?: boolean;
+  gst?: boolean;
+  ispercentageontotalcost?: boolean;
+  merchantfee?: boolean;
+  qtyapply?: boolean;
+  feedescription?: string;
+  feedescription1?: string;
+  feedescription2?: string;
+  feedescription3?: string;
 }
 
 export interface RCMStep3Request {

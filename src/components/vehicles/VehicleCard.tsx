@@ -37,8 +37,8 @@ const VehicleCard = ({ vehicle }: VehicleCardProps) => {
     }
     
     // Check if the image is an object with url property
-    if (image && typeof image === 'object' && 'url' in image) {
-      return image.url as string;
+    if (image && typeof image === 'object' && 'url' in image && typeof image.url === 'string') {
+      return image.url;
     }
     
     return '/placeholder.svg';
