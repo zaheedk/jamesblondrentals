@@ -33,7 +33,6 @@ export interface RCMLocation {
   longitude: number;
 }
 
-// New interfaces for Step1 response
 export interface RCMDriverAge {
   id: string;
   driverage: string;
@@ -90,7 +89,6 @@ export interface RCMStep1Response {
   results: RCMStep1Results;
 }
 
-// New Step2 response interfaces
 export interface RCMSeasonalRate {
   vehiclecategoryid: number | string;
   dailyratebeforediscount: number;
@@ -241,6 +239,32 @@ export interface RCMExtra {
   feedescription3?: string;
 }
 
+export interface RCMOptionalFee {
+  id: string | number;
+  vehiclecategorytypeid: string | number;
+  vehiclecategoryid: string | number;
+  locationid: string;
+  displayorder: number;
+  feegroupid: number;
+  feegroupname: string;
+  numberofdays: number;
+  payagency: boolean;
+  fees: number;
+  totalfeeamount: number;
+  name: string;
+  type: string;
+  maximumprice: number;
+  stampduty: boolean;
+  gst: boolean;
+  ispercentageontotalcost: boolean;
+  merchantfee: boolean;
+  qtyapply: boolean;
+  feedescription: string;
+  feedescription1: string;
+  feedescription2: string;
+  feedescription3: string;
+}
+
 export interface RCMStep3Request {
   vehiclecategoryid: string | number;
   vehiclecategorytypeid: string | number; 
@@ -258,6 +282,7 @@ export interface RCMStep3Results {
   insuranceoptions: RCMInsuranceOption[];
   kmcharges: RCMKmCharge[];
   extras: RCMExtra[];
+  optionalfees?: RCMOptionalFee[]; // Add this field to fix the type error
   locationfees: {
     vehiclecategoryid: string | number;
     currencysymbol: string;

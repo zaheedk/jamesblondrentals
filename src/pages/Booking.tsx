@@ -9,7 +9,7 @@ import BookingSummary from "@/components/booking/BookingSummary";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Separator } from "@/components/ui/separator";
-import { RCMStep3Request, RCMStep3Response, RCMInsuranceOption, RCMExtra } from "@/lib/api/rcm-api-types";
+import { RCMStep3Request, RCMStep3Response, RCMInsuranceOption, RCMExtra, RCMOptionalFee } from "@/lib/api/rcm-api-types";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { getBookingData, BookingSessionData } from "@/lib/booking-session";
