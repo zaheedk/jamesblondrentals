@@ -10,6 +10,7 @@ const Payment = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
   const bookingData = getBookingData();
+  const [iframeError, setIframeError] = useState(false);
 
   useEffect(() => {
     if (!bookingData) {
@@ -76,29 +77,23 @@ const Payment = () => {
     createPayment();
   }, [navigate, bookingData]);
 
-  // Log diagnostic info for debugging
-  useEffect(() => {
-    if (paymentUrl) {
-      const diagnosticInfo = {
-        userAgent: navigator.userAgent,
-        windowSize: {
-          innerWidth: window.innerWidth,
-          innerHeight: window.innerHeight
-        },
-        location: {
-          origin: window.location.origin,
-          pathname: window.location.pathname,
-          href: window.location.href
-        },
-        paymentUrl
-      };
-      
-      console.info('Diagnostic info:', diagnosticInfo);
-    }
-  }, [paymentUrl]);
+  // Handler for iframe load errors
+  const handleIframeError = () => {
+    console.error('Payment iframe failed to load properly');
+    setIframeError(true);
+    toast.error("Payment Form Error", {
+      description: "The payment form failed to load. Please try again or contact support.",
+    });
+  };
 
   const handleManualContinue = () => {
     navigate("/payment-success");
+  };
+
+  const refreshPaymentPage = () => {
+    setIsLoading(true);
+    setIframeError(false);
+    window.location.reload();
   };
 
   return (
@@ -112,25 +107,56 @@ const Payment = () => {
               <div className="w-12 h-12 border-4 border-t-blue-500 border-blue-200 rounded-full animate-spin mb-4"></div>
               <p className="text-lg">Preparing secure payment...</p>
             </div>
-          ) : paymentUrl ? (
+          ) : paymentUrl && !iframeError ? (
             <div className="w-full">
+              <div className="bg-blue-50 p-3 mb-4 rounded text-sm">
+                <p>If the payment form doesn't load properly, try clicking the button below:</p>
+                <div className="mt-2">
+                  <a 
+                    href={paymentUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                  >
+                    Open Payment Form in New Tab
+                  </a>
+                </div>
+              </div>
               <iframe 
                 src={paymentUrl}
                 className="w-full h-[600px] border-0"
                 title="Payment Form"
-                sandbox="allow-forms allow-scripts allow-same-origin allow-top-navigation allow-popups"
+                sandbox="allow-forms allow-scripts allow-same-origin allow-top-navigation allow-popups allow-popups-to-escape-sandbox allow-modals"
+                onError={handleIframeError}
               ></iframe>
             </div>
           ) : (
             <div className="text-center py-8">
-              <p className="text-red-500 mb-4">Failed to load payment form.</p>
+              <p className="text-red-500 mb-4">
+                {iframeError 
+                  ? "The payment form failed to load in this window." 
+                  : "Failed to load payment form."}
+              </p>
               <div className="space-y-4">
                 <button 
                   className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                  onClick={() => window.location.reload()}
+                  onClick={refreshPaymentPage}
                 >
                   Try Again
                 </button>
+                
+                {iframeError && paymentUrl && (
+                  <div className="mt-4">
+                    <a 
+                      href={paymentUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                    >
+                      Open Payment Form in New Tab
+                    </a>
+                  </div>
+                )}
                 
                 {/* Add option to continue to success page for testing */}
                 {process.env.NODE_ENV !== 'production' && (
