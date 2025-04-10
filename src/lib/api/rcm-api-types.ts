@@ -222,6 +222,7 @@ export interface RCMExtra {
 
 export interface RCMStep3Request {
   vehiclecategoryid: string | number;
+  vehiclecategorytypeid: string | number; // Added this field
   pickuplocationid: string | number;
   pickupdate: string;
   pickuptime: string;

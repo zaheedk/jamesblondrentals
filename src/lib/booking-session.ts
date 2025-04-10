@@ -6,6 +6,7 @@
 export interface BookingSessionData {
   vehicleId: string;
   vehicleName?: string;
+  vehicleCategoryTypeId: string; // Added this field for step3 API call
   pickupLocationId: string;
   pickupLocationName?: string;
   dropoffLocationId: string;

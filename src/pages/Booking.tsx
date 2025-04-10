@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRcmApi } from "@/hooks/use-rcm-api";
@@ -22,6 +23,7 @@ const Booking = () => {
   const [bookingDetails, setBookingDetails] = useState<any>(null);
   const [step3Params, setStep3Params] = useState<RCMStep3Request | null>(null);
   const [paramError, setParamError] = useState<string | null>(null);
+  const [numberOfDays, setNumberOfDays] = useState<number>(1);
   
   const [selectedInsuranceId, setSelectedInsuranceId] = useState<string | number | null>(null);
   const [selectedExtras, setSelectedExtras] = useState<Map<string | number, number>>(new Map());
@@ -44,9 +46,16 @@ const Booking = () => {
     }
 
     try {
+      // Calculate number of days between pickup and dropoff
+      const pickupDateObj = new Date(data.pickupDate);
+      const dropoffDateObj = new Date(data.dropoffDate);
+      const days = differenceInDays(dropoffDateObj, pickupDateObj) || 1;
+      setNumberOfDays(days);
+      
       // Log booking data for debugging
       console.group('Booking Data from Session Storage');
       console.log('vehicleId:', data.vehicleId);
+      console.log('vehicleCategoryTypeId:', data.vehicleCategoryTypeId);
       console.log('pickupLocationId:', data.pickupLocationId);
       console.log('dropoffLocationId:', data.dropoffLocationId);
       console.log('pickupDate:', data.pickupDate);
@@ -61,6 +70,7 @@ const Booking = () => {
       
       const params: RCMStep3Request = {
         vehiclecategoryid: data.vehicleId,
+        vehiclecategorytypeid: data.vehicleCategoryTypeId, // Added this field for the API
         pickuplocationid: data.pickupLocationId,
         pickupdate: data.pickupDate,
         pickuptime: data.pickupTime,
@@ -72,6 +82,7 @@ const Booking = () => {
       
       console.group('Step 3 Request Parameters');
       console.log('Vehicle Category ID:', params.vehiclecategoryid);
+      console.log('Vehicle Category Type ID:', params.vehiclecategorytypeid);
       console.log('Pickup Location ID:', params.pickuplocationid);
       console.log('Pickup Date:', params.pickupdate);
       console.log('Pickup Time:', params.pickuptime);

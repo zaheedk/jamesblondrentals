@@ -23,15 +23,20 @@ const VehicleCard = ({ vehicle }: VehicleCardProps) => {
   const dropoffTime = searchParams.get("dropoffTime") || "";
   const age = searchParams.get("age") || "";
   
+  // Get the image URL correctly handling different data formats
+  const getImageUrl = () => {
+    if (Array.isArray(vehicle.images) && vehicle.images.length > 0) {
+      const image = vehicle.images[0];
+      return typeof image === 'string' ? image : image.url || '/placeholder.svg';
+    }
+    return '/placeholder.svg';
+  };
+  
   return (
     <Card className="overflow-hidden shadow-md h-full flex flex-col">
       <div 
         className="h-48 bg-center bg-cover" 
-        style={{ 
-          backgroundImage: `url(${Array.isArray(vehicle.images) 
-            ? vehicle.images[0] 
-            : vehicle.images?.url || '/placeholder.svg'})` 
-        }}
+        style={{ backgroundImage: `url(${getImageUrl()})` }}
       />
       <CardHeader className="pb-2">
         <div className="flex justify-between items-start">
@@ -48,7 +53,7 @@ const VehicleCard = ({ vehicle }: VehicleCardProps) => {
               ${typeof vehicle.price === 'string' ? vehicle.price : vehicle.price.toFixed(2)}
             </div>
             <div className="text-xs text-gray-500">
-              {vehicle.priceUnit === 'daily' 
+              {vehicle.priceUnit === 'day' 
                 ? 'per day' 
                 : vehicle.priceUnit === 'total' 
                   ? 'total' 
