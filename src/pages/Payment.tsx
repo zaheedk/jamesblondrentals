@@ -49,10 +49,11 @@ const Payment = () => {
         
         console.log('Payment session created:', paymentSession);
 
-        if (paymentSession.status === "OK" && paymentSession.url) {
-          setPaymentUrl(paymentSession.url);
+        // Check for RedirectUrl in the results object
+        if (paymentSession.status === "OK" && paymentSession.results?.RedirectUrl) {
+          setPaymentUrl(paymentSession.results.RedirectUrl);
         } else {
-          throw new Error('Invalid payment session response');
+          throw new Error('Invalid payment session response - missing RedirectUrl');
         }
       } catch (error) {
         console.error('Error creating payment session:', error);

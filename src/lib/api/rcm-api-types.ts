@@ -1,4 +1,3 @@
-
 // RCM API type definitions
 
 export interface RCMVehicle {
@@ -351,8 +350,12 @@ export interface RCMPaymentRequest {
 
 export interface RCMPaymentResponse {
   status: string;
-  url?: string;
   error?: string;
+  results?: {
+    ReturnUrl?: string;
+    RedirectUrl?: string;
+    TransactionType?: string;
+  };
 }
 
 export interface RCMApiConfig {
