@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -11,6 +12,7 @@ interface VehicleCardProps {
 
 const VehicleCard = ({ vehicle }: VehicleCardProps) => {
   const [searchParams] = useSearchParams();
+  const [imageError, setImageError] = React.useState(false);
   
   const pickupLocation = searchParams.get("pickupLocation") || "";
   const pickupLocationName = searchParams.get("pickupLocationName") || "";
@@ -23,6 +25,10 @@ const VehicleCard = ({ vehicle }: VehicleCardProps) => {
   const age = searchParams.get("age") || "";
   
   const getImageUrl = () => {
+    if (imageError) {
+      return '/placeholder.svg';
+    }
+    
     if (!vehicle.images || !Array.isArray(vehicle.images) || vehicle.images.length === 0) {
       return '/placeholder.svg';
     }
@@ -42,12 +48,22 @@ const VehicleCard = ({ vehicle }: VehicleCardProps) => {
   
   const imageUrl = getImageUrl();
   
+  // Function to handle image load errors
+  const handleImageError = () => {
+    console.log(`Image failed to load for vehicle: ${vehicle.make} ${vehicle.model}`);
+    setImageError(true);
+  };
+  
   return (
     <Card className="overflow-hidden shadow-md h-full flex flex-col">
-      <div 
-        className="h-48 bg-center bg-cover" 
-        style={{ backgroundImage: `url(${imageUrl})` }}
-      />
+      <div className="h-48 relative">
+        <img 
+          src={imageUrl} 
+          alt={`${vehicle.make} ${vehicle.model}`}
+          className="h-full w-full object-cover"
+          onError={handleImageError}
+        />
+      </div>
       <CardHeader className="pb-2">
         <div className="flex justify-between items-start">
           <div>
