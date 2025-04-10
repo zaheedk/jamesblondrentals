@@ -11,6 +11,8 @@ import Vehicles from "./pages/Vehicles";
 import VehicleDetail from "./pages/VehicleDetail";
 import Booking from "./pages/Booking";
 import CustomerDetails from "./pages/CustomerDetails";
+import Payment from "./pages/Payment";
+import PaymentSuccess from "./pages/PaymentSuccess";
 
 // Use function component syntax to ensure hooks work correctly
 const App = () => {
@@ -29,6 +31,8 @@ const App = () => {
             <Route path="/vehicle/:id" element={<VehicleDetail />} />
             <Route path="/booking" element={<Booking />} />
             <Route path="/customer-details" element={<CustomerDetails />} />
+            <Route path="/payment" element={<Payment />} />
+            <Route path="/payment-success" element={<PaymentSuccess />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

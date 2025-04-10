@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -27,7 +26,6 @@ import { cn } from "@/lib/utils";
 import { getBookingData } from "@/lib/booking-session";
 import { toast } from "sonner";
 
-// Define schema for form validation
 const formSchema = z.object({
   firstName: z.string().min(2, {
     message: "First name must be at least 2 characters.",
@@ -47,7 +45,6 @@ const formSchema = z.object({
 
 type CustomerFormValues = z.infer<typeof formSchema>;
 
-// Default values for the form
 const defaultValues: Partial<CustomerFormValues> = {
   firstName: "",
   lastName: "",
@@ -60,11 +57,9 @@ const CustomerDetails = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   
-  // Get booking data from session
   const bookingData = getBookingData();
   
   React.useEffect(() => {
-    // Redirect to home if no booking data is available
     if (!bookingData) {
       toast.error("No booking information found", {
         description: "Please start a new booking.",
@@ -81,19 +76,14 @@ const CustomerDetails = () => {
   const onSubmit = (data: CustomerFormValues) => {
     setIsSubmitting(true);
     
-    // Log form submission
     console.log("Form submitted:", data);
     
-    // Here you would typically send the data to your backend or combine with booking data
     try {
-      // Add a mock successful submission
       setTimeout(() => {
         toast.success("Customer details saved", {
-          description: "Your booking is being processed.",
+          description: "Proceeding to payment.",
         });
-        // Navigate to a confirmation page or payment page
-        // For now, we'll just navigate back to home
-        navigate("/");
+        navigate("/payment");
         setIsSubmitting(false);
       }, 1500);
     } catch (error) {
@@ -114,7 +104,6 @@ const CustomerDetails = () => {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* First Name */}
                 <FormField
                   control={form.control}
                   name="firstName"
@@ -132,7 +121,6 @@ const CustomerDetails = () => {
                   )}
                 />
                 
-                {/* Last Name */}
                 <FormField
                   control={form.control}
                   name="lastName"
@@ -150,7 +138,6 @@ const CustomerDetails = () => {
                   )}
                 />
                 
-                {/* Email */}
                 <FormField
                   control={form.control}
                   name="email"
@@ -168,7 +155,6 @@ const CustomerDetails = () => {
                   )}
                 />
                 
-                {/* Phone */}
                 <FormField
                   control={form.control}
                   name="phone"
@@ -186,7 +172,6 @@ const CustomerDetails = () => {
                   )}
                 />
                 
-                {/* Date of Birth */}
                 <FormField
                   control={form.control}
                   name="dateOfBirth"
@@ -233,7 +218,6 @@ const CustomerDetails = () => {
                   )}
                 />
                 
-                {/* Flight Number */}
                 <FormField
                   control={form.control}
                   name="flightNumber"
@@ -255,7 +239,6 @@ const CustomerDetails = () => {
                 />
               </div>
               
-              {/* Form Actions */}
               <div className="flex justify-between pt-4 border-t border-gray-200">
                 <Button 
                   type="button" 
