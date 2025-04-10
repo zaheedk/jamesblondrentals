@@ -39,6 +39,14 @@ export interface BookingSessionData {
   bookingReference?: string;
   confirmationNumber?: string;
   reservationNo?: string;
+  // Customer details fields
+  customerFirstName?: string;
+  customerLastName?: string;
+  customerEmail?: string;
+  customerPhone?: string;
+  customerDob?: string;
+  customerLicenseExpiry?: string;
+  customerAddress?: string;
 }
 
 export const BOOKING_SESSION_KEY = 'rcm_booking_data';

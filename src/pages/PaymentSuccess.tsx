@@ -2,15 +2,19 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, XCircle } from "lucide-react";
+import { CheckCircle2, XCircle, FrownIcon } from "lucide-react";
 import { getBookingData, clearBookingData } from "@/lib/booking-session";
 import { toast } from "sonner";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { formatCurrency } from "@/lib/utils";
 
 const PaymentSuccess = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [bookingDetails, setBookingDetails] = useState<any>(null);
   const [paymentStatus, setPaymentStatus] = useState<"success" | "failed" | "pending">("pending");
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [transactionId, setTransactionId] = useState<string>("");
   
   useEffect(() => {
     // Get booking data from session
@@ -28,14 +32,18 @@ const PaymentSuccess = () => {
     // Parse URL parameters to determine payment status
     const queryParams = new URLSearchParams(location.search);
     const result = queryParams.get("result");
+    const txnId = queryParams.get("txnId") || "N/A";
+    setTransactionId(txnId);
     
     if (result === "failed" || queryParams.get("error")) {
       setPaymentStatus("failed");
+      setErrorMessage(queryParams.get("message") || "Your payment was not successful. Please try again.");
       toast.error("Payment Failed", {
         description: queryParams.get("message") || "Your payment was not successful. Please try again."
       });
     } else if (result === "cancelled") {
       setPaymentStatus("failed");
+      setErrorMessage("You cancelled the payment process.");
       toast.error("Payment Cancelled", {
         description: "You cancelled the payment process."
       });
@@ -58,9 +66,20 @@ const PaymentSuccess = () => {
     );
   }
 
+  // Get customer details from booking data if available
+  const customerDetails = {
+    firstName: bookingDetails.customerFirstName || "Not provided",
+    lastName: bookingDetails.customerLastName || "Not provided",
+    email: bookingDetails.customerEmail || "Not provided",
+    phone: bookingDetails.customerPhone || "Not provided",
+    dob: bookingDetails.customerDob || "Not provided",
+    licenseExpiry: bookingDetails.customerLicenseExpiry || "Not provided",
+    address: bookingDetails.customerAddress || "Not provided"
+  };
+
   return (
-    <div className="container mx-auto px-4 py-16 text-center">
-      <div className="max-w-md mx-auto bg-white rounded-lg shadow-md p-8">
+    <div className="container mx-auto px-4 py-8 text-center">
+      <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-8">
         {paymentStatus === "success" ? (
           <>
             <CheckCircle2 className="h-16 w-16 text-green-500 mx-auto mb-4" />
@@ -74,55 +93,92 @@ const PaymentSuccess = () => {
           </>
         ) : (
           <>
-            <XCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
-            <h1 className="text-3xl font-bold mb-2">Payment Not Completed</h1>
-            <p className="text-gray-600 mb-6">
-              Your payment was not completed successfully.
-            </p>
-            <p className="text-gray-600 mb-8">
-              Please try again or contact customer support for assistance.
-            </p>
-            <Button 
-              onClick={() => navigate("/payment-options")}
-              className="w-full mb-4"
-              variant="outline"
-            >
-              Try Payment Again
-            </Button>
+            <h1 className="text-4xl font-bold mb-6">Payment Request Failed</h1>
+            <div className="bg-red-200 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
+              <FrownIcon className="h-12 w-12 text-red-500" />
+            </div>
+            <p className="text-xl font-medium mb-8">Failed Payment</p>
+            
+            {errorMessage && (
+              <Alert variant="destructive" className="mb-6">
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{errorMessage}</AlertDescription>
+              </Alert>
+            )}
+            
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold mb-4">Transaction Number</h2>
+              <p className="text-lg mb-6">{transactionId || "0000000000"}</p>
+              
+              <h2 className="text-2xl font-bold mb-4">Customer Request Details</h2>
+              
+              <div className="space-y-2 text-left max-w-md mx-auto">
+                <p><span className="font-medium">First Name: </span>{customerDetails.firstName}</p>
+                <p><span className="font-medium">Last Name: </span>{customerDetails.lastName}</p>
+                <p><span className="font-medium">Email - ID: </span>{customerDetails.email}</p>
+                <p><span className="font-medium">Mobile No: </span>{customerDetails.phone}</p>
+                <p><span className="font-medium">Date of Birth: </span>{customerDetails.dob}</p>
+                <p><span className="font-medium">License Expires: </span>{customerDetails.licenseExpiry}</p>
+                <p><span className="font-medium">Full Address: </span>{customerDetails.address}</p>
+              </div>
+            </div>
+            
+            <div className="flex flex-col md:flex-row gap-4 justify-center mb-4">
+              <Button 
+                onClick={() => navigate("/payment")}
+                className="bg-[#342F63] hover:bg-[#25224A] text-white px-8 py-2 rounded-full text-lg"
+              >
+                TRY AGAIN
+              </Button>
+              
+              <Button 
+                variant="outline"
+                onClick={() => navigate("/payment-options")}
+                className="bg-[#342F63] hover:bg-[#25224A] text-white px-8 py-2 rounded-full text-lg"
+              >
+                SAVE QUOTATION
+              </Button>
+            </div>
+            
+            <p className="text-red-500 mt-4">Note :- Please filled Valid details</p>
           </>
         )}
         
-        <div className="text-left mb-8 border-t border-b py-4">
-          <div className="flex justify-between py-2">
-            <span className="font-medium">Vehicle:</span> 
-            <span>{bookingDetails.vehicleName}</span>
-          </div>
-          <div className="flex justify-between py-2">
-            <span className="font-medium">Pickup Date:</span> 
-            <span>{bookingDetails.pickupDate} at {bookingDetails.pickupTime}</span>
-          </div>
-          <div className="flex justify-between py-2">
-            <span className="font-medium">Return Date:</span> 
-            <span>{bookingDetails.dropoffDate} at {bookingDetails.dropoffTime}</span>
-          </div>
-          <div className="flex justify-between py-2">
-            <span className="font-medium">Payment Amount:</span> 
-            <span>${bookingDetails.paymentAmount?.toFixed(2) || bookingDetails.basePrice?.toFixed(2)}</span>
-          </div>
-          {bookingDetails.paymentType === "deposit" && (
-            <div className="flex justify-between py-2">
-              <span className="font-medium">Balance Due:</span> 
-              <span>${(bookingDetails.basePrice - bookingDetails.paymentAmount).toFixed(2)}</span>
+        {paymentStatus === "success" && (
+          <>
+            <div className="text-left mb-8 border-t border-b py-4">
+              <div className="flex justify-between py-2">
+                <span className="font-medium">Vehicle:</span> 
+                <span>{bookingDetails.vehicleName}</span>
+              </div>
+              <div className="flex justify-between py-2">
+                <span className="font-medium">Pickup Date:</span> 
+                <span>{bookingDetails.pickupDate} at {bookingDetails.pickupTime}</span>
+              </div>
+              <div className="flex justify-between py-2">
+                <span className="font-medium">Return Date:</span> 
+                <span>{bookingDetails.dropoffDate} at {bookingDetails.dropoffTime}</span>
+              </div>
+              <div className="flex justify-between py-2">
+                <span className="font-medium">Payment Amount:</span> 
+                <span>{formatCurrency(bookingDetails.paymentAmount || bookingDetails.basePrice)}</span>
+              </div>
+              {bookingDetails.paymentType === "deposit" && (
+                <div className="flex justify-between py-2">
+                  <span className="font-medium">Balance Due:</span> 
+                  <span>{formatCurrency(bookingDetails.basePrice - bookingDetails.paymentAmount)}</span>
+                </div>
+              )}
             </div>
-          )}
-        </div>
-        
-        <Button 
-          onClick={() => navigate("/")}
-          className="w-full"
-        >
-          Return to Home
-        </Button>
+            
+            <Button 
+              onClick={() => navigate("/")}
+              className="w-full"
+            >
+              Return to Home
+            </Button>
+          </>
+        )}
       </div>
     </div>
   );
