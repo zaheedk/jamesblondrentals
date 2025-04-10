@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -134,10 +133,10 @@ const CustomerDetails = () => {
         
         // Store all reference numbers from the response
         const updatedData = updateBookingData({
-          reservationRef: response.reservationRef || response.results?.reservationref,
-          bookingReference: response.bookingReference || response.results?.bookingref,
-          confirmationNumber: response.confirmationNumber || response.results?.confirmationno,
-          reservationNo: response.results?.reservationno?.toString()
+          reservationRef: response.reservationRef || (response.results?.reservationref || ""),
+          bookingReference: response.bookingReference || (response.results?.bookingref || ""),
+          confirmationNumber: response.confirmationNumber || (response.results?.confirmationno || ""),
+          reservationNo: response.results?.reservationno?.toString() || ""
         });
         
         // Log all the booking reference data

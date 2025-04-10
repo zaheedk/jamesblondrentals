@@ -198,6 +198,14 @@ export interface RCMBookingRequest {
   transmission?: number;
 }
 
+export interface RCMBookingResponseResults {
+  reservationref?: string;
+  bookingref?: string;
+  confirmationno?: string;
+  reservationno?: string | number;
+  totalamount?: number;
+}
+
 export interface RCMBookingResponse {
   status: string;
   bookingId?: string;
@@ -206,6 +214,7 @@ export interface RCMBookingResponse {
   bookingReference?: string;
   totalAmount?: number;
   error?: string;
+  results?: RCMBookingResponseResults;
 }
 
 export interface RCMAvailabilityRequest {
