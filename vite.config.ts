@@ -3,6 +3,12 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
+import type { IncomingMessage } from 'http';
+
+// Extend IncomingMessage type to include body
+interface ExtendedIncomingMessage extends IncomingMessage {
+  body?: any;
+}
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -29,8 +35,9 @@ export default defineConfig(({ mode }) => ({
             console.log('Request headers:', proxyReq.getHeaders());
             
             // Log request body for debugging if available
-            if (req.body) {
-              console.log('Request body:', typeof req.body === 'object' ? JSON.stringify(req.body) : req.body);
+            const extendedReq = req as ExtendedIncomingMessage;
+            if (extendedReq.body) {
+              console.log('Request body:', typeof extendedReq.body === 'object' ? JSON.stringify(extendedReq.body) : extendedReq.body);
             }
           });
           proxy.on('proxyRes', (proxyRes, req, _res) => {
