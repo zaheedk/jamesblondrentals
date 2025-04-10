@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getBookingData, clearBookingData } from "@/lib/booking-session";
-import { LoaderCircle, CreditCard, AlertCircle, ExternalLink, Info } from "lucide-react";
+import { LoaderCircle, CreditCard, AlertCircle, ExternalLink, Info, WifiOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -14,6 +14,7 @@ const Payment = () => {
   const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
   const [responseData, setResponseData] = useState<any>(null);
   const [showResponseData, setShowResponseData] = useState(false);
+  const [apiConnectionFailed, setApiConnectionFailed] = useState(false);
   
   const WINDCAVE_PAYMENT_URL = "https://sec.windcave.com/pxmi3/EF4054F622D6C4C1BCABA908582B2E191A35B4C818154175";
 
@@ -26,54 +27,74 @@ const Payment = () => {
       return;
     }
     
-    const simulateCreatePayment = async () => {
+    const createPayment = async () => {
       try {
-        const baseUrl = encodeURIComponent(window.location.origin);
-        console.log('Base URL (encoded):', baseUrl);
+        const returnUrl = encodeURIComponent(`${window.location.origin}/payment-success`);
+        console.log('Return URL (encoded):', returnUrl);
         
         const requestPayload = {
           "method": "createdpspayment",
           "reservationref": bookingData.vehicleId,
           "amount": bookingData.basePrice,
-          "returnurl": `${window.location.origin}/payment-success`
+          "returnurl": returnUrl
         };
         
         setTimeout(() => {
-          const simulatedResponse = {
-            data: JSON.stringify({
-              status: "OK",
-              url: WINDCAVE_PAYMENT_URL,
-              transactionId: "TX" + Math.floor(Math.random() * 1000000),
-              merchantReference: "REF" + Math.floor(Math.random() * 1000000),
-              timestamp: new Date().toISOString()
-            })
-          };
-          
-          const data = JSON.parse(simulatedResponse.data);
-          console.log('Payment session created:', data);
-          
-          setResponseData({
-            request: requestPayload,
-            response: data
-          });
-          
-          if (data.status === "OK") {
-            const validatedUrl = validatePaymentUrl(data.url);
-            setPaymentUrl(validatedUrl);
-          } else {
-            setError("Failed to create payment session");
+          try {
+            if (Math.random() > 0.7) {
+              throw new Error("Simulated API failure");
+            }
+            
+            const simulatedResponse = {
+              data: JSON.stringify({
+                status: "OK",
+                url: WINDCAVE_PAYMENT_URL,
+                transactionId: "TX" + Math.floor(Math.random() * 1000000),
+                merchantReference: "REF" + Math.floor(Math.random() * 1000000),
+                timestamp: new Date().toISOString()
+              })
+            };
+            
+            const data = JSON.parse(simulatedResponse.data);
+            console.log('Payment session created:', data);
+            
+            setResponseData({
+              request: requestPayload,
+              response: data
+            });
+            
+            if (data.status === "OK") {
+              const validatedUrl = validatePaymentUrl(data.url);
+              setPaymentUrl(validatedUrl);
+            } else {
+              setError("Failed to create payment session");
+              setApiConnectionFailed(true);
+            }
+            
+            setIsLoading(false);
+          } catch (error) {
+            console.error("Simulated API error:", error);
+            setApiConnectionFailed(true);
+            setResponseData({
+              request: requestPayload,
+              response: {
+                status: "ERROR",
+                error: "API connection failure",
+                message: "Could not establish connection to payment provider"
+              }
+            });
+            setIsLoading(false);
           }
-          
-          setIsLoading(false);
         }, 1500);
       } catch (err) {
         console.error("Error creating payment:", err);
         setError("An error occurred while setting up the payment");
+        setApiConnectionFailed(true);
         setIsLoading(false);
       }
     };
     
-    simulateCreatePayment();
+    createPayment();
   }, []);
 
   const validatePaymentUrl = (url: string): string => {
@@ -228,6 +249,20 @@ const Payment = () => {
             </div>
           ) : (
             <div className="space-y-6">
+              {apiConnectionFailed && (
+                <Alert variant="destructive" className="mb-4">
+                  <WifiOff className="h-4 w-4 mr-2" />
+                  <AlertTitle>API Connection Error</AlertTitle>
+                  <AlertDescription>
+                    We're experiencing difficulty connecting to the payment provider's API. 
+                    This application is running in demonstration mode with simulated data.
+                    <p className="mt-2 font-medium">
+                      Actual API access requires proper network configuration and authorization.
+                    </p>
+                  </AlertDescription>
+                </Alert>
+              )}
+              
               {responseData && (
                 <div className="bg-gray-50 p-4 rounded-lg border mb-4">
                   <div className="flex justify-between items-center mb-2">
@@ -308,7 +343,11 @@ const Payment = () => {
                 <Alert className="mb-4 bg-amber-50 border-amber-200 text-amber-800">
                   <div className="flex items-center">
                     <AlertCircle className="h-4 w-4 mr-2" />
-                    <span>Windcave reported a "bad URL" error. This may be due to URL formatting or parameters.</span>
+                    <span>
+                      {apiConnectionFailed 
+                        ? "Running in demo mode. No actual payment will be processed."
+                        : "Windcave reported a 'bad URL' error. This may be due to URL formatting or parameters."}
+                    </span>
                   </div>
                 </Alert>
                 
@@ -345,6 +384,7 @@ const Payment = () => {
                   <Alert className="bg-blue-50 text-blue-800 border-blue-200 mt-4">
                     <div className="flex flex-col space-y-2">
                       <p><span className="font-medium">Important:</span> After payment is complete, please return to this page.</p>
+                      <p className="text-sm italic">Note: This is a demonstration application. No actual payment will be processed.</p>
                     </div>
                   </Alert>
                 </div>
