@@ -11,8 +11,10 @@ const Payment = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
+  const [showIframe, setShowIframe] = useState(false);
   
-  // In a real implementation, this URL would come from your backend API
+  // Fallback URL for demo purposes
   const WINDCAVE_PAYMENT_URL = "https://sec.windcave.com/pxmi3/EF4054F622D6C4C1BCABA908582B2E191A35B4C818154175";
 
   useEffect(() => {
@@ -25,26 +27,83 @@ const Payment = () => {
       return;
     }
     
-    // In a real implementation, you would:
-    // 1. Call your backend API to create a payment session with Windcave
-    // 2. Get the payment URL from the response
-    
-    // For demo purposes, we'll simulate preparing a payment session after a delay
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1500);
-    
-    return () => {
-      clearTimeout(timer);
+    // In a real implementation, this would call your backend API
+    // For demo purposes, we'll simulate the API call
+    const simulateCreatePayment = async () => {
+      try {
+        // This simulates the code you provided
+        const baseUrl = window.location.origin;
+        console.log('Base URL:', baseUrl);
+        
+        // In a real implementation, you would make an actual API call like this:
+        /*
+        const response = await fetch("/api/RentalCarManagerApi/CreatedpsPayment", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            "method": "createdpspayment",
+            "reservationref": bookingData.vehicleId,
+            "amount": bookingData.basePrice,
+            "returnurl": `${baseUrl}/payment-success`
+          })
+        });
+        const responseData = await response.json();
+        */
+        
+        // For demo, we'll simulate a successful response
+        setTimeout(() => {
+          // Simulate response with payment URL
+          const simulatedResponse = {
+            data: JSON.stringify({
+              status: "OK",
+              url: WINDCAVE_PAYMENT_URL
+            })
+          };
+          
+          const data = JSON.parse(simulatedResponse.data);
+          console.log('Payment session created:', data);
+          
+          if (data.status === "OK") {
+            setPaymentUrl(data.url);
+          } else {
+            setError("Failed to create payment session");
+          }
+          
+          setIsLoading(false);
+        }, 1500);
+      } catch (err) {
+        console.error("Error creating payment:", err);
+        setError("An error occurred while setting up the payment");
+        setIsLoading(false);
+      }
     };
+    
+    simulateCreatePayment();
   }, []);
 
-  // Function to handle redirect to Windcave payment page
+  // Show Windcave in an iframe
+  const showWindcaveIframe = () => {
+    if (!paymentUrl) {
+      toast.error("Payment URL not available");
+      return;
+    }
+    
+    setShowIframe(true);
+    toast.info("Loading payment form...");
+  };
+
+  // Redirect to Windcave payment page
   const handleRedirectToPayment = () => {
     try {
+      if (!paymentUrl) {
+        toast.error("Payment URL not available");
+        return;
+      }
+      
       toast.info("Redirecting to payment gateway...");
-      // Immediately redirect to Windcave payment page
-      window.location.href = WINDCAVE_PAYMENT_URL;
+      window.location.href = paymentUrl;
     } catch (error) {
       console.error("Error redirecting to payment gateway:", error);
       toast.error("Failed to redirect to payment gateway");
@@ -93,6 +152,26 @@ const Payment = () => {
               <LoaderCircle className="h-10 w-10 text-primary animate-spin mb-4" />
               <p className="text-lg">Preparing Windcave Payment Gateway...</p>
             </div>
+          ) : showIframe ? (
+            <div className="space-y-4">
+              <div className="relative h-[600px] w-full border rounded-lg overflow-hidden">
+                <iframe 
+                  src={paymentUrl || ""}
+                  frameBorder="0" 
+                  id="paymentIFrame" 
+                  className="absolute inset-0 w-full h-full"
+                  title="Windcave Payment"
+                ></iframe>
+              </div>
+              <div className="flex justify-between pt-4">
+                <Button variant="outline" onClick={() => setShowIframe(false)}>
+                  Back
+                </Button>
+                <Button onClick={handleSimulateComplete}>
+                  Simulate Payment Complete
+                </Button>
+              </div>
+            </div>
           ) : (
             <div className="space-y-6">
               <div className="bg-gray-50 p-6 rounded-lg border">
@@ -102,26 +181,42 @@ const Payment = () => {
                 </h2>
                 
                 <div className="text-gray-700 space-y-4">
-                  <p>You will be redirected to Windcave's secure payment page to complete your transaction.</p>
+                  <p>You can complete your payment using one of the following methods:</p>
                   
-                  <Alert className="bg-blue-50 text-blue-800 border-blue-200">
+                  <div className="grid md:grid-cols-2 gap-4 mt-4">
+                    <div className="border rounded-lg p-4 bg-white">
+                      <h3 className="font-medium mb-2">Option 1: Embedded Payment Form</h3>
+                      <p className="text-sm mb-3">Complete your payment without leaving this page.</p>
+                      <Button 
+                        onClick={showWindcaveIframe}
+                        variant="outline"
+                        className="w-full"
+                      >
+                        Pay in Embedded Form
+                      </Button>
+                    </div>
+                    
+                    <div className="border rounded-lg p-4 bg-white">
+                      <h3 className="font-medium mb-2">Option 2: Redirect to Payment Page</h3>
+                      <p className="text-sm mb-3">You will be redirected to Windcave's secure payment page.</p>
+                      <Button 
+                        onClick={handleRedirectToPayment}
+                        className="w-full"
+                      >
+                        <CreditCard className="mr-2 h-4 w-4" />
+                        Go to Payment Page
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <Alert className="bg-blue-50 text-blue-800 border-blue-200 mt-4">
                     <div className="flex flex-col space-y-2">
-                      <p><span className="font-medium">Important:</span> Please do not close your browser during the payment process.</p>
-                      <p><span className="font-medium">Note:</span> After payment is complete, you will be redirected back to our website.</p>
+                      <p><span className="font-medium">Important:</span> After payment is complete, you will be redirected back to our website.</p>
                     </div>
                   </Alert>
-                  
-                  <Button 
-                    className="w-full mt-4"
-                    onClick={handleRedirectToPayment}
-                  >
-                    <CreditCard className="mr-2 h-4 w-4" />
-                    Proceed to Secure Payment
-                  </Button>
                 </div>
               </div>
               
-              {/* For demo purposes only - in production these would be handled by the payment provider */}
               <div className="flex justify-between border-t pt-4">
                 <Button variant="outline" onClick={handleCancel}>
                   Cancel
