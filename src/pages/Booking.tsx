@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -175,9 +176,9 @@ const Booking = () => {
         return {
           id: optionalFee.id,
           name: optionalFee.name,
-          quantity: 1, // Optional fees always have quantity 1
+          quantity: qty, // Now supporting quantity for optional fees
           unitPrice: optionalFee.fees,
-          totalPrice: optionalFee.fees
+          totalPrice: optionalFee.fees * qty // Multiply by quantity
         };
       } else {
         console.warn("Could not find extra or optional fee with id:", id);

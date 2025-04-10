@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -89,8 +90,24 @@ const ExtrasSelection = ({
                   </div>
                   
                   {selectedExtras.has(fee.id) && (
-                    <div className="font-semibold text-right min-w-16">
-                      {currencySymbol}{fee.fees.toFixed(2)}
+                    <div className="flex items-center gap-2">
+                      {fee.qtyapply && (
+                        <>
+                          <Label htmlFor={`quantity-fee-${fee.id}`} className="text-sm">Qty:</Label>
+                          <Input
+                            id={`quantity-fee-${fee.id}`}
+                            type="number"
+                            min="1"
+                            max="10"
+                            value={selectedExtras.get(fee.id) || 1}
+                            onChange={(e) => handleQuantityChange(fee.id, parseInt(e.target.value, 10))}
+                            className="w-16 h-8 text-sm"
+                          />
+                        </>
+                      )}
+                      <div className="font-semibold text-right min-w-16">
+                        {currencySymbol}{((selectedExtras.get(fee.id) || 1) * fee.fees).toFixed(2)}
+                      </div>
                     </div>
                   )}
                 </div>
