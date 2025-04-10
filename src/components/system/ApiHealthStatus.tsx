@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRcmApi } from '@/hooks/use-rcm-api';
 import { useApiDiagnostics } from '@/hooks/use-api-diagnostics';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
@@ -16,7 +16,10 @@ export const ApiHealthStatus = ({ onlyShowOnError = false }: ApiHealthStatusProp
   const [lastChecked, setLastChecked] = useState<Date | null>(null);
   const [isChecking, setIsChecking] = useState(false);
   
-  const checkApiHealth = async () => {
+  // Use useCallback to prevent recreation of this function on each render
+  const checkApiHealth = useCallback(async () => {
+    if (isChecking) return; // Prevent multiple simultaneous checks
+    
     setIsChecking(true);
     try {
       const result = await runDiagnostics();
@@ -38,12 +41,11 @@ export const ApiHealthStatus = ({ onlyShowOnError = false }: ApiHealthStatusProp
     } finally {
       setIsChecking(false);
     }
-  };
+  }, [initializeApi, runDiagnostics, isChecking]);
   
   useEffect(() => {
+    // Only check on initial mount, don't create dependencies that could cause re-renders
     checkApiHealth();
-    
-    // Don't set up interval for automatic rechecks
   }, []);
   
   if (onlyShowOnError && apiStatus !== 'error') {

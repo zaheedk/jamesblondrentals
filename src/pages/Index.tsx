@@ -5,7 +5,7 @@ import Hero from "@/components/home/Hero";
 import FeaturedVehicles from "@/components/home/FeaturedVehicles";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRcmApi } from "@/hooks/use-rcm-api";
 import { toast } from "sonner";
 import { useApiDiagnostics } from "@/hooks/use-api-diagnostics";
@@ -17,9 +17,9 @@ const Index = () => {
   const { runDiagnostics } = useApiDiagnostics();
   const [apiConnectionFailed, setApiConnectionFailed] = useState(false);
   
-  useEffect(() => {
-    // Initialize the API with connection enabled
-    initializeApi({ 
+  // Use useCallback for API initialization to prevent recreation on each render
+  const initializeApiWithConfig = useCallback(() => {
+    return initializeApi({ 
       enableApi: true, // Explicitly enable the API
       useMockData: false,
       apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
@@ -27,7 +27,7 @@ const Index = () => {
       apiUrl: "/api/rcm/booking/v3.2/"
     }).then(() => {
       // Run diagnostics to check API connectivity
-      runDiagnostics().then(result => {
+      return runDiagnostics().then(result => {
         console.log("API diagnostics result:", result);
         if (!result.apiAccessible) {
           toast.error("API Connection Failed", {
@@ -36,7 +36,7 @@ const Index = () => {
           setApiConnectionFailed(true);
           
           // Fall back to mock data if API is not accessible
-          initializeApi({
+          return initializeApi({
             enableApi: true,
             useMockData: true,
             apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
@@ -49,7 +49,13 @@ const Index = () => {
       console.error("Failed to initialize API:", error);
       setApiConnectionFailed(true);
     });
-  }, []); // Remove dependencies to prevent reconnection attempts
+  }, [initializeApi, runDiagnostics]);
+  
+  useEffect(() => {
+    // Initialize API only once when the component mounts
+    initializeApiWithConfig();
+    // Empty dependency array to only run on mount
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen">
