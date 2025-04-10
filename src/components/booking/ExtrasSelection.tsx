@@ -29,12 +29,14 @@ const ExtrasSelection = ({
     onExtraChange(extraId, quantity);
   };
 
-  // Debugging output
+  // Enhanced debugging output
   console.log("Extras received in component:", extras);
   console.log("Selected extras:", [...selectedExtras.entries()]);
+  console.log("Extras type:", typeof extras);
+  console.log("Is extras an array:", Array.isArray(extras));
 
   // If extras array is undefined, null, or empty, show a message
-  if (!extras || extras.length === 0) {
+  if (!extras || !Array.isArray(extras) || extras.length === 0) {
     return (
       <div className="space-y-4">
         <h3 className="text-lg font-semibold">Additional Extras</h3>

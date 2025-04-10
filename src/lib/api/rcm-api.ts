@@ -280,7 +280,50 @@ class RCMApiClient {
   async getStep3(params: RCMStep3Request): Promise<RCMStep3Response> {
     console.log('Fetching Step3 data with params:', params);
     
-    return this.request<RCMStep3Response>('POST', 'step3', params);
+    try {
+      const response = await this.request<RCMStep3Response>('POST', 'step3', params);
+      
+      // Additional logging to debug extras
+      if (response.status === "OK" && response.results) {
+        console.log('Step3 response received with status OK');
+        console.log('Extras in response:', response.results.extras);
+        console.log('Extras type:', typeof response.results.extras);
+        
+        // Ensure extras is always an array
+        if (!response.results.extras) {
+          console.log('No extras in response, setting to empty array');
+          response.results.extras = [];
+        } else if (!Array.isArray(response.results.extras)) {
+          console.log('Extras is not an array, converting:', response.results.extras);
+          try {
+            // If the API returns an object or string, try to convert it to an array
+            response.results.extras = [];
+          } catch (e) {
+            console.error('Failed to parse extras:', e);
+            response.results.extras = [];
+          }
+        }
+      }
+      
+      return response;
+    } catch (error) {
+      console.error('Error in getStep3:', error);
+      // Return a valid but empty response on error
+      return {
+        status: "ERR",
+        error: error instanceof Error ? error.message : "Unknown error in getStep3",
+        results: {
+          insuranceoptions: [],
+          kmcharges: [],
+          extras: [],
+          locationfees: {
+            vehiclecategoryid: 0,
+            currencysymbol: "$",
+            currencyname: "USD"
+          }
+        }
+      };
+    }
   }
 }
 

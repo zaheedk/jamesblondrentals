@@ -22,6 +22,7 @@ const Booking = () => {
   const [kmCharges, setKmCharges] = useState<RCMKmCharge[]>([]);
   const [extras, setExtras] = useState<RCMExtra[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [apiResponseDebug, setApiResponseDebug] = useState<any>(null);
   
   // Selected options state
   const [selectedInsurance, setSelectedInsurance] = useState<RCMInsuranceOption | null>(null);
@@ -100,13 +101,25 @@ const Booking = () => {
     })
     .then((response) => {
       console.log("Step 3 API response:", response);
+      setApiResponseDebug(response); // Store full response for debugging
+      
       if (response.status === "OK" && response.results) {
         const { insuranceoptions, kmcharges, extras } = response.results;
-        console.log("Received extras:", extras);
         
+        // Enhanced debug logging for extras
+        console.log("Raw extras from API:", extras);
+        console.log("Type of extras:", typeof extras);
+        console.log("Is extras array?", Array.isArray(extras));
+        console.log("Extras length:", extras ? extras.length : 'undefined');
+        
+        // Ensure we always have arrays, even if API returns null/undefined
         setInsuranceOptions(insuranceoptions || []);
         setKmCharges(kmcharges || []);
-        setExtras(extras || []);
+        
+        // Create a safe copy of extras array
+        const safeExtras = Array.isArray(extras) ? extras : [];
+        console.log("Safe extras array:", safeExtras);
+        setExtras(safeExtras);
         
         // Set default selections
         const defaultInsurance = insuranceoptions?.find(i => i.isdefault) || null;
@@ -114,6 +127,11 @@ const Booking = () => {
         
         const defaultKmCharge = kmcharges?.find(k => k.isdefault) || null;
         setSelectedKmCharge(defaultKmCharge);
+      } else {
+        console.error("API returned error or missing results:", response.error || "Unknown error");
+        toast.error("Could not load booking options", {
+          description: response.error || "The API returned an invalid response",
+        });
       }
     })
     .catch((error) => {
@@ -148,6 +166,7 @@ const Booking = () => {
 
   // Handle extras selection
   const handleExtrasChange = (extraId: string | number, quantity: number) => {
+    console.log("Handling extras change:", extraId, quantity);
     const newSelectedExtrasMap = new Map(selectedExtrasMap);
     
     if (quantity <= 0) {
@@ -156,12 +175,16 @@ const Booking = () => {
       newSelectedExtrasMap.set(extraId, quantity);
     }
     
+    console.log("Updated selected extras map:", [...newSelectedExtrasMap.entries()]);
     setSelectedExtrasMap(newSelectedExtrasMap);
     
     // Update the selectedExtras array for BookingSummary
     const updatedSelectedExtras = Array.from(newSelectedExtrasMap).map(([id, qty]) => {
       const extra = extras.find(e => e.id.toString() === id.toString());
-      if (!extra) return null;
+      if (!extra) {
+        console.warn("Could not find extra with id:", id);
+        return null;
+      }
       
       return {
         id: extra.id,
@@ -178,6 +201,7 @@ const Booking = () => {
       totalPrice: number;
     }[];
     
+    console.log("Updated selectedExtras array:", updatedSelectedExtras);
     setSelectedExtras(updatedSelectedExtras);
   };
 
@@ -203,6 +227,23 @@ const Booking = () => {
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">Complete Your Booking</h1>
       
+      {/* Debug section - only in development */}
+      {process.env.NODE_ENV !== 'production' && (
+        <div className="mb-6 p-4 border border-gray-300 rounded-md bg-gray-50">
+          <h3 className="font-medium mb-2">Debug Information</h3>
+          <div className="space-y-2 text-sm">
+            <div><strong>Extras Array Length:</strong> {extras?.length || 0}</div>
+            <div><strong>API Status:</strong> {apiResponseDebug?.status}</div>
+            <details>
+              <summary className="cursor-pointer">Raw API Response</summary>
+              <pre className="mt-2 p-2 bg-gray-100 overflow-auto text-xs">
+                {JSON.stringify(apiResponseDebug, null, 2)}
+              </pre>
+            </details>
+          </div>
+        </div>
+      )}
+      
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Options Section */}
         <div className="lg:col-span-2 space-y-8">
@@ -220,14 +261,14 @@ const Booking = () => {
           {kmCharges.length > 0 && (
             <KmCharges 
               kmCharges={kmCharges}
-              numberOfDays={numberOfDays}
+              numberOfDays={calculateNumberOfDays()}
               currencySymbol="$"
             />
           )}
           
           {/* Extras Selection */}
           <ExtrasSelection 
-            extras={extras || []}
+            extras={extras}
             selectedExtras={selectedExtrasMap}
             onExtraChange={handleExtrasChange}
             currencySymbol="$"
