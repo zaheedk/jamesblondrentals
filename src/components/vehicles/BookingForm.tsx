@@ -38,25 +38,58 @@ export default function BookingForm({
     // Use type instead of category since category may not exist on Vehicle type
     const vehicleCategoryTypeId = vehicle.type?.toString() || '0';
     
-    // Convert date strings to ISO format for better compatibility
-    let isoPickupDate = pickupDate;
-    let isoDropoffDate = dropoffDate;
+    // Format dates in dd/MM/yyyy format for API compatibility
+    let formattedPickupDate = pickupDate;
+    let formattedDropoffDate = dropoffDate;
     
     try {
-      // Parse date strings in DD/MM/YYYY format
-      if (pickupDate && pickupDate.includes('/')) {
-        const parsedDate = parse(pickupDate, 'dd/MM/yyyy', new Date());
-        isoPickupDate = parsedDate.toISOString();
+      // Parse and format dates appropriately
+      if (pickupDate) {
+        let parsedDate;
+        
+        if (pickupDate.includes('T')) {
+          // Handle ISO date format
+          parsedDate = new Date(pickupDate);
+        } else if (pickupDate.includes('/')) {
+          // Handle dd/MM/yyyy format
+          parsedDate = parse(pickupDate, 'dd/MM/yyyy', new Date());
+        } else {
+          // Handle other date formats
+          parsedDate = new Date(pickupDate);
+        }
+        
+        if (parsedDate && !isNaN(parsedDate.getTime())) {
+          formattedPickupDate = format(parsedDate, 'dd/MM/yyyy');
+        }
       }
       
-      if (dropoffDate && dropoffDate.includes('/')) {
-        const parsedDate = parse(dropoffDate, 'dd/MM/yyyy', new Date());
-        isoDropoffDate = parsedDate.toISOString();
+      if (dropoffDate) {
+        let parsedDate;
+        
+        if (dropoffDate.includes('T')) {
+          // Handle ISO date format
+          parsedDate = new Date(dropoffDate);
+        } else if (dropoffDate.includes('/')) {
+          // Handle dd/MM/yyyy format
+          parsedDate = parse(dropoffDate, 'dd/MM/yyyy', new Date());
+        } else {
+          // Handle other date formats
+          parsedDate = new Date(dropoffDate);
+        }
+        
+        if (parsedDate && !isNaN(parsedDate.getTime())) {
+          formattedDropoffDate = format(parsedDate, 'dd/MM/yyyy');
+        }
       }
     } catch (error) {
-      console.error("Error parsing dates:", error);
-      // Keep original strings if parsing fails
+      console.error("Error formatting dates:", error);
+      // Keep original strings if formatting fails
     }
+    
+    console.log("Booking form dates:", { 
+      original: { pickupDate, dropoffDate },
+      formatted: { pickupDate: formattedPickupDate, dropoffDate: formattedDropoffDate }
+    });
     
     // Save booking data to session storage
     saveBookingData({
@@ -67,9 +100,9 @@ export default function BookingForm({
       pickupLocationName,
       dropoffLocationId,
       dropoffLocationName,
-      pickupDate: isoPickupDate,
+      pickupDate: formattedPickupDate,
       pickupTime,
-      dropoffDate: isoDropoffDate,
+      dropoffDate: formattedDropoffDate,
       dropoffTime,
       ageId,
       basePrice: typeof vehicle.price === 'number' ? vehicle.price : parseFloat(vehicle.price || '0')

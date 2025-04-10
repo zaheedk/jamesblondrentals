@@ -41,40 +41,57 @@ const BookingSummary = ({
     try {
       // If it's already a valid Date object
       if (date instanceof Date && !isNaN(date.getTime())) {
-        return format(date, "PPP p");
+        return format(date, "PPP");
       }
       
       // If it's a string
       if (typeof date === 'string') {
-        // Check if it's an ISO string
-        if (date.includes('T')) {
-          const dateObj = new Date(date);
-          if (isValid(dateObj)) {
-            return format(dateObj, "PPP p");
+        // Check if it's a dd/MM/yyyy format
+        if (date.includes('/')) {
+          try {
+            const parsedDate = parse(date, 'dd/MM/yyyy', new Date());
+            if (isValid(parsedDate) && !isNaN(parsedDate.getTime())) {
+              return format(parsedDate, "PPP");
+            }
+          } catch (e) {
+            console.error("Failed to parse date with dd/MM/yyyy format:", date, e);
           }
         }
         
-        // Check if it's in DD/MM/YYYY format
-        if (date.includes('/')) {
-          const parsedDate = parse(date, 'dd/MM/yyyy', new Date());
-          if (isValid(parsedDate)) {
-            return format(parsedDate, "PPP p");
+        // Check if it's an ISO string
+        if (date.includes('T')) {
+          try {
+            const dateObj = new Date(date);
+            if (isValid(dateObj) && !isNaN(dateObj.getTime())) {
+              return format(dateObj, "PPP");
+            }
+          } catch (e) {
+            console.error("Failed to parse ISO date:", date, e);
           }
         }
         
         // Last attempt - try to parse as is
-        const fallbackDate = new Date(date);
-        if (isValid(fallbackDate)) {
-          return format(fallbackDate, "PPP p");
+        try {
+          const fallbackDate = new Date(date);
+          if (isValid(fallbackDate) && !isNaN(fallbackDate.getTime())) {
+            return format(fallbackDate, "PPP");
+          }
+        } catch (e) {
+          console.error("Failed to parse date with generic method:", date, e);
         }
       }
       
-      return "Invalid date format";
+      // If all parsing attempts fail, return the original string
+      return typeof date === 'string' ? date : "Invalid date format";
     } catch (err) {
       console.error("Error formatting date:", err, date);
       return "Date format error";
     }
   };
+
+  // Format pickup and dropoff dates
+  const formattedPickupDate = formatSafeDate(pickupDate);
+  const formattedDropoffDate = formatSafeDate(dropoffDate);
 
   return (
     <Card>
@@ -90,13 +107,13 @@ const BookingSummary = ({
         <div className="space-y-2">
           <h4 className="font-medium">Pickup</h4>
           <p className="text-sm">{pickupLocation}</p>
-          <p className="text-sm">{formatSafeDate(pickupDate)}</p>
+          <p className="text-sm">{formattedPickupDate}</p>
         </div>
         
         <div className="space-y-2">
           <h4 className="font-medium">Drop-off</h4>
           <p className="text-sm">{dropoffLocation}</p>
-          <p className="text-sm">{formatSafeDate(dropoffDate)}</p>
+          <p className="text-sm">{formattedDropoffDate}</p>
         </div>
         
         <div className="border-t border-gray-200 my-4"></div>

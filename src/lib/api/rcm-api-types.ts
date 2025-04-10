@@ -1,3 +1,4 @@
+
 // RCM API type definitions
 
 export interface RCMVehicle {
@@ -222,12 +223,12 @@ export interface RCMExtra {
 
 export interface RCMStep3Request {
   vehiclecategoryid: string | number;
-  vehiclecategorytypeid: string | number; // Added this field
+  vehiclecategorytypeid: string | number; 
   pickuplocationid: string | number;
-  pickupdate: string;
+  pickupdate: string;  // Should be in dd/MM/yyyy format
   pickuptime: string;
   dropofflocationid: string | number;
-  dropoffdate: string;
+  dropoffdate: string;  // Should be in dd/MM/yyyy format
   dropofftime: string;
   ageid: string | number;
   campaigncode?: string;

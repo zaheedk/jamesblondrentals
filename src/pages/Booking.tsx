@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRcmApi } from "@/hooks/use-rcm-api";
-import { parseISO, parse, differenceInDays, isValid } from "date-fns";
+import { parseISO, parse, differenceInDays, isValid, format } from "date-fns";
 import InsuranceOptions from "@/components/booking/InsuranceOptions";
 import KmCharges from "@/components/booking/KmCharges";
 import ExtrasSelection from "@/components/booking/ExtrasSelection";
@@ -82,14 +82,17 @@ const Booking = () => {
       const days = Math.max(differenceInDays(dropoffDateObj, pickupDateObj) || 1, 1);
       setNumberOfDays(days);
       
+      const formattedPickupDate = format(pickupDateObj, 'dd/MM/yyyy');
+      const formattedDropoffDate = format(dropoffDateObj, 'dd/MM/yyyy');
+      
       console.group('Booking Data from Session Storage');
       console.log('vehicleId:', data.vehicleId);
       console.log('vehicleCategoryTypeId:', data.vehicleCategoryTypeId);
       console.log('pickupLocationId:', data.pickupLocationId);
       console.log('dropoffLocationId:', data.dropoffLocationId);
-      console.log('pickupDate:', data.pickupDate, '(Parsed:', pickupDateObj.toISOString(), ')');
+      console.log('pickupDate:', data.pickupDate, '(Formatted:', formattedPickupDate, ')');
       console.log('pickupTime:', data.pickupTime);
-      console.log('dropoffDate:', data.dropoffDate, '(Parsed:', dropoffDateObj.toISOString(), ')');
+      console.log('dropoffDate:', data.dropoffDate, '(Formatted:', formattedDropoffDate, ')');
       console.log('dropoffTime:', data.dropoffTime);
       console.log('ageId:', data.ageId);
       console.log('vehicleName:', data.vehicleName);
@@ -101,10 +104,10 @@ const Booking = () => {
         vehiclecategoryid: data.vehicleId,
         vehiclecategorytypeid: data.vehicleCategoryTypeId,
         pickuplocationid: data.pickupLocationId,
-        pickupdate: data.pickupDate,
+        pickupdate: formattedPickupDate,
         pickuptime: data.pickupTime,
         dropofflocationid: data.dropoffLocationId,
-        dropoffdate: data.dropoffDate,
+        dropoffdate: formattedDropoffDate,
         dropofftime: data.dropoffTime,
         ageid: data.ageId
       };
@@ -316,6 +319,9 @@ const Booking = () => {
           <AlertTitle>API Error</AlertTitle>
           <AlertDescription>
             There was an error loading the booking options. This may be due to invalid parameters.
+            <p className="mt-2 text-xs overflow-auto max-h-32 bg-gray-100 p-2 rounded">
+              {step3Error instanceof Error ? step3Error.message : 'Unknown error'}
+            </p>
           </AlertDescription>
         </Alert>
         <Button className="mt-4" onClick={() => navigate("/vehicles")}>
