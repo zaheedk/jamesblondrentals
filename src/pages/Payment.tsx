@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getBookingData, updateBookingData } from "@/lib/booking-session";
@@ -12,7 +11,6 @@ const Payment = () => {
   const [isLoading, setIsLoading] = useState(true);
   const bookingData = getBookingData();
   
-  // Get query parameters from URL
   const queryParams = new URLSearchParams(location.search);
   const windcaveResult = queryParams.get("result");
   
@@ -25,23 +23,19 @@ const Payment = () => {
       return;
     }
     
-    // Check if we have a payment result from Windcave
     if (windcaveResult) {
       checkPaymentStatus(windcaveResult);
       return;
     }
     
-    // Get the reservation reference with proper fallbacks
-    // Priority: reservationRef > bookingReference > confirmationNumber > reservationNo
     const reservationRef = bookingData.reservationRef || 
                           bookingData.bookingReference || 
                           bookingData.confirmationNumber || 
                           bookingData.reservationNo ||
-                          bookingData.vehicleId; // last resort fallback
+                          bookingData.vehicleId;
     
     console.log('Using reservation reference:', reservationRef);
     
-    // Get payment amount - either deposit or full amount
     const paymentAmount = bookingData.paymentAmount || bookingData.basePrice;
     console.log('Payment amount:', paymentAmount);
     
@@ -59,14 +53,11 @@ const Payment = () => {
 
         console.log('Payment request payload:', requestPayload);
 
-        // Use the RCM API client instead of direct fetch
         const paymentSession = await rcmApi.createPaymentSession(requestPayload);
         
         console.log('Payment session created:', paymentSession);
 
-        // Check for RedirectUrl in the results object
         if (paymentSession.status === "OK" && paymentSession.results?.RedirectUrl) {
-          // Redirect to the payment gateway instead of displaying in iframe
           window.location.href = paymentSession.results.RedirectUrl;
         } else {
           throw new Error('Invalid payment session response - missing RedirectUrl');
@@ -77,7 +68,6 @@ const Payment = () => {
           description: "Failed to create payment session. Please try again.",
         });
         
-        // In case of error, add option to continue to success page for testing
         if (process.env.NODE_ENV !== 'production') {
           setTimeout(() => {
             setIsLoading(false);
@@ -89,13 +79,11 @@ const Payment = () => {
     createPayment();
   }, [navigate, bookingData, windcaveResult, location.search]);
   
-  // Function to check payment status with Windcave
   const checkPaymentStatus = async (windcaveResult: string) => {
     try {
       setIsLoading(true);
       console.log('Checking payment status with result:', windcaveResult);
       
-      // Get the reservation reference
       const reservationRef = bookingData?.reservationRef || 
                             bookingData?.bookingReference || 
                             bookingData?.confirmationNumber || 
@@ -114,20 +102,27 @@ const Payment = () => {
       
       console.log('Payment status check payload:', requestPayload);
       
-      // Make API call to check payment status with proper typing
       const response = await rcmApi.request<RCMPaymentResponse>('POST', 'getdpspayment', requestPayload);
       
       console.log('Payment status check response:', response);
       
       if (response && response.results) {
-        // Store transaction ID in booking data
         const transactionId = response.results.TransactionId || 'N/A';
+        
+        let paymentStatus: "Approved" | "Failed" | "Pending" | "Unknown" = "Unknown";
+        if (response.results.Status === "Approved") {
+          paymentStatus = "Approved";
+        } else if (response.results.Status === "Failed") {
+          paymentStatus = "Failed";
+        } else if (response.results.Status === "Pending") {
+          paymentStatus = "Pending";
+        }
+        
         updateBookingData({ 
           transactionId: transactionId,
-          paymentStatus: response.results.Status || 'Unknown'
+          paymentStatus: paymentStatus
         });
         
-        // Navigate to success page with appropriate parameters
         const params = new URLSearchParams();
         params.append('result', response.results.Status === 'Approved' ? 'success' : 'failed');
         params.append('txnId', transactionId);
@@ -143,7 +138,6 @@ const Payment = () => {
     } catch (error) {
       console.error('Error checking payment status:', error);
       
-      // Navigate to success page with error parameters
       const params = new URLSearchParams();
       params.append('result', 'failed');
       params.append('error', 'true');
@@ -153,7 +147,6 @@ const Payment = () => {
     }
   };
 
-  // Provide a back button and retry option in case redirect doesn't happen
   const handleRetry = () => {
     setIsLoading(true);
     window.location.reload();
@@ -195,7 +188,6 @@ const Payment = () => {
                   </button>
                 </div>
                 
-                {/* Add option to continue to success page for testing */}
                 {process.env.NODE_ENV !== 'production' && (
                   <div>
                     <p className="text-gray-600 my-4">For development/testing purposes:</p>
