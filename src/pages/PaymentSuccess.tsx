@@ -39,6 +39,7 @@ const PaymentSuccess = () => {
     transactionDate?: string;
     status?: string;
     transactionId?: string;
+    reservationRef?: string;
     cardDetails?: {
       cardholder?: string;
       payType?: string;
@@ -55,6 +56,12 @@ const PaymentSuccess = () => {
         const result = queryParams.get("result");
         const txnId = queryParams.get("txnId") || "N/A";
         const reservationRef = queryParams.get("reservationRef");
+        
+        console.log("URL Parameters:", {
+          result,
+          txnId,
+          reservationRef
+        });
         
         setTransactionId(txnId);
         
@@ -79,51 +86,64 @@ const PaymentSuccess = () => {
         }
         
         const sessionBookingData = getBookingData();
+        console.log("Session booking data:", sessionBookingData);
+        
+        const windcaveResponse = queryParams.get("windcaveResponse");
+        let parsedWindcaveResponse: any = null;
+        
+        if (windcaveResponse) {
+          try {
+            parsedWindcaveResponse = JSON.parse(decodeURIComponent(windcaveResponse));
+            console.log("Full Windcave Response:", parsedWindcaveResponse);
+            
+            const windcaveReservationRef = parsedWindcaveResponse.results?.ReservationRef || 
+                                          parsedWindcaveResponse.ReservationRef;
+            
+            console.log("Windcave Reservation Ref:", windcaveReservationRef);
+            
+            if (windcaveReservationRef && (!reservationRef || windcaveReservationRef !== reservationRef)) {
+              console.log("Using reservation reference from Windcave response:", windcaveReservationRef);
+              
+              setWindcaveResponseDetails({
+                amount: parsedWindcaveResponse.results?.Amount,
+                transactionDate: parsedWindcaveResponse.results?.TransactionDate,
+                status: parsedWindcaveResponse.results?.Status,
+                transactionId: parsedWindcaveResponse.results?.TransactionId,
+                reservationRef: windcaveReservationRef,
+                cardDetails: {
+                  cardholder: parsedWindcaveResponse.results?.Card?.Cardholder,
+                  payType: parsedWindcaveResponse.results?.Card?.PayType,
+                  cardNumber: parsedWindcaveResponse.results?.Card?.CardNumber
+                }
+              });
+              
+              if (windcaveReservationRef) {
+                await fetchBookingFromRCM(windcaveReservationRef);
+                setIsLoading(false);
+                return;
+              }
+            }
+            
+            setWindcaveResponseDetails({
+              amount: parsedWindcaveResponse.results?.Amount,
+              transactionDate: parsedWindcaveResponse.results?.TransactionDate,
+              status: parsedWindcaveResponse.results?.Status,
+              transactionId: parsedWindcaveResponse.results?.TransactionId,
+              reservationRef: reservationRef,
+              cardDetails: {
+                cardholder: parsedWindcaveResponse.results?.Card?.Cardholder,
+                payType: parsedWindcaveResponse.results?.Card?.PayType,
+                cardNumber: parsedWindcaveResponse.results?.Card?.CardNumber
+              }
+            });
+          } catch (parseError) {
+            console.error("Error parsing Windcave response:", parseError);
+          }
+        }
         
         if (reservationRef && (!sessionBookingData || reservationRef !== sessionBookingData.reservationRef)) {
-          console.log("Fetching booking details using reservation reference:", reservationRef);
-          
-          try {
-            const requestPayload = {
-              method: "getreservation",
-              reservationref: reservationRef
-            };
-            
-            const response = await rcmApi.request('POST', 'getreservation', requestPayload);
-            
-            const typedResponse = response as { status: string, results?: any };
-            
-            console.log("Booking details response:", typedResponse);
-            
-            if (typedResponse && typedResponse.status === "OK" && typedResponse.results) {
-              const apiBookingDetails = mapApiResponseToBookingDetails(typedResponse.results, reservationRef);
-              setBookingDetails(apiBookingDetails);
-            } else {
-              throw new Error("Failed to fetch booking details");
-            }
-          } catch (error) {
-            console.error("Error fetching booking details:", error);
-            if (sessionBookingData) {
-              const convertedDetails: BookingDetails = {
-                vehicleName: sessionBookingData.vehicleName || 'Vehicle',
-                pickupDate: sessionBookingData.pickupDate,
-                pickupTime: sessionBookingData.pickupTime, 
-                dropoffDate: sessionBookingData.dropoffDate,
-                dropoffTime: sessionBookingData.dropoffTime,
-                paymentAmount: sessionBookingData.paymentAmount || 0,
-                basePrice: sessionBookingData.basePrice || 0,
-                paymentType: sessionBookingData.paymentType,
-                customerFirstName: sessionBookingData.customerFirstName,
-                customerLastName: sessionBookingData.customerLastName,
-                customerEmail: sessionBookingData.customerEmail,
-                customerPhone: sessionBookingData.customerPhone,
-                customerDob: sessionBookingData.customerDob,
-                customerLicenseExpiry: sessionBookingData.customerLicenseExpiry,
-                customerAddress: sessionBookingData.customerAddress
-              };
-              setBookingDetails(convertedDetails);
-            }
-          }
+          console.log("Fetching booking details using reservation reference from URL:", reservationRef);
+          await fetchBookingFromRCM(reservationRef);
         } else if (sessionBookingData) {
           const convertedDetails: BookingDetails = {
             vehicleName: sessionBookingData.vehicleName || 'Vehicle',
@@ -145,29 +165,6 @@ const PaymentSuccess = () => {
           setBookingDetails(convertedDetails);
         }
         
-        const windcaveResponse = queryParams.get("windcaveResponse");
-        
-        if (windcaveResponse) {
-          try {
-            const parsedResponse = JSON.parse(decodeURIComponent(windcaveResponse));
-            console.log("Full Windcave Response:", parsedResponse);
-            
-            setWindcaveResponseDetails({
-              amount: parsedResponse.results?.Amount,
-              transactionDate: parsedResponse.results?.TransactionDate,
-              status: parsedResponse.results?.Status,
-              transactionId: parsedResponse.results?.TransactionId,
-              cardDetails: {
-                cardholder: parsedResponse.results?.Card?.Cardholder,
-                payType: parsedResponse.results?.Card?.PayType,
-                cardNumber: parsedResponse.results?.Card?.CardNumber
-              }
-            });
-          } catch (parseError) {
-            console.error("Error parsing Windcave response:", parseError);
-          }
-        }
-        
         setIsLoading(false);
       } catch (error) {
         console.error("Error in fetchBookingDetails:", error);
@@ -175,6 +172,34 @@ const PaymentSuccess = () => {
         toast.error("Error", {
           description: "Failed to load booking details."
         });
+      }
+    };
+    
+    const fetchBookingFromRCM = async (reservationRef: string) => {
+      try {
+        const requestPayload = {
+          method: "getreservation",
+          reservationref: reservationRef
+        };
+        
+        console.log("Fetching booking details with payload:", requestPayload);
+        
+        const response = await rcmApi.request('POST', 'getreservation', requestPayload);
+        
+        const typedResponse = response as { status: string, results?: any };
+        
+        console.log("Booking details response from RCM:", typedResponse);
+        
+        if (typedResponse && typedResponse.status === "OK" && typedResponse.results) {
+          const apiBookingDetails = mapApiResponseToBookingDetails(typedResponse.results, reservationRef);
+          setBookingDetails(apiBookingDetails);
+          return true;
+        } else {
+          throw new Error("Failed to fetch booking details");
+        }
+      } catch (error) {
+        console.error("Error fetching booking details from RCM:", error);
+        return false;
       }
     };
     
@@ -230,13 +255,13 @@ const PaymentSuccess = () => {
   }
 
   const customerDetails = {
-    firstName: bookingDetails.customerFirstName || "Not provided",
-    lastName: bookingDetails.customerLastName || "Not provided",
-    email: bookingDetails.customerEmail || "Not provided",
-    phone: bookingDetails.customerPhone || "Not provided",
-    dob: bookingDetails.customerDob || "Not provided",
-    licenseExpiry: bookingDetails.customerLicenseExpiry || "Not provided",
-    address: bookingDetails.customerAddress || "Not provided"
+    firstName: bookingDetails?.customerFirstName || "Not provided",
+    lastName: bookingDetails?.customerLastName || "Not provided",
+    email: bookingDetails?.customerEmail || "Not provided",
+    phone: bookingDetails?.customerPhone || "Not provided",
+    dob: bookingDetails?.customerDob || "Not provided",
+    licenseExpiry: bookingDetails?.customerLicenseExpiry || "Not provided",
+    address: bookingDetails?.customerAddress || "Not provided"
   };
 
   const renderWindcavePaymentDetails = () => {
@@ -250,6 +275,9 @@ const PaymentSuccess = () => {
           <p><strong>Amount:</strong> ${windcaveResponseDetails.amount?.toFixed(2)}</p>
           <p><strong>Transaction ID:</strong> {windcaveResponseDetails.transactionId}</p>
           <p><strong>Transaction Date:</strong> {windcaveResponseDetails.transactionDate}</p>
+          {windcaveResponseDetails.reservationRef && (
+            <p><strong>Reservation Reference:</strong> {windcaveResponseDetails.reservationRef}</p>
+          )}
           {windcaveResponseDetails.cardDetails && (
             <div>
               <h4 className="font-medium mt-2">Card Details</h4>
@@ -334,21 +362,21 @@ const PaymentSuccess = () => {
             <div className="text-left mb-8 border-t border-b py-4">
               <div className="flex justify-between py-2">
                 <span className="font-medium">Vehicle:</span> 
-                <span>{bookingDetails.vehicleName}</span>
+                <span>{bookingDetails?.vehicleName}</span>
               </div>
               <div className="flex justify-between py-2">
                 <span className="font-medium">Pickup Date:</span> 
-                <span>{bookingDetails.pickupDate} at {bookingDetails.pickupTime}</span>
+                <span>{bookingDetails?.pickupDate} at {bookingDetails?.pickupTime}</span>
               </div>
               <div className="flex justify-between py-2">
                 <span className="font-medium">Return Date:</span> 
-                <span>{bookingDetails.dropoffDate} at {bookingDetails.dropoffTime}</span>
+                <span>{bookingDetails?.dropoffDate} at {bookingDetails?.dropoffTime}</span>
               </div>
               <div className="flex justify-between py-2">
                 <span className="font-medium">Payment Amount:</span> 
-                <span>{formatCurrency(bookingDetails.paymentAmount || bookingDetails.basePrice)}</span>
+                <span>{formatCurrency(bookingDetails?.paymentAmount || bookingDetails?.basePrice || 0)}</span>
               </div>
-              {bookingDetails.paymentType === "deposit" && (
+              {bookingDetails?.paymentType === "deposit" && bookingDetails?.basePrice && bookingDetails?.paymentAmount && (
                 <div className="flex justify-between py-2">
                   <span className="font-medium">Balance Due:</span> 
                   <span>{formatCurrency(bookingDetails.basePrice - bookingDetails.paymentAmount)}</span>
