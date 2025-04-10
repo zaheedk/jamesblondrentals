@@ -5,6 +5,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { RCMExtra } from "@/lib/api/rcm-api-types";
+import { AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface ExtrasSelectionProps {
   extras: RCMExtra[];
@@ -27,57 +29,75 @@ const ExtrasSelection = ({
     onExtraChange(extraId, quantity);
   };
 
+  // If extras array is undefined or null, show a message
+  if (!extras) {
+    return (
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold">Additional Extras</h3>
+        <Alert variant="default">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            Unable to load extras for this vehicle.
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-semibold">Additional Extras</h3>
       <Card className="p-4">
         <div className="space-y-4">
-          {extras.map((extra) => (
-            <div key={extra.id} className="flex items-start justify-between border-b border-gray-100 py-2 last:border-0">
-              <div className="flex items-start gap-2">
-                <Checkbox 
-                  id={`extra-${extra.id}`}
-                  checked={!!selectedExtras.get(extra.id)} 
-                  onCheckedChange={(checked) => handleCheckboxChange(extra.id, checked as boolean)}
-                />
-                <div>
-                  <Label htmlFor={`extra-${extra.id}`} className="cursor-pointer font-medium">
-                    {extra.name}
-                  </Label>
-                  {extra.description && (
-                    <p className="text-sm text-muted-foreground">{extra.description}</p>
-                  )}
-                  <div className="text-sm">
-                    {currencySymbol}{extra.unitprice.toFixed(2)} each
+          {extras.length > 0 ? (
+            extras.map((extra) => (
+              <div key={extra.id} className="flex items-start justify-between border-b border-gray-100 py-2 last:border-0">
+                <div className="flex items-start gap-2">
+                  <Checkbox 
+                    id={`extra-${extra.id}`}
+                    checked={!!selectedExtras.get(extra.id)} 
+                    onCheckedChange={(checked) => handleCheckboxChange(extra.id, checked as boolean)}
+                  />
+                  <div>
+                    <Label htmlFor={`extra-${extra.id}`} className="cursor-pointer font-medium">
+                      {extra.name}
+                    </Label>
+                    {extra.description && (
+                      <p className="text-sm text-muted-foreground">{extra.description}</p>
+                    )}
+                    <div className="text-sm">
+                      {currencySymbol}{extra.unitprice.toFixed(2)} each
+                    </div>
                   </div>
                 </div>
+                
+                {selectedExtras.has(extra.id) && extra.maxquantity > 1 && (
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor={`quantity-${extra.id}`} className="text-sm">Qty:</Label>
+                    <Input
+                      id={`quantity-${extra.id}`}
+                      type="number"
+                      min="1"
+                      max={extra.maxquantity}
+                      value={selectedExtras.get(extra.id) || 1}
+                      onChange={(e) => handleQuantityChange(extra.id, parseInt(e.target.value, 10))}
+                      className="w-16 h-8 text-sm"
+                    />
+                  </div>
+                )}
+                
+                {selectedExtras.has(extra.id) && (
+                  <div className="font-semibold text-right min-w-16">
+                    {currencySymbol}{((selectedExtras.get(extra.id) || 0) * extra.unitprice).toFixed(2)}
+                  </div>
+                )}
               </div>
-              
-              {selectedExtras.has(extra.id) && extra.maxquantity > 1 && (
-                <div className="flex items-center gap-2">
-                  <Label htmlFor={`quantity-${extra.id}`} className="text-sm">Qty:</Label>
-                  <Input
-                    id={`quantity-${extra.id}`}
-                    type="number"
-                    min="1"
-                    max={extra.maxquantity}
-                    value={selectedExtras.get(extra.id) || 1}
-                    onChange={(e) => handleQuantityChange(extra.id, parseInt(e.target.value, 10))}
-                    className="w-16 h-8 text-sm"
-                  />
-                </div>
-              )}
-              
-              {selectedExtras.has(extra.id) && (
-                <div className="font-semibold text-right min-w-16">
-                  {currencySymbol}{((selectedExtras.get(extra.id) || 0) * extra.unitprice).toFixed(2)}
-                </div>
-              )}
+            ))
+          ) : (
+            <div className="text-center py-4 text-gray-600">
+              <p className="italic mb-2">No extras are available for this vehicle</p>
+              <p className="text-xs">Items like child seats, GPS units, or additional equipment would appear here if available.</p>
             </div>
-          ))}
-          
-          {extras.length === 0 && (
-            <p className="text-muted-foreground italic">No extras available for this vehicle</p>
           )}
         </div>
       </Card>
