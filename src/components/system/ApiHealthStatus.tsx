@@ -43,10 +43,7 @@ export const ApiHealthStatus = ({ onlyShowOnError = false }: ApiHealthStatusProp
   useEffect(() => {
     checkApiHealth();
     
-    // Re-check API health every 5 minutes
-    const intervalId = setInterval(checkApiHealth, 5 * 60 * 1000);
-    
-    return () => clearInterval(intervalId);
+    // Don't set up interval for automatic rechecks
   }, []);
   
   if (onlyShowOnError && apiStatus !== 'error') {
@@ -93,10 +90,10 @@ export const ApiHealthStatus = ({ onlyShowOnError = false }: ApiHealthStatusProp
               <Button 
                 variant="outline" 
                 size="sm" 
-                onClick={checkApiHealth}
+                onClick={() => window.location.reload()}
                 disabled={isChecking}
               >
-                {isChecking ? "Checking..." : "Check Again"}
+                {isChecking ? "Checking..." : "Reload Page to Retry"}
               </Button>
             </div>
           </AlertDescription>

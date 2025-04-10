@@ -49,7 +49,7 @@ const Index = () => {
       console.error("Failed to initialize API:", error);
       setApiConnectionFailed(true);
     });
-  }, [initializeApi, runDiagnostics]);
+  }, []); // Remove dependencies to prevent reconnection attempts
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -62,6 +62,15 @@ const Index = () => {
             <AlertDescription>
               Unable to connect to the booking system API. The application is running in demo mode.
               Real bookings cannot be processed until the API connection is restored.
+              <div className="mt-2">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => window.location.reload()}
+                >
+                  Retry Connection
+                </Button>
+              </div>
             </AlertDescription>
           </Alert>
         )}
