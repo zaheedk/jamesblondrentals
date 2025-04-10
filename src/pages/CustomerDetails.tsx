@@ -131,7 +131,14 @@ const CustomerDetails = () => {
       if (response.status === "OK") {
         console.log('Booking created successfully:', response);
         
-        // Store all reference numbers from the response
+        // Store all reference numbers from the response with detailed logging
+        console.log('Response details:', {
+          reservationRef: response.reservationRef || (response.results?.reservationref || ""),
+          bookingReference: response.bookingReference || (response.results?.bookingref || ""),
+          confirmationNumber: response.confirmationNumber || (response.results?.confirmationno || ""),
+          reservationNo: response.results?.reservationno?.toString() || ""
+        });
+        
         const updatedData = updateBookingData({
           reservationRef: response.reservationRef || (response.results?.reservationref || ""),
           bookingReference: response.bookingReference || (response.results?.bookingref || ""),
@@ -145,7 +152,9 @@ const CustomerDetails = () => {
         toast.success("Booking created successfully", {
           description: response.confirmationNumber 
             ? `Confirmation #: ${response.confirmationNumber}` 
-            : "Proceeding to payment"
+            : (response.reservationRef 
+              ? `Reservation #: ${response.reservationRef}` 
+              : "Proceeding to payment")
         });
         
         return response;
@@ -168,13 +177,17 @@ const CustomerDetails = () => {
       const bookingResponse = await createBooking(data);
       
       if (bookingResponse) {
-        // Check reservation number to ensure booking was successful
+        // First check reservationRef directly since that's what we want
+        const reservationRef = bookingResponse.reservationRef || bookingResponse.results?.reservationref;
+        
+        // Fallback to checking reservation number if ref is not available
         const reservationNo = bookingResponse.results?.reservationno;
-        if (reservationNo && parseInt(reservationNo.toString()) > 0) {
+        
+        if (reservationRef || (reservationNo && parseInt(String(reservationNo)) > 0)) {
           navigate("/payment");
         } else {
           toast.error("Booking unsuccessful", {
-            description: "Please contact support with this message: ReservationNo <= 0"
+            description: "Please contact support: No reservation reference received"
           });
           setIsSubmitting(false);
         }
