@@ -7,18 +7,28 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { useEffect } from "react";
 import { useRcmApi } from "@/hooks/use-rcm-api";
+import { toast } from "sonner";
+import { ApiStatusIndicator } from "@/components/diagnostics/ApiStatusIndicator";
 
 const Index = () => {
   const { initializeApi } = useRcmApi();
   
   useEffect(() => {
     // Initialize the API with real connection only (mock data disabled)
-    initializeApi({ 
-      useMockData: false, // Force real API connection only
-      apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
-      apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
-      apiUrl: "/api/rcm/booking/v3.2/"
-    });
+    try {
+      initializeApi({ 
+        useMockData: false, // Force real API connection only
+        apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
+        apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
+        apiUrl: "/api/rcm/booking/v3.2" // Match exactly what we're proxying
+      });
+      console.log('API initialized successfully');
+    } catch (error) {
+      console.error('Failed to initialize API:', error);
+      toast.error('API Connection Error', {
+        description: 'Failed to connect to the booking system. Please try again later.'
+      });
+    }
   }, [initializeApi]);
 
   return (
@@ -26,6 +36,14 @@ const Index = () => {
       <Navbar />
       <main className="flex-grow">
         <Hero />
+        
+        {/* API Status Indicator - Only in development mode */}
+        {process.env.NODE_ENV !== 'production' && (
+          <div className="container mx-auto px-4 py-4">
+            <ApiStatusIndicator />
+          </div>
+        )}
+        
         <FeaturedVehicles />
         
         {/* Why Choose Us Section */}

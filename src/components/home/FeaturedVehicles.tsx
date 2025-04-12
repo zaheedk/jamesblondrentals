@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import VehicleCard from "../vehicles/VehicleCard";
 import { Vehicle, VehicleType } from "@/lib/types";
 import { useRcmApi } from "@/hooks/use-rcm-api";
+import { format, addDays } from "date-fns";
+import { toast } from "sonner";
 
 const FeaturedVehicles = () => {
   const [activeCategory, setActiveCategory] = useState<VehicleType | "all">("all");
@@ -16,25 +18,48 @@ const FeaturedVehicles = () => {
     const fetchVehicles = async () => {
       try {
         setIsLoading(true);
+        console.log('Fetching featured vehicles...');
+        
         // Get default location from Step1 data
         const step1Data = await rcmApi.getStep1();
         
         if (step1Data.status === "OK" && step1Data.results?.locations?.length) {
           const defaultLocation = step1Data.results.locations[0];
+          console.log('Using default location:', defaultLocation);
           
-          // Get today's date and add 3 days for return
-          const pickupDate = new Date();
-          const dropoffDate = new Date();
-          dropoffDate.setDate(dropoffDate.getDate() + 3);
+          // Set pickup date to tomorrow to ensure it's in the future
+          const today = new Date();
+          const pickupDate = addDays(today, 1);
+          // Set dropoff date to 3 days after pickup
+          const dropoffDate = addDays(pickupDate, 3);
+          
+          // Format dates as dd/MM/yyyy for the API
+          const formattedPickupDate = format(pickupDate, 'dd/MM/yyyy');
+          const formattedDropoffDate = format(dropoffDate, 'dd/MM/yyyy');
+          
+          // Use noon (12:00) for both pickup and dropoff times
+          const pickupTime = "12:00";
+          const dropoffTime = "12:00";
+          
+          console.log('Search parameters:', {
+            pickupLocationId: defaultLocation.id,
+            pickupDate: formattedPickupDate,
+            pickupTime,
+            dropoffLocationId: defaultLocation.id,
+            dropoffDate: formattedDropoffDate,
+            dropoffTime,
+          });
           
           const vehiclesData = await rcmApi.getAvailableVehicles({
             pickupLocationId: defaultLocation.id.toString(),
-            pickupDate: pickupDate.toISOString().split('T')[0],
-            pickupTime: "10:00",
+            pickupDate: formattedPickupDate,
+            pickupTime,
             dropoffLocationId: defaultLocation.id.toString(),
-            dropoffDate: dropoffDate.toISOString().split('T')[0],
-            dropoffTime: "10:00",
+            dropoffDate: formattedDropoffDate,
+            dropoffTime,
           });
+          
+          console.log('Vehicles data received:', vehiclesData);
           
           // Transform API data to match our Vehicle interface
           const mappedVehicles: Vehicle[] = vehiclesData.map(v => ({
@@ -59,11 +84,15 @@ const FeaturedVehicles = () => {
             description: v.description || `${v.make} ${v.model} with ${v.passengers || 4} seats and ${v.transmission === "A" ? "automatic" : "manual"} transmission.`,
           }));
           
+          console.log('Mapped vehicles:', mappedVehicles);
           setVehicles(mappedVehicles);
         }
       } catch (error) {
         console.error("Error fetching vehicles:", error);
         setVehicles([]);
+        toast.error("Failed to load featured vehicles", {
+          description: "Please try again later"
+        });
       } finally {
         setIsLoading(false);
       }

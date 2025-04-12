@@ -10,7 +10,7 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
     proxy: {
-      // Proxy API requests to RCM API with improved logging and error handling
+      // Proxy API requests to RCM API with improved configuration
       '/api/rcm': {
         target: 'https://apis.rentalcarmanager.com',
         changeOrigin: true,
@@ -24,24 +24,43 @@ export default defineConfig(({ mode }) => ({
           proxy.on('error', (err, _req, _res) => {
             console.log('Proxy error:', err);
           });
+          
           proxy.on('proxyReq', (proxyReq, req, _res) => {
-            console.log('Proxy request:', req.method, req.url);
+            // Add debugging information
+            console.log(`Proxying request to: ${req.method} ${proxyReq.path}`);
             
-            // Log request body for debugging, only if available
-            // Using 'as any' to bypass TypeScript error since body is added by middleware
-            const reqWithBody = req as any;
-            if (reqWithBody.body) {
-              console.log('Request body:', reqWithBody.body);
+            // Fix for POST requests - ensure body is properly forwarded
+            if (req.body) {
+              const bodyData = JSON.stringify(req.body);
+              // Update header to match content length
+              proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
+              // Write body to request
+              proxyReq.write(bodyData);
             }
-            
-            // Log request headers for debugging
-            console.log('Request headers:', req.headers);
           });
+          
           proxy.on('proxyRes', (proxyRes, req, _res) => {
-            console.log('Proxy response:', proxyRes.statusCode, req.url);
+            const status = proxyRes.statusCode;
+            console.log(`Received response: ${status} for ${req.url}`);
             
-            // Log response headers for debugging
-            console.log('Response headers:', proxyRes.headers);
+            // Enhanced logging for non-200 responses
+            if (status >= 400) {
+              console.error(`Error response from API: ${status} for ${req.url}`);
+              let responseBody = '';
+              
+              proxyRes.on('data', (chunk) => {
+                responseBody += chunk;
+              });
+              
+              proxyRes.on('end', () => {
+                try {
+                  const parsedBody = JSON.parse(responseBody);
+                  console.error('Error response body:', parsedBody);
+                } catch (e) {
+                  console.error('Error response (non-JSON):', responseBody);
+                }
+              });
+            }
           });
         }
       }
