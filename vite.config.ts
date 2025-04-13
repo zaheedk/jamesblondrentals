@@ -3,6 +3,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
+import type { IncomingMessage, ServerResponse } from 'http';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -25,7 +26,7 @@ export default defineConfig(({ mode }) => ({
             console.log('Proxy error:', err);
           });
           
-          proxy.on('proxyReq', (proxyReq, req, _res) => {
+          proxy.on('proxyReq', (proxyReq, req: IncomingMessage & { body?: any }, _res) => {
             // Add debugging information
             console.log(`Proxying request to: ${req.method} ${proxyReq.path}`);
             
@@ -41,10 +42,10 @@ export default defineConfig(({ mode }) => ({
           
           proxy.on('proxyRes', (proxyRes, req, _res) => {
             const status = proxyRes.statusCode;
-            console.log(`Received response: ${status} for ${req.url}`);
+            console.log(`Received response: ${status ?? 'unknown'} for ${req.url}`);
             
             // Enhanced logging for non-200 responses
-            if (status >= 400) {
+            if (status && status >= 400) {
               console.error(`Error response from API: ${status} for ${req.url}`);
               let responseBody = '';
               
