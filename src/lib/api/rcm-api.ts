@@ -99,6 +99,7 @@ class RCMApiClient {
   private apiConnectionFailed: boolean = false;
   private apiFailedAttempts: number = 0;
   private maxFailAttempts: number = 2;
+  private environment: string = process.env.NODE_ENV || 'unknown';
 
   constructor(config: RCMApiConfig) {
     // Ensure API URL doesn't end with a slash
@@ -106,6 +107,11 @@ class RCMApiClient {
       ...config,
       apiUrl: config.apiUrl.replace(/\/$/, '')
     };
+    
+    // In production, we might need to adapt the API URL
+    if (this.environment === 'production') {
+      console.log('Initializing RCM API client in production environment');
+    }
   }
 
   /**
@@ -128,7 +134,8 @@ class RCMApiClient {
     console.log('RCM API initialized with config:', {
       apiUrl: this.config.apiUrl,
       apiKey: this.config.apiKey,
-      useMockData: this.useMockData
+      useMockData: this.useMockData,
+      environment: this.environment
     });
   }
 
@@ -223,7 +230,7 @@ class RCMApiClient {
     try {
       // Build the URL with API key
       const apiUrl = this.buildApiUrl();
-      console.log(`Making ${method} request to ${apiUrl} for method ${requestMethod}`);
+      console.log(`Making ${method} request to ${apiUrl} for method ${requestMethod} in ${this.environment} environment`);
       
       // Create requestBody with method as the first property
       const requestBody = { method: requestMethod, ...body };
@@ -241,12 +248,14 @@ class RCMApiClient {
 
       // Check if response is JSON
       const contentType = response.headers.get("content-type");
+      console.log(`API response content type: ${contentType}`);
+      
       if (!contentType || contentType.indexOf("application/json") === -1) {
         console.error("Non-JSON response received:", contentType);
         
         // Capture response text for better debugging
         const responseText = await response.text();
-        console.error("Response text preview:", responseText.substring(0, 200));
+        console.error("Response text preview:", responseText.substring(0, 500));
         
         // Increment failure counter
         this.apiFailedAttempts++;
@@ -256,7 +265,7 @@ class RCMApiClient {
           if (!this.apiConnectionFailed) {
             this.apiConnectionFailed = true;
             toast.error("API Connection Failed", {
-              description: "Switching to demo mode with sample data"
+              description: `Switching to demo mode with sample data. Environment: ${this.environment}`
             });
           }
           
@@ -264,7 +273,7 @@ class RCMApiClient {
           return this.getMockData(requestMethod) as T;
         }
         
-        throw new Error("API returned non-JSON response");
+        throw new Error(`API returned non-JSON response (${contentType}). Environment: ${this.environment}`);
       }
 
       // Reset failure counter on successful response
@@ -298,7 +307,7 @@ class RCMApiClient {
       
       return responseData;
     } catch (error) {
-      console.error('RCM API request failed:', error);
+      console.error(`RCM API request failed in ${this.environment} environment:`, error);
       
       // Increment failure counter
       this.apiFailedAttempts++;
@@ -308,7 +317,7 @@ class RCMApiClient {
         if (!this.apiConnectionFailed) {
           this.apiConnectionFailed = true;
           toast.error("API Connection Failed", {
-            description: "Switching to demo mode with sample data"
+            description: `Switching to demo mode with sample data. Environment: ${this.environment}`
           });
         }
         
@@ -654,3 +663,4 @@ class RCMApiClient {
 
 // Export a singleton instance
 export const rcmApi = new RCMApiClient(DEFAULT_CONFIG);
+

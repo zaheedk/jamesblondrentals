@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useApiDiagnostics } from '@/hooks/use-api-diagnostics';
 import { Button } from '@/components/ui/button';
-import { Loader2, Check, AlertTriangle, RefreshCw, Server } from 'lucide-react';
+import { Loader2, Check, AlertTriangle, RefreshCw, Server, Globe } from 'lucide-react';
 import { toast } from 'sonner';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
@@ -77,6 +77,8 @@ export function ApiStatusIndicator() {
         
         <div className="text-sm text-gray-600">
           <p>Last check: {lastRun ? lastRun.toLocaleTimeString() : 'Not checked yet'}</p>
+          <p>Environment: {connectionStatus.environment || process.env.NODE_ENV || 'Unknown'}</p>
+          <p>Host: {window.location.origin}</p>
           
           {!connectionStatus.isConnected && (
             <Alert variant="destructive" className="mt-2">
@@ -87,9 +89,16 @@ export function ApiStatusIndicator() {
                 <ul className="list-disc list-inside text-xs space-y-1">
                   <li>The API endpoint URL is incorrect</li>
                   <li>The API server might be down or misconfigured</li>
-                  <li>Your proxy configuration might need adjustment</li>
+                  <li>Your proxy configuration might need adjustment for production</li>
                   <li>CORS issues are preventing proper communication</li>
                 </ul>
+                <div className="mt-2">
+                  <p className="text-xs font-semibold">For published apps:</p>
+                  <ul className="list-disc list-inside text-xs">
+                    <li>Add a CORS proxy for production environments</li>
+                    <li>Configure the API to accept requests from {window.location.origin}</li>
+                  </ul>
+                </div>
               </AlertDescription>
             </Alert>
           )}
