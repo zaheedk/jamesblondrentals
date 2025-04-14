@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -8,7 +7,7 @@ import { getBookingData, updateBookingData } from "@/lib/booking-session";
 import { Label } from "@/components/ui/label";
 import { formatCurrency } from "@/lib/utils";
 
-const DEPOSIT_AMOUNT = 50;
+const DEPOSIT_AMOUNT = 1;
 
 const PaymentOptions = () => {
   const navigate = useNavigate();
@@ -17,7 +16,6 @@ const PaymentOptions = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // Get booking data from session
     const bookingData = getBookingData();
     
     if (!bookingData) {
@@ -49,16 +47,13 @@ const PaymentOptions = () => {
     setIsLoading(true);
     
     try {
-      // Amount to pay based on selection
       const amountToPay = paymentType === "deposit" ? DEPOSIT_AMOUNT : fullAmount;
       
-      // Update booking data with payment information
       updateBookingData({
         paymentAmount: amountToPay,
         paymentType: paymentType
       });
       
-      // Navigate to payment page with the selected amount
       navigate("/payment");
     } catch (error) {
       console.error("Error processing payment option:", error);
