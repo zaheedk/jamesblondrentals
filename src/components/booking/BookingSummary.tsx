@@ -1,7 +1,8 @@
 
 import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { format, parse, isValid } from "date-fns";
+import { format, parse, isValid, differenceInDays } from "date-fns";
+import { Calendar, Shield, Package } from "lucide-react";
 
 interface BookingSummaryProps {
   pickupLocation: string;
@@ -96,6 +97,47 @@ const BookingSummary = ({
   // Format pickup and dropoff dates
   const formattedPickupDate = formatSafeDate(pickupDate);
   const formattedDropoffDate = formatSafeDate(dropoffDate);
+  
+  // Calculate rental duration
+  const calculateRentalDuration = () => {
+    try {
+      let pickup: Date | null = null;
+      let dropoff: Date | null = null;
+      
+      if (pickupDate instanceof Date) {
+        pickup = pickupDate;
+      } else if (typeof pickupDate === 'string') {
+        if (pickupDate.includes('/')) {
+          const [day, month, year] = pickupDate.split('/').map(Number);
+          pickup = new Date(year, month - 1, day);
+        } else {
+          pickup = new Date(pickupDate);
+        }
+      }
+      
+      if (dropoffDate instanceof Date) {
+        dropoff = dropoffDate;
+      } else if (typeof dropoffDate === 'string') {
+        if (dropoffDate.includes('/')) {
+          const [day, month, year] = dropoffDate.split('/').map(Number);
+          dropoff = new Date(year, month - 1, day);
+        } else {
+          dropoff = new Date(dropoffDate);
+        }
+      }
+      
+      if (pickup && dropoff && isValid(pickup) && isValid(dropoff)) {
+        const days = differenceInDays(dropoff, pickup) + 1; // +1 to include the pickup day
+        return days > 0 ? days : 1;
+      }
+    } catch (e) {
+      console.error("Error calculating duration:", e);
+    }
+    
+    return 1;
+  };
+  
+  const rentalDuration = calculateRentalDuration();
 
   // Function to handle image load errors
   const handleImageError = () => {
@@ -110,7 +152,7 @@ const BookingSummary = ({
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Vehicle image with error handling */}
-        {vehicleImageUrl && (
+        {vehicleImageUrl && !imageError && (
           <div className="w-full aspect-video rounded-md mb-2 overflow-hidden">
             <img
               src={imageError ? '/placeholder.svg' : vehicleImageUrl}
@@ -138,6 +180,14 @@ const BookingSummary = ({
           <p className="text-sm">{formattedDropoffDate}</p>
         </div>
         
+        {/* Duration of hire */}
+        <div className="space-y-2">
+          <h4 className="font-medium flex items-center">
+            <Calendar className="h-4 w-4 mr-2" /> Duration of Hire
+          </h4>
+          <p className="text-sm">{rentalDuration} day{rentalDuration !== 1 ? 's' : ''}</p>
+        </div>
+        
         <div className="border-t border-gray-200 my-4"></div>
         
         <div className="flex justify-between items-center">
@@ -147,7 +197,9 @@ const BookingSummary = ({
         
         {selectedInsurance && (
           <div className="flex justify-between items-center">
-            <span>Insurance: {selectedInsurance.name}</span>
+            <span className="flex items-center">
+              <Shield className="h-4 w-4 mr-2" /> {selectedInsurance.name}
+            </span>
             <span>{currencySymbol}{selectedInsurance.price.toFixed(2)}</span>
           </div>
         )}
@@ -159,14 +211,21 @@ const BookingSummary = ({
           </div>
         )}
         
-        {selectedExtras.map((extra) => (
-          <div key={extra.id} className="flex justify-between items-center">
-            <span>
-              {extra.name} {extra.quantity > 1 ? `× ${extra.quantity}` : ''}
-            </span>
-            <span>{currencySymbol}{extra.totalPrice.toFixed(2)}</span>
+        {selectedExtras.length > 0 && (
+          <div className="py-2">
+            <div className="font-medium flex items-center mb-2">
+              <Package className="h-4 w-4 mr-2" /> Extras:
+            </div>
+            {selectedExtras.map((extra) => (
+              <div key={extra.id} className="flex justify-between pl-6 py-1">
+                <span>
+                  {extra.name} {extra.quantity > 1 ? `× ${extra.quantity}` : ''}
+                </span>
+                <span>{currencySymbol}{extra.totalPrice.toFixed(2)}</span>
+              </div>
+            ))}
           </div>
-        ))}
+        )}
         
         <div className="border-t border-gray-200 my-4"></div>
         

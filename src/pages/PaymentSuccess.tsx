@@ -1,12 +1,14 @@
+
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, XCircle, FrownIcon } from "lucide-react";
+import { CheckCircle2, XCircle, FrownIcon, Calendar, Shield, Package } from "lucide-react";
 import { getBookingData, clearBookingData } from "@/lib/booking-session";
 import { toast } from "sonner";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { formatCurrency } from "@/lib/utils";
 import { rcmApi } from "@/lib/api/rcm-api";
+import { differenceInDays, parseISO, isValid } from "date-fns";
 
 interface BookingDetails {
   vehicleName: string;
@@ -25,6 +27,12 @@ interface BookingDetails {
   customerLicenseExpiry?: string;
   customerAddress?: string;
   reservationRef?: string;
+  vehicleImageUrl?: string;
+  insuranceOption?: string;
+  insuranceAmount?: number;
+  extras?: Array<{name: string; quantity: number; amount: number}>;
+  kmOption?: string;
+  kmAmount?: number;
 }
 
 const PaymentSuccess = () => {
@@ -35,6 +43,8 @@ const PaymentSuccess = () => {
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [transactionId, setTransactionId] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [rentalDuration, setRentalDuration] = useState<number>(0);
+  const [imageError, setImageError] = useState<boolean>(false);
   const [windcaveResponseDetails, setWindcaveResponseDetails] = useState<{
     amount?: number;
     transactionDate?: string;
@@ -173,9 +183,20 @@ const PaymentSuccess = () => {
             customerDob: sessionBookingData.customerDob,
             customerLicenseExpiry: sessionBookingData.customerLicenseExpiry,
             customerAddress: sessionBookingData.customerAddress,
-            reservationRef: bookingReservationRef
+            reservationRef: bookingReservationRef,
+            vehicleImageUrl: sessionBookingData.vehicleImageUrl,
+            insuranceOption: sessionBookingData.insuranceOption,
+            insuranceAmount: sessionBookingData.insuranceAmount,
+            extras: sessionBookingData.extras,
+            kmOption: sessionBookingData.kmOption,
+            kmAmount: sessionBookingData.kmAmount
           };
           setBookingDetails(convertedDetails);
+          
+          // Calculate rental duration
+          if (convertedDetails.pickupDate && convertedDetails.dropoffDate) {
+            calculateRentalDuration(convertedDetails.pickupDate, convertedDetails.dropoffDate);
+          }
         }
         
         setIsLoading(false);
@@ -211,6 +232,11 @@ const PaymentSuccess = () => {
         if (typedResponse && typedResponse.status === "OK" && typedResponse.results) {
           const apiBookingDetails = mapApiResponseToBookingDetails(typedResponse.results, reservationRef);
           setBookingDetails(apiBookingDetails);
+          
+          // Calculate rental duration
+          if (apiBookingDetails.pickupDate && apiBookingDetails.dropoffDate) {
+            calculateRentalDuration(apiBookingDetails.pickupDate, apiBookingDetails.dropoffDate);
+          }
           return true;
         } else {
           throw new Error("Failed to fetch booking details");
@@ -221,6 +247,38 @@ const PaymentSuccess = () => {
       }
     };
     
+    const calculateRentalDuration = (pickupDate: string, dropoffDate: string) => {
+      try {
+        let pickup, dropoff;
+        
+        // Try to parse as ISO date
+        if (pickupDate.includes('T') || pickupDate.includes('-')) {
+          pickup = parseISO(pickupDate);
+        } else {
+          // Try to parse dd/MM/yyyy format
+          const [day, month, year] = pickupDate.split('/').map(Number);
+          pickup = new Date(year, month - 1, day);
+        }
+        
+        if (dropoffDate.includes('T') || dropoffDate.includes('-')) {
+          dropoff = parseISO(dropoffDate);
+        } else {
+          const [day, month, year] = dropoffDate.split('/').map(Number);
+          dropoff = new Date(year, month - 1, day);
+        }
+        
+        if (isValid(pickup) && isValid(dropoff)) {
+          const days = differenceInDays(dropoff, pickup) + 1; // +1 to include the pickup day
+          setRentalDuration(days > 0 ? days : 0);
+          console.log(`Rental duration: ${days} days`);
+        } else {
+          console.error("Invalid date format for duration calculation:", { pickupDate, dropoffDate });
+        }
+      } catch (error) {
+        console.error("Error calculating rental duration:", error);
+      }
+    };
+    
     fetchBookingDetails();
   }, [navigate, location]);
   
@@ -228,6 +286,18 @@ const PaymentSuccess = () => {
     const bookingInfo = apiResponse.bookinginfo && apiResponse.bookinginfo[0] ? apiResponse.bookinginfo[0] : {};
     const customerInfo = apiResponse.customerinfo && apiResponse.customerinfo[0] ? apiResponse.customerinfo[0] : {};
     const paymentInfo = apiResponse.paymentinfo && apiResponse.paymentinfo[0] ? apiResponse.paymentinfo[0] : {};
+    
+    // Try to extract extras from the API response
+    const extrasInfo: Array<{name: string; quantity: number; amount: number}> = [];
+    if (apiResponse.extras && Array.isArray(apiResponse.extras)) {
+      apiResponse.extras.forEach((extra: any) => {
+        extrasInfo.push({
+          name: extra.description || extra.name || "Extra item",
+          quantity: parseInt(extra.quantity) || 1,
+          amount: parseFloat(extra.amount) || 0
+        });
+      });
+    }
     
     return {
       vehicleName: bookingInfo.vehiclecategory || "Vehicle",
@@ -244,8 +314,19 @@ const PaymentSuccess = () => {
       customerDob: customerInfo.dateofbirth || "N/A",
       customerLicenseExpiry: customerInfo.licenseexpires || "N/A",
       customerAddress: customerInfo.fulladdress || customerInfo.address || "N/A",
-      reservationRef: reservationRef
+      reservationRef: reservationRef,
+      vehicleImageUrl: bookingInfo.imageurl || bookingInfo.vehicleimageurl,
+      insuranceOption: bookingInfo.insuranceoption || paymentInfo.insuranceoption,
+      insuranceAmount: parseFloat(bookingInfo.insuranceamount) || parseFloat(paymentInfo.insuranceamount) || 0,
+      extras: extrasInfo.length > 0 ? extrasInfo : undefined,
+      kmOption: bookingInfo.kmcharge || bookingInfo.kmoption,
+      kmAmount: parseFloat(bookingInfo.kmchargeamount) || 0
     };
+  };
+  
+  const handleImageError = () => {
+    console.log("Error loading vehicle image");
+    setImageError(true);
   };
   
   if (isLoading) {
@@ -382,23 +463,90 @@ const PaymentSuccess = () => {
         
         {paymentStatus === "success" && (
           <>
+            {/* Vehicle image section */}
+            {bookingDetails.vehicleImageUrl && !imageError && (
+              <div className="w-full aspect-video rounded-md mb-6 overflow-hidden">
+                <img
+                  src={bookingDetails.vehicleImageUrl}
+                  alt={bookingDetails.vehicleName}
+                  className="w-full h-full object-cover"
+                  onError={handleImageError}
+                />
+              </div>
+            )}
+            
             <div className="text-left mb-8 border-t border-b py-4">
               <div className="flex justify-between py-2">
                 <span className="font-medium">Vehicle:</span> 
                 <span>{bookingDetails?.vehicleName}</span>
               </div>
+              
               <div className="flex justify-between py-2">
                 <span className="font-medium">Pickup Date:</span> 
                 <span>{bookingDetails?.pickupDate} at {bookingDetails?.pickupTime}</span>
               </div>
+              
               <div className="flex justify-between py-2">
                 <span className="font-medium">Return Date:</span> 
                 <span>{bookingDetails?.dropoffDate} at {bookingDetails?.dropoffTime}</span>
               </div>
+              
+              {/* Duration of hire */}
+              <div className="flex justify-between py-2 items-center">
+                <span className="font-medium flex items-center">
+                  <Calendar className="h-4 w-4 mr-2" /> Duration of Hire:
+                </span> 
+                <span>{rentalDuration} day{rentalDuration !== 1 ? 's' : ''}</span>
+              </div>
+              
+              {/* Insurance option */}
+              {bookingDetails?.insuranceOption && (
+                <div className="flex justify-between py-2 items-center">
+                  <span className="font-medium flex items-center">
+                    <Shield className="h-4 w-4 mr-2" /> Insurance:
+                  </span> 
+                  <span>
+                    {bookingDetails.insuranceOption}
+                    {bookingDetails.insuranceAmount > 0 && 
+                      ` (${formatCurrency(bookingDetails.insuranceAmount)})`}
+                  </span>
+                </div>
+              )}
+              
+              {/* KM charge option */}
+              {bookingDetails?.kmOption && (
+                <div className="flex justify-between py-2">
+                  <span className="font-medium">Mileage Option:</span> 
+                  <span>
+                    {bookingDetails.kmOption}
+                    {bookingDetails.kmAmount !== 0 && 
+                      ` (${formatCurrency(bookingDetails.kmAmount)})`}
+                  </span>
+                </div>
+              )}
+              
+              {/* Extras */}
+              {bookingDetails?.extras && bookingDetails.extras.length > 0 && (
+                <div className="py-2">
+                  <div className="font-medium flex items-center mb-2">
+                    <Package className="h-4 w-4 mr-2" /> Extras:
+                  </div>
+                  {bookingDetails.extras.map((extra, index) => (
+                    <div key={index} className="flex justify-between pl-6 py-1">
+                      <span>
+                        {extra.name} {extra.quantity > 1 ? `× ${extra.quantity}` : ''}
+                      </span>
+                      <span>{formatCurrency(extra.amount)}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+              
               <div className="flex justify-between py-2">
                 <span className="font-medium">Payment Amount:</span> 
                 <span>{formatCurrency(bookingDetails?.paymentAmount || bookingDetails?.basePrice || 0)}</span>
               </div>
+              
               {bookingDetails?.paymentType === "deposit" && bookingDetails?.basePrice && bookingDetails?.paymentAmount && (
                 <div className="flex justify-between py-2">
                   <span className="font-medium">Balance Due:</span> 
