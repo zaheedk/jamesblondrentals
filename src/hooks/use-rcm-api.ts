@@ -1,4 +1,3 @@
-
 import { useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { rcmApi } from '@/lib/api/rcm-api';
@@ -328,13 +327,11 @@ export function useRcmApi() {
         try {
           console.log('Fetching booking details for reservation:', reservationRef);
           
-          // Using getbooking method instead of getreservation based on API error
-          const response = await rcmApi.request('POST', 'getbooking', {
-            method: 'getbooking',
+          const response = await rcmApi.request('POST', 'getreservation', {
+            method: 'getreservation',
             reservationref: reservationRef
           });
           
-          // Fix the type assertion to handle the unknown type properly
           const typedResponse = response as { status: string, results?: any, error?: string };
           
           if (typedResponse.status === "OK") {
