@@ -178,13 +178,13 @@ const PaymentSuccess = () => {
     const fetchBookingFromRCM = async (reservationRef: string) => {
       try {
         const requestPayload = {
-          method: "getreservation",
+          method: "bookinginfo",
           reservationref: reservationRef
         };
         
         console.log("Fetching booking details with payload:", requestPayload);
         
-        const response = await rcmApi.request('POST', 'getreservation', requestPayload);
+        const response = await rcmApi.request('POST', 'bookinginfo', requestPayload);
         
         const typedResponse = response as { status: string, results?: any };
         

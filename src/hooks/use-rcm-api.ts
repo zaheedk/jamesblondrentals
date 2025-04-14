@@ -1,3 +1,4 @@
+
 import { useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { rcmApi } from '@/lib/api/rcm-api';
@@ -327,8 +328,8 @@ export function useRcmApi() {
         try {
           console.log('Fetching booking details for reservation:', reservationRef);
           
-          const response = await rcmApi.request('POST', 'getreservation', {
-            method: 'getreservation',
+          const response = await rcmApi.request('POST', 'bookinginfo', {
+            method: 'bookinginfo',
             reservationref: reservationRef
           });
           
