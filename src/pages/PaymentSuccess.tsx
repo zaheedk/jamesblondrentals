@@ -24,6 +24,7 @@ interface BookingDetails {
   customerDob?: string;
   customerLicenseExpiry?: string;
   customerAddress?: string;
+  reservationRef?: string;
 }
 
 const PaymentSuccess = () => {
@@ -141,9 +142,20 @@ const PaymentSuccess = () => {
           }
         }
         
-        if (reservationRef && (!sessionBookingData || reservationRef !== sessionBookingData.reservationRef)) {
-          console.log("Fetching booking details using reservation reference from URL:", reservationRef);
-          await fetchBookingFromRCM(reservationRef);
+        const bookingReservationRef = reservationRef || 
+                                     (sessionBookingData && (
+                                       sessionBookingData.reservationRef ||
+                                       sessionBookingData.bookingReference ||
+                                       sessionBookingData.confirmationNumber ||
+                                       sessionBookingData.reservationNo ||
+                                       sessionBookingData.windcaveReservationRef
+                                     ));
+                                     
+        console.log("Using reservation reference for API call:", bookingReservationRef);
+        
+        if (bookingReservationRef && (!sessionBookingData || bookingReservationRef !== sessionBookingData.reservationRef)) {
+          console.log("Fetching booking details using reservation reference:", bookingReservationRef);
+          await fetchBookingFromRCM(bookingReservationRef);
         } else if (sessionBookingData) {
           const convertedDetails: BookingDetails = {
             vehicleName: sessionBookingData.vehicleName || 'Vehicle',
@@ -160,7 +172,8 @@ const PaymentSuccess = () => {
             customerPhone: sessionBookingData.customerPhone,
             customerDob: sessionBookingData.customerDob,
             customerLicenseExpiry: sessionBookingData.customerLicenseExpiry,
-            customerAddress: sessionBookingData.customerAddress
+            customerAddress: sessionBookingData.customerAddress,
+            reservationRef: bookingReservationRef
           };
           setBookingDetails(convertedDetails);
         }
@@ -177,6 +190,11 @@ const PaymentSuccess = () => {
     
     const fetchBookingFromRCM = async (reservationRef: string) => {
       try {
+        if (!reservationRef) {
+          console.error("No reservation reference provided for API call");
+          return false;
+        }
+        
         const requestPayload = {
           method: "bookinginfo",
           reservationref: reservationRef
@@ -207,21 +225,26 @@ const PaymentSuccess = () => {
   }, [navigate, location]);
   
   const mapApiResponseToBookingDetails = (apiResponse: any, reservationRef: string): BookingDetails => {
+    const bookingInfo = apiResponse.bookinginfo && apiResponse.bookinginfo[0] ? apiResponse.bookinginfo[0] : {};
+    const customerInfo = apiResponse.customerinfo && apiResponse.customerinfo[0] ? apiResponse.customerinfo[0] : {};
+    const paymentInfo = apiResponse.paymentinfo && apiResponse.paymentinfo[0] ? apiResponse.paymentinfo[0] : {};
+    
     return {
-      vehicleName: apiResponse.vehicleName || apiResponse.vehiclecategory || "Vehicle",
-      pickupDate: apiResponse.pickupdate || "N/A",
-      pickupTime: apiResponse.pickuptime || "N/A",
-      dropoffDate: apiResponse.dropoffdate || "N/A",
-      dropoffTime: apiResponse.dropofftime || "N/A",
-      paymentAmount: parseFloat(apiResponse.totalamount) || 0,
-      basePrice: parseFloat(apiResponse.totalamount) || 0,
-      customerFirstName: apiResponse.firstname || "N/A",
-      customerLastName: apiResponse.lastname || "N/A",
-      customerEmail: apiResponse.email || "N/A",
-      customerPhone: apiResponse.phone || apiResponse.mobile || "N/A",
-      customerDob: apiResponse.dateofbirth || "N/A",
-      customerLicenseExpiry: apiResponse.licenseexpires || "N/A",
-      customerAddress: apiResponse.address || "N/A"
+      vehicleName: bookingInfo.vehiclecategory || "Vehicle",
+      pickupDate: bookingInfo.pickupdate || "N/A",
+      pickupTime: bookingInfo.pickuptime || "N/A",
+      dropoffDate: bookingInfo.dropoffdate || "N/A",
+      dropoffTime: bookingInfo.dropofftime || "N/A",
+      paymentAmount: parseFloat(paymentInfo.paidamount) || parseFloat(bookingInfo.totalcost) || 0,
+      basePrice: parseFloat(bookingInfo.totalcost) || 0,
+      customerFirstName: customerInfo.firstname || "N/A",
+      customerLastName: customerInfo.lastname || "N/A",
+      customerEmail: customerInfo.email || "N/A",
+      customerPhone: customerInfo.phone || customerInfo.mobile || "N/A",
+      customerDob: customerInfo.dateofbirth || "N/A",
+      customerLicenseExpiry: customerInfo.licenseexpires || "N/A",
+      customerAddress: customerInfo.fulladdress || customerInfo.address || "N/A",
+      reservationRef: reservationRef
     };
   };
   
