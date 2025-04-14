@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -178,13 +179,13 @@ const PaymentSuccess = () => {
     const fetchBookingFromRCM = async (reservationRef: string) => {
       try {
         const requestPayload = {
-          method: "getreservation",
+          method: "getbooking", // Changed from getreservation to getbooking
           reservationref: reservationRef
         };
         
         console.log("Fetching booking details with payload:", requestPayload);
         
-        const response = await rcmApi.request('POST', 'getreservation', requestPayload);
+        const response = await rcmApi.request('POST', 'getbooking', requestPayload);
         
         const typedResponse = response as { status: string, results?: any };
         

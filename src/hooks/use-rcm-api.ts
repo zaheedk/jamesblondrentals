@@ -328,8 +328,9 @@ export function useRcmApi() {
         try {
           console.log('Fetching booking details for reservation:', reservationRef);
           
-          const response = await rcmApi.request('POST', 'getreservation', {
-            method: 'getreservation',
+          // Using getbooking method instead of getreservation based on API error
+          const response = await rcmApi.request('POST', 'getbooking', {
+            method: 'getbooking',
             reservationref: reservationRef
           });
           
