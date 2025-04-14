@@ -1,9 +1,8 @@
-
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
-import type { IncomingMessage, ServerResponse } from 'http';
+import type { IncomingMessage } from 'http';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -23,45 +22,36 @@ export default defineConfig(({ mode }) => ({
         },
         configure: (proxy, _options) => {
           proxy.on('error', (err, _req, _res) => {
-            console.log('Proxy error:', err);
+            console.error('Proxy error:', err);
           });
           
           proxy.on('proxyReq', (proxyReq, req: IncomingMessage & { body?: any }, _res) => {
-            // Add debugging information
-            console.log(`Proxying request to: ${req.method} ${proxyReq.path}`);
+            console.log(`Proxying request: ${req.method} ${proxyReq.path}`);
             
-            // Fix for POST requests - ensure body is properly forwarded
+            // Ensure body is properly handled for POST requests
             if (req.body) {
               const bodyData = JSON.stringify(req.body);
-              // Update header to match content length
               proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
-              // Write body to request
               proxyReq.write(bodyData);
             }
           });
           
           proxy.on('proxyRes', (proxyRes, req, _res) => {
-            const status = proxyRes.statusCode;
-            console.log(`Received response: ${status ?? 'unknown'} for ${req.url}`);
+            const contentType = proxyRes.headers['content-type'];
+            console.log(`Response Content-Type: ${contentType}`);
             
-            // Enhanced logging for non-200 responses
-            if (status && status >= 400) {
-              console.error(`Error response from API: ${status} for ${req.url}`);
-              let responseBody = '';
-              
-              proxyRes.on('data', (chunk) => {
-                responseBody += chunk;
-              });
-              
-              proxyRes.on('end', () => {
-                try {
-                  const parsedBody = JSON.parse(responseBody);
-                  console.error('Error response body:', parsedBody);
-                } catch (e) {
-                  console.error('Error response (non-JSON):', responseBody);
-                }
-              });
-            }
+            const status = proxyRes.statusCode;
+            console.log(`Response Status: ${status ?? 'unknown'} for ${req.url}`);
+            
+            // Log full response body for debugging
+            let responseBody = '';
+            proxyRes.on('data', (chunk) => {
+              responseBody += chunk;
+            });
+            
+            proxyRes.on('end', () => {
+              console.log('Full Response Body:', responseBody);
+            });
           });
         }
       }
