@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,7 @@ import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { formatCurrency } from "@/lib/utils";
 import { rcmApi } from "@/lib/api/rcm-api";
 import { differenceInDays, parseISO, isValid } from "date-fns";
+import BookingSummary from "@/components/booking/BookingSummary";
 
 interface BookingDetails {
   vehicleName: string;
@@ -189,7 +191,7 @@ const PaymentSuccess = () => {
             selectedExtras: sessionBookingData.selectedExtras?.map(extra => ({
               name: extra.name,
               quantity: extra.quantity,
-              amount: extra.price * extra.quantity
+              price: extra.price
             })),
             extraKmsName: sessionBookingData.extraKmsName,
             extraKmsPrice: sessionBookingData.extraKmsPrice
@@ -319,13 +321,13 @@ const PaymentSuccess = () => {
     const paymentInfo = apiResponse.paymentinfo && apiResponse.paymentinfo[0] ? apiResponse.paymentinfo[0] : {};
     
     // Try to extract extras from the API response
-    const extrasInfo: Array<{name: string; quantity: number; amount: number}> = [];
+    const extrasInfo: Array<{name: string; quantity: number; price: number}> = [];
     if (apiResponse.extras && Array.isArray(apiResponse.extras)) {
       apiResponse.extras.forEach((extra: any) => {
         extrasInfo.push({
           name: extra.description || extra.name || "Extra item",
           quantity: parseInt(extra.quantity) || 1,
-          amount: parseFloat(extra.amount) || 0
+          price: parseFloat(extra.amount) || 0
         });
       });
     }
@@ -349,7 +351,7 @@ const PaymentSuccess = () => {
       vehicleImage: bookingInfo.imageurl || bookingInfo.vehicleimageurl,
       insuranceName: bookingInfo.insuranceoption || paymentInfo.insuranceoption,
       insurancePrice: parseFloat(bookingInfo.insuranceamount) || parseFloat(paymentInfo.insuranceamount) || 0,
-      selectedExtras: extrasInfo.length > 0 ? extrasInfo : undefined,
+      selectedExtras: extrasInfo,
       extraKmsName: bookingInfo.kmcharge || bookingInfo.kmoption,
       extraKmsPrice: parseFloat(bookingInfo.kmchargeamount) || 0
     };
@@ -567,7 +569,7 @@ const PaymentSuccess = () => {
                       <span>
                         {extra.name} {extra.quantity > 1 ? `× ${extra.quantity}` : ''}
                       </span>
-                      <span>{formatCurrency(extra.amount)}</span>
+                      <span>{formatCurrency(extra.price)}</span>
                     </div>
                   ))}
                 </div>
