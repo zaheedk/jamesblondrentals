@@ -1,160 +1,122 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 
-interface ConnectionStatus {
+interface ApiConnectionStatus {
   isConnected: boolean;
-  lastAttempt: Date | null;
-  successfulEndpoints: string[];
   failedEndpoints: string[];
+  message?: string;
 }
 
-interface EndpointCheck {
-  url: string;
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
-  body?: any;
-  headers?: Record<string, string>;
+interface DiagnosticsResult {
+  apiAccessible: boolean;
+  message: string;
+  responseText?: string;
+  failedEndpoints?: string[];
 }
 
-/**
- * Hook to monitor API connection status and perform diagnostics
- */
 export function useApiDiagnostics() {
-  const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>({
+  const [connectionStatus, setConnectionStatus] = useState<ApiConnectionStatus>({
     isConnected: false,
-    lastAttempt: null,
-    successfulEndpoints: [],
     failedEndpoints: []
   });
 
-  /**
-   * Check if the browser can connect to the internet
-   */
-  const checkInternetConnection = async (): Promise<boolean> => {
+  const runDiagnostics = useCallback(async (): Promise<DiagnosticsResult> => {
     try {
-      // Try to fetch a small resource that should always be available
-      const response = await fetch('https://www.google.com/favicon.ico', { 
-        mode: 'no-cors',
-        cache: 'no-store'
-      });
-      return true; // If no error is thrown, assume connection is OK
-    } catch (error) {
-      console.error('Internet connection check failed:', error);
-      return false;
-    }
-  };
-
-  /**
-   * Check if a specific API endpoint is accessible
-   */
-  const checkEndpoint = async (check: EndpointCheck): Promise<boolean> => {
-    try {
-      const options: RequestInit = {
-        method: check.method,
-        headers: check.headers || {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        mode: 'cors'
-      };
-
-      if (check.body && (check.method === 'POST' || check.method === 'PUT')) {
-        options.body = JSON.stringify(check.body);
-      }
-
-      const response = await fetch(check.url, options);
+      // Test the RCM API endpoint
+      const apiUrl = "/api/rcm/booking/v3.2/TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq?apikey=TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq";
       
-      // Check if response is valid
-      const contentType = response.headers.get('content-type');
-      const isJson = contentType && contentType.includes('application/json');
-
-      if (!response.ok || !isJson) {
-        throw new Error(`Endpoint returned ${response.status}: ${response.statusText}`);
-      }
-
-      // Update successful endpoints
-      setConnectionStatus(prev => ({
-        ...prev,
-        isConnected: true,
-        lastAttempt: new Date(),
-        successfulEndpoints: [...prev.successfulEndpoints, check.url]
-      }));
-
-      return true;
-    } catch (error) {
-      console.error(`Endpoint check failed for ${check.url}:`, error);
+      console.log('Testing API connection to:', apiUrl);
       
-      // Update failed endpoints
-      setConnectionStatus(prev => ({
-        ...prev,
-        lastAttempt: new Date(),
-        failedEndpoints: [...prev.failedEndpoints, check.url]
-      }));
+      const headers = new Headers();
+      headers.append('Content-Type', 'application/json');
+      headers.append('Accept', 'application/json');
       
-      return false;
-    }
-  };
-
-  /**
-   * Run diagnostics to check API connectivity and identify issues
-   */
-  const runDiagnostics = async () => {
-    console.log('Running API diagnostics...');
-    
-    // Reset connection status
-    setConnectionStatus({
-      isConnected: false,
-      lastAttempt: new Date(),
-      successfulEndpoints: [],
-      failedEndpoints: []
-    });
-
-    // First check internet connection
-    const hasInternet = await checkInternetConnection();
-    
-    if (!hasInternet) {
-      console.error('No internet connection detected');
-      return {
-        message: 'No internet connection detected',
-        hasInternet: false,
-        apiAccessible: false
-      };
-    }
-
-    // Check API endpoints
-    const apiUrlBase = '/api/rcm/booking/v3.2';
-    const apiKey = 'TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq';
-    
-    const endpointChecks: EndpointCheck[] = [
-      {
-        url: `${apiUrlBase}/${apiKey}?apikey=${apiKey}`,
+      const response = await fetch(apiUrl, {
         method: 'POST',
-        body: { method: 'step1' }
+        headers: headers,
+        body: JSON.stringify({ method: "step1" }),
+      });
+
+      const contentType = response.headers.get("content-type");
+      let responseText = '';
+      
+      try {
+        // We'll capture the response text for debugging purposes
+        responseText = await response.text();
+      } catch (e) {
+        responseText = 'Could not read response text';
       }
-    ];
 
-    const results = await Promise.all(endpointChecks.map(check => checkEndpoint(check)));
-    const allSuccessful = results.every(result => result);
+      // Check if the response is JSON
+      const isJsonResponse = contentType && contentType.includes('application/json');
+      
+      if (!isJsonResponse) {
+        console.error("API returned non-JSON content type:", contentType);
+        console.log("Response preview:", responseText.substring(0, 500));
+        
+        setConnectionStatus({
+          isConnected: false,
+          failedEndpoints: [apiUrl],
+          message: `API returned ${contentType || 'unknown content type'} instead of JSON`
+        });
+        
+        return {
+          apiAccessible: false,
+          message: `API returned ${contentType || 'unknown content type'} instead of JSON`,
+          responseText: responseText,
+          failedEndpoints: [apiUrl]
+        };
+      }
+      
+      let jsonData: any;
+      try {
+        // Attempt to parse the response as JSON
+        jsonData = JSON.parse(responseText);
+      } catch (e) {
+        console.error("Failed to parse response as JSON:", e);
+        
+        setConnectionStatus({
+          isConnected: false,
+          failedEndpoints: [apiUrl],
+          message: 'Response is not valid JSON'
+        });
+        
+        return {
+          apiAccessible: false,
+          message: 'Response is not valid JSON',
+          responseText: responseText,
+          failedEndpoints: [apiUrl]
+        };
+      }
 
-    console.log('API diagnostics complete:', { 
-      hasInternet, 
-      apiAccessible: allSuccessful,
-      connectionStatus
-    });
+      // If we made it here, the API is accessible and returned valid JSON
+      setConnectionStatus({
+        isConnected: true,
+        failedEndpoints: []
+      });
+      
+      return {
+        apiAccessible: true,
+        message: 'API connection successful',
+        responseText: responseText
+      };
+    } catch (error) {
+      console.error('API diagnostics error:', error);
+      
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      
+      setConnectionStatus({
+        isConnected: false,
+        failedEndpoints: ['API endpoint'],
+        message: errorMessage
+      });
+      
+      return {
+        apiAccessible: false,
+        message: errorMessage
+      };
+    }
+  }, []);
 
-    return {
-      message: allSuccessful 
-        ? 'API is accessible' 
-        : 'API is not accessible. Check network configuration and credentials.',
-      hasInternet,
-      apiAccessible: allSuccessful,
-      details: connectionStatus
-    };
-  };
-
-  return {
-    connectionStatus,
-    checkInternetConnection,
-    checkEndpoint,
-    runDiagnostics
-  };
+  return { connectionStatus, runDiagnostics };
 }

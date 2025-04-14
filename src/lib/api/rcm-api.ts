@@ -1,3 +1,4 @@
+
 import { generateSignature } from './rcm-signature';
 import type { 
   RCMApiConfig,
@@ -96,6 +97,8 @@ class RCMApiClient {
   private initialized: boolean = false;
   private useMockData: boolean = false;
   private apiConnectionFailed: boolean = false;
+  private apiFailedAttempts: number = 0;
+  private maxFailAttempts: number = 2;
 
   constructor(config: RCMApiConfig) {
     // Ensure API URL doesn't end with a slash
@@ -113,11 +116,12 @@ class RCMApiClient {
     if (config.apiSecret) this.config.apiSecret = config.apiSecret;
     if (config.apiUrl) this.config.apiUrl = config.apiUrl.replace(/\/$/, '');
     
-    // Only use mock data if explicitly requested, default to false
-    this.useMockData = config.useMockData === true;
-    
-    // Always reset the connection status on initialization
+    // Reset connection failure flags when re-initializing
     this.apiConnectionFailed = false;
+    this.apiFailedAttempts = 0;
+    
+    // Use mock data if explicitly requested, or if we previously detected API failures
+    this.useMockData = config.useMockData === true || this.apiConnectionFailed;
     
     this.initialized = true;
     
@@ -182,6 +186,27 @@ class RCMApiClient {
     console.log('Built API URL:', url);
     return url;
   }
+  
+  /**
+   * Check if we should use mock data
+   * - If explicitly set to use mock data
+   * - If API connection has failed too many times
+   */
+  private shouldUseMockData(requestMethod: string): boolean {
+    // Always check user-configured setting first
+    if (this.useMockData) {
+      console.log(`Using mock data because useMockData=true for: ${requestMethod}`);
+      return true;
+    }
+    
+    // Then check if API has failed too many times
+    if (this.apiConnectionFailed) {
+      console.log(`Using mock data because previous API connection failed for: ${requestMethod}`);
+      return true;
+    }
+    
+    return false;
+  }
 
   /**
    * Makes a generic API request with the correct format
@@ -190,9 +215,8 @@ class RCMApiClient {
   async request<T>(method: string, requestMethod: string, body?: any): Promise<T> {
     this.ensureInitialized();
 
-    // Only use mock data if explicitly enabled
-    if (this.useMockData) {
-      console.log('Using mock data because useMockData=true for:', requestMethod);
+    // Check if we should use mock data
+    if (this.shouldUseMockData(requestMethod)) {
       return this.getMockData(requestMethod) as T;
     }
 
@@ -217,12 +241,35 @@ class RCMApiClient {
 
       // Check if response is JSON
       const contentType = response.headers.get("content-type");
-      if (contentType && contentType.indexOf("application/json") === -1) {
+      if (!contentType || contentType.indexOf("application/json") === -1) {
         console.error("Non-JSON response received:", contentType);
-        const text = await response.text();
-        console.error("Response text:", text);
+        
+        // Capture response text for better debugging
+        const responseText = await response.text();
+        console.error("Response text preview:", responseText.substring(0, 200));
+        
+        // Increment failure counter
+        this.apiFailedAttempts++;
+        
+        if (this.apiFailedAttempts >= this.maxFailAttempts) {
+          // After several failures, switch to mock data mode automatically
+          if (!this.apiConnectionFailed) {
+            this.apiConnectionFailed = true;
+            toast.error("API Connection Failed", {
+              description: "Switching to demo mode with sample data"
+            });
+          }
+          
+          // Return mock data as a fallback
+          return this.getMockData(requestMethod) as T;
+        }
+        
         throw new Error("API returned non-JSON response");
       }
+
+      // Reset failure counter on successful response
+      this.apiFailedAttempts = 0;
+      this.apiConnectionFailed = false;
 
       // Handle non-OK responses
       if (!response.ok) {
@@ -252,6 +299,23 @@ class RCMApiClient {
       return responseData;
     } catch (error) {
       console.error('RCM API request failed:', error);
+      
+      // Increment failure counter
+      this.apiFailedAttempts++;
+      
+      if (this.apiFailedAttempts >= this.maxFailAttempts) {
+        // After several failures, switch to mock data mode automatically
+        if (!this.apiConnectionFailed) {
+          this.apiConnectionFailed = true;
+          toast.error("API Connection Failed", {
+            description: "Switching to demo mode with sample data"
+          });
+        }
+        
+        // Return mock data as a fallback
+        return this.getMockData(requestMethod) as T;
+      }
+      
       throw error;
     }
   }
