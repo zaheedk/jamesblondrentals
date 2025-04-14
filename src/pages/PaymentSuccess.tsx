@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -27,12 +26,12 @@ interface BookingDetails {
   customerLicenseExpiry?: string;
   customerAddress?: string;
   reservationRef?: string;
-  vehicleImageUrl?: string;
-  insuranceOption?: string;
-  insuranceAmount?: number;
-  extras?: Array<{name: string; quantity: number; amount: number}>;
-  kmOption?: string;
-  kmAmount?: number;
+  vehicleImage?: string;
+  insuranceName?: string;
+  insurancePrice?: number;
+  selectedExtras?: Array<{name: string; quantity: number; price: number}>;
+  extraKmsName?: string;
+  extraKmsPrice?: number;
 }
 
 const PaymentSuccess = () => {
@@ -184,12 +183,16 @@ const PaymentSuccess = () => {
             customerLicenseExpiry: sessionBookingData.customerLicenseExpiry,
             customerAddress: sessionBookingData.customerAddress,
             reservationRef: bookingReservationRef,
-            vehicleImageUrl: sessionBookingData.vehicleImageUrl,
-            insuranceOption: sessionBookingData.insuranceOption,
-            insuranceAmount: sessionBookingData.insuranceAmount,
-            extras: sessionBookingData.extras,
-            kmOption: sessionBookingData.kmOption,
-            kmAmount: sessionBookingData.kmAmount
+            vehicleImage: sessionBookingData.vehicleImage,
+            insuranceName: sessionBookingData.insuranceName,
+            insurancePrice: sessionBookingData.insurancePrice,
+            selectedExtras: sessionBookingData.selectedExtras?.map(extra => ({
+              name: extra.name,
+              quantity: extra.quantity,
+              amount: extra.price * extra.quantity
+            })),
+            extraKmsName: sessionBookingData.extraKmsName,
+            extraKmsPrice: sessionBookingData.extraKmsPrice
           };
           setBookingDetails(convertedDetails);
           
@@ -267,6 +270,34 @@ const PaymentSuccess = () => {
           dropoff = new Date(year, month - 1, day);
         }
         
+        if (!isValid(pickup) && pickupDate.includes('/')) {
+          const parts = pickupDate.split('/');
+          if (parts.length === 3) {
+            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            const day = parseInt(parts[0]);
+            const monthIndex = monthNames.findIndex(m => parts[1].includes(m));
+            const year = parseInt(parts[2]);
+            
+            if (!isNaN(day) && monthIndex !== -1 && !isNaN(year)) {
+              pickup = new Date(year, monthIndex, day);
+            }
+          }
+        }
+        
+        if (!isValid(dropoff) && dropoffDate.includes('/')) {
+          const parts = dropoffDate.split('/');
+          if (parts.length === 3) {
+            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            const day = parseInt(parts[0]);
+            const monthIndex = monthNames.findIndex(m => parts[1].includes(m));
+            const year = parseInt(parts[2]);
+            
+            if (!isNaN(day) && monthIndex !== -1 && !isNaN(year)) {
+              dropoff = new Date(year, monthIndex, day);
+            }
+          }
+        }
+        
         if (isValid(pickup) && isValid(dropoff)) {
           const days = differenceInDays(dropoff, pickup) + 1; // +1 to include the pickup day
           setRentalDuration(days > 0 ? days : 0);
@@ -315,12 +346,12 @@ const PaymentSuccess = () => {
       customerLicenseExpiry: customerInfo.licenseexpires || "N/A",
       customerAddress: customerInfo.fulladdress || customerInfo.address || "N/A",
       reservationRef: reservationRef,
-      vehicleImageUrl: bookingInfo.imageurl || bookingInfo.vehicleimageurl,
-      insuranceOption: bookingInfo.insuranceoption || paymentInfo.insuranceoption,
-      insuranceAmount: parseFloat(bookingInfo.insuranceamount) || parseFloat(paymentInfo.insuranceamount) || 0,
-      extras: extrasInfo.length > 0 ? extrasInfo : undefined,
-      kmOption: bookingInfo.kmcharge || bookingInfo.kmoption,
-      kmAmount: parseFloat(bookingInfo.kmchargeamount) || 0
+      vehicleImage: bookingInfo.imageurl || bookingInfo.vehicleimageurl,
+      insuranceName: bookingInfo.insuranceoption || paymentInfo.insuranceoption,
+      insurancePrice: parseFloat(bookingInfo.insuranceamount) || parseFloat(paymentInfo.insuranceamount) || 0,
+      selectedExtras: extrasInfo.length > 0 ? extrasInfo : undefined,
+      extraKmsName: bookingInfo.kmcharge || bookingInfo.kmoption,
+      extraKmsPrice: parseFloat(bookingInfo.kmchargeamount) || 0
     };
   };
   
@@ -464,10 +495,10 @@ const PaymentSuccess = () => {
         {paymentStatus === "success" && (
           <>
             {/* Vehicle image section */}
-            {bookingDetails.vehicleImageUrl && !imageError && (
+            {bookingDetails.vehicleImage && !imageError && (
               <div className="w-full aspect-video rounded-md mb-6 overflow-hidden">
                 <img
-                  src={bookingDetails.vehicleImageUrl}
+                  src={bookingDetails.vehicleImage}
                   alt={bookingDetails.vehicleName}
                   className="w-full h-full object-cover"
                   onError={handleImageError}
@@ -500,38 +531,38 @@ const PaymentSuccess = () => {
               </div>
               
               {/* Insurance option */}
-              {bookingDetails?.insuranceOption && (
+              {bookingDetails?.insuranceName && (
                 <div className="flex justify-between py-2 items-center">
                   <span className="font-medium flex items-center">
                     <Shield className="h-4 w-4 mr-2" /> Insurance:
                   </span> 
                   <span>
-                    {bookingDetails.insuranceOption}
-                    {bookingDetails.insuranceAmount > 0 && 
-                      ` (${formatCurrency(bookingDetails.insuranceAmount)})`}
+                    {bookingDetails.insuranceName}
+                    {bookingDetails.insurancePrice > 0 && 
+                      ` (${formatCurrency(bookingDetails.insurancePrice)})`}
                   </span>
                 </div>
               )}
               
               {/* KM charge option */}
-              {bookingDetails?.kmOption && (
+              {bookingDetails?.extraKmsName && (
                 <div className="flex justify-between py-2">
                   <span className="font-medium">Mileage Option:</span> 
                   <span>
-                    {bookingDetails.kmOption}
-                    {bookingDetails.kmAmount !== 0 && 
-                      ` (${formatCurrency(bookingDetails.kmAmount)})`}
+                    {bookingDetails.extraKmsName}
+                    {bookingDetails.extraKmsPrice !== 0 && 
+                      ` (${formatCurrency(bookingDetails.extraKmsPrice)})`}
                   </span>
                 </div>
               )}
               
               {/* Extras */}
-              {bookingDetails?.extras && bookingDetails.extras.length > 0 && (
+              {bookingDetails?.selectedExtras && bookingDetails.selectedExtras.length > 0 && (
                 <div className="py-2">
                   <div className="font-medium flex items-center mb-2">
                     <Package className="h-4 w-4 mr-2" /> Extras:
                   </div>
-                  {bookingDetails.extras.map((extra, index) => (
+                  {bookingDetails.selectedExtras.map((extra, index) => (
                     <div key={index} className="flex justify-between pl-6 py-1">
                       <span>
                         {extra.name} {extra.quantity > 1 ? `× ${extra.quantity}` : ''}

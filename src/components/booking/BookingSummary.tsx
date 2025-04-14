@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { format, parse, isValid, differenceInDays } from "date-fns";
@@ -54,6 +53,24 @@ const BookingSummary = ({
         // Check if it's a dd/MM/yyyy format
         if (date.includes('/')) {
           try {
+            // Handle format like "14/Apr/2025"
+            if (date.match(/\d+\/[A-Za-z]+\/\d+/)) {
+              const parts = date.split('/');
+              const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                                 "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+              const day = parseInt(parts[0]);
+              const monthIndex = monthNames.findIndex(m => parts[1].includes(m));
+              const year = parseInt(parts[2]);
+              
+              if (!isNaN(day) && monthIndex !== -1 && !isNaN(year)) {
+                const parsedDate = new Date(year, monthIndex, day);
+                if (isValid(parsedDate)) {
+                  return format(parsedDate, "PPP");
+                }
+              }
+            }
+            
+            // Try standard dd/MM/yyyy format
             const parsedDate = parse(date, 'dd/MM/yyyy', new Date());
             if (isValid(parsedDate) && !isNaN(parsedDate.getTime())) {
               return format(parsedDate, "PPP");
@@ -107,7 +124,19 @@ const BookingSummary = ({
       if (pickupDate instanceof Date) {
         pickup = pickupDate;
       } else if (typeof pickupDate === 'string') {
-        if (pickupDate.includes('/')) {
+        // Handle format like "14/Apr/2025"
+        if (pickupDate.match(/\d+\/[A-Za-z]+\/\d+/)) {
+          const parts = pickupDate.split('/');
+          const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                             "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+          const day = parseInt(parts[0]);
+          const monthIndex = monthNames.findIndex(m => parts[1].includes(m));
+          const year = parseInt(parts[2]);
+          
+          if (!isNaN(day) && monthIndex !== -1 && !isNaN(year)) {
+            pickup = new Date(year, monthIndex, day);
+          }
+        } else if (pickupDate.includes('/')) {
           const [day, month, year] = pickupDate.split('/').map(Number);
           pickup = new Date(year, month - 1, day);
         } else {
@@ -118,7 +147,19 @@ const BookingSummary = ({
       if (dropoffDate instanceof Date) {
         dropoff = dropoffDate;
       } else if (typeof dropoffDate === 'string') {
-        if (dropoffDate.includes('/')) {
+        // Handle format like "14/Apr/2025"
+        if (dropoffDate.match(/\d+\/[A-Za-z]+\/\d+/)) {
+          const parts = dropoffDate.split('/');
+          const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                             "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+          const day = parseInt(parts[0]);
+          const monthIndex = monthNames.findIndex(m => parts[1].includes(m));
+          const year = parseInt(parts[2]);
+          
+          if (!isNaN(day) && monthIndex !== -1 && !isNaN(year)) {
+            dropoff = new Date(year, monthIndex, day);
+          }
+        } else if (dropoffDate.includes('/')) {
           const [day, month, year] = dropoffDate.split('/').map(Number);
           dropoff = new Date(year, month - 1, day);
         } else {
