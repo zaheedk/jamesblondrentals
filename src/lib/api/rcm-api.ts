@@ -28,6 +28,13 @@ const DEFAULT_CONFIG: RCMApiConfig = {
 // Production fallback URL in case the proxy doesn't work
 const FALLBACK_API_URL = "https://apis.rentalcarmanager.com/booking/v3.2";
 
+// CORS proxy URLs for production/published environments
+const CORS_PROXY_URLS = [
+  "https://corsproxy.io/?",
+  "https://cors-anywhere.herokuapp.com/",
+  "https://api.allorigins.win/raw?url="
+];
+
 // Mock data definitions remain but won't be used unless explicitly requested
 const MOCK_STEP1_DATA: RCMStep1Response = {
   status: "OK",
@@ -105,6 +112,7 @@ class RCMApiClient {
   private environment: string = process.env.NODE_ENV || 'unknown';
   private useDirectApi: boolean = false;
   private isLovableHosted: boolean = false;
+  private currentCorsProxyIndex: number = -1; // Not using CORS proxy by default
 
   constructor(config: RCMApiConfig) {
     // Ensure API URL doesn't end with a slash
@@ -115,17 +123,17 @@ class RCMApiClient {
     
     // Check if we're running on Lovable hosted environment
     this.isLovableHosted = window.location.hostname.includes('lovable.dev') || 
-                          window.location.hostname.includes('lovable-apps');
+                          window.location.hostname.includes('lovable-apps') || 
+                          window.location.hostname.includes('lovable.app');
     
     console.log('RCM API Client initialized. Environment:', this.environment);
     console.log('Running on Lovable hosted environment:', this.isLovableHosted);
     
-    // In production or Lovable hosted environment, we might need special handling
+    // In production or Lovable hosted environment, we might need direct API access
     if (this.environment === 'production' || this.isLovableHosted) {
       console.log('Initializing RCM API client for production or hosted environment');
-      
-      // We'll start with the proxy approach, but be ready to switch to direct API
-      // if the proxy fails consistently
+      this.useDirectApi = true;
+      console.log('Using direct API by default in production/hosted environment');
     }
   }
 
@@ -140,7 +148,17 @@ class RCMApiClient {
     // Reset connection failure flags when re-initializing
     this.apiConnectionFailed = false;
     this.apiFailedAttempts = 0;
-    this.useDirectApi = false;
+    this.currentCorsProxyIndex = -1;
+    
+    // For Lovable hosted apps, default to direct API access
+    if (this.isLovableHosted && config.useDirectApi !== false) {
+      this.useDirectApi = true;
+      console.log('Using direct API access for Lovable hosted app');
+    } else if (config.useDirectApi === true) {
+      this.useDirectApi = true;
+    } else {
+      this.useDirectApi = false;
+    }
     
     // Use mock data if explicitly requested, or if we previously detected API failures
     this.useMockData = config.useMockData === true || this.apiConnectionFailed;
@@ -152,7 +170,8 @@ class RCMApiClient {
       apiKey: this.config.apiKey,
       useMockData: this.useMockData,
       environment: this.environment,
-      isLovableHosted: this.isLovableHosted
+      isLovableHosted: this.isLovableHosted,
+      useDirectApi: this.useDirectApi
     });
   }
 
@@ -163,6 +182,12 @@ class RCMApiClient {
     if (!this.initialized) {
       console.log('RCM API not explicitly initialized, using default config');
       this.initialized = true;
+      
+      // For Lovable hosted apps, default to direct API access if not initialized
+      if (this.isLovableHosted) {
+        this.useDirectApi = true;
+        console.log('Using direct API access for uninitialized Lovable hosted app');
+      }
     }
   }
 
@@ -194,8 +219,6 @@ class RCMApiClient {
     if (this.useDirectApi) {
       // For direct API calls, we might need CORS headers
       headers.append('X-Requested-With', 'XMLHttpRequest');
-      // We might need an Origin header in some cases
-      // headers.append('Origin', window.location.origin);
     }
     
     // Log request details for debugging
@@ -204,6 +227,7 @@ class RCMApiClient {
       timestamp,
       signature,
       useDirectApi: this.useDirectApi,
+      corsProxyIndex: this.currentCorsProxyIndex,
       body: requestBody
     });
     
@@ -214,6 +238,7 @@ class RCMApiClient {
    * Builds the correct API URL with the API key format
    * Format: /api/rcm/booking/v3.2/[API_KEY]?apikey=[API_KEY]
    * Or in direct mode: https://apis.rentalcarmanager.com/booking/v3.2/[API_KEY]?apikey=[API_KEY]
+   * With CORS proxy: [CORS_PROXY_URL]https://apis.rentalcarmanager.com/booking/v3.2/[API_KEY]?apikey=[API_KEY]
    */
   private buildApiUrl(): string {
     let baseUrl = this.config.apiUrl;
@@ -222,10 +247,17 @@ class RCMApiClient {
     if (this.useDirectApi) {
       baseUrl = FALLBACK_API_URL;
       console.log('Using direct API URL:', baseUrl);
+      
+      // If we're using a CORS proxy due to previous failures
+      if (this.currentCorsProxyIndex >= 0 && this.currentCorsProxyIndex < CORS_PROXY_URLS.length) {
+        const corsProxy = CORS_PROXY_URLS[this.currentCorsProxyIndex];
+        console.log('Using CORS proxy:', corsProxy);
+        baseUrl = corsProxy + encodeURIComponent(baseUrl);
+      }
     }
     
     const url = `${baseUrl}/${this.config.apiKey}?apikey=${this.config.apiKey}`;
-    console.log('Built API URL:', url, 'Direct mode:', this.useDirectApi);
+    console.log('Built API URL:', url, 'Direct mode:', this.useDirectApi, 'CORS proxy index:', this.currentCorsProxyIndex);
     return url;
   }
   
@@ -273,13 +305,21 @@ class RCMApiClient {
       // Create headers with auth tokens
       const headers = this.createHeaders(method, requestBody);
       
-      // Make the request
-      const response = await fetch(apiUrl, {
+      // Configure fetch options based on environment
+      const fetchOptions: RequestInit = {
         method,
         headers,
         body: JSON.stringify(requestBody),
-        credentials: 'same-origin', // Important for cookies if needed
-      });
+      };
+      
+      // If using CORS proxy, we need to adjust mode
+      if (this.currentCorsProxyIndex >= 0) {
+        fetchOptions.mode = 'cors';
+        console.log('Using CORS mode for fetch with proxy');
+      }
+      
+      // Make the request
+      const response = await fetch(apiUrl, fetchOptions);
 
       // Check if response is JSON
       const contentType = response.headers.get("content-type");
@@ -295,14 +335,23 @@ class RCMApiClient {
         // Increment failure counter
         this.apiFailedAttempts++;
         
-        // If we're not already in direct API mode and we've failed once with the proxy,
-        // try switching to direct API mode
-        if (!this.useDirectApi && this.apiFailedAttempts === 1 && 
+        // If we're not already using a CORS proxy, try switching to one
+        if (this.useDirectApi && this.currentCorsProxyIndex < 0 && 
             (this.environment === 'production' || this.isLovableHosted)) {
-          console.log('Switching to direct API mode after proxy failure');
-          this.useDirectApi = true;
+          console.log('Switching to CORS proxy after direct API failure');
+          this.currentCorsProxyIndex = 0;
           
-          // Retry the request with direct API
+          // Retry the request with CORS proxy
+          return this.request<T>(method, requestMethod, body);
+        }
+        // If one CORS proxy failed, try the next one
+        else if (this.useDirectApi && 
+                this.currentCorsProxyIndex >= 0 && 
+                this.currentCorsProxyIndex < CORS_PROXY_URLS.length - 1) {
+          this.currentCorsProxyIndex++;
+          console.log(`Trying next CORS proxy: ${CORS_PROXY_URLS[this.currentCorsProxyIndex]}`);
+          
+          // Retry with next CORS proxy
           return this.request<T>(method, requestMethod, body);
         }
         
@@ -358,14 +407,23 @@ class RCMApiClient {
       // Increment failure counter
       this.apiFailedAttempts++;
       
-      // If we're not already in direct API mode and we've failed once with the proxy,
-      // try switching to direct API mode
-      if (!this.useDirectApi && this.apiFailedAttempts === 1 && 
+      // If we're not already using a CORS proxy, try switching to one
+      if (this.useDirectApi && this.currentCorsProxyIndex < 0 && 
           (this.environment === 'production' || this.isLovableHosted)) {
-        console.log('Switching to direct API mode after proxy failure');
-        this.useDirectApi = true;
+        console.log('Switching to CORS proxy after direct API failure');
+        this.currentCorsProxyIndex = 0;
         
-        // Retry the request with direct API
+        // Retry the request with CORS proxy
+        return this.request<T>(method, requestMethod, body);
+      }
+      // If one CORS proxy failed, try the next one
+      else if (this.useDirectApi && 
+              this.currentCorsProxyIndex >= 0 && 
+              this.currentCorsProxyIndex < CORS_PROXY_URLS.length - 1) {
+        this.currentCorsProxyIndex++;
+        console.log(`Trying next CORS proxy: ${CORS_PROXY_URLS[this.currentCorsProxyIndex]}`);
+        
+        // Retry with next CORS proxy
         return this.request<T>(method, requestMethod, body);
       }
       
