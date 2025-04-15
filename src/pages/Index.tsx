@@ -18,19 +18,18 @@ const Index = () => {
     // Initialize the API with different strategies based on environment
     try {
       if (process.env.NODE_ENV === 'production') {
-        // In production, use mock data since CORS proxies are failing
+        // In production, always start with mock data for initial render speed
+        // API status indicator will let users try real connections if needed
         initializeApi({ 
-          useMockData: true,
-          useDirectApi: false,
-          useCorsProxy: false,
+          useMockData: true
         });
         
-        // In production, show API status by default
+        // In production, show API status by default so users can reconnect
         setShowApiStatus(true);
         
-        console.log('API initialized for production with mock data due to CORS issues');
-        toast.info('Using sample data in production', {
-          description: 'Live API connection unavailable. Using sample data instead.',
+        console.log('API initialized for production with mock data initially');
+        toast.info('Using sample data', {
+          description: 'Select "Check API Connection" to try connecting to live data.',
           duration: 10000
         });
       } else {

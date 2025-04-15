@@ -23,8 +23,13 @@ export function ApiStatusIndicator() {
                           window.location.hostname.includes('lovable.app');
   
   useEffect(() => {
-    // Run diagnostics on component mount
-    handleRunDiagnostics();
+    // Don't auto-run diagnostics in production to ensure fast initial load
+    if (process.env.NODE_ENV !== 'production') {
+      handleRunDiagnostics();
+    } else {
+      // In production, just initialize the component state
+      setLastRun(new Date());
+    }
   }, []);
   
   const handleRunDiagnostics = async () => {
@@ -42,13 +47,17 @@ export function ApiStatusIndicator() {
         if (results.message?.includes('CORS proxy')) {
           rcmApi.initialize({
             useDirectApi: true,
-            useCorsProxy: true
+            useCorsProxy: true,
+            useMockData: false
           });
+          toast.success('Connected to live API using CORS proxy');
         } else if (results.message?.includes('Direct API')) {
           rcmApi.initialize({
             useDirectApi: true,
-            useCorsProxy: false
+            useCorsProxy: false,
+            useMockData: false
           });
+          toast.success('Connected to live API directly');
         }
       } else {
         toast.error('API Connection Failed', {
@@ -66,6 +75,11 @@ export function ApiStatusIndicator() {
       toast.error('Diagnostics failed', {
         description: 'Could not complete API connectivity check'
       });
+      
+      // Ensure we're using mock data if diagnostics fail
+      rcmApi.initialize({
+        useMockData: true
+      });
     } finally {
       setIsRunning(false);
     }
@@ -82,7 +96,8 @@ export function ApiStatusIndicator() {
   const handleTryDirectApi = () => {
     rcmApi.initialize({
       useDirectApi: true,
-      useCorsProxy: false
+      useCorsProxy: false,
+      useMockData: false
     });
     toast.info('Switched to direct API mode');
     handleRunDiagnostics();
@@ -91,7 +106,8 @@ export function ApiStatusIndicator() {
   const handleTryCorsProxy = () => {
     rcmApi.initialize({
       useDirectApi: true,
-      useCorsProxy: true
+      useCorsProxy: true,
+      useMockData: false
     });
     toast.info('Switched to CORS proxy mode');
     handleRunDiagnostics();
