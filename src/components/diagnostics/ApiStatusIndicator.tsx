@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useApiDiagnostics } from '@/hooks/use-api-diagnostics';
 import { Button } from '@/components/ui/button';
@@ -23,13 +22,9 @@ export function ApiStatusIndicator() {
                           window.location.hostname.includes('lovable.app');
   
   useEffect(() => {
-    // Don't auto-run diagnostics in production to ensure fast initial load
-    if (process.env.NODE_ENV !== 'production') {
-      handleRunDiagnostics();
-    } else {
-      // In production, just initialize the component state
-      setLastRun(new Date());
-    }
+    // Don't auto-run diagnostics on initial load to prevent errors
+    setLastRun(new Date());
+    console.log('API status indicator mounted - diagnostics not auto-run');
   }, []);
   
   const handleRunDiagnostics = async () => {
@@ -58,6 +53,14 @@ export function ApiStatusIndicator() {
             useMockData: false
           });
           toast.success('Connected to live API directly');
+        } else if (results.message?.includes('proxy')) {
+          rcmApi.initialize({
+            useDirectApi: false,
+            useCorsProxy: false,
+            useMockData: false,
+            apiUrl: "/api/rcm/booking/v3.2"
+          });
+          toast.success('Connected to live API via local proxy');
         }
       } else {
         toast.error('API Connection Failed', {
@@ -113,6 +116,19 @@ export function ApiStatusIndicator() {
     handleRunDiagnostics();
   };
   
+  const handleTryLocalProxy = () => {
+    rcmApi.initialize({
+      useDirectApi: false,
+      useCorsProxy: false,
+      useMockData: false,
+      apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
+      apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
+      apiUrl: "/api/rcm/booking/v3.2"
+    });
+    toast.info('Switched to local proxy mode');
+    handleRunDiagnostics();
+  };
+  
   return (
     <Card className="border shadow-md">
       <CardHeader className="pb-2">
@@ -125,7 +141,7 @@ export function ApiStatusIndicator() {
             variant={connectionStatus.isConnected ? "default" : "destructive"}
             className={connectionStatus.isConnected ? "bg-green-500" : ""}
           >
-            {isRunning ? "Checking..." : connectionStatus.isConnected ? "Connected" : process.env.NODE_ENV === 'production' ? "Using Demo Data" : "Disconnected"}
+            {isRunning ? "Checking..." : connectionStatus.isConnected ? "Connected" : "Using Demo Data"}
           </Badge>
         </div>
         <CardDescription>
@@ -143,43 +159,17 @@ export function ApiStatusIndicator() {
           </TabsList>
           
           <TabsContent value="status" className="space-y-4">
-            {process.env.NODE_ENV === 'production' && (
+            {!connectionStatus.isConnected && (
               <Alert className="mt-2 bg-amber-50 border-amber-200">
                 <AlertTriangle className="h-4 w-4 text-amber-500" />
                 <AlertTitle className="text-amber-700">Using Demo Data</AlertTitle>
                 <AlertDescription className="text-amber-600">
-                  <p>Due to CORS restrictions, this application is running with demo data:</p>
+                  <p>This application is running with demo data. Possible reasons:</p>
                   <ul className="list-disc list-inside text-xs mt-1 space-y-1">
                     <li>The API server is preventing cross-origin requests</li>
-                    <li>CORS proxies have been attempted but are not working</li>
-                    <li>To use real API data, a backend proxy is required</li>
+                    <li>The development proxy is not configured correctly</li>
+                    <li>Click "Check Connection" to try connecting to the API</li>
                   </ul>
-                </AlertDescription>
-              </Alert>
-            )}
-            
-            {!connectionStatus.isConnected && process.env.NODE_ENV !== 'production' && (
-              <Alert variant="destructive" className="mt-2">
-                <Server className="h-4 w-4" />
-                <AlertTitle>Connection Error</AlertTitle>
-                <AlertDescription>
-                  <p className="mb-1">API connection failed. Likely reasons:</p>
-                  <ul className="list-disc list-inside text-xs space-y-1">
-                    <li>Proxy configuration not working in production</li>
-                    <li>CORS issues preventing direct API access</li>
-                    <li>API server restricting access from this domain</li>
-                  </ul>
-                  {isLovableHosted && (
-                    <div className="mt-2 bg-gray-800/20 p-2 rounded">
-                      <p className="text-xs font-semibold flex items-center">
-                        <Globe className="h-3 w-3 mr-1" />
-                        Important for Lovable hosted apps:
-                      </p>
-                      <p className="text-xs mt-1">
-                        Use the demo data mode until a backend proxy can be implemented.
-                      </p>
-                    </div>
-                  )}
                 </AlertDescription>
               </Alert>
             )}
@@ -209,6 +199,18 @@ export function ApiStatusIndicator() {
           
           <TabsContent value="actions" className="space-y-4">
             <div className="grid grid-cols-1 gap-3">
+              {process.env.NODE_ENV !== 'production' && (
+                <Button
+                  variant="outline"
+                  onClick={handleTryLocalProxy}
+                  disabled={isRunning}
+                  className="justify-start bg-blue-50"
+                >
+                  <Server className="mr-2 h-4 w-4" />
+                  Try Local Development Proxy (Recommended)
+                </Button>
+              )}
+              
               <Button
                 variant="outline"
                 onClick={handleTryDirectApi}
@@ -233,19 +235,19 @@ export function ApiStatusIndicator() {
                 variant="outline"
                 onClick={handleFallbackToMock}
                 disabled={isRunning}
-                className={`justify-start ${process.env.NODE_ENV === 'production' ? "bg-blue-50" : ""}`}
+                className="justify-start"
               >
                 <Server className="mr-2 h-4 w-4" />
-                Use Demo Data (Recommended)
+                Use Demo Data
               </Button>
             </div>
             
-            {process.env.NODE_ENV === 'production' && (
+            {process.env.NODE_ENV !== 'production' && (
               <Alert className="mt-2">
-                <AlertTriangle className="h-4 w-4" />
-                <AlertTitle>Production Mode</AlertTitle>
+                <Server className="h-4 w-4" />
+                <AlertTitle>Development Mode</AlertTitle>
                 <AlertDescription>
-                  <p className="text-sm">To use real API data in production, you would need to set up a backend API proxy.</p>
+                  <p className="text-sm">For development, the local proxy configured in vite.config.ts should work best.</p>
                 </AlertDescription>
               </Alert>
             )}

@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Hero from "@/components/home/Hero";
@@ -17,32 +16,20 @@ const Index = () => {
   useEffect(() => {
     // Initialize the API with different strategies based on environment
     try {
-      if (process.env.NODE_ENV === 'production') {
-        // In production, always start with mock data for initial render speed
-        // API status indicator will let users try real connections if needed
-        initializeApi({ 
-          useMockData: true
-        });
-        
-        // In production, show API status by default so users can reconnect
-        setShowApiStatus(true);
-        
-        console.log('API initialized for production with mock data initially');
-        toast.info('Using sample data', {
-          description: 'Select "Check API Connection" to try connecting to live data.',
-          duration: 10000
-        });
-      } else {
-        // In development, use the local proxy
-        initializeApi({ 
-          useMockData: false,
-          useDirectApi: false,
-          apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
-          apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
-          apiUrl: "/api/rcm/booking/v3.2"
-        });
-        console.log('API initialized for development with local proxy');
-      }
+      // For both development and production, start with mock data for reliability
+      initializeApi({ 
+        useMockData: true
+      });
+      
+      // Always show API status for better debugging
+      setShowApiStatus(true);
+      
+      const envType = process.env.NODE_ENV === 'production' ? 'production' : 'development';
+      console.log(`API initialized for ${envType} with mock data initially`);
+      toast.info('Using sample data', {
+        description: 'Select "Check API Connection" to try connecting to live data.',
+        duration: 8000
+      });
     } catch (error) {
       console.error('Failed to initialize API:', error);
       toast.error('API Connection Error', {
@@ -65,15 +52,15 @@ const Index = () => {
       <main className="flex-grow">
         <Hero />
         
-        {/* API Status Indicator - Shown in dev mode or when explicitly enabled */}
-        {(process.env.NODE_ENV !== 'production' || showApiStatus) && (
+        {/* API Status Indicator - Always shown by default */}
+        {showApiStatus && (
           <div className="container mx-auto px-4 py-4">
             <ApiStatusIndicator />
           </div>
         )}
         
-        {/* In production, add a button to show/hide API status */}
-        {process.env.NODE_ENV === 'production' && !showApiStatus && (
+        {/* Add a button to show/hide API status */}
+        {!showApiStatus && (
           <div className="container mx-auto px-4 -mt-4 mb-4 flex justify-end">
             <Button variant="outline" size="sm" onClick={toggleApiStatus}>
               Check API Connection
