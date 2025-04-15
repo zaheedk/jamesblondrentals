@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Hero from "@/components/home/Hero";
@@ -13,34 +12,27 @@ import { ApiStatusIndicator } from "@/components/diagnostics/ApiStatusIndicator"
 const Index = () => {
   const { initializeApi } = useRcmApi();
   const [showApiStatus, setShowApiStatus] = useState(false);
-  
-  // Check if we're in a Lovable hosted environment
-  const isLovableHosted = window.location.hostname.includes('lovable.dev') || 
-                          window.location.hostname.includes('lovable-apps') ||
-                          window.location.hostname.includes('lovable.app');
-  
+
   useEffect(() => {
     // Initialize the API with different strategies based on environment
     try {
-      if (process.env.NODE_ENV === 'production' || isLovableHosted) {
-        // In production/hosted environments, start with direct API + CORS proxy
+      if (process.env.NODE_ENV === 'production') {
+        // In production, use direct API access only
         initializeApi({ 
           useMockData: false,
           useDirectApi: true,
-          useCorsProxy: true,
+          useCorsProxy: false,
           apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
           apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg"
         });
         
-        // In production, always show the API status indicator temporarily
+        // In production, show API status temporarily
         setShowApiStatus(true);
-        
-        // Hide it after 30 seconds unless there are issues
         setTimeout(() => {
           setShowApiStatus(false);
         }, 30000);
         
-        console.log('API initialized for production with CORS proxy');
+        console.log('API initialized for production with direct access');
       } else {
         // In development, use the local proxy
         initializeApi({ 
@@ -61,7 +53,7 @@ const Index = () => {
       // Show API status on error
       setShowApiStatus(true);
     }
-  }, [initializeApi, isLovableHosted]);
+  }, [initializeApi]);
 
   // Function to toggle API status visibility
   const toggleApiStatus = () => {
