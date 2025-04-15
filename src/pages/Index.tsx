@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Hero from "@/components/home/Hero";
@@ -17,22 +18,21 @@ const Index = () => {
     // Initialize the API with different strategies based on environment
     try {
       if (process.env.NODE_ENV === 'production') {
-        // In production, use direct API access only
+        // In production, use mock data since CORS proxies are failing
         initializeApi({ 
-          useMockData: false,
-          useDirectApi: true,
+          useMockData: true,
+          useDirectApi: false,
           useCorsProxy: false,
-          apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
-          apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg"
         });
         
-        // In production, show API status temporarily
+        // In production, show API status by default
         setShowApiStatus(true);
-        setTimeout(() => {
-          setShowApiStatus(false);
-        }, 30000);
         
-        console.log('API initialized for production with direct access');
+        console.log('API initialized for production with mock data due to CORS issues');
+        toast.info('Using sample data in production', {
+          description: 'Live API connection unavailable. Using sample data instead.',
+          duration: 10000
+        });
       } else {
         // In development, use the local proxy
         initializeApi({ 
@@ -47,7 +47,7 @@ const Index = () => {
     } catch (error) {
       console.error('Failed to initialize API:', error);
       toast.error('API Connection Error', {
-        description: 'Failed to connect to the booking system. Please try again later.'
+        description: 'Failed to connect to the booking system. Using sample data instead.'
       });
       
       // Show API status on error

@@ -128,13 +128,11 @@ class RCMApiClient {
     console.log('RCM API Client initialized. Environment:', this.environment);
     console.log('Running on Lovable hosted environment:', this.isLovableHosted);
     
-    // In production or Lovable hosted environment, immediately configure for direct API access
+    // In production or Lovable hosted environment, use mock data by default
     if (this.environment === 'production' || this.isLovableHosted) {
       console.log('Initializing RCM API client for production or hosted environment');
-      this.useDirectApi = true;
-      // Start with the first CORS proxy by default in production
-      this.currentCorsProxyIndex = 0;
-      console.log('Using direct API with CORS proxy in production/hosted environment');
+      this.useMockData = true;
+      console.log('Using mock data by default in production/hosted environment due to CORS issues');
     }
   }
 
@@ -159,17 +157,10 @@ class RCMApiClient {
       this.currentCorsProxyIndex = -1;
     }
     
-    // For Lovable hosted apps, default to direct API access with CORS proxy
-    if (this.isLovableHosted && config.useDirectApi !== false) {
+    // Handle direct API vs proxy configuration
+    if (config.useDirectApi === true) {
       this.useDirectApi = true;
-      // Default to using CORS proxy on Lovable hosted unless explicitly turned off
-      if (config.useCorsProxy !== false && this.currentCorsProxyIndex === -1) {
-        this.currentCorsProxyIndex = 0;
-      }
-      console.log('Using direct API access for Lovable hosted app with CORS proxy:', this.currentCorsProxyIndex);
-    } else if (config.useDirectApi === true) {
-      this.useDirectApi = true;
-    } else {
+    } else if (config.useDirectApi === false) {
       this.useDirectApi = false;
     }
     
@@ -187,12 +178,13 @@ class RCMApiClient {
       useDirectApi: this.useDirectApi,
       corsProxyIndex: this.currentCorsProxyIndex
     });
-    
-    // Log additional debug info for production environments
-    if (this.environment === 'production' || this.isLovableHosted) {
-      const effectiveApiUrl = this.buildApiUrl();
-      console.log('Effective API URL:', effectiveApiUrl);
-    }
+  }
+
+  /**
+   * Check if mock data is being used
+   */
+  isUsingMockData(): boolean {
+    return this.useMockData;
   }
 
   /**
@@ -203,10 +195,10 @@ class RCMApiClient {
       console.log('RCM API not explicitly initialized, using default config');
       this.initialized = true;
       
-      // For Lovable hosted apps, default to direct API access if not initialized
-      if (this.isLovableHosted) {
-        this.useDirectApi = true;
-        console.log('Using direct API access for uninitialized Lovable hosted app');
+      // For Lovable hosted apps, default to mock data if not initialized
+      if (this.isLovableHosted || this.environment === 'production') {
+        this.useMockData = true;
+        console.log('Using mock data for uninitialized Lovable hosted app');
       }
     }
   }
@@ -344,33 +336,14 @@ class RCMApiClient {
         const response = await fetch(apiUrl, fetchOptions);
         clearTimeout(timeout);
         
-        // Check if response is JSON
+        // Process response
         const contentType = response.headers.get("content-type");
         console.log(`API response content type: ${contentType}`);
         
         if (!contentType || contentType.indexOf("application/json") === -1) {
-          console.error("Non-JSON response received:", contentType);
-          
-          // Capture response text for better debugging
-          const responseText = await response.text();
-          console.error("Response text preview:", responseText.substring(0, 500));
-          
-          // Increment failure counter
-          this.apiFailedAttempts++;
-          
-          // Try the next connection strategy
-          if (this.tryNextConnectionStrategy()) {
-            // Retry the request with new connection strategy
-            return this.request<T>(method, requestMethod, body);
-          }
-          
-          // If all strategies failed, switch to mock data
-          if (this.apiFailedAttempts >= this.maxFailAttempts) {
-            this.switchToMockData();
-            return this.getMockData(requestMethod) as T;
-          }
-          
-          throw new Error(`API returned non-JSON response (${contentType}). Environment: ${this.environment}`);
+          // Handle non-JSON response
+          this.switchToMockData();
+          return this.getMockData(requestMethod) as T;
         }
 
         // Reset failure counter on successful response
@@ -379,17 +352,9 @@ class RCMApiClient {
 
         // Handle non-OK responses
         if (!response.ok) {
-          const errorText = await response.text();
-          let errorData;
-          
-          try {
-            errorData = JSON.parse(errorText);
-          } catch (e) {
-            errorData = { message: errorText || `API request failed: ${response.status}` };
-          }
-          
-          console.error(`API error: ${response.status} ${response.statusText}`, errorData);
-          throw new Error(errorData.message || `Request failed with status: ${response.status}`);
+          // Switch to mock data after failure
+          this.switchToMockData();
+          return this.getMockData(requestMethod) as T;
         }
 
         // Parse and return the response
@@ -399,46 +364,24 @@ class RCMApiClient {
         // Check for API errors in the response
         if (responseData.status === "ERR") {
           console.error('API returned error:', responseData.error);
-          throw new Error(responseData.error || 'Unknown API error');
+          // Switch to mock data on API error
+          this.switchToMockData();
+          return this.getMockData(requestMethod) as T;
         }
         
         return responseData;
-      } catch (error: any) {
+      } catch (error) {
         clearTimeout(timeout);
-        
-        // Check if it was a timeout
-        if (error.name === 'AbortError') {
-          console.error('API request timed out');
-          this.apiFailedAttempts++;
-          
-          // Try the next connection strategy
-          if (this.tryNextConnectionStrategy()) {
-            // Retry the request with new connection strategy
-            return this.request<T>(method, requestMethod, body);
-          }
-        }
-        
-        throw error;
+        // Switch to mock data on error
+        this.switchToMockData();
+        return this.getMockData(requestMethod) as T;
       }
     } catch (error) {
       console.error(`RCM API request failed in ${this.environment} environment:`, error);
       
-      // Increment failure counter
-      this.apiFailedAttempts++;
-      
-      // Try the next connection strategy
-      if (this.tryNextConnectionStrategy()) {
-        // Retry the request with new connection strategy
-        return this.request<T>(method, requestMethod, body);
-      }
-      
-      // If all strategies failed, switch to mock data
-      if (this.apiFailedAttempts >= this.maxFailAttempts) {
-        this.switchToMockData();
-        return this.getMockData(requestMethod) as T;
-      }
-      
-      throw error;
+      // Switch to mock data
+      this.switchToMockData();
+      return this.getMockData(requestMethod) as T;
     }
   }
   

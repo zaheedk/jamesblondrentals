@@ -51,8 +51,8 @@ export function ApiStatusIndicator() {
           });
         }
       } else {
-        toast.error('API connection failed', {
-          description: results.message
+        toast.error('API Connection Failed', {
+          description: 'Using demo data instead. See Status tab for details.'
         });
         // Fall back to mock data after failed diagnostics
         rcmApi.initialize({
@@ -75,7 +75,7 @@ export function ApiStatusIndicator() {
     rcmApi.initialize({
       useMockData: true
     });
-    toast.success('Switched to mock data mode');
+    toast.success('Switched to demo data mode');
     setActiveTab("actions");
   };
 
@@ -109,7 +109,7 @@ export function ApiStatusIndicator() {
             variant={connectionStatus.isConnected ? "default" : "destructive"}
             className={connectionStatus.isConnected ? "bg-green-500" : ""}
           >
-            {isRunning ? "Checking..." : connectionStatus.isConnected ? "Connected" : "Disconnected"}
+            {isRunning ? "Checking..." : connectionStatus.isConnected ? "Connected" : process.env.NODE_ENV === 'production' ? "Using Demo Data" : "Disconnected"}
           </Badge>
         </div>
         <CardDescription>
@@ -127,7 +127,22 @@ export function ApiStatusIndicator() {
           </TabsList>
           
           <TabsContent value="status" className="space-y-4">
-            {!connectionStatus.isConnected && (
+            {process.env.NODE_ENV === 'production' && (
+              <Alert className="mt-2 bg-amber-50 border-amber-200">
+                <AlertTriangle className="h-4 w-4 text-amber-500" />
+                <AlertTitle className="text-amber-700">Using Demo Data</AlertTitle>
+                <AlertDescription className="text-amber-600">
+                  <p>Due to CORS restrictions, this application is running with demo data:</p>
+                  <ul className="list-disc list-inside text-xs mt-1 space-y-1">
+                    <li>The API server is preventing cross-origin requests</li>
+                    <li>CORS proxies have been attempted but are not working</li>
+                    <li>To use real API data, a backend proxy is required</li>
+                  </ul>
+                </AlertDescription>
+              </Alert>
+            )}
+            
+            {!connectionStatus.isConnected && process.env.NODE_ENV !== 'production' && (
               <Alert variant="destructive" className="mt-2">
                 <Server className="h-4 w-4" />
                 <AlertTitle>Connection Error</AlertTitle>
@@ -145,7 +160,7 @@ export function ApiStatusIndicator() {
                         Important for Lovable hosted apps:
                       </p>
                       <p className="text-xs mt-1">
-                        Try using the Actions tab to switch to CORS proxy or mock data.
+                        Use the demo data mode until a backend proxy can be implemented.
                       </p>
                     </div>
                   )}
@@ -202,12 +217,22 @@ export function ApiStatusIndicator() {
                 variant="outline"
                 onClick={handleFallbackToMock}
                 disabled={isRunning}
-                className="justify-start"
+                className={`justify-start ${process.env.NODE_ENV === 'production' ? "bg-blue-50" : ""}`}
               >
                 <Server className="mr-2 h-4 w-4" />
-                Use Sample Data
+                Use Demo Data (Recommended)
               </Button>
             </div>
+            
+            {process.env.NODE_ENV === 'production' && (
+              <Alert className="mt-2">
+                <AlertTriangle className="h-4 w-4" />
+                <AlertTitle>Production Mode</AlertTitle>
+                <AlertDescription>
+                  <p className="text-sm">To use real API data in production, you would need to set up a backend API proxy.</p>
+                </AlertDescription>
+              </Alert>
+            )}
           </TabsContent>
           
           <TabsContent value="debug" className="space-y-4">
@@ -216,6 +241,7 @@ export function ApiStatusIndicator() {
               <p>Host: {window.location.origin}</p>
               <p>Lovable hosted: {isLovableHosted ? 'Yes' : 'No'}</p>
               <p>Test run count: {attemptCount}</p>
+              <p>Demo mode active: {rcmApi.isUsingMockData() ? 'Yes' : 'No'}</p>
               
               {connectionStatus.failedEndpoints.length > 0 && (
                 <div className="mt-2">
