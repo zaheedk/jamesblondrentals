@@ -44,25 +44,37 @@ export function useApiDiagnostics() {
       const successfulEndpoints = [];
       const failedEndpoints = [];
       
-      // First try the proxy path
-      let apiUrl = "/api/rcm/booking/v3.2/TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq?apikey=TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq";
-      endpoints.push(apiUrl);
+      // First try the proxy path - only in development
+      if (!isProduction && !isLovableHosted) {
+        const apiUrl = "/api/rcm/booking/v3.2/TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq?apikey=TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq";
+        endpoints.push(apiUrl);
+      }
       
       // Direct API endpoint
       const directApiUrl = "https://apis.rentalcarmanager.com/booking/v3.2/TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq?apikey=TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq";
       endpoints.push(directApiUrl);
       
-      // CORS proxied API endpoints
+      // CORS proxied API endpoints - try these first in production/Lovable hosted
       const corsProxies = [
         "https://corsproxy.io/?",
-        "https://cors-anywhere.herokuapp.com/",
-        "https://api.allorigins.win/raw?url="
+        "https://api.allorigins.win/raw?url=",
+        "https://cors-anywhere.herokuapp.com/"
       ];
       
-      const corsProxyEndpoints = corsProxies.map(proxy => 
-        `${proxy}${encodeURIComponent(directApiUrl)}`
-      );
-      endpoints.push(...corsProxyEndpoints);
+      // In production, prioritize CORS proxies
+      if (isProduction || isLovableHosted) {
+        const corsProxyEndpoints = corsProxies.map(proxy => 
+          `${proxy}${encodeURIComponent(directApiUrl)}`
+        );
+        // Put CORS proxies at the beginning in production
+        endpoints.unshift(...corsProxyEndpoints);
+      } else {
+        // In dev, add them after the proxy and direct attempts
+        const corsProxyEndpoints = corsProxies.map(proxy => 
+          `${proxy}${encodeURIComponent(directApiUrl)}`
+        );
+        endpoints.push(...corsProxyEndpoints);
+      }
       
       console.log('Testing API endpoints:', endpoints);
       
@@ -70,7 +82,7 @@ export function useApiDiagnostics() {
       headers.append('Content-Type', 'application/json');
       headers.append('Accept', 'application/json');
       
-      // Generate a test signature (not actually used in this case but helpful for debugging)
+      // Generate a test request body
       const testBody = JSON.stringify({ method: "step1" });
       
       let successfulResponse = null;
@@ -95,33 +107,50 @@ export function useApiDiagnostics() {
             fetchOptions.mode = 'cors';
           }
           
-          const response = await fetch(endpoint, fetchOptions);
-          const respText = await response.text();
+          // Add a timeout to the fetch request
+          const controller = new AbortController();
+          fetchOptions.signal = controller.signal;
           
-          console.log(`Response from ${endpoint}:`, response.status, response.statusText);
-          console.log('Content-Type:', response.headers.get('content-type'));
-          console.log('Response preview:', respText.substring(0, 200));
+          // Set a timeout of 5 seconds per endpoint
+          const timeoutId = setTimeout(() => controller.abort(), 5000);
           
-          // Check if the response is valid JSON
-          let isJsonResponse = false;
           try {
-            JSON.parse(respText);
-            isJsonResponse = true;
-            console.log(`Endpoint ${endpoint} returned valid JSON`);
-          } catch (e) {
-            console.error(`Endpoint ${endpoint} returned invalid JSON:`, e);
-            isJsonResponse = false;
-          }
-          
-          if (isJsonResponse) {
-            successfulEndpoints.push(endpoint);
-            successfulResponse = response;
-            successfulEndpoint = endpoint;
-            responseText = respText;
-            console.log(`Found working endpoint: ${endpoint}`);
-            break; // Found a working endpoint, no need to continue
-          } else {
-            failedEndpoints.push(endpoint);
+            const response = await fetch(endpoint, fetchOptions);
+            clearTimeout(timeoutId);
+            
+            const respText = await response.text();
+            
+            console.log(`Response from ${endpoint}:`, response.status, response.statusText);
+            console.log('Content-Type:', response.headers.get('content-type'));
+            console.log('Response preview:', respText.substring(0, 200));
+            
+            // Check if the response is valid JSON
+            let isJsonResponse = false;
+            try {
+              JSON.parse(respText);
+              isJsonResponse = true;
+              console.log(`Endpoint ${endpoint} returned valid JSON`);
+            } catch (e) {
+              console.error(`Endpoint ${endpoint} returned invalid JSON:`, e);
+              isJsonResponse = false;
+            }
+            
+            if (isJsonResponse) {
+              successfulEndpoints.push(endpoint);
+              successfulResponse = response;
+              successfulEndpoint = endpoint;
+              responseText = respText;
+              console.log(`Found working endpoint: ${endpoint}`);
+              break; // Found a working endpoint, no need to continue
+            } else {
+              failedEndpoints.push(endpoint);
+            }
+          } catch (error) {
+            clearTimeout(timeoutId);
+            console.error(`Error testing endpoint ${endpoint}:`, error);
+            
+            // Add specific error details for this endpoint
+            failedEndpoints.push(`${endpoint} (${error instanceof Error ? error.message : 'Unknown error'})`);
           }
         } catch (error) {
           console.error(`Error testing endpoint ${endpoint}:`, error);
@@ -131,23 +160,30 @@ export function useApiDiagnostics() {
       
       // If we found a working endpoint
       if (successfulEndpoint) {
-        const recommendationText = successfulEndpoint.includes('/api/rcm') 
+        const isProxy = successfulEndpoint.includes('/api/rcm');
+        const isCorsProxy = successfulEndpoint.includes('corsproxy.io') || 
+                         successfulEndpoint.includes('cors-anywhere') || 
+                         successfulEndpoint.includes('allorigins');
+        
+        const recommendationText = isProxy 
           ? "Proxy configuration is working properly." 
-          : successfulEndpoint.includes('corsproxy') 
-            ? "Direct API with CORS proxy is working. Consider updating your application to use this approach."
+          : isCorsProxy 
+            ? "Direct API with CORS proxy is working. Use this approach for deployed apps."
             : "Direct API access is working. No proxy needed.";
+        
+        const connectionMode = isProxy ? "proxy" : isCorsProxy ? "CORS proxy" : "direct";
         
         setConnectionStatus({
           isConnected: true,
           failedEndpoints,
-          message: `Connection successful using ${successfulEndpoint}. ${recommendationText}`,
+          message: `Connection successful using ${connectionMode}. ${recommendationText}`,
           environment,
           isLovableHosted
         });
         
         return {
           apiAccessible: true,
-          message: `Connection successful using ${successfulEndpoint}. ${recommendationText}`,
+          message: `Connection successful using ${connectionMode}. ${recommendationText}`,
           responseText,
           failedEndpoints,
           environment,
@@ -156,22 +192,23 @@ export function useApiDiagnostics() {
       }
       
       // If all endpoints failed
-      const contentType = responseText ? 'unknown format' : 'empty response';
       const suggestionText = isLovableHosted
-        ? "In the Lovable hosted environment, you need to use direct API access with CORS. Update your RCM API client configuration."
-        : "Check API server configuration and CORS settings.";
+        ? "In the Lovable hosted environment, you need to use direct API access with a CORS proxy. Try the different connection methods in the Actions tab."
+        : isProduction
+        ? "Check API server CORS settings or try one of the connection methods in the Actions tab."
+        : "Check your development server configuration and network connection.";
       
       setConnectionStatus({
         isConnected: false,
         failedEndpoints,
-        message: `All API endpoints failed. API returned ${contentType}. ${suggestionText}`,
+        message: `API connection failed. ${suggestionText}`,
         environment,
         isLovableHosted
       });
       
       return {
         apiAccessible: false,
-        message: `All API endpoints failed. API returned ${contentType}. ${suggestionText}`,
+        message: `API connection failed. ${suggestionText}`,
         responseText,
         failedEndpoints,
         environment,

@@ -39,14 +39,15 @@ export function ApiStatusIndicator() {
       if (results.apiAccessible) {
         toast.success('API connection successful');
         // If we get a successful connection, also initialize the RCM API client to use this approach
-        if (results.message?.includes('Direct API with CORS proxy')) {
+        if (results.message?.includes('CORS proxy')) {
           rcmApi.initialize({
             useDirectApi: true,
             useCorsProxy: true
           });
-        } else if (results.message?.includes('Direct API access')) {
+        } else if (results.message?.includes('Direct API')) {
           rcmApi.initialize({
-            useDirectApi: true
+            useDirectApi: true,
+            useCorsProxy: false
           });
         }
       } else {
@@ -80,7 +81,8 @@ export function ApiStatusIndicator() {
 
   const handleTryDirectApi = () => {
     rcmApi.initialize({
-      useDirectApi: true
+      useDirectApi: true,
+      useCorsProxy: false
     });
     toast.info('Switched to direct API mode');
     handleRunDiagnostics();
@@ -143,8 +145,7 @@ export function ApiStatusIndicator() {
                         Important for Lovable hosted apps:
                       </p>
                       <p className="text-xs mt-1">
-                        The app has automatically switched to demo mode with sample data.
-                        Use the Actions tab to try different connection methods.
+                        Try using the Actions tab to switch to CORS proxy or mock data.
                       </p>
                     </div>
                   )}
