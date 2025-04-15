@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Hero from "@/components/home/Hero";
@@ -11,23 +12,19 @@ import { ApiStatusIndicator } from "@/components/diagnostics/ApiStatusIndicator"
 
 const Index = () => {
   const { initializeApi } = useRcmApi();
-  const [showApiStatus, setShowApiStatus] = useState(false);
+  const [showApiStatus, setShowApiStatus] = useState(true); // Always show by default
 
   useEffect(() => {
-    // Initialize the API with different strategies based on environment
     try {
-      // For both development and production, start with mock data for reliability
+      // Always start with mock data for reliability
       initializeApi({ 
         useMockData: true
       });
       
-      // Always show API status for better debugging
-      setShowApiStatus(true);
-      
       const envType = process.env.NODE_ENV === 'production' ? 'production' : 'development';
-      console.log(`API initialized for ${envType} with mock data initially`);
+      console.log(`API initialized for ${envType} environment with mock data initially`);
       toast.info('Using sample data', {
-        description: 'Select "Check API Connection" to try connecting to live data.',
+        description: 'Click "Check API Connection" to try connecting to live data.',
         duration: 8000
       });
     } catch (error) {
@@ -35,9 +32,6 @@ const Index = () => {
       toast.error('API Connection Error', {
         description: 'Failed to connect to the booking system. Using sample data instead.'
       });
-      
-      // Show API status on error
-      setShowApiStatus(true);
     }
   }, [initializeApi]);
 

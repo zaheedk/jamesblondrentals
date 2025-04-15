@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useApiDiagnostics } from '@/hooks/use-api-diagnostics';
 import { Button } from '@/components/ui/button';
@@ -15,16 +16,16 @@ export function ApiStatusIndicator() {
   const [lastRun, setLastRun] = useState<Date | null>(null);
   const [responseData, setResponseData] = useState<string | null>(null);
   const [attemptCount, setAttemptCount] = useState(0);
-  const [activeTab, setActiveTab] = useState("status");
+  const [activeTab, setActiveTab] = useState("actions"); // Start with actions tab for better UX
   
   const isLovableHosted = window.location.hostname.includes('lovable.dev') || 
                           window.location.hostname.includes('lovable-apps') ||
                           window.location.hostname.includes('lovable.app');
   
   useEffect(() => {
-    // Don't auto-run diagnostics on initial load to prevent errors
+    // Just set last run time without actually running diagnostics
     setLastRun(new Date());
-    console.log('API status indicator mounted - diagnostics not auto-run');
+    console.log('API status indicator mounted - ready for manual connection check');
   }, []);
   
   const handleRunDiagnostics = async () => {
@@ -62,14 +63,18 @@ export function ApiStatusIndicator() {
           });
           toast.success('Connected to live API via local proxy');
         }
+        // Switch to status tab to show successful connection
+        setActiveTab("status");
       } else {
         toast.error('API Connection Failed', {
-          description: 'Using demo data instead. See Status tab for details.'
+          description: 'Using demo data instead. See debug tab for details.'
         });
         // Fall back to mock data after failed diagnostics
         rcmApi.initialize({
           useMockData: true
         });
+        // Show debug info on failure
+        setActiveTab("debug");
       }
       
       setLastRun(new Date());
@@ -83,6 +88,9 @@ export function ApiStatusIndicator() {
       rcmApi.initialize({
         useMockData: true
       });
+      
+      // Show debug tab on error
+      setActiveTab("debug");
     } finally {
       setIsRunning(false);
     }
@@ -93,7 +101,7 @@ export function ApiStatusIndicator() {
       useMockData: true
     });
     toast.success('Switched to demo data mode');
-    setActiveTab("actions");
+    setActiveTab("status");
   };
 
   const handleTryDirectApi = () => {
@@ -102,7 +110,7 @@ export function ApiStatusIndicator() {
       useCorsProxy: false,
       useMockData: false
     });
-    toast.info('Switched to direct API mode');
+    toast.info('Trying direct API connection...');
     handleRunDiagnostics();
   };
 
@@ -112,7 +120,7 @@ export function ApiStatusIndicator() {
       useCorsProxy: true,
       useMockData: false
     });
-    toast.info('Switched to CORS proxy mode');
+    toast.info('Trying CORS proxy connection...');
     handleRunDiagnostics();
   };
   
@@ -125,7 +133,7 @@ export function ApiStatusIndicator() {
       apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
       apiUrl: "/api/rcm/booking/v3.2"
     });
-    toast.info('Switched to local proxy mode');
+    toast.info('Trying local proxy connection...');
     handleRunDiagnostics();
   };
   
@@ -154,7 +162,7 @@ export function ApiStatusIndicator() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-2">
           <TabsList className="mb-2 grid w-full grid-cols-3">
             <TabsTrigger value="status">Status</TabsTrigger>
-            <TabsTrigger value="actions">Actions</TabsTrigger>
+            <TabsTrigger value="actions">Connect</TabsTrigger>
             <TabsTrigger value="debug">Debug Info</TabsTrigger>
           </TabsList>
           
@@ -198,6 +206,14 @@ export function ApiStatusIndicator() {
           </TabsContent>
           
           <TabsContent value="actions" className="space-y-4">
+            <Alert className="mb-4 bg-blue-50 border-blue-200">
+              <Server className="h-4 w-4 text-blue-500" />
+              <AlertTitle className="text-blue-700">Connect to API</AlertTitle>
+              <AlertDescription className="text-blue-600">
+                <p>Choose a connection method below. Try all options to find which works best in your environment.</p>
+              </AlertDescription>
+            </Alert>
+            
             <div className="grid grid-cols-1 gap-3">
               {process.env.NODE_ENV !== 'production' && (
                 <Button
@@ -261,7 +277,7 @@ export function ApiStatusIndicator() {
               <p>Test run count: {attemptCount}</p>
               <p>Demo mode active: {rcmApi.isUsingMockData() ? 'Yes' : 'No'}</p>
               
-              {connectionStatus.failedEndpoints.length > 0 && (
+              {connectionStatus.failedEndpoints && connectionStatus.failedEndpoints.length > 0 && (
                 <div className="mt-2">
                   <p className="text-red-600 font-medium">Failed endpoints:</p>
                   <ul className="list-disc list-inside text-xs space-y-1">
