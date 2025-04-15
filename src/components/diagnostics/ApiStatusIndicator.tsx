@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useApiDiagnostics } from '@/hooks/use-api-diagnostics';
 import { Button } from '@/components/ui/button';
-import { Loader2, Check, AlertTriangle, RefreshCw, Server, Globe } from 'lucide-react';
+import { Loader2, Check, AlertTriangle, RefreshCw, Server, Globe, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
@@ -11,6 +11,10 @@ export function ApiStatusIndicator() {
   const [isRunning, setIsRunning] = useState(false);
   const [lastRun, setLastRun] = useState<Date | null>(null);
   const [responseData, setResponseData] = useState<string | null>(null);
+  const [attemptCount, setAttemptCount] = useState(0);
+  
+  const isLovableHosted = window.location.hostname.includes('lovable.dev') || 
+                         window.location.hostname.includes('lovable-apps');
   
   useEffect(() => {
     // Run diagnostics on component mount
@@ -19,6 +23,7 @@ export function ApiStatusIndicator() {
   
   const handleRunDiagnostics = async () => {
     setIsRunning(true);
+    setAttemptCount(count => count + 1);
     try {
       const results = await runDiagnostics();
       console.log('API Diagnostics results:', results);
@@ -79,6 +84,8 @@ export function ApiStatusIndicator() {
           <p>Last check: {lastRun ? lastRun.toLocaleTimeString() : 'Not checked yet'}</p>
           <p>Environment: {connectionStatus.environment || process.env.NODE_ENV || 'Unknown'}</p>
           <p>Host: {window.location.origin}</p>
+          <p>Lovable hosted: {isLovableHosted ? 'Yes' : 'No'}</p>
+          <p>Diagnostics run count: {attemptCount}</p>
           
           {!connectionStatus.isConnected && (
             <Alert variant="destructive" className="mt-2">
@@ -93,12 +100,26 @@ export function ApiStatusIndicator() {
                   <li>CORS issues are preventing proper communication</li>
                 </ul>
                 <div className="mt-2">
-                  <p className="text-xs font-semibold">For published apps:</p>
+                  <p className="text-xs font-semibold">For Lovable hosted apps:</p>
                   <ul className="list-disc list-inside text-xs">
-                    <li>Add a CORS proxy for production environments</li>
-                    <li>Configure the API to accept requests from {window.location.origin}</li>
+                    <li>The proxy configuration from development doesn't work in production</li>
+                    <li>Update the RCM API client to use a direct connection or CORS proxy</li>
+                    <li>Consider using a service like CORS Anywhere as a temporary solution</li>
+                    <li>Contact the API provider to allow requests from {window.location.origin}</li>
                   </ul>
                 </div>
+                {isLovableHosted && (
+                  <div className="mt-2 border-t pt-2">
+                    <p className="text-xs font-semibold flex items-center">
+                      <Globe className="h-3 w-3 mr-1" />
+                      Lovable Portal Solution:
+                    </p>
+                    <p className="text-xs mt-1">
+                      The app has been updated to automatically try both proxy and direct API 
+                      connections. If neither work, it will fall back to sample data.
+                    </p>
+                  </div>
+                )}
               </AlertDescription>
             </Alert>
           )}

@@ -25,6 +25,9 @@ const DEFAULT_CONFIG: RCMApiConfig = {
   apiUrl: "/api/rcm/booking/v3.2" // Use the proxy URL
 };
 
+// Production fallback URL in case the proxy doesn't work
+const FALLBACK_API_URL = "https://apis.rentalcarmanager.com/booking/v3.2";
+
 // Mock data definitions remain but won't be used unless explicitly requested
 const MOCK_STEP1_DATA: RCMStep1Response = {
   status: "OK",
@@ -100,6 +103,8 @@ class RCMApiClient {
   private apiFailedAttempts: number = 0;
   private maxFailAttempts: number = 2;
   private environment: string = process.env.NODE_ENV || 'unknown';
+  private useDirectApi: boolean = false;
+  private isLovableHosted: boolean = false;
 
   constructor(config: RCMApiConfig) {
     // Ensure API URL doesn't end with a slash
@@ -108,9 +113,19 @@ class RCMApiClient {
       apiUrl: config.apiUrl.replace(/\/$/, '')
     };
     
-    // In production, we might need to adapt the API URL
-    if (this.environment === 'production') {
-      console.log('Initializing RCM API client in production environment');
+    // Check if we're running on Lovable hosted environment
+    this.isLovableHosted = window.location.hostname.includes('lovable.dev') || 
+                          window.location.hostname.includes('lovable-apps');
+    
+    console.log('RCM API Client initialized. Environment:', this.environment);
+    console.log('Running on Lovable hosted environment:', this.isLovableHosted);
+    
+    // In production or Lovable hosted environment, we might need special handling
+    if (this.environment === 'production' || this.isLovableHosted) {
+      console.log('Initializing RCM API client for production or hosted environment');
+      
+      // We'll start with the proxy approach, but be ready to switch to direct API
+      // if the proxy fails consistently
     }
   }
 
@@ -125,6 +140,7 @@ class RCMApiClient {
     // Reset connection failure flags when re-initializing
     this.apiConnectionFailed = false;
     this.apiFailedAttempts = 0;
+    this.useDirectApi = false;
     
     // Use mock data if explicitly requested, or if we previously detected API failures
     this.useMockData = config.useMockData === true || this.apiConnectionFailed;
@@ -135,7 +151,8 @@ class RCMApiClient {
       apiUrl: this.config.apiUrl,
       apiKey: this.config.apiKey,
       useMockData: this.useMockData,
-      environment: this.environment
+      environment: this.environment,
+      isLovableHosted: this.isLovableHosted
     });
   }
 
@@ -171,13 +188,22 @@ class RCMApiClient {
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     headers.append('Accept', 'application/json');
-    headers.append('signature', signature); 
+    headers.append('signature', signature);
+    
+    // Add additional headers for direct API requests when needed
+    if (this.useDirectApi) {
+      // For direct API calls, we might need CORS headers
+      headers.append('X-Requested-With', 'XMLHttpRequest');
+      // We might need an Origin header in some cases
+      // headers.append('Origin', window.location.origin);
+    }
     
     // Log request details for debugging
     console.log('RCM API Request:', {
       method,
       timestamp,
       signature,
+      useDirectApi: this.useDirectApi,
       body: requestBody
     });
     
@@ -187,10 +213,19 @@ class RCMApiClient {
   /**
    * Builds the correct API URL with the API key format
    * Format: /api/rcm/booking/v3.2/[API_KEY]?apikey=[API_KEY]
+   * Or in direct mode: https://apis.rentalcarmanager.com/booking/v3.2/[API_KEY]?apikey=[API_KEY]
    */
   private buildApiUrl(): string {
-    const url = `${this.config.apiUrl}/${this.config.apiKey}?apikey=${this.config.apiKey}`;
-    console.log('Built API URL:', url);
+    let baseUrl = this.config.apiUrl;
+    
+    // If direct API mode is enabled (after proxy failures), use the direct URL
+    if (this.useDirectApi) {
+      baseUrl = FALLBACK_API_URL;
+      console.log('Using direct API URL:', baseUrl);
+    }
+    
+    const url = `${baseUrl}/${this.config.apiKey}?apikey=${this.config.apiKey}`;
+    console.log('Built API URL:', url, 'Direct mode:', this.useDirectApi);
     return url;
   }
   
@@ -260,6 +295,17 @@ class RCMApiClient {
         // Increment failure counter
         this.apiFailedAttempts++;
         
+        // If we're not already in direct API mode and we've failed once with the proxy,
+        // try switching to direct API mode
+        if (!this.useDirectApi && this.apiFailedAttempts === 1 && 
+            (this.environment === 'production' || this.isLovableHosted)) {
+          console.log('Switching to direct API mode after proxy failure');
+          this.useDirectApi = true;
+          
+          // Retry the request with direct API
+          return this.request<T>(method, requestMethod, body);
+        }
+        
         if (this.apiFailedAttempts >= this.maxFailAttempts) {
           // After several failures, switch to mock data mode automatically
           if (!this.apiConnectionFailed) {
@@ -311,6 +357,17 @@ class RCMApiClient {
       
       // Increment failure counter
       this.apiFailedAttempts++;
+      
+      // If we're not already in direct API mode and we've failed once with the proxy,
+      // try switching to direct API mode
+      if (!this.useDirectApi && this.apiFailedAttempts === 1 && 
+          (this.environment === 'production' || this.isLovableHosted)) {
+        console.log('Switching to direct API mode after proxy failure');
+        this.useDirectApi = true;
+        
+        // Retry the request with direct API
+        return this.request<T>(method, requestMethod, body);
+      }
       
       if (this.apiFailedAttempts >= this.maxFailAttempts) {
         // After several failures, switch to mock data mode automatically
@@ -663,4 +720,3 @@ class RCMApiClient {
 
 // Export a singleton instance
 export const rcmApi = new RCMApiClient(DEFAULT_CONFIG);
-

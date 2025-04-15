@@ -71,5 +71,7 @@ export default defineConfig(({ mode }) => ({
   // Add production specific settings
   build: {
     sourcemap: true, // Enable sourcemaps for debugging
+    // Add public path to ensure the app works when hosted on the Lovable portal
+    base: './',
   }
 }));
