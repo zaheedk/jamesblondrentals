@@ -104,7 +104,7 @@ export function ApiStatusIndicator() {
             <CardTitle className="text-lg">API Connection Status</CardTitle>
           </div>
           <Badge 
-            variant={connectionStatus.isConnected ? "success" : "destructive"}
+            variant={connectionStatus.isConnected ? "default" : "destructive"}
             className={connectionStatus.isConnected ? "bg-green-500" : ""}
           >
             {isRunning ? "Checking..." : connectionStatus.isConnected ? "Connected" : "Disconnected"}
