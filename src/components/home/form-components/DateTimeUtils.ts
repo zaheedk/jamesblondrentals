@@ -1,4 +1,3 @@
-
 import { addDays, addHours, getDay, isBefore, isSameDay, startOfDay, setHours, setMinutes, isAfter } from "date-fns";
 import { RCMOfficeTime, RCMLocationDetail } from "@/lib/api/rcm-api-types";
 
@@ -102,7 +101,7 @@ export const getLocationTimeOptions = (
     endTime = hours.endpickup || hours.closingtime;
   } else { // dropoff
     startTime = hours.startdropoff || hours.openingtime;
-    endTime = hours.enddropoff || hours.closingtime;
+    endTime = hours.closingtime;
   }
   
   console.log(`Office hours for ${type} at location ${locationId} on day ${apiDayOfWeek}:`, 
