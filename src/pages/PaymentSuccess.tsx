@@ -67,6 +67,28 @@ const PaymentSuccess = () => {
   };
 
   useEffect(() => {
+    // Log all query parameters
+    const queryParams = new URLSearchParams(location.search);
+    const allParams = {};
+    for (const [key, value] of queryParams.entries()) {
+      allParams[key] = value;
+    }
+    console.log("💡 ALL URL QUERY PARAMETERS:", allParams);
+
+    // Log session booking data
+    const sessionData = getBookingData();
+    console.log("💡 SESSION BOOKING DATA:", sessionData);
+
+    // Optional: Log Windcave response if available
+    const windcaveResponse = queryParams.get("windcaveResponse");
+    if (windcaveResponse) {
+      try {
+        const parsedResponse = JSON.parse(decodeURIComponent(windcaveResponse));
+        console.log("💡 DECODED WINDCAVE RESPONSE:", parsedResponse);
+      } catch (error) {
+        console.error("Error parsing Windcave response:", error);
+      }
+    }
     const fetchBookingDetails = async () => {
       try {
         setIsLoading(true);
