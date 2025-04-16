@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -31,7 +30,6 @@ const PaymentOptions = () => {
     
     setBookingDetails(bookingData);
     
-    // Calculate total amount using totalRateAfterDiscount if available, otherwise use basePrice
     const basePrice = bookingData.totalRateAfterDiscount || bookingData.basePrice || 0;
     console.log("Using price for calculation:", basePrice, 
       bookingData.totalRateAfterDiscount ? "(from totalRateAfterDiscount)" : "(from basePrice)");
@@ -42,7 +40,6 @@ const PaymentOptions = () => {
       0
     );
     
-    // Calculate mandatory fees total
     const mandatoryTotal = (bookingData.mandatoryFees || []).reduce(
       (sum: number, fee: any) => sum + fee.amount,
       0
@@ -69,7 +66,6 @@ const PaymentOptions = () => {
     setIsLoading(true);
     
     try {
-      // Include mandatory fees in the payment amount
       const amountToPay = paymentType === "deposit" ? DEPOSIT_AMOUNT : (totalAmount + mandatoryFeesTotal);
       
       updateBookingData({
@@ -127,19 +123,14 @@ const PaymentOptions = () => {
                   ))}</p>
                 )}
                 
-                {/* Display Mandatory Fees */}
                 {bookingDetails?.mandatoryFees && bookingDetails.mandatoryFees.length > 0 && (
-                  <>
-                    <div className="mt-2">
-                      <span className="font-medium">Mandatory Fees:</span>
-                      {bookingDetails.mandatoryFees.map((fee: any, index: number) => (
-                        <p key={index} className="ml-4 text-sm">
-                          {fee.name}: {formatCurrency(fee.amount)}
-                        </p>
-                      ))}
-                      <p className="font-medium">Total Mandatory Fees: {formatCurrency(mandatoryFeesTotal)}</p>
-                    </div>
-                  </>
+                  <div className="mt-2">
+                    {bookingDetails.mandatoryFees.map((fee: any, index: number) => (
+                      <p key={index} className="text-sm">
+                        {fee.name}: {formatCurrency(fee.amount)}
+                      </p>
+                    ))}
+                  </div>
                 )}
                 
                 <p className="font-medium mt-2 text-lg">
