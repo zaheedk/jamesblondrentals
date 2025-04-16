@@ -182,6 +182,15 @@ const BookingSummary = ({
 
   const totalSeasonalRates = seasonalRates.reduce((sum, rate) => sum + rate.totalAmount, 0);
   const totalMandatoryFees = mandatoryFees.reduce((sum, fee) => sum + fee.amount, 0);
+  
+  // Calculate total price before using it in the JSX
+  const totalPrice = 
+    basePrice + 
+    (selectedInsurance?.price || 0) + 
+    selectedExtras.reduce((sum, extra) => sum + extra.totalPrice, 0) + 
+    kmChargePrice +
+    totalSeasonalRates +
+    totalMandatoryFees;
 
   return (
     <Card>
@@ -308,12 +317,6 @@ const BookingSummary = ({
       </CardContent>
     </Card>
   );
-  
-  const totalPrice = 
-    basePrice + 
-    (selectedInsurance?.price || 0) + 
-    selectedExtras.reduce((sum, extra) => sum + extra.totalPrice, 0) + 
-    kmChargePrice;
 };
 
 export default BookingSummary;
