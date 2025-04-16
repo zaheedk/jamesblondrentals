@@ -1,4 +1,3 @@
-
 import { generateSignature } from './rcm-signature';
 import type { 
   RCMApiConfig,
@@ -30,10 +29,9 @@ const DIRECT_API_URL = "https://apis.rentalcarmanager.com/booking/v3.2";
 
 // CORS proxy URLs for production/published environments
 const CORS_PROXY_URLS = [
-  "https://api.corsproxy.io/?",
+  "https://corsproxy.io/?",
   "https://api.allorigins.win/raw?url=",
-  "https://cors-anywhere.herokuapp.com/",
-  "https://crossorigin.me/"
+  "https://cors-anywhere.herokuapp.com/"
 ];
 
 // Mock data definitions remain but won't be used unless explicitly requested
@@ -130,11 +128,13 @@ class RCMApiClient {
     console.log('RCM API Client initialized. Environment:', this.environment);
     console.log('Running on Lovable hosted environment:', this.isLovableHosted);
     
-    // In production or Lovable hosted environment, use mock data by default
+    // In production or Lovable hosted environment, immediately configure for direct API access
     if (this.environment === 'production' || this.isLovableHosted) {
       console.log('Initializing RCM API client for production or hosted environment');
-      this.useMockData = true;
-      console.log('Using mock data by default in production/hosted environment due to CORS issues');
+      this.useDirectApi = true;
+      // Start with the first CORS proxy by default in production
+      this.currentCorsProxyIndex = 0;
+      console.log('Using direct API with CORS proxy in production/hosted environment');
     }
   }
 
@@ -153,16 +153,23 @@ class RCMApiClient {
     // Configure CORS proxy usage
     if (config.useCorsProxy === true) {
       // If explicitly requested to use a CORS proxy, set it
-      this.currentCorsProxyIndex = config.corsProxyIndex !== undefined ? config.corsProxyIndex : 0;
+      this.currentCorsProxyIndex = 0;
     } else if (config.useCorsProxy === false) {
       // If explicitly requested not to use a CORS proxy, disable it
       this.currentCorsProxyIndex = -1;
     }
     
-    // Handle direct API vs proxy configuration
-    if (config.useDirectApi === true) {
+    // For Lovable hosted apps, default to direct API access with CORS proxy
+    if (this.isLovableHosted && config.useDirectApi !== false) {
       this.useDirectApi = true;
-    } else if (config.useDirectApi === false) {
+      // Default to using CORS proxy on Lovable hosted unless explicitly turned off
+      if (config.useCorsProxy !== false && this.currentCorsProxyIndex === -1) {
+        this.currentCorsProxyIndex = 0;
+      }
+      console.log('Using direct API access for Lovable hosted app with CORS proxy:', this.currentCorsProxyIndex);
+    } else if (config.useDirectApi === true) {
+      this.useDirectApi = true;
+    } else {
       this.useDirectApi = false;
     }
     
@@ -180,13 +187,12 @@ class RCMApiClient {
       useDirectApi: this.useDirectApi,
       corsProxyIndex: this.currentCorsProxyIndex
     });
-  }
-
-  /**
-   * Check if mock data is being used
-   */
-  isUsingMockData(): boolean {
-    return this.useMockData;
+    
+    // Log additional debug info for production environments
+    if (this.environment === 'production' || this.isLovableHosted) {
+      const effectiveApiUrl = this.buildApiUrl();
+      console.log('Effective API URL:', effectiveApiUrl);
+    }
   }
 
   /**
@@ -197,10 +203,10 @@ class RCMApiClient {
       console.log('RCM API not explicitly initialized, using default config');
       this.initialized = true;
       
-      // For Lovable hosted apps, default to mock data if not initialized
-      if (this.isLovableHosted || this.environment === 'production') {
-        this.useMockData = true;
-        console.log('Using mock data for uninitialized Lovable hosted app');
+      // For Lovable hosted apps, default to direct API access if not initialized
+      if (this.isLovableHosted) {
+        this.useDirectApi = true;
+        console.log('Using direct API access for uninitialized Lovable hosted app');
       }
     }
   }
@@ -321,9 +327,13 @@ class RCMApiClient {
         method,
         headers,
         body: JSON.stringify(requestBody),
-        mode: 'cors', // Always use cors mode for consistency
-        credentials: 'omit', // Don't send credentials to avoid CORS issues
       };
+      
+      // If using CORS proxy, we need to adjust mode
+      if (this.currentCorsProxyIndex >= 0) {
+        fetchOptions.mode = 'cors';
+        console.log('Using CORS mode for fetch with proxy');
+      }
       
       // Make the request with a timeout
       const controller = new AbortController();
@@ -334,29 +344,52 @@ class RCMApiClient {
         const response = await fetch(apiUrl, fetchOptions);
         clearTimeout(timeout);
         
-        // Process response
+        // Check if response is JSON
         const contentType = response.headers.get("content-type");
         console.log(`API response content type: ${contentType}`);
         
         if (!contentType || contentType.indexOf("application/json") === -1) {
-          // Handle non-JSON response
-          console.error('Non-JSON response received:', await response.text().then(text => text.substring(0, 200) + '...'));
-          this.switchToMockData();
-          return this.getMockData(requestMethod) as T;
+          console.error("Non-JSON response received:", contentType);
+          
+          // Capture response text for better debugging
+          const responseText = await response.text();
+          console.error("Response text preview:", responseText.substring(0, 500));
+          
+          // Increment failure counter
+          this.apiFailedAttempts++;
+          
+          // Try the next connection strategy
+          if (this.tryNextConnectionStrategy()) {
+            // Retry the request with new connection strategy
+            return this.request<T>(method, requestMethod, body);
+          }
+          
+          // If all strategies failed, switch to mock data
+          if (this.apiFailedAttempts >= this.maxFailAttempts) {
+            this.switchToMockData();
+            return this.getMockData(requestMethod) as T;
+          }
+          
+          throw new Error(`API returned non-JSON response (${contentType}). Environment: ${this.environment}`);
         }
 
         // Reset failure counter on successful response
-        if (response.ok) {
-          this.apiFailedAttempts = 0;
-          this.apiConnectionFailed = false;
-        }
+        this.apiFailedAttempts = 0;
+        this.apiConnectionFailed = false;
 
         // Handle non-OK responses
         if (!response.ok) {
-          console.error(`API returned status ${response.status}: ${response.statusText}`);
-          // Switch to mock data after failure
-          this.switchToMockData();
-          return this.getMockData(requestMethod) as T;
+          const errorText = await response.text();
+          let errorData;
+          
+          try {
+            errorData = JSON.parse(errorText);
+          } catch (e) {
+            errorData = { message: errorText || `API request failed: ${response.status}` };
+          }
+          
+          console.error(`API error: ${response.status} ${response.statusText}`, errorData);
+          throw new Error(errorData.message || `Request failed with status: ${response.status}`);
         }
 
         // Parse and return the response
@@ -366,34 +399,46 @@ class RCMApiClient {
         // Check for API errors in the response
         if (responseData.status === "ERR") {
           console.error('API returned error:', responseData.error);
-          // Switch to mock data on API error
-          this.switchToMockData();
-          return this.getMockData(requestMethod) as T;
+          throw new Error(responseData.error || 'Unknown API error');
         }
         
         return responseData;
-      } catch (error) {
+      } catch (error: any) {
         clearTimeout(timeout);
-        const errorMessage = error instanceof Error ? error.message : "Unknown fetch error";
-        console.error(`API fetch error:`, errorMessage);
         
-        // Try next connection strategy
-        if (this.tryNextConnectionStrategy()) {
-          console.log('Trying next connection strategy...');
-          // Try again with new strategy
-          return this.request<T>(method, requestMethod, body);
+        // Check if it was a timeout
+        if (error.name === 'AbortError') {
+          console.error('API request timed out');
+          this.apiFailedAttempts++;
+          
+          // Try the next connection strategy
+          if (this.tryNextConnectionStrategy()) {
+            // Retry the request with new connection strategy
+            return this.request<T>(method, requestMethod, body);
+          }
         }
         
-        // Switch to mock data on error if all strategies failed
-        this.switchToMockData();
-        return this.getMockData(requestMethod) as T;
+        throw error;
       }
     } catch (error) {
       console.error(`RCM API request failed in ${this.environment} environment:`, error);
       
-      // Switch to mock data
-      this.switchToMockData();
-      return this.getMockData(requestMethod) as T;
+      // Increment failure counter
+      this.apiFailedAttempts++;
+      
+      // Try the next connection strategy
+      if (this.tryNextConnectionStrategy()) {
+        // Retry the request with new connection strategy
+        return this.request<T>(method, requestMethod, body);
+      }
+      
+      // If all strategies failed, switch to mock data
+      if (this.apiFailedAttempts >= this.maxFailAttempts) {
+        this.switchToMockData();
+        return this.getMockData(requestMethod) as T;
+      }
+      
+      throw error;
     }
   }
   
@@ -518,13 +563,13 @@ class RCMApiClient {
               {
                 id: "201",
                 description: "Basic Insurance",
-                totalinsuranceamount: 15,
+                amount: 15,
                 isdefault: true
               },
               {
                 id: "202",
                 description: "Premium Insurance",
-                totalinsuranceamount: 25,
+                amount: 25,
                 isdefault: false
               }
             ],
@@ -532,13 +577,13 @@ class RCMApiClient {
               {
                 id: "301",
                 description: "Unlimited",
-                dailyrate: 0,
+                amount: 0,
                 isdefault: true
               },
               {
                 id: "302",
                 description: "200km per day",
-                dailyrate: -10,
+                amount: -10,
                 isdefault: false
               }
             ],
@@ -546,13 +591,13 @@ class RCMApiClient {
               {
                 id: "401",
                 description: "GPS Navigation",
-                totalextraamount: 5,
+                amount: 5,
                 isdefault: false
               },
               {
                 id: "402",
                 description: "Child Seat",
-                totalextraamount: 7,
+                amount: 7,
                 isdefault: false
               }
             ],
@@ -728,11 +773,10 @@ class RCMApiClient {
       // Additional logging to debug extras
       if (response.status === "OK" && response.results) {
         console.log('Step3 response received with status OK');
-        console.log('Insurance options:', response.results.insuranceoptions);
-        console.log('KM charges:', response.results.kmcharges);
         console.log('Extras in response:', response.results.extras);
+        console.log('Extras type:', typeof response.results.extras);
         
-        // Ensure all arrays are properly initialized
+        // Ensure extras is always an array
         if (!response.results.extras) {
           console.log('No extras in response, setting to empty array');
           response.results.extras = [];
@@ -745,20 +789,6 @@ class RCMApiClient {
             console.error('Failed to parse extras:', e);
             response.results.extras = [];
           }
-        }
-        
-        if (!response.results.insuranceoptions) {
-          console.log('No insurance options in response, setting to empty array');
-          response.results.insuranceoptions = [];
-        } else if (!Array.isArray(response.results.insuranceoptions)) {
-          response.results.insuranceoptions = [];
-        }
-        
-        if (!response.results.kmcharges) {
-          console.log('No km charges in response, setting to empty array');
-          response.results.kmcharges = [];
-        } else if (!Array.isArray(response.results.kmcharges)) {
-          response.results.kmcharges = [];
         }
       }
       

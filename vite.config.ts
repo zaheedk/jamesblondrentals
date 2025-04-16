@@ -10,59 +10,53 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
-    ...(mode === 'development' ? {
-      proxy: {
-        // Proxy API requests to RCM API only in development
-        '/api/rcm': {
-          target: 'https://apis.rentalcarmanager.com',
-          changeOrigin: true,
-          secure: true, 
-          rewrite: (path) => path.replace(/^\/api\/rcm/, ''),
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Origin': 'https://apis.rentalcarmanager.com'
-          },
-          configure: (proxy, _options) => {
-            proxy.on('error', (err, _req, _res) => {
-              console.error('Proxy error:', err);
+    proxy: {
+      // Proxy API requests to RCM API with improved configuration
+      '/api/rcm': {
+        target: 'https://apis.rentalcarmanager.com',
+        changeOrigin: true,
+        secure: true, 
+        rewrite: (path) => path.replace(/^\/api\/rcm/, ''),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        configure: (proxy, _options) => {
+          proxy.on('error', (err, _req, _res) => {
+            console.error('Proxy error:', err);
+          });
+          
+          proxy.on('proxyReq', (proxyReq, req: IncomingMessage & { body?: any }, _res) => {
+            console.log(`Proxying request: ${req.method} ${proxyReq.path}`);
+            
+            // Ensure body is properly handled for POST requests
+            if (req.body) {
+              const bodyData = JSON.stringify(req.body);
+              proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
+              proxyReq.write(bodyData);
+            }
+          });
+          
+          proxy.on('proxyRes', (proxyRes, req, _res) => {
+            const contentType = proxyRes.headers['content-type'];
+            console.log(`Response Content-Type: ${contentType}`);
+            
+            const status = proxyRes.statusCode;
+            console.log(`Response Status: ${status ?? 'unknown'} for ${req.url}`);
+            
+            // Log full response body for debugging
+            let responseBody = '';
+            proxyRes.on('data', (chunk) => {
+              responseBody += chunk;
             });
             
-            proxy.on('proxyReq', (proxyReq, req: IncomingMessage & { body?: any }, _res) => {
-              console.log(`Proxying request: ${req.method} ${proxyReq.path}`);
-              
-              // Add origin header to avoid CORS issues
-              proxyReq.setHeader('Origin', 'https://apis.rentalcarmanager.com');
-              
-              // Ensure body is properly handled for POST requests
-              if (req.body) {
-                const bodyData = JSON.stringify(req.body);
-                proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
-                proxyReq.write(bodyData);
-              }
+            proxyRes.on('end', () => {
+              console.log('Full Response Body:', responseBody);
             });
-            
-            proxy.on('proxyRes', (proxyRes, req, _res) => {
-              const contentType = proxyRes.headers['content-type'];
-              console.log(`Response Content-Type: ${contentType}`);
-              
-              const status = proxyRes.statusCode;
-              console.log(`Response Status: ${status ?? 'unknown'} for ${req.url}`);
-              
-              // Log full response body for debugging
-              let responseBody = '';
-              proxyRes.on('data', (chunk) => {
-                responseBody += chunk;
-              });
-              
-              proxyRes.on('end', () => {
-                console.log('Full Response Body:', responseBody.substring(0, 500) + (responseBody.length > 500 ? '... (truncated)' : ''));
-              });
-            });
-          }
+          });
         }
       }
-    } : {})
+    }
   },
   plugins: [
     react(),
@@ -74,8 +68,10 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  // Add production specific settings
   build: {
-    sourcemap: true,
+    sourcemap: true, // Enable sourcemaps for debugging
+    // Add public path to ensure the app works when hosted on the Lovable portal
     base: './',
   }
 }));

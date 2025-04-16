@@ -15,14 +15,15 @@ const Booking = () => {
   const navigate = useNavigate();
   const { rcmApi } = useRcmApi();
 
+  // State for booking options
   const [bookingData, setBookingData] = useState<BookingSessionData | null>(null);
   const [insuranceOptions, setInsuranceOptions] = useState<RCMInsuranceOption[]>([]);
   const [kmCharges, setKmCharges] = useState<RCMKmCharge[]>([]);
   const [extras, setExtras] = useState<RCMExtra[]>([]);
   const [optionalFees, setOptionalFees] = useState<RCMOptionalFee[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [apiError, setApiError] = useState<string | null>(null);
   
+  // Selected options state
   const [selectedInsurance, setSelectedInsurance] = useState<RCMInsuranceOption | null>(null);
   const [selectedKmCharge, setSelectedKmCharge] = useState<RCMKmCharge | null>(null);
   const [selectedExtras, setSelectedExtras] = useState<{
@@ -34,6 +35,7 @@ const Booking = () => {
   }[]>([]);
   const [selectedExtrasMap, setSelectedExtrasMap] = useState(new Map<string | number, number>());
 
+  // Calculate number of days for rental
   const calculateNumberOfDays = () => {
     if (!bookingData) return 1;
     try {
@@ -57,6 +59,7 @@ const Booking = () => {
     }
   };
 
+  // Get booking data from session storage
   useEffect(() => {
     const data = getBookingData();
     if (!data) {
@@ -69,8 +72,8 @@ const Booking = () => {
     
     setBookingData(data);
     
+    // Fetch step 3 data (options)
     setIsLoading(true);
-    setApiError(null);
     
     rcmApi.getStep3({
       vehiclecategoryid: data.vehicleId,
@@ -84,52 +87,29 @@ const Booking = () => {
       ageid: data.ageId,
     })
     .then((response) => {
-      console.log('Step3 API full response:', response);
       if (response.status === "OK" && response.results) {
-        console.log('Step3 response results:', response.results);
+        const { insuranceoptions, kmcharges, extras, optionalfees } = response.results;
         
-        const safeInsuranceOptions = Array.isArray(response.results.insuranceoptions) ? 
-          response.results.insuranceoptions : [];
-        setInsuranceOptions(safeInsuranceOptions);
+        // Ensure we always have arrays, even if API returns null/undefined
+        setInsuranceOptions(insuranceoptions || []);
+        setKmCharges(kmcharges || []);
         
-        const safeKmCharges = Array.isArray(response.results.kmcharges) ? 
-          response.results.kmcharges : [];
-        setKmCharges(safeKmCharges);
-        
-        let safeExtras: RCMExtra[] = [];
-        if (response.results.extras) {
-          if (Array.isArray(response.results.extras)) {
-            safeExtras = response.results.extras;
-          } else {
-            console.warn('Extras is not an array:', response.results.extras);
-            try {
-              const extrasObj = response.results.extras;
-              if (extrasObj && typeof extrasObj === 'object') {
-                safeExtras = Object.values(extrasObj);
-                console.log('Converted extras object to array:', safeExtras);
-              }
-            } catch (error) {
-              console.error('Failed to convert extras:', error);
-            }
-          }
-        }
+        // Create a safe copy of extras array
+        const safeExtras = Array.isArray(extras) ? extras : [];
         setExtras(safeExtras);
-        console.log('Processed extras array:', safeExtras);
         
-        const safeOptionalFees = Array.isArray(response.results.optionalfees) ? 
-          response.results.optionalfees : [];
+        // Create a safe copy of optional fees array
+        const safeOptionalFees = Array.isArray(optionalfees) ? optionalfees : [];
         setOptionalFees(safeOptionalFees);
         
-        const defaultInsurance = safeInsuranceOptions.find(i => i.isdefault) || 
-          (safeInsuranceOptions.length > 0 ? safeInsuranceOptions[0] : null);
+        // Set default selections
+        const defaultInsurance = insuranceoptions?.find(i => i.isdefault) || null;
         setSelectedInsurance(defaultInsurance);
         
-        const defaultKmCharge = safeKmCharges.find(k => k.isdefault) || 
-          (safeKmCharges.length > 0 ? safeKmCharges[0] : null);
+        const defaultKmCharge = kmcharges?.find(k => k.isdefault) || null;
         setSelectedKmCharge(defaultKmCharge);
       } else {
         console.error("API returned error or missing results:", response.error || "Unknown error");
-        setApiError(response.error || "Could not load booking options");
         toast.error("Could not load booking options", {
           description: response.error || "The API returned an invalid response",
         });
@@ -137,7 +117,6 @@ const Booking = () => {
     })
     .catch((error) => {
       console.error("Error fetching booking options:", error);
-      setApiError("Failed to connect to the booking system");
       toast.error("Failed to load booking options", {
         description: "Please try again later.",
       });
@@ -147,7 +126,9 @@ const Booking = () => {
     });
   }, [navigate, rcmApi]);
 
+  // Handle proceeding to customer details page
   const handleProceedToDetails = () => {
+    // Save selected options to session storage before navigating
     const selectedExtrasArray = Array.from(selectedExtrasMap).map(([id, quantity]) => {
       const extra = extras.find(e => e.id.toString() === id.toString());
       const optionalFee = optionalFees.find(f => f.id.toString() === id.toString());
@@ -189,16 +170,19 @@ const Booking = () => {
     navigate('/customer-details');
   };
 
+  // Handle insurance selection
   const handleInsuranceChange = (insuranceId: string | number) => {
     const selected = insuranceOptions.find(i => i.id.toString() === insuranceId.toString()) || null;
     setSelectedInsurance(selected);
   };
 
+  // Handle km charge selection
   const handleKmChargeChange = (kmChargeId: string | number) => {
     const selected = kmCharges.find(k => k.id.toString() === kmChargeId.toString()) || null;
     setSelectedKmCharge(selected);
   };
 
+  // Handle extras selection
   const handleExtrasChange = (extraId: string | number, quantity: number) => {
     const newSelectedExtrasMap = new Map(selectedExtrasMap);
     
@@ -210,7 +194,9 @@ const Booking = () => {
     
     setSelectedExtrasMap(newSelectedExtrasMap);
     
+    // Update the selectedExtras array for BookingSummary
     const updatedSelectedExtras = Array.from(newSelectedExtrasMap).map(([id, qty]) => {
+      // Check in both extras and optionalFees arrays
       const extra = extras.find(e => e.id.toString() === id.toString());
       const optionalFee = optionalFees.filter(
         fee => !["Deposit", "FullPayment"].includes(fee.name)
@@ -228,9 +214,9 @@ const Booking = () => {
         return {
           id: optionalFee.id,
           name: optionalFee.name,
-          quantity: qty,
+          quantity: qty, // Now supporting quantity for optional fees
           unitPrice: optionalFee.fees,
-          totalPrice: optionalFee.fees * qty
+          totalPrice: optionalFee.fees * qty // Multiply by quantity
         };
       } else {
         console.warn("Could not find extra or optional fee with id:", id);
@@ -247,32 +233,20 @@ const Booking = () => {
     setSelectedExtras(updatedSelectedExtras);
   };
 
+  // Prepare booking summary data
   const selectedInsuranceForSummary = selectedInsurance ? {
     id: selectedInsurance.id,
-    name: selectedInsurance.name || selectedInsurance.description || "Insurance",
-    price: selectedInsurance.totalinsuranceamount || 0
+    name: selectedInsurance.name,
+    price: selectedInsurance.totalinsuranceamount
   } : null;
   
-  const kmChargePrice = selectedKmCharge ? 
-    (selectedKmCharge.dailyrate || 0) * calculateNumberOfDays() : 0;
+  const kmChargePrice = selectedKmCharge ? selectedKmCharge.dailyrate * calculateNumberOfDays() : 0;
   const numberOfDays = calculateNumberOfDays();
 
-  if (isLoading) {
+  if (isLoading || !bookingData) {
     return (
       <div className="container mx-auto px-4 py-8 text-center">
         <div className="animate-pulse">Loading booking options...</div>
-      </div>
-    );
-  }
-
-  if (apiError && !bookingData) {
-    return (
-      <div className="container mx-auto px-4 py-8 text-center">
-        <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-4">
-          <h2 className="text-red-700 font-medium">API Connection Error</h2>
-          <p className="text-red-600">{apiError}</p>
-        </div>
-        <Button onClick={() => navigate('/')}>Return to Home</Button>
       </div>
     );
   }
@@ -281,18 +255,10 @@ const Booking = () => {
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">Complete Your Booking</h1>
       
-      {apiError && (
-        <div className="bg-amber-50 border border-amber-200 rounded-md p-4 mb-6">
-          <h2 className="text-amber-700 font-medium">Warning</h2>
-          <p className="text-amber-600">
-            Some booking options could not be loaded. You can continue with limited options 
-            or return home to try again.
-          </p>
-        </div>
-      )}
-      
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Options Section */}
         <div className="lg:col-span-2 space-y-8">
+          {/* Insurance Options */}
           {insuranceOptions.length > 0 && (
             <InsuranceOptions 
               insuranceOptions={insuranceOptions}
@@ -302,6 +268,7 @@ const Booking = () => {
             />
           )}
           
+          {/* Kilometer Charges */}
           {kmCharges.length > 0 && (
             <KmCharges 
               kmCharges={kmCharges}
@@ -310,6 +277,7 @@ const Booking = () => {
             />
           )}
           
+          {/* Extras Selection */}
           <ExtrasSelection 
             extras={extras}
             selectedExtras={selectedExtrasMap}
@@ -318,6 +286,7 @@ const Booking = () => {
             optionalFees={optionalFees}
           />
           
+          {/* Navigation Buttons */}
           <div className="flex justify-between pt-4">
             <Button 
               variant="outline" 
@@ -331,19 +300,20 @@ const Booking = () => {
           </div>
         </div>
         
+        {/* Booking Summary */}
         <div>
           <BookingSummary
-            pickupLocation={bookingData?.pickupLocationName || ""}
-            dropoffLocation={bookingData?.dropoffLocationName || ""}
-            pickupDate={bookingData?.pickupDate || ""}
-            dropoffDate={bookingData?.dropoffDate || ""}
-            vehicleName={bookingData?.vehicleName || ""}
-            basePrice={bookingData?.basePrice || 0}
+            pickupLocation={bookingData.pickupLocationName || ""}
+            dropoffLocation={bookingData.dropoffLocationName || ""}
+            pickupDate={bookingData.pickupDate}
+            dropoffDate={bookingData.dropoffDate}
+            vehicleName={bookingData.vehicleName || ""}
+            basePrice={bookingData.basePrice}
             selectedInsurance={selectedInsuranceForSummary}
             selectedExtras={selectedExtras}
             kmChargePrice={kmChargePrice}
             currencySymbol="$"
-            vehicleImageUrl={bookingData?.vehicleImage}
+            vehicleImageUrl={bookingData.vehicleImage}
           />
         </div>
       </div>

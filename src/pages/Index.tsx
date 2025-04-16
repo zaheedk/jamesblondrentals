@@ -12,28 +12,56 @@ import { ApiStatusIndicator } from "@/components/diagnostics/ApiStatusIndicator"
 
 const Index = () => {
   const { initializeApi } = useRcmApi();
-  const [showApiStatus, setShowApiStatus] = useState(true); // Always show by default
-
+  const [showApiStatus, setShowApiStatus] = useState(false);
+  
+  // Check if we're in a Lovable hosted environment
+  const isLovableHosted = window.location.hostname.includes('lovable.dev') || 
+                          window.location.hostname.includes('lovable-apps') ||
+                          window.location.hostname.includes('lovable.app');
+  
   useEffect(() => {
+    // Initialize the API with different strategies based on environment
     try {
-      // Always start with mock data for reliability
-      initializeApi({ 
-        useMockData: true
-      });
-      
-      const envType = process.env.NODE_ENV === 'production' ? 'production' : 'development';
-      console.log(`API initialized for ${envType} environment with mock data initially`);
-      toast.info('Using sample data', {
-        description: 'Click "Check API Connection" to try connecting to live data.',
-        duration: 8000
-      });
+      if (process.env.NODE_ENV === 'production' || isLovableHosted) {
+        // In production/hosted environments, start with direct API + CORS proxy
+        initializeApi({ 
+          useMockData: false,
+          useDirectApi: true,
+          useCorsProxy: true,
+          apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
+          apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg"
+        });
+        
+        // In production, always show the API status indicator temporarily
+        setShowApiStatus(true);
+        
+        // Hide it after 30 seconds unless there are issues
+        setTimeout(() => {
+          setShowApiStatus(false);
+        }, 30000);
+        
+        console.log('API initialized for production with CORS proxy');
+      } else {
+        // In development, use the local proxy
+        initializeApi({ 
+          useMockData: false,
+          useDirectApi: false,
+          apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
+          apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
+          apiUrl: "/api/rcm/booking/v3.2"
+        });
+        console.log('API initialized for development with local proxy');
+      }
     } catch (error) {
       console.error('Failed to initialize API:', error);
       toast.error('API Connection Error', {
-        description: 'Failed to connect to the booking system. Using sample data instead.'
+        description: 'Failed to connect to the booking system. Please try again later.'
       });
+      
+      // Show API status on error
+      setShowApiStatus(true);
     }
-  }, [initializeApi]);
+  }, [initializeApi, isLovableHosted]);
 
   // Function to toggle API status visibility
   const toggleApiStatus = () => {
@@ -46,15 +74,15 @@ const Index = () => {
       <main className="flex-grow">
         <Hero />
         
-        {/* API Status Indicator - Always shown by default */}
-        {showApiStatus && (
+        {/* API Status Indicator - Shown in dev mode or when explicitly enabled */}
+        {(process.env.NODE_ENV !== 'production' || showApiStatus) && (
           <div className="container mx-auto px-4 py-4">
             <ApiStatusIndicator />
           </div>
         )}
         
-        {/* Add a button to show/hide API status */}
-        {!showApiStatus && (
+        {/* In production, add a button to show/hide API status */}
+        {process.env.NODE_ENV === 'production' && !showApiStatus && (
           <div className="container mx-auto px-4 -mt-4 mb-4 flex justify-end">
             <Button variant="outline" size="sm" onClick={toggleApiStatus}>
               Check API Connection
