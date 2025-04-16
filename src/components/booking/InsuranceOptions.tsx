@@ -8,7 +8,7 @@ import { RCMInsuranceOption } from "@/lib/api/rcm-api-types";
 interface InsuranceOptionsProps {
   insuranceOptions: RCMInsuranceOption[];
   selectedInsuranceId: string | number | null;
-  onSelectInsurance: (insuranceId: string | number) => void;
+  onSelectInsurance: (insurance: { id: string | number; name: string; price: number }) => void;
   currencySymbol: string;
 }
 
@@ -36,7 +36,16 @@ const InsuranceOptions = ({
       <Card className="p-4">
         <RadioGroup
           value={selectedInsuranceId?.toString()}
-          onValueChange={(value) => onSelectInsurance(value)}
+          onValueChange={(value) => {
+            const selectedOption = insuranceOptions.find(ins => ins.id.toString() === value);
+            if (selectedOption) {
+              onSelectInsurance({
+                id: selectedOption.id,
+                name: selectedOption.name,
+                price: selectedOption.totalinsuranceamount
+              });
+            }
+          }}
           className="space-y-2"
         >
           {insuranceOptions.map((insurance) => (

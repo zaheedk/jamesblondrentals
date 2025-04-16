@@ -109,7 +109,7 @@ const Booking = () => {
     }
   }, [step3Data]);
   
-  const handleInsuranceSelect = (insurance: { id: string | number; name: string; price: number } | null) => {
+  const handleInsuranceSelect = (insurance: { id: string | number; name: string; price: number }) => {
     setSelectedInsurance(insurance);
   };
   
