@@ -16,6 +16,7 @@ const PaymentOptions = () => {
   const [bookingDetails, setBookingDetails] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [totalAmount, setTotalAmount] = useState(0);
+  const [mandatoryFeesTotal, setMandatoryFeesTotal] = useState(0);
 
   useEffect(() => {
     const bookingData = getBookingData();
@@ -41,6 +42,13 @@ const PaymentOptions = () => {
       0
     );
     
+    // Calculate mandatory fees total
+    const mandatoryTotal = (bookingData.mandatoryFees || []).reduce(
+      (sum: number, fee: any) => sum + fee.amount,
+      0
+    );
+    setMandatoryFeesTotal(mandatoryTotal);
+    
     const calculatedTotal = basePrice + insurancePrice + extrasTotal;
     setTotalAmount(calculatedTotal);
   }, [navigate]);
@@ -61,7 +69,8 @@ const PaymentOptions = () => {
     setIsLoading(true);
     
     try {
-      const amountToPay = paymentType === "deposit" ? DEPOSIT_AMOUNT : totalAmount;
+      // Include mandatory fees in the payment amount
+      const amountToPay = paymentType === "deposit" ? DEPOSIT_AMOUNT : (totalAmount + mandatoryFeesTotal);
       
       updateBookingData({
         paymentAmount: amountToPay,
@@ -117,7 +126,25 @@ const PaymentOptions = () => {
                     0
                   ))}</p>
                 )}
-                <p className="font-medium mt-2 text-lg">Total Amount: {formatCurrency(totalAmount)}</p>
+                
+                {/* Display Mandatory Fees */}
+                {bookingDetails?.mandatoryFees && bookingDetails.mandatoryFees.length > 0 && (
+                  <>
+                    <div className="mt-2">
+                      <span className="font-medium">Mandatory Fees:</span>
+                      {bookingDetails.mandatoryFees.map((fee: any, index: number) => (
+                        <p key={index} className="ml-4 text-sm">
+                          {fee.name}: {formatCurrency(fee.amount)}
+                        </p>
+                      ))}
+                      <p className="font-medium">Total Mandatory Fees: {formatCurrency(mandatoryFeesTotal)}</p>
+                    </div>
+                  </>
+                )}
+                
+                <p className="font-medium mt-2 text-lg">
+                  Total Amount: {formatCurrency(totalAmount + mandatoryFeesTotal)}
+                </p>
               </div>
             </div>
           </div>
@@ -136,7 +163,7 @@ const PaymentOptions = () => {
                   <Label htmlFor="deposit" className="flex-1 cursor-pointer">
                     <div>
                       <p className="font-medium">Pay Deposit Only</p>
-                      <p className="text-gray-600 text-sm">Pay {formatCurrency(DEPOSIT_AMOUNT)} now and the remaining {formatCurrency(totalAmount - DEPOSIT_AMOUNT)} upon collection</p>
+                      <p className="text-gray-600 text-sm">Pay {formatCurrency(DEPOSIT_AMOUNT)} now and the remaining {formatCurrency((totalAmount + mandatoryFeesTotal) - DEPOSIT_AMOUNT)} upon collection</p>
                     </div>
                   </Label>
                   <div className="text-lg font-semibold">{formatCurrency(DEPOSIT_AMOUNT)}</div>
@@ -150,7 +177,7 @@ const PaymentOptions = () => {
                       <p className="text-gray-600 text-sm">Pay the full amount now</p>
                     </div>
                   </Label>
-                  <div className="text-lg font-semibold">{formatCurrency(totalAmount)}</div>
+                  <div className="text-lg font-semibold">{formatCurrency(totalAmount + mandatoryFeesTotal)}</div>
                 </div>
               </RadioGroup>
             </div>
@@ -173,7 +200,7 @@ const PaymentOptions = () => {
                     <span className="animate-spin mr-2">◌</span> Processing...
                   </>
                 ) : (
-                  `Proceed to Pay ${paymentType === "deposit" ? formatCurrency(DEPOSIT_AMOUNT) : formatCurrency(totalAmount)}`
+                  `Proceed to Pay ${paymentType === "deposit" ? formatCurrency(DEPOSIT_AMOUNT) : formatCurrency(totalAmount + mandatoryFeesTotal)}`
                 )}
               </Button>
             </div>
