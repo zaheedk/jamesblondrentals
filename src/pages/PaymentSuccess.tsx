@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, XCircle, FrownIcon, Calendar, Shield, Package, MapPin, CreditCard, Calculator } from "lucide-react";
+import { CheckCircle2, XCircle, FrownIcon, Calendar, Shield, Package, MapPin, Clock, Car } from "lucide-react";
 import { getBookingData, clearBookingData } from "@/lib/booking-session";
 import { toast } from "sonner";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
@@ -432,19 +432,21 @@ const PaymentSuccess = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 text-center">
-      <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-8">
+    <div className="container mx-auto px-4 py-8">
+      <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-8">
         {paymentStatus === "success" ? (
           <>
-            <CheckCircle2 className="h-16 w-16 text-green-500 mx-auto mb-4" />
-            <h1 className="text-3xl font-bold mb-2">Payment Successful!</h1>
-            <p className="text-gray-600 mb-6">
-              Thank you for your booking. Your reservation is confirmed.
-            </p>
-            
-            {/* Vehicle image section */}
-            {bookingDetails?.vehicleImage && !imageError && (
-              <div className="w-full aspect-video rounded-md mb-6 overflow-hidden bg-gray-100">
+            <div className="text-center mb-8">
+              <CheckCircle2 className="h-16 w-16 text-green-500 mx-auto mb-4" />
+              <h1 className="text-3xl font-bold mb-2">Payment Successful!</h1>
+              <p className="text-gray-600">
+                Thank you for your booking. Your reservation is confirmed.
+              </p>
+            </div>
+
+            {/* Vehicle Image */}
+            {bookingDetails.vehicleImage && !imageError && (
+              <div className="w-full aspect-video rounded-lg overflow-hidden bg-gray-100 mb-6">
                 <img
                   src={bookingDetails.vehicleImage}
                   alt={bookingDetails.vehicleName}
@@ -453,98 +455,82 @@ const PaymentSuccess = () => {
                 />
               </div>
             )}
-            
-            <div className="text-left space-y-6 mb-8">
-              {/* Vehicle Details */}
-              <div className="border-b pb-4">
-                <h2 className="text-xl font-semibold mb-2">{bookingDetails?.vehicleName}</h2>
-              </div>
-              
-              {/* Location Details */}
-              <div className="space-y-4 border-b pb-4">
-                <div>
-                  <h3 className="font-medium flex items-center gap-2 mb-2">
-                    <MapPin className="h-4 w-4" /> Pickup Location
-                  </h3>
-                  <p className="text-gray-600">{bookingDetails?.pickupDate} at {bookingDetails?.pickupTime}</p>
-                  <p className="text-gray-600">{bookingDetails?.pickupLocationName}</p>
-                </div>
-                
-                <div>
-                  <h3 className="font-medium flex items-center gap-2 mb-2">
-                    <MapPin className="h-4 w-4" /> Drop-off Location
-                  </h3>
-                  <p className="text-gray-600">{bookingDetails?.dropoffDate} at {bookingDetails?.dropoffTime}</p>
-                  <p className="text-gray-600">{bookingDetails?.dropoffLocationName}</p>
-                </div>
-              </div>
-              
-              {/* Payment Details */}
-              <div className="space-y-3 border-b pb-4">
-                <h3 className="font-medium flex items-center gap-2">
-                  <CreditCard className="h-4 w-4" /> Payment Details
-                </h3>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Total Rental Amount:</span>
-                    <span className="font-medium">{formatCurrency(bookingDetails?.basePrice || 0)}</span>
+
+            {/* Vehicle Name */}
+            <div className="flex items-center gap-2 mb-6">
+              <Car className="h-6 w-6 text-gray-500" />
+              <h2 className="text-2xl font-semibold">{bookingDetails.vehicleName}</h2>
+            </div>
+
+            {/* Pickup and Dropoff Details - Combined on one line */}
+            <div className="bg-gray-50 rounded-lg p-4 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <MapPin className="h-5 w-5 text-blue-500" />
+                    <span className="font-medium">Pickup:</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Amount Paid:</span>
-                    <span className="font-medium text-green-600">{formatCurrency(bookingDetails?.paymentAmount || 0)}</span>
-                  </div>
-                  {bookingDetails?.paymentType === "deposit" && (
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Balance Due:</span>
-                      <span className="font-medium text-amber-600">
-                        {formatCurrency((bookingDetails.basePrice || 0) - (bookingDetails.paymentAmount || 0))}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </div>
-              
-              {/* Additional Details */}
-              <div className="space-y-4">
-                {/* Duration */}
-                <div className="flex justify-between items-center">
-                  <span className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4" /> Duration of Hire
-                  </span>
-                  <span>{rentalDuration} day{rentalDuration !== 1 ? 's' : ''}</span>
-                </div>
-                
-                {/* Insurance */}
-                {bookingDetails?.insuranceName && (
-                  <div className="flex justify-between items-center">
-                    <span className="flex items-center gap-2">
-                      <Shield className="h-4 w-4" /> Insurance
-                    </span>
-                    <span>
-                      {bookingDetails.insuranceName}
-                      {bookingDetails.insurancePrice > 0 && 
-                        ` (${formatCurrency(bookingDetails.insurancePrice)})`}
-                    </span>
-                  </div>
-                )}
-                
-                {/* Extras */}
-                {bookingDetails?.selectedExtras && bookingDetails.selectedExtras.length > 0 && (
                   <div>
-                    <h4 className="font-medium flex items-center gap-2 mb-2">
-                      <Package className="h-4 w-4" /> Extras
-                    </h4>
-                    {bookingDetails.selectedExtras.map((extra, index) => (
-                      <div key={index} className="flex justify-between pl-6 py-1">
-                        <span>{extra.name} {extra.quantity > 1 ? `× ${extra.quantity}` : ''}</span>
-                        <span>{formatCurrency(extra.price)}</span>
-                      </div>
-                    ))}
+                    <p>{bookingDetails.pickupLocationName}</p>
+                    <p className="text-sm text-gray-600">
+                      {bookingDetails.pickupDate} at {bookingDetails.pickupTime}
+                    </p>
                   </div>
-                )}
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <MapPin className="h-5 w-5 text-red-500" />
+                    <span className="font-medium">Drop-off:</span>
+                  </div>
+                  <div>
+                    <p>{bookingDetails.dropoffLocationName}</p>
+                    <p className="text-sm text-gray-600">
+                      {bookingDetails.dropoffDate} at {bookingDetails.dropoffTime}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
-            
+
+            {/* Payment Breakdown */}
+            <div className="bg-gray-50 rounded-lg p-4 mb-6">
+              <h3 className="text-lg font-semibold mb-4">Payment Summary</h3>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span>Base Rental Price</span>
+                  <span>{formatCurrency(bookingDetails.basePrice)}</span>
+                </div>
+                
+                {bookingDetails.insurancePrice > 0 && (
+                  <div className="flex justify-between">
+                    <span>{bookingDetails.insuranceName || 'Insurance'}</span>
+                    <span>{formatCurrency(bookingDetails.insurancePrice)}</span>
+                  </div>
+                )}
+                
+                {bookingDetails.extraKmsPrice > 0 && (
+                  <div className="flex justify-between">
+                    <span>{bookingDetails.extraKmsName || 'Mileage Charge'}</span>
+                    <span>{formatCurrency(bookingDetails.extraKmsPrice)}</span>
+                  </div>
+                )}
+                
+                {bookingDetails.selectedExtras && bookingDetails.selectedExtras.map((extra, index) => (
+                  <div key={index} className="flex justify-between">
+                    <span>{extra.name} {extra.quantity > 1 ? `(x${extra.quantity})` : ''}</span>
+                    <span>{formatCurrency(extra.price)}</span>
+                  </div>
+                ))}
+                
+                <div className="border-t border-gray-300 my-2 pt-2">
+                  <div className="flex justify-between font-semibold">
+                    <span>Total Amount</span>
+                    <span>{formatCurrency(bookingDetails.paymentAmount)}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <Button 
               onClick={() => navigate("/")}
               className="w-full"
