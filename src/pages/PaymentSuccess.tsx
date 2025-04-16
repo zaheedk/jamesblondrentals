@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -58,6 +59,12 @@ const PaymentSuccess = () => {
       cardNumber?: string;
     };
   }>({});
+
+  // Define the handleImageError function that was missing
+  const handleImageError = () => {
+    console.log("Error loading vehicle image");
+    setImageError(true);
+  };
 
   useEffect(() => {
     const fetchBookingDetails = async () => {
@@ -376,11 +383,6 @@ const PaymentSuccess = () => {
       };
     };
     
-    const handleImageError = () => {
-      console.log("Error loading vehicle image");
-      setImageError(true);
-    };
-    
     fetchBookingDetails();
   }, [navigate, location]);
   
@@ -630,3 +632,4 @@ const PaymentSuccess = () => {
 };
 
 export default PaymentSuccess;
+
