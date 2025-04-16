@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Vehicle } from "@/lib/types";
 import { saveBookingData } from "@/lib/booking-session";
+import { parse, format } from "date-fns";
 
 interface BookingFormProps {
   vehicle: Vehicle;
