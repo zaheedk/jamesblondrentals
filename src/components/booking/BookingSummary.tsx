@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { format, parse, isValid, differenceInDays } from "date-fns";
@@ -44,7 +43,6 @@ const BookingSummary = ({
 }: BookingSummaryProps) => {
   const [imageError, setImageError] = React.useState(false);
   
-  // Define formatSafeDate function before using it
   const formatSafeDate = (date: Date | string | null | undefined): string => {
     if (!date) return "Date not available";
     
@@ -109,7 +107,6 @@ const BookingSummary = ({
     }
   };
 
-  // Use the formatSafeDate function after it's been defined
   const formattedPickupDate = formatSafeDate(pickupDate);
   const formattedDropoffDate = formatSafeDate(dropoffDate);
   
@@ -183,9 +180,10 @@ const BookingSummary = ({
   const totalSeasonalRates = seasonalRates.reduce((sum, rate) => sum + rate.totalAmount, 0);
   const totalMandatoryFees = mandatoryFees.reduce((sum, fee) => sum + fee.amount, 0);
   
-  // Calculate total price before using it in the JSX
+  const adjustedBasePrice = basePrice - totalMandatoryFees;
+  
   const totalPrice = 
-    basePrice + 
+    adjustedBasePrice + 
     (selectedInsurance?.price || 0) + 
     selectedExtras.reduce((sum, extra) => sum + extra.totalPrice, 0) + 
     kmChargePrice +
@@ -236,8 +234,13 @@ const BookingSummary = ({
         <div className="border-t border-gray-200 my-4"></div>
         
         <div className="flex justify-between items-center">
-          <span>Base price</span>
+          <span>Base price (before mandatory fees)</span>
           <span>{currencySymbol}{basePrice.toFixed(2)}</span>
+        </div>
+
+        <div className="flex justify-between items-center">
+          <span>Base price (after mandatory fees)</span>
+          <span>{currencySymbol}{adjustedBasePrice.toFixed(2)}</span>
         </div>
         
         {selectedInsurance && (
