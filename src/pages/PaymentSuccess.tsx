@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -35,6 +34,8 @@ interface BookingDetails {
   extraKmsPrice?: number;
   pickupLocationName?: string;
   dropoffLocationName?: string;
+  totalRateAfterDiscount?: number;
+  mandatoryFees?: Array<{name: string; amount: number}>;
 }
 
 const PaymentSuccess = () => {
@@ -60,7 +61,6 @@ const PaymentSuccess = () => {
     };
   }>({});
 
-  // Define the handleImageError function that was missing
   const handleImageError = () => {
     console.log("Error loading vehicle image");
     setImageError(true);
@@ -203,14 +203,13 @@ const PaymentSuccess = () => {
             extraKmsName: sessionBookingData.extraKmsName,
             extraKmsPrice: sessionBookingData.extraKmsPrice,
             pickupLocationName: sessionBookingData.pickupLocationName,
-            dropoffLocationName: sessionBookingData.dropoffLocationName
+            dropoffLocationName: sessionBookingData.dropoffLocationName,
+            totalRateAfterDiscount: sessionBookingData.totalRateAfterDiscount,
+            mandatoryFees: sessionBookingData.mandatoryFees
           };
           setBookingDetails(convertedDetails);
           
-          // Calculate rental duration
-          if (convertedDetails.pickupDate && convertedDetails.dropoffDate) {
-            calculateRentalDuration(convertedDetails.pickupDate, convertedDetails.dropoffDate);
-          }
+          calculateRentalDuration(convertedDetails.pickupDate, convertedDetails.dropoffDate);
         }
         
         setIsLoading(false);
@@ -247,7 +246,6 @@ const PaymentSuccess = () => {
           const apiBookingDetails = mapApiResponseToBookingDetails(typedResponse.results, reservationRef);
           setBookingDetails(apiBookingDetails);
           
-          // Calculate rental duration
           if (apiBookingDetails.pickupDate && apiBookingDetails.dropoffDate) {
             calculateRentalDuration(apiBookingDetails.pickupDate, apiBookingDetails.dropoffDate);
           }
@@ -265,11 +263,9 @@ const PaymentSuccess = () => {
       try {
         let pickup, dropoff;
         
-        // Try to parse as ISO date
         if (pickupDate.includes('T') || pickupDate.includes('-')) {
           pickup = parseISO(pickupDate);
         } else {
-          // Try to parse dd/MM/yyyy format
           const [day, month, year] = pickupDate.split('/').map(Number);
           pickup = new Date(year, month - 1, day);
         }
@@ -310,7 +306,7 @@ const PaymentSuccess = () => {
         }
         
         if (isValid(pickup) && isValid(dropoff)) {
-          const days = differenceInDays(dropoff, pickup) + 1; // +1 to include the pickup day
+          const days = differenceInDays(dropoff, pickup) + 1;
           setRentalDuration(days > 0 ? days : 0);
           console.log(`Rental duration: ${days} days`);
         } else {
@@ -328,13 +324,10 @@ const PaymentSuccess = () => {
       const customerInfo = apiResponse.customerinfo && apiResponse.customerinfo[0] ? apiResponse.customerinfo[0] : {};
       const paymentInfo = apiResponse.paymentinfo && apiResponse.paymentinfo[0] ? apiResponse.paymentinfo[0] : {};
       
-      // Try to extract extras from the API response
       const extrasInfo: Array<{name: string; quantity: number; price: number}> = [];
       
-      // Process all extra fees in the response
       if (apiResponse.extrafees && Array.isArray(apiResponse.extrafees)) {
         apiResponse.extrafees.forEach((extra: any) => {
-          // Only include non-bond fees as extras
           if (!extra.isbondfee) {
             extrasInfo.push({
               name: extra.name || "Extra item",
@@ -345,10 +338,8 @@ const PaymentSuccess = () => {
         });
       }
 
-      // Format the vehicle image URL correctly
       let vehicleImageUrl = bookingInfo.vehicleimage;
       if (vehicleImageUrl && bookingInfo.urlpathfordocuments) {
-        // Check if the image URL is already absolute
         if (!vehicleImageUrl.startsWith('http')) {
           vehicleImageUrl = `${bookingInfo.urlpathfordocuments}${vehicleImageUrl}`;
         }
@@ -379,7 +370,9 @@ const PaymentSuccess = () => {
         extraKmsName: bookingInfo.kmcharges_description || bookingInfo.kmcharge || bookingInfo.kmoption,
         extraKmsPrice: parseFloat(bookingInfo.kmcharges_additionalkmtotalamount) || parseFloat(bookingInfo.kmchargeamount) || 0,
         pickupLocationName: bookingInfo.pickuplocationname,
-        dropoffLocationName: bookingInfo.dropofflocationname
+        dropoffLocationName: bookingInfo.dropofflocationname,
+        totalRateAfterDiscount: bookingInfo.totalrateafterdiscount,
+        mandatoryFees: bookingInfo.mandatoryfees
       };
     };
     
@@ -469,7 +462,6 @@ const PaymentSuccess = () => {
               )}
             </div>
 
-            {/* Vehicle Image */}
             {bookingDetails?.vehicleImage && !imageError && (
               <div className="w-full aspect-video rounded-lg overflow-hidden bg-gray-100 mb-6">
                 <img
@@ -481,13 +473,11 @@ const PaymentSuccess = () => {
               </div>
             )}
 
-            {/* Vehicle Name */}
             <div className="flex items-center gap-2 mb-6">
               <Car className="h-6 w-6 text-gray-500" />
               <h2 className="text-2xl font-semibold">{bookingDetails?.vehicleName}</h2>
             </div>
 
-            {/* Pickup and Dropoff Details - Combined on one line */}
             <div className="bg-gray-50 rounded-lg p-4 mb-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex items-center gap-4">
@@ -517,7 +507,6 @@ const PaymentSuccess = () => {
               </div>
             </div>
 
-            {/* Rental Duration */}
             <div className="bg-gray-50 rounded-lg p-4 mb-6">
               <div className="flex items-center gap-2 mb-2">
                 <Calendar className="h-5 w-5 text-gray-600" />
@@ -526,14 +515,20 @@ const PaymentSuccess = () => {
               <p className="pl-7">{rentalDuration} day{rentalDuration !== 1 ? 's' : ''}</p>
             </div>
 
-            {/* Payment Breakdown */}
             <div className="bg-gray-50 rounded-lg p-4 mb-6">
               <h3 className="text-lg font-semibold mb-4">Payment Summary</h3>
               <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span>Base Rental Price</span>
-                  <span>{formatCurrency(bookingDetails?.basePrice || 0)}</span>
-                </div>
+                {bookingDetails?.totalRateAfterDiscount ? (
+                  <div className="flex justify-between">
+                    <span>Rate After Discount</span>
+                    <span>{formatCurrency(bookingDetails.totalRateAfterDiscount)}</span>
+                  </div>
+                ) : (
+                  <div className="flex justify-between">
+                    <span>Base Rental Price</span>
+                    <span>{formatCurrency(bookingDetails?.basePrice || 0)}</span>
+                  </div>
+                )}
                 
                 {bookingDetails?.insurancePrice > 0 && (
                   <div className="flex justify-between">
@@ -555,6 +550,20 @@ const PaymentSuccess = () => {
                     <span>{formatCurrency(extra.price)}</span>
                   </div>
                 ))}
+
+                {bookingDetails?.mandatoryFees && bookingDetails.mandatoryFees.length > 0 && (
+                  <>
+                    <div className="border-t border-gray-300 my-2 pt-2">
+                      <div className="font-medium mb-2">Mandatory Fees</div>
+                      {bookingDetails.mandatoryFees.map((fee, index) => (
+                        <div key={index} className="flex justify-between text-sm">
+                          <span>{fee.name}</span>
+                          <span>{formatCurrency(fee.amount)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
                 
                 <div className="border-t border-gray-300 my-2 pt-2">
                   <div className="flex justify-between font-semibold">
@@ -632,4 +641,3 @@ const PaymentSuccess = () => {
 };
 
 export default PaymentSuccess;
-
