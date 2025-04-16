@@ -234,12 +234,7 @@ const BookingSummary = ({
         <div className="border-t border-gray-200 my-4"></div>
         
         <div className="flex justify-between items-center">
-          <span>Base price (before mandatory fees)</span>
-          <span>{currencySymbol}{basePrice.toFixed(2)}</span>
-        </div>
-
-        <div className="flex justify-between items-center">
-          <span>Base price (after mandatory fees)</span>
+          <span>Base price</span>
           <span>{currencySymbol}{adjustedBasePrice.toFixed(2)}</span>
         </div>
         
@@ -272,24 +267,6 @@ const BookingSummary = ({
                 <span>{currencySymbol}{extra.totalPrice.toFixed(2)}</span>
               </div>
             ))}
-          </div>
-        )}
-        
-        {seasonalRates.length > 0 && (
-          <div className="py-2">
-            <div className="font-medium flex items-center mb-2">
-              <Calendar className="h-4 w-4 mr-2" /> Seasonal Rates:
-            </div>
-            {seasonalRates.map((rate, index) => (
-              <div key={index} className="flex justify-between pl-6 py-1">
-                <span>Daily Rate</span>
-                <span>{currencySymbol}{rate.dailyRate.toFixed(2)}</span>
-              </div>
-            ))}
-            <div className="flex justify-between pl-6 py-1 font-medium">
-              <span>Total Seasonal Charges</span>
-              <span>{currencySymbol}{totalSeasonalRates.toFixed(2)}</span>
-            </div>
           </div>
         )}
         
