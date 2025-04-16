@@ -9,7 +9,8 @@ export function cn(...inputs: ClassValue[]) {
 /**
  * Format a number as a currency string with the specified locale and currency
  */
-export function formatCurrency(amount: number, locale = 'en-US', currency = 'USD'): string {
+export function formatCurrency(amount: number, locale = 'en-US', currency = 'NZD'): string {
+  console.log('Formatting currency:', { amount, locale, currency }); // Add logging
   return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency: currency,
@@ -17,3 +18,4 @@ export function formatCurrency(amount: number, locale = 'en-US', currency = 'USD
     maximumFractionDigits: 2,
   }).format(amount);
 }
+
