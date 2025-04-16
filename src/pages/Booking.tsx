@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -16,7 +15,6 @@ const Booking = () => {
   const navigate = useNavigate();
   const { rcmApi } = useRcmApi();
 
-  // State for booking options
   const [bookingData, setBookingData] = useState<BookingSessionData | null>(null);
   const [insuranceOptions, setInsuranceOptions] = useState<RCMInsuranceOption[]>([]);
   const [kmCharges, setKmCharges] = useState<RCMKmCharge[]>([]);
@@ -25,7 +23,6 @@ const Booking = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [apiError, setApiError] = useState<string | null>(null);
   
-  // Selected options state
   const [selectedInsurance, setSelectedInsurance] = useState<RCMInsuranceOption | null>(null);
   const [selectedKmCharge, setSelectedKmCharge] = useState<RCMKmCharge | null>(null);
   const [selectedExtras, setSelectedExtras] = useState<{
@@ -37,7 +34,6 @@ const Booking = () => {
   }[]>([]);
   const [selectedExtrasMap, setSelectedExtrasMap] = useState(new Map<string | number, number>());
 
-  // Calculate number of days for rental
   const calculateNumberOfDays = () => {
     if (!bookingData) return 1;
     try {
@@ -61,7 +57,6 @@ const Booking = () => {
     }
   };
 
-  // Get booking data from session storage
   useEffect(() => {
     const data = getBookingData();
     if (!data) {
@@ -74,7 +69,6 @@ const Booking = () => {
     
     setBookingData(data);
     
-    // Fetch step 3 data (options)
     setIsLoading(true);
     setApiError(null);
     
@@ -94,7 +88,6 @@ const Booking = () => {
       if (response.status === "OK" && response.results) {
         console.log('Step3 response results:', response.results);
         
-        // Ensure we always have arrays, even if API returns null/undefined
         const safeInsuranceOptions = Array.isArray(response.results.insuranceoptions) ? 
           response.results.insuranceoptions : [];
         setInsuranceOptions(safeInsuranceOptions);
@@ -103,14 +96,12 @@ const Booking = () => {
           response.results.kmcharges : [];
         setKmCharges(safeKmCharges);
         
-        // Create a safe copy of extras array
         let safeExtras: RCMExtra[] = [];
         if (response.results.extras) {
           if (Array.isArray(response.results.extras)) {
             safeExtras = response.results.extras;
           } else {
             console.warn('Extras is not an array:', response.results.extras);
-            // Try to convert if it's an object
             try {
               const extrasObj = response.results.extras;
               if (extrasObj && typeof extrasObj === 'object') {
@@ -125,12 +116,10 @@ const Booking = () => {
         setExtras(safeExtras);
         console.log('Processed extras array:', safeExtras);
         
-        // Create a safe copy of optional fees array
         const safeOptionalFees = Array.isArray(response.results.optionalfees) ? 
           response.results.optionalfees : [];
         setOptionalFees(safeOptionalFees);
         
-        // Set default selections
         const defaultInsurance = safeInsuranceOptions.find(i => i.isdefault) || 
           (safeInsuranceOptions.length > 0 ? safeInsuranceOptions[0] : null);
         setSelectedInsurance(defaultInsurance);
@@ -158,9 +147,7 @@ const Booking = () => {
     });
   }, [navigate, rcmApi]);
 
-  // Handle proceeding to customer details page
   const handleProceedToDetails = () => {
-    // Save selected options to session storage before navigating
     const selectedExtrasArray = Array.from(selectedExtrasMap).map(([id, quantity]) => {
       const extra = extras.find(e => e.id.toString() === id.toString());
       const optionalFee = optionalFees.find(f => f.id.toString() === id.toString());
@@ -202,19 +189,16 @@ const Booking = () => {
     navigate('/customer-details');
   };
 
-  // Handle insurance selection
   const handleInsuranceChange = (insuranceId: string | number) => {
     const selected = insuranceOptions.find(i => i.id.toString() === insuranceId.toString()) || null;
     setSelectedInsurance(selected);
   };
 
-  // Handle km charge selection
   const handleKmChargeChange = (kmChargeId: string | number) => {
     const selected = kmCharges.find(k => k.id.toString() === kmChargeId.toString()) || null;
     setSelectedKmCharge(selected);
   };
 
-  // Handle extras selection
   const handleExtrasChange = (extraId: string | number, quantity: number) => {
     const newSelectedExtrasMap = new Map(selectedExtrasMap);
     
@@ -226,9 +210,7 @@ const Booking = () => {
     
     setSelectedExtrasMap(newSelectedExtrasMap);
     
-    // Update the selectedExtras array for BookingSummary
     const updatedSelectedExtras = Array.from(newSelectedExtrasMap).map(([id, qty]) => {
-      // Check in both extras and optionalFees arrays
       const extra = extras.find(e => e.id.toString() === id.toString());
       const optionalFee = optionalFees.filter(
         fee => !["Deposit", "FullPayment"].includes(fee.name)
@@ -246,9 +228,9 @@ const Booking = () => {
         return {
           id: optionalFee.id,
           name: optionalFee.name,
-          quantity: qty, // Now supporting quantity for optional fees
+          quantity: qty,
           unitPrice: optionalFee.fees,
-          totalPrice: optionalFee.fees * qty // Multiply by quantity
+          totalPrice: optionalFee.fees * qty
         };
       } else {
         console.warn("Could not find extra or optional fee with id:", id);
@@ -265,18 +247,16 @@ const Booking = () => {
     setSelectedExtras(updatedSelectedExtras);
   };
 
-  // Prepare booking summary data
   const selectedInsuranceForSummary = selectedInsurance ? {
     id: selectedInsurance.id,
     name: selectedInsurance.name || selectedInsurance.description || "Insurance",
-    price: selectedInsurance.totalinsuranceamount || selectedInsurance.amount || 0
+    price: selectedInsurance.totalinsuranceamount || 0
   } : null;
   
   const kmChargePrice = selectedKmCharge ? 
-    (selectedKmCharge.dailyrate || selectedKmCharge.amount || 0) * calculateNumberOfDays() : 0;
+    (selectedKmCharge.dailyrate || 0) * calculateNumberOfDays() : 0;
   const numberOfDays = calculateNumberOfDays();
 
-  // Show loading state
   if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-8 text-center">
@@ -285,7 +265,6 @@ const Booking = () => {
     );
   }
 
-  // Show error state with retry option
   if (apiError && !bookingData) {
     return (
       <div className="container mx-auto px-4 py-8 text-center">
@@ -298,7 +277,6 @@ const Booking = () => {
     );
   }
 
-  // Main booking form with any available options
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">Complete Your Booking</h1>
@@ -314,9 +292,7 @@ const Booking = () => {
       )}
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Options Section */}
         <div className="lg:col-span-2 space-y-8">
-          {/* Insurance Options */}
           {insuranceOptions.length > 0 && (
             <InsuranceOptions 
               insuranceOptions={insuranceOptions}
@@ -326,7 +302,6 @@ const Booking = () => {
             />
           )}
           
-          {/* Kilometer Charges */}
           {kmCharges.length > 0 && (
             <KmCharges 
               kmCharges={kmCharges}
@@ -335,7 +310,6 @@ const Booking = () => {
             />
           )}
           
-          {/* Extras Selection */}
           <ExtrasSelection 
             extras={extras}
             selectedExtras={selectedExtrasMap}
@@ -344,7 +318,6 @@ const Booking = () => {
             optionalFees={optionalFees}
           />
           
-          {/* Navigation Buttons */}
           <div className="flex justify-between pt-4">
             <Button 
               variant="outline" 
@@ -358,7 +331,6 @@ const Booking = () => {
           </div>
         </div>
         
-        {/* Booking Summary */}
         <div>
           <BookingSummary
             pickupLocation={bookingData?.pickupLocationName || ""}
