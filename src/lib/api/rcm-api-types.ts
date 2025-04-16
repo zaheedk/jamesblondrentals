@@ -327,7 +327,7 @@ export interface RCMStep3Results {
   insuranceoptions: RCMInsuranceOption[];
   kmcharges: RCMKmCharge[];
   extras: RCMExtra[];
-  optionalfees?: RCMOptionalFee[]; // Add this field to fix the type error
+  optionalfees?: RCMOptionalFee[];
   locationfees: {
     vehiclecategoryid: string | number;
     currencysymbol: string;
@@ -349,6 +349,7 @@ export interface RCMStep3Results {
     totalfeeamount: number;
     name?: string;
   }[];
+  availablecars?: RCMAvailableCar[];
 }
 
 export interface RCMStep3Response {
