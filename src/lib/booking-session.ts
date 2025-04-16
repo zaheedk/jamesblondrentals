@@ -18,8 +18,6 @@ export interface BookingSessionData {
   ageId: string;
   basePrice: number;
   vehicleImage?: string;
-  currencySymbol?: string;
-  campaignCode?: string;
   // Payment related fields
   paymentAmount?: number;
   paymentType?: "deposit" | "full";
@@ -27,10 +25,10 @@ export interface BookingSessionData {
   transactionId?: string;
   windcaveReservationRef?: string; // Adding this property to fix the type error
   // Insurance and optional fees
-  insuranceId?: string | number;
+  insuranceId?: string;
   insuranceName?: string;
   insurancePrice?: number;
-  extraKmsId?: string | number;
+  extraKmsId?: string;
   extraKmsName?: string;
   extraKmsPrice?: number;
   selectedExtras?: Array<{

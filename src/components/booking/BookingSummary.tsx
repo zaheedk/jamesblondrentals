@@ -16,15 +16,9 @@ interface BookingSummaryProps {
   currencySymbol: string;
   vehicleImageUrl?: string;
   seasonalRates?: {
-    season?: string;
-    rateperiod: string;
-    numberofdays: number;
     dailyRate: number;
     totalAmount: number;
     discountAmount?: number;
-    dailyratebeforediscount?: number;
-    discounttype?: string;
-    discountname?: string;
   }[];
   mandatoryFees?: {
     name: string;
@@ -55,69 +49,6 @@ const BookingSummary = ({
     selectedExtras.reduce((sum, extra) => sum + extra.totalPrice, 0) + 
     kmChargePrice;
 
-  const formattedPickupDate = formatSafeDate(pickupDate);
-  const formattedDropoffDate = formatSafeDate(dropoffDate);
-  
-  const calculateRentalDuration = () => {
-    try {
-      let pickup: Date | null = null;
-      let dropoff: Date | null = null;
-      
-      if (pickupDate instanceof Date) {
-        pickup = pickupDate;
-      } else if (typeof pickupDate === 'string') {
-        if (pickupDate.match(/\d+\/[A-Za-z]+\/\d+/)) {
-          const parts = pickupDate.split('/');
-          const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
-                             "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-          const day = parseInt(parts[0]);
-          const monthIndex = monthNames.findIndex(m => parts[1].includes(m));
-          const year = parseInt(parts[2]);
-          
-          if (!isNaN(day) && monthIndex !== -1 && !isNaN(year)) {
-            pickup = new Date(year, monthIndex, day);
-          }
-        } else if (pickupDate.includes('/')) {
-          const [day, month, year] = pickupDate.split('/').map(Number);
-          pickup = new Date(year, month - 1, day);
-        } else {
-          pickup = new Date(pickupDate);
-        }
-      }
-      
-      if (dropoffDate instanceof Date) {
-        dropoff = dropoffDate;
-      } else if (typeof dropoffDate === 'string') {
-        if (dropoffDate.match(/\d+\/[A-Za-z]+\/\d+/)) {
-          const parts = dropoffDate.split('/');
-          const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
-                             "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-          const day = parseInt(parts[0]);
-          const monthIndex = monthNames.findIndex(m => parts[1].includes(m));
-          const year = parseInt(parts[2]);
-          
-          if (!isNaN(day) && monthIndex !== -1 && !isNaN(year)) {
-            dropoff = new Date(year, monthIndex, day);
-          }
-        } else if (dropoffDate.includes('/')) {
-          const [day, month, year] = dropoffDate.split('/').map(Number);
-          dropoff = new Date(year, month - 1, day);
-        } else {
-          dropoff = new Date(dropoffDate);
-        }
-      }
-      
-      if (pickup && dropoff && isValid(pickup) && isValid(dropoff)) {
-        const days = differenceInDays(dropoff, pickup) + 1;
-        return days > 0 ? days : 1;
-      }
-    } catch (e) {
-      console.error("Error calculating duration:", e);
-    }
-    
-    return 1;
-  };
-  
   const formatSafeDate = (date: Date | string | null | undefined): string => {
     if (!date) return "Date not available";
     
@@ -180,6 +111,69 @@ const BookingSummary = ({
       console.error("Error formatting date:", err, date);
       return "Date format error";
     }
+  };
+
+  const formattedPickupDate = formatSafeDate(pickupDate);
+  const formattedDropoffDate = formatSafeDate(dropoffDate);
+  
+  const calculateRentalDuration = () => {
+    try {
+      let pickup: Date | null = null;
+      let dropoff: Date | null = null;
+      
+      if (pickupDate instanceof Date) {
+        pickup = pickupDate;
+      } else if (typeof pickupDate === 'string') {
+        if (pickupDate.match(/\d+\/[A-Za-z]+\/\d+/)) {
+          const parts = pickupDate.split('/');
+          const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                             "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+          const day = parseInt(parts[0]);
+          const monthIndex = monthNames.findIndex(m => parts[1].includes(m));
+          const year = parseInt(parts[2]);
+          
+          if (!isNaN(day) && monthIndex !== -1 && !isNaN(year)) {
+            pickup = new Date(year, monthIndex, day);
+          }
+        } else if (pickupDate.includes('/')) {
+          const [day, month, year] = pickupDate.split('/').map(Number);
+          pickup = new Date(year, month - 1, day);
+        } else {
+          pickup = new Date(pickupDate);
+        }
+      }
+      
+      if (dropoffDate instanceof Date) {
+        dropoff = dropoffDate;
+      } else if (typeof dropoffDate === 'string') {
+        if (dropoffDate.match(/\d+\/[A-Za-z]+\/\d+/)) {
+          const parts = dropoffDate.split('/');
+          const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                             "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+          const day = parseInt(parts[0]);
+          const monthIndex = monthNames.findIndex(m => parts[1].includes(m));
+          const year = parseInt(parts[2]);
+          
+          if (!isNaN(day) && monthIndex !== -1 && !isNaN(year)) {
+            dropoff = new Date(year, monthIndex, day);
+          }
+        } else if (dropoffDate.includes('/')) {
+          const [day, month, year] = dropoffDate.split('/').map(Number);
+          dropoff = new Date(year, month - 1, day);
+        } else {
+          dropoff = new Date(dropoffDate);
+        }
+      }
+      
+      if (pickup && dropoff && isValid(pickup) && isValid(dropoff)) {
+        const days = differenceInDays(dropoff, pickup) + 1;
+        return days > 0 ? days : 1;
+      }
+    } catch (e) {
+      console.error("Error calculating duration:", e);
+    }
+    
+    return 1;
   };
   
   const rentalDuration = calculateRentalDuration();
@@ -278,44 +272,15 @@ const BookingSummary = ({
               <Calendar className="h-4 w-4 mr-2" /> Seasonal Rates:
             </div>
             {seasonalRates.map((rate, index) => (
-              <div key={index} className="space-y-2 pl-6">
-                {rate.season && (
-                  <div className="flex justify-between">
-                    <span>Season</span>
-                    <span>{rate.season}</span>
-                  </div>
-                )}
-                <div className="flex justify-between">
-                  <span>Rate Period</span>
-                  <span>{rate.rateperiod}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Number of Days</span>
-                  <span>{rate.numberofdays}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Daily Rate</span>
-                  <span>{currencySymbol}{rate.dailyRate.toFixed(2)}</span>
-                </div>
-                {rate.discounttype && (
-                  <div className="flex justify-between">
-                    <span>Discount Type</span>
-                    <span>{rate.discounttype}</span>
-                  </div>
-                )}
-                {rate.discountname && (
-                  <div className="flex justify-between">
-                    <span>Discount Name</span>
-                    <span>{rate.discountname}</span>
-                  </div>
-                )}
-                <div className="flex justify-between font-medium">
-                  <span>Total Rate</span>
-                  <span>{currencySymbol}{rate.totalAmount.toFixed(2)}</span>
-                </div>
-                <div className="border-t border-gray-200 my-2"></div>
+              <div key={index} className="flex justify-between pl-6 py-1">
+                <span>Daily Rate</span>
+                <span>{currencySymbol}{rate.dailyRate.toFixed(2)}</span>
               </div>
             ))}
+            <div className="flex justify-between pl-6 py-1 font-medium">
+              <span>Total Seasonal Charges</span>
+              <span>{currencySymbol}{totalSeasonalRates.toFixed(2)}</span>
+            </div>
           </div>
         )}
         
