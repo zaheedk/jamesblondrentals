@@ -29,7 +29,7 @@ const PaymentOptions = () => {
     
     setBookingDetails(bookingData);
     
-    // Calculate total amount including base price (totalrateafterdiscount), insurance, and extras
+    // Calculate total amount using the base price from previous step
     const basePrice = bookingData.basePrice || 0;
     const insurancePrice = bookingData.insurancePrice || 0;
     const extrasTotal = (bookingData.selectedExtras || []).reduce(
@@ -52,14 +52,12 @@ const PaymentOptions = () => {
     );
   }
 
-  const fullAmount = totalAmount;
-  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
     try {
-      const amountToPay = paymentType === "deposit" ? DEPOSIT_AMOUNT : fullAmount;
+      const amountToPay = paymentType === "deposit" ? DEPOSIT_AMOUNT : totalAmount;
       
       updateBookingData({
         paymentAmount: amountToPay,
@@ -87,16 +85,16 @@ const PaymentOptions = () => {
             <h2 className="text-xl font-semibold mb-2">Vehicle Booking Summary</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <p><span className="font-medium">Vehicle:</span> {bookingDetails.vehicleName}</p>
-                <p><span className="font-medium">Pickup:</span> {bookingDetails.pickupDate} at {bookingDetails.pickupTime}</p>
-                <p><span className="font-medium">Return:</span> {bookingDetails.dropoffDate} at {bookingDetails.dropoffTime}</p>
+                <p><span className="font-medium">Vehicle:</span> {bookingDetails?.vehicleName}</p>
+                <p><span className="font-medium">Pickup:</span> {bookingDetails?.pickupDate} at {bookingDetails?.pickupTime}</p>
+                <p><span className="font-medium">Return:</span> {bookingDetails?.dropoffDate} at {bookingDetails?.dropoffTime}</p>
               </div>
-              <div>
-                <p><span className="font-medium">Base Amount:</span> {formatCurrency(bookingDetails.basePrice || 0)}</p>
-                {bookingDetails.insurancePrice > 0 && (
+              <div className="space-y-1">
+                <p><span className="font-medium">Base Amount:</span> {formatCurrency(bookingDetails?.basePrice || 0)}</p>
+                {bookingDetails?.insurancePrice > 0 && (
                   <p><span className="font-medium">Insurance:</span> {formatCurrency(bookingDetails.insurancePrice)}</p>
                 )}
-                {bookingDetails.selectedExtras?.length > 0 && (
+                {bookingDetails?.selectedExtras?.length > 0 && (
                   <p><span className="font-medium">Extras:</span> {formatCurrency(bookingDetails.selectedExtras.reduce(
                     (sum: number, extra: any) => sum + (extra.price * extra.quantity), 
                     0

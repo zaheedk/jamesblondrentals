@@ -53,7 +53,7 @@ export interface RCMOfficeTime {
   startpickup?: string;
   endpickup?: string;
   startdropoff?: string;
-  enddropoff?: string;
+  enddate?: string;
   startdate?: string;
   enddate?: string;
 }
@@ -412,4 +412,65 @@ export interface RCMConfigInit {
   apiKey?: string;
   apiSecret?: string;
   useMockData?: boolean;
+}
+
+export interface BookingSessionData {
+  vehicleId: string;
+  vehicleName?: string;
+  vehicleCategoryTypeId: string;
+  pickupLocationId: string;
+  pickupLocationName?: string;
+  dropoffLocationId: string;
+  dropoffLocationName?: string;
+  pickupDate: string;
+  pickupTime: string;
+  dropoffDate: string;
+  dropoffTime: string;
+  ageId: string;
+  basePrice: number;
+  vehicleImage?: string;
+  // Payment related fields
+  paymentAmount?: number;
+  paymentType?: "deposit" | "full";
+  paymentStatus?: "Approved" | "Failed" | "Pending" | "Unknown";
+  transactionId?: string;
+  windcaveReservationRef?: string; // Adding this property to fix the type error
+  // Insurance and optional fees
+  insuranceId?: string;
+  insuranceName?: string;
+  insurancePrice?: number;
+  extraKmsId?: string;
+  extraKmsName?: string;
+  extraKmsPrice?: number;
+  selectedExtras?: Array<{
+    id: string;
+    name: string;
+    quantity: number;
+    price: number;
+  }>;
+  // Booking reference fields
+  reservationRef?: string;
+  bookingReference?: string;
+  confirmationNumber?: string;
+  reservationNo?: string;
+  // Customer details fields
+  customerFirstName?: string;
+  customerLastName?: string;
+  customerEmail?: string;
+  customerPhone?: string;
+  customerDob?: string;
+  customerLicenseExpiry?: string;
+  customerAddress?: string;
+  // Price breakdown fields
+  basePrice: number;
+  mandatoryFees?: {
+    name: string;
+    amount: number;
+  }[];
+  seasonalRates?: {
+    dailyRateBeforeDiscount: number;
+    dailyRateAfterDiscount: number;
+    discountRate: number;
+    numberOfDays: number;
+  }[];
 }
