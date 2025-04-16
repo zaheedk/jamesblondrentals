@@ -177,18 +177,13 @@ const BookingSummary = ({
     setImageError(true);
   };
 
-  const totalSeasonalRates = seasonalRates.reduce((sum, rate) => sum + rate.totalAmount, 0);
   const totalMandatoryFees = mandatoryFees.reduce((sum, fee) => sum + fee.amount, 0);
   
-  const adjustedBasePrice = basePrice - totalMandatoryFees;
-  
   const totalPrice = 
-    adjustedBasePrice + 
+    basePrice + 
     (selectedInsurance?.price || 0) + 
     selectedExtras.reduce((sum, extra) => sum + extra.totalPrice, 0) + 
-    kmChargePrice +
-    totalSeasonalRates +
-    totalMandatoryFees;
+    kmChargePrice;
 
   return (
     <Card>
@@ -235,7 +230,7 @@ const BookingSummary = ({
         
         <div className="flex justify-between items-center">
           <span>Base price</span>
-          <span>{currencySymbol}{adjustedBasePrice.toFixed(2)}</span>
+          <span>{currencySymbol}{basePrice.toFixed(2)}</span>
         </div>
         
         {selectedInsurance && (
@@ -292,7 +287,7 @@ const BookingSummary = ({
         
         <div className="flex justify-between items-center font-semibold">
           <span>Total</span>
-          <span>{currencySymbol}{totalPrice.toFixed(2)}</span>
+          <span>{currencySymbol}{(totalPrice + totalMandatoryFees).toFixed(2)}</span>
         </div>
       </CardContent>
     </Card>
