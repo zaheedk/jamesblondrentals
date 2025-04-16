@@ -14,7 +14,7 @@ interface BookingSummaryProps {
   kmChargePrice: number;
   currencySymbol: string;
   vehicleImageUrl?: string;
-  availableCars?: {
+  availableCars: {
     vehiclecategoryid: string;
     totalrateafterdiscount: number;
   }[];
@@ -43,7 +43,9 @@ const BookingSummary = ({
   const [imageError, setImageError] = React.useState(false);
 
   const basePrice = React.useMemo(() => {
-    const selectedCar = availableCars.find(car => car.vehiclecategoryid === selectedVehicleCategoryId);
+    const selectedCar = availableCars.find(car => 
+      car.vehiclecategoryid === String(selectedVehicleCategoryId)
+    );
     return selectedCar?.totalrateafterdiscount || 0;
   }, [availableCars, selectedVehicleCategoryId]);
 
