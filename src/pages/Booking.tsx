@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -10,6 +11,9 @@ import InsuranceOptions from '@/components/booking/InsuranceOptions';
 import KmCharges from '@/components/booking/KmCharges';
 import ExtrasSelection from '@/components/booking/ExtrasSelection';
 import { differenceInDays, parseISO } from 'date-fns';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Card } from '@/components/ui/card';
 
 const Booking = () => {
   const navigate = useNavigate();
@@ -34,6 +38,9 @@ const Booking = () => {
     totalPrice: number;
   }[]>([]);
   const [selectedExtrasMap, setSelectedExtrasMap] = useState(new Map<string | number, number>());
+  
+  // Raw API response state
+  const [rawApiResponse, setRawApiResponse] = useState<any>(null);
 
   // Calculate number of days for rental
   const calculateNumberOfDays = () => {
@@ -87,6 +94,9 @@ const Booking = () => {
       ageid: data.ageId,
     })
     .then((response) => {
+      // Store the raw API response
+      setRawApiResponse(response);
+      
       if (response.status === "OK" && response.results) {
         const { insuranceoptions, kmcharges, extras, optionalfees } = response.results;
         
@@ -258,6 +268,24 @@ const Booking = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Options Section */}
         <div className="lg:col-span-2 space-y-8">
+          {/* Raw API Response */}
+          <Accordion type="single" collapsible className="mb-6">
+            <AccordionItem value="raw-api-response">
+              <AccordionTrigger className="text-lg font-semibold">
+                Raw API Response
+              </AccordionTrigger>
+              <AccordionContent>
+                <Card className="p-4">
+                  <ScrollArea className="h-[400px] rounded-md border p-4">
+                    <pre className="text-xs whitespace-pre-wrap overflow-auto">
+                      {JSON.stringify(rawApiResponse, null, 2)}
+                    </pre>
+                  </ScrollArea>
+                </Card>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+
           {/* Insurance Options */}
           {insuranceOptions.length > 0 && (
             <InsuranceOptions 
