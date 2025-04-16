@@ -212,6 +212,7 @@ const Booking = () => {
               extras={step3Data.results.extras || []}
               onSelect={handleExtraSelect}
               selectedExtras={selectedExtras}
+              currencySymbol={currencySymbol}
             />
             
             <div className="flex justify-between mt-8">
