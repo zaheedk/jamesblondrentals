@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Vehicle } from "@/lib/types";
 import { saveBookingData } from "@/lib/booking-session";
-import { parse, format } from "date-fns";
 
 interface BookingFormProps {
   vehicle: Vehicle;
@@ -37,10 +36,26 @@ export default function BookingForm({
 }: BookingFormProps) {
   const navigate = useNavigate();
   
+  const getFirstVehicleImage = (vehicle: Vehicle): string => {
+    if (!vehicle.images || !Array.isArray(vehicle.images) || vehicle.images.length === 0) {
+      return '/placeholder.svg';
+    }
+    
+    const image = vehicle.images[0];
+    
+    if (typeof image === 'string') {
+      return image;
+    }
+    
+    if (image && typeof image === 'object' && 'url' in image) {
+      return (image as {url: string}).url;
+    }
+    
+    return '/placeholder.svg';
+  };
+
   const handleBookNow = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    const vehicleCategoryTypeId = vehicle.type?.toString() || '0';
     
     let formattedPickupDate = pickupDate;
     let formattedDropoffDate = dropoffDate;
@@ -86,12 +101,16 @@ export default function BookingForm({
       formatted: { pickupDate: formattedPickupDate, dropoffDate: formattedDropoffDate }
     });
     
-    console.log("Saving booking data with totalRateAfterDiscount:", totalRateAfterDiscount);
+    console.log("Saving booking data with rate details:", {
+      totalRateAfterDiscount,
+      totalDiscountAmount,
+      basePrice: vehicle.price
+    });
     
     saveBookingData({
       vehicleId: vehicle.id.toString(),
       vehicleName: `${vehicle.make} ${vehicle.model}`,
-      vehicleCategoryTypeId: vehicleCategoryTypeId,
+      vehicleCategoryTypeId: vehicle.type?.toString() || '0',
       pickupLocationId,
       pickupLocationName,
       dropoffLocationId,
@@ -102,30 +121,12 @@ export default function BookingForm({
       dropoffTime,
       ageId,
       basePrice: totalRateAfterDiscount || (typeof vehicle.price === 'number' ? vehicle.price : parseFloat(vehicle.price || '0')),
-      totalRateAfterDiscount: totalRateAfterDiscount,
-      totalDiscountAmount: totalDiscountAmount,
+      totalRateAfterDiscount,
+      totalDiscountAmount,
       vehicleImage: vehicleImageUrl || getFirstVehicleImage(vehicle)
     });
     
     navigate('/booking');
-  };
-
-  const getFirstVehicleImage = (vehicle: Vehicle): string => {
-    if (!vehicle.images || !Array.isArray(vehicle.images) || vehicle.images.length === 0) {
-      return '/placeholder.svg';
-    }
-    
-    const image = vehicle.images[0];
-    
-    if (typeof image === 'string') {
-      return image;
-    }
-    
-    if (image && typeof image === 'object' && 'url' in image) {
-      return (image as {url: string}).url;
-    }
-    
-    return '/placeholder.svg';
   };
 
   return (
