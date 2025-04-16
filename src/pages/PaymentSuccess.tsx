@@ -444,6 +444,110 @@ const PaymentSuccess = () => {
     );
   };
 
+  const renderPaymentSummary = () => {
+    if (!bookingDetails) return null;
+
+    // Calculate rental value from rateinfo
+    const rentalValue = rentalDuration * (bookingDetails.totalRateAfterDiscount || 0);
+
+    // Calculate total extra fees
+    const extraFeesTotal = (bookingDetails.selectedExtras || []).reduce((total, extra) => 
+      total + (extra.price || 0), 0);
+
+    // Calculate mandatory fees total
+    const mandatoryFeesTotal = (bookingDetails.mandatoryFees || []).reduce((total, fee) => 
+      total + (fee.amount || 0), 0);
+
+    // Calculate base price (total amount)
+    const basePrice = rentalValue + extraFeesTotal + mandatoryFeesTotal + 
+      (bookingDetails.insurancePrice || 0) + 
+      (bookingDetails.extraKmsPrice || 0);
+
+    // Calculate balance (base price minus paid amount)
+    const balance = basePrice - (windcaveResponseDetails.amount || 0);
+
+    return (
+      <div className="bg-gray-50 rounded-lg p-4 mb-6">
+        <h3 className="text-lg font-semibold mb-4">Payment Summary</h3>
+        <div className="space-y-2">
+          {/* Rental Value */}
+          <div className="flex justify-between">
+            <span>Rental Value ({rentalDuration} days × ${bookingDetails.totalRateAfterDiscount})</span>
+            <span>{formatCurrency(rentalValue)}</span>
+          </div>
+
+          {/* Insurance */}
+          {bookingDetails.insurancePrice > 0 && (
+            <div className="flex justify-between">
+              <span>{bookingDetails.insuranceName || 'Insurance'}</span>
+              <span>{formatCurrency(bookingDetails.insurancePrice)}</span>
+            </div>
+          )}
+
+          {/* Extra Kilometers */}
+          {bookingDetails.extraKmsPrice > 0 && (
+            <div className="flex justify-between">
+              <span>{bookingDetails.extraKmsName || 'Mileage Charge'}</span>
+              <span>{formatCurrency(bookingDetails.extraKmsPrice)}</span>
+            </div>
+          )}
+
+          {/* Extra Fees */}
+          {bookingDetails.selectedExtras && bookingDetails.selectedExtras.length > 0 && (
+            <>
+              <div className="border-t border-gray-300 my-2 pt-2">
+                <div className="font-medium mb-2">Extra Items</div>
+                {bookingDetails.selectedExtras.map((extra, index) => (
+                  <div key={index} className="flex justify-between text-sm">
+                    <span>{extra.name} {extra.quantity > 1 ? `(x${extra.quantity})` : ''}</span>
+                    <span>{formatCurrency(extra.price)}</span>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+
+          {/* Mandatory Fees */}
+          {bookingDetails.mandatoryFees && bookingDetails.mandatoryFees.length > 0 && (
+            <>
+              <div className="border-t border-gray-300 my-2 pt-2">
+                <div className="font-medium mb-2">Mandatory Fees</div>
+                {bookingDetails.mandatoryFees.map((fee, index) => (
+                  <div key={index} className="flex justify-between text-sm">
+                    <span>{fee.name}</span>
+                    <span>{formatCurrency(fee.amount)}</span>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+
+          {/* Base Price (Total Amount) */}
+          <div className="border-t border-gray-300 my-2 pt-2">
+            <div className="flex justify-between font-semibold">
+              <span>Base Price (Total Amount)</span>
+              <span>{formatCurrency(basePrice)}</span>
+            </div>
+          </div>
+
+          {/* Amount Paid */}
+          <div className="flex justify-between text-green-600">
+            <span>Amount Paid</span>
+            <span>{formatCurrency(windcaveResponseDetails.amount || 0)}</span>
+          </div>
+
+          {/* Balance */}
+          {balance > 0 && (
+            <div className="flex justify-between text-red-600 font-bold">
+              <span>Balance Due</span>
+              <span>{formatCurrency(balance)}</span>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-8">
@@ -478,101 +582,7 @@ const PaymentSuccess = () => {
               <h2 className="text-2xl font-semibold">{bookingDetails?.vehicleName}</h2>
             </div>
 
-            <div className="bg-gray-50 rounded-lg p-4 mb-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2">
-                    <MapPin className="h-5 w-5 text-blue-500" />
-                    <span className="font-medium">Pickup:</span>
-                  </div>
-                  <div>
-                    <p>{bookingDetails?.pickupLocationName || 'N/A'}</p>
-                    <p className="text-sm text-gray-600">
-                      {bookingDetails?.pickupDate} at {bookingDetails?.pickupTime}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2">
-                    <MapPin className="h-5 w-5 text-red-500" />
-                    <span className="font-medium">Drop-off:</span>
-                  </div>
-                  <div>
-                    <p>{bookingDetails?.dropoffLocationName || 'N/A'}</p>
-                    <p className="text-sm text-gray-600">
-                      {bookingDetails?.dropoffDate} at {bookingDetails?.dropoffTime}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-gray-50 rounded-lg p-4 mb-6">
-              <div className="flex items-center gap-2 mb-2">
-                <Calendar className="h-5 w-5 text-gray-600" />
-                <h3 className="text-lg font-semibold">Rental Duration</h3>
-              </div>
-              <p className="pl-7">{rentalDuration} day{rentalDuration !== 1 ? 's' : ''}</p>
-            </div>
-
-            <div className="bg-gray-50 rounded-lg p-4 mb-6">
-              <h3 className="text-lg font-semibold mb-4">Payment Summary</h3>
-              <div className="space-y-2">
-                {bookingDetails?.totalRateAfterDiscount ? (
-                  <div className="flex justify-between">
-                    <span>Rate After Discount</span>
-                    <span>{formatCurrency(bookingDetails.totalRateAfterDiscount)}</span>
-                  </div>
-                ) : (
-                  <div className="flex justify-between">
-                    <span>Base Rental Price</span>
-                    <span>{formatCurrency(bookingDetails?.basePrice || 0)}</span>
-                  </div>
-                )}
-                
-                {bookingDetails?.insurancePrice > 0 && (
-                  <div className="flex justify-between">
-                    <span>{bookingDetails.insuranceName || 'Insurance'}</span>
-                    <span>{formatCurrency(bookingDetails.insurancePrice)}</span>
-                  </div>
-                )}
-                
-                {bookingDetails?.extraKmsPrice > 0 && (
-                  <div className="flex justify-between">
-                    <span>{bookingDetails.extraKmsName || 'Mileage Charge'}</span>
-                    <span>{formatCurrency(bookingDetails.extraKmsPrice)}</span>
-                  </div>
-                )}
-                
-                {bookingDetails?.selectedExtras && bookingDetails.selectedExtras.map((extra, index) => (
-                  <div key={index} className="flex justify-between">
-                    <span>{extra.name} {extra.quantity > 1 ? `(x${extra.quantity})` : ''}</span>
-                    <span>{formatCurrency(extra.price)}</span>
-                  </div>
-                ))}
-
-                {bookingDetails?.mandatoryFees && bookingDetails.mandatoryFees.length > 0 && (
-                  <>
-                    <div className="border-t border-gray-300 my-2 pt-2">
-                      <div className="font-medium mb-2">Mandatory Fees</div>
-                      {bookingDetails.mandatoryFees.map((fee, index) => (
-                        <div key={index} className="flex justify-between text-sm">
-                          <span>{fee.name}</span>
-                          <span>{formatCurrency(fee.amount)}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </>
-                )}
-                
-                <div className="border-t border-gray-300 my-2 pt-2">
-                  <div className="flex justify-between font-semibold">
-                    <span>Total Amount</span>
-                    <span>{formatCurrency(bookingDetails?.paymentAmount || 0)}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+            {renderPaymentSummary()}
 
             <Button 
               onClick={() => navigate("/")}
