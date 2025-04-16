@@ -314,57 +314,75 @@ const PaymentSuccess = () => {
       }
     };
     
+    const mapApiResponseToBookingDetails = (apiResponse: any, reservationRef: string): BookingDetails => {
+      console.log("Mapping API response to booking details:", apiResponse);
+      
+      const bookingInfo = apiResponse.bookinginfo && apiResponse.bookinginfo[0] ? apiResponse.bookinginfo[0] : {};
+      const customerInfo = apiResponse.customerinfo && apiResponse.customerinfo[0] ? apiResponse.customerinfo[0] : {};
+      const paymentInfo = apiResponse.paymentinfo && apiResponse.paymentinfo[0] ? apiResponse.paymentinfo[0] : {};
+      
+      // Try to extract extras from the API response
+      const extrasInfo: Array<{name: string; quantity: number; price: number}> = [];
+      
+      // Process all extra fees in the response
+      if (apiResponse.extrafees && Array.isArray(apiResponse.extrafees)) {
+        apiResponse.extrafees.forEach((extra: any) => {
+          // Only include non-bond fees as extras
+          if (!extra.isbondfee) {
+            extrasInfo.push({
+              name: extra.name || "Extra item",
+              quantity: parseInt(extra.qty) || 1,
+              price: parseFloat(extra.totalfeeamount) || 0
+            });
+          }
+        });
+      }
+
+      // Format the vehicle image URL correctly
+      let vehicleImageUrl = bookingInfo.vehicleimage;
+      if (vehicleImageUrl && bookingInfo.urlpathfordocuments) {
+        // Check if the image URL is already absolute
+        if (!vehicleImageUrl.startsWith('http')) {
+          vehicleImageUrl = `${bookingInfo.urlpathfordocuments}${vehicleImageUrl}`;
+        }
+      }
+      
+      console.log("Vehicle image URL:", vehicleImageUrl);
+      
+      return {
+        vehicleName: bookingInfo.vehiclecategory || "Vehicle",
+        pickupDate: bookingInfo.pickupdate || "N/A",
+        pickupTime: bookingInfo.pickuptime || "N/A",
+        dropoffDate: bookingInfo.dropoffdate || "N/A",
+        dropoffTime: bookingInfo.dropofftime || "N/A",
+        paymentAmount: parseFloat(paymentInfo.paidamount) || parseFloat(bookingInfo.totalcost) || 0,
+        basePrice: parseFloat(bookingInfo.totalcost) || 0,
+        customerFirstName: customerInfo.firstname || "N/A",
+        customerLastName: customerInfo.lastname || "N/A",
+        customerEmail: customerInfo.email || "N/A",
+        customerPhone: customerInfo.phone || customerInfo.mobile || "N/A",
+        customerDob: customerInfo.dateofbirth || "N/A",
+        customerLicenseExpiry: customerInfo.licenseexpires || "N/A",
+        customerAddress: customerInfo.fulladdress || customerInfo.address || "N/A",
+        reservationRef: reservationRef,
+        vehicleImage: vehicleImageUrl,
+        insuranceName: bookingInfo.insuranceoption || paymentInfo.insuranceoption,
+        insurancePrice: parseFloat(bookingInfo.insuranceamount) || parseFloat(paymentInfo.insuranceamount) || 0,
+        selectedExtras: extrasInfo,
+        extraKmsName: bookingInfo.kmcharges_description || bookingInfo.kmcharge || bookingInfo.kmoption,
+        extraKmsPrice: parseFloat(bookingInfo.kmcharges_additionalkmtotalamount) || parseFloat(bookingInfo.kmchargeamount) || 0,
+        pickupLocationName: bookingInfo.pickuplocationname,
+        dropoffLocationName: bookingInfo.dropofflocationname
+      };
+    };
+    
+    const handleImageError = () => {
+      console.log("Error loading vehicle image");
+      setImageError(true);
+    };
+    
     fetchBookingDetails();
   }, [navigate, location]);
-  
-  const mapApiResponseToBookingDetails = (apiResponse: any, reservationRef: string): BookingDetails => {
-    const bookingInfo = apiResponse.bookinginfo && apiResponse.bookinginfo[0] ? apiResponse.bookinginfo[0] : {};
-    const customerInfo = apiResponse.customerinfo && apiResponse.customerinfo[0] ? apiResponse.customerinfo[0] : {};
-    const paymentInfo = apiResponse.paymentinfo && apiResponse.paymentinfo[0] ? apiResponse.paymentinfo[0] : {};
-    
-    // Try to extract extras from the API response
-    const extrasInfo: Array<{name: string; quantity: number; price: number}> = [];
-    if (apiResponse.extras && Array.isArray(apiResponse.extras)) {
-      apiResponse.extras.forEach((extra: any) => {
-        extrasInfo.push({
-          name: extra.description || extra.name || "Extra item",
-          quantity: parseInt(extra.quantity) || 1,
-          price: parseFloat(extra.amount) || 0
-        });
-      });
-    }
-    
-    return {
-      vehicleName: bookingInfo.vehiclecategory || "Vehicle",
-      pickupDate: bookingInfo.pickupdate || "N/A",
-      pickupTime: bookingInfo.pickuptime || "N/A",
-      dropoffDate: bookingInfo.dropoffdate || "N/A",
-      dropoffTime: bookingInfo.dropofftime || "N/A",
-      paymentAmount: parseFloat(paymentInfo.paidamount) || parseFloat(bookingInfo.totalcost) || 0,
-      basePrice: parseFloat(bookingInfo.totalcost) || 0,
-      customerFirstName: customerInfo.firstname || "N/A",
-      customerLastName: customerInfo.lastname || "N/A",
-      customerEmail: customerInfo.email || "N/A",
-      customerPhone: customerInfo.phone || customerInfo.mobile || "N/A",
-      customerDob: customerInfo.dateofbirth || "N/A",
-      customerLicenseExpiry: customerInfo.licenseexpires || "N/A",
-      customerAddress: customerInfo.fulladdress || customerInfo.address || "N/A",
-      reservationRef: reservationRef,
-      vehicleImage: bookingInfo.imageurl || bookingInfo.vehicleimageurl,
-      insuranceName: bookingInfo.insuranceoption || paymentInfo.insuranceoption,
-      insurancePrice: parseFloat(bookingInfo.insuranceamount) || parseFloat(paymentInfo.insuranceamount) || 0,
-      selectedExtras: extrasInfo,
-      extraKmsName: bookingInfo.kmcharge || bookingInfo.kmoption,
-      extraKmsPrice: parseFloat(bookingInfo.kmchargeamount) || 0,
-      pickupLocationName: bookingInfo.pickuplocationname,
-      dropoffLocationName: bookingInfo.dropofflocationname
-    };
-  };
-  
-  const handleImageError = () => {
-    console.log("Error loading vehicle image");
-    setImageError(true);
-  };
   
   if (isLoading) {
     return (
@@ -442,10 +460,15 @@ const PaymentSuccess = () => {
               <p className="text-gray-600">
                 Thank you for your booking. Your reservation is confirmed.
               </p>
+              {bookingDetails?.reservationRef && (
+                <p className="mt-2 text-blue-500 font-medium">
+                  Reservation Reference: {bookingDetails.reservationRef}
+                </p>
+              )}
             </div>
 
             {/* Vehicle Image */}
-            {bookingDetails.vehicleImage && !imageError && (
+            {bookingDetails?.vehicleImage && !imageError && (
               <div className="w-full aspect-video rounded-lg overflow-hidden bg-gray-100 mb-6">
                 <img
                   src={bookingDetails.vehicleImage}
@@ -459,7 +482,7 @@ const PaymentSuccess = () => {
             {/* Vehicle Name */}
             <div className="flex items-center gap-2 mb-6">
               <Car className="h-6 w-6 text-gray-500" />
-              <h2 className="text-2xl font-semibold">{bookingDetails.vehicleName}</h2>
+              <h2 className="text-2xl font-semibold">{bookingDetails?.vehicleName}</h2>
             </div>
 
             {/* Pickup and Dropoff Details - Combined on one line */}
@@ -471,9 +494,9 @@ const PaymentSuccess = () => {
                     <span className="font-medium">Pickup:</span>
                   </div>
                   <div>
-                    <p>{bookingDetails.pickupLocationName}</p>
+                    <p>{bookingDetails?.pickupLocationName || 'N/A'}</p>
                     <p className="text-sm text-gray-600">
-                      {bookingDetails.pickupDate} at {bookingDetails.pickupTime}
+                      {bookingDetails?.pickupDate} at {bookingDetails?.pickupTime}
                     </p>
                   </div>
                 </div>
@@ -483,13 +506,22 @@ const PaymentSuccess = () => {
                     <span className="font-medium">Drop-off:</span>
                   </div>
                   <div>
-                    <p>{bookingDetails.dropoffLocationName}</p>
+                    <p>{bookingDetails?.dropoffLocationName || 'N/A'}</p>
                     <p className="text-sm text-gray-600">
-                      {bookingDetails.dropoffDate} at {bookingDetails.dropoffTime}
+                      {bookingDetails?.dropoffDate} at {bookingDetails?.dropoffTime}
                     </p>
                   </div>
                 </div>
               </div>
+            </div>
+
+            {/* Rental Duration */}
+            <div className="bg-gray-50 rounded-lg p-4 mb-6">
+              <div className="flex items-center gap-2 mb-2">
+                <Calendar className="h-5 w-5 text-gray-600" />
+                <h3 className="text-lg font-semibold">Rental Duration</h3>
+              </div>
+              <p className="pl-7">{rentalDuration} day{rentalDuration !== 1 ? 's' : ''}</p>
             </div>
 
             {/* Payment Breakdown */}
@@ -498,24 +530,24 @@ const PaymentSuccess = () => {
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span>Base Rental Price</span>
-                  <span>{formatCurrency(bookingDetails.basePrice)}</span>
+                  <span>{formatCurrency(bookingDetails?.basePrice || 0)}</span>
                 </div>
                 
-                {bookingDetails.insurancePrice > 0 && (
+                {bookingDetails?.insurancePrice > 0 && (
                   <div className="flex justify-between">
                     <span>{bookingDetails.insuranceName || 'Insurance'}</span>
                     <span>{formatCurrency(bookingDetails.insurancePrice)}</span>
                   </div>
                 )}
                 
-                {bookingDetails.extraKmsPrice > 0 && (
+                {bookingDetails?.extraKmsPrice > 0 && (
                   <div className="flex justify-between">
                     <span>{bookingDetails.extraKmsName || 'Mileage Charge'}</span>
                     <span>{formatCurrency(bookingDetails.extraKmsPrice)}</span>
                   </div>
                 )}
                 
-                {bookingDetails.selectedExtras && bookingDetails.selectedExtras.map((extra, index) => (
+                {bookingDetails?.selectedExtras && bookingDetails.selectedExtras.map((extra, index) => (
                   <div key={index} className="flex justify-between">
                     <span>{extra.name} {extra.quantity > 1 ? `(x${extra.quantity})` : ''}</span>
                     <span>{formatCurrency(extra.price)}</span>
@@ -525,7 +557,7 @@ const PaymentSuccess = () => {
                 <div className="border-t border-gray-300 my-2 pt-2">
                   <div className="flex justify-between font-semibold">
                     <span>Total Amount</span>
-                    <span>{formatCurrency(bookingDetails.paymentAmount)}</span>
+                    <span>{formatCurrency(bookingDetails?.paymentAmount || 0)}</span>
                   </div>
                 </div>
               </div>
