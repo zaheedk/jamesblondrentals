@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { format, parse, isValid, differenceInDays } from "date-fns";
@@ -43,12 +44,7 @@ const BookingSummary = ({
 }: BookingSummaryProps) => {
   const [imageError, setImageError] = React.useState(false);
   
-  const totalPrice = 
-    basePrice + 
-    (selectedInsurance?.price || 0) + 
-    selectedExtras.reduce((sum, extra) => sum + extra.totalPrice, 0) + 
-    kmChargePrice;
-
+  // Define formatSafeDate function before using it
   const formatSafeDate = (date: Date | string | null | undefined): string => {
     if (!date) return "Date not available";
     
@@ -113,6 +109,7 @@ const BookingSummary = ({
     }
   };
 
+  // Use the formatSafeDate function after it's been defined
   const formattedPickupDate = formatSafeDate(pickupDate);
   const formattedDropoffDate = formatSafeDate(dropoffDate);
   
@@ -311,6 +308,12 @@ const BookingSummary = ({
       </CardContent>
     </Card>
   );
+  
+  const totalPrice = 
+    basePrice + 
+    (selectedInsurance?.price || 0) + 
+    selectedExtras.reduce((sum, extra) => sum + extra.totalPrice, 0) + 
+    kmChargePrice;
 };
 
 export default BookingSummary;
