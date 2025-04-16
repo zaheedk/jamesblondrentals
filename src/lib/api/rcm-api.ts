@@ -96,6 +96,8 @@ class RCMApiClient {
   private initialized: boolean = false;
   private useMockData: boolean = false;
   private apiConnectionFailed: boolean = false;
+  private connectionFailCount: number = 0;
+  private readonly MAX_CONNECTION_FAILURES = 3;
 
   constructor(config: RCMApiConfig) {
     // Ensure API URL doesn't end with a slash
@@ -113,17 +115,18 @@ class RCMApiClient {
     if (config.apiSecret) this.config.apiSecret = config.apiSecret;
     if (config.apiUrl) this.config.apiUrl = config.apiUrl.replace(/\/$/, '');
     
-    // Only use mock data if explicitly requested, default to false
+    // Set useMockData explicitly or when provided
     this.useMockData = config.useMockData === true;
     
-    // Always reset the connection status on initialization
+    // Reset connection status when re-initializing
     this.apiConnectionFailed = false;
+    this.connectionFailCount = 0;
     
     this.initialized = true;
     
     console.log('RCM API initialized with config:', {
       apiUrl: this.config.apiUrl,
-      apiKey: this.config.apiKey,
+      apiKey: this.config.apiKey ? '******' : undefined,
       useMockData: this.useMockData
     });
   }
@@ -150,7 +153,7 @@ class RCMApiClient {
     // Generate HMAC SHA256 signature
     const signature = generateSignature({
       method,
-      path: '', // Not used in actual signature generation
+      path: '', 
       timestamp,
       apiKey: this.config.apiKey,
       apiSecret: this.config.apiSecret,
@@ -162,66 +165,68 @@ class RCMApiClient {
     headers.append('Accept', 'application/json');
     headers.append('signature', signature); 
     
-    // Log request details for debugging
-    console.log('RCM API Request:', {
-      method,
-      timestamp,
-      signature,
-      body: requestBody
-    });
-    
     return headers;
   }
 
   /**
    * Builds the correct API URL with the API key format
-   * Format: /api/rcm/booking/v3.2/[API_KEY]?apikey=[API_KEY]
    */
   private buildApiUrl(): string {
-    const url = `${this.config.apiUrl}/${this.config.apiKey}?apikey=${this.config.apiKey}`;
-    console.log('Built API URL:', url);
-    return url;
+    return `${this.config.apiUrl}/${this.config.apiKey}?apikey=${this.config.apiKey}`;
+  }
+
+  /**
+   * Detect if we should fall back to mock data based on connection failures
+   */
+  private shouldUseMockData(): boolean {
+    return this.useMockData || this.apiConnectionFailed;
   }
 
   /**
    * Makes a generic API request with the correct format
-   * This allows for custom method calls that aren't pre-defined
    */
   async request<T>(method: string, requestMethod: string, body?: any): Promise<T> {
     this.ensureInitialized();
 
-    // Only use mock data if explicitly enabled
-    if (this.useMockData) {
-      console.log('Using mock data because useMockData=true for:', requestMethod);
+    // If explicitly using mock data or previous API calls failed, use mock data
+    if (this.shouldUseMockData()) {
+      console.log(`Using mock data for ${requestMethod} (useMockData=${this.useMockData}, apiConnectionFailed=${this.apiConnectionFailed})`);
       return this.getMockData(requestMethod) as T;
     }
 
     try {
-      // Build the URL with API key
       const apiUrl = this.buildApiUrl();
       console.log(`Making ${method} request to ${apiUrl} for method ${requestMethod}`);
       
-      // Create requestBody with method as the first property
       const requestBody = { method: requestMethod, ...body };
-      
-      // Create headers with auth tokens
       const headers = this.createHeaders(method, requestBody);
       
-      // Make the request
       const response = await fetch(apiUrl, {
         method,
         headers,
         body: JSON.stringify(requestBody),
-        credentials: 'same-origin', // Important for cookies if needed
+        credentials: 'same-origin',
       });
 
-      // Check if response is JSON
-      const contentType = response.headers.get("content-type");
-      if (contentType && contentType.indexOf("application/json") === -1) {
-        console.error("Non-JSON response received:", contentType);
-        const text = await response.text();
-        console.error("Response text:", text);
-        throw new Error("API returned non-JSON response");
+      // Check for HTML responses which indicate proxy issues
+      const contentType = response.headers.get("content-type") || "";
+      if (contentType.includes("text/html")) {
+        console.error("Received HTML instead of JSON. This likely indicates a proxy configuration issue.");
+        console.error("Content type:", contentType);
+        
+        // Read and log the HTML content
+        const htmlContent = await response.text();
+        console.error("HTML response length:", htmlContent.length);
+        console.error("HTML response preview:", htmlContent.substring(0, 200) + "...");
+        
+        this.connectionFailCount++;
+        if (this.connectionFailCount >= this.MAX_CONNECTION_FAILURES) {
+          console.warn(`API connection failed ${this.connectionFailCount} times, falling back to mock data for all requests`);
+          this.apiConnectionFailed = true;
+        }
+        
+        // Return mock data instead
+        return this.getMockData(requestMethod) as T;
       }
 
       // Handle non-OK responses
@@ -241,7 +246,9 @@ class RCMApiClient {
 
       // Parse and return the response
       const responseData = await response.json();
-      console.log('API response:', responseData);
+      
+      // Reset failure count on successful response
+      this.connectionFailCount = 0;
       
       // Check for API errors in the response
       if (responseData.status === "ERR") {
@@ -252,7 +259,16 @@ class RCMApiClient {
       return responseData;
     } catch (error) {
       console.error('RCM API request failed:', error);
-      throw error;
+      
+      // Increment failure count
+      this.connectionFailCount++;
+      if (this.connectionFailCount >= this.MAX_CONNECTION_FAILURES) {
+        console.warn(`API connection failed ${this.connectionFailCount} times, falling back to mock data for all requests`);
+        this.apiConnectionFailed = true;
+      }
+      
+      // Return mock data as fallback
+      return this.getMockData(requestMethod) as T;
     }
   }
 

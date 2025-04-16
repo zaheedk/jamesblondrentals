@@ -1,16 +1,15 @@
+
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
-import type { IncomingMessage } from 'http';
+import type { IncomingMessage, ServerResponse } from 'http';
 
-// https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
     proxy: {
-      // Proxy API requests to RCM API with improved configuration
       '/api/rcm': {
         target: 'https://apis.rentalcarmanager.com',
         changeOrigin: true,
@@ -26,7 +25,10 @@ export default defineConfig(({ mode }) => ({
           });
           
           proxy.on('proxyReq', (proxyReq, req: IncomingMessage & { body?: any }, _res) => {
-            console.log(`Proxying request: ${req.method} ${proxyReq.path}`);
+            console.log(`Proxying request to RCM API: ${req.method} ${proxyReq.path}`);
+            
+            // Enhanced logging for request
+            console.log('Request headers:', proxyReq.getHeaders());
             
             // Ensure body is properly handled for POST requests
             if (req.body) {
@@ -36,22 +38,14 @@ export default defineConfig(({ mode }) => ({
             }
           });
           
-          proxy.on('proxyRes', (proxyRes, req, _res) => {
-            const contentType = proxyRes.headers['content-type'];
-            console.log(`Response Content-Type: ${contentType}`);
+          proxy.on('proxyRes', (proxyRes, req, _res: ServerResponse) => {
+            console.log(`Response from RCM API: ${proxyRes.statusCode} for ${req.url}`);
             
-            const status = proxyRes.statusCode;
-            console.log(`Response Status: ${status ?? 'unknown'} for ${req.url}`);
-            
-            // Log full response body for debugging
-            let responseBody = '';
-            proxyRes.on('data', (chunk) => {
-              responseBody += chunk;
-            });
-            
-            proxyRes.on('end', () => {
-              console.log('Full Response Body:', responseBody);
-            });
+            // Check if response is HTML instead of JSON
+            const contentType = proxyRes.headers['content-type'] || '';
+            if (contentType.includes('text/html')) {
+              console.error('WARNING: Received HTML instead of JSON response from API. This indicates a proxy misconfiguration or API endpoint issue.');
+            }
           });
         }
       }
