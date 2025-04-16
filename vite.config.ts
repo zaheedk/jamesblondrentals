@@ -1,3 +1,4 @@
+
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
@@ -19,7 +20,8 @@ export default defineConfig(({ mode }) => ({
           rewrite: (path) => path.replace(/^\/api\/rcm/, ''),
           headers: {
             'Content-Type': 'application/json',
-            'Accept': 'application/json'
+            'Accept': 'application/json',
+            'Origin': 'https://apis.rentalcarmanager.com'
           },
           configure: (proxy, _options) => {
             proxy.on('error', (err, _req, _res) => {
@@ -28,6 +30,9 @@ export default defineConfig(({ mode }) => ({
             
             proxy.on('proxyReq', (proxyReq, req: IncomingMessage & { body?: any }, _res) => {
               console.log(`Proxying request: ${req.method} ${proxyReq.path}`);
+              
+              // Add origin header to avoid CORS issues
+              proxyReq.setHeader('Origin', 'https://apis.rentalcarmanager.com');
               
               // Ensure body is properly handled for POST requests
               if (req.body) {
@@ -51,7 +56,7 @@ export default defineConfig(({ mode }) => ({
               });
               
               proxyRes.on('end', () => {
-                console.log('Full Response Body:', responseBody);
+                console.log('Full Response Body:', responseBody.substring(0, 500) + (responseBody.length > 500 ? '... (truncated)' : ''));
               });
             });
           }

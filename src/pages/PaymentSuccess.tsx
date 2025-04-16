@@ -1,265 +1,72 @@
+
 import React, { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { CheckCircle2, XCircle, FrownIcon, Calendar, Shield, Package, MapPin, CreditCard, Calculator } from "lucide-react";
-import { getBookingData, clearBookingData } from "@/lib/booking-session";
+import { useLocation, useNavigate, Link } from "react-router-dom";
+import { getBookingData, updateBookingData } from "@/lib/booking-session";
 import { toast } from "sonner";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { formatCurrency } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import { rcmApi } from "@/lib/api/rcm-api";
-import { differenceInDays, parseISO, isValid } from "date-fns";
 import { useApiDiagnostics } from "@/hooks/use-api-diagnostics";
+import { 
+  ChevronRight, 
+  Calendar, 
+  MapPin, 
+  Car, 
+  CreditCard, 
+  Clock, 
+  CheckCircle, 
+  XCircle, 
+  AlertCircle, 
+  ExternalLink,
+  RefreshCw
+} from "lucide-react";
+import moment from "moment";
 
-interface BookingDetails {
-  vehicleName: string;
-  pickupDate: string;
-  pickupTime: string;
-  dropoffDate: string;
-  dropoffTime: string;
-  paymentAmount: number;
-  basePrice: number;
-  paymentType?: string;
-  customerFirstName?: string;
-  customerLastName?: string;
-  customerEmail?: string;
-  customerPhone?: string;
-  customerDob?: string;
-  customerLicenseExpiry?: string;
-  customerAddress?: string;
-  reservationRef?: string;
-  vehicleImage?: string;
-  insuranceName?: string;
-  insurancePrice?: number;
-  selectedExtras?: Array<{name: string; quantity: number; price: number}>;
-  extraKmsName?: string;
-  extraKmsPrice?: number;
-  pickupLocationName?: string;
-  dropoffLocationName?: string;
-}
-
-const PaymentSuccess = () => {
-  const navigate = useNavigate();
+function PaymentSuccess() {
   const location = useLocation();
-  const [bookingDetails, setBookingDetails] = useState<BookingDetails | null>(null);
-  const [paymentStatus, setPaymentStatus] = useState<"success" | "failed" | "pending">("pending");
-  const [errorMessage, setErrorMessage] = useState<string>("");
-  const [transactionId, setTransactionId] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [rentalDuration, setRentalDuration] = useState<number>(0);
-  const [imageError, setImageError] = useState<boolean>(false);
-  const [corsError, setCorsError] = useState<boolean>(false);
+  const navigate = useNavigate();
+  
+  const queryParams = new URLSearchParams(location.search);
+  const result = queryParams.get("result");
+  const txnId = queryParams.get("txnId");
+  const message = queryParams.get("message");
+  const reservationRef = queryParams.get("reservationRef");
+  const isManual = queryParams.get("manual") === "true";
+  const hasError = queryParams.get("error") === "true";
+  const isCorsError = queryParams.get("error") === "cors";
+  
+  const bookingData = getBookingData();
+  const [paymentInfo, setPaymentInfo] = useState<any>(null);
+  const [isLoadingDetails, setIsLoadingDetails] = useState(true);
   const { runDiagnostics } = useApiDiagnostics();
-  const [windcaveResponseDetails, setWindcaveResponseDetails] = useState<{
-    amount?: number;
-    transactionDate?: string;
-    status?: string;
-    transactionId?: string;
-    reservationRef?: string;
-    cardDetails?: {
-      cardholder?: string;
-      payType?: string;
-      cardNumber?: string;
-    };
-  }>({});
-
+  
+  const isSuccess = result === "success" || result === "approved";
+  
+  // Extract Windcave response from URL parameter, if available
+  const [windcaveResponse, setWindcaveResponse] = useState<any>(null);
+  
   useEffect(() => {
-    const fetchBookingDetails = async () => {
+    const windcaveResponseParam = queryParams.get("windcaveResponse");
+    
+    if (windcaveResponseParam) {
       try {
-        setIsLoading(true);
-        
-        const queryParams = new URLSearchParams(location.search);
-        const result = queryParams.get("result");
-        const txnId = queryParams.get("txnId") || "N/A";
-        const reservationRef = queryParams.get("reservationRef");
-        
-        console.log("URL Parameters:", {
-          result,
-          txnId,
-          reservationRef
-        });
-        
-        setTransactionId(txnId);
-        
-        if (result === "failed" || queryParams.get("error")) {
-          setPaymentStatus("failed");
-          setErrorMessage(queryParams.get("message") || "Your payment was not successful. Please try again.");
-          toast.error("Payment Failed", {
-            description: queryParams.get("message") || "Your payment was not successful. Please try again."
-          });
-        } else if (result === "cancelled") {
-          setPaymentStatus("failed");
-          setErrorMessage("You cancelled the payment process.");
-          toast.error("Payment Cancelled", {
-            description: "You cancelled the payment process."
-          });
-        } else {
-          setPaymentStatus("success");
-          clearBookingData();
-          toast.success("Payment Successful", {
-            description: "Your booking has been confirmed."
-          });
-        }
-        
-        const sessionBookingData = getBookingData();
-        console.log("Session booking data:", sessionBookingData);
-        
-        const windcaveResponse = queryParams.get("windcaveResponse");
-        let parsedWindcaveResponse: any = null;
-        
-        if (windcaveResponse) {
-          try {
-            parsedWindcaveResponse = JSON.parse(decodeURIComponent(windcaveResponse));
-            console.log("Full Windcave Response:", parsedWindcaveResponse);
-            
-            const windcaveReservationRef = parsedWindcaveResponse.results?.ReservationRef || 
-                                          parsedWindcaveResponse.ReservationRef;
-            
-            console.log("Windcave Reservation Ref:", windcaveReservationRef);
-            
-            if (windcaveReservationRef && (!reservationRef || windcaveReservationRef !== reservationRef)) {
-              console.log("Using reservation reference from Windcave response:", windcaveReservationRef);
-              
-              setWindcaveResponseDetails({
-                amount: parsedWindcaveResponse.results?.Amount,
-                transactionDate: parsedWindcaveResponse.results?.TransactionDate,
-                status: parsedWindcaveResponse.results?.Status,
-                transactionId: parsedWindcaveResponse.results?.TransactionId,
-                reservationRef: windcaveReservationRef,
-                cardDetails: {
-                  cardholder: parsedWindcaveResponse.results?.Card?.Cardholder,
-                  payType: parsedWindcaveResponse.results?.Card?.PayType,
-                  cardNumber: parsedWindcaveResponse.results?.Card?.CardNumber
-                }
-              });
-              
-              if (windcaveReservationRef) {
-                try {
-                  await fetchBookingFromRCM(windcaveReservationRef);
-                } catch (error) {
-                  console.error("Error fetching booking with reservation ref:", error);
-                  setCorsError(true);
-                  // Try to diagnose API connectivity
-                  const diagnosticResult = await runDiagnostics();
-                  console.log("API diagnostics result:", diagnosticResult);
-                  
-                  if (!diagnosticResult.apiAccessible) {
-                    console.error("API connectivity issue detected:", diagnosticResult.message);
-                    toast.error("API Connection Error", {
-                      description: "Could not connect to booking system. Using session data instead."
-                    });
-                  }
-                }
-                setIsLoading(false);
-                return;
-              }
-            }
-            
-            setWindcaveResponseDetails({
-              amount: parsedWindcaveResponse.results?.Amount,
-              transactionDate: parsedWindcaveResponse.results?.TransactionDate,
-              status: parsedWindcaveResponse.results?.Status,
-              transactionId: parsedWindcaveResponse.results?.TransactionId,
-              reservationRef: reservationRef,
-              cardDetails: {
-                cardholder: parsedWindcaveResponse.results?.Card?.Cardholder,
-                payType: parsedWindcaveResponse.results?.Card?.PayType,
-                cardNumber: parsedWindcaveResponse.results?.Card?.CardNumber
-              }
-            });
-          } catch (parseError) {
-            console.error("Error parsing Windcave response:", parseError);
-          }
-        }
-        
-        const bookingReservationRef = reservationRef || 
-                                     (sessionBookingData && (
-                                       sessionBookingData.reservationRef ||
-                                       sessionBookingData.bookingReference ||
-                                       sessionBookingData.confirmationNumber ||
-                                       sessionBookingData.reservationNo ||
-                                       sessionBookingData.windcaveReservationRef
-                                     ));
-                                     
-        console.log("Using reservation reference for API call:", bookingReservationRef);
-        
-        if (bookingReservationRef && (!sessionBookingData || bookingReservationRef !== sessionBookingData.reservationRef)) {
-          console.log("Fetching booking details using reservation reference:", bookingReservationRef);
-          try {
-            await fetchBookingFromRCM(bookingReservationRef);
-          } catch (error) {
-            console.error("Error fetching booking with reservation ref:", error);
-            setCorsError(true);
-            
-            // Fall back to session data if available
-            if (sessionBookingData) {
-              console.log("API call failed, using session data instead");
-              useSessionData(sessionBookingData);
-            }
-          }
-        } else if (sessionBookingData) {
-          useSessionData(sessionBookingData);
-        }
-        
-        setIsLoading(false);
+        const decodedResponse = decodeURIComponent(windcaveResponseParam);
+        const parsedResponse = JSON.parse(decodedResponse);
+        setWindcaveResponse(parsedResponse);
+        console.log("Parsed Windcave response:", parsedResponse);
       } catch (error) {
-        console.error("Error in fetchBookingDetails:", error);
-        setIsLoading(false);
-        setCorsError(true);
-        toast.error("Error", {
-          description: "Failed to load booking details."
-        });
+        console.error("Error parsing Windcave response from URL:", error);
       }
-    };
-    
-    const useSessionData = (sessionBookingData: any) => {
-      const convertedDetails: BookingDetails = {
-        vehicleName: sessionBookingData.vehicleName || 'Vehicle',
-        pickupDate: sessionBookingData.pickupDate,
-        pickupTime: sessionBookingData.pickupTime, 
-        dropoffDate: sessionBookingData.dropoffDate,
-        dropoffTime: sessionBookingData.dropoffTime,
-        paymentAmount: sessionBookingData.paymentAmount || 0,
-        basePrice: sessionBookingData.basePrice || 0,
-        paymentType: sessionBookingData.paymentType,
-        customerFirstName: sessionBookingData.customerFirstName,
-        customerLastName: sessionBookingData.customerLastName,
-        customerEmail: sessionBookingData.customerEmail,
-        customerPhone: sessionBookingData.customerPhone,
-        customerDob: sessionBookingData.customerDob,
-        customerLicenseExpiry: sessionBookingData.customerLicenseExpiry,
-        customerAddress: sessionBookingData.customerAddress,
-        reservationRef: sessionBookingData.reservationRef,
-        vehicleImage: sessionBookingData.vehicleImage,
-        insuranceName: sessionBookingData.insuranceName,
-        insurancePrice: sessionBookingData.insurancePrice,
-        selectedExtras: sessionBookingData.selectedExtras?.map((extra: any) => ({
-          name: extra.name,
-          quantity: extra.quantity,
-          price: extra.price
-        })),
-        extraKmsName: sessionBookingData.extraKmsName,
-        extraKmsPrice: sessionBookingData.extraKmsPrice,
-        pickupLocationName: sessionBookingData.pickupLocationName,
-        dropoffLocationName: sessionBookingData.dropoffLocationName
-      };
-      setBookingDetails(convertedDetails);
+    }
+  }, [queryParams]);
+  
+  useEffect(() => {
+    const loadBookingDetails = async () => {
+      setIsLoadingDetails(true);
       
-      // Calculate rental duration
-      if (convertedDetails.pickupDate && convertedDetails.dropoffDate) {
-        calculateRentalDuration(convertedDetails.pickupDate, convertedDetails.dropoffDate);
-      }
-    };
-    
-    const fetchBookingFromRCM = async (reservationRef: string) => {
       try {
-        if (!reservationRef) {
-          console.error("No reservation reference provided for API call");
-          return false;
-        }
-        
-        // Initialize API with CORS proxy for published app
-        if (window.location.hostname.includes('lovable.app') || window.location.hostname.includes('lovable.dev')) {
-          console.log("Initializing API with CORS proxy for published app");
+        // In case of CORS errors, initialize API with CORS proxy
+        if (isCorsError || isManual || !bookingData) {
+          console.log("Using CORS proxy due to previous errors or manual mode");
           rcmApi.initialize({
             useCorsProxy: true,
             useDirectApi: true,
@@ -267,488 +74,305 @@ const PaymentSuccess = () => {
           });
         }
         
-        const requestPayload = {
-          method: "bookinginfo",
-          reservationref: reservationRef
-        };
-        
-        console.log("Fetching booking details with payload:", requestPayload);
-        
-        const response = await rcmApi.request('POST', 'bookinginfo', requestPayload);
-        
-        const typedResponse = response as { status: string, results?: any };
-        
-        console.log("Booking details response from RCM:", typedResponse);
-        
-        if (typedResponse && typedResponse.status === "OK" && typedResponse.results) {
-          const apiBookingDetails = mapApiResponseToBookingDetails(typedResponse.results, reservationRef);
-          setBookingDetails(apiBookingDetails);
+        // If we have a valid booking reference, try to fetch the booking details
+        if (reservationRef || 
+            (bookingData && (bookingData.reservationRef || bookingData.bookingReference || bookingData.confirmationNumber))) {
           
-          // Calculate rental duration
-          if (apiBookingDetails.pickupDate && apiBookingDetails.dropoffDate) {
-            calculateRentalDuration(apiBookingDetails.pickupDate, apiBookingDetails.dropoffDate);
+          const bookingRef = reservationRef || 
+                           bookingData?.reservationRef || 
+                           bookingData?.bookingReference || 
+                           bookingData?.confirmationNumber;
+          
+          console.log("Fetching booking details for:", bookingRef);
+          
+          // Try to fetch booking details
+          try {
+            // First check API connection
+            await runDiagnostics();
+            
+            // If a transaction ID was provided in the URL, update the session
+            if (txnId && bookingData) {
+              console.log("Updating booking data with transaction ID:", txnId);
+              updateBookingData({ 
+                transactionId: txnId,
+                paymentStatus: isSuccess ? "Approved" : "Failed",
+                reservationRef: bookingRef
+              });
+            }
+            
+            console.log("Setting payment info from booking data");
+            setPaymentInfo({
+              transactionId: txnId || bookingData?.transactionId || "N/A",
+              bookingReference: bookingRef,
+              totalAmount: bookingData?.totalAmount || bookingData?.paymentAmount || 0,
+              vehicleName: bookingData?.vehicleName || "Selected Vehicle",
+              pickupDate: bookingData?.pickupDate,
+              dropoffDate: bookingData?.dropoffDate,
+              pickupLocation: bookingData?.pickupLocation,
+              dropoffLocation: bookingData?.dropoffLocation
+            });
+          } catch (error) {
+            console.error("Error fetching booking details:", error);
+            // Fall back to session data
+            setPaymentInfo({
+              transactionId: txnId || bookingData?.transactionId || "N/A",
+              bookingReference: bookingRef,
+              totalAmount: bookingData?.totalAmount || bookingData?.paymentAmount || 0,
+              vehicleName: bookingData?.vehicleName || "Selected Vehicle",
+              pickupDate: bookingData?.pickupDate,
+              dropoffDate: bookingData?.dropoffDate,
+              pickupLocation: bookingData?.pickupLocation,
+              dropoffLocation: bookingData?.dropoffLocation
+            });
           }
-          return true;
         } else {
-          throw new Error("Failed to fetch booking details");
+          console.log("No booking reference available, using session data");
+          // Fall back to session data
+          setPaymentInfo({
+            transactionId: txnId || bookingData?.transactionId || "N/A",
+            bookingReference: bookingData?.reservationRef || bookingData?.bookingReference || "Not available",
+            totalAmount: bookingData?.totalAmount || bookingData?.paymentAmount || 0,
+            vehicleName: bookingData?.vehicleName || "Selected Vehicle",
+            pickupDate: bookingData?.pickupDate,
+            dropoffDate: bookingData?.dropoffDate,
+            pickupLocation: bookingData?.pickupLocation,
+            dropoffLocation: bookingData?.dropoffLocation
+          });
         }
       } catch (error) {
-        console.error("Error fetching booking details from RCM:", error);
-        // If we get a CORS error, try falling back to mock data
-        if (error instanceof Error && (error.message.includes("CORS") || error.message.includes("cors"))) {
-          console.log("CORS error detected, switching to mock data");
-          rcmApi.initialize({
-            useMockData: true
-          });
-          setCorsError(true);
-        }
-        throw error;
+        console.error("Error in loadBookingDetails:", error);
+        toast.error("Failed to load booking details");
+      } finally {
+        setIsLoadingDetails(false);
       }
     };
     
-    const calculateRentalDuration = (pickupDate: string, dropoffDate: string) => {
-      try {
-        let pickup, dropoff;
-        
-        // Try to parse as ISO date
-        if (pickupDate.includes('T') || pickupDate.includes('-')) {
-          pickup = parseISO(pickupDate);
-        } else {
-          // Try to parse dd/MM/yyyy format
-          const [day, month, year] = pickupDate.split('/').map(Number);
-          pickup = new Date(year, month - 1, day);
-        }
-        
-        if (dropoffDate.includes('T') || dropoffDate.includes('-')) {
-          dropoff = parseISO(dropoffDate);
-        } else {
-          const [day, month, year] = dropoffDate.split('/').map(Number);
-          dropoff = new Date(year, month - 1, day);
-        }
-        
-        if (!isValid(pickup) && pickupDate.includes('/')) {
-          const parts = pickupDate.split('/');
-          if (parts.length === 3) {
-            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-            const day = parseInt(parts[0]);
-            const monthIndex = monthNames.findIndex(m => parts[1].includes(m));
-            const year = parseInt(parts[2]);
-            
-            if (!isNaN(day) && monthIndex !== -1 && !isNaN(year)) {
-              pickup = new Date(year, monthIndex, day);
-            }
-          }
-        }
-        
-        if (!isValid(dropoff) && dropoffDate.includes('/')) {
-          const parts = dropoffDate.split('/');
-          if (parts.length === 3) {
-            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-            const day = parseInt(parts[0]);
-            const monthIndex = monthNames.findIndex(m => parts[1].includes(m));
-            const year = parseInt(parts[2]);
-            
-            if (!isNaN(day) && monthIndex !== -1 && !isNaN(year)) {
-              dropoff = new Date(year, monthIndex, day);
-            }
-          }
-        }
-        
-        if (isValid(pickup) && isValid(dropoff)) {
-          const days = differenceInDays(dropoff, pickup) + 1; // +1 to include the pickup day
-          setRentalDuration(days > 0 ? days : 0);
-          console.log(`Rental duration: ${days} days`);
-        } else {
-          console.error("Invalid date format for duration calculation:", { pickupDate, dropoffDate });
-        }
-      } catch (error) {
-        console.error("Error calculating rental duration:", error);
-      }
-    };
-    
-    const mapApiResponseToBookingDetails = (apiResponse: any, reservationRef: string): BookingDetails => {
-      const bookingInfo = apiResponse.bookinginfo && apiResponse.bookinginfo[0] ? apiResponse.bookinginfo[0] : {};
-      const customerInfo = apiResponse.customerinfo && apiResponse.customerinfo[0] ? apiResponse.customerinfo[0] : {};
-      const paymentInfo = apiResponse.paymentinfo && apiResponse.paymentinfo[0] ? apiResponse.paymentinfo[0] : {};
-      
-      // Try to extract extras from the API response
-      const extrasInfo: Array<{name: string; quantity: number; price: number}> = [];
-      if (apiResponse.extras && Array.isArray(apiResponse.extras)) {
-        apiResponse.extras.forEach((extra: any) => {
-          extrasInfo.push({
-            name: extra.description || extra.name || "Extra item",
-            quantity: parseInt(extra.quantity) || 1,
-            price: parseFloat(extra.amount) || 0
-          });
-        });
-      }
-      
-      return {
-        vehicleName: bookingInfo.vehiclecategory || "Vehicle",
-        pickupDate: bookingInfo.pickupdate || "N/A",
-        pickupTime: bookingInfo.pickuptime || "N/A",
-        dropoffDate: bookingInfo.dropoffdate || "N/A",
-        dropoffTime: bookingInfo.dropofftime || "N/A",
-        paymentAmount: parseFloat(paymentInfo.paidamount) || parseFloat(bookingInfo.totalcost) || 0,
-        basePrice: parseFloat(bookingInfo.totalcost) || 0,
-        customerFirstName: customerInfo.firstname || "N/A",
-        customerLastName: customerInfo.lastname || "N/A",
-        customerEmail: customerInfo.email || "N/A",
-        customerPhone: customerInfo.phone || customerInfo.mobile || "N/A",
-        customerDob: customerInfo.dateofbirth || "N/A",
-        customerLicenseExpiry: customerInfo.licenseexpires || "N/A",
-        customerAddress: customerInfo.fulladdress || customerInfo.address || "N/A",
-        reservationRef: reservationRef,
-        vehicleImage: bookingInfo.imageurl || bookingInfo.vehicleimageurl,
-        insuranceName: bookingInfo.insuranceoption || paymentInfo.insuranceoption,
-        insurancePrice: parseFloat(bookingInfo.insuranceamount) || parseFloat(paymentInfo.insuranceamount) || 0,
-        selectedExtras: extrasInfo,
-        extraKmsName: bookingInfo.kmcharge || bookingInfo.kmoption,
-        extraKmsPrice: parseFloat(bookingInfo.kmchargeamount) || 0,
-        pickupLocationName: bookingInfo.pickuplocationname,
-        dropoffLocationName: bookingInfo.dropofflocationname
-      };
-    };
-    
-    const handleImageError = () => {
-      console.log("Error loading vehicle image");
-      setImageError(true);
-    };
-    
-    const handleTryCorsFix = async () => {
-      setIsLoading(true);
-      
+    loadBookingDetails();
+  }, [reservationRef, txnId, isSuccess, bookingData, isCorsError, isManual, runDiagnostics]);
+  
+  // Function to format booking dates
+  const formatDate = (date: string) => {
+    if (!date) return "N/A";
+    return moment(date).format("ddd, MMM D, YYYY");
+  };
+  
+  // Function to format booking times
+  const formatTime = (date: string) => {
+    if (!date) return "N/A";
+    return moment(date).format("h:mm A");
+  };
+  
+  const handleTryCorsFix = async () => {
+    try {
       // Try different CORS proxy configurations
-      try {
-        // Try direct API with different CORS proxy
-        rcmApi.initialize({
-          useCorsProxy: true,
-          useDirectApi: true,
-          useMockData: false
-        });
+      const configurations = [
+        // Try direct API with a CORS proxy
+        { useCorsProxy: true, useDirectApi: true, useMockData: false },
+        // Try different CORS proxy
+        { useCorsProxy: true, useDirectApi: true, useMockData: false, corsProxyIndex: 1 },
+        // Try another CORS proxy
+        { useCorsProxy: true, useDirectApi: true, useMockData: false, corsProxyIndex: 2 },
+      ];
+      
+      for (const config of configurations) {
+        console.log("Trying API configuration:", config);
+        rcmApi.initialize(config);
         
+        // Test the connection
         const diagnosticResult = await runDiagnostics();
-        console.log("API diagnostics after CORS fix attempt:", diagnosticResult);
+        console.log("API diagnostics result:", diagnosticResult);
         
         if (diagnosticResult.apiAccessible) {
           toast.success("API Connection Restored", {
-            description: "Successfully connected to booking system."
+            description: "Reconnected to API. Reloading page..."
           });
           
-          // Reload the page to retry with new configuration
-          window.location.reload();
-        } else {
-          // If still failing, switch to mock data mode
-          rcmApi.initialize({
-            useMockData: true
-          });
-          
-          toast.info("Using Demo Mode", {
-            description: "Switched to demo mode with sample data due to API connection issues."
-          });
-          
-          // Reload with mock data
-          window.location.reload();
+          // Wait a moment before reloading
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+          return;
         }
-      } catch (error) {
-        console.error("Error trying CORS fix:", error);
-        toast.error("Connection Error", {
-          description: "Could not establish connection to booking system."
-        });
-        setIsLoading(false);
       }
-    };
-    
-    fetchBookingDetails();
-  }, [navigate, location, runDiagnostics]);
-  
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="w-12 h-12 border-4 border-t-blue-500 border-blue-200 rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-  
-  if (corsError && !bookingDetails) {
-    return (
-      <div className="container mx-auto px-4 py-8 text-center">
-        <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-8">
-          <h1 className="text-3xl font-bold mb-6">API Connection Error</h1>
-          <Alert variant="destructive" className="mb-6">
-            <AlertTitle>CORS Error</AlertTitle>
-            <AlertDescription>
-              We're having trouble connecting to our booking system due to CORS restrictions.
-            </AlertDescription>
-          </Alert>
-          <p className="text-gray-600 mb-6">
-            This is typically a temporary issue. Your booking may have been processed successfully 
-            despite this error. Please check your email for booking confirmation.
-          </p>
-          <p className="text-gray-600 mb-6">Transaction ID: {transactionId}</p>
-          <div className="space-y-4">
-            <Button 
-              onClick={handleTryCorsFix}
-              className="w-full bg-amber-600 hover:bg-amber-700"
-            >
-              Try Alternative Connection
-            </Button>
-            <Button 
-              onClick={() => navigate("/")}
-              className="w-full"
-            >
-              Return to Home
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-  
-  if (!bookingDetails) {
-    return (
-      <div className="container mx-auto px-4 py-8 text-center">
-        <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-8">
-          <h1 className="text-3xl font-bold mb-6">Booking Details Not Found</h1>
-          <p className="text-gray-600 mb-6">
-            We couldn't retrieve your booking details. If you've just completed a booking,
-            please contact customer support with your transaction ID.
-          </p>
-          <p className="text-gray-600 mb-6">Transaction ID: {transactionId}</p>
-          <Button 
-            onClick={() => navigate("/")}
-            className="w-full"
-          >
-            Return to Home
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  const customerDetails = {
-    firstName: bookingDetails?.customerFirstName || "Not provided",
-    lastName: bookingDetails?.customerLastName || "Not provided",
-    email: bookingDetails?.customerEmail || "Not provided",
-    phone: bookingDetails?.customerPhone || "Not provided",
-    dob: bookingDetails?.customerDob || "Not provided",
-    licenseExpiry: bookingDetails?.customerLicenseExpiry || "Not provided",
-    address: bookingDetails?.customerAddress || "Not provided"
+      
+      // If all configurations failed
+      toast.error("Connection Failed", {
+        description: "Could not connect to API after multiple attempts."
+      });
+    } catch (error) {
+      console.error("Error during retry:", error);
+      toast.error("Failed to establish connection");
+    }
   };
-
-  const renderWindcavePaymentDetails = () => {
-    if (!windcaveResponseDetails.status) return null;
-
-    return (
-      <div className="bg-gray-100 rounded-lg p-4 mt-4">
-        <h3 className="text-xl font-semibold mb-2">Payment Transaction Details</h3>
-        <div className="space-y-2">
-          <p><strong>Status:</strong> {windcaveResponseDetails.status}</p>
-          <p><strong>Amount:</strong> ${windcaveResponseDetails.amount?.toFixed(2)}</p>
-          <p><strong>Transaction ID:</strong> {windcaveResponseDetails.transactionId}</p>
-          <p><strong>Transaction Date:</strong> {windcaveResponseDetails.transactionDate}</p>
-          {windcaveResponseDetails.reservationRef && (
-            <p><strong>Reservation Reference:</strong> {windcaveResponseDetails.reservationRef}</p>
-          )}
-          {windcaveResponseDetails.cardDetails && (
-            <div>
-              <h4 className="font-medium mt-2">Card Details</h4>
-              <p><strong>Cardholder:</strong> {windcaveResponseDetails.cardDetails.cardholder}</p>
-              <p><strong>Card Number:</strong> {windcaveResponseDetails.cardDetails.cardNumber}</p>
-            </div>
-          )}
-        </div>
-      </div>
-    );
+  
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const target = e.target as HTMLImageElement;
+    target.src = '/placeholder.svg';
+    target.alt = 'Vehicle image not available';
   };
+  
+  // If no booking data and not manual mode, redirect to home
+  if (!bookingData && !isManual && !isLoading) {
+    navigate("/");
+    return null;
+  }
 
   return (
-    <div className="container mx-auto px-4 py-8 text-center">
-      <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-8">
-        {corsError && (
-          <Alert className="mb-6 bg-amber-50 border-amber-200">
-            <AlertTitle className="text-amber-800">API Connection Issue</AlertTitle>
-            <AlertDescription className="text-amber-700">
-              We're having trouble connecting to our booking system. Some information may be limited.
-            </AlertDescription>
-          </Alert>
-        )}
-        
-        {paymentStatus === "success" ? (
-          <>
-            <CheckCircle2 className="h-16 w-16 text-green-500 mx-auto mb-4" />
-            <h1 className="text-3xl font-bold mb-2">Payment Successful!</h1>
-            <p className="text-gray-600 mb-6">
-              Thank you for your booking. Your reservation is confirmed.
-            </p>
-            
-            {/* Vehicle image section */}
-            {bookingDetails?.vehicleImage && !imageError && (
-              <div className="w-full aspect-video rounded-md mb-6 overflow-hidden bg-gray-100">
-                <img
-                  src={bookingDetails.vehicleImage}
-                  alt={bookingDetails.vehicleName}
-                  className="w-full h-full object-cover"
-                  onError={handleImageError}
-                />
-              </div>
-            )}
-            
-            <div className="text-left space-y-6 mb-8">
-              {/* Vehicle Details */}
-              <div className="border-b pb-4">
-                <h2 className="text-xl font-semibold mb-2">{bookingDetails?.vehicleName}</h2>
-              </div>
-              
-              {/* Location Details */}
-              <div className="space-y-4 border-b pb-4">
-                <div>
-                  <h3 className="font-medium flex items-center gap-2 mb-2">
-                    <MapPin className="h-4 w-4" /> Pickup Location
-                  </h3>
-                  <p className="text-gray-600">{bookingDetails?.pickupDate} at {bookingDetails?.pickupTime}</p>
-                  <p className="text-gray-600">{bookingDetails?.pickupLocationName}</p>
-                </div>
-                
-                <div>
-                  <h3 className="font-medium flex items-center gap-2 mb-2">
-                    <MapPin className="h-4 w-4" /> Drop-off Location
-                  </h3>
-                  <p className="text-gray-600">{bookingDetails?.dropoffDate} at {bookingDetails?.dropoffTime}</p>
-                  <p className="text-gray-600">{bookingDetails?.dropoffLocationName}</p>
-                </div>
-              </div>
-              
-              {/* Payment Details */}
-              <div className="space-y-3 border-b pb-4">
-                <h3 className="font-medium flex items-center gap-2">
-                  <CreditCard className="h-4 w-4" /> Payment Details
-                </h3>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Total Rental Amount:</span>
-                    <span className="font-medium">{formatCurrency(bookingDetails?.basePrice || 0)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Amount Paid:</span>
-                    <span className="font-medium text-green-600">{formatCurrency(bookingDetails?.paymentAmount || 0)}</span>
-                  </div>
-                  {bookingDetails?.paymentType === "deposit" && (
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Balance Due:</span>
-                      <span className="font-medium text-amber-600">
-                        {formatCurrency((bookingDetails.basePrice || 0) - (bookingDetails.paymentAmount || 0))}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </div>
-              
-              {/* Additional Details */}
-              <div className="space-y-4">
-                {/* Duration */}
-                <div className="flex justify-between items-center">
-                  <span className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4" /> Duration of Hire
-                  </span>
-                  <span>{rentalDuration} day{rentalDuration !== 1 ? 's' : ''}</span>
-                </div>
-                
-                {/* Insurance */}
-                {bookingDetails?.insuranceName && (
-                  <div className="flex justify-between items-center">
-                    <span className="flex items-center gap-2">
-                      <Shield className="h-4 w-4" /> Insurance
-                    </span>
-                    <span>
-                      {bookingDetails.insuranceName}
-                      {bookingDetails.insurancePrice > 0 && 
-                        ` (${formatCurrency(bookingDetails.insurancePrice)})`}
-                    </span>
-                  </div>
-                )}
-                
-                {/* Extras */}
-                {bookingDetails?.selectedExtras && bookingDetails.selectedExtras.length > 0 && (
-                  <div>
-                    <h4 className="font-medium flex items-center gap-2 mb-2">
-                      <Package className="h-4 w-4" /> Extras
-                    </h4>
-                    {bookingDetails.selectedExtras.map((extra, index) => (
-                      <div key={index} className="flex justify-between pl-6 py-1">
-                        <span>{extra.name} {extra.quantity > 1 ? `× ${extra.quantity}` : ''}</span>
-                        <span>{formatCurrency(extra.price)}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+    <div className="container mx-auto px-4 py-12">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-10">
+          {isSuccess ? (
+            <div className="mb-4 inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-100">
+              <CheckCircle className="w-12 h-12 text-green-500" />
             </div>
-            
+          ) : (
+            <div className="mb-4 inline-flex items-center justify-center w-20 h-20 rounded-full bg-red-100">
+              {hasError || isCorsError ? (
+                <AlertCircle className="w-12 h-12 text-amber-500" />
+              ) : (
+                <XCircle className="w-12 h-12 text-red-500" />
+              )}
+            </div>
+          )}
+          
+          <h1 className="text-3xl font-bold mb-2">
+            {isSuccess ? "Payment Successful!" : hasError || isCorsError ? "Payment Status Uncertain" : "Payment Failed"}
+          </h1>
+          
+          <p className="text-gray-600 max-w-lg mx-auto">
+            {isSuccess 
+              ? "Your payment has been processed and your booking is confirmed. Details of your booking are below."
+              : isCorsError 
+                ? "Due to technical limitations, we couldn't verify your payment status automatically. If you've completed payment, your booking has likely been confirmed."
+                : hasError
+                  ? "We encountered an error processing your payment status. If you completed payment, your booking may still be confirmed."
+                  : message || "Your payment could not be completed. Please try again or contact customer support."}
+          </p>
+          
+          {isCorsError && (
             <Button 
-              onClick={() => navigate("/")}
-              className="w-full"
+              onClick={handleTryCorsFix}
+              className="mt-4"
+              variant="outline"
             >
-              Return to Home
+              <RefreshCw className="mr-2 h-4 w-4" />
+              Try Again to Verify Payment
             </Button>
-          </>
+          )}
+        </div>
+        
+        {isLoadingDetails ? (
+          <div className="flex justify-center items-center py-12">
+            <div className="w-12 h-12 border-4 border-t-blue-500 border-blue-200 rounded-full animate-spin"></div>
+          </div>
         ) : (
-          <>
-            <h1 className="text-4xl font-bold mb-6">Payment Request Failed</h1>
-            <div className="bg-red-200 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
-              <FrownIcon className="h-12 w-12 text-red-500" />
+          <div className="bg-white shadow-lg rounded-lg overflow-hidden">
+            <div className="bg-gray-50 px-6 py-4 border-b">
+              <h2 className="text-xl font-semibold">Booking Summary</h2>
             </div>
-            <p className="text-xl font-medium mb-8">Failed Payment</p>
             
-            {errorMessage && (
-              <Alert variant="destructive" className="mb-6">
-                <AlertTitle>Error</AlertTitle>
-                <AlertDescription>{errorMessage}</AlertDescription>
-              </Alert>
-            )}
-            
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold mb-4">Transaction Number</h2>
-              <p className="text-lg mb-6">{transactionId || "0000000000"}</p>
+            <div className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <div className="mb-6">
+                    <h3 className="font-medium text-gray-700 mb-1">Booking Reference</h3>
+                    <p className="text-xl font-semibold">{paymentInfo?.bookingReference || "Not available"}</p>
+                  </div>
+                  
+                  <div className="mb-6">
+                    <h3 className="font-medium text-gray-700 mb-1">Transaction ID</h3>
+                    <p className="text-gray-800">{paymentInfo?.transactionId || "Not available"}</p>
+                  </div>
+                  
+                  <div className="mb-6">
+                    <h3 className="font-medium text-gray-700 mb-1">Total Amount</h3>
+                    <p className="text-xl font-bold">${parseFloat(paymentInfo?.totalAmount || 0).toFixed(2)}</p>
+                  </div>
+                </div>
+                
+                <div>
+                  <div className="mb-5 flex items-start">
+                    <Car className="mt-1 mr-2 flex-shrink-0 text-gray-500" size={18} />
+                    <div>
+                      <h3 className="font-medium text-gray-700">Vehicle</h3>
+                      <p className="text-gray-800">{paymentInfo?.vehicleName || "Selected Vehicle"}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="mb-5 flex items-start">
+                    <Calendar className="mt-1 mr-2 flex-shrink-0 text-gray-500" size={18} />
+                    <div>
+                      <h3 className="font-medium text-gray-700">Rental Period</h3>
+                      <p className="text-gray-800">
+                        {formatDate(paymentInfo?.pickupDate)} - {formatDate(paymentInfo?.dropoffDate)}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="mb-5 flex items-start">
+                    <Clock className="mt-1 mr-2 flex-shrink-0 text-gray-500" size={18} />
+                    <div>
+                      <h3 className="font-medium text-gray-700">Pick-up Time</h3>
+                      <p className="text-gray-800">{formatTime(paymentInfo?.pickupDate)}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start">
+                    <MapPin className="mt-1 mr-2 flex-shrink-0 text-gray-500" size={18} />
+                    <div>
+                      <h3 className="font-medium text-gray-700">Pick-up Location</h3>
+                      <p className="text-gray-800">{paymentInfo?.pickupLocation || "Selected Location"}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
               
-              <h2 className="text-2xl font-bold mb-4">Customer Request Details</h2>
-              
-              <div className="space-y-2 text-left max-w-md mx-auto">
-                <p><span className="font-medium">First Name: </span>{customerDetails.firstName}</p>
-                <p><span className="font-medium">Last Name: </span>{customerDetails.lastName}</p>
-                <p><span className="font-medium">Email - ID: </span>{customerDetails.email}</p>
-                <p><span className="font-medium">Mobile No: </span>{customerDetails.phone}</p>
-                <p><span className="font-medium">Date of Birth: </span>{customerDetails.dob}</p>
-                <p><span className="font-medium">License Expires: </span>{customerDetails.licenseExpiry}</p>
-                <p><span className="font-medium">Full Address: </span>{customerDetails.address}</p>
+              <div className="mt-10 pt-6 border-t border-gray-200">
+                <div className="flex flex-wrap gap-3 justify-between items-center">
+                  <div>
+                    <p className="text-gray-600 mb-2">
+                      {isSuccess 
+                        ? "Your booking details have been sent to your email."
+                        : isCorsError || hasError
+                          ? "If payment was successful, you should receive a confirmation email."
+                          : "You have not been charged for this booking."}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      For assistance, please contact our customer support.
+                    </p>
+                  </div>
+                  
+                  <div className="flex flex-wrap gap-3">
+                    <Button variant="outline" asChild>
+                      <Link to="/">
+                        Return to Home
+                      </Link>
+                    </Button>
+                    
+                    {isSuccess && (
+                      <Button asChild>
+                        <Link to="/vehicles">
+                          Browse More Vehicles
+                        </Link>
+                      </Button>
+                    )}
+                    
+                    {!isSuccess && !isManual && (
+                      <Button asChild>
+                        <Link to="/payment-options">
+                          Try Again
+                        </Link>
+                      </Button>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
-            
-            <div className="flex flex-col md:flex-row gap-4 justify-center mb-4">
-              <Button 
-                onClick={() => navigate("/payment")}
-                className="bg-[#342F63] hover:bg-[#25224A] text-white px-8 py-2 rounded-full text-lg"
-              >
-                TRY AGAIN
-              </Button>
-              
-              <Button 
-                variant="outline"
-                onClick={() => navigate("/payment-options")}
-                className="bg-[#342F63] hover:bg-[#25224A] text-white px-8 py-2 rounded-full text-lg"
-              >
-                SAVE QUOTATION
-              </Button>
-            </div>
-            
-            <p className="text-red-500 mt-4">Note :- Please filled Valid details</p>
-          </>
+          </div>
         )}
-        
-        {renderWindcavePaymentDetails()}
       </div>
     </div>
   );
-};
+}
 
 export default PaymentSuccess;

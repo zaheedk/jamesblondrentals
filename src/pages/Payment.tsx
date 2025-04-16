@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getBookingData, updateBookingData } from "@/lib/booking-session";
@@ -55,14 +56,24 @@ const Payment = () => {
       const paymentAmount = bookingData.paymentAmount || bookingData.basePrice;
       console.log('Payment amount:', paymentAmount);
       
-      await createPayment(reservationRef, paymentAmount);
+      await createPayment(reservationRef ? String(reservationRef) : '', paymentAmount);
     };
     
     initializePage();
   }, [navigate, bookingData, windcaveResult, location.search]);
   
-  const createPayment = async (reservationRef: string | number | undefined, paymentAmount: number | undefined) => {
+  const createPayment = async (reservationRef: string, paymentAmount: number | undefined) => {
     try {
+      // Validate reservationRef
+      if (!reservationRef) {
+        throw new Error('No reservation reference available');
+      }
+      
+      // Validate payment amount
+      if (typeof paymentAmount !== 'number' || isNaN(paymentAmount)) {
+        throw new Error('Invalid payment amount');
+      }
+      
       const returnUrl = encodeURIComponent(`${window.location.origin}/payment`);
       console.log('Return URL (encoded):', returnUrl);
       

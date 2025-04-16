@@ -1,3 +1,4 @@
+
 import { generateSignature } from './rcm-signature';
 import type { 
   RCMApiConfig,
@@ -29,9 +30,10 @@ const DIRECT_API_URL = "https://apis.rentalcarmanager.com/booking/v3.2";
 
 // CORS proxy URLs for production/published environments
 const CORS_PROXY_URLS = [
-  "https://corsproxy.io/?",
+  "https://api.corsproxy.io/?",
   "https://api.allorigins.win/raw?url=",
-  "https://cors-anywhere.herokuapp.com/"
+  "https://cors-anywhere.herokuapp.com/",
+  "https://crossorigin.me/"
 ];
 
 // Mock data definitions remain but won't be used unless explicitly requested
@@ -151,7 +153,7 @@ class RCMApiClient {
     // Configure CORS proxy usage
     if (config.useCorsProxy === true) {
       // If explicitly requested to use a CORS proxy, set it
-      this.currentCorsProxyIndex = 0;
+      this.currentCorsProxyIndex = config.corsProxyIndex !== undefined ? config.corsProxyIndex : 0;
     } else if (config.useCorsProxy === false) {
       // If explicitly requested not to use a CORS proxy, disable it
       this.currentCorsProxyIndex = -1;
@@ -319,13 +321,9 @@ class RCMApiClient {
         method,
         headers,
         body: JSON.stringify(requestBody),
+        mode: 'cors', // Always use cors mode for consistency
+        credentials: 'omit', // Don't send credentials to avoid CORS issues
       };
-      
-      // If using CORS proxy, we need to adjust mode
-      if (this.currentCorsProxyIndex >= 0) {
-        fetchOptions.mode = 'cors';
-        console.log('Using CORS mode for fetch with proxy');
-      }
       
       // Make the request with a timeout
       const controller = new AbortController();
@@ -342,16 +340,20 @@ class RCMApiClient {
         
         if (!contentType || contentType.indexOf("application/json") === -1) {
           // Handle non-JSON response
+          console.error('Non-JSON response received:', await response.text().then(text => text.substring(0, 200) + '...'));
           this.switchToMockData();
           return this.getMockData(requestMethod) as T;
         }
 
         // Reset failure counter on successful response
-        this.apiFailedAttempts = 0;
-        this.apiConnectionFailed = false;
+        if (response.ok) {
+          this.apiFailedAttempts = 0;
+          this.apiConnectionFailed = false;
+        }
 
         // Handle non-OK responses
         if (!response.ok) {
+          console.error(`API returned status ${response.status}: ${response.statusText}`);
           // Switch to mock data after failure
           this.switchToMockData();
           return this.getMockData(requestMethod) as T;
@@ -372,7 +374,17 @@ class RCMApiClient {
         return responseData;
       } catch (error) {
         clearTimeout(timeout);
-        // Switch to mock data on error
+        const errorMessage = error instanceof Error ? error.message : "Unknown fetch error";
+        console.error(`API fetch error:`, errorMessage);
+        
+        // Try next connection strategy
+        if (this.tryNextConnectionStrategy()) {
+          console.log('Trying next connection strategy...');
+          // Try again with new strategy
+          return this.request<T>(method, requestMethod, body);
+        }
+        
+        // Switch to mock data on error if all strategies failed
         this.switchToMockData();
         return this.getMockData(requestMethod) as T;
       }
@@ -506,13 +518,13 @@ class RCMApiClient {
               {
                 id: "201",
                 description: "Basic Insurance",
-                amount: 15,
+                totalinsuranceamount: 15,
                 isdefault: true
               },
               {
                 id: "202",
                 description: "Premium Insurance",
-                amount: 25,
+                totalinsuranceamount: 25,
                 isdefault: false
               }
             ],
@@ -520,13 +532,13 @@ class RCMApiClient {
               {
                 id: "301",
                 description: "Unlimited",
-                amount: 0,
+                dailyrate: 0,
                 isdefault: true
               },
               {
                 id: "302",
                 description: "200km per day",
-                amount: -10,
+                dailyrate: -10,
                 isdefault: false
               }
             ],
@@ -534,13 +546,13 @@ class RCMApiClient {
               {
                 id: "401",
                 description: "GPS Navigation",
-                amount: 5,
+                totalextraamount: 5,
                 isdefault: false
               },
               {
                 id: "402",
                 description: "Child Seat",
-                amount: 7,
+                totalextraamount: 7,
                 isdefault: false
               }
             ],
@@ -716,10 +728,11 @@ class RCMApiClient {
       // Additional logging to debug extras
       if (response.status === "OK" && response.results) {
         console.log('Step3 response received with status OK');
+        console.log('Insurance options:', response.results.insuranceoptions);
+        console.log('KM charges:', response.results.kmcharges);
         console.log('Extras in response:', response.results.extras);
-        console.log('Extras type:', typeof response.results.extras);
         
-        // Ensure extras is always an array
+        // Ensure all arrays are properly initialized
         if (!response.results.extras) {
           console.log('No extras in response, setting to empty array');
           response.results.extras = [];
@@ -732,6 +745,20 @@ class RCMApiClient {
             console.error('Failed to parse extras:', e);
             response.results.extras = [];
           }
+        }
+        
+        if (!response.results.insuranceoptions) {
+          console.log('No insurance options in response, setting to empty array');
+          response.results.insuranceoptions = [];
+        } else if (!Array.isArray(response.results.insuranceoptions)) {
+          response.results.insuranceoptions = [];
+        }
+        
+        if (!response.results.kmcharges) {
+          console.log('No km charges in response, setting to empty array');
+          response.results.kmcharges = [];
+        } else if (!Array.isArray(response.results.kmcharges)) {
+          response.results.kmcharges = [];
         }
       }
       

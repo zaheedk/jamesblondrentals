@@ -56,9 +56,10 @@ export function useApiDiagnostics() {
       
       // CORS proxied API endpoints - try these first in production/Lovable hosted
       const corsProxies = [
-        "https://corsproxy.io/?",
+        "https://api.corsproxy.io/?",
         "https://api.allorigins.win/raw?url=",
-        "https://cors-anywhere.herokuapp.com/"
+        "https://cors-anywhere.herokuapp.com/",
+        "https://crossorigin.me/"
       ];
       
       // In production, prioritize CORS proxies
@@ -98,14 +99,9 @@ export function useApiDiagnostics() {
             method: 'POST',
             headers: headers,
             body: testBody,
+            mode: 'cors', // Use CORS mode for all requests to ensure consistency
+            credentials: 'omit' // Don't send credentials to avoid CORS issues
           };
-          
-          // Use CORS mode for CORS proxy endpoints
-          if (endpoint.includes('corsproxy.io') || 
-              endpoint.includes('cors-anywhere') || 
-              endpoint.includes('allorigins')) {
-            fetchOptions.mode = 'cors';
-          }
           
           // Add a timeout to the fetch request
           const controller = new AbortController();
@@ -135,35 +131,45 @@ export function useApiDiagnostics() {
               isJsonResponse = false;
             }
             
-            if (isJsonResponse) {
-              successfulEndpoints.push(endpoint);
-              successfulResponse = response;
-              successfulEndpoint = endpoint;
-              responseText = respText;
-              console.log(`Found working endpoint: ${endpoint}`);
-              break; // Found a working endpoint, no need to continue
+            // Consider any successful response (even non-JSON) to detect CORS issues
+            if (response.ok) {
+              console.log(`Endpoint ${endpoint} returned HTTP OK`);
+              
+              if (isJsonResponse) {
+                successfulEndpoints.push(endpoint);
+                successfulResponse = response;
+                successfulEndpoint = endpoint;
+                responseText = respText;
+                console.log(`Found working endpoint with valid JSON: ${endpoint}`);
+                break; // Found a working endpoint, no need to continue
+              } else {
+                // Success but invalid JSON - might be a CORS issue where we got HTML back
+                console.log(`Endpoint ${endpoint} returned OK but invalid JSON - possible CORS issue`);
+                failedEndpoints.push(`${endpoint} (Invalid JSON response)`);
+              }
             } else {
-              failedEndpoints.push(endpoint);
+              console.log(`Endpoint ${endpoint} returned HTTP error: ${response.status}`);
+              failedEndpoints.push(`${endpoint} (HTTP ${response.status})`);
             }
           } catch (error) {
             clearTimeout(timeoutId);
-            console.error(`Error testing endpoint ${endpoint}:`, error);
+            const errorMessage = error instanceof Error ? error.message : "Unknown fetch error";
+            console.error(`Error testing endpoint ${endpoint}:`, errorMessage);
             
             // Add specific error details for this endpoint
-            failedEndpoints.push(`${endpoint} (${error instanceof Error ? error.message : 'Unknown error'})`);
+            failedEndpoints.push(`${endpoint} (${errorMessage})`);
           }
         } catch (error) {
-          console.error(`Error testing endpoint ${endpoint}:`, error);
-          failedEndpoints.push(endpoint);
+          const errorMessage = error instanceof Error ? error.message : "Unknown error";
+          console.error(`Error in outer try block for ${endpoint}:`, errorMessage);
+          failedEndpoints.push(`${endpoint} (${errorMessage})`);
         }
       }
       
       // If we found a working endpoint
       if (successfulEndpoint) {
         const isProxy = successfulEndpoint.includes('/api/rcm');
-        const isCorsProxy = successfulEndpoint.includes('corsproxy.io') || 
-                         successfulEndpoint.includes('cors-anywhere') || 
-                         successfulEndpoint.includes('allorigins');
+        const isCorsProxy = corsProxies.some(proxy => successfulEndpoint.includes(proxy.split('//')[1]));
         
         const recommendationText = isProxy 
           ? "Proxy configuration is working properly." 
