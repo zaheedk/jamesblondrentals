@@ -42,12 +42,32 @@ const BookingSummary = ({
 }: BookingSummaryProps) => {
   const [imageError, setImageError] = React.useState(false);
 
+  console.log("Available Cars:", availableCars);
+  console.log("Selected Vehicle Category ID:", selectedVehicleCategoryId);
+  
   const basePrice = React.useMemo(() => {
+    if (!availableCars || !selectedVehicleCategoryId) {
+      console.log("Missing required data for base price calculation");
+      return 0;
+    }
+    
+    console.log("Looking for vehicle category ID:", selectedVehicleCategoryId);
+    console.log("Available car IDs:", availableCars.map(car => car.vehiclecategoryid));
+    
     const selectedCar = availableCars.find(car => 
-      car.vehiclecategoryid === String(selectedVehicleCategoryId)
+      String(car.vehiclecategoryid) === String(selectedVehicleCategoryId)
     );
-    return selectedCar?.totalrateafterdiscount || 0;
+    
+    console.log("Selected car found:", selectedCar);
+    
+    if (selectedCar && typeof selectedCar.totalrateafterdiscount === 'number') {
+      return selectedCar.totalrateafterdiscount;
+    }
+    
+    return 0;
   }, [availableCars, selectedVehicleCategoryId]);
+  
+  console.log("Calculated base price:", basePrice);
 
   const formatSafeDate = (date: Date | string | null | undefined): string => {
     if (!date) return "Date not available";

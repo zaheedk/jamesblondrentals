@@ -99,8 +99,12 @@ const Booking = () => {
     .then((response) => {
       setRawApiResponse(response);
       
+      console.log("Raw API Response:", response);
+      
       if (response.status === "OK" && response.results) {
         const { insuranceoptions, kmcharges, extras, optionalfees } = response.results;
+        
+        console.log("Available cars:", response.results.availablecars);
         
         setInsuranceOptions(insuranceoptions || []);
         setKmCharges(kmcharges || []);
@@ -267,6 +271,11 @@ const Booking = () => {
       </div>
     );
   }
+
+  console.log("Data passed to BookingSummary:", {
+    availableCars: rawApiResponse?.results?.availablecars || [],
+    selectedVehicleCategoryId: bookingData.vehicleId
+  });
 
   return (
     <div className="container mx-auto px-4 py-8">
