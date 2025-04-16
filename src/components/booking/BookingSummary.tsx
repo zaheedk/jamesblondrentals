@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { format, parse, isValid, differenceInDays } from "date-fns";
-import { Calendar, Shield, Package } from "lucide-react";
+import { Calendar, Shield, Package, MapPin, Clock, Car } from "lucide-react";
 
 interface BookingSummaryProps {
   pickupLocation: string;
@@ -9,17 +9,16 @@ interface BookingSummaryProps {
   pickupDate: Date | string;
   dropoffDate: Date | string;
   vehicleName: string;
-  basePrice: number;
   selectedInsurance: { id: string | number; name: string; price: number } | null;
   selectedExtras: { id: string | number; name: string; quantity: number; totalPrice: number }[];
   kmChargePrice: number;
   currencySymbol: string;
   vehicleImageUrl?: string;
-  seasonalRates?: {
-    dailyRate: number;
-    totalAmount: number;
-    discountAmount?: number;
+  availableCars?: {
+    vehiclecategoryid: string;
+    totalrateafterdiscount: number;
   }[];
+  selectedVehicleCategoryId?: string;
   mandatoryFees?: {
     name: string;
     amount: number;
@@ -32,17 +31,22 @@ const BookingSummary = ({
   pickupDate,
   dropoffDate,
   vehicleName,
-  basePrice,
   selectedInsurance,
   selectedExtras,
   kmChargePrice,
   currencySymbol,
   vehicleImageUrl,
-  seasonalRates = [],
+  availableCars = [],
+  selectedVehicleCategoryId,
   mandatoryFees = []
 }: BookingSummaryProps) => {
   const [imageError, setImageError] = React.useState(false);
-  
+
+  const basePrice = React.useMemo(() => {
+    const selectedCar = availableCars.find(car => car.vehiclecategoryid === selectedVehicleCategoryId);
+    return selectedCar?.totalrateafterdiscount || 0;
+  }, [availableCars, selectedVehicleCategoryId]);
+
   const formatSafeDate = (date: Date | string | null | undefined): string => {
     if (!date) return "Date not available";
     
