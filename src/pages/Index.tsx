@@ -4,43 +4,27 @@ import Hero from "@/components/home/Hero";
 import FeaturedVehicles from "@/components/home/FeaturedVehicles";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRcmApi } from "@/hooks/use-rcm-api";
 import { toast } from "sonner";
 import { ApiStatusIndicator } from "@/components/diagnostics/ApiStatusIndicator";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
 
 const Index = () => {
-  const { initializeApi, rcmApi } = useRcmApi();
-  const [apiInitError, setApiInitError] = useState<string | null>(null);
+  const { initializeApi } = useRcmApi();
   
   useEffect(() => {
-    // Initialize the API with fallback to mock data if connection fails
     try {
       initializeApi({ 
-        useMockData: false,
         apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
         apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
         apiUrl: "/api/rcm/booking/v3.2" 
       });
       console.log('API initialized successfully');
-      setApiInitError(null);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       console.error('Failed to initialize API:', error);
-      setApiInitError(errorMessage);
-      
-      // Fall back to mock data if API initialization fails
-      initializeApi({ 
-        useMockData: true,
-        apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
-        apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
-        apiUrl: "/api/rcm/booking/v3.2" 
-      });
-      
       toast.error('API Connection Error', {
-        description: 'Using demo data because we could not connect to the booking API. You can still explore the interface.'
+        description: 'Could not connect to the booking API. Please try again later.'
       });
     }
   }, [initializeApi]);
@@ -53,18 +37,6 @@ const Index = () => {
         
         {/* API Status Indicator and Error Alert */}
         <div className="container mx-auto px-4 py-4">
-          {apiInitError && (
-            <Alert variant="destructive" className="mb-4">
-              <AlertCircle className="h-4 w-4" />
-              <AlertTitle>API Connection Error</AlertTitle>
-              <AlertDescription>
-                We're experiencing issues connecting to our booking system. 
-                The application is running in demo mode with sample data.
-                <div className="text-xs mt-2 opacity-75">Error: {apiInitError}</div>
-              </AlertDescription>
-            </Alert>
-          )}
-          
           {process.env.NODE_ENV !== 'production' && (
             <ApiStatusIndicator />
           )}
