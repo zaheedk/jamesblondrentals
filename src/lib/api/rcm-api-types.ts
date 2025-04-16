@@ -334,14 +334,22 @@ export interface RCMStep3Results {
     currencyname: string;
   };
   seasonalrates?: {
+    vehiclecategorytypeid: string | number;
     vehiclecategoryid: number | string;
+    season?: string;
+    rateperiod: string;
+    rateperiod_number?: number;
+    rateperiod_rateafterdiscount?: number;
+    rateperiod_remainingnumberofdays?: number;
+    rateperiod_dailyrateafterdiscountforremainingdays?: number;
+    numberofhours: number;
+    numberofdays: number;
     dailyratebeforediscount: number;
     dailyrateafterdiscount: number;
+    ratesubtotal: number;
+    discounttype?: string;
     discountrate: number;
-    discounttype: string;
-    numberofdays: number;
-    numberofhours: number;
-    rateperiod: string;
+    discountname?: string;
   }[];
   mandatoryfees?: {
     vehiclecategoryid: number | string;

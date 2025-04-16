@@ -16,9 +16,15 @@ interface BookingSummaryProps {
   currencySymbol: string;
   vehicleImageUrl?: string;
   seasonalRates?: {
+    season?: string;
+    rateperiod: string;
+    numberofdays: number;
     dailyRate: number;
     totalAmount: number;
     discountAmount?: number;
+    dailyratebeforediscount?: number;
+    discounttype?: string;
+    discountname?: string;
   }[];
   mandatoryFees?: {
     name: string;
@@ -272,15 +278,44 @@ const BookingSummary = ({
               <Calendar className="h-4 w-4 mr-2" /> Seasonal Rates:
             </div>
             {seasonalRates.map((rate, index) => (
-              <div key={index} className="flex justify-between pl-6 py-1">
-                <span>Daily Rate</span>
-                <span>{currencySymbol}{rate.dailyRate.toFixed(2)}</span>
+              <div key={index} className="space-y-2 pl-6">
+                {rate.season && (
+                  <div className="flex justify-between">
+                    <span>Season</span>
+                    <span>{rate.season}</span>
+                  </div>
+                )}
+                <div className="flex justify-between">
+                  <span>Rate Period</span>
+                  <span>{rate.rateperiod}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Number of Days</span>
+                  <span>{rate.numberofdays}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Daily Rate</span>
+                  <span>{currencySymbol}{rate.dailyRate.toFixed(2)}</span>
+                </div>
+                {rate.discounttype && (
+                  <div className="flex justify-between">
+                    <span>Discount Type</span>
+                    <span>{rate.discounttype}</span>
+                  </div>
+                )}
+                {rate.discountname && (
+                  <div className="flex justify-between">
+                    <span>Discount Name</span>
+                    <span>{rate.discountname}</span>
+                  </div>
+                )}
+                <div className="flex justify-between font-medium">
+                  <span>Total Rate</span>
+                  <span>{currencySymbol}{rate.totalAmount.toFixed(2)}</span>
+                </div>
+                <div className="border-t border-gray-200 my-2"></div>
               </div>
             ))}
-            <div className="flex justify-between pl-6 py-1 font-medium">
-              <span>Total Seasonal Charges</span>
-              <span>{currencySymbol}{totalSeasonalRates.toFixed(2)}</span>
-            </div>
           </div>
         )}
         
