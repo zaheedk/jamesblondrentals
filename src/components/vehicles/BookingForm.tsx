@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Vehicle } from "@/lib/types";
@@ -16,6 +17,8 @@ interface BookingFormProps {
   dropoffTime: string;
   ageId: string;
   vehicleImageUrl?: string;
+  totalRateAfterDiscount?: number; // Add this new prop
+  totalDiscountAmount?: number;     // Add this new prop
 }
 
 export default function BookingForm({ 
@@ -29,7 +32,9 @@ export default function BookingForm({
   pickupTime,
   dropoffTime,
   ageId,
-  vehicleImageUrl
+  vehicleImageUrl,
+  totalRateAfterDiscount, // Use the new prop
+  totalDiscountAmount     // Use the new prop
 }: BookingFormProps) {
   const navigate = useNavigate();
   
@@ -82,6 +87,12 @@ export default function BookingForm({
       formatted: { pickupDate: formattedPickupDate, dropoffDate: formattedDropoffDate }
     });
     
+    // Calculate base price from either the rate after discount or the regular price
+    const basePrice = totalRateAfterDiscount || 
+      (typeof vehicle.price === 'number' ? vehicle.price : parseFloat(vehicle.price || '0'));
+    
+    console.log("Saving booking data with totalRateAfterDiscount:", totalRateAfterDiscount);
+    
     saveBookingData({
       vehicleId: vehicle.id.toString(),
       vehicleName: `${vehicle.make} ${vehicle.model}`,
@@ -95,7 +106,9 @@ export default function BookingForm({
       dropoffDate: formattedDropoffDate,
       dropoffTime,
       ageId,
-      basePrice: typeof vehicle.price === 'number' ? vehicle.price : parseFloat(vehicle.price || '0'),
+      basePrice: basePrice,
+      totalRateAfterDiscount: totalRateAfterDiscount,
+      totalDiscountAmount: totalDiscountAmount,
       vehicleImage: vehicleImageUrl || getFirstVehicleImage(vehicle)
     });
     
@@ -134,8 +147,10 @@ export default function BookingForm({
       <input type="hidden" name="dropoffDate" value={dropoffDate} />
       <input type="hidden" name="dropoffTime" value={dropoffTime} />
       <input type="hidden" name="ageId" value={ageId} />
-      <input type="hidden" name="basePrice" value={vehicle.price?.toString() || '0'} />
+      <input type="hidden" name="basePrice" value={totalRateAfterDiscount?.toString() || vehicle.price?.toString() || '0'} />
       <input type="hidden" name="vehicleImage" value={vehicleImageUrl || getFirstVehicleImage(vehicle)} />
+      <input type="hidden" name="totalRateAfterDiscount" value={totalRateAfterDiscount?.toString() || ''} />
+      <input type="hidden" name="totalDiscountAmount" value={totalDiscountAmount?.toString() || ''} />
       
       <Button type="submit" className="w-full">
         Book Now

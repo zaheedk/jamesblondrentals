@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -29,8 +30,11 @@ const PaymentOptions = () => {
     
     setBookingDetails(bookingData);
     
-    // Calculate total amount using the base price from previous step
-    const basePrice = bookingData.basePrice || 0;
+    // Calculate total amount using totalRateAfterDiscount if available, otherwise use basePrice
+    const basePrice = bookingData.totalRateAfterDiscount || bookingData.basePrice || 0;
+    console.log("Using price for calculation:", basePrice, 
+      bookingData.totalRateAfterDiscount ? "(from totalRateAfterDiscount)" : "(from basePrice)");
+    
     const insurancePrice = bookingData.insurancePrice || 0;
     const extrasTotal = (bookingData.selectedExtras || []).reduce(
       (sum: number, extra: any) => sum + (extra.price * extra.quantity), 
@@ -90,7 +94,20 @@ const PaymentOptions = () => {
                 <p><span className="font-medium">Return:</span> {bookingDetails?.dropoffDate} at {bookingDetails?.dropoffTime}</p>
               </div>
               <div className="space-y-1">
-                <p><span className="font-medium">Base Amount:</span> {formatCurrency(bookingDetails?.basePrice || 0)}</p>
+                <p>
+                  <span className="font-medium">Base Amount:</span> {
+                    bookingDetails?.totalRateAfterDiscount ? 
+                    <>
+                      {formatCurrency(bookingDetails.totalRateAfterDiscount)}
+                      {bookingDetails.totalDiscountAmount > 0 && 
+                        <span className="text-green-600 text-sm ml-1">
+                          (Saved {formatCurrency(bookingDetails.totalDiscountAmount)})
+                        </span>
+                      }
+                    </> :
+                    formatCurrency(bookingDetails?.basePrice || 0)
+                  }
+                </p>
                 {bookingDetails?.insurancePrice > 0 && (
                   <p><span className="font-medium">Insurance:</span> {formatCurrency(bookingDetails.insurancePrice)}</p>
                 )}

@@ -8,9 +8,15 @@ import BookingForm from "./BookingForm";
 
 interface VehicleCardProps {
   vehicle: Vehicle;
+  totalRateAfterDiscount?: number;  // Add this new prop
+  totalDiscountAmount?: number;     // Add this new prop
 }
 
-const VehicleCard = ({ vehicle }: VehicleCardProps) => {
+const VehicleCard = ({ 
+  vehicle, 
+  totalRateAfterDiscount,  // Use the new prop
+  totalDiscountAmount      // Use the new prop
+}: VehicleCardProps) => {
   const [searchParams] = useSearchParams();
   const [imageError, setImageError] = React.useState(false);
   
@@ -76,7 +82,8 @@ const VehicleCard = ({ vehicle }: VehicleCardProps) => {
           </div>
           <div className="text-right">
             <div className="font-bold text-lg">
-              ${typeof vehicle.price === 'string' ? vehicle.price : vehicle.price?.toFixed(2) || '0.00'}
+              ${totalRateAfterDiscount?.toFixed(2) || 
+                (typeof vehicle.price === 'string' ? vehicle.price : vehicle.price?.toFixed(2) || '0.00')}
             </div>
             <div className="text-xs text-gray-500">
               {vehicle.priceUnit === 'day' 
@@ -116,6 +123,8 @@ const VehicleCard = ({ vehicle }: VehicleCardProps) => {
             dropoffTime={dropoffTime}
             ageId={age}
             vehicleImageUrl={imageUrl}
+            totalRateAfterDiscount={totalRateAfterDiscount}
+            totalDiscountAmount={totalDiscountAmount}
           />
         ) : (
           <div className="w-full p-2 bg-gray-100 text-gray-500 text-center rounded">
