@@ -1,4 +1,3 @@
-
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
@@ -68,10 +67,4 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  // Add production specific settings
-  build: {
-    sourcemap: true, // Enable sourcemaps for debugging
-    // Add public path to ensure the app works when hosted on the Lovable portal
-    base: './',
-  }
 }));

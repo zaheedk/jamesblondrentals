@@ -83,24 +83,19 @@ const SearchForm = () => {
   
   const isLocationError = !!locationError;
   
-  const isLovableHosted = window.location.hostname.includes('lovable.dev') || 
-                          window.location.hostname.includes('lovable-apps') ||
-                          window.location.hostname.includes('lovable.app');
-
   useEffect(() => {
     initializeApi({
       apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
       apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
       apiUrl: "/api/rcm/booking/v3.2/",
-      useMockData: false,
-      useDirectApi: isLovableHosted
+      useMockData: false // Force real API connection only
     }).catch(error => {
       console.error('Failed to initialize API:', error);
       toast.error("Error connecting to booking system", {
         description: "Please check your internet connection or try again later"
       });
     });
-  }, [initializeApi, isLovableHosted]);
+  }, [initializeApi]);
 
   useEffect(() => {
     console.log('Setting default dates');

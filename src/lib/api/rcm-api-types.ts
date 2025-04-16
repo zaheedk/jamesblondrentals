@@ -391,10 +391,8 @@ export interface RCMApiConfig {
 }
 
 export interface RCMConfigInit {
+  apiUrl?: string;
   apiKey?: string;
   apiSecret?: string;
-  apiUrl?: string;
   useMockData?: boolean;
-  useDirectApi?: boolean;
-  useCorsProxy?: boolean;
 }

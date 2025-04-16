@@ -21,18 +21,8 @@ import { toast } from 'sonner';
 const DEFAULT_CONFIG: RCMApiConfig = {
   apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
   apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
-  apiUrl: "/api/rcm/booking/v3.2" // Use the proxy URL in development
+  apiUrl: "/api/rcm/booking/v3.2" // Use the proxy URL
 };
-
-// Direct API URL for production environments
-const DIRECT_API_URL = "https://apis.rentalcarmanager.com/booking/v3.2";
-
-// CORS proxy URLs for production/published environments
-const CORS_PROXY_URLS = [
-  "https://corsproxy.io/?",
-  "https://api.allorigins.win/raw?url=",
-  "https://cors-anywhere.herokuapp.com/"
-];
 
 // Mock data definitions remain but won't be used unless explicitly requested
 const MOCK_STEP1_DATA: RCMStep1Response = {
@@ -106,12 +96,6 @@ class RCMApiClient {
   private initialized: boolean = false;
   private useMockData: boolean = false;
   private apiConnectionFailed: boolean = false;
-  private apiFailedAttempts: number = 0;
-  private maxFailAttempts: number = 2;
-  private environment: string = process.env.NODE_ENV || 'unknown';
-  private useDirectApi: boolean = false;
-  private isLovableHosted: boolean = false;
-  private currentCorsProxyIndex: number = -1; // Not using CORS proxy by default
 
   constructor(config: RCMApiConfig) {
     // Ensure API URL doesn't end with a slash
@@ -119,23 +103,6 @@ class RCMApiClient {
       ...config,
       apiUrl: config.apiUrl.replace(/\/$/, '')
     };
-    
-    // Check if we're running on Lovable hosted environment
-    this.isLovableHosted = window.location.hostname.includes('lovable.dev') || 
-                          window.location.hostname.includes('lovable-apps') || 
-                          window.location.hostname.includes('lovable.app');
-    
-    console.log('RCM API Client initialized. Environment:', this.environment);
-    console.log('Running on Lovable hosted environment:', this.isLovableHosted);
-    
-    // In production or Lovable hosted environment, immediately configure for direct API access
-    if (this.environment === 'production' || this.isLovableHosted) {
-      console.log('Initializing RCM API client for production or hosted environment');
-      this.useDirectApi = true;
-      // Start with the first CORS proxy by default in production
-      this.currentCorsProxyIndex = 0;
-      console.log('Using direct API with CORS proxy in production/hosted environment');
-    }
   }
 
   /**
@@ -146,53 +113,19 @@ class RCMApiClient {
     if (config.apiSecret) this.config.apiSecret = config.apiSecret;
     if (config.apiUrl) this.config.apiUrl = config.apiUrl.replace(/\/$/, '');
     
-    // Reset connection failure flags when re-initializing
+    // Only use mock data if explicitly requested, default to false
+    this.useMockData = config.useMockData === true;
+    
+    // Always reset the connection status on initialization
     this.apiConnectionFailed = false;
-    this.apiFailedAttempts = 0;
-    
-    // Configure CORS proxy usage
-    if (config.useCorsProxy === true) {
-      // If explicitly requested to use a CORS proxy, set it
-      this.currentCorsProxyIndex = 0;
-    } else if (config.useCorsProxy === false) {
-      // If explicitly requested not to use a CORS proxy, disable it
-      this.currentCorsProxyIndex = -1;
-    }
-    
-    // For Lovable hosted apps, default to direct API access with CORS proxy
-    if (this.isLovableHosted && config.useDirectApi !== false) {
-      this.useDirectApi = true;
-      // Default to using CORS proxy on Lovable hosted unless explicitly turned off
-      if (config.useCorsProxy !== false && this.currentCorsProxyIndex === -1) {
-        this.currentCorsProxyIndex = 0;
-      }
-      console.log('Using direct API access for Lovable hosted app with CORS proxy:', this.currentCorsProxyIndex);
-    } else if (config.useDirectApi === true) {
-      this.useDirectApi = true;
-    } else {
-      this.useDirectApi = false;
-    }
-    
-    // Use mock data if explicitly requested, or if we previously detected API failures
-    this.useMockData = config.useMockData === true || this.apiConnectionFailed;
     
     this.initialized = true;
     
     console.log('RCM API initialized with config:', {
       apiUrl: this.config.apiUrl,
       apiKey: this.config.apiKey,
-      useMockData: this.useMockData,
-      environment: this.environment,
-      isLovableHosted: this.isLovableHosted,
-      useDirectApi: this.useDirectApi,
-      corsProxyIndex: this.currentCorsProxyIndex
+      useMockData: this.useMockData
     });
-    
-    // Log additional debug info for production environments
-    if (this.environment === 'production' || this.isLovableHosted) {
-      const effectiveApiUrl = this.buildApiUrl();
-      console.log('Effective API URL:', effectiveApiUrl);
-    }
   }
 
   /**
@@ -202,12 +135,6 @@ class RCMApiClient {
     if (!this.initialized) {
       console.log('RCM API not explicitly initialized, using default config');
       this.initialized = true;
-      
-      // For Lovable hosted apps, default to direct API access if not initialized
-      if (this.isLovableHosted) {
-        this.useDirectApi = true;
-        console.log('Using direct API access for uninitialized Lovable hosted app');
-      }
     }
   }
 
@@ -233,21 +160,13 @@ class RCMApiClient {
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     headers.append('Accept', 'application/json');
-    headers.append('signature', signature);
-    
-    // Add additional headers for direct API requests when needed
-    if (this.useDirectApi) {
-      // For direct API calls, we might need CORS headers
-      headers.append('X-Requested-With', 'XMLHttpRequest');
-    }
+    headers.append('signature', signature); 
     
     // Log request details for debugging
     console.log('RCM API Request:', {
       method,
       timestamp,
       signature,
-      useDirectApi: this.useDirectApi,
-      corsProxyIndex: this.currentCorsProxyIndex,
       body: requestBody
     });
     
@@ -256,47 +175,12 @@ class RCMApiClient {
 
   /**
    * Builds the correct API URL with the API key format
+   * Format: /api/rcm/booking/v3.2/[API_KEY]?apikey=[API_KEY]
    */
   private buildApiUrl(): string {
-    let baseUrl = this.config.apiUrl;
-    
-    // If direct API mode is enabled or we're in production, use the direct URL
-    if (this.useDirectApi) {
-      baseUrl = DIRECT_API_URL;
-      console.log('Using direct API URL:', baseUrl);
-      
-      // If we're using a CORS proxy
-      if (this.currentCorsProxyIndex >= 0 && this.currentCorsProxyIndex < CORS_PROXY_URLS.length) {
-        const corsProxy = CORS_PROXY_URLS[this.currentCorsProxyIndex];
-        console.log('Using CORS proxy:', corsProxy);
-        baseUrl = corsProxy + encodeURIComponent(baseUrl);
-      }
-    }
-    
-    const url = `${baseUrl}/${this.config.apiKey}?apikey=${this.config.apiKey}`;
-    console.log('Built API URL:', url, 'Direct mode:', this.useDirectApi, 'CORS proxy index:', this.currentCorsProxyIndex);
+    const url = `${this.config.apiUrl}/${this.config.apiKey}?apikey=${this.config.apiKey}`;
+    console.log('Built API URL:', url);
     return url;
-  }
-  
-  /**
-   * Check if we should use mock data
-   * - If explicitly set to use mock data
-   * - If API connection has failed too many times
-   */
-  private shouldUseMockData(requestMethod: string): boolean {
-    // Always check user-configured setting first
-    if (this.useMockData) {
-      console.log(`Using mock data because useMockData=true for: ${requestMethod}`);
-      return true;
-    }
-    
-    // Then check if API has failed too many times
-    if (this.apiConnectionFailed) {
-      console.log(`Using mock data because previous API connection failed for: ${requestMethod}`);
-      return true;
-    }
-    
-    return false;
   }
 
   /**
@@ -306,15 +190,16 @@ class RCMApiClient {
   async request<T>(method: string, requestMethod: string, body?: any): Promise<T> {
     this.ensureInitialized();
 
-    // Check if we should use mock data
-    if (this.shouldUseMockData(requestMethod)) {
+    // Only use mock data if explicitly enabled
+    if (this.useMockData) {
+      console.log('Using mock data because useMockData=true for:', requestMethod);
       return this.getMockData(requestMethod) as T;
     }
 
     try {
       // Build the URL with API key
       const apiUrl = this.buildApiUrl();
-      console.log(`Making ${method} request to ${apiUrl} for method ${requestMethod} in ${this.environment} environment`);
+      console.log(`Making ${method} request to ${apiUrl} for method ${requestMethod}`);
       
       // Create requestBody with method as the first property
       const requestBody = { method: requestMethod, ...body };
@@ -322,163 +207,52 @@ class RCMApiClient {
       // Create headers with auth tokens
       const headers = this.createHeaders(method, requestBody);
       
-      // Configure fetch options based on environment
-      const fetchOptions: RequestInit = {
+      // Make the request
+      const response = await fetch(apiUrl, {
         method,
         headers,
         body: JSON.stringify(requestBody),
-      };
-      
-      // If using CORS proxy, we need to adjust mode
-      if (this.currentCorsProxyIndex >= 0) {
-        fetchOptions.mode = 'cors';
-        console.log('Using CORS mode for fetch with proxy');
-      }
-      
-      // Make the request with a timeout
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 15000); // 15 second timeout
-      
-      try {
-        fetchOptions.signal = controller.signal;
-        const response = await fetch(apiUrl, fetchOptions);
-        clearTimeout(timeout);
-        
-        // Check if response is JSON
-        const contentType = response.headers.get("content-type");
-        console.log(`API response content type: ${contentType}`);
-        
-        if (!contentType || contentType.indexOf("application/json") === -1) {
-          console.error("Non-JSON response received:", contentType);
-          
-          // Capture response text for better debugging
-          const responseText = await response.text();
-          console.error("Response text preview:", responseText.substring(0, 500));
-          
-          // Increment failure counter
-          this.apiFailedAttempts++;
-          
-          // Try the next connection strategy
-          if (this.tryNextConnectionStrategy()) {
-            // Retry the request with new connection strategy
-            return this.request<T>(method, requestMethod, body);
-          }
-          
-          // If all strategies failed, switch to mock data
-          if (this.apiFailedAttempts >= this.maxFailAttempts) {
-            this.switchToMockData();
-            return this.getMockData(requestMethod) as T;
-          }
-          
-          throw new Error(`API returned non-JSON response (${contentType}). Environment: ${this.environment}`);
-        }
-
-        // Reset failure counter on successful response
-        this.apiFailedAttempts = 0;
-        this.apiConnectionFailed = false;
-
-        // Handle non-OK responses
-        if (!response.ok) {
-          const errorText = await response.text();
-          let errorData;
-          
-          try {
-            errorData = JSON.parse(errorText);
-          } catch (e) {
-            errorData = { message: errorText || `API request failed: ${response.status}` };
-          }
-          
-          console.error(`API error: ${response.status} ${response.statusText}`, errorData);
-          throw new Error(errorData.message || `Request failed with status: ${response.status}`);
-        }
-
-        // Parse and return the response
-        const responseData = await response.json();
-        console.log('API response:', responseData);
-        
-        // Check for API errors in the response
-        if (responseData.status === "ERR") {
-          console.error('API returned error:', responseData.error);
-          throw new Error(responseData.error || 'Unknown API error');
-        }
-        
-        return responseData;
-      } catch (error: any) {
-        clearTimeout(timeout);
-        
-        // Check if it was a timeout
-        if (error.name === 'AbortError') {
-          console.error('API request timed out');
-          this.apiFailedAttempts++;
-          
-          // Try the next connection strategy
-          if (this.tryNextConnectionStrategy()) {
-            // Retry the request with new connection strategy
-            return this.request<T>(method, requestMethod, body);
-          }
-        }
-        
-        throw error;
-      }
-    } catch (error) {
-      console.error(`RCM API request failed in ${this.environment} environment:`, error);
-      
-      // Increment failure counter
-      this.apiFailedAttempts++;
-      
-      // Try the next connection strategy
-      if (this.tryNextConnectionStrategy()) {
-        // Retry the request with new connection strategy
-        return this.request<T>(method, requestMethod, body);
-      }
-      
-      // If all strategies failed, switch to mock data
-      if (this.apiFailedAttempts >= this.maxFailAttempts) {
-        this.switchToMockData();
-        return this.getMockData(requestMethod) as T;
-      }
-      
-      throw error;
-    }
-  }
-  
-  /**
-   * Try the next connection strategy when the current one fails
-   * Returns true if there's a new strategy to try
-   */
-  private tryNextConnectionStrategy(): boolean {
-    if (!this.useDirectApi) {
-      // Switch to direct API if we were using proxy
-      console.log('Switching to direct API after proxy failure');
-      this.useDirectApi = true;
-      this.currentCorsProxyIndex = -1;
-      return true;
-    } else if (this.currentCorsProxyIndex < 0) {
-      // Switch to first CORS proxy if we were using direct without proxy
-      console.log('Switching to CORS proxy after direct API failure');
-      this.currentCorsProxyIndex = 0;
-      return true;
-    } else if (this.currentCorsProxyIndex < CORS_PROXY_URLS.length - 1) {
-      // Try next CORS proxy
-      this.currentCorsProxyIndex++;
-      console.log(`Trying next CORS proxy: ${CORS_PROXY_URLS[this.currentCorsProxyIndex]}`);
-      return true;
-    }
-    
-    // No more strategies to try
-    return false;
-  }
-  
-  /**
-   * Switch to mock data mode when all API strategies have failed
-   */
-  private switchToMockData(): void {
-    if (!this.apiConnectionFailed) {
-      this.apiConnectionFailed = true;
-      this.useMockData = true;
-      toast.error("API Connection Failed", {
-        description: `Switching to demo mode with sample data. Environment: ${this.environment}`
+        credentials: 'same-origin', // Important for cookies if needed
       });
+
+      // Check if response is JSON
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.indexOf("application/json") === -1) {
+        console.error("Non-JSON response received:", contentType);
+        const text = await response.text();
+        console.error("Response text:", text);
+        throw new Error("API returned non-JSON response");
+      }
+
+      // Handle non-OK responses
+      if (!response.ok) {
+        const errorText = await response.text();
+        let errorData;
+        
+        try {
+          errorData = JSON.parse(errorText);
+        } catch (e) {
+          errorData = { message: errorText || `API request failed: ${response.status}` };
+        }
+        
+        console.error(`API error: ${response.status} ${response.statusText}`, errorData);
+        throw new Error(errorData.message || `Request failed with status: ${response.status}`);
+      }
+
+      // Parse and return the response
+      const responseData = await response.json();
+      console.log('API response:', responseData);
+      
+      // Check for API errors in the response
+      if (responseData.status === "ERR") {
+        console.error('API returned error:', responseData.error);
+        throw new Error(responseData.error || 'Unknown API error');
+      }
+      
+      return responseData;
+    } catch (error) {
+      console.error('RCM API request failed:', error);
+      throw error;
     }
   }
 
