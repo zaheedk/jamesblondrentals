@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -41,6 +40,17 @@ const Booking = () => {
   
   // Raw API response state
   const [rawApiResponse, setRawApiResponse] = useState<any>(null);
+
+  // New state for seasonal rates and mandatory fees
+  const [seasonalRates, setSeasonalRates] = useState<{
+    dailyRate: number;
+    totalAmount: number;
+    discountAmount?: number;
+  }[]>([]);
+  const [mandatoryFees, setMandatoryFees] = useState<{
+    name: string;
+    amount: number;
+  }[]>([]);
 
   // Calculate number of days for rental
   const calculateNumberOfDays = () => {
@@ -118,6 +128,25 @@ const Booking = () => {
         
         const defaultKmCharge = kmcharges?.find(k => k.isdefault) || null;
         setSelectedKmCharge(defaultKmCharge);
+        
+        // Process seasonal rates if available
+        if (response.results.seasonalrates) {
+          const rates = response.results.seasonalrates.map((rate: any) => ({
+            dailyRate: rate.dailyratebeforediscount || 0,
+            totalAmount: rate.dailyrateafterdiscount || 0,
+            discountAmount: rate.discountrate || 0
+          }));
+          setSeasonalRates(rates);
+        }
+        
+        // Process mandatory fees if available
+        if (response.results.mandatoryfees) {
+          const fees = response.results.mandatoryfees.map((fee: any) => ({
+            name: fee.name || "Mandatory Fee",
+            amount: fee.totalfeeamount || 0
+          }));
+          setMandatoryFees(fees);
+        }
       } else {
         console.error("API returned error or missing results:", response.error || "Unknown error");
         toast.error("Could not load booking options", {
@@ -342,6 +371,8 @@ const Booking = () => {
             kmChargePrice={kmChargePrice}
             currencySymbol="$"
             vehicleImageUrl={bookingData.vehicleImage}
+            seasonalRates={seasonalRates}
+            mandatoryFees={mandatoryFees}
           />
         </div>
       </div>

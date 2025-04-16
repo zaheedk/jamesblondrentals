@@ -15,6 +15,15 @@ interface BookingSummaryProps {
   kmChargePrice: number;
   currencySymbol: string;
   vehicleImageUrl?: string;
+  seasonalRates?: {
+    dailyRate: number;
+    totalAmount: number;
+    discountAmount?: number;
+  }[];
+  mandatoryFees?: {
+    name: string;
+    amount: number;
+  }[];
 }
 
 const BookingSummary = ({
@@ -28,7 +37,9 @@ const BookingSummary = ({
   selectedExtras,
   kmChargePrice,
   currencySymbol,
-  vehicleImageUrl
+  vehicleImageUrl,
+  seasonalRates = [],
+  mandatoryFees = []
 }: BookingSummaryProps) => {
   const [imageError, setImageError] = React.useState(false);
   
@@ -38,22 +49,17 @@ const BookingSummary = ({
     selectedExtras.reduce((sum, extra) => sum + extra.totalPrice, 0) + 
     kmChargePrice;
 
-  // Add validation for dates before formatting
   const formatSafeDate = (date: Date | string | null | undefined): string => {
     if (!date) return "Date not available";
     
     try {
-      // If it's already a valid Date object
       if (date instanceof Date && !isNaN(date.getTime())) {
         return format(date, "PPP");
       }
       
-      // If it's a string
       if (typeof date === 'string') {
-        // Check if it's a dd/MM/yyyy format
         if (date.includes('/')) {
           try {
-            // Handle format like "14/Apr/2025"
             if (date.match(/\d+\/[A-Za-z]+\/\d+/)) {
               const parts = date.split('/');
               const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
@@ -70,7 +76,6 @@ const BookingSummary = ({
               }
             }
             
-            // Try standard dd/MM/yyyy format
             const parsedDate = parse(date, 'dd/MM/yyyy', new Date());
             if (isValid(parsedDate) && !isNaN(parsedDate.getTime())) {
               return format(parsedDate, "PPP");
@@ -80,7 +85,6 @@ const BookingSummary = ({
           }
         }
         
-        // Check if it's an ISO string
         if (date.includes('T')) {
           try {
             const dateObj = new Date(date);
@@ -92,7 +96,6 @@ const BookingSummary = ({
           }
         }
         
-        // Last attempt - try to parse as is
         try {
           const fallbackDate = new Date(date);
           if (isValid(fallbackDate) && !isNaN(fallbackDate.getTime())) {
@@ -103,7 +106,6 @@ const BookingSummary = ({
         }
       }
       
-      // If all parsing attempts fail, return the original string
       return typeof date === 'string' ? date : "Invalid date format";
     } catch (err) {
       console.error("Error formatting date:", err, date);
@@ -111,11 +113,9 @@ const BookingSummary = ({
     }
   };
 
-  // Format pickup and dropoff dates
   const formattedPickupDate = formatSafeDate(pickupDate);
   const formattedDropoffDate = formatSafeDate(dropoffDate);
   
-  // Calculate rental duration
   const calculateRentalDuration = () => {
     try {
       let pickup: Date | null = null;
@@ -124,7 +124,6 @@ const BookingSummary = ({
       if (pickupDate instanceof Date) {
         pickup = pickupDate;
       } else if (typeof pickupDate === 'string') {
-        // Handle format like "14/Apr/2025"
         if (pickupDate.match(/\d+\/[A-Za-z]+\/\d+/)) {
           const parts = pickupDate.split('/');
           const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
@@ -147,7 +146,6 @@ const BookingSummary = ({
       if (dropoffDate instanceof Date) {
         dropoff = dropoffDate;
       } else if (typeof dropoffDate === 'string') {
-        // Handle format like "14/Apr/2025"
         if (dropoffDate.match(/\d+\/[A-Za-z]+\/\d+/)) {
           const parts = dropoffDate.split('/');
           const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
@@ -168,7 +166,7 @@ const BookingSummary = ({
       }
       
       if (pickup && dropoff && isValid(pickup) && isValid(dropoff)) {
-        const days = differenceInDays(dropoff, pickup) + 1; // +1 to include the pickup day
+        const days = differenceInDays(dropoff, pickup) + 1;
         return days > 0 ? days : 1;
       }
     } catch (e) {
@@ -180,11 +178,13 @@ const BookingSummary = ({
   
   const rentalDuration = calculateRentalDuration();
 
-  // Function to handle image load errors
   const handleImageError = () => {
     console.log(`Image failed to load for vehicle: ${vehicleName}`);
     setImageError(true);
   };
+
+  const totalSeasonalRates = seasonalRates.reduce((sum, rate) => sum + rate.totalAmount, 0);
+  const totalMandatoryFees = mandatoryFees.reduce((sum, fee) => sum + fee.amount, 0);
 
   return (
     <Card>
@@ -192,7 +192,6 @@ const BookingSummary = ({
         <CardTitle>Booking Summary</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Vehicle image with error handling */}
         {vehicleImageUrl && !imageError && (
           <div className="w-full aspect-video rounded-md mb-2 overflow-hidden">
             <img
@@ -221,7 +220,6 @@ const BookingSummary = ({
           <p className="text-sm">{formattedDropoffDate}</p>
         </div>
         
-        {/* Duration of hire */}
         <div className="space-y-2">
           <h4 className="font-medium flex items-center">
             <Calendar className="h-4 w-4 mr-2" /> Duration of Hire
@@ -265,6 +263,42 @@ const BookingSummary = ({
                 <span>{currencySymbol}{extra.totalPrice.toFixed(2)}</span>
               </div>
             ))}
+          </div>
+        )}
+        
+        {seasonalRates.length > 0 && (
+          <div className="py-2">
+            <div className="font-medium flex items-center mb-2">
+              <Calendar className="h-4 w-4 mr-2" /> Seasonal Rates:
+            </div>
+            {seasonalRates.map((rate, index) => (
+              <div key={index} className="flex justify-between pl-6 py-1">
+                <span>Daily Rate</span>
+                <span>{currencySymbol}{rate.dailyRate.toFixed(2)}</span>
+              </div>
+            ))}
+            <div className="flex justify-between pl-6 py-1 font-medium">
+              <span>Total Seasonal Charges</span>
+              <span>{currencySymbol}{totalSeasonalRates.toFixed(2)}</span>
+            </div>
+          </div>
+        )}
+        
+        {mandatoryFees.length > 0 && (
+          <div className="py-2">
+            <div className="font-medium flex items-center mb-2">
+              <Shield className="h-4 w-4 mr-2" /> Mandatory Fees:
+            </div>
+            {mandatoryFees.map((fee, index) => (
+              <div key={index} className="flex justify-between pl-6 py-1">
+                <span>{fee.name}</span>
+                <span>{currencySymbol}{fee.amount.toFixed(2)}</span>
+              </div>
+            ))}
+            <div className="flex justify-between pl-6 py-1 font-medium">
+              <span>Total Mandatory Fees</span>
+              <span>{currencySymbol}{totalMandatoryFees.toFixed(2)}</span>
+            </div>
           </div>
         )}
         
