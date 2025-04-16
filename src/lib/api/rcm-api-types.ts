@@ -333,6 +333,22 @@ export interface RCMStep3Results {
     currencysymbol: string;
     currencyname: string;
   };
+  seasonalrates?: {
+    vehiclecategoryid: number | string;
+    dailyratebeforediscount: number;
+    dailyrateafterdiscount: number;
+    discountrate: number;
+    discounttype: string;
+    numberofdays: number;
+    numberofhours: number;
+    rateperiod: string;
+  }[];
+  mandatoryfees?: {
+    vehiclecategoryid: number | string;
+    vehiclecategorytypeid: number | string;
+    totalfeeamount: number;
+    name?: string;
+  }[];
 }
 
 export interface RCMStep3Response {

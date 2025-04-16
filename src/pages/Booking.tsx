@@ -130,7 +130,7 @@ const Booking = () => {
         setSelectedKmCharge(defaultKmCharge);
         
         // Process seasonal rates if available
-        if (response.results.seasonalrates) {
+        if (response.results.seasonalrates && Array.isArray(response.results.seasonalrates)) {
           const rates = response.results.seasonalrates.map((rate: any) => ({
             dailyRate: rate.dailyratebeforediscount || 0,
             totalAmount: rate.dailyrateafterdiscount || 0,
@@ -140,7 +140,7 @@ const Booking = () => {
         }
         
         // Process mandatory fees if available
-        if (response.results.mandatoryfees) {
+        if (response.results.mandatoryfees && Array.isArray(response.results.mandatoryfees)) {
           const fees = response.results.mandatoryfees.map((fee: any) => ({
             name: fee.name || "Mandatory Fee",
             amount: fee.totalfeeamount || 0
