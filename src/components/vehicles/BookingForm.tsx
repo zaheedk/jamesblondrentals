@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Vehicle } from "@/lib/types";
@@ -17,8 +16,8 @@ interface BookingFormProps {
   dropoffTime: string;
   ageId: string;
   vehicleImageUrl?: string;
-  totalRateAfterDiscount?: number; // Add this new prop
-  totalDiscountAmount?: number;     // Add this new prop
+  totalRateAfterDiscount?: number;
+  totalDiscountAmount?: number;
 }
 
 export default function BookingForm({ 
@@ -33,8 +32,8 @@ export default function BookingForm({
   dropoffTime,
   ageId,
   vehicleImageUrl,
-  totalRateAfterDiscount, // Use the new prop
-  totalDiscountAmount     // Use the new prop
+  totalRateAfterDiscount,
+  totalDiscountAmount
 }: BookingFormProps) {
   const navigate = useNavigate();
   
@@ -87,10 +86,6 @@ export default function BookingForm({
       formatted: { pickupDate: formattedPickupDate, dropoffDate: formattedDropoffDate }
     });
     
-    // Calculate base price from either the rate after discount or the regular price
-    const basePrice = totalRateAfterDiscount || 
-      (typeof vehicle.price === 'number' ? vehicle.price : parseFloat(vehicle.price || '0'));
-    
     console.log("Saving booking data with totalRateAfterDiscount:", totalRateAfterDiscount);
     
     saveBookingData({
@@ -106,7 +101,7 @@ export default function BookingForm({
       dropoffDate: formattedDropoffDate,
       dropoffTime,
       ageId,
-      basePrice: basePrice,
+      basePrice: totalRateAfterDiscount || (typeof vehicle.price === 'number' ? vehicle.price : parseFloat(vehicle.price || '0')),
       totalRateAfterDiscount: totalRateAfterDiscount,
       totalDiscountAmount: totalDiscountAmount,
       vehicleImage: vehicleImageUrl || getFirstVehicleImage(vehicle)

@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -8,14 +7,14 @@ import BookingForm from "./BookingForm";
 
 interface VehicleCardProps {
   vehicle: Vehicle;
-  totalRateAfterDiscount?: number;  // Add this new prop
-  totalDiscountAmount?: number;     // Add this new prop
+  totalRateAfterDiscount?: number;
+  totalDiscountAmount?: number;
 }
 
 const VehicleCard = ({ 
   vehicle, 
-  totalRateAfterDiscount,  // Use the new prop
-  totalDiscountAmount      // Use the new prop
+  totalRateAfterDiscount,
+  totalDiscountAmount
 }: VehicleCardProps) => {
   const [searchParams] = useSearchParams();
   const [imageError, setImageError] = React.useState(false);
@@ -54,7 +53,6 @@ const VehicleCard = ({
   
   const imageUrl = getImageUrl();
   
-  // Function to handle image load errors
   const handleImageError = () => {
     console.log(`Image failed to load for vehicle: ${vehicle.make} ${vehicle.model}`);
     setImageError(true);
