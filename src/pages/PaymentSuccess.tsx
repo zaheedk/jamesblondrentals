@@ -8,6 +8,7 @@ import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { formatCurrency } from "@/lib/utils";
 import { rcmApi } from "@/lib/api/rcm-api";
 import { differenceInDays, parseISO, isValid } from "date-fns";
+import { useApiDiagnostics } from "@/hooks/use-api-diagnostics";
 
 interface BookingDetails {
   vehicleName: string;
@@ -46,6 +47,8 @@ const PaymentSuccess = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [rentalDuration, setRentalDuration] = useState<number>(0);
   const [imageError, setImageError] = useState<boolean>(false);
+  const [corsError, setCorsError] = useState<boolean>(false);
+  const { runDiagnostics } = useApiDiagnostics();
   const [windcaveResponseDetails, setWindcaveResponseDetails] = useState<{
     amount?: number;
     transactionDate?: string;
@@ -130,7 +133,22 @@ const PaymentSuccess = () => {
               });
               
               if (windcaveReservationRef) {
-                await fetchBookingFromRCM(windcaveReservationRef);
+                try {
+                  await fetchBookingFromRCM(windcaveReservationRef);
+                } catch (error) {
+                  console.error("Error fetching booking with reservation ref:", error);
+                  setCorsError(true);
+                  // Try to diagnose API connectivity
+                  const diagnosticResult = await runDiagnostics();
+                  console.log("API diagnostics result:", diagnosticResult);
+                  
+                  if (!diagnosticResult.apiAccessible) {
+                    console.error("API connectivity issue detected:", diagnosticResult.message);
+                    toast.error("API Connection Error", {
+                      description: "Could not connect to booking system. Using session data instead."
+                    });
+                  }
+                }
                 setIsLoading(false);
                 return;
               }
@@ -166,53 +184,69 @@ const PaymentSuccess = () => {
         
         if (bookingReservationRef && (!sessionBookingData || bookingReservationRef !== sessionBookingData.reservationRef)) {
           console.log("Fetching booking details using reservation reference:", bookingReservationRef);
-          await fetchBookingFromRCM(bookingReservationRef);
-        } else if (sessionBookingData) {
-          const convertedDetails: BookingDetails = {
-            vehicleName: sessionBookingData.vehicleName || 'Vehicle',
-            pickupDate: sessionBookingData.pickupDate,
-            pickupTime: sessionBookingData.pickupTime, 
-            dropoffDate: sessionBookingData.dropoffDate,
-            dropoffTime: sessionBookingData.dropoffTime,
-            paymentAmount: sessionBookingData.paymentAmount || 0,
-            basePrice: sessionBookingData.basePrice || 0,
-            paymentType: sessionBookingData.paymentType,
-            customerFirstName: sessionBookingData.customerFirstName,
-            customerLastName: sessionBookingData.customerLastName,
-            customerEmail: sessionBookingData.customerEmail,
-            customerPhone: sessionBookingData.customerPhone,
-            customerDob: sessionBookingData.customerDob,
-            customerLicenseExpiry: sessionBookingData.customerLicenseExpiry,
-            customerAddress: sessionBookingData.customerAddress,
-            reservationRef: bookingReservationRef,
-            vehicleImage: sessionBookingData.vehicleImage,
-            insuranceName: sessionBookingData.insuranceName,
-            insurancePrice: sessionBookingData.insurancePrice,
-            selectedExtras: sessionBookingData.selectedExtras?.map(extra => ({
-              name: extra.name,
-              quantity: extra.quantity,
-              price: extra.price
-            })),
-            extraKmsName: sessionBookingData.extraKmsName,
-            extraKmsPrice: sessionBookingData.extraKmsPrice,
-            pickupLocationName: sessionBookingData.pickupLocationName,
-            dropoffLocationName: sessionBookingData.dropoffLocationName
-          };
-          setBookingDetails(convertedDetails);
-          
-          // Calculate rental duration
-          if (convertedDetails.pickupDate && convertedDetails.dropoffDate) {
-            calculateRentalDuration(convertedDetails.pickupDate, convertedDetails.dropoffDate);
+          try {
+            await fetchBookingFromRCM(bookingReservationRef);
+          } catch (error) {
+            console.error("Error fetching booking with reservation ref:", error);
+            setCorsError(true);
+            
+            // Fall back to session data if available
+            if (sessionBookingData) {
+              console.log("API call failed, using session data instead");
+              useSessionData(sessionBookingData);
+            }
           }
+        } else if (sessionBookingData) {
+          useSessionData(sessionBookingData);
         }
         
         setIsLoading(false);
       } catch (error) {
         console.error("Error in fetchBookingDetails:", error);
         setIsLoading(false);
+        setCorsError(true);
         toast.error("Error", {
           description: "Failed to load booking details."
         });
+      }
+    };
+    
+    const useSessionData = (sessionBookingData: any) => {
+      const convertedDetails: BookingDetails = {
+        vehicleName: sessionBookingData.vehicleName || 'Vehicle',
+        pickupDate: sessionBookingData.pickupDate,
+        pickupTime: sessionBookingData.pickupTime, 
+        dropoffDate: sessionBookingData.dropoffDate,
+        dropoffTime: sessionBookingData.dropoffTime,
+        paymentAmount: sessionBookingData.paymentAmount || 0,
+        basePrice: sessionBookingData.basePrice || 0,
+        paymentType: sessionBookingData.paymentType,
+        customerFirstName: sessionBookingData.customerFirstName,
+        customerLastName: sessionBookingData.customerLastName,
+        customerEmail: sessionBookingData.customerEmail,
+        customerPhone: sessionBookingData.customerPhone,
+        customerDob: sessionBookingData.customerDob,
+        customerLicenseExpiry: sessionBookingData.customerLicenseExpiry,
+        customerAddress: sessionBookingData.customerAddress,
+        reservationRef: sessionBookingData.reservationRef,
+        vehicleImage: sessionBookingData.vehicleImage,
+        insuranceName: sessionBookingData.insuranceName,
+        insurancePrice: sessionBookingData.insurancePrice,
+        selectedExtras: sessionBookingData.selectedExtras?.map((extra: any) => ({
+          name: extra.name,
+          quantity: extra.quantity,
+          price: extra.price
+        })),
+        extraKmsName: sessionBookingData.extraKmsName,
+        extraKmsPrice: sessionBookingData.extraKmsPrice,
+        pickupLocationName: sessionBookingData.pickupLocationName,
+        dropoffLocationName: sessionBookingData.dropoffLocationName
+      };
+      setBookingDetails(convertedDetails);
+      
+      // Calculate rental duration
+      if (convertedDetails.pickupDate && convertedDetails.dropoffDate) {
+        calculateRentalDuration(convertedDetails.pickupDate, convertedDetails.dropoffDate);
       }
     };
     
@@ -221,6 +255,16 @@ const PaymentSuccess = () => {
         if (!reservationRef) {
           console.error("No reservation reference provided for API call");
           return false;
+        }
+        
+        // Initialize API with CORS proxy for published app
+        if (window.location.hostname.includes('lovable.app') || window.location.hostname.includes('lovable.dev')) {
+          console.log("Initializing API with CORS proxy for published app");
+          rcmApi.initialize({
+            useCorsProxy: true,
+            useDirectApi: true,
+            useMockData: false
+          });
         }
         
         const requestPayload = {
@@ -250,7 +294,15 @@ const PaymentSuccess = () => {
         }
       } catch (error) {
         console.error("Error fetching booking details from RCM:", error);
-        return false;
+        // If we get a CORS error, try falling back to mock data
+        if (error instanceof Error && (error.message.includes("CORS") || error.message.includes("cors"))) {
+          console.log("CORS error detected, switching to mock data");
+          rcmApi.initialize({
+            useMockData: true
+          });
+          setCorsError(true);
+        }
+        throw error;
       }
     };
     
@@ -314,62 +366,141 @@ const PaymentSuccess = () => {
       }
     };
     
-    fetchBookingDetails();
-  }, [navigate, location]);
-  
-  const mapApiResponseToBookingDetails = (apiResponse: any, reservationRef: string): BookingDetails => {
-    const bookingInfo = apiResponse.bookinginfo && apiResponse.bookinginfo[0] ? apiResponse.bookinginfo[0] : {};
-    const customerInfo = apiResponse.customerinfo && apiResponse.customerinfo[0] ? apiResponse.customerinfo[0] : {};
-    const paymentInfo = apiResponse.paymentinfo && apiResponse.paymentinfo[0] ? apiResponse.paymentinfo[0] : {};
-    
-    // Try to extract extras from the API response
-    const extrasInfo: Array<{name: string; quantity: number; price: number}> = [];
-    if (apiResponse.extras && Array.isArray(apiResponse.extras)) {
-      apiResponse.extras.forEach((extra: any) => {
-        extrasInfo.push({
-          name: extra.description || extra.name || "Extra item",
-          quantity: parseInt(extra.quantity) || 1,
-          price: parseFloat(extra.amount) || 0
+    const mapApiResponseToBookingDetails = (apiResponse: any, reservationRef: string): BookingDetails => {
+      const bookingInfo = apiResponse.bookinginfo && apiResponse.bookinginfo[0] ? apiResponse.bookinginfo[0] : {};
+      const customerInfo = apiResponse.customerinfo && apiResponse.customerinfo[0] ? apiResponse.customerinfo[0] : {};
+      const paymentInfo = apiResponse.paymentinfo && apiResponse.paymentinfo[0] ? apiResponse.paymentinfo[0] : {};
+      
+      // Try to extract extras from the API response
+      const extrasInfo: Array<{name: string; quantity: number; price: number}> = [];
+      if (apiResponse.extras && Array.isArray(apiResponse.extras)) {
+        apiResponse.extras.forEach((extra: any) => {
+          extrasInfo.push({
+            name: extra.description || extra.name || "Extra item",
+            quantity: parseInt(extra.quantity) || 1,
+            price: parseFloat(extra.amount) || 0
+          });
         });
-      });
-    }
-    
-    return {
-      vehicleName: bookingInfo.vehiclecategory || "Vehicle",
-      pickupDate: bookingInfo.pickupdate || "N/A",
-      pickupTime: bookingInfo.pickuptime || "N/A",
-      dropoffDate: bookingInfo.dropoffdate || "N/A",
-      dropoffTime: bookingInfo.dropofftime || "N/A",
-      paymentAmount: parseFloat(paymentInfo.paidamount) || parseFloat(bookingInfo.totalcost) || 0,
-      basePrice: parseFloat(bookingInfo.totalcost) || 0,
-      customerFirstName: customerInfo.firstname || "N/A",
-      customerLastName: customerInfo.lastname || "N/A",
-      customerEmail: customerInfo.email || "N/A",
-      customerPhone: customerInfo.phone || customerInfo.mobile || "N/A",
-      customerDob: customerInfo.dateofbirth || "N/A",
-      customerLicenseExpiry: customerInfo.licenseexpires || "N/A",
-      customerAddress: customerInfo.fulladdress || customerInfo.address || "N/A",
-      reservationRef: reservationRef,
-      vehicleImage: bookingInfo.imageurl || bookingInfo.vehicleimageurl,
-      insuranceName: bookingInfo.insuranceoption || paymentInfo.insuranceoption,
-      insurancePrice: parseFloat(bookingInfo.insuranceamount) || parseFloat(paymentInfo.insuranceamount) || 0,
-      selectedExtras: extrasInfo,
-      extraKmsName: bookingInfo.kmcharge || bookingInfo.kmoption,
-      extraKmsPrice: parseFloat(bookingInfo.kmchargeamount) || 0,
-      pickupLocationName: bookingInfo.pickuplocationname,
-      dropoffLocationName: bookingInfo.dropofflocationname
+      }
+      
+      return {
+        vehicleName: bookingInfo.vehiclecategory || "Vehicle",
+        pickupDate: bookingInfo.pickupdate || "N/A",
+        pickupTime: bookingInfo.pickuptime || "N/A",
+        dropoffDate: bookingInfo.dropoffdate || "N/A",
+        dropoffTime: bookingInfo.dropofftime || "N/A",
+        paymentAmount: parseFloat(paymentInfo.paidamount) || parseFloat(bookingInfo.totalcost) || 0,
+        basePrice: parseFloat(bookingInfo.totalcost) || 0,
+        customerFirstName: customerInfo.firstname || "N/A",
+        customerLastName: customerInfo.lastname || "N/A",
+        customerEmail: customerInfo.email || "N/A",
+        customerPhone: customerInfo.phone || customerInfo.mobile || "N/A",
+        customerDob: customerInfo.dateofbirth || "N/A",
+        customerLicenseExpiry: customerInfo.licenseexpires || "N/A",
+        customerAddress: customerInfo.fulladdress || customerInfo.address || "N/A",
+        reservationRef: reservationRef,
+        vehicleImage: bookingInfo.imageurl || bookingInfo.vehicleimageurl,
+        insuranceName: bookingInfo.insuranceoption || paymentInfo.insuranceoption,
+        insurancePrice: parseFloat(bookingInfo.insuranceamount) || parseFloat(paymentInfo.insuranceamount) || 0,
+        selectedExtras: extrasInfo,
+        extraKmsName: bookingInfo.kmcharge || bookingInfo.kmoption,
+        extraKmsPrice: parseFloat(bookingInfo.kmchargeamount) || 0,
+        pickupLocationName: bookingInfo.pickuplocationname,
+        dropoffLocationName: bookingInfo.dropofflocationname
+      };
     };
-  };
-  
-  const handleImageError = () => {
-    console.log("Error loading vehicle image");
-    setImageError(true);
-  };
+    
+    const handleImageError = () => {
+      console.log("Error loading vehicle image");
+      setImageError(true);
+    };
+    
+    const handleTryCorsFix = async () => {
+      setIsLoading(true);
+      
+      // Try different CORS proxy configurations
+      try {
+        // Try direct API with different CORS proxy
+        rcmApi.initialize({
+          useCorsProxy: true,
+          useDirectApi: true,
+          useMockData: false
+        });
+        
+        const diagnosticResult = await runDiagnostics();
+        console.log("API diagnostics after CORS fix attempt:", diagnosticResult);
+        
+        if (diagnosticResult.apiAccessible) {
+          toast.success("API Connection Restored", {
+            description: "Successfully connected to booking system."
+          });
+          
+          // Reload the page to retry with new configuration
+          window.location.reload();
+        } else {
+          // If still failing, switch to mock data mode
+          rcmApi.initialize({
+            useMockData: true
+          });
+          
+          toast.info("Using Demo Mode", {
+            description: "Switched to demo mode with sample data due to API connection issues."
+          });
+          
+          // Reload with mock data
+          window.location.reload();
+        }
+      } catch (error) {
+        console.error("Error trying CORS fix:", error);
+        toast.error("Connection Error", {
+          description: "Could not establish connection to booking system."
+        });
+        setIsLoading(false);
+      }
+    };
+    
+    fetchBookingDetails();
+  }, [navigate, location, runDiagnostics]);
   
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
         <div className="w-12 h-12 border-4 border-t-blue-500 border-blue-200 rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+  
+  if (corsError && !bookingDetails) {
+    return (
+      <div className="container mx-auto px-4 py-8 text-center">
+        <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-8">
+          <h1 className="text-3xl font-bold mb-6">API Connection Error</h1>
+          <Alert variant="destructive" className="mb-6">
+            <AlertTitle>CORS Error</AlertTitle>
+            <AlertDescription>
+              We're having trouble connecting to our booking system due to CORS restrictions.
+            </AlertDescription>
+          </Alert>
+          <p className="text-gray-600 mb-6">
+            This is typically a temporary issue. Your booking may have been processed successfully 
+            despite this error. Please check your email for booking confirmation.
+          </p>
+          <p className="text-gray-600 mb-6">Transaction ID: {transactionId}</p>
+          <div className="space-y-4">
+            <Button 
+              onClick={handleTryCorsFix}
+              className="w-full bg-amber-600 hover:bg-amber-700"
+            >
+              Try Alternative Connection
+            </Button>
+            <Button 
+              onClick={() => navigate("/")}
+              className="w-full"
+            >
+              Return to Home
+            </Button>
+          </div>
+        </div>
       </div>
     );
   }
@@ -434,6 +565,15 @@ const PaymentSuccess = () => {
   return (
     <div className="container mx-auto px-4 py-8 text-center">
       <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-8">
+        {corsError && (
+          <Alert className="mb-6 bg-amber-50 border-amber-200">
+            <AlertTitle className="text-amber-800">API Connection Issue</AlertTitle>
+            <AlertDescription className="text-amber-700">
+              We're having trouble connecting to our booking system. Some information may be limited.
+            </AlertDescription>
+          </Alert>
+        )}
+        
         {paymentStatus === "success" ? (
           <>
             <CheckCircle2 className="h-16 w-16 text-green-500 mx-auto mb-4" />
