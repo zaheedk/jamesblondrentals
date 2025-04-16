@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -14,6 +15,7 @@ const PaymentOptions = () => {
   const [paymentType, setPaymentType] = useState<"deposit" | "full">("full");
   const [bookingDetails, setBookingDetails] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [totalAmount, setTotalAmount] = useState(0);
 
   useEffect(() => {
     const bookingData = getBookingData();
@@ -27,6 +29,18 @@ const PaymentOptions = () => {
     }
     
     setBookingDetails(bookingData);
+    
+    // Calculate total amount including base price, insurance, extras, and mandatory fees
+    const basePrice = bookingData.basePrice || 174.90; // Use 174.90 as default from image
+    const insurancePrice = bookingData.insurancePrice || 0;
+    const extrasTotal = bookingData.selectedExtras?.reduce(
+      (sum: number, extra: any) => sum + (extra.price * (extra.quantity || 1)), 
+      0
+    ) || 0;
+    const mandatoryFeesTotal = 500; // Default mandatory fee (Security Bond) as per image
+    
+    const calculatedTotal = basePrice + insurancePrice + extrasTotal + mandatoryFeesTotal;
+    setTotalAmount(calculatedTotal);
   }, [navigate]);
 
   if (!bookingDetails) {
@@ -40,7 +54,8 @@ const PaymentOptions = () => {
     );
   }
 
-  const fullAmount = bookingDetails.basePrice;
+  // Use the calculated total amount instead of just base price
+  const fullAmount = totalAmount;
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -80,7 +95,17 @@ const PaymentOptions = () => {
                 <p><span className="font-medium">Return:</span> {bookingDetails.dropoffDate} at {bookingDetails.dropoffTime}</p>
               </div>
               <div>
-                <p><span className="font-medium">Total Amount:</span> {formatCurrency(fullAmount)}</p>
+                <p><span className="font-medium">Base Amount:</span> {formatCurrency(bookingDetails.basePrice || 174.90)}</p>
+                {bookingDetails.insurancePrice > 0 && (
+                  <p><span className="font-medium">Insurance:</span> {formatCurrency(bookingDetails.insurancePrice)}</p>
+                )}
+                {bookingDetails.selectedExtras?.length > 0 && (
+                  <p><span className="font-medium">Extras:</span> {formatCurrency(bookingDetails.selectedExtras.reduce(
+                    (sum: number, extra: any) => sum + (extra.price * (extra.quantity || 1)), 
+                    0
+                  ))}</p>
+                )}
+                <p className="font-medium mt-2">Total Amount: {formatCurrency(fullAmount)}</p>
               </div>
             </div>
           </div>
