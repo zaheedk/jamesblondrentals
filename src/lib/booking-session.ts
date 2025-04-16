@@ -51,6 +51,11 @@ export interface BookingSessionData {
   customerAddress?: string;
   totalRateAfterDiscount?: number; // Add this new optional field
   totalDiscountAmount?: number;     // Also add total discount amount
+  // Add the new mandatory fees field
+  mandatoryFees?: Array<{
+    name: string;
+    amount: number;
+  }>;
 }
 
 export const BOOKING_SESSION_KEY = 'rcm_booking_data';

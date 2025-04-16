@@ -183,6 +183,12 @@ const Booking = () => {
         price: 0
       };
     });
+
+    const selectedAvailableCar = rawApiResponse?.results?.availablecars?.find(
+      car => car.vehiclecategoryid.toString() === bookingData?.vehicleId
+    );
+    
+    const totalMandatoryFees = (mandatoryFees || []).reduce((sum, fee) => sum + fee.amount, 0);
     
     updateBookingData({
       insuranceId: selectedInsurance?.id?.toString(),
@@ -191,7 +197,10 @@ const Booking = () => {
       extraKmsId: selectedKmCharge?.id?.toString(),
       extraKmsName: selectedKmCharge?.name || selectedKmCharge?.mileagedesc,
       extraKmsPrice: selectedKmCharge?.dailyrate,
-      selectedExtras: selectedExtrasArray
+      selectedExtras: selectedExtrasArray,
+      totalRateAfterDiscount: selectedAvailableCar?.totalrateafterdiscount || bookingData?.basePrice,
+      totalDiscountAmount: selectedAvailableCar?.totaldiscountamount || 0,
+      mandatoryFees: mandatoryFees
     });
     
     navigate('/customer-details');
