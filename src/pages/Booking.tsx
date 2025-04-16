@@ -8,15 +8,15 @@ import KmCharges from "@/components/booking/KmCharges";
 import ExtrasSelection from "@/components/booking/ExtrasSelection";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { getBookingSession, setBookingSession } from "@/lib/booking-session";
+import { getBookingData, updateBookingData } from "@/lib/booking-session";
 import { RCMStep3Request, RCMStep3Response, RCMSeasonalRate } from "@/lib/api/rcm-api-types";
-import { useRCMApi } from "@/hooks/use-rcm-api";
+import { useRcmApi } from "@/hooks/use-rcm-api";
 
 const Booking = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const rcmApi = useRCMApi();
-  const bookingSession = getBookingSession();
+  const { rcmApi } = useRcmApi();
+  const bookingSession = getBookingData();
   
   const [selectedInsurance, setSelectedInsurance] = useState<{ id: string | number; name: string; price: number } | null>(null);
   const [selectedExtras, setSelectedExtras] = useState<{ id: string | number; name: string; quantity: number; totalPrice: number }[]>([]);
@@ -123,11 +123,19 @@ const Booking = () => {
   
   const handleContinue = () => {
     // Update booking session with selected options
-    setBookingSession({
-      ...bookingSession,
+    updateBookingData({
       insuranceId: selectedInsurance?.id,
-      extras: selectedExtras,
-      kmChargeId: selectedKmCharge?.id
+      insuranceName: selectedInsurance?.name,
+      insurancePrice: selectedInsurance?.price,
+      extraKmsId: selectedKmCharge?.id,
+      extraKmsName: selectedKmCharge?.name,
+      extraKmsPrice: selectedKmCharge?.price,
+      selectedExtras: selectedExtras.map(extra => ({
+        id: extra.id.toString(),
+        name: extra.name,
+        quantity: extra.quantity,
+        price: extra.totalPrice / extra.quantity
+      }))
     });
     
     // Navigate to customer details page
@@ -149,6 +157,36 @@ const Booking = () => {
       </div>
     );
   }
+
+  // Calculate the rental duration
+  const calculateRentalDuration = () => {
+    try {
+      const pickupDate = bookingSession?.pickupDate;
+      const dropoffDate = bookingSession?.dropoffDate;
+      
+      if (pickupDate && dropoffDate) {
+        // Simple calculation assuming format is dd/MM/yyyy
+        const [pDay, pMonth, pYear] = pickupDate.split('/').map(Number);
+        const [dDay, dMonth, dYear] = dropoffDate.split('/').map(Number);
+        
+        if (!isNaN(pDay) && !isNaN(pMonth) && !isNaN(pYear) && 
+            !isNaN(dDay) && !isNaN(dMonth) && !isNaN(dYear)) {
+          const pickup = new Date(pYear, pMonth - 1, pDay);
+          const dropoff = new Date(dYear, dMonth - 1, dDay);
+          const diffTime = dropoff.getTime() - pickup.getTime();
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 to include the pickup day
+          return diffDays > 0 ? diffDays : 1;
+        }
+      }
+    } catch (e) {
+      console.error("Error calculating duration:", e);
+    }
+    
+    return seasonalRates.reduce((total, rate) => total + rate.numberofdays, 0) || 1;
+  };
+
+  const rentalDuration = calculateRentalDuration();
+  const currencySymbol = bookingSession?.currencySymbol || "$";
   
   return (
     <div className="container mx-auto p-4 py-8">
@@ -159,14 +197,15 @@ const Booking = () => {
           <div className="space-y-8">
             <InsuranceOptions 
               insuranceOptions={step3Data.results.insuranceoptions || []}
-              onSelect={handleInsuranceSelect}
-              selectedInsurance={selectedInsurance}
+              selectedInsuranceId={selectedInsurance?.id || null}
+              onSelectInsurance={handleInsuranceSelect}
+              currencySymbol={currencySymbol}
             />
             
             <KmCharges 
               kmCharges={step3Data.results.kmcharges || []}
-              onSelect={handleKmChargeSelect}
-              selectedKmCharge={selectedKmCharge}
+              numberOfDays={rentalDuration}
+              currencySymbol={currencySymbol}
             />
             
             <ExtrasSelection 
@@ -193,8 +232,8 @@ const Booking = () => {
             selectedInsurance={selectedInsurance}
             selectedExtras={selectedExtras}
             kmChargePrice={selectedKmCharge?.price || 0}
-            currencySymbol={bookingSession?.currencySymbol || "$"}
-            vehicleImageUrl={bookingSession?.vehicleImageUrl}
+            currencySymbol={currencySymbol}
+            vehicleImageUrl={bookingSession?.vehicleImage}
             seasonalRates={seasonalRates}
             mandatoryFees={mandatoryFees}
           />
