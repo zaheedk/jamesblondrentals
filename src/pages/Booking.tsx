@@ -18,7 +18,6 @@ const Booking = () => {
   const navigate = useNavigate();
   const { rcmApi } = useRcmApi();
 
-  // State for booking options
   const [bookingData, setBookingData] = useState<BookingSessionData | null>(null);
   const [insuranceOptions, setInsuranceOptions] = useState<RCMInsuranceOption[]>([]);
   const [kmCharges, setKmCharges] = useState<RCMKmCharge[]>([]);
@@ -26,7 +25,6 @@ const Booking = () => {
   const [optionalFees, setOptionalFees] = useState<RCMOptionalFee[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   
-  // Selected options state
   const [selectedInsurance, setSelectedInsurance] = useState<RCMInsuranceOption | null>(null);
   const [selectedKmCharge, setSelectedKmCharge] = useState<RCMKmCharge | null>(null);
   const [selectedExtras, setSelectedExtras] = useState<{
@@ -38,10 +36,8 @@ const Booking = () => {
   }[]>([]);
   const [selectedExtrasMap, setSelectedExtrasMap] = useState(new Map<string | number, number>());
   
-  // Raw API response state
   const [rawApiResponse, setRawApiResponse] = useState<any>(null);
 
-  // New state for seasonal rates and mandatory fees
   const [seasonalRates, setSeasonalRates] = useState<{
     dailyRate: number;
     totalAmount: number;
@@ -52,7 +48,6 @@ const Booking = () => {
     amount: number;
   }[]>([]);
 
-  // Calculate number of days for rental
   const calculateNumberOfDays = () => {
     if (!bookingData) return 1;
     try {
@@ -76,7 +71,6 @@ const Booking = () => {
     }
   };
 
-  // Get booking data from session storage
   useEffect(() => {
     const data = getBookingData();
     if (!data) {
@@ -89,7 +83,6 @@ const Booking = () => {
     
     setBookingData(data);
     
-    // Fetch step 3 data (options)
     setIsLoading(true);
     
     rcmApi.getStep3({
@@ -104,32 +97,26 @@ const Booking = () => {
       ageid: data.ageId,
     })
     .then((response) => {
-      // Store the raw API response
       setRawApiResponse(response);
       
       if (response.status === "OK" && response.results) {
         const { insuranceoptions, kmcharges, extras, optionalfees } = response.results;
         
-        // Ensure we always have arrays, even if API returns null/undefined
         setInsuranceOptions(insuranceoptions || []);
         setKmCharges(kmcharges || []);
         
-        // Create a safe copy of extras array
         const safeExtras = Array.isArray(extras) ? extras : [];
         setExtras(safeExtras);
         
-        // Create a safe copy of optional fees array
         const safeOptionalFees = Array.isArray(optionalfees) ? optionalfees : [];
         setOptionalFees(safeOptionalFees);
         
-        // Set default selections
         const defaultInsurance = insuranceoptions?.find(i => i.isdefault) || null;
         setSelectedInsurance(defaultInsurance);
         
         const defaultKmCharge = kmcharges?.find(k => k.isdefault) || null;
         setSelectedKmCharge(defaultKmCharge);
         
-        // Process seasonal rates if available
         if (response.results.seasonalrates && Array.isArray(response.results.seasonalrates)) {
           const rates = response.results.seasonalrates.map((rate: any) => ({
             dailyRate: rate.dailyratebeforediscount || 0,
@@ -139,7 +126,6 @@ const Booking = () => {
           setSeasonalRates(rates);
         }
         
-        // Process mandatory fees if available
         if (response.results.mandatoryfees && Array.isArray(response.results.mandatoryfees)) {
           const fees = response.results.mandatoryfees.map((fee: any) => ({
             name: fee.name || "Mandatory Fee",
@@ -165,9 +151,7 @@ const Booking = () => {
     });
   }, [navigate, rcmApi]);
 
-  // Handle proceeding to customer details page
   const handleProceedToDetails = () => {
-    // Save selected options to session storage before navigating
     const selectedExtrasArray = Array.from(selectedExtrasMap).map(([id, quantity]) => {
       const extra = extras.find(e => e.id.toString() === id.toString());
       const optionalFee = optionalFees.find(f => f.id.toString() === id.toString());
@@ -209,19 +193,16 @@ const Booking = () => {
     navigate('/customer-details');
   };
 
-  // Handle insurance selection
   const handleInsuranceChange = (insuranceId: string | number) => {
     const selected = insuranceOptions.find(i => i.id.toString() === insuranceId.toString()) || null;
     setSelectedInsurance(selected);
   };
 
-  // Handle km charge selection
   const handleKmChargeChange = (kmChargeId: string | number) => {
     const selected = kmCharges.find(k => k.id.toString() === kmChargeId.toString()) || null;
     setSelectedKmCharge(selected);
   };
 
-  // Handle extras selection
   const handleExtrasChange = (extraId: string | number, quantity: number) => {
     const newSelectedExtrasMap = new Map(selectedExtrasMap);
     
@@ -233,9 +214,7 @@ const Booking = () => {
     
     setSelectedExtrasMap(newSelectedExtrasMap);
     
-    // Update the selectedExtras array for BookingSummary
     const updatedSelectedExtras = Array.from(newSelectedExtrasMap).map(([id, qty]) => {
-      // Check in both extras and optionalFees arrays
       const extra = extras.find(e => e.id.toString() === id.toString());
       const optionalFee = optionalFees.filter(
         fee => !["Deposit", "FullPayment"].includes(fee.name)
@@ -253,9 +232,9 @@ const Booking = () => {
         return {
           id: optionalFee.id,
           name: optionalFee.name,
-          quantity: qty, // Now supporting quantity for optional fees
+          quantity: qty,
           unitPrice: optionalFee.fees,
-          totalPrice: optionalFee.fees * qty // Multiply by quantity
+          totalPrice: optionalFee.fees * qty
         };
       } else {
         console.warn("Could not find extra or optional fee with id:", id);
@@ -272,7 +251,6 @@ const Booking = () => {
     setSelectedExtras(updatedSelectedExtras);
   };
 
-  // Prepare booking summary data
   const selectedInsuranceForSummary = selectedInsurance ? {
     id: selectedInsurance.id,
     name: selectedInsurance.name,
@@ -295,9 +273,7 @@ const Booking = () => {
       <h1 className="text-3xl font-bold mb-6">Complete Your Booking</h1>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Options Section */}
         <div className="lg:col-span-2 space-y-8">
-          {/* Raw API Response */}
           <Accordion type="single" collapsible className="mb-6">
             <AccordionItem value="raw-api-response">
               <AccordionTrigger className="text-lg font-semibold">
@@ -315,7 +291,6 @@ const Booking = () => {
             </AccordionItem>
           </Accordion>
 
-          {/* Insurance Options */}
           {insuranceOptions.length > 0 && (
             <InsuranceOptions 
               insuranceOptions={insuranceOptions}
@@ -325,7 +300,6 @@ const Booking = () => {
             />
           )}
           
-          {/* Kilometer Charges */}
           {kmCharges.length > 0 && (
             <KmCharges 
               kmCharges={kmCharges}
@@ -334,7 +308,6 @@ const Booking = () => {
             />
           )}
           
-          {/* Extras Selection */}
           <ExtrasSelection 
             extras={extras}
             selectedExtras={selectedExtrasMap}
@@ -343,7 +316,6 @@ const Booking = () => {
             optionalFees={optionalFees}
           />
           
-          {/* Navigation Buttons */}
           <div className="flex justify-between pt-4">
             <Button 
               variant="outline" 
@@ -357,7 +329,6 @@ const Booking = () => {
           </div>
         </div>
         
-        {/* Booking Summary */}
         <div>
           <BookingSummary
             pickupLocation={bookingData.pickupLocationName || ""}
@@ -365,13 +336,13 @@ const Booking = () => {
             pickupDate={bookingData.pickupDate}
             dropoffDate={bookingData.dropoffDate}
             vehicleName={bookingData.vehicleName || ""}
-            basePrice={bookingData.basePrice}
             selectedInsurance={selectedInsuranceForSummary}
             selectedExtras={selectedExtras}
             kmChargePrice={kmChargePrice}
             currencySymbol="$"
             vehicleImageUrl={bookingData.vehicleImage}
-            seasonalRates={seasonalRates}
+            availableCars={rawApiResponse?.results?.availablecars || []}
+            selectedVehicleCategoryId={bookingData.vehicleId}
             mandatoryFees={mandatoryFees}
           />
         </div>
