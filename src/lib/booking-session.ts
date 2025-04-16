@@ -1,4 +1,3 @@
-
 /**
  * Utility functions to manage booking data between pages using sessionStorage
  */
@@ -50,6 +49,8 @@ export interface BookingSessionData {
   customerDob?: string;
   customerLicenseExpiry?: string;
   customerAddress?: string;
+  totalRateAfterDiscount?: number; // Add this new optional field
+  totalDiscountAmount?: number;     // Also add total discount amount
 }
 
 export const BOOKING_SESSION_KEY = 'rcm_booking_data';
@@ -59,8 +60,9 @@ export const BOOKING_SESSION_KEY = 'rcm_booking_data';
  */
 export const saveBookingData = (data: BookingSessionData): void => {
   try {
+    // Include a way to save the total rate after discount
     sessionStorage.setItem(BOOKING_SESSION_KEY, JSON.stringify(data));
-    console.log('Booking data saved to session:', data);
+    console.log('Booking data saved to session, including total rate:', data.totalRateAfterDiscount);
   } catch (error) {
     console.error('Error saving booking data to session:', error);
   }
