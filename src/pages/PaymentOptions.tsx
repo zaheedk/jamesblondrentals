@@ -29,16 +29,15 @@ const PaymentOptions = () => {
     
     setBookingDetails(bookingData);
     
-    // Calculate total amount including base price, insurance, extras, and mandatory fees
-    const basePrice = bookingData.basePrice || 174.90;
+    // Calculate total amount including base price (totalrateafterdiscount), insurance, and extras
+    const basePrice = bookingData.basePrice || 0;
     const insurancePrice = bookingData.insurancePrice || 0;
     const extrasTotal = (bookingData.selectedExtras || []).reduce(
       (sum: number, extra: any) => sum + (extra.price * extra.quantity), 
       0
     );
-    const mandatoryFeesTotal = 500; // Security Bond
     
-    const calculatedTotal = basePrice + insurancePrice + extrasTotal + mandatoryFeesTotal;
+    const calculatedTotal = basePrice + insurancePrice + extrasTotal;
     setTotalAmount(calculatedTotal);
   }, [navigate]);
 
@@ -93,7 +92,7 @@ const PaymentOptions = () => {
                 <p><span className="font-medium">Return:</span> {bookingDetails.dropoffDate} at {bookingDetails.dropoffTime}</p>
               </div>
               <div>
-                <p><span className="font-medium">Base Amount:</span> {formatCurrency(bookingDetails.basePrice || 174.90)}</p>
+                <p><span className="font-medium">Base Amount:</span> {formatCurrency(bookingDetails.basePrice || 0)}</p>
                 {bookingDetails.insurancePrice > 0 && (
                   <p><span className="font-medium">Insurance:</span> {formatCurrency(bookingDetails.insurancePrice)}</p>
                 )}
@@ -103,8 +102,7 @@ const PaymentOptions = () => {
                     0
                   ))}</p>
                 )}
-                <p><span className="font-medium">Security Bond:</span> {formatCurrency(500)}</p>
-                <p className="font-medium mt-2 text-lg">Total Amount: {formatCurrency(fullAmount)}</p>
+                <p className="font-medium mt-2 text-lg">Total Amount: {formatCurrency(totalAmount)}</p>
               </div>
             </div>
           </div>
@@ -123,7 +121,7 @@ const PaymentOptions = () => {
                   <Label htmlFor="deposit" className="flex-1 cursor-pointer">
                     <div>
                       <p className="font-medium">Pay Deposit Only</p>
-                      <p className="text-gray-600 text-sm">Pay {formatCurrency(DEPOSIT_AMOUNT)} now and the remaining {formatCurrency(fullAmount - DEPOSIT_AMOUNT)} upon collection</p>
+                      <p className="text-gray-600 text-sm">Pay {formatCurrency(DEPOSIT_AMOUNT)} now and the remaining {formatCurrency(totalAmount - DEPOSIT_AMOUNT)} upon collection</p>
                     </div>
                   </Label>
                   <div className="text-lg font-semibold">{formatCurrency(DEPOSIT_AMOUNT)}</div>
@@ -137,7 +135,7 @@ const PaymentOptions = () => {
                       <p className="text-gray-600 text-sm">Pay the full amount now</p>
                     </div>
                   </Label>
-                  <div className="text-lg font-semibold">{formatCurrency(fullAmount)}</div>
+                  <div className="text-lg font-semibold">{formatCurrency(totalAmount)}</div>
                 </div>
               </RadioGroup>
             </div>
@@ -160,7 +158,7 @@ const PaymentOptions = () => {
                     <span className="animate-spin mr-2">◌</span> Processing...
                   </>
                 ) : (
-                  `Proceed to Pay ${paymentType === "deposit" ? formatCurrency(DEPOSIT_AMOUNT) : formatCurrency(fullAmount)}`
+                  `Proceed to Pay ${paymentType === "deposit" ? formatCurrency(DEPOSIT_AMOUNT) : formatCurrency(totalAmount)}`
                 )}
               </Button>
             </div>
