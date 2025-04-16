@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -31,13 +30,13 @@ const PaymentOptions = () => {
     setBookingDetails(bookingData);
     
     // Calculate total amount including base price, insurance, extras, and mandatory fees
-    const basePrice = bookingData.basePrice || 174.90; // Use 174.90 as default from image
+    const basePrice = bookingData.basePrice || 174.90;
     const insurancePrice = bookingData.insurancePrice || 0;
-    const extrasTotal = bookingData.selectedExtras?.reduce(
-      (sum: number, extra: any) => sum + (extra.price * (extra.quantity || 1)), 
+    const extrasTotal = (bookingData.selectedExtras || []).reduce(
+      (sum: number, extra: any) => sum + (extra.price * extra.quantity), 
       0
-    ) || 0;
-    const mandatoryFeesTotal = 500; // Default mandatory fee (Security Bond) as per image
+    );
+    const mandatoryFeesTotal = 500; // Security Bond
     
     const calculatedTotal = basePrice + insurancePrice + extrasTotal + mandatoryFeesTotal;
     setTotalAmount(calculatedTotal);
@@ -54,7 +53,6 @@ const PaymentOptions = () => {
     );
   }
 
-  // Use the calculated total amount instead of just base price
   const fullAmount = totalAmount;
   
   const handleSubmit = async (e: React.FormEvent) => {
@@ -101,11 +99,12 @@ const PaymentOptions = () => {
                 )}
                 {bookingDetails.selectedExtras?.length > 0 && (
                   <p><span className="font-medium">Extras:</span> {formatCurrency(bookingDetails.selectedExtras.reduce(
-                    (sum: number, extra: any) => sum + (extra.price * (extra.quantity || 1)), 
+                    (sum: number, extra: any) => sum + (extra.price * extra.quantity), 
                     0
                   ))}</p>
                 )}
-                <p className="font-medium mt-2">Total Amount: {formatCurrency(fullAmount)}</p>
+                <p><span className="font-medium">Security Bond:</span> {formatCurrency(500)}</p>
+                <p className="font-medium mt-2 text-lg">Total Amount: {formatCurrency(fullAmount)}</p>
               </div>
             </div>
           </div>
