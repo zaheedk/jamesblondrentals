@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -22,6 +23,7 @@ const Booking = () => {
   const [extras, setExtras] = useState<RCMExtra[]>([]);
   const [optionalFees, setOptionalFees] = useState<RCMOptionalFee[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [apiError, setApiError] = useState<string | null>(null);
   
   // Selected options state
   const [selectedInsurance, setSelectedInsurance] = useState<RCMInsuranceOption | null>(null);
@@ -74,6 +76,7 @@ const Booking = () => {
     
     // Fetch step 3 data (options)
     setIsLoading(true);
+    setApiError(null);
     
     rcmApi.getStep3({
       vehiclecategoryid: data.vehicleId,
@@ -87,29 +90,57 @@ const Booking = () => {
       ageid: data.ageId,
     })
     .then((response) => {
+      console.log('Step3 API full response:', response);
       if (response.status === "OK" && response.results) {
-        const { insuranceoptions, kmcharges, extras, optionalfees } = response.results;
+        console.log('Step3 response results:', response.results);
         
         // Ensure we always have arrays, even if API returns null/undefined
-        setInsuranceOptions(insuranceoptions || []);
-        setKmCharges(kmcharges || []);
+        const safeInsuranceOptions = Array.isArray(response.results.insuranceoptions) ? 
+          response.results.insuranceoptions : [];
+        setInsuranceOptions(safeInsuranceOptions);
+        
+        const safeKmCharges = Array.isArray(response.results.kmcharges) ? 
+          response.results.kmcharges : [];
+        setKmCharges(safeKmCharges);
         
         // Create a safe copy of extras array
-        const safeExtras = Array.isArray(extras) ? extras : [];
+        let safeExtras: RCMExtra[] = [];
+        if (response.results.extras) {
+          if (Array.isArray(response.results.extras)) {
+            safeExtras = response.results.extras;
+          } else {
+            console.warn('Extras is not an array:', response.results.extras);
+            // Try to convert if it's an object
+            try {
+              const extrasObj = response.results.extras;
+              if (extrasObj && typeof extrasObj === 'object') {
+                safeExtras = Object.values(extrasObj);
+                console.log('Converted extras object to array:', safeExtras);
+              }
+            } catch (error) {
+              console.error('Failed to convert extras:', error);
+            }
+          }
+        }
         setExtras(safeExtras);
+        console.log('Processed extras array:', safeExtras);
         
         // Create a safe copy of optional fees array
-        const safeOptionalFees = Array.isArray(optionalfees) ? optionalfees : [];
+        const safeOptionalFees = Array.isArray(response.results.optionalfees) ? 
+          response.results.optionalfees : [];
         setOptionalFees(safeOptionalFees);
         
         // Set default selections
-        const defaultInsurance = insuranceoptions?.find(i => i.isdefault) || null;
+        const defaultInsurance = safeInsuranceOptions.find(i => i.isdefault) || 
+          (safeInsuranceOptions.length > 0 ? safeInsuranceOptions[0] : null);
         setSelectedInsurance(defaultInsurance);
         
-        const defaultKmCharge = kmcharges?.find(k => k.isdefault) || null;
+        const defaultKmCharge = safeKmCharges.find(k => k.isdefault) || 
+          (safeKmCharges.length > 0 ? safeKmCharges[0] : null);
         setSelectedKmCharge(defaultKmCharge);
       } else {
         console.error("API returned error or missing results:", response.error || "Unknown error");
+        setApiError(response.error || "Could not load booking options");
         toast.error("Could not load booking options", {
           description: response.error || "The API returned an invalid response",
         });
@@ -117,6 +148,7 @@ const Booking = () => {
     })
     .catch((error) => {
       console.error("Error fetching booking options:", error);
+      setApiError("Failed to connect to the booking system");
       toast.error("Failed to load booking options", {
         description: "Please try again later.",
       });
@@ -236,14 +268,16 @@ const Booking = () => {
   // Prepare booking summary data
   const selectedInsuranceForSummary = selectedInsurance ? {
     id: selectedInsurance.id,
-    name: selectedInsurance.name,
-    price: selectedInsurance.totalinsuranceamount
+    name: selectedInsurance.name || selectedInsurance.description || "Insurance",
+    price: selectedInsurance.totalinsuranceamount || selectedInsurance.amount || 0
   } : null;
   
-  const kmChargePrice = selectedKmCharge ? selectedKmCharge.dailyrate * calculateNumberOfDays() : 0;
+  const kmChargePrice = selectedKmCharge ? 
+    (selectedKmCharge.dailyrate || selectedKmCharge.amount || 0) * calculateNumberOfDays() : 0;
   const numberOfDays = calculateNumberOfDays();
 
-  if (isLoading || !bookingData) {
+  // Show loading state
+  if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-8 text-center">
         <div className="animate-pulse">Loading booking options...</div>
@@ -251,9 +285,33 @@ const Booking = () => {
     );
   }
 
+  // Show error state with retry option
+  if (apiError && !bookingData) {
+    return (
+      <div className="container mx-auto px-4 py-8 text-center">
+        <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-4">
+          <h2 className="text-red-700 font-medium">API Connection Error</h2>
+          <p className="text-red-600">{apiError}</p>
+        </div>
+        <Button onClick={() => navigate('/')}>Return to Home</Button>
+      </div>
+    );
+  }
+
+  // Main booking form with any available options
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">Complete Your Booking</h1>
+      
+      {apiError && (
+        <div className="bg-amber-50 border border-amber-200 rounded-md p-4 mb-6">
+          <h2 className="text-amber-700 font-medium">Warning</h2>
+          <p className="text-amber-600">
+            Some booking options could not be loaded. You can continue with limited options 
+            or return home to try again.
+          </p>
+        </div>
+      )}
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Options Section */}
@@ -303,17 +361,17 @@ const Booking = () => {
         {/* Booking Summary */}
         <div>
           <BookingSummary
-            pickupLocation={bookingData.pickupLocationName || ""}
-            dropoffLocation={bookingData.dropoffLocationName || ""}
-            pickupDate={bookingData.pickupDate}
-            dropoffDate={bookingData.dropoffDate}
-            vehicleName={bookingData.vehicleName || ""}
-            basePrice={bookingData.basePrice}
+            pickupLocation={bookingData?.pickupLocationName || ""}
+            dropoffLocation={bookingData?.dropoffLocationName || ""}
+            pickupDate={bookingData?.pickupDate || ""}
+            dropoffDate={bookingData?.dropoffDate || ""}
+            vehicleName={bookingData?.vehicleName || ""}
+            basePrice={bookingData?.basePrice || 0}
             selectedInsurance={selectedInsuranceForSummary}
             selectedExtras={selectedExtras}
             kmChargePrice={kmChargePrice}
             currencySymbol="$"
-            vehicleImageUrl={bookingData.vehicleImage}
+            vehicleImageUrl={bookingData?.vehicleImage}
           />
         </div>
       </div>
