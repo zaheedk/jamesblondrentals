@@ -1,11 +1,10 @@
-
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 import type { IncomingMessage, ServerResponse } from 'http';
-import type { HttpProxy } from 'http-proxy';
-import type { Connect } from 'vite';
+import type { ProxyConfigMap } from 'vite';
+import type { ServerProxy, ProxyOptions } from 'http-proxy';
 
 // Common proxy configuration for development and production preview
 const createRcmProxy = () => ({
@@ -17,12 +16,12 @@ const createRcmProxy = () => ({
     'Content-Type': 'application/json',
     'Accept': 'application/json'
   },
-  configure: (proxy: HttpProxy, _options: any) => {
+  configure: (proxy: ServerProxy, _options: ProxyOptions) => {
     proxy.on('error', (err: Error, _req: IncomingMessage, _res: ServerResponse) => {
       console.error('Proxy error:', err);
     });
     
-    proxy.on('proxyReq', (proxyReq: HttpProxy.ProxyReqCallback, req: IncomingMessage & { body?: any }, _res: ServerResponse) => {
+    proxy.on('proxyReq', (proxyReq: any, req: IncomingMessage & { body?: any }, _res: ServerResponse) => {
       console.log(`Proxying request to RCM API: ${req.method} ${proxyReq.path}`);
       
       // Enhanced logging for request
