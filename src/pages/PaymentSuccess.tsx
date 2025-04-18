@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -80,6 +79,53 @@ const PaymentSuccess = () => {
   const handleImageError = () => {
     console.log("Error loading vehicle image");
     setImageError(true);
+  };
+
+  const handleSaveQuotation = async () => {
+    try {
+      if (!bookingDetails) {
+        toast.error("No booking details available to save quote");
+        return;
+      }
+
+      const bookingResponse = await rcmApi.request('POST', 'booking', {
+        vehiclecategoryid: bookingDetails.vehicleCategoryId || 6,
+        vehiclecategorytypeid: bookingDetails.vehicleCategoryTypeId || 6,
+        pickuplocationid: bookingDetails.pickupLocationId || 1,
+        pickupdate: bookingDetails.pickupDate,
+        pickuptime: bookingDetails.pickupTime,
+        dropofflocationid: bookingDetails.dropoffLocationId || 1,
+        dropoffdate: bookingDetails.dropoffDate,
+        dropofftime: bookingDetails.dropoffTime,
+        ageid: bookingDetails.driverageId || 4,
+        bookingtype: 1, // Set as quote
+        emailoption: 1, // Enable email notification
+        customer: {
+          firstname: bookingDetails.customerFirstName || "",
+          lastname: bookingDetails.customerLastName || "",
+          email: bookingDetails.customerEmail || "",
+          phone: bookingDetails.customerPhone || "",
+          dateofbirth: bookingDetails.customerDob || "",
+          licenseexpires: bookingDetails.customerLicenseExpiry || "",
+          address: bookingDetails.customerAddress || ""
+        }
+      });
+
+      if (bookingResponse.status === "OK") {
+        toast.success("Quotation saved successfully!", {
+          description: "Check your email for the quote details"
+        });
+        // Optionally navigate home after short delay
+        setTimeout(() => navigate("/"), 2000);
+      } else {
+        throw new Error(bookingResponse.error || "Failed to save quotation");
+      }
+    } catch (error) {
+      console.error("Failed to save quotation:", error);
+      toast.error("Failed to save quotation", {
+        description: "Please try again or contact support"
+      });
+    }
   };
 
   useEffect(() => {
@@ -562,7 +608,7 @@ const PaymentSuccess = () => {
                 
                 <Button 
                   variant="outline"
-                  onClick={() => navigate("/payment-options")}
+                  onClick={handleSaveQuotation}
                   className="bg-[#342F63] hover:bg-[#25224A] text-white px-8 py-2 rounded-full text-lg"
                 >
                   SAVE QUOTATION
