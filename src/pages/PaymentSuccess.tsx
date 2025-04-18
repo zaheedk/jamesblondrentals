@@ -469,32 +469,16 @@ const PaymentSuccess = () => {
   const renderPaymentSummary = () => {
     if (!bookingDetails) return null;
 
-    // Calculate rental value from rateinfo
-    const rentalValue = rentalDuration * (bookingDetails.totalRateAfterDiscount || 0);
-
-    // Calculate total extra fees
-    const extraFeesTotal = (bookingDetails.selectedExtras || []).reduce((total, extra) => 
-      total + (extra.price || 0), 0);
-
-    // Calculate mandatory fees total
-    const mandatoryFeesTotal = (bookingDetails.mandatoryFees || []).reduce((total, fee) => 
-      total + (fee.amount || 0), 0);
-
-    // Calculate base price (total amount)
-    const basePrice = rentalValue + extraFeesTotal + mandatoryFeesTotal + 
-      (bookingDetails.insurancePrice || 0) + 
-      (bookingDetails.extraKmsPrice || 0);
-
-    // Calculate balance (base price minus paid amount)
-    const balance = basePrice - (windcaveResponseDetails.amount || 0);
-
+    // Get values from the API response
+    const rentalValue = (bookingDetails.numberofdays || 0) * (bookingDetails.dailyrate || 0);
+    
     return (
       <div className="bg-gray-50 rounded-lg p-4 mb-6">
         <h3 className="text-lg font-semibold mb-4">Payment Summary</h3>
         <div className="space-y-2">
           {/* Rental Value */}
           <div className="flex justify-between">
-            <span>Rental Value ({rentalDuration} days × ${bookingDetails.totalRateAfterDiscount})</span>
+            <span>Rental Value ({bookingDetails.numberofdays} days × ${bookingDetails.dailyrate})</span>
             <span>{formatCurrency(rentalValue)}</span>
           </div>
 
@@ -544,25 +528,25 @@ const PaymentSuccess = () => {
             </>
           )}
 
-          {/* Base Price (Total Amount) */}
+          {/* Total Cost */}
           <div className="border-t border-gray-300 my-2 pt-2">
             <div className="flex justify-between font-semibold">
-              <span>Base Price (Total Amount)</span>
-              <span>{formatCurrency(basePrice)}</span>
+              <span>Total Cost</span>
+              <span>{formatCurrency(bookingDetails.totalcost || 0)}</span>
             </div>
           </div>
 
           {/* Amount Paid */}
           <div className="flex justify-between text-green-600">
-            <span>Amount Paid</span>
-            <span>{formatCurrency(windcaveResponseDetails.amount || 0)}</span>
+            <span>Paid</span>
+            <span>{formatCurrency(bookingDetails.payment || 0)}</span>
           </div>
 
-          {/* Balance */}
-          {balance > 0 && (
+          {/* Balance Due */}
+          {(bookingDetails.balancedue || 0) > 0 && (
             <div className="flex justify-between text-red-600 font-bold">
               <span>Balance Due</span>
-              <span>{formatCurrency(balance)}</span>
+              <span>{formatCurrency(bookingDetails.balancedue || 0)}</span>
             </div>
           )}
         </div>
