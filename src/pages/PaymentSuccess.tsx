@@ -120,11 +120,30 @@ const PaymentSuccess = () => {
         console.log(`Updated dates: Pickup ${pickupDate}, Dropoff ${dropoffDate}`);
       }
 
-      // Create default values for required fields to prevent API errors
-      const defaultFirstName = "Guest";
-      const defaultLastName = "Customer";
-      const defaultEmail = "quote@example.com";
+      // Get customer information from the API response if available
+      let customerInfo = null;
+      try {
+        // If we have a reservation reference, fetch detailed booking info
+        if (bookingDetails.reservationRef) {
+          console.log("Fetching booking details for reservation:", bookingDetails.reservationRef);
+          const response = await rcmApi.request('POST', 'bookinginfo', {
+            method: 'bookinginfo',
+            reservationref: bookingDetails.reservationRef
+          });
+          
+          const apiResponse = response as { status: string, results?: any, error?: string };
+          
+          if (apiResponse.status === "OK" && apiResponse.results?.customerinfo?.[0]) {
+            customerInfo = apiResponse.results.customerinfo[0];
+            console.log("Retrieved customer info from API:", customerInfo);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch customer details:", error);
+        // Will fall back to session data if API fetch fails
+      }
 
+      // Set customer data with priority: API data > session data > defaults
       const requestPayload = {
         vehiclecategoryid: bookingDetails.vehicleCategoryId || sessionData?.vehicleCategoryId || 6,
         vehiclecategorytypeid: bookingDetails.vehicleCategoryTypeId || sessionData?.vehicleCategoryTypeId || 6,
@@ -141,13 +160,17 @@ const PaymentSuccess = () => {
         insuranceid: bookingDetails.insuranceId || sessionData?.insuranceId || 0,
         extrakmsid: bookingDetails.extraKmsId || sessionData?.extraKmsId || 0,
         customer: {
-          firstname: bookingDetails.customerFirstName || sessionData?.customerFirstName || defaultFirstName,
-          lastname: bookingDetails.customerLastName || sessionData?.customerLastName || defaultLastName,
-          email: bookingDetails.customerEmail || sessionData?.customerEmail || defaultEmail,
-          phone: bookingDetails.customerPhone || sessionData?.customerPhone || "",
-          dateofbirth: bookingDetails.customerDob || sessionData?.customerDob || "",
-          licenseexpires: bookingDetails.customerLicenseExpiry || sessionData?.customerLicenseExpiry || "",
-          address: bookingDetails.customerAddress || sessionData?.customerAddress || ""
+          // Use customer info from API if available, else session data, finally fallback to defaults
+          firstname: customerInfo?.firstname || bookingDetails.customerFirstName || sessionData?.customerFirstName || "Guest",
+          lastname: customerInfo?.lastname || bookingDetails.customerLastName || sessionData?.customerLastName || "Customer",
+          email: customerInfo?.email || bookingDetails.customerEmail || sessionData?.customerEmail || "quote@example.com",
+          phone: customerInfo?.phone || customerInfo?.mobile || bookingDetails.customerPhone || sessionData?.customerPhone || "",
+          dateofbirth: customerInfo?.dateofbirth || bookingDetails.customerDob || sessionData?.customerDob || "",
+          licenseexpires: customerInfo?.licenseexpires || bookingDetails.customerLicenseExpiry || sessionData?.customerLicenseExpiry || "",
+          address: customerInfo?.address || bookingDetails.customerAddress || sessionData?.customerAddress || "",
+          city: customerInfo?.city || "",
+          state: customerInfo?.state || "",
+          postcode: customerInfo?.postcode || ""
         }
       };
       
