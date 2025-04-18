@@ -1,15 +1,16 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, XCircle, FrownIcon, Calendar, Shield, Package, MapPin, Clock, Car } from "lucide-react";
+import { Car } from "lucide-react";
 import { getBookingData, clearBookingData } from "@/lib/booking-session";
 import { toast } from "sonner";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { formatCurrency } from "@/lib/utils";
 import { rcmApi } from "@/lib/api/rcm-api";
 import { RCMBookingResponse } from "@/lib/api/rcm-api-types";
 import { differenceInDays, parseISO, isValid, format, addDays } from "date-fns";
+import PaymentStatusHeader from "@/components/payment/PaymentStatusHeader";
+import RentalDetails from "@/components/payment/RentalDetails";
+import DebugInfo from "@/components/payment/DebugInfo";
 
 interface BookingDetails {
   vehicleName: string;
@@ -347,47 +348,34 @@ const PaymentSuccess = () => {
     fetchBookingDetails();
   }, [navigate, location]);
 
-  const formattedPickupDate = bookingDetails?.pickupDate ? new Date(bookingDetails.pickupDate).toLocaleDateString() : "N/A";
-  const formattedDropoffDate = bookingDetails?.dropoffDate ? new Date(bookingDetails.dropoffDate).toLocaleDateString() : "N/A";
-
-  const renderApiResponseDebug = () => {
-    if (!apiResponse) return null;
-    
+  if (isLoading) {
     return (
-      <div className="bg-gray-100 rounded-lg p-4 mt-4 mb-4 overflow-auto max-h-60">
-        <h3 className="text-xl font-semibold mb-2">API Response Debug</h3>
-        <pre className="text-xs whitespace-pre-wrap">
-          {JSON.stringify(apiResponse, null, 2)}
-        </pre>
+      <div className="flex justify-center items-center h-screen">
+        <div className="w-12 h-12 border-4 border-t-blue-500 border-blue-200 rounded-full animate-spin"></div>
       </div>
     );
-  };
+  }
 
-  const renderWindcavePaymentDetails = () => {
-    if (!windcaveResponseDetails.status) return null;
-
+  if (!bookingDetails) {
     return (
-      <div className="bg-gray-100 rounded-lg p-4 mt-4">
-        <h3 className="text-xl font-semibold mb-2">Payment Transaction Details</h3>
-        <div className="space-y-2">
-          <p><strong>Status:</strong> {windcaveResponseDetails.status}</p>
-          <p><strong>Amount:</strong> ${windcaveResponseDetails.amount?.toFixed(2)}</p>
-          <p><strong>Transaction ID:</strong> {windcaveResponseDetails.transactionId}</p>
-          <p><strong>Transaction Date:</strong> {windcaveResponseDetails.transactionDate}</p>
-          {windcaveResponseDetails.reservationRef && (
-            <p><strong>Reservation Reference:</strong> {windcaveResponseDetails.reservationRef}</p>
-          )}
-          {windcaveResponseDetails.cardDetails && (
-            <div>
-              <h4 className="font-medium mt-2">Card Details</h4>
-              <p><strong>Cardholder:</strong> {windcaveResponseDetails.cardDetails.cardholder}</p>
-              <p><strong>Card Number:</strong> {windcaveResponseDetails.cardDetails.cardNumber}</p>
-            </div>
-          )}
+      <div className="container mx-auto px-4 py-8 text-center">
+        <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-8">
+          <h1 className="text-3xl font-bold mb-6">Booking Details Not Found</h1>
+          <p className="text-gray-600 mb-6">
+            We couldn't retrieve your booking details. If you've just completed a booking,
+            please contact customer support with your transaction ID.
+          </p>
+          <p className="text-gray-600 mb-6">Transaction ID: {transactionId}</p>
+          <Button onClick={() => navigate("/")} className="w-full">
+            Return to Home
+          </Button>
         </div>
       </div>
     );
-  };
+  }
+
+  const formattedPickupDate = bookingDetails.pickupDate ? new Date(bookingDetails.pickupDate).toLocaleDateString() : "N/A";
+  const formattedDropoffDate = bookingDetails.dropoffDate ? new Date(bookingDetails.dropoffDate).toLocaleDateString() : "N/A";
 
   const renderPaymentSummary = () => {
     if (!bookingDetails) return null;
@@ -542,68 +530,15 @@ const PaymentSuccess = () => {
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="w-12 h-12 border-4 border-t-blue-500 border-blue-200 rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-  
-  if (!bookingDetails) {
-    return (
-      <div className="container mx-auto px-4 py-8 text-center">
-        <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-8">
-          <h1 className="text-3xl font-bold mb-6">Booking Details Not Found</h1>
-          <p className="text-gray-600 mb-6">
-            We couldn't retrieve your booking details. If you've just completed a booking,
-            please contact customer support with your transaction ID.
-          </p>
-          <p className="text-gray-600 mb-6">Transaction ID: {transactionId}</p>
-          <Button 
-            onClick={() => navigate("/")}
-            className="w-full"
-          >
-            Return to Home
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-8">
-        {paymentStatus === "success" ? (
-          <div className="text-center mb-8">
-            <CheckCircle2 className="h-16 w-16 text-green-500 mx-auto mb-4" />
-            <h1 className="text-3xl font-bold mb-2">Payment Successful!</h1>
-            <p className="text-gray-600">
-              Thank you for your booking. Your reservation is confirmed.
-            </p>
-            {bookingDetails?.reservationRef && (
-              <p className="mt-2 text-blue-500 font-medium">
-                Reservation Reference: {bookingDetails.reservationRef}
-              </p>
-            )}
-          </div>
-        ) : (
-          <div className="text-center mb-8">
-            <div className="bg-red-200 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
-              <FrownIcon className="h-12 w-12 text-red-500" />
-            </div>
-            <h1 className="text-3xl font-bold mb-2">Payment Failed</h1>
-            {errorMessage && (
-              <Alert variant="destructive" className="mb-6">
-                <AlertTitle>Error</AlertTitle>
-                <AlertDescription>{errorMessage}</AlertDescription>
-              </Alert>
-            )}
-            <p className="text-gray-600 mb-4">
-              Transaction ID: {transactionId || "N/A"}
-            </p>
-          </div>
-        )}
+        <PaymentStatusHeader 
+          status={paymentStatus}
+          errorMessage={errorMessage}
+          transactionId={transactionId}
+          reservationRef={bookingDetails.reservationRef}
+        />
 
         {bookingDetails && (
           <>
@@ -623,44 +558,26 @@ const PaymentSuccess = () => {
               <h2 className="text-2xl font-semibold">{bookingDetails?.vehicleName}</h2>
             </div>
 
-            <div className="bg-gray-50 rounded-lg p-4 mb-6">
-              <h3 className="text-lg font-semibold mb-4">Rental Details</h3>
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4" />
-                  <div>
-                    <p className="font-medium">Pickup Location</p>
-                    <p>{bookingDetails.pickupLocationName || "Not specified"}</p>
-                    <p>{formattedPickupDate} - {bookingDetails.pickupTime}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4" />
-                  <div>
-                    <p className="font-medium">Drop-off Location</p>
-                    <p>{bookingDetails.dropoffLocationName || "Not specified"}</p>
-                    <p>{formattedDropoffDate} - {bookingDetails.dropoffTime}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Clock className="h-4 w-4" />
-                  <div>
-                    <p className="font-medium">Duration</p>
-                    <p>{rentalDuration} day{rentalDuration !== 1 ? 's' : ''}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <RentalDetails 
+              vehicleName={bookingDetails.vehicleName}
+              pickupLocationName={bookingDetails.pickupLocationName || ""}
+              dropoffLocationName={bookingDetails.dropoffLocationName || ""}
+              formattedPickupDate={formattedPickupDate}
+              formattedDropoffDate={formattedDropoffDate}
+              pickupTime={bookingDetails.pickupTime}
+              dropoffTime={bookingDetails.dropoffTime}
+              rentalDuration={rentalDuration}
+            />
 
             {renderPaymentSummary()}
-            {renderApiResponseDebug()}
-            {renderWindcavePaymentDetails()}
+
+            <DebugInfo 
+              apiResponse={apiResponse}
+              windcaveResponseDetails={windcaveResponseDetails}
+            />
             
             {paymentStatus === "success" ? (
-              <Button 
-                onClick={() => navigate("/")}
-                className="w-full"
-              >
+              <Button onClick={() => navigate("/")} className="w-full">
                 Return to Home
               </Button>
             ) : (
