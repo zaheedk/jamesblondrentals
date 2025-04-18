@@ -28,18 +28,16 @@ export function generateSignature({
   // The API expects the raw request body as the string to sign
   const stringToSign = body || '{}';
   
-  // Log for debugging
-  console.log('RCM API - String to sign:', stringToSign);
-  
   // Generate HMAC SHA256 signature using the API secret as the key
-  // This matches the Postman collection: CryptoJS.HmacSHA256(requestBody, secret)
   const signature = HmacSHA256(stringToSign, apiSecret);
   
-  // Return HEX encoded signature to match Postman: toString(CryptoJS.digest)
+  // Return HEX encoded signature
   const hexSignature = Hex.stringify(signature).toUpperCase();
   
-  // Log the final signature for debugging
-  console.log('RCM API - Generated signature:', hexSignature);
+  console.log('RCM API - Generated signature for request', {
+    stringToSign: stringToSign.length > 100 ? stringToSign.substring(0, 100) + '...' : stringToSign,
+    signature: hexSignature
+  });
   
   return hexSignature;
 }

@@ -1,10 +1,11 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Hero from "@/components/home/Hero";
 import FeaturedVehicles from "@/components/home/FeaturedVehicles";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRcmApi } from "@/hooks/use-rcm-api";
 import { ApiStatusIndicator } from "@/components/diagnostics/ApiStatusIndicator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -12,17 +13,21 @@ import { AlertCircle } from "lucide-react";
 
 const Index = () => {
   const { initializeApi } = useRcmApi();
+  const [apiInitError, setApiInitError] = useState<string | null>(null);
   
   useEffect(() => {
     try {
       initializeApi({ 
         apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
         apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
-        apiUrl: "/api/rcm/booking/v3.2" 
+        apiUrl: "/api/rcm/booking/v3.2",
+        useMockData: false // Force real API connection
       });
       console.log('API initialized successfully');
+      setApiInitError(null);
     } catch (error) {
       console.error('Failed to initialize API:', error);
+      setApiInitError(error instanceof Error ? error.message : 'Unknown error initializing API');
     }
   }, [initializeApi]);
 
@@ -32,9 +37,20 @@ const Index = () => {
       <main className="flex-grow">
         <Hero />
         
-        {/* API Status Indicator */}
+        {/* API Status and Error Messages */}
         <div className="container mx-auto px-4 py-4">
-          {process.env.NODE_ENV !== 'production' && (
+          {apiInitError && (
+            <Alert variant="destructive" className="mb-4">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>API Connection Error</AlertTitle>
+              <AlertDescription>
+                {apiInitError}
+              </AlertDescription>
+            </Alert>
+          )}
+          
+          {/* Always show API status indicator in development or if there's an error */}
+          {(process.env.NODE_ENV !== 'production' || apiInitError) && (
             <ApiStatusIndicator />
           )}
         </div>

@@ -51,6 +51,17 @@ export default defineConfig(({ mode }) => ({
       }
     }
   },
+  preview: {
+    // Configure the production preview server to handle API proxy as well
+    proxy: {
+      '/api/rcm': {
+        target: 'https://apis.rentalcarmanager.com',
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/api\/rcm/, '')
+      }
+    }
+  },
   plugins: [
     react(),
     mode === 'development' &&

@@ -41,7 +41,7 @@ export function ApiStatusIndicator() {
         toast.success('API connection successful');
       } else {
         toast.error('API connection failed', {
-          description: results.message
+          description: results.message || 'Could not connect to RCM API'
         });
       }
       
