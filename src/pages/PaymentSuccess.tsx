@@ -8,7 +8,7 @@ import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { formatCurrency } from "@/lib/utils";
 import { rcmApi } from "@/lib/api/rcm-api";
 import { RCMBookingResponse } from "@/lib/api/rcm-api-types";
-import { differenceInDays, parseISO, isValid } from "date-fns";
+import { differenceInDays, parseISO, isValid, format, addDays } from "date-fns";
 
 interface BookingDetails {
   vehicleName: string;
@@ -98,25 +98,45 @@ const PaymentSuccess = () => {
 
       const sessionData = getBookingData();
 
+      const today = new Date();
+      const formattedToday = format(today, "dd/MMM/yyyy");
+      
+      let pickupDate = bookingDetails.pickupDate;
+      let dropoffDate = bookingDetails.dropoffDate;
+      
+      const isPickupToday = pickupDate.includes(formattedToday.split('/')[1]) && 
+                          pickupDate.includes(formattedToday.split('/')[0]);
+                          
+      if (isPickupToday) {
+        const newPickupDate = addDays(today, 2);
+        pickupDate = format(newPickupDate, "dd/MMM/yyyy");
+        
+        const rentalDays = rentalDuration || 3;
+        const newDropoffDate = addDays(newPickupDate, rentalDays);
+        dropoffDate = format(newDropoffDate, "dd/MMM/yyyy");
+        
+        console.log(`Updated dates: Pickup ${pickupDate}, Dropoff ${dropoffDate}`);
+      }
+
       const bookingResponse = await rcmApi.request<RCMBookingResponse>('POST', 'booking', {
         vehiclecategoryid: bookingDetails.vehicleCategoryId || sessionData?.vehicleCategoryId || 6,
         vehiclecategorytypeid: bookingDetails.vehicleCategoryTypeId || sessionData?.vehicleCategoryTypeId || 6,
         pickuplocationid: bookingDetails.pickupLocationId || sessionData?.pickupLocationId || 1,
-        pickupdate: bookingDetails.pickupDate,
+        pickupdate: pickupDate,
         pickuptime: bookingDetails.pickupTime,
         dropofflocationid: bookingDetails.dropoffLocationId || sessionData?.dropoffLocationId || 1,
-        dropoffdate: bookingDetails.dropoffDate,
+        dropoffdate: dropoffDate,
         dropofftime: bookingDetails.dropoffTime,
         ageid: bookingDetails.driverageId || sessionData?.ageId || 4,
-        bookingtype: 1, // Set as quote
-        emailoption: 1, // Enable email notification
-        transmission: sessionData?.transmission || 0, // Adding required transmission field
-        insuranceid: bookingDetails.insuranceId || sessionData?.insuranceId || 0, // Adding required insurance field
-        extrakmsid: bookingDetails.extraKmsId || sessionData?.extraKmsId || 0, // Adding required extrakms field
+        bookingtype: 1,
+        emailoption: 1,
+        transmission: sessionData?.transmission || 0,
+        insuranceid: bookingDetails.insuranceId || sessionData?.insuranceId || 0,
+        extrakmsid: bookingDetails.extraKmsId || sessionData?.extraKmsId || 0,
         customer: {
           firstname: bookingDetails.customerFirstName || "",
-          lastname: bookingDetails.customerLastName || "Quote", // Default last name to avoid API error
-          email: bookingDetails.customerEmail || "quote@example.com", // Default email to avoid API error
+          lastname: bookingDetails.customerLastName || "Quote",
+          email: bookingDetails.customerEmail || "quote@example.com",
           phone: bookingDetails.customerPhone || "",
           dateofbirth: bookingDetails.customerDob || "",
           licenseexpires: bookingDetails.customerLicenseExpiry || "",
@@ -128,7 +148,6 @@ const PaymentSuccess = () => {
         toast.success("Quotation saved successfully!", {
           description: "Check your email for the quote details"
         });
-        // Optionally navigate home after short delay
         setTimeout(() => navigate("/"), 2000);
       } else {
         throw new Error(bookingResponse.error || "Failed to save quotation");
