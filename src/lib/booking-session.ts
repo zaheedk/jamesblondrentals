@@ -5,6 +5,7 @@
 export interface BookingSessionData {
   vehicleId: string;
   vehicleName?: string;
+  vehicleCategoryId?: string | number;  // Added field for vehicle category ID
   vehicleCategoryTypeId: string;
   pickupLocationId: string;
   pickupLocationName?: string;
@@ -15,6 +16,7 @@ export interface BookingSessionData {
   dropoffDate: string;
   dropoffTime: string;
   ageId: string;
+  driverageId?: string | number;  // Added field for driver age ID
   basePrice: number;
   vehicleImage?: string;
   // Payment related fields
@@ -62,6 +64,7 @@ export interface BookingSessionData {
   totalcost?: number;
   payment?: number;
   balancedue?: number;
+  transmission?: number; // Added for API compatibility
 }
 
 export const BOOKING_SESSION_KEY = 'rcm_booking_data';

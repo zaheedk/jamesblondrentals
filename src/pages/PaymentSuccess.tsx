@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { formatCurrency } from "@/lib/utils";
 import { rcmApi } from "@/lib/api/rcm-api";
+import { RCMBookingResponse } from "@/lib/api/rcm-api-types";
 import { differenceInDays, parseISO, isValid } from "date-fns";
 
 interface BookingDetails {
@@ -41,6 +42,13 @@ interface BookingDetails {
   totalcost?: number;
   payment?: number;
   balancedue?: number;
+  vehicleCategoryId?: string | number;
+  vehicleCategoryTypeId?: string | number;
+  pickupLocationId?: string | number;
+  dropoffLocationId?: string | number;
+  driverageId?: string | number;
+  insuranceId?: string | number;
+  extraKmsId?: string | number;
 }
 
 interface ApiBookingResponse {
@@ -88,22 +96,27 @@ const PaymentSuccess = () => {
         return;
       }
 
-      const bookingResponse = await rcmApi.request('POST', 'booking', {
-        vehiclecategoryid: bookingDetails.vehicleCategoryId || 6,
-        vehiclecategorytypeid: bookingDetails.vehicleCategoryTypeId || 6,
-        pickuplocationid: bookingDetails.pickupLocationId || 1,
+      const sessionData = getBookingData();
+
+      const bookingResponse = await rcmApi.request<RCMBookingResponse>('POST', 'booking', {
+        vehiclecategoryid: bookingDetails.vehicleCategoryId || sessionData?.vehicleCategoryId || 6,
+        vehiclecategorytypeid: bookingDetails.vehicleCategoryTypeId || sessionData?.vehicleCategoryTypeId || 6,
+        pickuplocationid: bookingDetails.pickupLocationId || sessionData?.pickupLocationId || 1,
         pickupdate: bookingDetails.pickupDate,
         pickuptime: bookingDetails.pickupTime,
-        dropofflocationid: bookingDetails.dropoffLocationId || 1,
+        dropofflocationid: bookingDetails.dropoffLocationId || sessionData?.dropoffLocationId || 1,
         dropoffdate: bookingDetails.dropoffDate,
         dropofftime: bookingDetails.dropoffTime,
-        ageid: bookingDetails.driverageId || 4,
+        ageid: bookingDetails.driverageId || sessionData?.ageId || 4,
         bookingtype: 1, // Set as quote
         emailoption: 1, // Enable email notification
+        transmission: sessionData?.transmission || 0, // Adding required transmission field
+        insuranceid: bookingDetails.insuranceId || sessionData?.insuranceId || 0, // Adding required insurance field
+        extrakmsid: bookingDetails.extraKmsId || sessionData?.extraKmsId || 0, // Adding required extrakms field
         customer: {
           firstname: bookingDetails.customerFirstName || "",
-          lastname: bookingDetails.customerLastName || "",
-          email: bookingDetails.customerEmail || "",
+          lastname: bookingDetails.customerLastName || "Quote", // Default last name to avoid API error
+          email: bookingDetails.customerEmail || "quote@example.com", // Default email to avoid API error
           phone: bookingDetails.customerPhone || "",
           dateofbirth: bookingDetails.customerDob || "",
           licenseexpires: bookingDetails.customerLicenseExpiry || "",
@@ -162,7 +175,6 @@ const PaymentSuccess = () => {
           });
         }
 
-        // Get booking reference from either URL params, Windcave response, or session data
         const sessionData = getBookingData();
         const bookingReservationRef = reservationRef || 
                                      (sessionData && (
@@ -311,7 +323,6 @@ const PaymentSuccess = () => {
   const renderPaymentSummary = () => {
     if (!bookingDetails) return null;
 
-    // Log all details received from the API
     console.log('📦 Booking Details Received:', {
       numberofdays: bookingDetails.numberofdays,
       dailyrate: bookingDetails.dailyrate,
@@ -322,7 +333,6 @@ const PaymentSuccess = () => {
       fullBookingDetails: bookingDetails
     });
 
-    // Calculate rental value from days and daily rate, or use base price
     const rentalDays = bookingDetails.numberofdays || rentalDuration || 1;
     const dailyRate = bookingDetails.dailyrate || (bookingDetails.basePrice / rentalDays);
     const rentalValue = rentalDays * dailyRate;
@@ -331,13 +341,11 @@ const PaymentSuccess = () => {
       <div className="bg-gray-50 rounded-lg p-4 mb-6">
         <h3 className="text-lg font-semibold mb-4">Payment Summary</h3>
         <div className="space-y-2">
-          {/* Rental Value */}
           <div className="flex justify-between">
             <span>Rental Value ({rentalDays} days × ${dailyRate.toFixed(2)})</span>
             <span>{formatCurrency(rentalValue)}</span>
           </div>
 
-          {/* Insurance */}
           {bookingDetails.insurancePrice > 0 && (
             <div className="flex justify-between">
               <span>{bookingDetails.insuranceName || 'Insurance'}</span>
@@ -345,7 +353,6 @@ const PaymentSuccess = () => {
             </div>
           )}
 
-          {/* Extra Kilometers */}
           {bookingDetails.extraKmsPrice > 0 && (
             <div className="flex justify-between">
               <span>{bookingDetails.extraKmsName || 'Mileage Charge'}</span>
@@ -353,7 +360,6 @@ const PaymentSuccess = () => {
             </div>
           )}
 
-          {/* Extra Fees */}
           {bookingDetails.selectedExtras && bookingDetails.selectedExtras.length > 0 && (
             <>
               <div className="border-t border-gray-300 my-2 pt-2">
@@ -368,7 +374,6 @@ const PaymentSuccess = () => {
             </>
           )}
 
-          {/* Mandatory Fees */}
           {bookingDetails.mandatoryFees && bookingDetails.mandatoryFees.length > 0 && (
             <>
               <div className="border-t border-gray-300 my-2 pt-2">
@@ -383,7 +388,6 @@ const PaymentSuccess = () => {
             </>
           )}
 
-          {/* Total Cost */}
           <div className="border-t border-gray-300 my-2 pt-2">
             <div className="flex justify-between font-semibold">
               <span>Total Cost</span>
@@ -391,13 +395,11 @@ const PaymentSuccess = () => {
             </div>
           </div>
 
-          {/* Amount Paid */}
           <div className="flex justify-between text-green-600">
             <span>Paid</span>
             <span>{formatCurrency(bookingDetails.payment || bookingDetails.paymentAmount || 0)}</span>
           </div>
 
-          {/* Balance Due */}
           {(bookingDetails.balancedue || 0) > 0 && (
             <div className="flex justify-between text-red-600 font-bold">
               <span>Balance Due</span>
@@ -503,7 +505,6 @@ const PaymentSuccess = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-8">
-        {/* Payment Status Section */}
         {paymentStatus === "success" ? (
           <div className="text-center mb-8">
             <CheckCircle2 className="h-16 w-16 text-green-500 mx-auto mb-4" />
@@ -537,7 +538,6 @@ const PaymentSuccess = () => {
 
         {bookingDetails && (
           <>
-            {/* Vehicle Image */}
             {bookingDetails?.vehicleImage && !imageError && (
               <div className="w-full aspect-video rounded-lg overflow-hidden bg-gray-100 mb-6">
                 <img
@@ -549,13 +549,11 @@ const PaymentSuccess = () => {
               </div>
             )}
             
-            {/* Vehicle Name */}
             <div className="flex items-center gap-2 mb-6">
               <Car className="h-6 w-6 text-gray-500" />
               <h2 className="text-2xl font-semibold">{bookingDetails?.vehicleName}</h2>
             </div>
 
-            {/* Rental Details */}
             <div className="bg-gray-50 rounded-lg p-4 mb-6">
               <h3 className="text-lg font-semibold mb-4">Rental Details</h3>
               <div className="space-y-2">
@@ -585,11 +583,9 @@ const PaymentSuccess = () => {
               </div>
             </div>
 
-            {/* Payment Summary */}
             {renderPaymentSummary()}
             {renderWindcavePaymentDetails()}
             
-            {/* Action Buttons */}
             {paymentStatus === "success" ? (
               <Button 
                 onClick={() => navigate("/")}
