@@ -4,7 +4,8 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 import type { IncomingMessage, ServerResponse } from 'http';
-import type { Server } from 'http-proxy';
+// Fix the import for Server by using import type and using a namespace import
+import type * as httpProxy from 'http-proxy';
 
 // Common proxy configuration for development and production preview
 const createRcmProxy = () => ({
@@ -16,7 +17,7 @@ const createRcmProxy = () => ({
     'Content-Type': 'application/json',
     'Accept': 'application/json'
   },
-  configure: (proxy: Server, _options: object) => {
+  configure: (proxy: httpProxy.Server, _options: object) => {
     proxy.on('error', (err: Error, _req: IncomingMessage, _res: ServerResponse) => {
       console.error('Proxy error:', err);
     });
