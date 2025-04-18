@@ -1,38 +1,28 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Hero from "@/components/home/Hero";
 import FeaturedVehicles from "@/components/home/FeaturedVehicles";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRcmApi } from "@/hooks/use-rcm-api";
 import { ApiStatusIndicator } from "@/components/diagnostics/ApiStatusIndicator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle, HelpCircle } from "lucide-react";
-import { toast } from "sonner";
+import { AlertCircle } from "lucide-react";
 
 const Index = () => {
   const { initializeApi } = useRcmApi();
-  const [apiInitError, setApiInitError] = useState<string | null>(null);
-  const [isProduction] = useState(() => import.meta.env.PROD === true);
   
   useEffect(() => {
     try {
       initializeApi({ 
         apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
         apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
-        apiUrl: "/api/rcm/booking/v3.2",
-        useMockData: false // Force real API connection
+        apiUrl: "/api/rcm/booking/v3.2" 
       });
       console.log('API initialized successfully');
-      setApiInitError(null);
     } catch (error) {
       console.error('Failed to initialize API:', error);
-      setApiInitError(error instanceof Error ? error.message : 'Unknown error initializing API');
-      toast.error('API Initialization Failed', {
-        description: 'The booking system API could not be initialized. Some features may be limited.'
-      });
     }
   }, [initializeApi]);
 
@@ -42,34 +32,10 @@ const Index = () => {
       <main className="flex-grow">
         <Hero />
         
-        {/* API Status and Error Messages */}
+        {/* API Status Indicator */}
         <div className="container mx-auto px-4 py-4">
-          {apiInitError && (
-            <Alert variant="destructive" className="mb-4">
-              <AlertCircle className="h-4 w-4" />
-              <AlertTitle>API Connection Error</AlertTitle>
-              <AlertDescription>
-                {apiInitError}
-              </AlertDescription>
-            </Alert>
-          )}
-          
-          {/* In production, only show API status indicator when there's an error */}
-          {(!isProduction || apiInitError) && (
-            <div className="mb-8">
-              <ApiStatusIndicator />
-            </div>
-          )}
-          
-          {isProduction && apiInitError && (
-            <Alert variant="default" className="mb-4 bg-blue-50 border-blue-200">
-              <HelpCircle className="h-4 w-4 text-blue-500" />
-              <AlertTitle>Production Environment</AlertTitle>
-              <AlertDescription>
-                API connection issues may be related to CORS or proxy configuration in the production environment.
-                Please check server configuration for the deployed application.
-              </AlertDescription>
-            </Alert>
+          {process.env.NODE_ENV !== 'production' && (
+            <ApiStatusIndicator />
           )}
         </div>
         

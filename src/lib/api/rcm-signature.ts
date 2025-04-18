@@ -15,7 +15,7 @@ interface SignatureParams {
  * Generates signature for RCM API authentication as per:
  * https://support.rentalcarmanager.com/portal/en/kb/developer-s-support
  * 
- * Based on the Postman collection implementation with fixes for production deployment
+ * Based on the Postman collection implementation
  */
 export function generateSignature({
   method,
@@ -25,24 +25,21 @@ export function generateSignature({
   apiSecret,
   body = ''
 }: SignatureParams): string {
-  // Normalize body to ensure consistent string representation
-  const normalizedBody = typeof body === 'string' ? body : JSON.stringify(body || {});
+  // The API expects the raw request body as the string to sign
+  const stringToSign = body || '{}';
   
-  // For production compatibility, ensure we're using a consistent string representation
-  const stringToSign = normalizedBody.trim() || '{}';
+  // Log for debugging
+  console.log('RCM API - String to sign:', stringToSign);
   
   // Generate HMAC SHA256 signature using the API secret as the key
+  // This matches the Postman collection: CryptoJS.HmacSHA256(requestBody, secret)
   const signature = HmacSHA256(stringToSign, apiSecret);
   
-  // Return HEX encoded signature
+  // Return HEX encoded signature to match Postman: toString(CryptoJS.digest)
   const hexSignature = Hex.stringify(signature).toUpperCase();
   
-  console.log('RCM API - Generating signature', {
-    method,
-    bodyLength: stringToSign.length,
-    signature: hexSignature,
-    environment: import.meta.env.MODE || 'unknown'
-  });
+  // Log the final signature for debugging
+  console.log('RCM API - Generated signature:', hexSignature);
   
   return hexSignature;
 }

@@ -1,13 +1,11 @@
 
 import { useState, useEffect } from 'react';
-import { rcmApi } from '@/lib/api/rcm-api';
 
 interface ConnectionStatus {
   isConnected: boolean;
   lastAttempt: Date | null;
   successfulEndpoints: string[];
   failedEndpoints: string[];
-  error: string | null;
 }
 
 interface EndpointCheck {
@@ -15,14 +13,6 @@ interface EndpointCheck {
   method: 'GET' | 'POST' | 'PUT' | 'DELETE';
   body?: any;
   headers?: Record<string, string>;
-}
-
-interface DiagnosticResults {
-  message: string;
-  hasInternet: boolean;
-  apiAccessible: boolean;
-  details?: ConnectionStatus;
-  errorDetails?: string;
 }
 
 /**
@@ -33,8 +23,7 @@ export function useApiDiagnostics() {
     isConnected: false,
     lastAttempt: null,
     successfulEndpoints: [],
-    failedEndpoints: [],
-    error: null
+    failedEndpoints: []
   });
 
   /**
@@ -42,20 +31,15 @@ export function useApiDiagnostics() {
    */
   const checkInternetConnection = async (): Promise<boolean> => {
     try {
-      // Use a CDN endpoint that's likely to be stable and support CORS
-      const response = await fetch('https://cdn.jsdelivr.net/npm/react@18/package.json', { 
-        mode: 'cors',
-        cache: 'no-store',
-        headers: {
-          'Accept': 'application/json'
-        },
-        // Short timeout to avoid waiting too long
-        signal: AbortSignal.timeout(5000)
+      // Try to fetch a small resource that should always be available
+      const response = await fetch('https://www.google.com/favicon.ico', { 
+        mode: 'no-cors',
+        cache: 'no-store'
       });
-      return response.ok; // Check if response is OK
+      return true; // If no error is thrown, assume connection is OK
     } catch (error) {
       console.error('Internet connection check failed:', error);
-      return navigator.onLine; // Fallback to browser's online status
+      return false;
     }
   };
 
@@ -70,8 +54,7 @@ export function useApiDiagnostics() {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
-        signal: AbortSignal.timeout(15000), // 15 second timeout
-        cache: 'no-store'
+        mode: 'cors'
       };
 
       if (check.body && (check.method === 'POST' || check.method === 'PUT')) {
@@ -93,8 +76,7 @@ export function useApiDiagnostics() {
         ...prev,
         isConnected: true,
         lastAttempt: new Date(),
-        successfulEndpoints: [...prev.successfulEndpoints, check.url],
-        error: null
+        successfulEndpoints: [...prev.successfulEndpoints, check.url]
       }));
 
       return true;
@@ -105,8 +87,7 @@ export function useApiDiagnostics() {
       setConnectionStatus(prev => ({
         ...prev,
         lastAttempt: new Date(),
-        failedEndpoints: [...prev.failedEndpoints, check.url],
-        error: error instanceof Error ? error.message : 'Unknown error checking endpoint'
+        failedEndpoints: [...prev.failedEndpoints, check.url]
       }));
       
       return false;
@@ -116,91 +97,59 @@ export function useApiDiagnostics() {
   /**
    * Run diagnostics to check API connectivity and identify issues
    */
-  const runDiagnostics = async (): Promise<DiagnosticResults> => {
-    console.log('Running API diagnostics...', {
-      environment: import.meta.env.MODE || 'unknown'
-    });
+  const runDiagnostics = async () => {
+    console.log('Running API diagnostics...');
     
     // Reset connection status
     setConnectionStatus({
       isConnected: false,
       lastAttempt: new Date(),
       successfulEndpoints: [],
-      failedEndpoints: [],
-      error: null
+      failedEndpoints: []
     });
 
     // First check internet connection
     const hasInternet = await checkInternetConnection();
     
     if (!hasInternet) {
-      const message = 'No internet connection detected';
-      console.error(message);
-      setConnectionStatus(prev => ({...prev, error: message}));
+      console.error('No internet connection detected');
       return {
-        message,
+        message: 'No internet connection detected',
         hasInternet: false,
-        apiAccessible: false,
-        errorDetails: 'No internet connection available. Please check your network.'
+        apiAccessible: false
       };
     }
 
-    // Try direct API test using the RCM API client
-    try {
-      // This will use the proper signature generation in production
-      await rcmApi.getStep1();
-      
-      // If we get here, API is accessible
-      setConnectionStatus(prev => ({
-        ...prev,
-        isConnected: true,
-        error: null
-      }));
-      
-      return {
-        message: 'API is accessible',
-        hasInternet: true,
-        apiAccessible: true,
-        details: connectionStatus
-      };
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown API error';
-      console.error('API test failed:', errorMessage);
-      
-      // Try to diagnose if it's a CORS or proxy issue
-      const apiError = rcmApi.getLastError() || errorMessage;
-      let diagnosticMessage = 'API connection failed';
-      
-      // Update connection status
-      setConnectionStatus(prev => ({
-        ...prev,
-        isConnected: false,
-        error: apiError
-      }));
-      
-      return {
-        message: diagnosticMessage,
-        hasInternet: true,
-        apiAccessible: false,
-        errorDetails: apiError,
-        details: connectionStatus
-      };
-    }
-  };
-
-  // Check API connectivity on component mount
-  useEffect(() => {
-    // Run diagnostics once when the hook is first used
-    const checkApiOnMount = async () => {
-      try {
-        await runDiagnostics();
-      } catch (error) {
-        console.error("Error running initial API diagnostics:", error);
-      }
-    };
+    // Check API endpoints
+    const apiUrlBase = '/api/rcm/booking/v3.2';
+    const apiKey = 'TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq';
     
-    checkApiOnMount();
-  }, []);
+    const endpointChecks: EndpointCheck[] = [
+      {
+        url: `${apiUrlBase}/${apiKey}?apikey=${apiKey}`,
+        method: 'POST',
+        body: { method: 'step1' }
+      }
+    ];
+
+    const results = await Promise.all(endpointChecks.map(check => checkEndpoint(check)));
+    const allSuccessful = results.every(result => result);
+
+    console.log('API diagnostics complete:', { 
+      hasInternet, 
+      apiAccessible: allSuccessful,
+      connectionStatus
+    });
+
+    return {
+      message: allSuccessful 
+        ? 'API is accessible' 
+        : 'API is not accessible. Check network configuration and credentials.',
+      hasInternet,
+      apiAccessible: allSuccessful,
+      details: connectionStatus
+    };
+  };
 
   return {
     connectionStatus,

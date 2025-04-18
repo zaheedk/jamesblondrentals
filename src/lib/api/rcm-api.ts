@@ -27,10 +27,7 @@ const DEFAULT_CONFIG: RCMApiConfig = {
 class RCMApiClient {
   private config: RCMApiConfig;
   private initialized: boolean = false;
-  private apiConnectionFailed: boolean = false;
-  private useMockData: boolean = false;
-  private lastError: string | null = null;
-  
+
   constructor(config: RCMApiConfig) {
     this.config = {
       ...config,
@@ -42,25 +39,13 @@ class RCMApiClient {
     if (config.apiKey) this.config.apiKey = config.apiKey;
     if (config.apiSecret) this.config.apiSecret = config.apiSecret;
     if (config.apiUrl) this.config.apiUrl = config.apiUrl.replace(/\/$/, '');
-    if (config.useMockData !== undefined) this.useMockData = config.useMockData;
     
     this.initialized = true;
-    this.lastError = null;
     
     console.log('RCM API initialized with config:', {
       apiUrl: this.config.apiUrl,
-      apiKey: this.config.apiKey ? this.config.apiKey.substring(0, 10) + '...' : undefined,
-      useMockData: this.useMockData,
-      environment: import.meta.env.MODE || 'unknown'
+      apiKey: this.config.apiKey ? '******' : undefined
     });
-  }
-
-  shouldUseMockData(): boolean {
-    return this.useMockData || this.apiConnectionFailed;
-  }
-  
-  getLastError(): string | null {
-    return this.lastError;
   }
 
   private ensureInitialized(): void {
@@ -100,50 +85,30 @@ class RCMApiClient {
   async request<T>(method: string, requestMethod: string, body?: any): Promise<T> {
     this.ensureInitialized();
 
-    // If mock mode is enabled, handle mock responses
-    if (this.shouldUseMockData()) {
-      console.log(`[MOCK MODE] Would make ${method} request for method ${requestMethod}`);
-      // TODO: Implement mock data responses if needed
-    }
-
     try {
       const apiUrl = this.buildApiUrl();
-      console.log(`Making ${method} request to ${apiUrl} for method ${requestMethod}`, {
-        environment: import.meta.env.MODE || 'unknown'
-      });
+      console.log(`Making ${method} request to ${apiUrl} for method ${requestMethod}`);
       
       const requestBody = { method: requestMethod, ...body };
       const headers = this.createHeaders(method, requestBody);
-      
-      // Log the request details for debugging
-      console.log('Request body:', JSON.stringify(requestBody).substring(0, 200));
-      console.log('Request headers:', {
-        'Content-Type': headers.get('Content-Type'),
-        'Accept': headers.get('Accept'),
-        'signature': headers.get('signature')?.substring(0, 15) + '...'
-      });
       
       const response = await fetch(apiUrl, {
         method,
         headers,
         body: JSON.stringify(requestBody),
         credentials: 'same-origin',
-        cache: 'no-cache',
       });
 
       // Check for HTML responses which indicate proxy issues
       const contentType = response.headers.get("content-type") || "";
       if (contentType.includes("text/html")) {
-        const errorMsg = "Received HTML instead of JSON. This indicates a proxy configuration issue.";
-        console.error(errorMsg);
+        console.error("Received HTML instead of JSON. This likely indicates a proxy configuration issue.");
         console.error("Content type:", contentType);
         
         // Read and log the HTML content for debugging
         const htmlContent = await response.text();
         console.error("HTML response preview:", htmlContent.substring(0, 200));
-        this.apiConnectionFailed = true;
-        this.lastError = errorMsg;
-        throw new Error(errorMsg);
+        throw new Error("Invalid API response format - received HTML instead of JSON");
       }
 
       if (!response.ok) {
@@ -157,38 +122,19 @@ class RCMApiClient {
         }
         
         console.error(`API error: ${response.status} ${response.statusText}`, errorData);
-        this.apiConnectionFailed = true;
-        this.lastError = errorData.message || `Request failed with status: ${response.status}`;
-        throw new Error(this.lastError);
+        throw new Error(errorData.message || `Request failed with status: ${response.status}`);
       }
 
       const responseData = await response.json();
       
-      // Log response for debugging
-      console.log('API response:', JSON.stringify(responseData).substring(0, 200));
-      
       if (responseData.status === "ERR") {
         console.error('API returned error:', responseData.error);
-        if (responseData.error?.includes("Signature is invalid")) {
-          console.error('Signature validation failed - check API key and secret');
-        }
-        this.apiConnectionFailed = true;
-        this.lastError = responseData.error || 'Unknown API error';
-        throw new Error(this.lastError);
+        throw new Error(responseData.error || 'Unknown API error');
       }
       
-      // Reset the connection failed flag if we got a successful response
-      this.apiConnectionFailed = false;
-      this.lastError = null;
       return responseData;
     } catch (error) {
       console.error('RCM API request failed:', error);
-      this.apiConnectionFailed = true;
-      if (error instanceof Error) {
-        this.lastError = error.message;
-      } else {
-        this.lastError = 'Unknown API error';
-      }
       throw error;
     }
   }
