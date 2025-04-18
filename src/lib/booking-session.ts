@@ -56,6 +56,12 @@ export interface BookingSessionData {
     name: string;
     amount: number;
   }>;
+  // Add these new fields from the API response
+  numberofdays?: number;
+  dailyrate?: number;
+  totalcost?: number;
+  payment?: number;
+  balancedue?: number;
 }
 
 export const BOOKING_SESSION_KEY = 'rcm_booking_data';
