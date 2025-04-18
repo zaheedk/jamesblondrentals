@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -41,6 +42,16 @@ interface BookingDetails {
   totalcost?: number;
   payment?: number;
   balancedue?: number;
+}
+
+interface ApiBookingResponse {
+  status: string;
+  error: string;
+  results?: {
+    bookinginfo?: any[];
+    paymentinfo?: any[];
+    // Add other result properties as needed
+  };
 }
 
 const PaymentSuccess = () => {
@@ -122,10 +133,12 @@ const PaymentSuccess = () => {
             reservationref: bookingReservationRef
           });
 
-          if (response.status === "OK" && response.results) {
-            console.log("API Response:", response);
-            const bookingInfo = response.results.bookinginfo?.[0] || {};
-            const paymentInfo = response.results.paymentinfo?.[0] || {};
+          const apiResponse = response as ApiBookingResponse;
+
+          if (apiResponse.status === "OK" && apiResponse.results) {
+            console.log("API Response:", apiResponse);
+            const bookingInfo = apiResponse.results.bookinginfo?.[0] || {};
+            const paymentInfo = apiResponse.results.paymentinfo?.[0] || {};
             
             const convertedDetails: BookingDetails = {
               vehicleName: bookingInfo.vehiclecategory || sessionData?.vehicleName || 'Vehicle',
@@ -201,7 +214,10 @@ const PaymentSuccess = () => {
           };
           setBookingDetails(convertedDetails);
           
-          calculateRentalDuration(convertedDetails.pickupDate, convertedDetails.dropoffDate);
+          if (convertedDetails.pickupDate && convertedDetails.dropoffDate) {
+            const days = calculateRentalDuration(convertedDetails.pickupDate, convertedDetails.dropoffDate);
+            setRentalDuration(days);
+          }
         }
         
         setIsLoading(false);
@@ -349,7 +365,8 @@ const PaymentSuccess = () => {
 
   const calculateRentalDuration = (pickupDate: string, dropoffDate: string) => {
     try {
-      let pickup, dropoff;
+      let pickup: Date | null = null;
+      let dropoff: Date | null = null;
       
       if (pickupDate.includes('T') || pickupDate.includes('-')) {
         pickup = parseISO(pickupDate);
@@ -397,13 +414,15 @@ const PaymentSuccess = () => {
         const days = differenceInDays(dropoff, pickup) + 1;
         setRentalDuration(days > 0 ? days : 0);
         console.log(`Rental duration: ${days} days`);
+        return days > 0 ? days : 0;
       } else {
         console.error("Invalid date format for duration calculation:", { pickupDate, dropoffDate });
+        return 1; // Default to 1 day if calculation fails
       }
     } catch (error) {
       console.error("Error calculating rental duration:", error);
+      return 1; // Default to 1 day if error occurs
     }
-    return differenceInDays(dropoff, pickup) + 1;
   };
 
   if (isLoading) {
@@ -476,7 +495,7 @@ const PaymentSuccess = () => {
             {bookingDetails?.vehicleImage && !imageError && (
               <div className="w-full aspect-video rounded-lg overflow-hidden bg-gray-100 mb-6">
                 <img
-                  src={bookingDetails.vehicleImage}
+                  src={`${bookingDetails.vehicleImage.includes('http') ? '' : 'https://rentalcarmanagerau.blob.core.windows.net/public/nzkuzarentals493/'}${bookingDetails.vehicleImage}`}
                   alt={bookingDetails.vehicleName}
                   className="w-full h-full object-cover"
                   onError={handleImageError}
