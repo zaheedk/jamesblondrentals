@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -71,6 +72,7 @@ const PaymentSuccess = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [rentalDuration, setRentalDuration] = useState<number>(0);
   const [imageError, setImageError] = useState<boolean>(false);
+  const [apiResponse, setApiResponse] = useState<any>(null);
   const [windcaveResponseDetails, setWindcaveResponseDetails] = useState<{
     amount?: number;
     transactionDate?: string;
@@ -118,7 +120,8 @@ const PaymentSuccess = () => {
         console.log(`Updated dates: Pickup ${pickupDate}, Dropoff ${dropoffDate}`);
       }
 
-      const bookingResponse = await rcmApi.request<RCMBookingResponse>('POST', 'booking', {
+      // Create request payload and log it
+      const requestPayload = {
         vehiclecategoryid: bookingDetails.vehicleCategoryId || sessionData?.vehicleCategoryId || 6,
         vehiclecategorytypeid: bookingDetails.vehicleCategoryTypeId || sessionData?.vehicleCategoryTypeId || 6,
         pickuplocationid: bookingDetails.pickupLocationId || sessionData?.pickupLocationId || 1,
@@ -142,11 +145,19 @@ const PaymentSuccess = () => {
           licenseexpires: bookingDetails.customerLicenseExpiry || "",
           address: bookingDetails.customerAddress || ""
         }
-      });
+      };
+      
+      console.log('Sending save quotation request with payload:', requestPayload);
+
+      const bookingResponse = await rcmApi.request<RCMBookingResponse>('POST', 'booking', requestPayload);
+      
+      // Store and log the complete API response
+      setApiResponse(bookingResponse);
+      console.log('Complete API response from save quotation:', bookingResponse);
 
       if (bookingResponse.status === "OK") {
         toast.success("Quotation saved successfully!", {
-          description: "Check your email for the quote details"
+          description: `Check your email for the quote details. Response: ${JSON.stringify(bookingResponse.results || {})}`
         });
         setTimeout(() => navigate("/"), 2000);
       } else {
@@ -154,8 +165,9 @@ const PaymentSuccess = () => {
       }
     } catch (error) {
       console.error("Failed to save quotation:", error);
+      setApiResponse(error);
       toast.error("Failed to save quotation", {
-        description: "Please try again or contact support"
+        description: error instanceof Error ? error.message : "Please try again or contact support"
       });
     }
   };
@@ -312,6 +324,19 @@ const PaymentSuccess = () => {
 
   const formattedPickupDate = bookingDetails?.pickupDate ? new Date(bookingDetails.pickupDate).toLocaleDateString() : "N/A";
   const formattedDropoffDate = bookingDetails?.dropoffDate ? new Date(bookingDetails.dropoffDate).toLocaleDateString() : "N/A";
+
+  const renderApiResponseDebug = () => {
+    if (!apiResponse) return null;
+    
+    return (
+      <div className="bg-gray-100 rounded-lg p-4 mt-4 mb-4 overflow-auto max-h-60">
+        <h3 className="text-xl font-semibold mb-2">API Response Debug</h3>
+        <pre className="text-xs whitespace-pre-wrap">
+          {JSON.stringify(apiResponse, null, 2)}
+        </pre>
+      </div>
+    );
+  };
 
   const renderWindcavePaymentDetails = () => {
     if (!windcaveResponseDetails.status) return null;
@@ -603,6 +628,7 @@ const PaymentSuccess = () => {
             </div>
 
             {renderPaymentSummary()}
+            {renderApiResponseDebug()}
             {renderWindcavePaymentDetails()}
             
             {paymentStatus === "success" ? (
