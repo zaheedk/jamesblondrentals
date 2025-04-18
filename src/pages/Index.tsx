@@ -9,11 +9,13 @@ import { useEffect, useState } from "react";
 import { useRcmApi } from "@/hooks/use-rcm-api";
 import { ApiStatusIndicator } from "@/components/diagnostics/ApiStatusIndicator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, HelpCircle } from "lucide-react";
+import { toast } from "sonner";
 
 const Index = () => {
   const { initializeApi } = useRcmApi();
   const [apiInitError, setApiInitError] = useState<string | null>(null);
+  const [isProduction] = useState(() => import.meta.env.PROD === true);
   
   useEffect(() => {
     try {
@@ -28,6 +30,9 @@ const Index = () => {
     } catch (error) {
       console.error('Failed to initialize API:', error);
       setApiInitError(error instanceof Error ? error.message : 'Unknown error initializing API');
+      toast.error('API Initialization Failed', {
+        description: 'The booking system API could not be initialized. Some features may be limited.'
+      });
     }
   }, [initializeApi]);
 
@@ -49,9 +54,22 @@ const Index = () => {
             </Alert>
           )}
           
-          {/* Always show API status indicator in development or if there's an error */}
-          {(process.env.NODE_ENV !== 'production' || apiInitError) && (
-            <ApiStatusIndicator />
+          {/* In production, only show API status indicator when there's an error */}
+          {(!isProduction || apiInitError) && (
+            <div className="mb-8">
+              <ApiStatusIndicator />
+            </div>
+          )}
+          
+          {isProduction && apiInitError && (
+            <Alert variant="default" className="mb-4 bg-blue-50 border-blue-200">
+              <HelpCircle className="h-4 w-4 text-blue-500" />
+              <AlertTitle>Production Environment</AlertTitle>
+              <AlertDescription>
+                API connection issues may be related to CORS or proxy configuration in the production environment.
+                Please check server configuration for the deployed application.
+              </AlertDescription>
+            </Alert>
           )}
         </div>
         
