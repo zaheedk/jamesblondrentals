@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -120,7 +119,6 @@ const PaymentSuccess = () => {
         console.log(`Updated dates: Pickup ${pickupDate}, Dropoff ${dropoffDate}`);
       }
 
-      // Create request payload and log it
       const requestPayload = {
         vehiclecategoryid: bookingDetails.vehicleCategoryId || sessionData?.vehicleCategoryId || 6,
         vehiclecategorytypeid: bookingDetails.vehicleCategoryTypeId || sessionData?.vehicleCategoryTypeId || 6,
@@ -151,7 +149,6 @@ const PaymentSuccess = () => {
 
       const bookingResponse = await rcmApi.request<RCMBookingResponse>('POST', 'booking', requestPayload);
       
-      // Store and log the complete API response
       setApiResponse(bookingResponse);
       console.log('Complete API response from save quotation:', bookingResponse);
 
@@ -159,7 +156,6 @@ const PaymentSuccess = () => {
         toast.success("Quotation saved successfully!", {
           description: `Check your email for the quote details. Response: ${JSON.stringify(bookingResponse.results || {})}`
         });
-        setTimeout(() => navigate("/"), 2000);
       } else {
         throw new Error(bookingResponse.error || "Failed to save quotation");
       }
