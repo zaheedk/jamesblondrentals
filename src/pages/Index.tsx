@@ -1,17 +1,23 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Hero from "@/components/home/Hero";
 import FeaturedVehicles from "@/components/home/FeaturedVehicles";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRcmApi } from "@/hooks/use-rcm-api";
 import { ApiStatusIndicator } from "@/components/diagnostics/ApiStatusIndicator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const Index = () => {
-  const { initializeApi } = useRcmApi();
+  const { initializeApi, rcmApi } = useRcmApi();
+  const [apiResponse, setApiResponse] = useState<any>(null);
+  const [apiError, setApiError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   
   useEffect(() => {
     try {
@@ -26,17 +32,111 @@ const Index = () => {
     }
   }, [initializeApi]);
 
+  // Function to test API connection
+  const testApiConnection = async () => {
+    setIsLoading(true);
+    setApiResponse(null);
+    setApiError(null);
+    
+    try {
+      console.log('Testing API connection...');
+      const response = await rcmApi.getStep1();
+      console.log('API test response:', response);
+      setApiResponse(response);
+    } catch (error) {
+      console.error('API test error:', error);
+      setApiError(error instanceof Error ? error.message : String(error));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
       <main className="flex-grow">
         <Hero />
         
-        {/* API Status Indicator */}
+        {/* API Status and Debug Section */}
         <div className="container mx-auto px-4 py-4">
-          {process.env.NODE_ENV !== 'production' && (
-            <ApiStatusIndicator />
-          )}
+          <div className="mb-8">
+            <div className="flex flex-col md:flex-row gap-4 mb-4">
+              <div className="flex-1">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex justify-between items-center">
+                      API Connection Status
+                      <Button 
+                        size="sm" 
+                        onClick={testApiConnection} 
+                        disabled={isLoading}
+                      >
+                        {isLoading ? "Testing..." : "Test API Connection"}
+                      </Button>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ApiStatusIndicator />
+                    
+                    {apiError && (
+                      <Alert variant="destructive" className="mt-4">
+                        <AlertCircle className="h-4 w-4" />
+                        <AlertTitle>API Error</AlertTitle>
+                        <AlertDescription>
+                          <code className="text-xs">{apiError}</code>
+                        </AlertDescription>
+                      </Alert>
+                    )}
+                    
+                    {apiResponse && (
+                      <div className="mt-4">
+                        <div className="font-medium mb-2">API Response:</div>
+                        <ScrollArea className="h-64 rounded border p-2 bg-slate-50">
+                          <pre className="text-xs whitespace-pre-wrap">
+                            {JSON.stringify(apiResponse, null, 2)}
+                          </pre>
+                        </ScrollArea>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+              
+              <div className="flex-1">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>API Configuration</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      <div>
+                        <span className="font-medium">API URL:</span> 
+                        <code className="ml-2 text-xs">/api/rcm/booking/v3.2</code>
+                      </div>
+                      <div>
+                        <span className="font-medium">API Key:</span> 
+                        <code className="ml-2 text-xs">TnpLdXph...Vq</code>
+                      </div>
+                      <div>
+                        <span className="font-medium">Mode:</span>
+                        <code className="ml-2 text-xs">{process.env.NODE_ENV}</code>
+                      </div>
+                      <div className="pt-4">
+                        <Alert>
+                          <AlertCircle className="h-4 w-4" />
+                          <AlertTitle>API Proxy Information</AlertTitle>
+                          <AlertDescription>
+                            <p>The API requests are proxied to <code>https://apis.rentalcarmanager.com</code></p>
+                            <p className="mt-1">If you're seeing HTML responses instead of JSON, this indicates a proxy configuration issue.</p>
+                          </AlertDescription>
+                        </Alert>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
         </div>
         
         <FeaturedVehicles />
