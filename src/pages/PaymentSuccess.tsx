@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -135,13 +136,13 @@ const PaymentSuccess = () => {
         insuranceid: bookingDetails.insuranceId || sessionData?.insuranceId || 0,
         extrakmsid: bookingDetails.extraKmsId || sessionData?.extraKmsId || 0,
         customer: {
-          firstname: bookingDetails.customerFirstName || "",
-          lastname: bookingDetails.customerLastName || "Quote",
-          email: bookingDetails.customerEmail || "quote@example.com",
-          phone: bookingDetails.customerPhone || "",
-          dateofbirth: bookingDetails.customerDob || "",
-          licenseexpires: bookingDetails.customerLicenseExpiry || "",
-          address: bookingDetails.customerAddress || ""
+          firstname: bookingDetails.customerFirstName || sessionData?.customerFirstName || "",
+          lastname: bookingDetails.customerLastName || sessionData?.customerLastName || "",
+          email: bookingDetails.customerEmail || sessionData?.customerEmail || "quote@example.com",
+          phone: bookingDetails.customerPhone || sessionData?.customerPhone || "",
+          dateofbirth: bookingDetails.customerDob || sessionData?.customerDob || "",
+          licenseexpires: bookingDetails.customerLicenseExpiry || sessionData?.customerLicenseExpiry || "",
+          address: bookingDetails.customerAddress || sessionData?.customerAddress || ""
         }
       };
       
