@@ -226,15 +226,15 @@ const PaymentSuccess = () => {
             })),
             extraKmsName: sessionBookingData.extraKmsName,
             extraKmsPrice: sessionBookingData.extraKmsPrice,
-            pickupLocationName: sessionBookingData.pickupLocationName,
-            dropoffLocationName: sessionBookingData.dropoffLocationName,
+            pickupLocationName: sessionBookingData.pickupLocationName || "Not specified",
+            dropoffLocationName: sessionBookingData.dropoffLocationName || "Not specified",
             totalRateAfterDiscount: sessionBookingData.totalRateAfterDiscount,
             mandatoryFees: sessionBookingData.mandatoryFees,
-            numberofdays: sessionBookingData.numberofdays,
-            dailyrate: sessionBookingData.dailyrate,
-            totalcost: sessionBookingData.totalcost,
-            payment: sessionBookingData.payment,
-            balancedue: sessionBookingData.balancedue
+            numberofdays: sessionBookingData.numberofdays || calculateRentalDuration(sessionBookingData.pickupDate, sessionBookingData.dropoffDate),
+            dailyrate: sessionBookingData.dailyrate || (sessionBookingData.basePrice / calculateRentalDuration(sessionBookingData.pickupDate, sessionBookingData.dropoffDate)),
+            totalcost: sessionBookingData.totalcost || sessionBookingData.basePrice,
+            payment: sessionBookingData.payment || sessionBookingData.paymentAmount,
+            balancedue: sessionBookingData.balancedue || 0
           };
           setBookingDetails(convertedDetails);
           
@@ -403,15 +403,15 @@ const PaymentSuccess = () => {
         selectedExtras: extrasInfo,
         extraKmsName: bookingInfo.kmcharges_description || bookingInfo.kmcharge || bookingInfo.kmoption,
         extraKmsPrice: parseFloat(bookingInfo.kmcharges_additionalkmtotalamount) || parseFloat(bookingInfo.kmchargeamount) || 0,
-        pickupLocationName: bookingInfo.pickuplocationname,
-        dropoffLocationName: bookingInfo.dropofflocationname,
-        totalRateAfterDiscount: bookingInfo.totalrateafterdiscount,
+        pickupLocationName: bookingInfo.pickuplocationname || "Not specified",
+        dropoffLocationName: bookingInfo.dropofflocationname || "Not specified",
+        totalRateAfterDiscount: parseFloat(bookingInfo.totalrateafterdiscount) || 0,
         mandatoryFees: bookingInfo.mandatoryfees,
-        numberofdays: bookingInfo.numberofdays,
-        dailyrate: bookingInfo.dailyrate,
-        totalcost: bookingInfo.totalcost,
-        payment: bookingInfo.payment,
-        balancedue: bookingInfo.balancedue
+        numberofdays: parseInt(bookingInfo.numberofdays) || 0,
+        dailyrate: parseFloat(bookingInfo.dailyrate) || 0,
+        totalcost: parseFloat(bookingInfo.totalcost) || 0,
+        payment: parseFloat(bookingInfo.payment) || parseFloat(paymentInfo.paidamount) || 0,
+        balancedue: parseFloat(bookingInfo.balancedue) || 0
       };
     };
     
@@ -490,8 +490,10 @@ const PaymentSuccess = () => {
       fullBookingDetails: bookingDetails
     });
 
-    // Get values from the API response
-    const rentalValue = (bookingDetails.numberofdays || 0) * (bookingDetails.dailyrate || 0);
+    // Calculate rental value from days and daily rate, or use base price
+    const rentalDays = bookingDetails.numberofdays || rentalDuration || 1;
+    const dailyRate = bookingDetails.dailyrate || (bookingDetails.basePrice / rentalDays);
+    const rentalValue = rentalDays * dailyRate;
     
     return (
       <div className="bg-gray-50 rounded-lg p-4 mb-6">
@@ -499,7 +501,7 @@ const PaymentSuccess = () => {
         <div className="space-y-2">
           {/* Rental Value */}
           <div className="flex justify-between">
-            <span>Rental Value ({bookingDetails.numberofdays} days × ${bookingDetails.dailyrate})</span>
+            <span>Rental Value ({rentalDays} days × ${dailyRate.toFixed(2)})</span>
             <span>{formatCurrency(rentalValue)}</span>
           </div>
 
@@ -553,14 +555,14 @@ const PaymentSuccess = () => {
           <div className="border-t border-gray-300 my-2 pt-2">
             <div className="flex justify-between font-semibold">
               <span>Total Cost</span>
-              <span>{formatCurrency(bookingDetails.totalcost || 0)}</span>
+              <span>{formatCurrency(bookingDetails.totalcost || (bookingDetails.basePrice + (bookingDetails.insurancePrice || 0) + (bookingDetails.extraKmsPrice || 0) + (bookingDetails.selectedExtras?.reduce((sum, extra) => sum + extra.price, 0) || 0)))}</span>
             </div>
           </div>
 
           {/* Amount Paid */}
           <div className="flex justify-between text-green-600">
             <span>Paid</span>
-            <span>{formatCurrency(bookingDetails.payment || 0)}</span>
+            <span>{formatCurrency(bookingDetails.payment || bookingDetails.paymentAmount || 0)}</span>
           </div>
 
           {/* Balance Due */}
@@ -638,16 +640,16 @@ const PaymentSuccess = () => {
                   <MapPin className="h-4 w-4" />
                   <div>
                     <p className="font-medium">Pickup Location</p>
-                    <p>{bookingDetails.pickupLocationName}</p>
-                    <p>{formattedPickupDate}</p>
+                    <p>{bookingDetails.pickupLocationName || "Not specified"}</p>
+                    <p>{formattedPickupDate} - {bookingDetails.pickupTime}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <MapPin className="h-4 w-4" />
                   <div>
                     <p className="font-medium">Drop-off Location</p>
-                    <p>{bookingDetails.dropoffLocationName}</p>
-                    <p>{formattedDropoffDate}</p>
+                    <p>{bookingDetails.dropoffLocationName || "Not specified"}</p>
+                    <p>{formattedDropoffDate} - {bookingDetails.dropoffTime}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
