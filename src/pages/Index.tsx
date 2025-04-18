@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Hero from "@/components/home/Hero";
@@ -18,7 +19,9 @@ const Index = () => {
       initializeApi({ 
         apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
         apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
-        apiUrl: "/api/rcm/booking/v3.2" 
+        apiUrl: "/api/rcm/booking/v3.2",
+        // Use mock data for development to avoid API connection issues
+        useMockData: process.env.NODE_ENV !== 'production' 
       });
       console.log('API initialized successfully');
     } catch (error) {
@@ -35,7 +38,18 @@ const Index = () => {
         {/* API Status Indicator */}
         <div className="container mx-auto px-4 py-4">
           {process.env.NODE_ENV !== 'production' && (
-            <ApiStatusIndicator />
+            <div className="mb-4">
+              <Alert>
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Development Mode</AlertTitle>
+                <AlertDescription>
+                  Running in development mode with mock data. API requests won't reach the actual RCM servers.
+                </AlertDescription>
+              </Alert>
+              <div className="mt-4">
+                <ApiStatusIndicator />
+              </div>
+            </div>
           )}
         </div>
         

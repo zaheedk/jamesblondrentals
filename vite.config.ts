@@ -3,7 +3,6 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
-import type { IncomingMessage, ServerResponse } from 'http';
 
 export default defineConfig(({ mode }) => ({
   server: {
@@ -15,10 +14,6 @@ export default defineConfig(({ mode }) => ({
         changeOrigin: true,
         secure: true, 
         rewrite: (path) => path.replace(/^\/api\/rcm/, ''),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
         configure: (proxy, _options) => {
           proxy.on('error', (err, _req, _res) => {
             console.error('Proxy error:', err);
@@ -26,11 +21,9 @@ export default defineConfig(({ mode }) => ({
           
           proxy.on('proxyReq', (proxyReq, req, _res) => {
             console.log(`Proxying request to RCM API: ${req.method} ${proxyReq.path}`);
-            
-            // Enhanced logging for request
             console.log('Request headers:', proxyReq.getHeaders());
             
-            // Ensure body is properly handled for POST requests
+            // Handle JSON request body for POST requests
             if ('body' in req && req.body) {
               const bodyData = JSON.stringify(req.body);
               proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
@@ -44,7 +37,7 @@ export default defineConfig(({ mode }) => ({
             // Check if response is HTML instead of JSON
             const contentType = proxyRes.headers['content-type'] || '';
             if (contentType.includes('text/html')) {
-              console.error('WARNING: Received HTML instead of JSON response from API. This indicates a proxy misconfiguration or API endpoint issue.');
+              console.error('WARNING: Received HTML instead of JSON response from API');
             }
           });
         }
