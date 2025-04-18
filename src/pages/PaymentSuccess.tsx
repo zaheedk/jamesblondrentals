@@ -72,25 +72,6 @@ const PaymentSuccess = () => {
   };
 
   useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const allParams = {};
-    for (const [key, value] of queryParams.entries()) {
-      allParams[key] = value;
-    }
-    console.log("💡 ALL URL QUERY PARAMETERS:", allParams);
-
-    const sessionData = getBookingData();
-    console.log("💡 SESSION BOOKING DATA:", sessionData);
-
-    const windcaveResponse = queryParams.get("windcaveResponse");
-    if (windcaveResponse) {
-      try {
-        const parsedResponse = JSON.parse(decodeURIComponent(windcaveResponse));
-        console.log("💡 DECODED WINDCAVE RESPONSE:", parsedResponse);
-      } catch (error) {
-        console.error("Error parsing Windcave response:", error);
-      }
-    }
     const fetchBookingDetails = async () => {
       try {
         setIsLoading(true);
@@ -100,11 +81,7 @@ const PaymentSuccess = () => {
         const txnId = queryParams.get("txnId") || "N/A";
         const reservationRef = queryParams.get("reservationRef");
         
-        console.log("URL Parameters:", {
-          result,
-          txnId,
-          reservationRef
-        });
+        console.log("URL Parameters:", { result, txnId, reservationRef });
         
         setTransactionId(txnId);
         
@@ -127,114 +104,100 @@ const PaymentSuccess = () => {
             description: "Your booking has been confirmed."
           });
         }
-        
-        const sessionBookingData = getBookingData();
-        console.log("Session booking data:", sessionBookingData);
-        
-        const windcaveResponse = queryParams.get("windcaveResponse");
-        let parsedWindcaveResponse: any = null;
-        
-        if (windcaveResponse) {
-          try {
-            parsedWindcaveResponse = JSON.parse(decodeURIComponent(windcaveResponse));
-            console.log("Full Windcave Response:", parsedWindcaveResponse);
-            
-            const windcaveReservationRef = parsedWindcaveResponse.results?.ReservationRef || 
-                                          parsedWindcaveResponse.ReservationRef;
-            
-            console.log("Windcave Reservation Ref:", windcaveReservationRef);
-            
-            if (windcaveReservationRef && (!reservationRef || windcaveReservationRef !== reservationRef)) {
-              console.log("Using reservation reference from Windcave response:", windcaveReservationRef);
-              
-              setWindcaveResponseDetails({
-                amount: parsedWindcaveResponse.results?.Amount,
-                transactionDate: parsedWindcaveResponse.results?.TransactionDate,
-                status: parsedWindcaveResponse.results?.Status,
-                transactionId: parsedWindcaveResponse.results?.TransactionId,
-                reservationRef: windcaveReservationRef,
-                cardDetails: {
-                  cardholder: parsedWindcaveResponse.results?.Card?.Cardholder,
-                  payType: parsedWindcaveResponse.results?.Card?.PayType,
-                  cardNumber: parsedWindcaveResponse.results?.Card?.CardNumber
-                }
-              });
-              
-              if (windcaveReservationRef) {
-                await fetchBookingFromRCM(windcaveReservationRef);
-                setIsLoading(false);
-                return;
-              }
-            }
-            
-            setWindcaveResponseDetails({
-              amount: parsedWindcaveResponse.results?.Amount,
-              transactionDate: parsedWindcaveResponse.results?.TransactionDate,
-              status: parsedWindcaveResponse.results?.Status,
-              transactionId: parsedWindcaveResponse.results?.TransactionId,
-              reservationRef: reservationRef,
-              cardDetails: {
-                cardholder: parsedWindcaveResponse.results?.Card?.Cardholder,
-                payType: parsedWindcaveResponse.results?.Card?.PayType,
-                cardNumber: parsedWindcaveResponse.results?.Card?.CardNumber
-              }
-            });
-          } catch (parseError) {
-            console.error("Error parsing Windcave response:", parseError);
-          }
-        }
-        
+
+        // Get booking reference from either URL params, Windcave response, or session data
+        const sessionData = getBookingData();
         const bookingReservationRef = reservationRef || 
-                                     (sessionBookingData && (
-                                       sessionBookingData.reservationRef ||
-                                       sessionBookingData.bookingReference ||
-                                       sessionBookingData.confirmationNumber ||
-                                       sessionBookingData.reservationNo ||
-                                       sessionBookingData.windcaveReservationRef
+                                     (sessionData && (
+                                       sessionData.reservationRef ||
+                                       sessionData.bookingReference ||
+                                       sessionData.confirmationNumber ||
+                                       sessionData.reservationNo
                                      ));
-                                     
-        console.log("Using reservation reference for API call:", bookingReservationRef);
-        
-        if (bookingReservationRef && (!sessionBookingData || bookingReservationRef !== sessionBookingData.reservationRef)) {
-          console.log("Fetching booking details using reservation reference:", bookingReservationRef);
-          await fetchBookingFromRCM(bookingReservationRef);
-        } else if (sessionBookingData) {
+
+        if (bookingReservationRef) {
+          console.log("Fetching booking details for reservation:", bookingReservationRef);
+          const response = await rcmApi.request('POST', 'bookinginfo', {
+            method: 'bookinginfo',
+            reservationref: bookingReservationRef
+          });
+
+          if (response.status === "OK" && response.results) {
+            console.log("API Response:", response);
+            const bookingInfo = response.results.bookinginfo?.[0] || {};
+            const paymentInfo = response.results.paymentinfo?.[0] || {};
+            
+            const convertedDetails: BookingDetails = {
+              vehicleName: bookingInfo.vehiclecategory || sessionData?.vehicleName || 'Vehicle',
+              pickupDate: bookingInfo.pickupdate || sessionData?.pickupDate || '',
+              pickupTime: bookingInfo.pickuptime || sessionData?.pickupTime || '',
+              dropoffDate: bookingInfo.dropoffdate || sessionData?.dropoffDate || '',
+              dropoffTime: bookingInfo.dropofftime || sessionData?.dropoffTime || '',
+              paymentAmount: parseFloat(paymentInfo.paidamount) || sessionData?.paymentAmount || 0,
+              basePrice: parseFloat(bookingInfo.totalcost) || sessionData?.basePrice || 0,
+              reservationRef: bookingReservationRef,
+              vehicleImage: bookingInfo.vehicleimage || sessionData?.vehicleImage || '',
+              insuranceName: bookingInfo.insuranceoption || sessionData?.insuranceName || '',
+              insurancePrice: parseFloat(bookingInfo.insuranceamount) || sessionData?.insurancePrice || 0,
+              selectedExtras: sessionData?.selectedExtras || [],
+              pickupLocationName: bookingInfo.pickuplocationname || sessionData?.pickupLocationName || "Not specified",
+              dropoffLocationName: bookingInfo.dropofflocationname || sessionData?.dropoffLocationName || "Not specified",
+              totalRateAfterDiscount: parseFloat(bookingInfo.totalrateafterdiscount) || sessionData?.totalRateAfterDiscount || 0,
+              mandatoryFees: bookingInfo.mandatoryfees || sessionData?.mandatoryFees || [],
+              numberofdays: parseInt(bookingInfo.numberofdays) || 
+                          (sessionData?.pickupDate && sessionData?.dropoffDate ? 
+                            calculateRentalDuration(sessionData.pickupDate, sessionData.dropoffDate) : 0),
+              dailyrate: parseFloat(bookingInfo.dailyrate) || 
+                        (sessionData?.basePrice && sessionData?.numberofdays ? 
+                          sessionData.basePrice / sessionData.numberofdays : 0),
+              totalcost: parseFloat(bookingInfo.totalcost) || sessionData?.totalcost || 0,
+              payment: parseFloat(paymentInfo.paidamount) || sessionData?.payment || 0,
+              balancedue: parseFloat(bookingInfo.balancedue) || sessionData?.balancedue || 0
+            };
+
+            setBookingDetails(convertedDetails);
+            if (convertedDetails.pickupDate && convertedDetails.dropoffDate) {
+              const days = calculateRentalDuration(convertedDetails.pickupDate, convertedDetails.dropoffDate);
+              setRentalDuration(days);
+            }
+          }
+        } else if (sessionData) {
           const convertedDetails: BookingDetails = {
-            vehicleName: sessionBookingData.vehicleName || 'Vehicle',
-            pickupDate: sessionBookingData.pickupDate,
-            pickupTime: sessionBookingData.pickupTime, 
-            dropoffDate: sessionBookingData.dropoffDate,
-            dropoffTime: sessionBookingData.dropoffTime,
-            paymentAmount: sessionBookingData.paymentAmount || 0,
-            basePrice: sessionBookingData.basePrice || 0,
-            paymentType: sessionBookingData.paymentType,
-            customerFirstName: sessionBookingData.customerFirstName,
-            customerLastName: sessionBookingData.customerLastName,
-            customerEmail: sessionBookingData.customerEmail,
-            customerPhone: sessionBookingData.customerPhone,
-            customerDob: sessionBookingData.customerDob,
-            customerLicenseExpiry: sessionBookingData.customerLicenseExpiry,
-            customerAddress: sessionBookingData.customerAddress,
+            vehicleName: sessionData.vehicleName || 'Vehicle',
+            pickupDate: sessionData.pickupDate,
+            pickupTime: sessionData.pickupTime, 
+            dropoffDate: sessionData.dropoffDate,
+            dropoffTime: sessionData.dropoffTime,
+            paymentAmount: sessionData.paymentAmount || 0,
+            basePrice: sessionData.basePrice || 0,
+            paymentType: sessionData.paymentType,
+            customerFirstName: sessionData.customerFirstName,
+            customerLastName: sessionData.customerLastName,
+            customerEmail: sessionData.customerEmail,
+            customerPhone: sessionData.customerPhone,
+            customerDob: sessionData.customerDob,
+            customerLicenseExpiry: sessionData.customerLicenseExpiry,
+            customerAddress: sessionData.customerAddress,
             reservationRef: bookingReservationRef,
-            vehicleImage: sessionBookingData.vehicleImage,
-            insuranceName: sessionBookingData.insuranceName,
-            insurancePrice: sessionBookingData.insurancePrice,
-            selectedExtras: sessionBookingData.selectedExtras?.map(extra => ({
+            vehicleImage: sessionData.vehicleImage,
+            insuranceName: sessionData.insuranceName,
+            insurancePrice: sessionData.insurancePrice,
+            selectedExtras: sessionData.selectedExtras?.map(extra => ({
               name: extra.name,
               quantity: extra.quantity,
               price: extra.price
             })),
-            extraKmsName: sessionBookingData.extraKmsName,
-            extraKmsPrice: sessionBookingData.extraKmsPrice,
-            pickupLocationName: sessionBookingData.pickupLocationName || "Not specified",
-            dropoffLocationName: sessionBookingData.dropoffLocationName || "Not specified",
-            totalRateAfterDiscount: sessionBookingData.totalRateAfterDiscount,
-            mandatoryFees: sessionBookingData.mandatoryFees,
-            numberofdays: sessionBookingData.numberofdays || calculateRentalDuration(sessionBookingData.pickupDate, sessionBookingData.dropoffDate),
-            dailyrate: sessionBookingData.dailyrate || (sessionBookingData.basePrice / calculateRentalDuration(sessionBookingData.pickupDate, sessionBookingData.dropoffDate)),
-            totalcost: sessionBookingData.totalcost || sessionBookingData.basePrice,
-            payment: sessionBookingData.payment || sessionBookingData.paymentAmount,
-            balancedue: sessionBookingData.balancedue || 0
+            extraKmsName: sessionData.extraKmsName,
+            extraKmsPrice: sessionData.extraKmsPrice,
+            pickupLocationName: sessionData.pickupLocationName || "Not specified",
+            dropoffLocationName: sessionData.dropoffLocationName || "Not specified",
+            totalRateAfterDiscount: sessionData.totalRateAfterDiscount,
+            mandatoryFees: sessionData.mandatoryFees,
+            numberofdays: sessionData.numberofdays || calculateRentalDuration(sessionData.pickupDate, sessionData.dropoffDate),
+            dailyrate: sessionData.dailyrate || (sessionData.basePrice / calculateRentalDuration(sessionData.pickupDate, sessionData.dropoffDate)),
+            totalcost: sessionData.totalcost || sessionData.basePrice,
+            payment: sessionData.payment || sessionData.paymentAmount,
+            balancedue: sessionData.balancedue || 0
           };
           setBookingDetails(convertedDetails);
           
@@ -243,209 +206,16 @@ const PaymentSuccess = () => {
         
         setIsLoading(false);
       } catch (error) {
-        console.error("Error in fetchBookingDetails:", error);
+        console.error("Error fetching booking details:", error);
         setIsLoading(false);
         toast.error("Error", {
           description: "Failed to load booking details."
         });
       }
     };
-    
-    const fetchBookingFromRCM = async (reservationRef: string) => {
-      try {
-        if (!reservationRef) {
-          console.error("No reservation reference provided for API call");
-          return false;
-        }
-        
-        const requestPayload = {
-          method: "bookinginfo",
-          reservationref: reservationRef
-        };
-        
-        console.log("Fetching booking details with payload:", requestPayload);
-        
-        const response = await rcmApi.request('POST', 'bookinginfo', requestPayload);
-        
-        const typedResponse = response as { status: string, results?: any };
-        
-        console.log("Booking details response from RCM:", typedResponse);
-        
-        if (typedResponse && typedResponse.status === "OK" && typedResponse.results) {
-          const apiBookingDetails = mapApiResponseToBookingDetails(typedResponse.results, reservationRef);
-          setBookingDetails(apiBookingDetails);
-          
-          if (apiBookingDetails.pickupDate && apiBookingDetails.dropoffDate) {
-            calculateRentalDuration(apiBookingDetails.pickupDate, apiBookingDetails.dropoffDate);
-          }
-          return true;
-        } else {
-          throw new Error("Failed to fetch booking details");
-        }
-      } catch (error) {
-        console.error("Error fetching booking details from RCM:", error);
-        return false;
-      }
-    };
-    
-    const calculateRentalDuration = (pickupDate: string, dropoffDate: string) => {
-      try {
-        let pickup, dropoff;
-        
-        if (pickupDate.includes('T') || pickupDate.includes('-')) {
-          pickup = parseISO(pickupDate);
-        } else {
-          const [day, month, year] = pickupDate.split('/').map(Number);
-          pickup = new Date(year, month - 1, day);
-        }
-        
-        if (dropoffDate.includes('T') || dropoffDate.includes('-')) {
-          dropoff = parseISO(dropoffDate);
-        } else {
-          const [day, month, year] = dropoffDate.split('/').map(Number);
-          dropoff = new Date(year, month - 1, day);
-        }
-        
-        if (!isValid(pickup) && pickupDate.includes('/')) {
-          const parts = pickupDate.split('/');
-          if (parts.length === 3) {
-            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-            const day = parseInt(parts[0]);
-            const monthIndex = monthNames.findIndex(m => parts[1].includes(m));
-            const year = parseInt(parts[2]);
-            
-            if (!isNaN(day) && monthIndex !== -1 && !isNaN(year)) {
-              pickup = new Date(year, monthIndex, day);
-            }
-          }
-        }
-        
-        if (!isValid(dropoff) && dropoffDate.includes('/')) {
-          const parts = dropoffDate.split('/');
-          if (parts.length === 3) {
-            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-            const day = parseInt(parts[0]);
-            const monthIndex = monthNames.findIndex(m => parts[1].includes(m));
-            const year = parseInt(parts[2]);
-            
-            if (!isNaN(day) && monthIndex !== -1 && !isNaN(year)) {
-              dropoff = new Date(year, monthIndex, day);
-            }
-          }
-        }
-        
-        if (isValid(pickup) && isValid(dropoff)) {
-          const days = differenceInDays(dropoff, pickup) + 1;
-          setRentalDuration(days > 0 ? days : 0);
-          console.log(`Rental duration: ${days} days`);
-        } else {
-          console.error("Invalid date format for duration calculation:", { pickupDate, dropoffDate });
-        }
-      } catch (error) {
-        console.error("Error calculating rental duration:", error);
-      }
-    };
-    
-    const mapApiResponseToBookingDetails = (apiResponse: any, reservationRef: string): BookingDetails => {
-      console.log('🚨 FULL API RESPONSE:', JSON.stringify(apiResponse, null, 2));
 
-      console.log('🔍 Booking Info Raw:', apiResponse.bookinginfo);
-      console.log('🔍 Customer Info Raw:', apiResponse.customerinfo);
-      console.log('🔍 Payment Info Raw:', apiResponse.paymentinfo);
-      console.log('🔍 Extras Info Raw:', apiResponse.extrafees);
-
-      const bookingInfo = apiResponse.bookinginfo && apiResponse.bookinginfo[0] ? apiResponse.bookinginfo[0] : {};
-      const customerInfo = apiResponse.customerinfo && apiResponse.customerinfo[0] ? apiResponse.customerinfo[0] : {};
-      const paymentInfo = apiResponse.paymentinfo && apiResponse.paymentinfo[0] ? apiResponse.paymentinfo[0] : {};
-      
-      const extrasInfo: Array<{name: string; quantity: number; price: number}> = [];
-      
-      if (apiResponse.extrafees && Array.isArray(apiResponse.extrafees)) {
-        apiResponse.extrafees.forEach((extra: any) => {
-          if (!extra.isbondfee) {
-            extrasInfo.push({
-              name: extra.name || "Extra item",
-              quantity: parseInt(extra.qty) || 1,
-              price: parseFloat(extra.totalfeeamount) || 0
-            });
-          }
-        });
-      }
-
-      let vehicleImageUrl = bookingInfo.vehicleimage;
-      if (vehicleImageUrl && bookingInfo.urlpathfordocuments) {
-        if (!vehicleImageUrl.startsWith('http')) {
-          vehicleImageUrl = `${bookingInfo.urlpathfordocuments}${vehicleImageUrl}`;
-        }
-      }
-      
-      console.log("Vehicle image URL:", vehicleImageUrl);
-      
-      return {
-        vehicleName: bookingInfo.vehiclecategory || "Vehicle",
-        pickupDate: bookingInfo.pickupdate || "N/A",
-        pickupTime: bookingInfo.pickuptime || "N/A",
-        dropoffDate: bookingInfo.dropoffdate || "N/A",
-        dropoffTime: bookingInfo.dropofftime || "N/A",
-        paymentAmount: parseFloat(paymentInfo.paidamount) || parseFloat(bookingInfo.totalcost) || 0,
-        basePrice: parseFloat(bookingInfo.totalcost) || 0,
-        customerFirstName: customerInfo.firstname || "N/A",
-        customerLastName: customerInfo.lastname || "N/A",
-        customerEmail: customerInfo.email || "N/A",
-        customerPhone: customerInfo.phone || customerInfo.mobile || "N/A",
-        customerDob: customerInfo.dateofbirth || "N/A",
-        customerLicenseExpiry: customerInfo.licenseexpires || "N/A",
-        customerAddress: customerInfo.fulladdress || customerInfo.address || "N/A",
-        reservationRef: reservationRef,
-        vehicleImage: vehicleImageUrl,
-        insuranceName: bookingInfo.insuranceoption || paymentInfo.insuranceoption,
-        insurancePrice: parseFloat(bookingInfo.insuranceamount) || parseFloat(paymentInfo.insuranceamount) || 0,
-        selectedExtras: extrasInfo,
-        extraKmsName: bookingInfo.kmcharges_description || bookingInfo.kmcharge || bookingInfo.kmoption,
-        extraKmsPrice: parseFloat(bookingInfo.kmcharges_additionalkmtotalamount) || parseFloat(bookingInfo.kmchargeamount) || 0,
-        pickupLocationName: bookingInfo.pickuplocationname || "Not specified",
-        dropoffLocationName: bookingInfo.dropofflocationname || "Not specified",
-        totalRateAfterDiscount: parseFloat(bookingInfo.totalrateafterdiscount) || 0,
-        mandatoryFees: bookingInfo.mandatoryfees,
-        numberofdays: parseInt(bookingInfo.numberofdays) || 0,
-        dailyrate: parseFloat(bookingInfo.dailyrate) || 0,
-        totalcost: parseFloat(bookingInfo.totalcost) || 0,
-        payment: parseFloat(bookingInfo.payment) || parseFloat(paymentInfo.paidamount) || 0,
-        balancedue: parseFloat(bookingInfo.balancedue) || 0
-      };
-    };
-    
     fetchBookingDetails();
   }, [navigate, location]);
-  
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="w-12 h-12 border-4 border-t-blue-500 border-blue-200 rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-  
-  if (!bookingDetails) {
-    return (
-      <div className="container mx-auto px-4 py-8 text-center">
-        <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-8">
-          <h1 className="text-3xl font-bold mb-6">Booking Details Not Found</h1>
-          <p className="text-gray-600 mb-6">
-            We couldn't retrieve your booking details. If you've just completed a booking,
-            please contact customer support with your transaction ID.
-          </p>
-          <p className="text-gray-600 mb-6">Transaction ID: {transactionId}</p>
-          <Button 
-            onClick={() => navigate("/")}
-            className="w-full"
-          >
-            Return to Home
-          </Button>
-        </div>
-      </div>
-    );
-  }
 
   const formattedPickupDate = bookingDetails?.pickupDate ? new Date(bookingDetails.pickupDate).toLocaleDateString() : "N/A";
   const formattedDropoffDate = bookingDetails?.dropoffDate ? new Date(bookingDetails.dropoffDate).toLocaleDateString() : "N/A";
@@ -576,6 +346,94 @@ const PaymentSuccess = () => {
       </div>
     );
   };
+
+  const calculateRentalDuration = (pickupDate: string, dropoffDate: string) => {
+    try {
+      let pickup, dropoff;
+      
+      if (pickupDate.includes('T') || pickupDate.includes('-')) {
+        pickup = parseISO(pickupDate);
+      } else {
+        const [day, month, year] = pickupDate.split('/').map(Number);
+        pickup = new Date(year, month - 1, day);
+      }
+      
+      if (dropoffDate.includes('T') || dropoffDate.includes('-')) {
+        dropoff = parseISO(dropoffDate);
+      } else {
+        const [day, month, year] = dropoffDate.split('/').map(Number);
+        dropoff = new Date(year, month - 1, day);
+      }
+      
+      if (!isValid(pickup) && pickupDate.includes('/')) {
+        const parts = pickupDate.split('/');
+        if (parts.length === 3) {
+          const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+          const day = parseInt(parts[0]);
+          const monthIndex = monthNames.findIndex(m => parts[1].includes(m));
+          const year = parseInt(parts[2]);
+          
+          if (!isNaN(day) && monthIndex !== -1 && !isNaN(year)) {
+            pickup = new Date(year, monthIndex, day);
+          }
+        }
+      }
+      
+      if (!isValid(dropoff) && dropoffDate.includes('/')) {
+        const parts = dropoffDate.split('/');
+        if (parts.length === 3) {
+          const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+          const day = parseInt(parts[0]);
+          const monthIndex = monthNames.findIndex(m => parts[1].includes(m));
+          const year = parseInt(parts[2]);
+          
+          if (!isNaN(day) && monthIndex !== -1 && !isNaN(year)) {
+            dropoff = new Date(year, monthIndex, day);
+          }
+        }
+      }
+      
+      if (isValid(pickup) && isValid(dropoff)) {
+        const days = differenceInDays(dropoff, pickup) + 1;
+        setRentalDuration(days > 0 ? days : 0);
+        console.log(`Rental duration: ${days} days`);
+      } else {
+        console.error("Invalid date format for duration calculation:", { pickupDate, dropoffDate });
+      }
+    } catch (error) {
+      console.error("Error calculating rental duration:", error);
+    }
+    return differenceInDays(dropoff, pickup) + 1;
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="w-12 h-12 border-4 border-t-blue-500 border-blue-200 rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+  
+  if (!bookingDetails) {
+    return (
+      <div className="container mx-auto px-4 py-8 text-center">
+        <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-8">
+          <h1 className="text-3xl font-bold mb-6">Booking Details Not Found</h1>
+          <p className="text-gray-600 mb-6">
+            We couldn't retrieve your booking details. If you've just completed a booking,
+            please contact customer support with your transaction ID.
+          </p>
+          <p className="text-gray-600 mb-6">Transaction ID: {transactionId}</p>
+          <Button 
+            onClick={() => navigate("/")}
+            className="w-full"
+          >
+            Return to Home
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
