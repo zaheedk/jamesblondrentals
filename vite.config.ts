@@ -4,23 +4,25 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 import type { IncomingMessage, ServerResponse } from 'http';
+import type { HttpProxy } from 'http-proxy';
+import type { Connect } from 'vite';
 
 // Common proxy configuration for development and production preview
 const createRcmProxy = () => ({
   target: 'https://apis.rentalcarmanager.com',
   changeOrigin: true,
   secure: true, 
-  rewrite: (path) => path.replace(/^\/api\/rcm/, ''),
+  rewrite: (path: string) => path.replace(/^\/api\/rcm/, ''),
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
   },
-  configure: (proxy, _options) => {
-    proxy.on('error', (err, _req, _res) => {
+  configure: (proxy: HttpProxy, _options: any) => {
+    proxy.on('error', (err: Error, _req: IncomingMessage, _res: ServerResponse) => {
       console.error('Proxy error:', err);
     });
     
-    proxy.on('proxyReq', (proxyReq, req: IncomingMessage & { body?: any }, _res) => {
+    proxy.on('proxyReq', (proxyReq: HttpProxy.ProxyReqCallback, req: IncomingMessage & { body?: any }, _res: ServerResponse) => {
       console.log(`Proxying request to RCM API: ${req.method} ${proxyReq.path}`);
       
       // Enhanced logging for request
@@ -34,7 +36,7 @@ const createRcmProxy = () => ({
       }
     });
     
-    proxy.on('proxyRes', (proxyRes, req, _res: ServerResponse) => {
+    proxy.on('proxyRes', (proxyRes: IncomingMessage, req: IncomingMessage, _res: ServerResponse) => {
       console.log(`Response from RCM API: ${proxyRes.statusCode} for ${req.url}`);
       
       // Check if response is HTML instead of JSON
