@@ -120,6 +120,11 @@ const PaymentSuccess = () => {
         console.log(`Updated dates: Pickup ${pickupDate}, Dropoff ${dropoffDate}`);
       }
 
+      // Create default values for required fields to prevent API errors
+      const defaultFirstName = "Guest";
+      const defaultLastName = "Customer";
+      const defaultEmail = "quote@example.com";
+
       const requestPayload = {
         vehiclecategoryid: bookingDetails.vehicleCategoryId || sessionData?.vehicleCategoryId || 6,
         vehiclecategorytypeid: bookingDetails.vehicleCategoryTypeId || sessionData?.vehicleCategoryTypeId || 6,
@@ -136,9 +141,9 @@ const PaymentSuccess = () => {
         insuranceid: bookingDetails.insuranceId || sessionData?.insuranceId || 0,
         extrakmsid: bookingDetails.extraKmsId || sessionData?.extraKmsId || 0,
         customer: {
-          firstname: bookingDetails.customerFirstName || sessionData?.customerFirstName || "",
-          lastname: bookingDetails.customerLastName || sessionData?.customerLastName || "",
-          email: bookingDetails.customerEmail || sessionData?.customerEmail || "quote@example.com",
+          firstname: bookingDetails.customerFirstName || sessionData?.customerFirstName || defaultFirstName,
+          lastname: bookingDetails.customerLastName || sessionData?.customerLastName || defaultLastName,
+          email: bookingDetails.customerEmail || sessionData?.customerEmail || defaultEmail,
           phone: bookingDetails.customerPhone || sessionData?.customerPhone || "",
           dateofbirth: bookingDetails.customerDob || sessionData?.customerDob || "",
           licenseexpires: bookingDetails.customerLicenseExpiry || sessionData?.customerLicenseExpiry || "",
