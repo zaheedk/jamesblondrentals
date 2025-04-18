@@ -447,16 +447,6 @@ const PaymentSuccess = () => {
     );
   }
 
-  const customerDetails = {
-    firstName: bookingDetails?.customerFirstName || "Not provided",
-    lastName: bookingDetails?.customerLastName || "Not provided",
-    email: bookingDetails?.customerEmail || "Not provided",
-    phone: bookingDetails?.customerPhone || "Not provided",
-    dob: bookingDetails?.customerDob || "Not provided",
-    licenseExpiry: bookingDetails?.customerLicenseExpiry || "Not provided",
-    address: bookingDetails?.customerAddress || "Not provided"
-  };
-
   const formattedPickupDate = bookingDetails?.pickupDate ? new Date(bookingDetails.pickupDate).toLocaleDateString() : "N/A";
   const formattedDropoffDate = bookingDetails?.dropoffDate ? new Date(bookingDetails.dropoffDate).toLocaleDateString() : "N/A";
 
@@ -588,6 +578,7 @@ const PaymentSuccess = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-8">
+        {/* Payment Status Section */}
         {paymentStatus === "success" ? (
           <div className="text-center mb-8">
             <CheckCircle2 className="h-16 w-16 text-green-500 mx-auto mb-4" />
@@ -621,6 +612,7 @@ const PaymentSuccess = () => {
 
         {bookingDetails && (
           <>
+            {/* Vehicle Image */}
             {bookingDetails?.vehicleImage && !imageError && (
               <div className="w-full aspect-video rounded-lg overflow-hidden bg-gray-100 mb-6">
                 <img
@@ -632,23 +624,13 @@ const PaymentSuccess = () => {
               </div>
             )}
             
+            {/* Vehicle Name */}
             <div className="flex items-center gap-2 mb-6">
               <Car className="h-6 w-6 text-gray-500" />
               <h2 className="text-2xl font-semibold">{bookingDetails?.vehicleName}</h2>
             </div>
 
-            <div className="bg-gray-50 rounded-lg p-4 mb-6">
-              <h3 className="text-lg font-semibold mb-4">Customer Details</h3>
-              <div className="space-y-2">
-                <p><span className="font-medium">Name: </span>{customerDetails.firstName} {customerDetails.lastName}</p>
-                <p><span className="font-medium">Email: </span>{customerDetails.email}</p>
-                <p><span className="font-medium">Phone: </span>{customerDetails.phone}</p>
-                <p><span className="font-medium">Date of Birth: </span>{customerDetails.dob}</p>
-                <p><span className="font-medium">License Expires: </span>{customerDetails.licenseExpiry}</p>
-                <p><span className="font-medium">Address: </span>{customerDetails.address}</p>
-              </div>
-            </div>
-
+            {/* Rental Details */}
             <div className="bg-gray-50 rounded-lg p-4 mb-6">
               <h3 className="text-lg font-semibold mb-4">Rental Details</h3>
               <div className="space-y-2">
@@ -678,9 +660,11 @@ const PaymentSuccess = () => {
               </div>
             </div>
 
+            {/* Payment Summary */}
             {renderPaymentSummary()}
             {renderWindcavePaymentDetails()}
             
+            {/* Action Buttons */}
             {paymentStatus === "success" ? (
               <Button 
                 onClick={() => navigate("/")}
