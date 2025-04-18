@@ -27,8 +27,7 @@ const DEFAULT_CONFIG: RCMApiConfig = {
 class RCMApiClient {
   private config: RCMApiConfig;
   private initialized: boolean = false;
-  private useMockData: boolean = false;
-  
+
   constructor(config: RCMApiConfig) {
     this.config = {
       ...config,
@@ -40,20 +39,13 @@ class RCMApiClient {
     if (config.apiKey) this.config.apiKey = config.apiKey;
     if (config.apiSecret) this.config.apiSecret = config.apiSecret;
     if (config.apiUrl) this.config.apiUrl = config.apiUrl.replace(/\/$/, '');
-    if (config.useMockData !== undefined) this.useMockData = config.useMockData;
     
     this.initialized = true;
     
     console.log('RCM API initialized with config:', {
       apiUrl: this.config.apiUrl,
-      apiKey: this.config.apiKey ? '******' : undefined,
-      useMockData: this.useMockData
+      apiKey: this.config.apiKey ? '******' : undefined
     });
-  }
-
-  // Method to check if mock data should be used
-  public shouldUseMockData(): boolean {
-    return this.useMockData;
   }
 
   private ensureInitialized(): void {
@@ -92,12 +84,6 @@ class RCMApiClient {
 
   async request<T>(method: string, requestMethod: string, body?: any): Promise<T> {
     this.ensureInitialized();
-
-    // If mock data is enabled, don't make actual API calls
-    if (this.useMockData) {
-      console.log('Using mock data instead of API call');
-      return { status: "OK" } as unknown as T;
-    }
 
     try {
       const apiUrl = this.buildApiUrl();
