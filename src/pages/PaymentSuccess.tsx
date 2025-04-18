@@ -484,6 +484,17 @@ const PaymentSuccess = () => {
   const renderPaymentSummary = () => {
     if (!bookingDetails) return null;
 
+    // Log all details received from the API
+    console.log('📦 Booking Details Received:', {
+      numberofdays: bookingDetails.numberofdays,
+      dailyrate: bookingDetails.dailyrate,
+      totalcost: bookingDetails.totalcost,
+      payment: bookingDetails.payment,
+      balancedue: bookingDetails.balancedue,
+      basePrice: bookingDetails.basePrice,
+      fullBookingDetails: bookingDetails
+    });
+
     // Get values from the API response
     const rentalValue = (bookingDetails.numberofdays || 0) * (bookingDetails.dailyrate || 0);
     
