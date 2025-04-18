@@ -4,7 +4,7 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 import type { IncomingMessage, ServerResponse } from 'http';
-// Fix the import for Server by using import type and using a namespace import
+// Fix the import for http-proxy types
 import type * as httpProxy from 'http-proxy';
 
 // Common proxy configuration for development and production preview
