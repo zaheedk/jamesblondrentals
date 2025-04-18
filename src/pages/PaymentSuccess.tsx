@@ -350,8 +350,13 @@ const PaymentSuccess = () => {
     };
     
     const mapApiResponseToBookingDetails = (apiResponse: any, reservationRef: string): BookingDetails => {
-      console.log("Mapping API response to booking details:", apiResponse);
-      
+      console.log('🚨 FULL API RESPONSE:', JSON.stringify(apiResponse, null, 2));
+
+      console.log('🔍 Booking Info Raw:', apiResponse.bookinginfo);
+      console.log('🔍 Customer Info Raw:', apiResponse.customerinfo);
+      console.log('🔍 Payment Info Raw:', apiResponse.paymentinfo);
+      console.log('🔍 Extras Info Raw:', apiResponse.extrafees);
+
       const bookingInfo = apiResponse.bookinginfo && apiResponse.bookinginfo[0] ? apiResponse.bookinginfo[0] : {};
       const customerInfo = apiResponse.customerinfo && apiResponse.customerinfo[0] ? apiResponse.customerinfo[0] : {};
       const paymentInfo = apiResponse.paymentinfo && apiResponse.paymentinfo[0] ? apiResponse.paymentinfo[0] : {};
