@@ -72,7 +72,6 @@ const PaymentSuccess = () => {
   };
 
   useEffect(() => {
-    // Log all query parameters
     const queryParams = new URLSearchParams(location.search);
     const allParams = {};
     for (const [key, value] of queryParams.entries()) {
@@ -80,11 +79,9 @@ const PaymentSuccess = () => {
     }
     console.log("💡 ALL URL QUERY PARAMETERS:", allParams);
 
-    // Log session booking data
     const sessionData = getBookingData();
     console.log("💡 SESSION BOOKING DATA:", sessionData);
 
-    // Optional: Log Windcave response if available
     const windcaveResponse = queryParams.get("windcaveResponse");
     if (windcaveResponse) {
       try {
@@ -460,6 +457,9 @@ const PaymentSuccess = () => {
     address: bookingDetails?.customerAddress || "Not provided"
   };
 
+  const formattedPickupDate = bookingDetails?.pickupDate ? new Date(bookingDetails.pickupDate).toLocaleDateString() : "N/A";
+  const formattedDropoffDate = bookingDetails?.dropoffDate ? new Date(bookingDetails.dropoffDate).toLocaleDateString() : "N/A";
+
   const renderWindcavePaymentDetails = () => {
     if (!windcaveResponseDetails.status) return null;
 
@@ -589,20 +589,38 @@ const PaymentSuccess = () => {
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-8">
         {paymentStatus === "success" ? (
-          <>
-            <div className="text-center mb-8">
-              <CheckCircle2 className="h-16 w-16 text-green-500 mx-auto mb-4" />
-              <h1 className="text-3xl font-bold mb-2">Payment Successful!</h1>
-              <p className="text-gray-600">
-                Thank you for your booking. Your reservation is confirmed.
+          <div className="text-center mb-8">
+            <CheckCircle2 className="h-16 w-16 text-green-500 mx-auto mb-4" />
+            <h1 className="text-3xl font-bold mb-2">Payment Successful!</h1>
+            <p className="text-gray-600">
+              Thank you for your booking. Your reservation is confirmed.
+            </p>
+            {bookingDetails?.reservationRef && (
+              <p className="mt-2 text-blue-500 font-medium">
+                Reservation Reference: {bookingDetails.reservationRef}
               </p>
-              {bookingDetails?.reservationRef && (
-                <p className="mt-2 text-blue-500 font-medium">
-                  Reservation Reference: {bookingDetails.reservationRef}
-                </p>
-              )}
+            )}
+          </div>
+        ) : (
+          <div className="text-center mb-8">
+            <div className="bg-red-200 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
+              <FrownIcon className="h-12 w-12 text-red-500" />
             </div>
+            <h1 className="text-3xl font-bold mb-2">Payment Failed</h1>
+            {errorMessage && (
+              <Alert variant="destructive" className="mb-6">
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{errorMessage}</AlertDescription>
+              </Alert>
+            )}
+            <p className="text-gray-600 mb-4">
+              Transaction ID: {transactionId || "N/A"}
+            </p>
+          </div>
+        )}
 
+        {bookingDetails && (
+          <>
             {bookingDetails?.vehicleImage && !imageError && (
               <div className="w-full aspect-video rounded-lg overflow-hidden bg-gray-100 mb-6">
                 <img
@@ -613,75 +631,83 @@ const PaymentSuccess = () => {
                 />
               </div>
             )}
-
+            
             <div className="flex items-center gap-2 mb-6">
               <Car className="h-6 w-6 text-gray-500" />
               <h2 className="text-2xl font-semibold">{bookingDetails?.vehicleName}</h2>
             </div>
 
-            {renderPaymentSummary()}
-
-            <Button 
-              onClick={() => navigate("/")}
-              className="w-full"
-            >
-              Return to Home
-            </Button>
-          </>
-        ) : (
-          <>
-            <h1 className="text-4xl font-bold mb-6">Payment Request Failed</h1>
-            <div className="bg-red-200 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
-              <FrownIcon className="h-12 w-12 text-red-500" />
-            </div>
-            <p className="text-xl font-medium mb-8">Failed Payment</p>
-            
-            {errorMessage && (
-              <Alert variant="destructive" className="mb-6">
-                <AlertTitle>Error</AlertTitle>
-                <AlertDescription>{errorMessage}</AlertDescription>
-              </Alert>
-            )}
-            
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold mb-4">Transaction Number</h2>
-              <p className="text-lg mb-6">{transactionId || "0000000000"}</p>
-              
-              <h2 className="text-2xl font-bold mb-4">Customer Request Details</h2>
-              
-              <div className="space-y-2 text-left max-w-md mx-auto">
-                <p><span className="font-medium">First Name: </span>{customerDetails.firstName}</p>
-                <p><span className="font-medium">Last Name: </span>{customerDetails.lastName}</p>
-                <p><span className="font-medium">Email - ID: </span>{customerDetails.email}</p>
-                <p><span className="font-medium">Mobile No: </span>{customerDetails.phone}</p>
+            <div className="bg-gray-50 rounded-lg p-4 mb-6">
+              <h3 className="text-lg font-semibold mb-4">Customer Details</h3>
+              <div className="space-y-2">
+                <p><span className="font-medium">Name: </span>{customerDetails.firstName} {customerDetails.lastName}</p>
+                <p><span className="font-medium">Email: </span>{customerDetails.email}</p>
+                <p><span className="font-medium">Phone: </span>{customerDetails.phone}</p>
                 <p><span className="font-medium">Date of Birth: </span>{customerDetails.dob}</p>
                 <p><span className="font-medium">License Expires: </span>{customerDetails.licenseExpiry}</p>
-                <p><span className="font-medium">Full Address: </span>{customerDetails.address}</p>
+                <p><span className="font-medium">Address: </span>{customerDetails.address}</p>
               </div>
             </div>
-            
-            <div className="flex flex-col md:flex-row gap-4 justify-center mb-4">
-              <Button 
-                onClick={() => navigate("/payment")}
-                className="bg-[#342F63] hover:bg-[#25224A] text-white px-8 py-2 rounded-full text-lg"
-              >
-                TRY AGAIN
-              </Button>
-              
-              <Button 
-                variant="outline"
-                onClick={() => navigate("/payment-options")}
-                className="bg-[#342F63] hover:bg-[#25224A] text-white px-8 py-2 rounded-full text-lg"
-              >
-                SAVE QUOTATION
-              </Button>
+
+            <div className="bg-gray-50 rounded-lg p-4 mb-6">
+              <h3 className="text-lg font-semibold mb-4">Rental Details</h3>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4" />
+                  <div>
+                    <p className="font-medium">Pickup Location</p>
+                    <p>{bookingDetails.pickupLocationName}</p>
+                    <p>{formattedPickupDate}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4" />
+                  <div>
+                    <p className="font-medium">Drop-off Location</p>
+                    <p>{bookingDetails.dropoffLocationName}</p>
+                    <p>{formattedDropoffDate}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Clock className="h-4 w-4" />
+                  <div>
+                    <p className="font-medium">Duration</p>
+                    <p>{rentalDuration} day{rentalDuration !== 1 ? 's' : ''}</p>
+                  </div>
+                </div>
+              </div>
             </div>
+
+            {renderPaymentSummary()}
+            {renderWindcavePaymentDetails()}
             
-            <p className="text-red-500 mt-4">Note :- Please filled Valid details</p>
+            {paymentStatus === "success" ? (
+              <Button 
+                onClick={() => navigate("/")}
+                className="w-full"
+              >
+                Return to Home
+              </Button>
+            ) : (
+              <div className="flex flex-col md:flex-row gap-4 justify-center">
+                <Button 
+                  onClick={() => navigate("/payment")}
+                  className="bg-[#342F63] hover:bg-[#25224A] text-white px-8 py-2 rounded-full text-lg"
+                >
+                  TRY AGAIN
+                </Button>
+                
+                <Button 
+                  variant="outline"
+                  onClick={() => navigate("/payment-options")}
+                  className="bg-[#342F63] hover:bg-[#25224A] text-white px-8 py-2 rounded-full text-lg"
+                >
+                  SAVE QUOTATION
+                </Button>
+              </div>
+            )}
           </>
         )}
-        
-        {renderWindcavePaymentDetails()}
       </div>
     </div>
   );
