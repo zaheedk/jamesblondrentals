@@ -36,6 +36,11 @@ interface BookingDetails {
   dropoffLocationName?: string;
   totalRateAfterDiscount?: number;
   mandatoryFees?: Array<{name: string; amount: number}>;
+  numberofdays?: number;
+  dailyrate?: number;
+  totalcost?: number;
+  payment?: number;
+  balancedue?: number;
 }
 
 const PaymentSuccess = () => {
@@ -227,7 +232,12 @@ const PaymentSuccess = () => {
             pickupLocationName: sessionBookingData.pickupLocationName,
             dropoffLocationName: sessionBookingData.dropoffLocationName,
             totalRateAfterDiscount: sessionBookingData.totalRateAfterDiscount,
-            mandatoryFees: sessionBookingData.mandatoryFees
+            mandatoryFees: sessionBookingData.mandatoryFees,
+            numberofdays: sessionBookingData.numberofdays,
+            dailyrate: sessionBookingData.dailyrate,
+            totalcost: sessionBookingData.totalcost,
+            payment: sessionBookingData.payment,
+            balancedue: sessionBookingData.balancedue
           };
           setBookingDetails(convertedDetails);
           
@@ -394,7 +404,12 @@ const PaymentSuccess = () => {
         pickupLocationName: bookingInfo.pickuplocationname,
         dropoffLocationName: bookingInfo.dropofflocationname,
         totalRateAfterDiscount: bookingInfo.totalrateafterdiscount,
-        mandatoryFees: bookingInfo.mandatoryfees
+        mandatoryFees: bookingInfo.mandatoryfees,
+        numberofdays: bookingInfo.numberofdays,
+        dailyrate: bookingInfo.dailyrate,
+        totalcost: bookingInfo.totalcost,
+        payment: bookingInfo.payment,
+        balancedue: bookingInfo.balancedue
       };
     };
     
