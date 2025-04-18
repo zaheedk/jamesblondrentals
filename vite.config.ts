@@ -24,21 +24,21 @@ export default defineConfig(({ mode }) => ({
             console.error('Proxy error:', err);
           });
           
-          proxy.on('proxyReq', (proxyReq, req: IncomingMessage & { body?: any }, _res) => {
+          proxy.on('proxyReq', (proxyReq, req, _res) => {
             console.log(`Proxying request to RCM API: ${req.method} ${proxyReq.path}`);
             
             // Enhanced logging for request
             console.log('Request headers:', proxyReq.getHeaders());
             
             // Ensure body is properly handled for POST requests
-            if (req.body) {
+            if ('body' in req && req.body) {
               const bodyData = JSON.stringify(req.body);
               proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
               proxyReq.write(bodyData);
             }
           });
           
-          proxy.on('proxyRes', (proxyRes, req, _res: ServerResponse) => {
+          proxy.on('proxyRes', (proxyRes, req, _res) => {
             console.log(`Response from RCM API: ${proxyRes.statusCode} for ${req.url}`);
             
             // Check if response is HTML instead of JSON
