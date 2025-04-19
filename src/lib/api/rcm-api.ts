@@ -1,4 +1,3 @@
-
 import { generateSignature } from './rcm-signature';
 import type { 
   RCMApiConfig,
@@ -102,9 +101,9 @@ class RCMApiClient {
     const baseUrl = this.config.apiUrl;
     const apiKey = this.config.apiKey;
     
-    // Check if this is a direct API URL or proxy URL
+    // Direct API URL format now matches Postman exactly
     if (baseUrl.includes('apis.rentalcarmanager.com')) {
-      // Direct API URL format
+      // Note: The direct format does NOT append the API key to the path
       console.log('Using direct API URL format:', `${baseUrl}?apikey=${apiKey}`);
       return `${baseUrl}?apikey=${apiKey}`;
     }
@@ -146,7 +145,7 @@ class RCMApiClient {
         timestamp: requestStartTime.toISOString()
       };
       
-      // Log complete request details including signature
+      // Log complete request details for debugging
       console.log('Complete request details:', {
         url: apiUrl,
         method,
@@ -178,12 +177,26 @@ class RCMApiClient {
       });
       console.log('Response headers:', responseHeaders);
       
+      // Clone response to avoid consuming it
+      const responseClone = response.clone();
+      const textResponse = await responseClone.text();
+      
+      // Log the first part of the response for debugging
+      console.log('Response preview:', textResponse.substring(0, 200) + 
+                 (textResponse.length > 200 ? '...' : ''));
+      
       if (contentType.includes("text/html")) {
-        console.error("Received HTML instead of JSON. This likely indicates a proxy configuration issue.");
+        console.error("Received HTML instead of JSON. This likely indicates a proxy configuration issue or CORS problem.");
         console.error("Content type:", contentType);
         
-        const htmlContent = await response.text();
-        console.error("HTML response preview:", htmlContent.substring(0, 200));
+        // Add more detailed logging for HTML responses
+        console.error("HTML response preview:", textResponse.substring(0, 500));
+        
+        // Try to extract useful information from HTML
+        const errorMessage = this.extractMessageFromHtml(textResponse);
+        if (errorMessage) {
+          console.error("Extracted message from HTML:", errorMessage);
+        }
         
         // Save error details
         this.lastRequestDetails.error = `Received HTML instead of JSON. Status: ${status} ${statusText}`;
@@ -191,57 +204,41 @@ class RCMApiClient {
           status,
           statusText,
           contentType,
-          htmlPreview: htmlContent.substring(0, 500)
+          htmlPreview: textResponse.substring(0, 500),
+          extractedMessage: errorMessage
         };
         
-        let errorMessage = "Invalid API response format - received HTML instead of JSON";
-        
-        if (htmlContent.includes("404") || htmlContent.includes("not found")) {
-          errorMessage += " - Endpoint not found (404)";
-        } else if (htmlContent.includes("403") || htmlContent.includes("forbidden")) {
-          errorMessage += " - Access forbidden (403)";
-        } else if (htmlContent.includes("500") || htmlContent.includes("server error")) {
-          errorMessage += " - Server error (500)";
-        } else if (htmlContent.includes("maintenance") || htmlContent.includes("down for maintenance")) {
-          errorMessage += " - Service may be under maintenance";
-        }
-        
-        throw new Error(errorMessage);
+        throw new Error(`Invalid API response format - received HTML instead of JSON. Status: ${status} ${statusText}`);
       }
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        let errorData;
+      try {
+        // Try to parse as JSON
+        const jsonResponse = JSON.parse(textResponse);
+        console.log(`API parsed JSON response (${method} - ${requestMethod}):`, jsonResponse);
         
-        try {
-          errorData = JSON.parse(errorText);
-        } catch (e) {
-          errorData = { message: errorText || `API request failed: ${response.status}` };
+        // Save successful response
+        this.lastRequestDetails.response = jsonResponse;
+        
+        if (jsonResponse.status === "ERR") {
+          console.error('API returned error:', jsonResponse.error);
+          this.lastRequestDetails.error = jsonResponse.error || 'Unknown API error';
+          throw new Error(jsonResponse.error || 'Unknown API error');
         }
         
-        console.error(`API error: ${response.status} ${response.statusText}`, errorData);
+        return jsonResponse;
+      } catch (parseError) {
+        console.error('Failed to parse response as JSON:', parseError);
         
-        // Save error details
-        this.lastRequestDetails.error = `API request failed: ${response.status} ${response.statusText}`;
-        this.lastRequestDetails.response = errorData;
+        // Additional CORS troubleshooting for non-parseable responses
+        console.error('This might be a CORS issue or malformed JSON response');
         
-        throw new Error(errorData.message || `Request failed with status: ${response.status}`);
+        this.lastRequestDetails.error = `Failed to parse response as JSON: ${parseError instanceof Error ? parseError.message : String(parseError)}`;
+        this.lastRequestDetails.response = {
+          raw: textResponse.substring(0, 1000)
+        };
+        
+        throw new Error(`Failed to parse API response: ${parseError instanceof Error ? parseError.message : String(parseError)}`);
       }
-
-      // Success path
-      const responseData = await response.json();
-      console.log(`API success response (${method} - ${requestMethod}):`, responseData);
-      
-      // Save successful response
-      this.lastRequestDetails.response = responseData;
-      
-      if (responseData.status === "ERR") {
-        console.error('API returned error:', responseData.error);
-        this.lastRequestDetails.error = responseData.error || 'Unknown API error';
-        throw new Error(responseData.error || 'Unknown API error');
-      }
-      
-      return responseData;
     } catch (error) {
       console.error('RCM API request failed:', error);
       
@@ -250,6 +247,37 @@ class RCMApiClient {
       }
       
       throw error;
+    }
+  }
+  
+  // Helper function to extract meaningful message from HTML response
+  private extractMessageFromHtml(html: string): string | null {
+    try {
+      // Look for title tag
+      const titleMatch = html.match(/<title>(.*?)<\/title>/i);
+      if (titleMatch && titleMatch[1] && !titleMatch[1].toLowerCase().includes('document')) {
+        return `Page title: ${titleMatch[1]}`;
+      }
+      
+      // Look for common error messages in the body
+      const errorMatches = [
+        { pattern: /access denied|forbidden|403/i, message: 'Access denied or forbidden' },
+        { pattern: /not found|404/i, message: 'Resource not found' },
+        { pattern: /server error|500/i, message: 'Server error' },
+        { pattern: /maintenance|down for maintenance/i, message: 'Service under maintenance' },
+        { pattern: /invalid signature|authentication failed/i, message: 'Authentication failed' }
+      ];
+      
+      for (const matcher of errorMatches) {
+        if (matcher.pattern.test(html)) {
+          return matcher.message;
+        }
+      }
+      
+      return null;
+    } catch (e) {
+      console.error('Error extracting message from HTML:', e);
+      return null;
     }
   }
 

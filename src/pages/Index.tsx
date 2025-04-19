@@ -152,6 +152,8 @@ const Index = () => {
       const textResponse = await responseClone.text();
       setRawResponse(textResponse);
       
+      console.log('Raw response preview:', textResponse.substring(0, 200));
+      
       if (contentType.includes('text/html')) {
         console.error('Received HTML instead of JSON');
         setApiError(`Invalid API response format - received HTML instead of JSON. Status: ${status} ${statusText}, Content-Type: ${contentType}`);
