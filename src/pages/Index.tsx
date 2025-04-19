@@ -31,6 +31,7 @@ const Index = () => {
   }>({});
   const [apiMode, setApiMode] = useState<'proxy' | 'direct'>('proxy');
   const [directApiUrl, setDirectApiUrl] = useState('https://apis.rentalcarmanager.com/booking/v3.2');
+  const [proxyApiUrl, setProxyApiUrl] = useState('/api/rcm/booking/v3.2');
   const [browserInfo, setBrowserInfo] = useState<Record<string, any>>({});
   const [fullApiUrl, setFullApiUrl] = useState<string>('');
   const [constructedApiUrl, setConstructedApiUrl] = useState<string>('');
@@ -53,7 +54,7 @@ const Index = () => {
       const apiConfig = {
         apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
         apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
-        apiUrl: "/api/rcm/booking/v3.2"
+        apiUrl: proxyApiUrl
       };
       
       console.log('Initializing API with config:', {
@@ -67,7 +68,7 @@ const Index = () => {
       console.error('Failed to initialize API:', error);
       setApiError(`Initialization Error: ${error instanceof Error ? error.message : String(error)}`);
     }
-  }, [initializeApi]);
+  }, [proxyApiUrl]);
 
   const testApiConnection = async () => {
     setIsLoading(true);
@@ -81,7 +82,7 @@ const Index = () => {
       const apiKey = rcmApi.config?.apiKey || "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq";
       
       const fullUrl = apiMode === 'proxy' 
-        ? `${window.location.origin}/api/rcm/booking/v3.2/${apiKey}?apikey=${apiKey}`
+        ? `${window.location.origin}${proxyApiUrl}/${apiKey}?apikey=${apiKey}`
         : `${directApiUrl}?apikey=${apiKey}`;
       
       console.log(`Constructed API URL: ${fullUrl}`);
@@ -241,7 +242,20 @@ const Index = () => {
                 </CardHeader>
                 <CardContent className="space-y-2 text-sm">
                   <div>
-                    <strong>API URL:</strong> {rcmApi.config?.apiUrl || '/api/rcm/booking/v3.2'}
+                    <strong>API URL:</strong>
+                    <input
+                      type="text"
+                      value={apiMode === 'proxy' ? proxyApiUrl : directApiUrl}
+                      onChange={(e) => {
+                        if (apiMode === 'proxy') {
+                          setProxyApiUrl(e.target.value);
+                        } else {
+                          setDirectApiUrl(e.target.value);
+                        }
+                      }}
+                      className="w-full mt-1 p-2 text-xs border rounded font-mono"
+                      placeholder={apiMode === 'proxy' ? 'Proxy API URL' : 'Direct API URL'}
+                    />
                   </div>
                   <div>
                     <strong>API Key:</strong> {rcmApi.config?.apiKey || 'TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq'}
