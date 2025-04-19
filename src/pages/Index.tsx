@@ -1,11 +1,10 @@
-
+import { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Hero from "@/components/home/Hero";
 import FeaturedVehicles from "@/components/home/FeaturedVehicles";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import { useEffect, useState } from "react";
 import { useRcmApi } from "@/hooks/use-rcm-api";
 import { ApiStatusIndicator } from "@/components/diagnostics/ApiStatusIndicator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -15,6 +14,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { generateSignature } from "@/lib/api/rcm-signature";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from 'sonner';
 
 const Index = () => {
   const { initializeApi, rcmApi } = useRcmApi();
@@ -31,10 +31,10 @@ const Index = () => {
   const [apiMode, setApiMode] = useState<'proxy' | 'direct'>('proxy');
   const [directApiUrl, setDirectApiUrl] = useState('https://apis.rentalcarmanager.com/booking/v3.2');
   const [browserInfo, setBrowserInfo] = useState<Record<string, any>>({});
-  
+  const [fullApiUrl, setFullApiUrl] = useState<string>('');
+
   useEffect(() => {
     try {
-      // Collect browser information for debugging
       setBrowserInfo({
         userAgent: navigator.userAgent,
         language: navigator.language,
@@ -76,13 +76,18 @@ const Index = () => {
       console.log(`Testing API connection using ${apiMode} mode...`);
       
       const apiKey = rcmApi.config?.apiKey || "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq";
+      
+      const fullUrl = apiMode === 'proxy' 
+        ? `${window.location.origin}/api/rcm/booking/v3.2/${apiKey}?apikey=${apiKey}`
+        : `${directApiUrl}/${apiKey}?apikey=${apiKey}`;
+      
+      setFullApiUrl(fullUrl);
+
       const apiSecret = rcmApi.config?.apiSecret || "tsdavpoP51o6AcLIdorqgtFJ0ullAimg";
       
-      // Generate request details
       const timestamp = new Date().toISOString();
       const requestBody = JSON.stringify({ method: "step1" });
       
-      // Generate signature
       const signature = generateSignature({
         method: 'POST',
         path: '', 
@@ -92,7 +97,6 @@ const Index = () => {
         body: requestBody
       });
       
-      // Determine URL based on mode
       let url;
       if (apiMode === 'proxy') {
         url = `${rcmApi.config?.apiUrl || "/api/rcm/booking/v3.2"}/${apiKey}?apikey=${apiKey}`;
@@ -100,7 +104,6 @@ const Index = () => {
         url = `${directApiUrl}/${apiKey}?apikey=${apiKey}`;
       }
       
-      // Store request details for debug display
       setRequestDetails({
         url,
         method: 'POST',
@@ -119,7 +122,6 @@ const Index = () => {
         'signature': signature.substring(0, 10) + '...'
       });
       
-      // Make the API request with raw response handling
       const fetchResponse = await fetch(url, {
         method: 'POST',
         headers: {
@@ -131,7 +133,6 @@ const Index = () => {
         credentials: 'same-origin'
       });
       
-      // Capture response content type for debugging
       const contentType = fetchResponse.headers.get('content-type') || '';
       const status = fetchResponse.status;
       const statusText = fetchResponse.statusText;
@@ -140,25 +141,20 @@ const Index = () => {
       console.log('Response content type:', contentType);
       console.log('Response headers:', Array.from(fetchResponse.headers.entries()));
       
-      // Clone response to read text and also parse as JSON if possible
       const responseClone = fetchResponse.clone();
       
-      // Get raw text response first
       const textResponse = await responseClone.text();
       setRawResponse(textResponse);
       
-      // Check for HTML response
       if (contentType.includes('text/html')) {
         console.error('Received HTML instead of JSON');
         setApiError(`Invalid API response format - received HTML instead of JSON. Status: ${status} ${statusText}, Content-Type: ${contentType}`);
         
-        // Try to parse HTML to extract any error messages
         const htmlMessage = extractMessageFromHtml(textResponse);
         if (htmlMessage) {
           setApiError((prev) => `${prev || ''}\n\nExtracted message: ${htmlMessage}`);
         }
       } else {
-        // Try parsing as JSON
         try {
           const jsonResponse = JSON.parse(textResponse);
           setApiResponse(jsonResponse);
@@ -174,15 +170,16 @@ const Index = () => {
     } catch (error) {
       console.error('API test failed:', error);
       setApiError(`API Error: ${error instanceof Error ? error.message : String(error)}`);
+      toast.error('API Connection Error', {
+        description: `Failed to test API connection to: ${fullApiUrl}`
+      });
     } finally {
       setIsLoading(false);
     }
   };
-  
-  // Helper function to extract messages from HTML responses
+
   const extractMessageFromHtml = (html: string): string | null => {
     try {
-      // Try to extract common error patterns from HTML
       const titleMatch = html.match(/<title>(.*?)<\/title>/i);
       const bodyTextMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
       
@@ -191,12 +188,10 @@ const Index = () => {
       }
       
       if (bodyTextMatch) {
-        // Remove HTML tags to get plain text
         const div = document.createElement('div');
         div.innerHTML = bodyTextMatch[1];
         const textContent = div.textContent || div.innerText || '';
         
-        // Return a condensed version (first 200 chars)
         return textContent.trim().substring(0, 200) + (textContent.length > 200 ? '...' : '');
       }
       
@@ -213,16 +208,13 @@ const Index = () => {
       <main className="flex-grow">
         <Hero />
         
-        {/* API Status and Debug Section */}
         <div className="container mx-auto px-4 py-4 mb-8">
           <h2 className="text-2xl font-bold mb-4">API Diagnostics</h2>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {/* API Status Card */}
             <div>
               <ApiStatusIndicator />
               
-              {/* API Configuration */}
               <Card className="mt-4">
                 <CardHeader>
                   <CardTitle className="text-lg">API Configuration</CardTitle>
@@ -278,7 +270,6 @@ const Index = () => {
                 </CardContent>
               </Card>
               
-              {/* Browser Information */}
               <Card className="mt-4">
                 <CardHeader>
                   <CardTitle className="text-lg">Browser Information</CardTitle>
@@ -293,7 +284,6 @@ const Index = () => {
               </Card>
             </div>
             
-            {/* API Response Display */}
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">API Response</CardTitle>
@@ -377,7 +367,6 @@ const Index = () => {
         
         <FeaturedVehicles />
         
-        {/* Why Choose Us Section */}
         <section className="bg-gray-50 py-16">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-bold text-center mb-12">Why Choose Roadster Rentals</h2>
@@ -410,7 +399,6 @@ const Index = () => {
           </div>
         </section>
         
-        {/* Call to Action */}
         <section className="bg-primary py-16">
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-3xl font-bold text-white mb-4">Ready to Book Your Perfect Ride?</h2>
