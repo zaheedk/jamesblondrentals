@@ -15,6 +15,15 @@ interface EndpointCheck {
   headers?: Record<string, string>;
 }
 
+interface DiagnosticsResult {
+  message: string;
+  hasInternet: boolean;
+  apiAccessible: boolean;
+  details?: any;
+  responseText?: string;
+  statusCode?: number;
+}
+
 /**
  * Hook to monitor API connection status and perform diagnostics
  */
@@ -31,11 +40,18 @@ export function useApiDiagnostics() {
    */
   const checkInternetConnection = async (): Promise<boolean> => {
     try {
-      // Try to fetch a small resource that should always be available
-      const response = await fetch('https://www.google.com/favicon.ico', { 
+      console.log('Checking internet connection...');
+      
+      // Try to fetch a reliable resource with minimal payload
+      const response = await fetch('https://www.cloudflare.com/cdn-cgi/trace', { 
         mode: 'no-cors',
-        cache: 'no-store'
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate'
+        }
       });
+      
+      console.log('Internet connection check succeeded');
       return true; // If no error is thrown, assume connection is OK
     } catch (error) {
       console.error('Internet connection check failed:', error);
@@ -46,29 +62,73 @@ export function useApiDiagnostics() {
   /**
    * Check if a specific API endpoint is accessible
    */
-  const checkEndpoint = async (check: EndpointCheck): Promise<boolean> => {
+  const checkEndpoint = async (check: EndpointCheck): Promise<{success: boolean, responseText?: string, statusCode?: number}> => {
     try {
+      console.log(`Checking endpoint: ${check.method} ${check.url}`);
+      
       const options: RequestInit = {
         method: check.method,
         headers: check.headers || {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
-        mode: 'cors'
+        mode: 'cors',
+        credentials: 'same-origin'
       };
 
       if (check.body && (check.method === 'POST' || check.method === 'PUT')) {
         options.body = JSON.stringify(check.body);
       }
 
+      console.log('Request options:', {
+        ...options,
+        headers: options.headers,
+        body: typeof options.body === 'string' ? options.body.substring(0, 100) : options.body
+      });
+
+      // Use AbortController to set a timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+      options.signal = controller.signal;
+
       const response = await fetch(check.url, options);
+      clearTimeout(timeoutId);
+      
+      // Get full response details
+      const statusCode = response.status;
+      const statusText = response.statusText;
+      const contentType = response.headers.get('content-type') || '';
+      
+      console.log(`Endpoint response: ${statusCode} ${statusText} (${contentType})`);
+      
+      // Clone response to read body multiple times
+      const responseClone = response.clone();
+      const responseText = await responseClone.text();
+      
+      console.log('Response preview:', responseText.substring(0, 200));
       
       // Check if response is valid
-      const contentType = response.headers.get('content-type');
       const isJson = contentType && contentType.includes('application/json');
 
-      if (!response.ok || !isJson) {
-        throw new Error(`Endpoint returned ${response.status}: ${response.statusText}`);
+      if (!response.ok) {
+        console.error(`Endpoint error: ${statusCode} ${statusText}`);
+        
+        // Update failed endpoints
+        setConnectionStatus(prev => ({
+          ...prev,
+          lastAttempt: new Date(),
+          failedEndpoints: [...prev.failedEndpoints, check.url]
+        }));
+        
+        return {
+          success: false, 
+          responseText,
+          statusCode
+        };
+      }
+      
+      if (!isJson) {
+        console.warn(`Endpoint returned non-JSON response: ${contentType}`);
       }
 
       // Update successful endpoints
@@ -79,25 +139,36 @@ export function useApiDiagnostics() {
         successfulEndpoints: [...prev.successfulEndpoints, check.url]
       }));
 
-      return true;
+      return {
+        success: true,
+        responseText,
+        statusCode
+      };
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
       console.error(`Endpoint check failed for ${check.url}:`, error);
+      
+      // Check if the error is a timeout
+      const isTimeout = errorMessage.includes('aborted') || errorMessage.includes('timeout');
       
       // Update failed endpoints
       setConnectionStatus(prev => ({
         ...prev,
         lastAttempt: new Date(),
-        failedEndpoints: [...prev.failedEndpoints, check.url]
+        failedEndpoints: [...prev.failedEndpoints, `${check.url} (${isTimeout ? 'timeout' : 'error'})`]
       }));
       
-      return false;
+      return {
+        success: false,
+        responseText: errorMessage
+      };
     }
   };
 
   /**
    * Run diagnostics to check API connectivity and identify issues
    */
-  const runDiagnostics = async () => {
+  const runDiagnostics = async (): Promise<DiagnosticsResult> => {
     console.log('Running API diagnostics...');
     
     // Reset connection status
@@ -124,16 +195,46 @@ export function useApiDiagnostics() {
     const apiUrlBase = '/api/rcm/booking/v3.2';
     const apiKey = 'TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq';
     
+    const timestamp = new Date().toISOString();
+    const body = JSON.stringify({ method: 'step1' });
+    
+    // Create signature for the request
+    const signature = await import('@/lib/api/rcm-signature')
+      .then(module => module.generateSignature({
+        method: 'POST',
+        path: '', 
+        timestamp,
+        apiKey,
+        apiSecret: 'tsdavpoP51o6AcLIdorqgtFJ0ullAimg',
+        body
+      }));
+    
     const endpointChecks: EndpointCheck[] = [
       {
         url: `${apiUrlBase}/${apiKey}?apikey=${apiKey}`,
         method: 'POST',
-        body: { method: 'step1' }
+        body: { method: 'step1' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'signature': signature
+        }
       }
     ];
 
-    const results = await Promise.all(endpointChecks.map(check => checkEndpoint(check)));
-    const allSuccessful = results.every(result => result);
+    const checkResults = await Promise.all(endpointChecks.map(check => checkEndpoint(check)));
+    const allSuccessful = checkResults.every(result => result.success);
+    
+    // Extract response text and status code from the first check result
+    const firstResult = checkResults[0] || {};
+    const responseText = firstResult.responseText;
+    const statusCode = firstResult.statusCode;
+
+    // Set connection status based on results
+    setConnectionStatus(prev => ({
+      ...prev,
+      isConnected: allSuccessful
+    }));
 
     console.log('API diagnostics complete:', { 
       hasInternet, 
@@ -144,10 +245,12 @@ export function useApiDiagnostics() {
     return {
       message: allSuccessful 
         ? 'API is accessible' 
-        : 'API is not accessible. Check network configuration and credentials.',
+        : `API is not accessible (Status: ${statusCode || 'unknown'}). Check network configuration and credentials.`,
       hasInternet,
       apiAccessible: allSuccessful,
-      details: connectionStatus
+      details: connectionStatus,
+      responseText,
+      statusCode
     };
   };
 

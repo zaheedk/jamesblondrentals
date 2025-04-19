@@ -29,7 +29,12 @@ export function generateSignature({
   const stringToSign = body || '{}';
   
   // Log for debugging
-  console.log('RCM API - String to sign:', stringToSign);
+  console.log('RCM API - Signature generation:');
+  console.log('- API Key:', apiKey);
+  console.log('- Method:', method);
+  console.log('- Path:', path);
+  console.log('- Timestamp:', timestamp);
+  console.log('- String to sign:', stringToSign);
   
   // Generate HMAC SHA256 signature using the API secret as the key
   // This matches the Postman collection: CryptoJS.HmacSHA256(requestBody, secret)
