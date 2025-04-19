@@ -80,7 +80,7 @@ const Index = () => {
       
       const fullUrl = apiMode === 'proxy' 
         ? `${window.location.origin}/api/rcm/booking/v3.2/${apiKey}?apikey=${apiKey}`
-        : `${directApiUrl}/${apiKey}?apikey=${apiKey}`;
+        : `${directApiUrl}?apikey=${apiKey}`;
       
       console.log(`Constructed API URL: ${fullUrl}`);
       setConstructedApiUrl(fullUrl);
@@ -104,7 +104,7 @@ const Index = () => {
       if (apiMode === 'proxy') {
         url = `${rcmApi.config?.apiUrl || "/api/rcm/booking/v3.2"}/${apiKey}?apikey=${apiKey}`;
       } else {
-        url = `${directApiUrl}/${apiKey}?apikey=${apiKey}`;
+        url = `${directApiUrl}?apikey=${apiKey}`;
       }
       
       setRequestDetails({

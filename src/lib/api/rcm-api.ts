@@ -97,6 +97,14 @@ class RCMApiClient {
   private buildApiUrl(): string {
     const baseUrl = this.config.apiUrl;
     const apiKey = this.config.apiKey;
+    
+    // Check if this is a direct API URL or proxy URL
+    if (baseUrl.includes('apis.rentalcarmanager.com')) {
+      // Direct API URL format
+      return `${baseUrl}?apikey=${apiKey}`;
+    }
+    
+    // Proxy URL format (append API key to path)
     return `${baseUrl}/${apiKey}?apikey=${apiKey}`;
   }
 
