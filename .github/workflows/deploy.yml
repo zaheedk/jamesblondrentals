@@ -1,5 +1,5 @@
 
-name: Deploy
+name: Build
 
 on:
   push:
@@ -24,9 +24,10 @@ jobs:
       - name: Build
         run: npm run build
         
-      - name: Upload artifact
+      - name: Upload build artifact
         uses: actions/upload-artifact@v3
         with:
-          name: production-build
+          name: dist
           path: dist/
+          retention-days: 7
 
