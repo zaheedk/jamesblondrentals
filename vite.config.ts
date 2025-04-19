@@ -3,7 +3,8 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
-import type { IncomingMessage, ServerResponse } from 'http';
+import type { IncomingMessage } from 'http';
+import { ServerResponse } from 'http'; // Import ServerResponse as a value
 
 export default defineConfig(({ mode }) => ({
   server: {
@@ -20,15 +21,15 @@ export default defineConfig(({ mode }) => ({
           'Accept': 'application/json'
         },
         configure: (proxy, _options) => {
-          proxy.on('error', (err, req, res) => {
+          proxy.on('error', (err: Error, req, res: ServerResponse) => {
             console.error('Proxy error:', err);
             
             // Send a more informative error response instead of default error page
-            if (res instanceof ServerResponse && !res.writableEnded) {
+            if (res && !res.writableEnded) {
               const errorDetails = {
                 status: 'error',
                 message: `Proxy Error: ${err.message}`,
-                code: err.code,
+                errorCode: (err as NodeJS.ErrnoException).code, // Use type assertion
                 target: 'https://apis.rentalcarmanager.com'
               };
               
