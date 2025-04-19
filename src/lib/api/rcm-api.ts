@@ -26,6 +26,15 @@ const DEFAULT_CONFIG: RCMApiConfig = {
 class RCMApiClient {
   config: RCMApiConfig;
   private initialized: boolean = false;
+  private lastRequestDetails: {
+    url?: string;
+    method?: string;
+    headers?: Record<string, string>;
+    body?: any;
+    timestamp?: string;
+    response?: any;
+    error?: string;
+  } = {};
 
   constructor(config: RCMApiConfig) {
     this.config = {
@@ -74,38 +83,78 @@ class RCMApiClient {
     headers.append('Accept', 'application/json');
     headers.append('signature', signature); 
     
-    console.log('Request headers:', {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'signature': signature.substring(0, 10) + '...'
+    // Store request headers for diagnostic purposes
+    const headerObj: Record<string, string> = {};
+    headers.forEach((value, key) => {
+      headerObj[key] = key === 'signature' ? value.substring(0, 10) + '...' : value;
     });
+    
+    console.log('Request headers:', headerObj);
     
     return headers;
   }
 
   private buildApiUrl(): string {
-    return `${this.config.apiUrl}/${this.config.apiKey}?apikey=${this.config.apiKey}`;
+    const baseUrl = this.config.apiUrl;
+    const apiKey = this.config.apiKey;
+    return `${baseUrl}/${apiKey}?apikey=${apiKey}`;
+  }
+
+  getLastRequestDetails() {
+    return this.lastRequestDetails;
   }
 
   async request<T>(method: string, requestMethod: string, body?: any): Promise<T> {
     this.ensureInitialized();
 
+    const requestStartTime = new Date();
+    const requestDetails = {
+      timestamp: requestStartTime.toISOString(),
+      method,
+      requestMethod
+    };
+    
     try {
       const apiUrl = this.buildApiUrl();
       console.log(`Making ${method} request to ${apiUrl} for method ${requestMethod}`);
+      console.log(`Request time: ${requestStartTime.toISOString()}`);
+      console.log(`User agent: ${navigator.userAgent}`);
       
       const requestBody = { method: requestMethod, ...body };
       const headers = this.createHeaders(method, requestBody);
       
+      // Store request details for diagnostics
+      this.lastRequestDetails = {
+        url: apiUrl,
+        method,
+        headers: Object.fromEntries(headers.entries()),
+        body: requestBody,
+        timestamp: requestStartTime.toISOString()
+      };
+      
+      const fetchStartTime = Date.now();
       const response = await fetch(apiUrl, {
         method,
         headers,
         body: JSON.stringify(requestBody),
         credentials: 'same-origin',
       });
+      const fetchEndTime = Date.now();
+      
+      console.log(`Fetch completed in ${fetchEndTime - fetchStartTime}ms`);
 
       const contentType = response.headers.get("content-type") || "";
-      console.log(`Response status: ${response.status} ${response.statusText}, Content-Type: ${contentType}`);
+      const status = response.status;
+      const statusText = response.statusText;
+      
+      console.log(`Response status: ${status} ${statusText}, Content-Type: ${contentType}`);
+      
+      // Log all response headers for debugging
+      const responseHeaders: Record<string, string> = {};
+      response.headers.forEach((value, key) => {
+        responseHeaders[key] = value;
+      });
+      console.log('Response headers:', responseHeaders);
       
       if (contentType.includes("text/html")) {
         console.error("Received HTML instead of JSON. This likely indicates a proxy configuration issue.");
@@ -113,6 +162,15 @@ class RCMApiClient {
         
         const htmlContent = await response.text();
         console.error("HTML response preview:", htmlContent.substring(0, 200));
+        
+        // Save error details
+        this.lastRequestDetails.error = `Received HTML instead of JSON. Status: ${status} ${statusText}`;
+        this.lastRequestDetails.response = {
+          status,
+          statusText,
+          contentType,
+          htmlPreview: htmlContent.substring(0, 500)
+        };
         
         let errorMessage = "Invalid API response format - received HTML instead of JSON";
         
@@ -140,20 +198,35 @@ class RCMApiClient {
         }
         
         console.error(`API error: ${response.status} ${response.statusText}`, errorData);
+        
+        // Save error details
+        this.lastRequestDetails.error = `API request failed: ${response.status} ${response.statusText}`;
+        this.lastRequestDetails.response = errorData;
+        
         throw new Error(errorData.message || `Request failed with status: ${response.status}`);
       }
 
+      // Success path
       const responseData = await response.json();
       console.log(`API success response (${method} - ${requestMethod}):`, responseData);
       
+      // Save successful response
+      this.lastRequestDetails.response = responseData;
+      
       if (responseData.status === "ERR") {
         console.error('API returned error:', responseData.error);
+        this.lastRequestDetails.error = responseData.error || 'Unknown API error';
         throw new Error(responseData.error || 'Unknown API error');
       }
       
       return responseData;
     } catch (error) {
       console.error('RCM API request failed:', error);
+      
+      if (!this.lastRequestDetails.error) {
+        this.lastRequestDetails.error = error instanceof Error ? error.message : String(error);
+      }
+      
       throw error;
     }
   }

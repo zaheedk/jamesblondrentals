@@ -13,6 +13,8 @@ import { AlertCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { generateSignature } from "@/lib/api/rcm-signature";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const Index = () => {
   const { initializeApi, rcmApi } = useRcmApi();
@@ -26,9 +28,25 @@ const Index = () => {
     headers?: Record<string, string>;
     body?: string;
   }>({});
+  const [apiMode, setApiMode] = useState<'proxy' | 'direct'>('proxy');
+  const [directApiUrl, setDirectApiUrl] = useState('https://apis.rentalcarmanager.com/booking/v3.2');
+  const [browserInfo, setBrowserInfo] = useState<Record<string, any>>({});
   
   useEffect(() => {
     try {
+      // Collect browser information for debugging
+      setBrowserInfo({
+        userAgent: navigator.userAgent,
+        language: navigator.language,
+        cookiesEnabled: navigator.cookieEnabled,
+        online: navigator.onLine,
+        platform: navigator.platform,
+        screenSize: `${window.screen.width}x${window.screen.height}`,
+        windowSize: `${window.innerWidth}x${window.innerHeight}`,
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        dateTime: new Date().toISOString()
+      });
+
       const apiConfig = {
         apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
         apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
@@ -55,12 +73,32 @@ const Index = () => {
     setRawResponse(null);
     
     try {
-      console.log('Testing API connection...');
+      console.log(`Testing API connection using ${apiMode} mode...`);
       
-      // Enhanced API testing with raw response capture
-      const url = `${rcmApi.config?.apiUrl}/${rcmApi.config?.apiKey}?apikey=${rcmApi.config?.apiKey}`;
+      const apiKey = rcmApi.config?.apiKey || "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq";
+      const apiSecret = rcmApi.config?.apiSecret || "tsdavpoP51o6AcLIdorqgtFJ0ullAimg";
+      
+      // Generate request details
       const timestamp = new Date().toISOString();
       const requestBody = JSON.stringify({ method: "step1" });
+      
+      // Generate signature
+      const signature = generateSignature({
+        method: 'POST',
+        path: '', 
+        timestamp,
+        apiKey,
+        apiSecret,
+        body: requestBody
+      });
+      
+      // Determine URL based on mode
+      let url;
+      if (apiMode === 'proxy') {
+        url = `${rcmApi.config?.apiUrl || "/api/rcm/booking/v3.2"}/${apiKey}?apikey=${apiKey}`;
+      } else {
+        url = `${directApiUrl}/${apiKey}?apikey=${apiKey}`;
+      }
       
       // Store request details for debug display
       setRequestDetails({
@@ -68,9 +106,17 @@ const Index = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          'Accept': 'application/json',
+          'signature': signature
         },
         body: requestBody
+      });
+      
+      console.log(`Making API request to: ${url}`);
+      console.log('Request headers:', {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'signature': signature.substring(0, 10) + '...'
       });
       
       // Make the API request with raw response handling
@@ -78,7 +124,8 @@ const Index = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          'Accept': 'application/json',
+          'signature': signature
         },
         body: requestBody,
         credentials: 'same-origin'
@@ -86,7 +133,12 @@ const Index = () => {
       
       // Capture response content type for debugging
       const contentType = fetchResponse.headers.get('content-type') || '';
+      const status = fetchResponse.status;
+      const statusText = fetchResponse.statusText;
+      
+      console.log(`Response status: ${status} ${statusText}`);
       console.log('Response content type:', contentType);
+      console.log('Response headers:', Array.from(fetchResponse.headers.entries()));
       
       // Clone response to read text and also parse as JSON if possible
       const responseClone = fetchResponse.clone();
@@ -98,12 +150,12 @@ const Index = () => {
       // Check for HTML response
       if (contentType.includes('text/html')) {
         console.error('Received HTML instead of JSON');
-        setApiError(`Invalid API response format - received HTML instead of JSON. Content-Type: ${contentType}`);
+        setApiError(`Invalid API response format - received HTML instead of JSON. Status: ${status} ${statusText}, Content-Type: ${contentType}`);
         
         // Try to parse HTML to extract any error messages
         const htmlMessage = extractMessageFromHtml(textResponse);
         if (htmlMessage) {
-          setApiError(`${apiError}\n\nExtracted message: ${htmlMessage}`);
+          setApiError((prev) => `${prev || ''}\n\nExtracted message: ${htmlMessage}`);
         }
       } else {
         // Try parsing as JSON
@@ -119,11 +171,6 @@ const Index = () => {
           setApiError(`Failed to parse response: ${parseError instanceof Error ? parseError.message : String(parseError)}`);
         }
       }
-      
-      // Original API call through the client for comparison
-      const clientResponse = await rcmApi.getStep1();
-      console.log('Client API response:', clientResponse);
-      
     } catch (error) {
       console.error('API test failed:', error);
       setApiError(`API Error: ${error instanceof Error ? error.message : String(error)}`);
@@ -193,16 +240,55 @@ const Index = () => {
                   <div>
                     <strong>Base URL:</strong> {window.location.origin}
                   </div>
-                  <div className="pt-2">
-                    <Button 
-                      onClick={testApiConnection}
-                      disabled={isLoading}
-                      size="sm"
-                      className="w-full"
-                    >
-                      {isLoading ? "Testing API..." : "Test API Connection"}
-                    </Button>
+                  <div className="pt-2 space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <Select
+                        value={apiMode}
+                        onValueChange={(value) => setApiMode(value as 'proxy' | 'direct')}
+                      >
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="API Mode" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="proxy">Proxy API</SelectItem>
+                          <SelectItem value="direct">Direct API</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      
+                      <Button 
+                        onClick={testApiConnection}
+                        disabled={isLoading}
+                        size="sm"
+                        className="flex-1"
+                      >
+                        {isLoading ? "Testing API..." : "Test API Connection"}
+                      </Button>
+                    </div>
+                    
+                    {apiMode === 'direct' && (
+                      <input
+                        type="text"
+                        value={directApiUrl}
+                        onChange={(e) => setDirectApiUrl(e.target.value)}
+                        className="w-full p-2 text-xs border rounded"
+                        placeholder="Direct API URL"
+                      />
+                    )}
                   </div>
+                </CardContent>
+              </Card>
+              
+              {/* Browser Information */}
+              <Card className="mt-4">
+                <CardHeader>
+                  <CardTitle className="text-lg">Browser Information</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ScrollArea className="h-[150px] w-full rounded border p-2 bg-gray-50">
+                    <pre className="text-xs whitespace-pre-wrap break-words">
+                      {JSON.stringify(browserInfo, null, 2)}
+                    </pre>
+                  </ScrollArea>
                 </CardContent>
               </Card>
             </div>
