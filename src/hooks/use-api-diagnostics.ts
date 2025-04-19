@@ -24,6 +24,12 @@ interface DiagnosticsResult {
   statusCode?: number;
 }
 
+interface EndpointCheckResult {
+  success: boolean;
+  responseText?: string;
+  statusCode?: number;
+}
+
 /**
  * Hook to monitor API connection status and perform diagnostics
  */
@@ -62,7 +68,7 @@ export function useApiDiagnostics() {
   /**
    * Check if a specific API endpoint is accessible
    */
-  const checkEndpoint = async (check: EndpointCheck): Promise<{success: boolean, responseText?: string, statusCode?: number}> => {
+  const checkEndpoint = async (check: EndpointCheck): Promise<EndpointCheckResult> => {
     try {
       console.log(`Checking endpoint: ${check.method} ${check.url}`);
       
