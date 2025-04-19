@@ -1,3 +1,4 @@
+
 import { generateSignature } from './rcm-signature';
 import type { 
   RCMApiConfig,
@@ -83,6 +84,9 @@ class RCMApiClient {
     headers.append('Accept', 'application/json');
     headers.append('signature', signature); 
     
+    // Log signature for debugging purposes
+    console.log('Generated signature for API request:', signature.substring(0, 10) + '...');
+    
     // Store request headers for diagnostic purposes
     const headerObj: Record<string, string> = {};
     headers.forEach((value, key) => {
@@ -101,10 +105,12 @@ class RCMApiClient {
     // Check if this is a direct API URL or proxy URL
     if (baseUrl.includes('apis.rentalcarmanager.com')) {
       // Direct API URL format
+      console.log('Using direct API URL format:', `${baseUrl}?apikey=${apiKey}`);
       return `${baseUrl}?apikey=${apiKey}`;
     }
     
     // Proxy URL format (append API key to path)
+    console.log('Using proxy API URL format:', `${baseUrl}/${apiKey}?apikey=${apiKey}`);
     return `${baseUrl}/${apiKey}?apikey=${apiKey}`;
   }
 
@@ -139,6 +145,14 @@ class RCMApiClient {
         body: requestBody,
         timestamp: requestStartTime.toISOString()
       };
+      
+      // Log complete request details including signature
+      console.log('Complete request details:', {
+        url: apiUrl,
+        method,
+        headers: Object.fromEntries(headers.entries()),
+        body: requestBody
+      });
       
       const fetchStartTime = Date.now();
       const response = await fetch(apiUrl, {

@@ -100,6 +100,8 @@ const Index = () => {
         body: requestBody
       });
       
+      console.log('Generated signature for test:', signature);
+      
       let url;
       if (apiMode === 'proxy') {
         url = `${rcmApi.config?.apiUrl || "/api/rcm/booking/v3.2"}/${apiKey}?apikey=${apiKey}`;
@@ -124,6 +126,7 @@ const Index = () => {
         'Accept': 'application/json',
         'signature': signature.substring(0, 10) + '...'
       });
+      console.log('Request body:', requestBody);
       
       const fetchResponse = await fetch(url, {
         method: 'POST',

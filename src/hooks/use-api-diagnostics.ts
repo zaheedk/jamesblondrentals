@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 
 interface ConnectionStatus {
@@ -232,7 +231,7 @@ export function useApiDiagnostics() {
     const allSuccessful = checkResults.every(result => result.success);
     
     // Extract response text and status code from the first check result
-    const firstResult = checkResults[0] || {};
+    const firstResult = checkResults[0] || {} as EndpointCheckResult;
     const responseText = firstResult.responseText;
     const statusCode = firstResult.statusCode;
 
