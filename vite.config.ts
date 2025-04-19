@@ -6,11 +6,8 @@ import { componentTagger } from "lovable-tagger";
 import type { IncomingMessage } from 'http';
 import { ServerResponse } from 'http';
 
-// Define production and development API URLs
-const RCM_API_URL = {
-  development: 'https://apis.rentalcarmanager.com',
-  production: 'https://api.rentalcarmanager.com' // Production API endpoint
-};
+// Using the same API URL for both environments
+const API_URL = 'https://apis.rentalcarmanager.com';
 
 export default defineConfig(({ mode }) => ({
   server: {
@@ -18,7 +15,7 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
     proxy: {
       '/api/rcm': {
-        target: mode === 'production' ? RCM_API_URL.production : RCM_API_URL.development,
+        target: API_URL,
         changeOrigin: true,
         secure: true,
         rewrite: (path) => path.replace(/^\/api\/rcm/, ''),
@@ -34,7 +31,7 @@ export default defineConfig(({ mode }) => ({
               status: 'error',
               message: `Proxy Error: ${err.message}`,
               errorCode: (err as NodeJS.ErrnoException).code,
-              target: mode === 'production' ? RCM_API_URL.production : RCM_API_URL.development,
+              target: API_URL,
               environment: mode
             };
             
@@ -47,8 +44,7 @@ export default defineConfig(({ mode }) => ({
           });
           
           proxy.on('proxyReq', (proxyReq, req, _res) => {
-            const apiUrl = mode === 'production' ? RCM_API_URL.production : RCM_API_URL.development;
-            const url = new URL(proxyReq.path, apiUrl);
+            const url = new URL(proxyReq.path, API_URL);
             console.log(`[${mode.toUpperCase()}] Proxying ${req.method} request to: ${url.toString()}`);
             
             console.log('Request headers:', proxyReq.getHeaders());
