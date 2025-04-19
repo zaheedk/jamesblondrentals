@@ -29,7 +29,7 @@ const Index = () => {
     body?: string;
   }>({});
   const [apiMode, setApiMode] = useState<'proxy' | 'direct'>('proxy');
-  const [directApiUrl, setDirectApiUrl] = useState('https://apis.rentalcarmanager.com/booking/v3.2');
+  const [directApiUrl, setDirectApiUrl] = useState('https://apis.rentalcarmanager.com/booking/v3.2/?apikey=TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq');
   const [browserInfo, setBrowserInfo] = useState<Record<string, any>>({});
   const [fullApiUrl, setFullApiUrl] = useState<string>('');
   const [constructedApiUrl, setConstructedApiUrl] = useState<string>('');
