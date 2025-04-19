@@ -32,6 +32,7 @@ const Index = () => {
   const [directApiUrl, setDirectApiUrl] = useState('https://apis.rentalcarmanager.com/booking/v3.2');
   const [browserInfo, setBrowserInfo] = useState<Record<string, any>>({});
   const [fullApiUrl, setFullApiUrl] = useState<string>('');
+  const [constructedApiUrl, setConstructedApiUrl] = useState<string>('');
 
   useEffect(() => {
     try {
@@ -81,6 +82,9 @@ const Index = () => {
         ? `${window.location.origin}/api/rcm/booking/v3.2/${apiKey}?apikey=${apiKey}`
         : `${directApiUrl}/${apiKey}?apikey=${apiKey}`;
       
+      // Log and display the constructed URL
+      console.log(`Constructed API URL: ${fullUrl}`);
+      setConstructedApiUrl(fullUrl);
       setFullApiUrl(fullUrl);
 
       const apiSecret = rcmApi.config?.apiSecret || "tsdavpoP51o6AcLIdorqgtFJ0ullAimg";
@@ -232,6 +236,12 @@ const Index = () => {
                   <div>
                     <strong>Base URL:</strong> {window.location.origin}
                   </div>
+                  {constructedApiUrl && (
+                    <div>
+                      <strong>Constructed API URL:</strong> 
+                      <pre className="bg-gray-100 p-2 rounded text-xs break-all">{constructedApiUrl}</pre>
+                    </div>
+                  )}
                   <div className="pt-2 space-y-2">
                     <div className="flex items-center space-x-2">
                       <Select
