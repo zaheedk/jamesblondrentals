@@ -269,7 +269,12 @@ const Index = () => {
                   {constructedApiUrl && (
                     <div>
                       <strong>Constructed API URL:</strong> 
-                      <pre className="bg-gray-100 p-2 rounded text-xs break-all">{constructedApiUrl}</pre>
+                      <input
+                        type="text"
+                        value={constructedApiUrl}
+                        onChange={(e) => setConstructedApiUrl(e.target.value)}
+                        className="w-full mt-1 p-2 text-xs border rounded font-mono break-all"
+                      />
                     </div>
                   )}
                   <div className="pt-2 space-y-2">
