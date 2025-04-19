@@ -15,6 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { generateSignature } from "@/lib/api/rcm-signature";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from 'sonner';
+import { Textarea } from "@/components/ui/textarea";
 
 const Index = () => {
   const { initializeApi, rcmApi } = useRcmApi();
@@ -33,6 +34,7 @@ const Index = () => {
   const [browserInfo, setBrowserInfo] = useState<Record<string, any>>({});
   const [fullApiUrl, setFullApiUrl] = useState<string>('');
   const [constructedApiUrl, setConstructedApiUrl] = useState<string>('');
+  const [testRequestBody, setTestRequestBody] = useState<string>(JSON.stringify({ method: "step1" }, null, 2));
 
   useEffect(() => {
     try {
@@ -89,7 +91,17 @@ const Index = () => {
       const apiSecret = rcmApi.config?.apiSecret || "tsdavpoP51o6AcLIdorqgtFJ0ullAimg";
       
       const timestamp = new Date().toISOString();
-      const requestBody = JSON.stringify({ method: "step1" });
+      let requestBody: string;
+      
+      try {
+        requestBody = JSON.parse(testRequestBody);
+        requestBody = JSON.stringify(requestBody);
+      } catch (parseError) {
+        toast.error('Invalid JSON in request body');
+        setApiError('Invalid JSON format in request body');
+        setIsLoading(false);
+        return;
+      }
       
       const signature = generateSignature({
         method: 'POST',
@@ -247,6 +259,15 @@ const Index = () => {
                     </div>
                   )}
                   <div className="pt-2 space-y-2">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Request Body:
+                    </label>
+                    <Textarea
+                      value={testRequestBody}
+                      onChange={(e) => setTestRequestBody(e.target.value)}
+                      className="font-mono text-xs h-32"
+                      placeholder="Enter JSON request body"
+                    />
                     <div className="flex items-center space-x-2">
                       <Select
                         value={apiMode}
@@ -270,16 +291,6 @@ const Index = () => {
                         {isLoading ? "Testing API..." : "Test API Connection"}
                       </Button>
                     </div>
-                    
-                    {apiMode === 'direct' && (
-                      <input
-                        type="text"
-                        value={directApiUrl}
-                        onChange={(e) => setDirectApiUrl(e.target.value)}
-                        className="w-full p-2 text-xs border rounded"
-                        placeholder="Direct API URL"
-                      />
-                    )}
                   </div>
                 </CardContent>
               </Card>
