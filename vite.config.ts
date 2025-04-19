@@ -20,12 +20,28 @@ export default defineConfig(({ mode }) => ({
           'Accept': 'application/json'
         },
         configure: (proxy, _options) => {
-          proxy.on('error', (err, _req, _res) => {
+          proxy.on('error', (err, req, res) => {
             console.error('Proxy error:', err);
+            
+            // Send a more informative error response instead of default error page
+            if (res instanceof ServerResponse && !res.writableEnded) {
+              const errorDetails = {
+                status: 'error',
+                message: `Proxy Error: ${err.message}`,
+                code: err.code,
+                target: 'https://apis.rentalcarmanager.com'
+              };
+              
+              res.writeHead(502, {
+                'Content-Type': 'application/json'
+              });
+              res.end(JSON.stringify(errorDetails));
+            }
           });
           
           proxy.on('proxyReq', (proxyReq, req, _res) => {
-            console.log(`Proxying request to RCM API: ${req.method} ${proxyReq.path}`);
+            const url = new URL(proxyReq.path, 'https://apis.rentalcarmanager.com');
+            console.log(`Proxying ${req.method} request to: ${url.toString()}`);
             
             // Enhanced logging for request
             console.log('Request headers:', proxyReq.getHeaders());
@@ -35,16 +51,37 @@ export default defineConfig(({ mode }) => ({
               const bodyData = JSON.stringify(req.body);
               proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
               proxyReq.write(bodyData);
+              console.log('Request body:', bodyData.substring(0, 200) + (bodyData.length > 200 ? '...' : ''));
             }
           });
           
           proxy.on('proxyRes', (proxyRes, req, _res) => {
-            console.log(`Response from RCM API: ${proxyRes.statusCode} for ${req.url}`);
+            const statusCode = proxyRes.statusCode || 0;
+            const statusText = proxyRes.statusMessage || '';
+            const contentType = proxyRes.headers['content-type'] || '';
+            
+            console.log(`Response from RCM API: ${statusCode} ${statusText} for ${req.url}`);
+            console.log(`Response headers: ${JSON.stringify(proxyRes.headers)}`);
+            
+            // Check for problematic responses
+            if (statusCode >= 400) {
+              console.error(`API Error: ${statusCode} ${statusText} for ${req.url}`);
+            }
             
             // Check if response is HTML instead of JSON
-            const contentType = proxyRes.headers['content-type'] || '';
             if (contentType.includes('text/html')) {
               console.error('WARNING: Received HTML instead of JSON response from API. This indicates a proxy misconfiguration or API endpoint issue.');
+              console.error('Content-Type:', contentType);
+              
+              // Attempt to read and log HTML response for debugging
+              let responseBody = '';
+              proxyRes.on('data', (chunk) => {
+                responseBody += chunk;
+              });
+              
+              proxyRes.on('end', () => {
+                console.error('HTML response preview:', responseBody.substring(0, 500));
+              });
             }
           });
         }

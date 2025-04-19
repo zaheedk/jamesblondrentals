@@ -12,12 +12,20 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Index = () => {
   const { initializeApi, rcmApi } = useRcmApi();
   const [apiResponse, setApiResponse] = useState<any>(null);
   const [apiError, setApiError] = useState<string | null>(null);
+  const [rawResponse, setRawResponse] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [requestDetails, setRequestDetails] = useState<{
+    url?: string;
+    method?: string;
+    headers?: Record<string, string>;
+    body?: string;
+  }>({});
   
   useEffect(() => {
     try {
@@ -44,17 +52,111 @@ const Index = () => {
     setIsLoading(true);
     setApiError(null);
     setApiResponse(null);
+    setRawResponse(null);
     
     try {
       console.log('Testing API connection...');
-      const response = await rcmApi.getStep1();
-      console.log('API response:', response);
-      setApiResponse(response);
+      
+      // Enhanced API testing with raw response capture
+      const url = `${rcmApi.config?.apiUrl}/${rcmApi.config?.apiKey}?apikey=${rcmApi.config?.apiKey}`;
+      const timestamp = new Date().toISOString();
+      const requestBody = JSON.stringify({ method: "step1" });
+      
+      // Store request details for debug display
+      setRequestDetails({
+        url,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: requestBody
+      });
+      
+      // Make the API request with raw response handling
+      const fetchResponse = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: requestBody,
+        credentials: 'same-origin'
+      });
+      
+      // Capture response content type for debugging
+      const contentType = fetchResponse.headers.get('content-type') || '';
+      console.log('Response content type:', contentType);
+      
+      // Clone response to read text and also parse as JSON if possible
+      const responseClone = fetchResponse.clone();
+      
+      // Get raw text response first
+      const textResponse = await responseClone.text();
+      setRawResponse(textResponse);
+      
+      // Check for HTML response
+      if (contentType.includes('text/html')) {
+        console.error('Received HTML instead of JSON');
+        setApiError(`Invalid API response format - received HTML instead of JSON. Content-Type: ${contentType}`);
+        
+        // Try to parse HTML to extract any error messages
+        const htmlMessage = extractMessageFromHtml(textResponse);
+        if (htmlMessage) {
+          setApiError(`${apiError}\n\nExtracted message: ${htmlMessage}`);
+        }
+      } else {
+        // Try parsing as JSON
+        try {
+          const jsonResponse = JSON.parse(textResponse);
+          setApiResponse(jsonResponse);
+          
+          if (jsonResponse.status === "ERR") {
+            setApiError(`API Error: ${jsonResponse.error || 'Unknown error'}`);
+          }
+        } catch (parseError) {
+          console.error('Failed to parse response as JSON:', parseError);
+          setApiError(`Failed to parse response: ${parseError instanceof Error ? parseError.message : String(parseError)}`);
+        }
+      }
+      
+      // Original API call through the client for comparison
+      const clientResponse = await rcmApi.getStep1();
+      console.log('Client API response:', clientResponse);
+      
     } catch (error) {
       console.error('API test failed:', error);
       setApiError(`API Error: ${error instanceof Error ? error.message : String(error)}`);
     } finally {
       setIsLoading(false);
+    }
+  };
+  
+  // Helper function to extract messages from HTML responses
+  const extractMessageFromHtml = (html: string): string | null => {
+    try {
+      // Try to extract common error patterns from HTML
+      const titleMatch = html.match(/<title>(.*?)<\/title>/i);
+      const bodyTextMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+      
+      if (titleMatch && titleMatch[1] && titleMatch[1].toLowerCase() !== 'document') {
+        return `Page title: ${titleMatch[1]}`;
+      }
+      
+      if (bodyTextMatch) {
+        // Remove HTML tags to get plain text
+        const div = document.createElement('div');
+        div.innerHTML = bodyTextMatch[1];
+        const textContent = div.textContent || div.innerText || '';
+        
+        // Return a condensed version (first 200 chars)
+        return textContent.trim().substring(0, 200) + (textContent.length > 200 ? '...' : '');
+      }
+      
+      return null;
+    } catch (e) {
+      console.error('Error extracting message from HTML:', e);
+      return null;
     }
   };
 
@@ -66,6 +168,8 @@ const Index = () => {
         
         {/* API Status and Debug Section */}
         <div className="container mx-auto px-4 py-4 mb-8">
+          <h2 className="text-2xl font-bold mb-4">API Diagnostics</h2>
+          
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* API Status Card */}
             <div>
@@ -78,13 +182,16 @@ const Index = () => {
                 </CardHeader>
                 <CardContent className="space-y-2 text-sm">
                   <div>
-                    <strong>API URL:</strong> /api/rcm/booking/v3.2
+                    <strong>API URL:</strong> {rcmApi.config?.apiUrl || '/api/rcm/booking/v3.2'}
                   </div>
                   <div>
-                    <strong>API Key:</strong> TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq
+                    <strong>API Key:</strong> {rcmApi.config?.apiKey || 'TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq'}
                   </div>
                   <div>
                     <strong>Environment:</strong> {process.env.NODE_ENV}
+                  </div>
+                  <div>
+                    <strong>Base URL:</strong> {window.location.origin}
                   </div>
                   <div className="pt-2">
                     <Button 
@@ -110,7 +217,7 @@ const Index = () => {
                   <Alert variant="destructive" className="mb-4">
                     <AlertCircle className="h-4 w-4" />
                     <AlertTitle>Error</AlertTitle>
-                    <AlertDescription>{apiError}</AlertDescription>
+                    <AlertDescription className="whitespace-pre-wrap">{apiError}</AlertDescription>
                   </Alert>
                 )}
                 
@@ -120,18 +227,59 @@ const Index = () => {
                   </div>
                 )}
                 
-                {apiResponse && (
-                  <div>
-                    <div className="mb-2 font-medium">Raw API Response:</div>
-                    <ScrollArea className="h-[300px] w-full rounded border p-4 bg-gray-50">
-                      <pre className="text-xs whitespace-pre-wrap break-words">
-                        {JSON.stringify(apiResponse, null, 2)}
-                      </pre>
-                    </ScrollArea>
-                  </div>
+                {!isLoading && (
+                  <Tabs defaultValue="parsed" className="w-full">
+                    <TabsList className="mb-2 w-full">
+                      <TabsTrigger value="parsed">Parsed Response</TabsTrigger>
+                      <TabsTrigger value="raw">Raw Response</TabsTrigger>
+                      <TabsTrigger value="request">Request Details</TabsTrigger>
+                    </TabsList>
+                    
+                    <TabsContent value="parsed">
+                      {apiResponse ? (
+                        <ScrollArea className="h-[300px] w-full rounded border p-4 bg-gray-50">
+                          <pre className="text-xs whitespace-pre-wrap break-words">
+                            {JSON.stringify(apiResponse, null, 2)}
+                          </pre>
+                        </ScrollArea>
+                      ) : (
+                        <div className="text-center py-8 text-gray-500">
+                          {apiError ? "Failed to parse response as JSON" : "No response data available"}
+                        </div>
+                      )}
+                    </TabsContent>
+                    
+                    <TabsContent value="raw">
+                      {rawResponse ? (
+                        <ScrollArea className="h-[300px] w-full rounded border p-4 bg-gray-50">
+                          <pre className="text-xs whitespace-pre-wrap break-words">
+                            {rawResponse}
+                          </pre>
+                        </ScrollArea>
+                      ) : (
+                        <div className="text-center py-8 text-gray-500">
+                          No raw response data available
+                        </div>
+                      )}
+                    </TabsContent>
+                    
+                    <TabsContent value="request">
+                      {Object.keys(requestDetails).length > 0 ? (
+                        <ScrollArea className="h-[300px] w-full rounded border p-4 bg-gray-50">
+                          <pre className="text-xs whitespace-pre-wrap break-words">
+                            {JSON.stringify(requestDetails, null, 2)}
+                          </pre>
+                        </ScrollArea>
+                      ) : (
+                        <div className="text-center py-8 text-gray-500">
+                          No request details available
+                        </div>
+                      )}
+                    </TabsContent>
+                  </Tabs>
                 )}
                 
-                {!apiResponse && !apiError && !isLoading && (
+                {!apiResponse && !apiError && !isLoading && !rawResponse && (
                   <div className="text-center py-8 text-gray-500">
                     Click "Test API Connection" to see the response
                   </div>

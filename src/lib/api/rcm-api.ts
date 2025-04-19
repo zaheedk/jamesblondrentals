@@ -1,4 +1,3 @@
-
 import { generateSignature } from './rcm-signature';
 import type { 
   RCMApiConfig,
@@ -25,7 +24,7 @@ const DEFAULT_CONFIG: RCMApiConfig = {
 };
 
 class RCMApiClient {
-  private config: RCMApiConfig;
+  config: RCMApiConfig;
   private initialized: boolean = false;
 
   constructor(config: RCMApiConfig) {
@@ -75,6 +74,12 @@ class RCMApiClient {
     headers.append('Accept', 'application/json');
     headers.append('signature', signature); 
     
+    console.log('Request headers:', {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'signature': signature.substring(0, 10) + '...'
+    });
+    
     return headers;
   }
 
@@ -99,16 +104,29 @@ class RCMApiClient {
         credentials: 'same-origin',
       });
 
-      // Check for HTML responses which indicate proxy issues
       const contentType = response.headers.get("content-type") || "";
+      console.log(`Response status: ${response.status} ${response.statusText}, Content-Type: ${contentType}`);
+      
       if (contentType.includes("text/html")) {
         console.error("Received HTML instead of JSON. This likely indicates a proxy configuration issue.");
         console.error("Content type:", contentType);
         
-        // Read and log the HTML content for debugging
         const htmlContent = await response.text();
         console.error("HTML response preview:", htmlContent.substring(0, 200));
-        throw new Error("Invalid API response format - received HTML instead of JSON");
+        
+        let errorMessage = "Invalid API response format - received HTML instead of JSON";
+        
+        if (htmlContent.includes("404") || htmlContent.includes("not found")) {
+          errorMessage += " - Endpoint not found (404)";
+        } else if (htmlContent.includes("403") || htmlContent.includes("forbidden")) {
+          errorMessage += " - Access forbidden (403)";
+        } else if (htmlContent.includes("500") || htmlContent.includes("server error")) {
+          errorMessage += " - Server error (500)";
+        } else if (htmlContent.includes("maintenance") || htmlContent.includes("down for maintenance")) {
+          errorMessage += " - Service may be under maintenance";
+        }
+        
+        throw new Error(errorMessage);
       }
 
       if (!response.ok) {
@@ -126,6 +144,7 @@ class RCMApiClient {
       }
 
       const responseData = await response.json();
+      console.log(`API success response (${method} - ${requestMethod}):`, responseData);
       
       if (responseData.status === "ERR") {
         console.error('API returned error:', responseData.error);
