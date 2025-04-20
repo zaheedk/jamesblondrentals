@@ -1,100 +1,179 @@
 
 import React from "react";
 
+const faqData = [
+  {
+    question: "What do I need to hire a vehicle?",
+    answer: (
+      <>
+        You need a full driver’s licence (overseas and international licences accepted if in English, or with an approved translation) and a valid credit or debit card. The minimum age to hire is 21 for most vehicles, 25 for larger vehicles.
+      </>
+    ),
+  },
+  {
+    question: "What are your hours?",
+    answer: (
+      <>
+        Monday–Friday: 7:00 am – 6:00 pm<br />
+        Saturday: 8:00 am – 5:00 pm<br />
+        Sunday & Public Holidays: 8:30 am – 5:00 pm<br />
+        <span className="text-xs block mt-1">(Last return is 15 minutes before closing.)</span>
+      </>
+    ),
+  },
+  {
+    question: "Can I use my overseas licence?",
+    answer: (
+      <>
+        Yes, provided the licence is in English or accompanied by an acceptable translation / IDP. <br />
+        All drivers must comply with NZTA requirements.
+      </>
+    ),
+  },
+  {
+    question: "Is there a security bond/deposit?",
+    answer: (
+      <>
+        Yes, a bond is required. The amount varies by vehicle and insurance option. It can be held on a credit card or paid by debit card.
+      </>
+    ),
+  },
+  {
+    question: "Is there a mileage (kilometre) limit?",
+    answer: (
+      <>
+        Nearly all hires include free 150km/day. Additional kilometres are charged at a set rate depending on the vehicle. <br />
+        Unused kilometres are not credited.
+      </>
+    ),
+  },
+  {
+    question: "Can I return after hours?",
+    answer: (
+      <>
+        Yes, after-hours return is available. Keys should be placed in the secure dropbox. The hirer remains responsible for the vehicle until it is checked in during business hours.
+      </>
+    ),
+  },
+  {
+    question: "Do I need to refuel before returning?",
+    answer: (
+      <>
+        Yes, vehicles must be refuelled to the same level as supplied, or refuelling charges may apply.
+      </>
+    ),
+  },
+  {
+    question: "Can I add extra drivers?",
+    answer: (
+      <>
+        Yes, at no extra cost. They must meet our age and licensing conditions and must be registered at pick-up.
+      </>
+    ),
+  },
+  {
+    question: "What is your cancellation policy?",
+    answer: (
+      <>
+        We recommend contacting us as soon as possible to cancel or change a booking. <br />
+        Cancellations less than 24 hours in advance may incur charges.
+      </>
+    ),
+  },
+  {
+    question: "Are pets allowed?",
+    answer: (
+      <>
+        No, pets are not permitted in any vehicle unless authorised in advance. Cleaning charges may apply.
+      </>
+    ),
+  },
+  {
+    question: "How do I pay for road tolls?",
+    answer: (
+      <>
+        We charge tolls to the card on file plus a small administration fee. You can also pay tolls directly via the <a className="text-blue-500 underline" target="_blank" rel="noopener noreferrer" href="https://tollspayment.nzta.govt.nz/">NZTA website</a>.
+      </>
+    ),
+  },
+  {
+    question: "What about insurance?",
+    answer: (
+      <>
+        All hires include standard insurance with an excess. Extra cover is available for peace of mind. See our website for full details and options.
+      </>
+    ),
+  },
+  {
+    question: "Do you deliver or collect vehicles?",
+    answer: (
+      <>
+        Yes, we offer local delivery and collection for an additional fee. Please enquire when booking.
+      </>
+    ),
+  },
+  {
+    question: "Do your vehicles have tow bars?",
+    answer: (
+      <>
+        Some vehicles are fitted with tow bars. Please request this at the time of booking if needed.
+      </>
+    ),
+  },
+  {
+    question: "Do you provide one way hires?",
+    answer: (
+      <>
+        No, all vehicles must be collected and returned to our Auckland locations.
+      </>
+    ),
+  },
+  {
+    question: "Can I take the vehicle on a ferry?",
+    answer: (
+      <>
+        Yes, but the vehicle must be returned to Auckland. Hirer is responsible for all ferry costs and for returning on time.
+      </>
+    ),
+  },
+  {
+    question: "What if I have an accident or breakdown?",
+    answer: (
+      <>
+        Contact us as soon as possible. Our vehicles are covered by roadside assistance nationwide during your hire.
+      </>
+    ),
+  },
+  {
+    question: "How do I book a vehicle?",
+    answer: (
+      <>
+        Book online via our website or call our team at&nbsp;
+        <a className="text-blue-500 underline" href="tel:098361396">(09) 836 1396</a>.
+      </>
+    ),
+  },
+  {
+    question: "Who can I contact for more help?",
+    answer: (
+      <>
+        Phone: <a className="text-blue-500 underline" href="tel:098361396">(09) 836 1396</a><br />
+        Email: <a className="text-blue-500 underline" href="mailto:info@jamesblond.co.nz">info@jamesblond.co.nz</a>
+      </>
+    ),
+  },
+];
+
 const FAQ = () => (
   <div className="container mx-auto px-4 py-16">
     <h1 className="text-3xl font-bold mb-8">Frequently Asked Questions</h1>
-    <div className="space-y-8">
-      <div>
-        <h2 className="text-xl font-semibold mb-2">What do I need to hire a vehicle?</h2>
-        <p className="text-gray-700">
-          To hire a vehicle, you must have a valid driver’s licence (NZ or International, in English), be at least 21 years of age (or 25 for minibus and truck hire), and a valid credit or debit card for payment and bond purposes.
-        </p>
-      </div>
-      <div>
-        <h2 className="text-xl font-semibold mb-2">Can I use my overseas driver’s licence?</h2>
-        <p className="text-gray-700">
-          Yes! If your licence is in English, you can use it directly. If not, you must present an approved translation or an International Driving Permit.
-        </p>
-      </div>
-      <div>
-        <h2 className="text-xl font-semibold mb-2">How old do I need to be to hire a vehicle?</h2>
-        <p className="text-gray-700">
-          You must be at least 21 years of age for cars, vans, and utes. For minibus and truck rental, the minimum age is 25.
-        </p>
-      </div>
-      <div>
-        <h2 className="text-xl font-semibold mb-2">Do you require a bond or deposit?</h2>
-        <p className="text-gray-700">
-          Yes, a security bond is required. This can be processed as a hold on your credit card or paid by debit card. The amount depends on the insurance cover chosen and vehicle type.
-        </p>
-      </div>
-      <div>
-        <h2 className="text-xl font-semibold mb-2">Is there a mileage (kilometre) limit?</h2>
-        <p className="text-gray-700">
-          Most hires include 150 free kilometres per day. Additional kilometres are charged at a set rate. Ask our team for specific vehicle terms.
-        </p>
-      </div>
-      <div>
-        <h2 className="text-xl font-semibold mb-2">What happens if I return the vehicle late?</h2>
-        <p className="text-gray-700">
-          Late returns may incur additional hire charges. Please contact us as soon as possible if you expect to be late.
-        </p>
-      </div>
-      <div>
-        <h2 className="text-xl font-semibold mb-2">Is there a surcharge for public holidays?</h2>
-        <p className="text-gray-700">
-          Yes, a public holiday surcharge may apply on certain days. This will be shown when you book or can be checked with our team.
-        </p>
-      </div>
-      <div>
-        <h2 className="text-xl font-semibold mb-2">How do I pay for road tolls?</h2>
-        <p className="text-gray-700">
-          We will invoice you for any unpaid tolls, plus an admin fee. Alternatively, you can pay tolls online directly after you drive through.
-        </p>
-      </div>
-      <div>
-        <h2 className="text-xl font-semibold mb-2">Can other people drive the vehicle?</h2>
-        <p className="text-gray-700">
-          Yes, additional drivers can be added free of charge as long as they meet our licence and age requirements.
-        </p>
-      </div>
-      <div>
-        <h2 className="text-xl font-semibold mb-2">What is your fuel policy?</h2>
-        <p className="text-gray-700">
-          Vehicles are supplied with fuel, and you must return them with the same fuel level. Refuelling charges apply if returned less than provided.
-        </p>
-      </div>
-      <div>
-        <h2 className="text-xl font-semibold mb-2">Can I cancel or change my booking?</h2>
-        <p className="text-gray-700">
-          Yes. Please provide as much notice as possible. Cancellation fees may apply if notice is within 24 hours of the hire start time.
-        </p>
-      </div>
-      <div>
-        <h2 className="text-xl font-semibold mb-2">What do I do in the event of an accident or breakdown?</h2>
-        <p className="text-gray-700">
-          If involved in an accident, notify us immediately and fill out the required accident form. For breakdowns, our vehicles are covered by roadside assistance – call the number supplied with the vehicle.
-        </p>
-      </div>
-      <div>
-        <h2 className="text-xl font-semibold mb-2">Are pets allowed in the vehicles?</h2>
-        <p className="text-gray-700">
-          No pets are allowed unless agreed in advance. Cleaning or fumigation fees may apply for unauthorised pets in vehicles.
-        </p>
-      </div>
-      <div>
-        <h2 className="text-xl font-semibold mb-2">Do you deliver vehicles?</h2>
-        <p className="text-gray-700">
-          We offer delivery and collection services within the Auckland region for an extra fee. Contact us for pricing and arrangement.
-        </p>
-      </div>
-      <div>
-        <h2 className="text-xl font-semibold mb-2">How can I contact James Blond Rentals?</h2>
-        <p className="text-gray-700">
-          Call us at (09) 836 1396, email info@jamesblond.co.nz, or visit one of our Auckland locations. See our contact page for more details.
-        </p>
-      </div>
+    <div className="divide-y divide-gray-200 max-w-2xl mx-auto">
+      {faqData.map((faq, idx) => (
+        <div key={idx} className="py-6">
+          <h2 className="text-xl font-semibold mb-2">{faq.question}</h2>
+          <div className="text-gray-700 leading-relaxed">{faq.answer}</div>
+        </div>
+      ))}
     </div>
   </div>
 );

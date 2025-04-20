@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -30,9 +29,9 @@ import AirportDirections from "./pages/AirportDirections";
 
 import FAQ from "./pages/FAQ";
 
-// Use function component syntax to ensure hooks work correctly
+import AppLayout from "./components/layout/AppLayout";
+
 const App = () => {
-  // Create a client inside the component function
   const [queryClient] = useState(() => new QueryClient());
 
   return (
@@ -41,33 +40,34 @@ const App = () => {
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/vehicles" element={<Vehicles />} />
-            <Route path="/vehicle/:id" element={<VehicleDetail />} />
-            <Route path="/booking" element={<Booking />} />
-            <Route path="/customer-details" element={<CustomerDetails />} />
-            <Route path="/payment-options" element={<PaymentOptions />} />
-            <Route path="/payment" element={<Payment />} />
-            <Route path="/payment-success" element={<PaymentSuccess />} />
+          <AppLayout>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/vehicles" element={<Vehicles />} />
+              <Route path="/vehicle/:id" element={<VehicleDetail />} />
+              <Route path="/booking" element={<Booking />} />
+              <Route path="/customer-details" element={<CustomerDetails />} />
+              <Route path="/payment-options" element={<PaymentOptions />} />
+              <Route path="/payment" element={<Payment />} />
+              <Route path="/payment-success" element={<PaymentSuccess />} />
 
-            <Route path="/fleet" element={<Fleet />}>
-              <Route path="cars" element={<FleetCars />} />
-              <Route path="vans" element={<FleetVans />} />
-              <Route path="trucks" element={<FleetTrucks />} />
-              <Route path="minibuses" element={<FleetMinibuses />} />
-              <Route path="trailers" element={<FleetTrailers />} />
-              <Route path="furniture-truck" element={<FleetFurnitureTruck />} />
-            </Route>
-            <Route path="/airport" element={<Airport />}>
-              <Route path="about" element={<AirportAbout />} />
-              <Route path="shuttle" element={<AirportShuttle />} />
-              <Route path="directions" element={<AirportDirections />} />
-            </Route>
-            <Route path="/faq" element={<FAQ />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+              <Route path="/fleet" element={<Fleet />}>
+                <Route path="cars" element={<FleetCars />} />
+                <Route path="vans" element={<FleetVans />} />
+                <Route path="trucks" element={<FleetTrucks />} />
+                <Route path="minibuses" element={<FleetMinibuses />} />
+                <Route path="trailers" element={<FleetTrailers />} />
+                <Route path="furniture-truck" element={<FleetFurnitureTruck />} />
+              </Route>
+              <Route path="/airport" element={<Airport />}>
+                <Route path="about" element={<AirportAbout />} />
+                <Route path="shuttle" element={<AirportShuttle />} />
+                <Route path="directions" element={<AirportDirections />} />
+              </Route>
+              <Route path="/faq" element={<FAQ />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </AppLayout>
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
