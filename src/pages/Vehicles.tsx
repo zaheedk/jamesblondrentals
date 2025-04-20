@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -33,6 +34,7 @@ const Vehicles = () => {
   const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { useDriverAges, useStep2Vehicles, useVehicleCategories } = useRcmApi();
+  const { data: driverAges, isLoading: isLoadingAges, error: driverAgesError } = useDriverAges();
   const { data: categoryTypes } = useVehicleCategories();
   const [uniqueVehicleCategoryTypes, setUniqueVehicleCategoryTypes] = useState<Array<{id: string, name: string}>>([]);
 
