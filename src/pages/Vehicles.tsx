@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -35,7 +34,7 @@ const Vehicles = () => {
   const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { useDriverAges, useStep2Vehicles } = useRcmApi();
-  const [uniqueVehicleCategories, setUniqueVehicleCategories] = useState<string[]>([]);
+  const [uniqueVehicleCategoryTypes, setUniqueVehicleCategoryTypes] = useState<string[]>([]);
   
   const [vehicleType, setVehicleType] = useState<VehicleType | "all">("all");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 500]);
@@ -223,10 +222,10 @@ const Vehicles = () => {
 
   useEffect(() => {
     if (step2Data?.status === "OK" && step2Data.results?.availablecars) {
-      const categories = Array.from(new Set(
-        step2Data.results.availablecars.map(car => car.vehiclecategory)
+      const categoryTypes = Array.from(new Set(
+        step2Data.results.availablecars.map(car => String(car.vehiclecategorytypeid))
       )).sort();
-      setUniqueVehicleCategories(categories);
+      setUniqueVehicleCategoryTypes(categoryTypes);
     }
   }, [step2Data]);
 
@@ -289,9 +288,9 @@ const Vehicles = () => {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">All Types</SelectItem>
-                        {uniqueVehicleCategories.map((category) => (
-                          <SelectItem key={category} value={category}>
-                            {category}
+                        {uniqueVehicleCategoryTypes.map((categoryType) => (
+                          <SelectItem key={categoryType} value={categoryType}>
+                            {categoryType}
                           </SelectItem>
                         ))}
                       </SelectContent>
