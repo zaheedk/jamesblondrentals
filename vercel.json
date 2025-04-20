@@ -1,0 +1,18 @@
+
+{
+  "rewrites": [
+    {
+      "source": "/api/rcm/:path*",
+      "destination": "https://apis.rentalcarmanager.com/:path*"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/api/rcm/(.*)",
+      "headers": [
+        { "key": "Content-Type", "value": "application/json" },
+        { "key": "Accept", "value": "application/json" }
+      ]
+    }
+  ]
+}
