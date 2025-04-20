@@ -50,23 +50,26 @@ const FeaturedVehicles = () => {
           
           const kelstonLocationId = "1";
           
-          const vehiclesData = await rcmApi.getAvailableVehicles({
-            pickupLocationId: kelstonLocationId,
-            pickupDate: formattedPickupDate,
-            pickupTime,
-            dropoffLocationId: kelstonLocationId,
-            dropoffDate: formattedDropoffDate,
-            dropoffTime,
+          const vehiclesData = await rcmApi.request('POST', 'step2', {
+            method: 'step2',
+            pickuplocationid: kelstonLocationId,
+            pickupdate: formattedPickupDate,
+            pickuptime: pickupTime,
+            dropofflocationid: kelstonLocationId,
+            dropoffdate: formattedDropoffDate,
+            dropofftime: dropoffTime
           });
           
-          const premiumVehicles = vehiclesData.filter((vehicle: any) => 
-            premiumCategories.some((category: VehicleCategory) => 
-              category.id === vehicle.vehiclecategoryid
-            )
-          );
-          
-          console.log('Premium vehicles:', premiumVehicles);
-          setVehicles(premiumVehicles);
+          if (vehiclesData.status === "OK" && vehiclesData.results?.availablecars) {
+            const premiumVehicles = vehiclesData.results.availablecars.filter((vehicle: any) => 
+              premiumCategories.some((category: VehicleCategory) => 
+                category.id === vehicle.vehiclecategoryid
+              )
+            );
+            
+            console.log('Premium vehicles:', premiumVehicles);
+            setVehicles(premiumVehicles);
+          }
         }
       } catch (error) {
         console.error("Error fetching vehicles:", error);
