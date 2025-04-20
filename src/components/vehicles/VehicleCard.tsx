@@ -59,6 +59,13 @@ const VehicleCard = ({
     console.log(`Image failed to load for vehicle: ${vehicle.make} ${vehicle.model}`);
     setImageError(true);
   };
+
+  // Determine which price to display
+  const displayPrice = totalRateAfterDiscount !== undefined
+    ? totalRateAfterDiscount
+    : typeof vehicle.price === 'string' 
+      ? parseFloat(vehicle.price) 
+      : vehicle.price;
   
   return (
     <Card className="overflow-hidden shadow-md h-full flex flex-col">
@@ -82,8 +89,7 @@ const VehicleCard = ({
           </div>
           <div className="text-right">
             <div className="font-bold text-lg">
-              ${totalRateAfterDiscount?.toFixed(2) || 
-                (typeof vehicle.price === 'string' ? vehicle.price : vehicle.price?.toFixed(2) || '0.00')}
+              ${typeof displayPrice === 'number' ? displayPrice.toFixed(2) : '0.00'}
             </div>
             <div className="text-xs text-gray-500">
               {vehicle.priceUnit === 'day' 
@@ -123,7 +129,7 @@ const VehicleCard = ({
             dropoffTime={dropoffTime}
             ageId={age}
             vehicleImageUrl={imageUrl}
-            totalRateAfterDiscount={totalRateAfterDiscount}
+            totalRateAfterDiscount={displayPrice}
             totalDiscountAmount={totalDiscountAmount}
           />
         ) : (

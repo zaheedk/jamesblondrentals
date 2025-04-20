@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -39,6 +40,7 @@ const Vehicles = () => {
 
   const [vehicleType, setVehicleType] = useState<VehicleType | "all">("all");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 500]);
+  const [maxPrice, setMaxPrice] = useState<number>(500);
   const [searchTerm, setSearchTerm] = useState("");
   const [transmission, setTransmission] = useState<"all" | "automatic" | "manual">("all");
   const [fuelTypes, setFuelTypes] = useState({
@@ -113,6 +115,7 @@ const Vehicles = () => {
         );
         
         const feeAmount = mandatoryFee ? Number(mandatoryFee.totalfeeamount) : 0;
+        const totalPrice = car.totalrateafterdiscount + feeAmount;
         
         return {
           id: Number(car.vehiclecategoryid),
@@ -120,7 +123,7 @@ const Vehicles = () => {
           model: car.vehiclecategory.split(' ').slice(1).join(' ') || "Vehicle",
           year: new Date().getFullYear(),
           type: String(car.vehiclecategorytypeid) as VehicleType,
-          price: car.totalrateafterdiscount + feeAmount,
+          price: totalPrice,
           priceUnit: "total",
           seats: car.numberofadults + car.numberofchildren,
           transmission: "automatic",
@@ -147,10 +150,15 @@ const Vehicles = () => {
       setVehicles(mappedVehicles);
       
       if (mappedVehicles.length > 0) {
+        // Calculate the price range based on the total prices
         const prices = mappedVehicles.map(v => v.price as number);
         const minPrice = Math.floor(Math.min(...prices));
-        const maxPrice = Math.ceil(Math.max(...prices));
-        setPriceRange([minPrice, maxPrice]);
+        const maxPriceValue = Math.ceil(Math.max(...prices));
+        setMaxPrice(maxPriceValue);
+        // Only set the price range if it's the first time (or if the current range is the default)
+        if (priceRange[0] === 0 && priceRange[1] === 500) {
+          setPriceRange([minPrice, maxPriceValue]);
+        }
       } else {
         console.log("No vehicles found in the response");
         toast.info("No vehicles found", {
@@ -173,12 +181,13 @@ const Vehicles = () => {
       results = results.filter(vehicle => vehicle.type === vehicleType);
     }
     
+    // Filter based on price - ensure we're working with numeric prices
     results = results.filter(vehicle => {
-      const numericPrice = typeof vehicle.price === 'string' 
+      const price = typeof vehicle.price === 'string' 
         ? parseFloat(vehicle.price) 
         : vehicle.price;
         
-      return numericPrice >= priceRange[0] && numericPrice <= priceRange[1];
+      return price >= priceRange[0] && price <= priceRange[1];
     });
     
     if (searchTerm) {
@@ -306,14 +315,14 @@ const Vehicles = () => {
                   </div>
 
                   <div>
-                    <Label className="text-base">Price Range (per day)</Label>
+                    <Label className="text-base">Price Range (total)</Label>
                     <div className="flex justify-between mt-2">
                       <span>${priceRange[0]}</span>
                       <span>${priceRange[1]}</span>
                     </div>
                     <Slider
-                      defaultValue={[0, 500]}
-                      max={500}
+                      value={priceRange}
+                      max={maxPrice || 500}
                       step={10}
                       minStepsBetweenThumbs={1}
                       className="mt-2"
@@ -402,7 +411,12 @@ const Vehicles = () => {
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
                   {filteredVehicles.map((vehicle) => (
-                    <VehicleCard key={vehicle.id} vehicle={vehicle} />
+                    <VehicleCard 
+                      key={vehicle.id} 
+                      vehicle={vehicle} 
+                      totalRateAfterDiscount={typeof vehicle.price === 'number' ? vehicle.price : parseFloat(vehicle.price)}
+                      totalDiscountAmount={vehicle.discountAmount}
+                    />
                   ))}
                 </div>
               )}
