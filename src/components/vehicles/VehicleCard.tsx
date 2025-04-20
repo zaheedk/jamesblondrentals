@@ -60,11 +60,11 @@ const VehicleCard = ({
   
   return (
     <Card className="overflow-hidden shadow-md h-full flex flex-col">
-      <div className="h-48 relative">
+      <div className="relative aspect-[16/9] overflow-hidden">
         <img 
           src={imageUrl} 
           alt={`${vehicle.make} ${vehicle.model}`}
-          className="h-full w-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover"
           onError={handleImageError}
         />
       </div>

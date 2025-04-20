@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -108,11 +107,11 @@ const FeaturedVehicles = () => {
             {vehicles.map((vehicle) => (
               <CarouselItem key={vehicle.id} className="md:basis-1/2 lg:basis-1/3">
                 <Card className="mx-2">
-                  <div className="h-48 relative">
+                  <div className="relative aspect-[16/9] overflow-hidden">
                     <img 
                       src={vehicle.imageurl} 
                       alt={vehicle.vehiclecategoryname}
-                      className="h-full w-full object-cover"
+                      className="absolute inset-0 w-full h-full object-cover"
                       onError={(e) => {
                         (e.target as HTMLImageElement).src = '/placeholder.svg';
                       }}
@@ -135,4 +134,3 @@ const FeaturedVehicles = () => {
 };
 
 export default FeaturedVehicles;
-
