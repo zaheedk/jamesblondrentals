@@ -1,9 +1,11 @@
+
 import React from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Vehicle } from "@/lib/types";
 import { useSearchParams } from "react-router-dom";
 import BookingForm from "./BookingForm";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 interface VehicleCardProps {
   vehicle: Vehicle;
@@ -60,14 +62,14 @@ const VehicleCard = ({
   
   return (
     <Card className="overflow-hidden shadow-md h-full flex flex-col">
-      <div className="relative aspect-[16/9] overflow-hidden">
+      <AspectRatio ratio={4/3} className="overflow-hidden bg-muted">
         <img 
           src={imageUrl} 
           alt={`${vehicle.make} ${vehicle.model}`}
-          className="absolute inset-0 w-full h-full object-cover"
+          className="w-full h-full object-contain"
           onError={handleImageError}
         />
-      </div>
+      </AspectRatio>
       <CardHeader className="pb-2">
         <div className="flex justify-between items-start">
           <div>

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 interface VehicleCategory {
   id: number;
@@ -107,16 +109,16 @@ const FeaturedVehicles = () => {
             {vehicles.map((vehicle) => (
               <CarouselItem key={vehicle.id} className="md:basis-1/2 lg:basis-1/3">
                 <Card className="mx-2">
-                  <div className="relative aspect-[16/9] overflow-hidden">
+                  <AspectRatio ratio={4/3} className="overflow-hidden bg-muted">
                     <img 
                       src={vehicle.imageurl} 
                       alt={vehicle.vehiclecategoryname}
-                      className="absolute inset-0 w-full h-full object-cover"
+                      className="w-full h-full object-contain"
                       onError={(e) => {
                         (e.target as HTMLImageElement).src = '/placeholder.svg';
                       }}
                     />
-                  </div>
+                  </AspectRatio>
                   <CardContent className="p-4">
                     <h3 className="text-xl font-bold text-center">{vehicle.vehiclecategoryname}</h3>
                     <p className="text-gray-600 text-center mt-2">{vehicle.description}</p>
