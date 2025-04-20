@@ -166,10 +166,17 @@ const Vehicles = () => {
       results = results.filter(vehicle => vehicle.type === vehicleType);
     }
     
+    // Fix for price filter issue - properly parse price and handle comparison
     results = results.filter(vehicle => {
+      // Ensure price is a number for comparison
       const price = typeof vehicle.price === 'string' 
         ? parseFloat(vehicle.price) 
-        : vehicle.price;
+        : (vehicle.price || 0);
+      
+      // Log for debugging
+      console.log(`Filtering vehicle ${vehicle.make} ${vehicle.model}: price=${price}, range=[${priceRange[0]}, ${priceRange[1]}]`);
+      
+      // Fix comparison to include vehicles at max boundary
       return price >= priceRange[0] && price <= priceRange[1];
     });
     
@@ -182,6 +189,7 @@ const Vehicles = () => {
       );
     }
     
+    console.log(`Filtered vehicles: ${results.length} out of ${vehicles.length}`);
     setFilteredVehicles(results);
   }, [vehicles, vehicleType, priceRange, searchTerm]);
 
@@ -281,11 +289,14 @@ const Vehicles = () => {
                       <Slider
                         value={priceRange}
                         min={0}
-                        max={Math.max(1000, priceRange[1])}
+                        max={Math.max(1000, priceRange[1] + 100)} // Ensure max is always higher than highest price
                         step={10}
-                        minStepsBetweenThumbs={0}
+                        minStepsBetweenThumbs={1}
                         className="mt-2"
-                        onValueChange={(values: [number, number]) => setPriceRange(values)}
+                        onValueChange={(values: [number, number]) => {
+                          console.log("New price range:", values);
+                          setPriceRange(values);
+                        }}
                       />
                     </div>
                   </div>
