@@ -7,6 +7,18 @@ import { format, addDays } from "date-fns";
 import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 
+// Define an interface for the category data structure
+interface VehicleCategory {
+  id: string;
+  vehiclecategoryname: string;
+}
+
+// Define an interface for the category API response
+interface CategoryListResponse {
+  status: string;
+  results?: VehicleCategory[];
+}
+
 const FeaturedVehicles = () => {
   const [vehicles, setVehicles] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -18,11 +30,11 @@ const FeaturedVehicles = () => {
         setIsLoading(true);
         console.log('Fetching premium vehicles...');
         
-        // Get vehicle categories to filter Premium vehicles
-        const categoryData = await rcmApi.request('POST', 'categorylist');
+        // Get vehicle categories to filter Premium vehicles with proper type assertion
+        const categoryData = await rcmApi.request<CategoryListResponse>('POST', 'categorylist');
         
         // Filter premium categories
-        const premiumCategories = categoryData.results?.filter((category: any) => 
+        const premiumCategories = categoryData.results?.filter((category: VehicleCategory) => 
           category.vehiclecategoryname.toLowerCase().includes('premium')
         ) || [];
         
@@ -54,7 +66,7 @@ const FeaturedVehicles = () => {
           
           // Filter vehicles that belong to premium categories
           const premiumVehicles = vehiclesData.filter((vehicle: any) => 
-            premiumCategories.some((category: any) => 
+            premiumCategories.some((category: VehicleCategory) => 
               category.id === vehicle.vehiclecategoryid
             )
           );
@@ -133,4 +145,3 @@ const FeaturedVehicles = () => {
 };
 
 export default FeaturedVehicles;
-
