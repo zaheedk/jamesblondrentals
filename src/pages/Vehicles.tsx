@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -40,6 +39,7 @@ const Vehicles = () => {
 
   const [vehicleType, setVehicleType] = useState<VehicleType | "all">("all");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 500]);
+  const [maxPriceAvailable, setMaxPriceAvailable] = useState<number>(500);
   const [searchTerm, setSearchTerm] = useState("");
 
   const pickupLocation = searchParams.get("pickupLocation") || "";
@@ -140,10 +140,27 @@ const Vehicles = () => {
       setVehicles(mappedVehicles);
       
       if (mappedVehicles.length > 0) {
-        const prices = mappedVehicles.map(v => v.price as number);
+        const prices = mappedVehicles.map(v => {
+          const numPrice = typeof v.price === 'string' ? parseFloat(v.price) : (v.price || 0);
+          return numPrice;
+        });
+        
         const minPrice = Math.floor(Math.min(...prices));
         const maxPrice = Math.ceil(Math.max(...prices));
-        setPriceRange([minPrice, maxPrice]);
+        
+        console.log(`Price range calculated: min=${minPrice}, max=${maxPrice}`);
+        
+        setMaxPriceAvailable(maxPrice);
+        
+        if (priceRange[0] === 0 && priceRange[1] === 500) {
+          setPriceRange([minPrice, maxPrice]);
+        } else {
+          const adjustedMin = Math.max(minPrice, Math.min(priceRange[0], maxPrice));
+          const adjustedMax = Math.min(maxPrice, Math.max(priceRange[1], minPrice));
+          if (adjustedMin !== priceRange[0] || adjustedMax !== priceRange[1]) {
+            setPriceRange([adjustedMin, adjustedMax]);
+          }
+        }
       } else {
         console.log("No vehicles found in the response");
         toast.info("No vehicles found", {
@@ -166,17 +183,13 @@ const Vehicles = () => {
       results = results.filter(vehicle => vehicle.type === vehicleType);
     }
     
-    // Fix for price filter issue - properly parse price and handle comparison
     results = results.filter(vehicle => {
-      // Ensure price is a number for comparison
       const price = typeof vehicle.price === 'string' 
         ? parseFloat(vehicle.price) 
         : (vehicle.price || 0);
       
-      // Log for debugging
       console.log(`Filtering vehicle ${vehicle.make} ${vehicle.model}: price=${price}, range=[${priceRange[0]}, ${priceRange[1]}]`);
       
-      // Fix comparison to include vehicles at max boundary
       return price >= priceRange[0] && price <= priceRange[1];
     });
     
@@ -289,13 +302,17 @@ const Vehicles = () => {
                       <Slider
                         value={priceRange}
                         min={0}
-                        max={Math.max(1000, priceRange[1] + 100)} // Ensure max is always higher than highest price
+                        max={maxPriceAvailable}
                         step={10}
                         minStepsBetweenThumbs={1}
                         className="mt-2"
                         onValueChange={(values: [number, number]) => {
-                          console.log("New price range:", values);
-                          setPriceRange(values);
+                          const newValues: [number, number] = [
+                            values[0],
+                            Math.min(values[1], maxPriceAvailable)
+                          ];
+                          console.log("New price range:", newValues);
+                          setPriceRange(newValues);
                         }}
                       />
                     </div>
