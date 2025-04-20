@@ -2,11 +2,14 @@
 import { useState, useEffect } from 'react';
 import { useApiDiagnostics } from '@/hooks/use-api-diagnostics';
 import { Button } from '@/components/ui/button';
-import { Loader2, Check, AlertTriangle, RefreshCw, Server, Globe, WifiOff } from 'lucide-react';
+import { Loader2, Check, AlertTriangle, RefreshCw, Server, Globe, WifiOff, Settings } from 'lucide-react';
 import { toast } from 'sonner';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useRcmApi } from '@/hooks/use-rcm-api';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 export function ApiStatusIndicator() {
   const { connectionStatus, runDiagnostics, checkInternetConnection } = useApiDiagnostics();
@@ -16,6 +19,9 @@ export function ApiStatusIndicator() {
   const [isMockMode, setIsMockMode] = useState(false);
   const [hasInternetConnection, setHasInternetConnection] = useState<boolean | null>(null);
   const [requestDetails, setRequestDetails] = useState<{url?: string; error?: string}>({});
+  const [apiEndpoint, setApiEndpoint] = useState("/api/rcm/booking/v3.2");
+  const [isConfigOpen, setIsConfigOpen] = useState(false);
+  const [directApiToggle, setDirectApiToggle] = useState(false);
   
   useEffect(() => {
     // Run diagnostics on component mount
@@ -44,6 +50,12 @@ export function ApiStatusIndicator() {
           error: details.error
         });
       }
+    }
+
+    // Check if we're using direct API or proxy
+    if (rcmApi && rcmApi.config && rcmApi.config.apiUrl) {
+      setApiEndpoint(rcmApi.config.apiUrl);
+      setDirectApiToggle(rcmApi.config.apiUrl.includes('apis.rentalcarmanager.com'));
     }
   }, []);
   
@@ -98,6 +110,32 @@ export function ApiStatusIndicator() {
       setIsRunning(false);
     }
   };
+
+  const handleUpdateApiConfig = () => {
+    if (rcmApi && rcmApi.initialize) {
+      const newUrl = directApiToggle 
+        ? 'https://apis.rentalcarmanager.com/booking/v3.2'
+        : '/api/rcm/booking/v3.2';
+      
+      rcmApi.initialize({
+        apiUrl: newUrl,
+        apiKey: rcmApi.config.apiKey,
+        apiSecret: rcmApi.config.apiSecret
+      });
+      
+      toast.success('API configuration updated', {
+        description: `API endpoint set to: ${newUrl}`
+      });
+      
+      // Rerun diagnostics after config change
+      setTimeout(() => {
+        handleRunDiagnostics();
+      }, 500);
+      
+      setApiEndpoint(newUrl);
+      setIsConfigOpen(false);
+    }
+  };
   
   return (
     <Card>
@@ -107,11 +145,59 @@ export function ApiStatusIndicator() {
             <CardTitle className="text-lg">API Connection Status</CardTitle>
             <CardDescription>RCM Booking System</CardDescription>
           </div>
-          {isMockMode && (
-            <Badge variant="outline" className="bg-yellow-100 text-yellow-800">
-              Demo Mode
-            </Badge>
-          )}
+          <div className="flex items-center gap-2">
+            {isMockMode && (
+              <Badge variant="outline" className="bg-yellow-100 text-yellow-800">
+                Demo Mode
+              </Badge>
+            )}
+            <Dialog open={isConfigOpen} onOpenChange={setIsConfigOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline" size="icon">
+                  <Settings className="h-4 w-4" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>API Configuration</DialogTitle>
+                  <DialogDescription>
+                    Configure API connection settings
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 pt-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="apiEndpoint">API Endpoint</Label>
+                    <Input
+                      id="apiEndpoint"
+                      value={apiEndpoint}
+                      onChange={(e) => setApiEndpoint(e.target.value)}
+                      disabled
+                    />
+                  </div>
+                  
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="direct-api"
+                      checked={directApiToggle}
+                      onChange={() => setDirectApiToggle(!directApiToggle)}
+                    />
+                    <Label htmlFor="direct-api" className="text-sm cursor-pointer">
+                      Use direct API endpoint (bypasses proxy)
+                    </Label>
+                  </div>
+                  
+                  <div className="text-xs text-gray-500 mt-2">
+                    <p>Note: In development, you may need to use the direct API endpoint if the proxy is not working correctly.</p>
+                  </div>
+                  
+                  <Button onClick={handleUpdateApiConfig} className="w-full">
+                    Update Configuration
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
@@ -159,6 +245,7 @@ export function ApiStatusIndicator() {
         
         <div className="text-sm text-gray-600">
           <p>Last check: {lastRun ? lastRun.toLocaleTimeString() : 'Not checked yet'}</p>
+          <p className="text-xs text-muted-foreground mt-1">API Mode: {directApiToggle ? 'Direct API' : 'Proxy'}</p>
           
           {isMockMode && (
             <div className="mt-2 p-2 bg-yellow-50 text-yellow-800 text-xs rounded">

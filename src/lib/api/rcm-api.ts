@@ -1,3 +1,4 @@
+
 import { generateSignature } from './rcm-signature';
 import type { 
   RCMApiConfig,
@@ -26,6 +27,8 @@ const DEFAULT_CONFIG: RCMApiConfig = {
 class RCMApiClient {
   config: RCMApiConfig;
   private initialized: boolean = false;
+  private useMockData: boolean = false;
+  private apiConnectionFailed: boolean = false;
   private lastRequestDetails: {
     url?: string;
     method?: string;
@@ -47,12 +50,14 @@ class RCMApiClient {
     if (config.apiKey) this.config.apiKey = config.apiKey;
     if (config.apiSecret) this.config.apiSecret = config.apiSecret;
     if (config.apiUrl) this.config.apiUrl = config.apiUrl.replace(/\/$/, '');
+    if (config.useMockData !== undefined) this.useMockData = config.useMockData;
     
     this.initialized = true;
     
     console.log('RCM API initialized with config:', {
       apiUrl: this.config.apiUrl,
-      apiKey: this.config.apiKey ? '******' : undefined
+      apiKey: this.config.apiKey ? '******' : undefined,
+      useMockData: this.useMockData
     });
   }
 
@@ -61,6 +66,10 @@ class RCMApiClient {
       console.log('RCM API not explicitly initialized, using default config');
       this.initialized = true;
     }
+  }
+
+  shouldUseMockData(): boolean {
+    return this.useMockData || this.apiConnectionFailed;
   }
 
   private createHeaders(method: string, body?: any): Headers {
@@ -101,15 +110,13 @@ class RCMApiClient {
     const baseUrl = this.config.apiUrl;
     const apiKey = this.config.apiKey;
     
-    // Direct API URL format now matches Postman exactly
+    // Direct API URL format
     if (baseUrl.includes('apis.rentalcarmanager.com')) {
-      // Note: The direct format does NOT append the API key to the path
-      console.log('Using direct API URL format:', `${baseUrl}?apikey=${apiKey}`);
+      // Direct API URL format
       return `${baseUrl}?apikey=${apiKey}`;
     }
     
     // Proxy URL format (append API key to path)
-    console.log('Using proxy API URL format:', `${baseUrl}/${apiKey}?apikey=${apiKey}`);
     return `${baseUrl}/${apiKey}?apikey=${apiKey}`;
   }
 
@@ -119,6 +126,41 @@ class RCMApiClient {
 
   async request<T>(method: string, requestMethod: string, body?: any): Promise<T> {
     this.ensureInitialized();
+
+    // If mock mode is enabled, don't make actual API calls
+    if (this.useMockData) {
+      console.log(`[MOCK MODE] Skipping actual API request for ${method} - ${requestMethod}`);
+      this.lastRequestDetails = {
+        url: "mock://api.example.com",
+        method,
+        timestamp: new Date().toISOString(),
+        error: "Using mock data mode"
+      };
+      
+      // Return mock response based on the request method
+      if (requestMethod === "step1") {
+        return {
+          status: "OK",
+          results: {
+            locations: [
+              { id: "1", location: "Mock Location 1", address: "123 Mock St", city: "Mock City" },
+              { id: "2", location: "Mock Location 2", address: "456 Test Ave", city: "Test Town" }
+            ],
+            driverages: [
+              { id: 1, driverage: "18-24", isdefault: false },
+              { id: 2, driverage: "25+", isdefault: true }
+            ],
+            categorytypes: [
+              { id: 1, vehiclecategorytype: "Economy" },
+              { id: 2, vehiclecategorytype: "Luxury" }
+            ],
+            officetimes: []
+          }
+        } as unknown as T;
+      }
+      
+      return {} as T;
+    }
 
     const requestStartTime = new Date();
     const requestDetails = {
@@ -208,6 +250,9 @@ class RCMApiClient {
           extractedMessage: errorMessage
         };
         
+        // Flag API connection as failed
+        this.apiConnectionFailed = true;
+        
         throw new Error(`Invalid API response format - received HTML instead of JSON. Status: ${status} ${statusText}`);
       }
 
@@ -225,6 +270,9 @@ class RCMApiClient {
           throw new Error(jsonResponse.error || 'Unknown API error');
         }
         
+        // API connection succeeded
+        this.apiConnectionFailed = false;
+        
         return jsonResponse;
       } catch (parseError) {
         console.error('Failed to parse response as JSON:', parseError);
@@ -237,6 +285,9 @@ class RCMApiClient {
           raw: textResponse.substring(0, 1000)
         };
         
+        // Flag API connection as failed
+        this.apiConnectionFailed = true;
+        
         throw new Error(`Failed to parse API response: ${parseError instanceof Error ? parseError.message : String(parseError)}`);
       }
     } catch (error) {
@@ -245,6 +296,9 @@ class RCMApiClient {
       if (!this.lastRequestDetails.error) {
         this.lastRequestDetails.error = error instanceof Error ? error.message : String(error);
       }
+      
+      // Flag API connection as failed
+      this.apiConnectionFailed = true;
       
       throw error;
     }

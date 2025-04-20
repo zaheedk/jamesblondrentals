@@ -41,17 +41,28 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => ({
             }
           });
           
-          proxy.on('proxyReq', (proxyReq, req, _res) => {
-            const url = new URL(proxyReq.path, 'https://apis.rentalcarmanager.com');
+          proxy.on('proxyReq', (proxyReq, req: IncomingMessage, _res) => {
+            const url = new URL(proxyReq.path || '/', 'https://apis.rentalcarmanager.com');
             console.log(`Proxying ${req.method} request to: ${url.toString()}`);
             
             console.log('Request headers:', proxyReq.getHeaders());
             
-            if ('body' in req && req.body) {
-              const bodyData = JSON.stringify(req.body);
-              proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
-              proxyReq.write(bodyData);
-              console.log('Request body:', bodyData.substring(0, 200) + (bodyData.length > 200 ? '...' : ''));
+            // Ensure Content-Type and Accept headers are properly set
+            proxyReq.setHeader('Content-Type', 'application/json');
+            proxyReq.setHeader('Accept', 'application/json');
+            
+            // Fix for body handling in proxied POST requests
+            if (req.method === 'POST' && 'body' in req && (req as any).body) {
+              try {
+                const bodyData = JSON.stringify((req as any).body);
+                // Set content length header
+                proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
+                // Write the body to the request
+                proxyReq.write(bodyData);
+                console.log('Request body:', bodyData.substring(0, 200) + (bodyData.length > 200 ? '...' : ''));
+              } catch (error) {
+                console.error('Error handling request body:', error);
+              }
             }
           });
           
