@@ -109,7 +109,7 @@ const FeaturedVehicles = () => {
             {vehicles.map((vehicle) => (
               <CarouselItem key={vehicle.id} className="md:basis-1/2 lg:basis-1/3">
                 <Card className="mx-2">
-                  <AspectRatio ratio={4/3} className="overflow-hidden bg-muted">
+                  <AspectRatio ratio={4/3} className="overflow-hidden bg-white">
                     <img 
                       src={vehicle.imageurl} 
                       alt={vehicle.vehiclecategoryname}

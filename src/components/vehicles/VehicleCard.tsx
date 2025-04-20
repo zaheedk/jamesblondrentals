@@ -62,7 +62,7 @@ const VehicleCard = ({
   
   return (
     <Card className="overflow-hidden shadow-md h-full flex flex-col">
-      <AspectRatio ratio={4/3} className="overflow-hidden bg-muted">
+      <AspectRatio ratio={4/3} className="overflow-hidden bg-white">
         <img 
           src={imageUrl} 
           alt={`${vehicle.make} ${vehicle.model}`}
