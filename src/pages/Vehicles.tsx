@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -76,11 +75,9 @@ const Vehicles = () => {
     dropoffdate: dropoffDate,
     dropofftime: dropoffTime,
     ageid: getValidAgeId(),
-    // Always include vehiclecategorytypeid, even if it's "0"
     vehiclecategorytypeid: carCategory
   } : null;
 
-  // Enhanced logging
   console.log("Car Category Selected (raw):", carCategory);
   console.log("Car Category Type:", typeof carCategory);
   console.log("Step2Params (full):", JSON.stringify(step2Params, null, 2));
@@ -222,6 +219,15 @@ const Vehicles = () => {
 
   const hasApiError = driverAgesError || step2Error;
 
+  useEffect(() => {
+    if (step2Data?.status === "OK" && step2Data.results?.availablecars) {
+      const categories = Array.from(new Set(
+        step2Data.results.availablecars.map(car => car.vehiclecategory)
+      )).sort();
+      setUniqueVehicleCategories(categories);
+    }
+  }, [step2Data]);
+
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
@@ -281,13 +287,11 @@ const Vehicles = () => {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">All Types</SelectItem>
-                        <SelectItem value="economy">Economy</SelectItem>
-                        <SelectItem value="compact">Compact</SelectItem>
-                        <SelectItem value="midsize">Midsize</SelectItem>
-                        <SelectItem value="suv">SUV</SelectItem>
-                        <SelectItem value="luxury">Luxury</SelectItem>
-                        <SelectItem value="van">Van</SelectItem>
-                        <SelectItem value="convertible">Convertible</SelectItem>
+                        {uniqueVehicleCategories.map((category) => (
+                          <SelectItem key={category} value={category}>
+                            {category}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
