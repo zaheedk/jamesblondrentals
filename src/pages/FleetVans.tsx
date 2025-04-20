@@ -1,4 +1,3 @@
-
 import { Truck } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -31,20 +30,6 @@ const vans = [
       "9.3m³ cargo space (L 2.93m x W 1.70m x H 1.85m)",
       "Reversing camera & sensors",
       "Cruise control",
-    ],
-  },
-  {
-    id: "hiace-minibus",
-    title: "Toyota Hiace ZL 12-Seater Minibus",
-    img: "/images/fleet/vans/toyota-hiace-12-seater-minibus.jpg",
-    description:
-      "Comfortable and safe transport for teams, groups or larger families. 12 seats with lap-sash seatbelts, automatic, air con and reversing camera.",
-    specs: [
-      "Automatic transmission, petrol",
-      "12 seats (lap-sash seatbelts)",
-      "Reversing camera",
-      "Air conditioning",
-      "Luggage storage",
     ],
   },
   {
