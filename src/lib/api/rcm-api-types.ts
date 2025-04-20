@@ -42,6 +42,7 @@ export interface RCMDriverAge {
 export interface RCMVehicleCategory {
   id: string;
   vehiclecategorytype: string;
+  displayorder: number;
 }
 
 export interface RCMOfficeTime {
