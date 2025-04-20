@@ -3,7 +3,6 @@ import { useSearchParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import { Checkbox } from "@/components/ui/checkbox";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import VehicleCard from "@/components/vehicles/VehicleCard";
@@ -38,10 +37,8 @@ const Vehicles = () => {
   const [uniqueVehicleCategoryTypes, setUniqueVehicleCategoryTypes] = useState<Array<{id: string, name: string}>>([]);
 
   const [vehicleType, setVehicleType] = useState<VehicleType | "all">("all");
-  const [minPrice, setMinPrice] = useState<number>(0);
-  const [maxPrice, setMaxPrice] = useState<number>(500);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 500]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [transmission, setTransmission] = useState<"all" | "automatic" | "manual">("all");
 
   const pickupLocation = searchParams.get("pickupLocation") || "";
   const dropoffLocation = searchParams.get("dropoffLocation") || pickupLocation;
@@ -143,13 +140,10 @@ const Vehicles = () => {
       setVehicles(mappedVehicles);
       
       if (mappedVehicles.length > 0) {
-        // Calculate the price range based on the total prices
         const prices = mappedVehicles.map(v => v.price as number);
         const minPrice = Math.floor(Math.min(...prices));
-        const maxPriceValue = Math.ceil(Math.max(...prices));
-        setMaxPrice(maxPriceValue);
-        // Only set the price range if it's the first time (or if the current range is the default)
-        
+        const maxPrice = Math.ceil(Math.max(...prices));
+        setPriceRange([minPrice, maxPrice]);
       } else {
         console.log("No vehicles found in the response");
         toast.info("No vehicles found", {
@@ -172,12 +166,11 @@ const Vehicles = () => {
       results = results.filter(vehicle => vehicle.type === vehicleType);
     }
     
-    // Filter based on price range
     results = results.filter(vehicle => {
       const price = typeof vehicle.price === 'string' 
         ? parseFloat(vehicle.price) 
         : vehicle.price;
-      return price >= minPrice && price <= maxPrice;
+      return price >= priceRange[0] && price <= priceRange[1];
     });
     
     if (searchTerm) {
@@ -189,21 +182,8 @@ const Vehicles = () => {
       );
     }
     
-    if (transmission !== "all") {
-      results = results.filter(vehicle => vehicle.transmission === transmission);
-    }
-    
     setFilteredVehicles(results);
-  }, [
-    vehicles,
-    vehicleType,
-    minPrice,
-    maxPrice,
-    searchTerm,
-    transmission,
-  ]);
-
-  const hasApiError = driverAgesError || step2Error;
+  }, [vehicles, vehicleType, priceRange, searchTerm]);
 
   useEffect(() => {
     if (categoryTypes?.length) {
@@ -220,6 +200,8 @@ const Vehicles = () => {
       setUniqueVehicleCategoryTypes(formattedTypes);
     }
   }, [categoryTypes]);
+
+  const hasApiError = driverAgesError || step2Error;
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -291,46 +273,20 @@ const Vehicles = () => {
 
                   <div>
                     <Label className="text-base">Price Range (total)</Label>
-                    <div className="mt-4 space-y-4">
-                      <div>
-                        <Label className="text-sm">Minimum Price: ${minPrice}</Label>
-                        <Slider
-                          value={[minPrice]}
-                          max={maxPrice}
-                          step={10}
-                          className="mt-2"
-                          onValueChange={(values) => setMinPrice(values[0])}
-                        />
+                    <div className="mt-4">
+                      <div className="flex justify-between mb-2">
+                        <span className="text-sm">${priceRange[0]}</span>
+                        <span className="text-sm">${priceRange[1]}</span>
                       </div>
-                      <div>
-                        <Label className="text-sm">Maximum Price: ${maxPrice}</Label>
-                        <Slider
-                          value={[maxPrice]}
-                          min={minPrice}
-                          max={Math.max(minPrice + 100, 1000)}
-                          step={10}
-                          className="mt-2"
-                          onValueChange={(values) => setMaxPrice(values[0])}
-                        />
-                      </div>
+                      <Slider
+                        value={priceRange}
+                        min={0}
+                        max={Math.max(1000, priceRange[1])}
+                        step={10}
+                        className="mt-2"
+                        onValueChange={(values: [number, number]) => setPriceRange(values)}
+                      />
                     </div>
-                  </div>
-
-                  <div>
-                    <Label className="text-base">Transmission</Label>
-                    <Select
-                      value={transmission}
-                      onValueChange={(value) => setTransmission(value as "all" | "automatic" | "manual")}
-                    >
-                      <SelectTrigger className="mt-2">
-                        <SelectValue placeholder="Select type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Types</SelectItem>
-                        <SelectItem value="automatic">Automatic</SelectItem>
-                        <SelectItem value="manual">Manual</SelectItem>
-                      </SelectContent>
-                    </Select>
                   </div>
                 </div>
               </Card>
