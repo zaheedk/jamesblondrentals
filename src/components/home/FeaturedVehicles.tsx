@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -7,13 +6,11 @@ import { format, addDays } from "date-fns";
 import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 
-// Define an interface for the category data structure
 interface VehicleCategory {
   id: string;
   vehiclecategoryname: string;
 }
 
-// Define an interface for the category API response
 interface CategoryListResponse {
   status: string;
   results?: VehicleCategory[];
@@ -30,10 +27,10 @@ const FeaturedVehicles = () => {
         setIsLoading(true);
         console.log('Fetching premium vehicles...');
         
-        // Get vehicle categories to filter Premium vehicles with proper type assertion
-        const categoryData = await rcmApi.request<CategoryListResponse>('POST', 'categorylist');
+        const categoryData = await rcmApi.request<CategoryListResponse>('POST', 'categorylist', {
+          method: 'categorylist'
+        });
         
-        // Filter premium categories
         const premiumCategories = categoryData.results?.filter((category: VehicleCategory) => 
           category.vehiclecategoryname.toLowerCase().includes('premium')
         ) || [];
@@ -48,11 +45,9 @@ const FeaturedVehicles = () => {
           const formattedPickupDate = format(pickupDate, 'dd/MM/yyyy');
           const formattedDropoffDate = format(dropoffDate, 'dd/MM/yyyy');
           
-          // Use noon (12:00) for both pickup and dropoff times
           const pickupTime = "12:00";
           const dropoffTime = "12:00";
           
-          // Kelston location ID (you may need to adjust this based on your data)
           const kelstonLocationId = "1";
           
           const vehiclesData = await rcmApi.getAvailableVehicles({
@@ -64,7 +59,6 @@ const FeaturedVehicles = () => {
             dropoffTime,
           });
           
-          // Filter vehicles that belong to premium categories
           const premiumVehicles = vehiclesData.filter((vehicle: any) => 
             premiumCategories.some((category: VehicleCategory) => 
               category.id === vehicle.vehiclecategoryid
