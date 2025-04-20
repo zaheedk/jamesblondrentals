@@ -8,7 +8,7 @@ const Footer = () => {
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <h3 className="text-lg font-bold mb-4">Roadster Rentals</h3>
+            <h3 className="text-lg font-bold mb-4">James Blond Rentals</h3>
             <p className="text-gray-300 mb-4">
               Premium car rental service providing quality vehicles for your travel needs.
             </p>
@@ -32,13 +32,13 @@ const Footer = () => {
                 <Link to="/" className="text-gray-300 hover:text-white transition-colors">Home</Link>
               </li>
               <li>
-                <Link to="/vehicles" className="text-gray-300 hover:text-white transition-colors">Vehicles</Link>
+                <Link to="/fleet" className="text-gray-300 hover:text-white transition-colors">Fleet</Link>
               </li>
               <li>
-                <Link to="/locations" className="text-gray-300 hover:text-white transition-colors">Locations</Link>
+                <Link to="/airport" className="text-gray-300 hover:text-white transition-colors">Airport</Link>
               </li>
               <li>
-                <Link to="/about" className="text-gray-300 hover:text-white transition-colors">About Us</Link>
+                <Link to="/faq" className="text-gray-300 hover:text-white transition-colors">FAQ</Link>
               </li>
             </ul>
           </div>
@@ -67,13 +67,13 @@ const Footer = () => {
               <p>123 Rental Street</p>
               <p>Carville, CV 12345</p>
               <p className="mt-2">Phone: (123) 456-7890</p>
-              <p>Email: info@roadsterrentals.com</p>
+              <p>Email: info@jamesblondrentals.com</p>
             </address>
           </div>
         </div>
 
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-          <p>&copy; {new Date().getFullYear()} Roadster Rentals. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} James Blond Rentals. All rights reserved.</p>
         </div>
       </div>
     </footer>

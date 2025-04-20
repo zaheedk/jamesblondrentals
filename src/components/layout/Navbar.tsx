@@ -17,7 +17,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <span className="text-xl font-bold text-primary">Roadster</span>
+            <span className="text-xl font-bold text-primary">James Blond</span>
             <span className="ml-1 text-xl font-light">Rentals</span>
           </Link>
 
@@ -26,8 +26,14 @@ const Navbar = () => {
             <Link to="/" className="text-gray-600 hover:text-primary transition-colors">
               Home
             </Link>
-            <Link to="/vehicles" className="text-gray-600 hover:text-primary transition-colors">
-              Vehicles
+            <Link to="/fleet" className="text-gray-600 hover:text-primary transition-colors">
+              Fleet
+            </Link>
+            <Link to="/airport" className="text-gray-600 hover:text-primary transition-colors">
+              Airport
+            </Link>
+            <Link to="/faq" className="text-gray-600 hover:text-primary transition-colors">
+              FAQ
             </Link>
             <Link to="/locations" className="text-gray-600 hover:text-primary transition-colors">
               Locations
@@ -40,13 +46,7 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {/* Login / Register */}
-          <div className="hidden md:flex items-center space-x-4">
-            <Button variant="outline" size="sm">
-              Sign In
-            </Button>
-            <Button size="sm">Register</Button>
-          </div>
+          {/* No sign in/register buttons */}
 
           {/* Mobile Menu Button */}
           <div className="md:hidden">
@@ -60,49 +60,28 @@ const Navbar = () => {
         {isMobileMenuOpen && (
           <div className="md:hidden mt-4 pb-4 animate-slide-in">
             <div className="flex flex-col space-y-3">
-              <Link 
-                to="/" 
-                className="text-gray-600 hover:text-primary transition-colors py-2"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
+              <Link to="/" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>
                 Home
               </Link>
-              <Link 
-                to="/vehicles" 
-                className="text-gray-600 hover:text-primary transition-colors py-2"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Vehicles
+              <Link to="/fleet" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>
+                Fleet
               </Link>
-              <Link 
-                to="/locations" 
-                className="text-gray-600 hover:text-primary transition-colors py-2"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
+              <Link to="/airport" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>
+                Airport
+              </Link>
+              <Link to="/faq" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>
+                FAQ
+              </Link>
+              <Link to="/locations" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>
                 Locations
               </Link>
-              <Link 
-                to="/about" 
-                className="text-gray-600 hover:text-primary transition-colors py-2"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
+              <Link to="/about" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>
                 About
               </Link>
-              <Link 
-                to="/contact" 
-                className="text-gray-600 hover:text-primary transition-colors py-2"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
+              <Link to="/contact" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>
                 Contact
               </Link>
-              <div className="flex space-x-3 pt-3">
-                <Button variant="outline" size="sm" className="flex-1">
-                  Sign In
-                </Button>
-                <Button size="sm" className="flex-1">
-                  Register
-                </Button>
-              </div>
+              {/* No sign in/register buttons */}
             </div>
           </div>
         )}
