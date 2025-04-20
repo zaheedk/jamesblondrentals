@@ -5,7 +5,7 @@ import path from "path";
 import { componentTagger } from "lovable-tagger";
 import type { IncomingMessage } from 'http';
 import { ServerResponse } from 'http';
-import type { ConfigEnv, UserConfig } from 'vite';
+import type { ConfigEnv, UserConfig, ProxyOptions } from 'vite';
 
 export default defineConfig(({ mode }: ConfigEnv): UserConfig => ({
   server: {
