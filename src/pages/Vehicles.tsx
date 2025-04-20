@@ -33,8 +33,9 @@ const Vehicles = () => {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { useDriverAges, useStep2Vehicles } = useRcmApi();
-  const [uniqueVehicleCategoryTypes, setUniqueVehicleCategoryTypes] = useState<string[]>([]);
+  const { useDriverAges, useStep2Vehicles, useVehicleCategories } = useRcmApi();
+  const { data: categoryTypes } = useVehicleCategories();
+  const [uniqueVehicleCategoryTypes, setUniqueVehicleCategoryTypes] = useState<Array<{id: string, name: string}>>([]);
   
   const [vehicleType, setVehicleType] = useState<VehicleType | "all">("all");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 500]);
@@ -221,13 +222,14 @@ const Vehicles = () => {
   const hasApiError = driverAgesError || step2Error;
 
   useEffect(() => {
-    if (step2Data?.status === "OK" && step2Data.results?.availablecars) {
-      const categoryTypes = Array.from(new Set(
-        step2Data.results.availablecars.map(car => String(car.vehiclecategorytypeid))
-      )).sort();
-      setUniqueVehicleCategoryTypes(categoryTypes);
+    if (categoryTypes?.length) {
+      const formattedTypes = categoryTypes.map(type => ({
+        id: String(type.id),
+        name: type.vehiclecategorytype
+      })).sort((a, b) => a.name.localeCompare(b.name));
+      setUniqueVehicleCategoryTypes(formattedTypes);
     }
-  }, [step2Data]);
+  }, [categoryTypes]);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -289,8 +291,8 @@ const Vehicles = () => {
                       <SelectContent>
                         <SelectItem value="all">All Types</SelectItem>
                         {uniqueVehicleCategoryTypes.map((categoryType) => (
-                          <SelectItem key={categoryType} value={categoryType}>
-                            {categoryType}
+                          <SelectItem key={categoryType.id} value={categoryType.id}>
+                            {categoryType.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
