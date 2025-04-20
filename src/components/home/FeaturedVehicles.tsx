@@ -52,8 +52,8 @@ const FeaturedVehicles = () => {
         if (response.status === "OK") {
           const premiumVehicles = response.results.filter((vehicle) => 
             vehicle.categorytype.toLowerCase().includes('premium') &&
-            !vehicle.vehiclecategoryname.includes('Premium Midsize') &&
-            !vehicle.vehiclecategoryname.includes('Premium Wagon')
+            !vehicle.description.includes('Premium Midsize') &&
+            !vehicle.description.includes('Premium Wagon')
           );
           
           console.log('Filtered premium vehicles:', premiumVehicles);
