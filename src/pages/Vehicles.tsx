@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -34,6 +35,7 @@ const Vehicles = () => {
   const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { useDriverAges, useStep2Vehicles } = useRcmApi();
+  const [uniqueVehicleCategories, setUniqueVehicleCategories] = useState<string[]>([]);
   
   const [vehicleType, setVehicleType] = useState<VehicleType | "all">("all");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 500]);
