@@ -166,13 +166,21 @@ const SearchForm = () => {
         console.log(`Current pickup time ${pickupTime} not available, updating to ${options[0]}`);
         setPickupTime(options[0]);
       } else if (options.length === 0) {
-        console.log(`No pickup times available for location ${pickupLocation} on ${pickupDate.toISOString()}, clearing pickup time`);
+        console.log(`No pickup times available for location ${pickupLocation} on ${pickupDate.toISOString()}, trying next day`);
+        const nextDay = addDays(pickupDate, 1);
+        console.log(`Setting pickup date to next day: ${nextDay.toISOString()}`);
+        setPickupDate(nextDay);
+        
+        // Also update dropoff date to maintain at least one day difference
+        if (dropoffDate && !isBefore(dropoffDate, nextDay)) {
+          const newDropoffDate = addDays(nextDay, 1);
+          console.log(`Updating dropoff date to: ${newDropoffDate.toISOString()}`);
+          setDropoffDate(newDropoffDate);
+        }
         setPickupTime("");
       }
-    } else {
-      console.log(`Cannot fetch pickup times - location: ${pickupLocation}, date: ${pickupDate ? pickupDate.toISOString() : 'none'}`);
     }
-  }, [pickupLocation, pickupDate, officeHours, locationDetails, pickupTime]);
+  }, [pickupLocation, pickupDate, officeHours, locationDetails, pickupTime, dropoffDate]);
 
   useEffect(() => {
     const selectedLocation = sameLocation ? pickupLocation : dropoffLocation;

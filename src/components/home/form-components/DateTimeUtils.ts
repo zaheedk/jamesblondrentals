@@ -189,9 +189,8 @@ export const generateTimeOptions = (openTime: string, closeTime: string, date: D
   const options: string[] = [];
   const now = new Date();
   const isToday = isSameDay(date, now);
-  const isTomorrow = isSameDay(date, addDays(now, 1));
   
-  console.log(`Generating time options between ${openTime}-${closeTime} for date: ${date.toISOString()}, today? ${isToday}, tomorrow? ${isTomorrow}`);
+  console.log(`Generating time options between ${openTime}-${closeTime} for date: ${date.toISOString()}, today? ${isToday}`);
   
   // Calculate the earliest allowed date considering notice period
   let earliestAllowedDate: Date | null = null;
@@ -199,22 +198,6 @@ export const generateTimeOptions = (openTime: string, closeTime: string, date: D
     // Use startOfDay to ensure we're comparing full days
     earliestAllowedDate = addDays(startOfDay(now), requiredNoticeDays);
     console.log(`Required notice: ${requiredNoticeDays} days, earliest allowed time: ${earliestAllowedDate.toISOString()}`);
-  }
-  
-  // Check if the selected date meets notice requirements using startOfDay to compare days only
-  const selectedDateStartOfDay = startOfDay(new Date(date));
-  let earliestAllowedStartOfDay = null;
-  
-  if (earliestAllowedDate) {
-    earliestAllowedStartOfDay = startOfDay(new Date(earliestAllowedDate));
-    
-    console.log(`Comparing: selected date ${selectedDateStartOfDay.toISOString()} with earliest allowed date ${earliestAllowedStartOfDay.toISOString()}`);
-    
-    // Compare days only (not exact timestamps)
-    if (selectedDateStartOfDay.getTime() < earliestAllowedStartOfDay.getTime()) {
-      console.log(`Selected date ${selectedDateStartOfDay.toISOString()} is before earliest allowed date ${earliestAllowedStartOfDay.toISOString()}, no times available`);
-      return [];
-    }
   }
   
   // Parse times (expecting format like "09:00" or "17:30")
@@ -239,6 +222,12 @@ export const generateTimeOptions = (openTime: string, closeTime: string, date: D
     // Round up to next 30-min slot
     const roundedCurrentMinutes = Math.ceil((currentMinutes + 1) / 30) * 30;
     startInMinutes = Math.max(startInMinutes, roundedCurrentMinutes);
+    
+    // If current time is past closing time, return empty array to trigger date increment
+    if (roundedCurrentMinutes >= closingInMinutes) {
+      console.log(`Current time (${roundedCurrentMinutes} minutes) is past closing time (${closingInMinutes} minutes), returning empty array`);
+      return [];
+    }
   }
   
   // For same day as the notice period, we might need to limit available times
@@ -259,7 +248,7 @@ export const generateTimeOptions = (openTime: string, closeTime: string, date: D
     options.push(`${formattedHour}:${formattedMinute}`);
   }
   
-  console.log(`Generated ${options.length} time options for regular hours location`);
+  console.log(`Generated ${options.length} time options`);
   return options;
 };
 
