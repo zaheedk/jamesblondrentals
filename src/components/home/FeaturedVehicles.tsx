@@ -50,12 +50,12 @@ const FeaturedVehicles = () => {
         });
         
         if (response.status === "OK") {
-          const luxuryVehicles = response.results.filter((vehicle) => 
-            vehicle.categorytype.toLowerCase() === 'luxury'
+          const premiumVehicles = response.results.filter((vehicle) => 
+            vehicle.categorytype.toLowerCase().includes('premium')
           );
           
-          console.log('Luxury vehicles:', luxuryVehicles);
-          setVehicles(luxuryVehicles);
+          console.log('Premium vehicles:', premiumVehicles);
+          setVehicles(premiumVehicles);
         }
       } catch (error) {
         console.error("Error fetching vehicles:", error);
@@ -75,8 +75,8 @@ const FeaturedVehicles = () => {
     <div className="container mx-auto px-4 py-16">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
         <div>
-          <h2 className="text-3xl font-bold mb-2">Luxury Vehicles</h2>
-          <p className="text-gray-600">Explore our exclusive luxury collection</p>
+          <h2 className="text-3xl font-bold mb-2">Premium Vehicles</h2>
+          <p className="text-gray-600">Explore our exclusive premium collection</p>
         </div>
         <Link to="/vehicles">
           <Button variant="outline" className="mt-4 sm:mt-0">
@@ -93,7 +93,7 @@ const FeaturedVehicles = () => {
         </div>
       ) : vehicles.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-gray-600">No luxury vehicles available at this time.</p>
+          <p className="text-gray-600">No premium vehicles available at this time.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
