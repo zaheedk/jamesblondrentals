@@ -50,8 +50,6 @@ const Vehicles = () => {
   const carCategory = searchParams.get("carCategory") || "0";
   const promoCode = searchParams.get("promoCode") || "";
 
-  const { data: driverAges, isLoading: isLoadingAges, error: driverAgesError } = useDriverAges();
-  
   const getValidAgeId = () => {
     if (age && driverAges?.some(driverAge => String(driverAge.id) === age)) {
       return age;
@@ -286,7 +284,6 @@ const Vehicles = () => {
                         minStepsBetweenThumbs={0}
                         className="mt-2"
                         onValueChange={(values: [number, number]) => setPriceRange(values)}
-                        thumbClassName="block h-5 w-5 rounded-full border-2 border-primary bg-background ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       />
                     </div>
                   </div>
