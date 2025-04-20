@@ -2,15 +2,13 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import VehicleCard from "../vehicles/VehicleCard";
-import { Vehicle, VehicleType } from "@/lib/types";
 import { useRcmApi } from "@/hooks/use-rcm-api";
 import { format, addDays } from "date-fns";
 import { toast } from "sonner";
+import { Card, CardContent } from "@/components/ui/card";
 
 const FeaturedVehicles = () => {
-  const [activeCategory, setActiveCategory] = useState<VehicleType | "all">("all");
-  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [vehicles, setVehicles] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { rcmApi } = useRcmApi();
   
@@ -18,22 +16,23 @@ const FeaturedVehicles = () => {
     const fetchVehicles = async () => {
       try {
         setIsLoading(true);
-        console.log('Fetching featured vehicles...');
+        console.log('Fetching premium vehicles...');
         
-        // Get default location from Step1 data
-        const step1Data = await rcmApi.getStep1();
+        // Get vehicle categories to filter Premium vehicles
+        const categoryData = await rcmApi.request('POST', 'categorylist');
         
-        if (step1Data.status === "OK" && step1Data.results?.locations?.length) {
-          const defaultLocation = step1Data.results.locations[0];
-          console.log('Using default location:', defaultLocation);
-          
-          // Set pickup date to tomorrow to ensure it's in the future
+        // Filter premium categories
+        const premiumCategories = categoryData.results?.filter((category: any) => 
+          category.vehiclecategoryname.toLowerCase().includes('premium')
+        ) || [];
+        
+        console.log('Premium categories:', premiumCategories);
+        
+        if (premiumCategories.length > 0) {
           const today = new Date();
           const pickupDate = addDays(today, 1);
-          // Set dropoff date to 3 days after pickup
           const dropoffDate = addDays(pickupDate, 3);
           
-          // Format dates as dd/MM/yyyy for the API
           const formattedPickupDate = format(pickupDate, 'dd/MM/yyyy');
           const formattedDropoffDate = format(dropoffDate, 'dd/MM/yyyy');
           
@@ -41,58 +40,34 @@ const FeaturedVehicles = () => {
           const pickupTime = "12:00";
           const dropoffTime = "12:00";
           
-          console.log('Search parameters:', {
-            pickupLocationId: defaultLocation.id,
-            pickupDate: formattedPickupDate,
-            pickupTime,
-            dropoffLocationId: defaultLocation.id,
-            dropoffDate: formattedDropoffDate,
-            dropoffTime,
-          });
+          // Kelston location ID (you may need to adjust this based on your data)
+          const kelstonLocationId = "1";
           
           const vehiclesData = await rcmApi.getAvailableVehicles({
-            pickupLocationId: defaultLocation.id.toString(),
+            pickupLocationId: kelstonLocationId,
             pickupDate: formattedPickupDate,
             pickupTime,
-            dropoffLocationId: defaultLocation.id.toString(),
+            dropoffLocationId: kelstonLocationId,
             dropoffDate: formattedDropoffDate,
             dropoffTime,
           });
           
-          console.log('Vehicles data received:', vehiclesData);
+          // Filter vehicles that belong to premium categories
+          const premiumVehicles = vehiclesData.filter((vehicle: any) => 
+            premiumCategories.some((category: any) => 
+              category.id === vehicle.vehiclecategoryid
+            )
+          );
           
-          // Transform API data to match our Vehicle interface
-          const mappedVehicles: Vehicle[] = vehiclesData.map(v => ({
-            id: parseInt(v.id.toString()),
-            make: v.make || "Unknown",
-            model: v.model || "Vehicle",
-            year: v.year || new Date().getFullYear(),
-            type: (v.category?.toLowerCase() as VehicleType) || "economy",
-            price: parseFloat(v.price?.toString()) || 50,
-            priceUnit: "day",
-            seats: v.passengers || 4,
-            transmission: (v.transmission?.toLowerCase() === "a" ? "automatic" : "manual") as "automatic" | "manual",
-            fuelType: (v.fuelType?.toLowerCase() || "gasoline") as "gasoline" | "diesel" | "electric" | "hybrid",
-            fuelEfficiency: v.fuelConsumption || "35 mpg",
-            available: true,
-            location: defaultLocation.location || "Main Location",
-            features: typeof v.features === 'string' ? v.features.split(',').map(f => f.trim()) : 
-              (Array.isArray(v.features) ? v.features : ["Air Conditioning", "Power Steering"]),
-            images: Array.isArray(v.images) && v.images.length > 0 ? 
-              v.images.map(img => typeof img === 'string' ? img : (img as any).url || "/placeholder.svg") : 
-              ["/placeholder.svg"],
-            description: v.description || `${v.make} ${v.model} with ${v.passengers || 4} seats and ${v.transmission === "A" ? "automatic" : "manual"} transmission.`,
-          }));
-          
-          console.log('Mapped vehicles:', mappedVehicles);
-          setVehicles(mappedVehicles);
+          console.log('Premium vehicles:', premiumVehicles);
+          setVehicles(premiumVehicles);
         }
       } catch (error) {
         console.error("Error fetching vehicles:", error);
-        setVehicles([]);
-        toast.error("Failed to load featured vehicles", {
+        toast.error("Failed to load premium vehicles", {
           description: "Please try again later"
         });
+        setVehicles([]);
       } finally {
         setIsLoading(false);
       }
@@ -101,48 +76,25 @@ const FeaturedVehicles = () => {
     fetchVehicles();
   }, [rcmApi]);
   
-  const categories: { label: string; value: VehicleType | "all" }[] = [
-    { label: "All", value: "all" },
-    { label: "Economy", value: "economy" },
-    { label: "Compact", value: "compact" },
-    { label: "Midsize", value: "midsize" },
-    { label: "SUV", value: "suv" },
-    { label: "Luxury", value: "luxury" }
-  ];
-  
-  const filteredVehicles = vehicles.filter(vehicle => 
-    activeCategory === "all" || vehicle.type === activeCategory
-  ).slice(0, 3);
+  const getImageUrl = (vehicle: any) => {
+    if (!vehicle.images || !Array.isArray(vehicle.images) || vehicle.images.length === 0) {
+      return '/placeholder.svg';
+    }
+    return vehicle.images[0];
+  };
   
   return (
     <div className="container mx-auto px-4 py-16">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
         <div>
-          <h2 className="text-3xl font-bold mb-2">Featured Vehicles</h2>
-          <p className="text-gray-600">Explore our top picks for your next journey</p>
+          <h2 className="text-3xl font-bold mb-2">Premium Vehicles</h2>
+          <p className="text-gray-600">Explore our exclusive premium collection</p>
         </div>
-        
         <Link to="/vehicles">
           <Button variant="outline" className="mt-4 sm:mt-0">
             View All Vehicles
           </Button>
         </Link>
-      </div>
-      
-      <div className="flex flex-wrap mb-8 overflow-x-auto pb-2">
-        {categories.map((category) => (
-          <button
-            key={category.value}
-            onClick={() => setActiveCategory(category.value)}
-            className={`mr-2 mb-2 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-              activeCategory === category.value
-                ? "bg-primary text-white"
-                : "bg-gray-100 text-gray-800 hover:bg-gray-200"
-            }`}
-          >
-            {category.label}
-          </button>
-        ))}
       </div>
       
       {isLoading ? (
@@ -153,12 +105,26 @@ const FeaturedVehicles = () => {
         </div>
       ) : vehicles.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-gray-600">No vehicles available. Please check back later.</p>
+          <p className="text-gray-600">No premium vehicles available at this time.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredVehicles.map((vehicle) => (
-            <VehicleCard key={vehicle.id} vehicle={vehicle} />
+          {vehicles.slice(0, 3).map((vehicle) => (
+            <Card key={vehicle.id} className="overflow-hidden">
+              <div className="h-48 relative">
+                <img 
+                  src={getImageUrl(vehicle)} 
+                  alt={vehicle.vehiclecategory}
+                  className="h-full w-full object-cover"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = '/placeholder.svg';
+                  }}
+                />
+              </div>
+              <CardContent className="p-4">
+                <h3 className="text-xl font-bold text-center">{vehicle.vehiclecategory}</h3>
+              </CardContent>
+            </Card>
           ))}
         </div>
       )}
@@ -167,3 +133,4 @@ const FeaturedVehicles = () => {
 };
 
 export default FeaturedVehicles;
+
