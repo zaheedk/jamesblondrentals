@@ -5,11 +5,16 @@ import { useRcmApi } from "@/hooks/use-rcm-api";
 import { format, addDays } from "date-fns";
 import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
-import { CategoryListResponse, RCMStep2Response } from "@/lib/api/rcm-api-types";
+import { RCMStep2Response } from "@/lib/api/rcm-api-types";
 
 interface VehicleCategory {
   id: string;
   vehiclecategoryname: string;
+}
+
+interface CategoryListResponse {
+  status: string;
+  results?: VehicleCategory[];
 }
 
 const FeaturedVehicles = () => {
