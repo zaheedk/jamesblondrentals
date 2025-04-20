@@ -50,19 +50,23 @@ const FeaturedVehicles = () => {
     const fetchVehicles = async () => {
       try {
         setIsLoading(true);
-        console.log('Fetching all vehicles...');
+        console.log('Fetching premium vehicles...');
         
         const response = await rcmApi.request<CategoryListResponse>('POST', 'categorylist', {
           method: 'categorylist'
         });
         
         if (response.status === "OK") {
-          console.log('All vehicles:', response.results);
-          setVehicles(response.results);
+          const premiumVehicles = response.results.filter((vehicle) => 
+            vehicle.vehiclecategoryname.toLowerCase().includes('premium')
+          );
+          
+          console.log('Filtered premium vehicles:', premiumVehicles);
+          setVehicles(premiumVehicles);
         }
       } catch (error) {
         console.error("Error fetching vehicles:", error);
-        toast.error("Failed to load vehicles", {
+        toast.error("Failed to load premium vehicles", {
           description: "Please try again later"
         });
         setVehicles([]);
@@ -78,8 +82,8 @@ const FeaturedVehicles = () => {
     <div className="container mx-auto px-4 py-16">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
         <div>
-          <h2 className="text-3xl font-bold mb-2">Featured Vehicles</h2>
-          <p className="text-gray-600">Explore our complete vehicle collection</p>
+          <h2 className="text-3xl font-bold mb-2">Premium Vehicles</h2>
+          <p className="text-gray-600">Explore our exclusive premium collection</p>
         </div>
         <Link to="/vehicles">
           <Button variant="outline" className="mt-4 sm:mt-0">
@@ -96,7 +100,7 @@ const FeaturedVehicles = () => {
         </div>
       ) : vehicles.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-gray-600">No vehicles available at this time.</p>
+          <p className="text-gray-600">No premium vehicles available at this time.</p>
         </div>
       ) : (
         <Carousel className="w-full max-w-5xl mx-auto">
