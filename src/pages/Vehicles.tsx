@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -39,19 +38,13 @@ const Vehicles = () => {
   const [uniqueVehicleCategoryTypes, setUniqueVehicleCategoryTypes] = useState<Array<{id: string, name: string}>>([]);
 
   const [vehicleType, setVehicleType] = useState<VehicleType | "all">("all");
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 500]);
+  const [minPrice, setMinPrice] = useState<number>(0);
   const [maxPrice, setMaxPrice] = useState<number>(500);
   const [searchTerm, setSearchTerm] = useState("");
   const [transmission, setTransmission] = useState<"all" | "automatic" | "manual">("all");
-  const [fuelTypes, setFuelTypes] = useState({
-    gasoline: false,
-    diesel: false,
-    electric: false,
-    hybrid: false,
-  });
 
   const pickupLocation = searchParams.get("pickupLocation") || "";
-  const dropoffLocation = searchParams.get("dropoffLocation") || "";
+  const dropoffLocation = searchParams.get("dropoffLocation") || pickupLocation;
   const pickupDate = searchParams.get("pickupDate") || "";
   const dropoffDate = searchParams.get("dropoffDate") || "";
   const pickupTime = searchParams.get("pickupTime") || "";
@@ -156,9 +149,7 @@ const Vehicles = () => {
         const maxPriceValue = Math.ceil(Math.max(...prices));
         setMaxPrice(maxPriceValue);
         // Only set the price range if it's the first time (or if the current range is the default)
-        if (priceRange[0] === 0 && priceRange[1] === 500) {
-          setPriceRange([minPrice, maxPriceValue]);
-        }
+        
       } else {
         console.log("No vehicles found in the response");
         toast.info("No vehicles found", {
@@ -181,13 +172,12 @@ const Vehicles = () => {
       results = results.filter(vehicle => vehicle.type === vehicleType);
     }
     
-    // Filter based on price - ensure we're working with numeric prices
+    // Filter based on price range
     results = results.filter(vehicle => {
       const price = typeof vehicle.price === 'string' 
         ? parseFloat(vehicle.price) 
         : vehicle.price;
-        
-      return price >= priceRange[0] && price <= priceRange[1];
+      return price >= minPrice && price <= maxPrice;
     });
     
     if (searchTerm) {
@@ -203,30 +193,15 @@ const Vehicles = () => {
       results = results.filter(vehicle => vehicle.transmission === transmission);
     }
     
-    const selectedFuelTypes = Object.entries(fuelTypes)
-      .filter(([_, isSelected]) => isSelected)
-      .map(([type]) => type);
-    
-    if (selectedFuelTypes.length > 0) {
-      results = results.filter(vehicle => selectedFuelTypes.includes(vehicle.fuelType));
-    }
-    
     setFilteredVehicles(results);
   }, [
     vehicles,
     vehicleType,
-    priceRange,
+    minPrice,
+    maxPrice,
     searchTerm,
     transmission,
-    fuelTypes,
   ]);
-
-  const handleFuelTypeChange = (type: keyof typeof fuelTypes) => {
-    setFuelTypes(prev => ({
-      ...prev,
-      [type]: !prev[type],
-    }));
-  };
 
   const hasApiError = driverAgesError || step2Error;
 
@@ -316,18 +291,29 @@ const Vehicles = () => {
 
                   <div>
                     <Label className="text-base">Price Range (total)</Label>
-                    <div className="flex justify-between mt-2">
-                      <span>${priceRange[0]}</span>
-                      <span>${priceRange[1]}</span>
+                    <div className="mt-4 space-y-4">
+                      <div>
+                        <Label className="text-sm">Minimum Price: ${minPrice}</Label>
+                        <Slider
+                          value={[minPrice]}
+                          max={maxPrice}
+                          step={10}
+                          className="mt-2"
+                          onValueChange={(values) => setMinPrice(values[0])}
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-sm">Maximum Price: ${maxPrice}</Label>
+                        <Slider
+                          value={[maxPrice]}
+                          min={minPrice}
+                          max={Math.max(minPrice + 100, 1000)}
+                          step={10}
+                          className="mt-2"
+                          onValueChange={(values) => setMaxPrice(values[0])}
+                        />
+                      </div>
                     </div>
-                    <Slider
-                      value={priceRange}
-                      max={maxPrice || 500}
-                      step={10}
-                      minStepsBetweenThumbs={1}
-                      className="mt-2"
-                      onValueChange={(values) => setPriceRange(values as [number, number])}
-                    />
                   </div>
 
                   <div>
@@ -345,52 +331,6 @@ const Vehicles = () => {
                         <SelectItem value="manual">Manual</SelectItem>
                       </SelectContent>
                     </Select>
-                  </div>
-
-                  <div>
-                    <Label className="text-base">Fuel Type</Label>
-                    <div className="mt-2 space-y-2">
-                      <div className="flex items-center">
-                        <Checkbox
-                          id="gasoline"
-                          checked={fuelTypes.gasoline}
-                          onCheckedChange={() => handleFuelTypeChange("gasoline")}
-                        />
-                        <label htmlFor="gasoline" className="ml-2">
-                          Gasoline
-                        </label>
-                      </div>
-                      <div className="flex items-center">
-                        <Checkbox
-                          id="diesel"
-                          checked={fuelTypes.diesel}
-                          onCheckedChange={() => handleFuelTypeChange("diesel")}
-                        />
-                        <label htmlFor="diesel" className="ml-2">
-                          Diesel
-                        </label>
-                      </div>
-                      <div className="flex items-center">
-                        <Checkbox
-                          id="electric"
-                          checked={fuelTypes.electric}
-                          onCheckedChange={() => handleFuelTypeChange("electric")}
-                        />
-                        <label htmlFor="electric" className="ml-2">
-                          Electric
-                        </label>
-                      </div>
-                      <div className="flex items-center">
-                        <Checkbox
-                          id="hybrid"
-                          checked={fuelTypes.hybrid}
-                          onCheckedChange={() => handleFuelTypeChange("hybrid")}
-                        />
-                        <label htmlFor="hybrid" className="ml-2">
-                          Hybrid
-                        </label>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </Card>
