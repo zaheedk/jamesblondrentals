@@ -36,7 +36,7 @@ const Vehicles = () => {
   const { useDriverAges, useStep2Vehicles, useVehicleCategories } = useRcmApi();
   const { data: categoryTypes } = useVehicleCategories();
   const [uniqueVehicleCategoryTypes, setUniqueVehicleCategoryTypes] = useState<Array<{id: string, name: string}>>([]);
-  
+
   const [vehicleType, setVehicleType] = useState<VehicleType | "all">("all");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 500]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -223,10 +223,16 @@ const Vehicles = () => {
 
   useEffect(() => {
     if (categoryTypes?.length) {
-      const formattedTypes = categoryTypes.map(type => ({
-        id: String(type.id),
-        name: type.vehiclecategorytype
-      })).sort((a, b) => a.name.localeCompare(b.name));
+      const formattedTypes = categoryTypes
+        .map(type => ({
+          id: String(type.id),
+          name: type.vehiclecategorytype
+        }))
+        .sort((a, b) => {
+          const typeA = categoryTypes.find(t => String(t.id) === a.id);
+          const typeB = categoryTypes.find(t => String(t.id) === b.id);
+          return (typeA?.displayorder ?? 0) - (typeB?.displayorder ?? 0);
+        });
       setUniqueVehicleCategoryTypes(formattedTypes);
     }
   }, [categoryTypes]);
