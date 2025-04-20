@@ -5,6 +5,13 @@ import { Button } from "@/components/ui/button";
 import { useRcmApi } from "@/hooks/use-rcm-api";
 import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 interface VehicleCategory {
   id: number;
@@ -43,25 +50,19 @@ const FeaturedVehicles = () => {
     const fetchVehicles = async () => {
       try {
         setIsLoading(true);
-        console.log('Fetching premium vehicles...');
+        console.log('Fetching all vehicles...');
         
         const response = await rcmApi.request<CategoryListResponse>('POST', 'categorylist', {
           method: 'categorylist'
         });
         
         if (response.status === "OK") {
-          const premiumVehicles = response.results.filter((vehicle) => 
-            vehicle.categorytype.toLowerCase().includes('premium') &&
-            !vehicle.description.includes('Premium Midsize') &&
-            !vehicle.description.includes('Premium Wagon')
-          );
-          
-          console.log('Filtered premium vehicles:', premiumVehicles);
-          setVehicles(premiumVehicles);
+          console.log('All vehicles:', response.results);
+          setVehicles(response.results);
         }
       } catch (error) {
         console.error("Error fetching vehicles:", error);
-        toast.error("Failed to load premium vehicles", {
+        toast.error("Failed to load vehicles", {
           description: "Please try again later"
         });
         setVehicles([]);
@@ -77,8 +78,8 @@ const FeaturedVehicles = () => {
     <div className="container mx-auto px-4 py-16">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
         <div>
-          <h2 className="text-3xl font-bold mb-2">Premium Vehicles</h2>
-          <p className="text-gray-600">Explore our exclusive premium collection</p>
+          <h2 className="text-3xl font-bold mb-2">Featured Vehicles</h2>
+          <p className="text-gray-600">Explore our complete vehicle collection</p>
         </div>
         <Link to="/vehicles">
           <Button variant="outline" className="mt-4 sm:mt-0">
@@ -95,32 +96,39 @@ const FeaturedVehicles = () => {
         </div>
       ) : vehicles.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-gray-600">No premium vehicles available at this time.</p>
+          <p className="text-gray-600">No vehicles available at this time.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {vehicles.map((vehicle) => (
-            <Card key={vehicle.id} className="overflow-hidden">
-              <div className="h-48 relative">
-                <img 
-                  src={vehicle.imageurl} 
-                  alt={vehicle.vehiclecategoryname}
-                  className="h-full w-full object-cover"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = '/placeholder.svg';
-                  }}
-                />
-              </div>
-              <CardContent className="p-4">
-                <h3 className="text-xl font-bold text-center">{vehicle.vehiclecategoryname}</h3>
-                <p className="text-gray-600 text-center mt-2">{vehicle.description}</p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        <Carousel className="w-full max-w-5xl mx-auto">
+          <CarouselContent>
+            {vehicles.map((vehicle) => (
+              <CarouselItem key={vehicle.id} className="md:basis-1/2 lg:basis-1/3">
+                <Card className="mx-2">
+                  <div className="h-48 relative">
+                    <img 
+                      src={vehicle.imageurl} 
+                      alt={vehicle.vehiclecategoryname}
+                      className="h-full w-full object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = '/placeholder.svg';
+                      }}
+                    />
+                  </div>
+                  <CardContent className="p-4">
+                    <h3 className="text-xl font-bold text-center">{vehicle.vehiclecategoryname}</h3>
+                    <p className="text-gray-600 text-center mt-2">{vehicle.description}</p>
+                  </CardContent>
+                </Card>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
       )}
     </div>
   );
 };
 
 export default FeaturedVehicles;
+
