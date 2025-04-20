@@ -1,8 +1,12 @@
 
 import { Truck } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 const vans = [
   {
+    id: "hiace-petrol",
     title: "Toyota Hiace Van (Petrol, New Shape)",
     img: "/images/fleet/vans/toyota-hiace-new-shape-petrol.jpg",
     description:
@@ -16,6 +20,7 @@ const vans = [
     ],
   },
   {
+    id: "hiace-jumbo",
     title: "Toyota Hiace ZX Jumbo (Diesel)",
     img: "/images/fleet/vans/toyota-hiace-jumbo-diesel.jpg",
     description:
@@ -29,6 +34,7 @@ const vans = [
     ],
   },
   {
+    id: "hiace-minibus",
     title: "Toyota Hiace ZL 12-Seater Minibus",
     img: "/images/fleet/vans/toyota-hiace-12-seater-minibus.jpg",
     description:
@@ -42,6 +48,7 @@ const vans = [
     ],
   },
   {
+    id: "hilux-ute",
     title: "Toyota Hilux SR5 2WD Ute (Flat Deck)",
     img: "/images/fleet/vans/toyota-hilux-sr5-ute.jpg",
     description:
@@ -85,12 +92,16 @@ const faqs = [
 ];
 
 const FleetVans = () => (
-  <div className="container mx-auto px-4 py-10 max-w-5xl">
-    <h1 className="text-4xl font-bold mb-3 text-primary">Vans & Utes for Hire Auckland</h1>
-    <p className="text-lg text-gray-700 mb-6">
-      Modern Toyota vans, minibuses and utes – perfect for moving house, deliveries, sports teams, trades or group outings.<br />
-      Book online or <span className="text-primary font-semibold">call us to reserve!</span>
-    </p>
+  <div className="container mx-auto px-4 py-10 max-w-6xl">
+    <div className="mb-8">
+      <h1 className="text-4xl font-bold mb-3 text-primary">Vans & Utes for Hire Auckland</h1>
+      <p className="text-lg text-gray-700 mb-2">
+        Modern Toyota vans, minibuses and utes – perfect for moving house, deliveries, sports teams, trades or group outings.
+      </p>
+      <p className="text-lg text-gray-700 mb-6">
+        Book online or <span className="text-primary font-semibold">call us at 0800 52 52 52</span> to reserve!
+      </p>
+    </div>
 
     <div className="bg-primary/10 rounded-lg mb-10 p-4 md:p-8 flex flex-col md:flex-row gap-8 items-center">
       <div className="flex-1">
@@ -111,55 +122,107 @@ const FleetVans = () => (
       </div>
     </div>
 
+    <h2 className="text-3xl font-bold mb-6 text-primary">Our Van & Ute Fleet</h2>
+    
     <section className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-      {vans.map((van, idx) => (
-        <div
-          key={idx}
-          className="bg-white rounded-xl shadow hover:shadow-xl border border-gray-100 flex flex-col"
-        >
-          <img
-            src={van.img}
-            alt={van.title}
-            className="w-full h-56 object-cover rounded-t-xl"
-            onError={e => { e.currentTarget.src = '/placeholder.svg'; }}
-            loading="lazy"
-          />
-          <div className="p-5 flex flex-col flex-grow">
-            <div className="flex items-center gap-2 mb-1">
+      {vans.map((van) => (
+        <Card key={van.id} className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
+          <div className="h-64 overflow-hidden">
+            <img
+              src={van.img}
+              alt={van.title}
+              className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+              onError={e => { e.currentTarget.src = '/placeholder.svg'; }}
+              loading="lazy"
+            />
+          </div>
+          <CardHeader>
+            <div className="flex items-center gap-2">
               <Truck className="w-5 h-5 text-primary" />
-              <h3 className="font-bold text-xl">{van.title}</h3>
+              <CardTitle className="text-xl">{van.title}</CardTitle>
             </div>
-            <p className="text-gray-700 mb-2">{van.description}</p>
-            <ul className="list-disc list-inside text-gray-600 text-sm mb-4 pl-2">
-              {van.specs.map((f, i) => (
-                <li key={i} className="mb-1">{f}</li>
+            <CardDescription className="text-base text-gray-700">{van.description}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <h4 className="font-semibold mb-2 text-primary">Vehicle Features:</h4>
+            <ul className="list-disc list-inside text-gray-600 text-sm pl-2">
+              {van.specs.map((spec, i) => (
+                <li key={i} className="mb-1">{spec}</li>
               ))}
             </ul>
-            <a
-              href="/booking"
-              className="inline-block mt-auto bg-primary text-white py-2 px-4 rounded hover:bg-primary/90 text-center"
-            >
-              Book Now
-            </a>
-          </div>
-        </div>
+          </CardContent>
+          <CardFooter className="flex justify-between items-center">
+            <Button asChild className="bg-secondary hover:bg-secondary/90">
+              <Link to={`/fleet/vans/${van.id}`}>Know More</Link>
+            </Button>
+            <Button asChild>
+              <Link to="/booking">Book Now</Link>
+            </Button>
+          </CardFooter>
+        </Card>
       ))}
     </section>
 
+    <section className="mb-8">
+      <h2 className="text-3xl font-bold mb-6 text-primary">Moving House or Office?</h2>
+      <div className="bg-secondary/20 p-6 rounded-lg">
+        <p className="text-lg mb-4">
+          Our vans and utes are perfect for moving house or small office relocations. Save money by doing it yourself with a reliable, spacious vehicle.
+        </p>
+        <div className="flex flex-wrap gap-4">
+          <Button asChild>
+            <Link to="/booking">Book a Van</Link>
+          </Button>
+          <Button asChild variant="outline">
+            <Link to="/fleet/furniture-truck">Need Something Bigger?</Link>
+          </Button>
+        </div>
+      </div>
+    </section>
+
     <div className="mb-14 bg-white rounded-xl shadow border border-primary/30 p-6 md:p-8">
-      <h2 className="text-2xl font-bold mb-2 text-primary">Van & Ute Hire Auckland – FAQs</h2>
+      <h2 className="text-2xl font-bold mb-6 text-primary">Van & Ute Hire Auckland – FAQs</h2>
       <dl className="divide-y divide-gray-200">
         {faqs.map((faq, i) => (
           <div key={i} className="py-4 first:pt-0">
-            <dt className="font-semibold text-primary mb-1">{faq.question}</dt>
+            <dt className="font-semibold text-primary mb-1 text-lg">{faq.question}</dt>
             <dd className="text-gray-700 pl-2">{faq.answer}</dd>
           </div>
         ))}
       </dl>
-      <p className="text-gray-600 text-base mt-4">
-        For more info, see our <a href="/faq" className="text-primary underline hover:no-underline">main FAQ page</a>.
-      </p>
+      <div className="mt-6 pt-4 border-t border-gray-200">
+        <p className="text-gray-600 text-base mb-4">
+          For more information about our van and ute hire options, see our <Link to="/faq" className="text-primary underline hover:no-underline">main FAQ page</Link>.
+        </p>
+        <div className="flex flex-wrap gap-4">
+          <Button asChild>
+            <Link to="/booking">Book Online Now</Link>
+          </Button>
+          <Button asChild variant="outline">
+            <a href="tel:0800525252">Call Us: 0800 52 52 52</a>
+          </Button>
+        </div>
+      </div>
     </div>
+
+    <section className="text-center mb-8">
+      <h2 className="text-2xl font-bold text-primary mb-4">Need a Different Vehicle?</h2>
+      <p className="mb-6">Browse our other vehicle categories:</p>
+      <div className="flex flex-wrap gap-4 justify-center">
+        <Button asChild variant="outline">
+          <Link to="/fleet/cars">Cars</Link>
+        </Button>
+        <Button asChild variant="outline">
+          <Link to="/fleet/trucks">Trucks</Link>
+        </Button>
+        <Button asChild variant="outline">
+          <Link to="/fleet/minibuses">Minibuses</Link>
+        </Button>
+        <Button asChild variant="outline">
+          <Link to="/fleet/trailers">Trailers</Link>
+        </Button>
+      </div>
+    </section>
   </div>
 );
 

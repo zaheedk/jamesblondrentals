@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -17,6 +18,7 @@ import PaymentSuccess from "./pages/PaymentSuccess";
 import Fleet from "./pages/Fleet";
 import FleetCars from "./pages/FleetCars";
 import FleetVans from "./pages/FleetVans";
+import VanDetail from "./pages/VanDetail";
 import FleetTrucks from "./pages/FleetTrucks";
 import FleetMinibuses from "./pages/FleetMinibuses";
 import FleetTrailers from "./pages/FleetTrailers";
@@ -54,6 +56,7 @@ const App = () => {
               <Route path="/fleet" element={<Fleet />}>
                 <Route path="cars" element={<FleetCars />} />
                 <Route path="vans" element={<FleetVans />} />
+                <Route path="vans/:vanId" element={<VanDetail />} />
                 <Route path="trucks" element={<FleetTrucks />} />
                 <Route path="minibuses" element={<FleetMinibuses />} />
                 <Route path="trailers" element={<FleetTrailers />} />
