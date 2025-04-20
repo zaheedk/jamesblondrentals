@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -283,6 +283,7 @@ const Vehicles = () => {
                         min={0}
                         max={Math.max(1000, priceRange[1])}
                         step={10}
+                        minStepsBetweenThumbs={0}
                         className="mt-2"
                         onValueChange={(values: [number, number]) => setPriceRange(values)}
                       />
