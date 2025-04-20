@@ -1,5 +1,5 @@
 
-import { Car, Truck, Van } from "lucide-react";
+import { Truck } from "lucide-react";
 
 const vans = [
   {
@@ -96,7 +96,7 @@ const FleetVans = () => (
           />
           <div className="p-5 flex flex-col flex-grow">
             <div className="flex items-center gap-2 mb-2">
-              <Van className="w-5 h-5 text-primary" />
+              <Truck className="w-5 h-5 text-primary" />
               <h3 className="font-bold text-lg">{van.title}</h3>
             </div>
             <p className="text-gray-700 mb-2 flex-1">{van.description}</p>
