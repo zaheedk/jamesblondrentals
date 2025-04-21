@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -74,7 +75,6 @@ const PaymentSuccess = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [rentalDuration, setRentalDuration] = useState<number>(0);
   const [imageError, setImageError] = useState<boolean>(false);
-  const [apiResponse, setApiResponse] = useState<any>(null);
 
   const handleImageError = () => {
     console.log("Error loading vehicle image");
@@ -236,7 +236,6 @@ const PaymentSuccess = () => {
 
             const apiResponse = response as ApiBookingResponse;
             console.log("API Response for booking details:", apiResponse);
-            setApiResponse(apiResponse);
 
             if (apiResponse.status === "OK" && apiResponse.results) {
               const bookingInfo = apiResponse.results.bookinginfo?.[0] || {};
@@ -304,43 +303,60 @@ const PaymentSuccess = () => {
         // Fall back to session data if we couldn't get details from API
         if (!bookingDetails && sessionData) {
           console.log("Using session data as fallback for booking details");
+
+          // Fix for undefined values in the session data
+          const cleanedSessionData = { ...sessionData };
+          Object.keys(cleanedSessionData).forEach(key => {
+            // Check if the value is an object with _type: "undefined"
+            if (cleanedSessionData[key] && 
+                typeof cleanedSessionData[key] === 'object' && 
+                cleanedSessionData[key]._type === 'undefined') {
+              cleanedSessionData[key] = undefined;
+            }
+          });
+          
           const convertedDetails: BookingDetails = {
-            vehicleName: sessionData.vehicleName || 'Vehicle',
-            pickupDate: sessionData.pickupDate,
-            pickupTime: sessionData.pickupTime, 
-            dropoffDate: sessionData.dropoffDate,
-            dropoffTime: sessionData.dropoffTime,
-            paymentAmount: paymentStatus === "success" ? (sessionData.paymentAmount || 0) : 0,
-            basePrice: sessionData.basePrice || 0,
-            paymentType: sessionData.paymentType,
-            customerFirstName: sessionData.customerFirstName,
-            customerLastName: sessionData.customerLastName,
-            customerEmail: sessionData.customerEmail,
-            customerPhone: sessionData.customerPhone,
-            customerDob: sessionData.customerDob,
-            customerLicenseExpiry: sessionData.customerLicenseExpiry,
-            customerAddress: sessionData.customerAddress,
+            vehicleName: cleanedSessionData.vehicleName || 'Vehicle',
+            pickupDate: cleanedSessionData.pickupDate || '',
+            pickupTime: cleanedSessionData.pickupTime || '', 
+            dropoffDate: cleanedSessionData.dropoffDate || '',
+            dropoffTime: cleanedSessionData.dropoffTime || '',
+            paymentAmount: paymentStatus === "success" ? (cleanedSessionData.paymentAmount || 0) : 0,
+            basePrice: cleanedSessionData.basePrice || 0,
+            paymentType: cleanedSessionData.paymentType,
+            customerFirstName: cleanedSessionData.customerFirstName,
+            customerLastName: cleanedSessionData.customerLastName,
+            customerEmail: cleanedSessionData.customerEmail,
+            customerPhone: cleanedSessionData.customerPhone,
+            customerDob: cleanedSessionData.customerDob,
+            customerLicenseExpiry: cleanedSessionData.customerLicenseExpiry,
+            customerAddress: cleanedSessionData.customerAddress,
             reservationRef: bookingReservationRef,
-            vehicleImage: sessionData.vehicleImage,
-            insuranceName: sessionData.insuranceName,
-            insurancePrice: sessionData.insurancePrice,
-            selectedExtras: sessionData.selectedExtras?.map(extra => ({
+            vehicleImage: cleanedSessionData.vehicleImage || '',
+            insuranceName: cleanedSessionData.insuranceName,
+            insurancePrice: cleanedSessionData.insurancePrice || 0,
+            selectedExtras: cleanedSessionData.selectedExtras?.map(extra => ({
               name: extra.name,
               quantity: extra.quantity,
               price: extra.price
-            })),
-            extraKmsName: sessionData.extraKmsName,
-            extraKmsPrice: sessionData.extraKmsPrice,
-            pickupLocationName: sessionData.pickupLocationName || "Not specified",
-            dropoffLocationName: sessionData.dropoffLocationName || "Not specified",
-            totalRateAfterDiscount: sessionData.totalRateAfterDiscount,
-            mandatoryFees: sessionData.mandatoryFees,
-            numberofdays: sessionData.numberofdays || calculateRentalDuration(sessionData.pickupDate, sessionData.dropoffDate),
-            dailyrate: sessionData.dailyrate || (sessionData.basePrice / calculateRentalDuration(sessionData.pickupDate, sessionData.dropoffDate)),
-            totalcost: sessionData.totalcost || sessionData.basePrice,
-            payment: paymentStatus === "success" ? (sessionData.payment || sessionData.paymentAmount || 0) : 0,
-            balancedue: sessionData.balancedue || 0
+            })) || [],
+            extraKmsName: cleanedSessionData.extraKmsName,
+            extraKmsPrice: cleanedSessionData.extraKmsPrice,
+            pickupLocationName: cleanedSessionData.pickupLocationName || "Not specified",
+            dropoffLocationName: cleanedSessionData.dropoffLocationName || "Not specified",
+            totalRateAfterDiscount: cleanedSessionData.totalRateAfterDiscount || 0,
+            mandatoryFees: cleanedSessionData.mandatoryFees || [],
+            numberofdays: cleanedSessionData.numberofdays || 
+                        (cleanedSessionData.pickupDate && cleanedSessionData.dropoffDate ? 
+                          calculateRentalDuration(cleanedSessionData.pickupDate, cleanedSessionData.dropoffDate) : 1),
+            dailyrate: cleanedSessionData.dailyrate || 
+                      (cleanedSessionData.basePrice && cleanedSessionData.numberofdays ? 
+                        cleanedSessionData.basePrice / cleanedSessionData.numberofdays : 0),
+            totalcost: cleanedSessionData.totalcost || cleanedSessionData.basePrice || 0,
+            payment: paymentStatus === "success" ? (cleanedSessionData.payment || cleanedSessionData.paymentAmount || 0) : 0,
+            balancedue: cleanedSessionData.balancedue || 0
           };
+          
           setBookingDetails(convertedDetails);
           
           if (convertedDetails.pickupDate && convertedDetails.dropoffDate) {
@@ -500,10 +516,12 @@ const PaymentSuccess = () => {
 
         {bookingDetails && (
           <>
-            {bookingDetails?.vehicleImage && !imageError && (
+            {bookingDetails.vehicleImage && !imageError && (
               <div className="w-full aspect-video rounded-lg overflow-hidden bg-gray-100 mb-6">
                 <img
-                  src={`${bookingDetails.vehicleImage.includes('http') ? '' : 'https://rentalcarmanagerau.blob.core.windows.net/public/nzkuzarentals493/'}${bookingDetails.vehicleImage}`}
+                  src={bookingDetails.vehicleImage.includes('http') ? 
+                      bookingDetails.vehicleImage : 
+                      `https://rentalcarmanagerau.blob.core.windows.net/public/nzkuzarentals493/${bookingDetails.vehicleImage}`}
                   alt={bookingDetails.vehicleName}
                   className="w-full h-full object-cover"
                   onError={handleImageError}

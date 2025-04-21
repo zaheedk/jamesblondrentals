@@ -1,3 +1,4 @@
+
 /**
  * Utility functions to manage booking data between pages using sessionStorage
  */
@@ -74,9 +75,19 @@ export const BOOKING_SESSION_KEY = 'rcm_booking_data';
  */
 export const saveBookingData = (data: BookingSessionData): void => {
   try {
-    // Include a way to save the total rate after discount
-    sessionStorage.setItem(BOOKING_SESSION_KEY, JSON.stringify(data));
-    console.log('Booking data saved to session, including total rate:', data.totalRateAfterDiscount);
+    // Fix for any undefined values that might cause JSON stringify issues
+    const cleanData = { ...data };
+    
+    // Clean up the data before saving to prevent serialization issues
+    Object.keys(cleanData).forEach(key => {
+      const value = cleanData[key];
+      if (value === undefined) {
+        delete cleanData[key]; // Remove undefined values
+      }
+    });
+    
+    sessionStorage.setItem(BOOKING_SESSION_KEY, JSON.stringify(cleanData));
+    console.log('Booking data saved to session, including total rate:', cleanData.totalRateAfterDiscount);
   } catch (error) {
     console.error('Error saving booking data to session:', error);
   }
