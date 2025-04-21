@@ -526,7 +526,7 @@ const PaymentSuccess = () => {
         {bookingDetails && (
           <>
             {vehicleImageUrl && !imageError && (
-              <div className="w-full aspect-video rounded-lg overflow-hidden bg-gray-100 mb-6">
+              <div className="w-full aspect-video rounded-lg overflow-hidden bg-gray-100 mb-6 max-h-[180px]">
                 <img
                   src={vehicleImageUrl}
                   alt={bookingDetails.vehicleName}
