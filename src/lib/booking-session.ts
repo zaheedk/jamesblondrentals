@@ -76,15 +76,13 @@ export const BOOKING_SESSION_KEY = 'rcm_booking_data';
 export const saveBookingData = (data: BookingSessionData): void => {
   try {
     // Fix for any undefined values that might cause JSON stringify issues
-    const cleanData = { ...data };
-    
-    // Clean up the data before saving to prevent serialization issues
-    Object.keys(cleanData).forEach(key => {
-      const value = cleanData[key];
-      if (value === undefined) {
-        delete cleanData[key]; // Remove undefined values
+    const cleanData = JSON.parse(JSON.stringify(data, (key, value) => {
+      // Remove undefined values and complex objects that can't be serialized
+      if (value === undefined || (typeof value === 'object' && value !== null && value._type === 'undefined')) {
+        return null;
       }
-    });
+      return value;
+    }));
     
     sessionStorage.setItem(BOOKING_SESSION_KEY, JSON.stringify(cleanData));
     console.log('Booking data saved to session, including total rate:', cleanData.totalRateAfterDiscount);

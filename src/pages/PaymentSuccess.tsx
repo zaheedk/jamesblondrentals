@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -61,7 +60,6 @@ interface ApiBookingResponse {
     bookinginfo?: any[];
     paymentinfo?: any[];
     customerinfo?: any[];
-    // Add other result properties as needed
   };
 }
 
@@ -228,7 +226,6 @@ const PaymentSuccess = () => {
         if (bookingReservationRef) {
           console.log("Fetching booking details for reservation:", bookingReservationRef);
           try {
-            // Using the specific "bookinginfo" method as requested
             const response = await rcmApi.request('POST', 'bookinginfo', {
               method: 'bookinginfo',
               reservationref: bookingReservationRef
@@ -286,7 +283,6 @@ const PaymentSuccess = () => {
               
               console.log("Booking details set from API:", convertedDetails);
               
-              // Only clear session data after we've successfully retrieved and processed the API data
               if (paymentStatus === "success") {
                 clearBookingData();
                 console.log("Booking data cleared from session after successful payment");
@@ -300,20 +296,20 @@ const PaymentSuccess = () => {
           }
         }
         
-        // Fall back to session data if we couldn't get details from API
         if (!bookingDetails && sessionData) {
           console.log("Using session data as fallback for booking details");
 
-          // Fix for undefined values in the session data
-          const cleanedSessionData = { ...sessionData };
-          Object.keys(cleanedSessionData).forEach(key => {
-            // Check if the value is an object with _type: "undefined"
-            if (cleanedSessionData[key] && 
-                typeof cleanedSessionData[key] === 'object' && 
-                cleanedSessionData[key]._type === 'undefined') {
-              cleanedSessionData[key] = undefined;
+          const cleanedSessionData = JSON.parse(JSON.stringify(sessionData, (key, value) => {
+            if (value && typeof value === 'object' && value._type === 'undefined') {
+              return undefined;
             }
-          });
+            return value;
+          }));
+          
+          let vehicleImage = cleanedSessionData.vehicleImage || '';
+          if (vehicleImage && !vehicleImage.includes('http')) {
+            vehicleImage = `https://rentalcarmanagerau.blob.core.windows.net/public/nzkuzarentals493/${vehicleImage}`;
+          }
           
           const convertedDetails: BookingDetails = {
             vehicleName: cleanedSessionData.vehicleName || 'Vehicle',
@@ -332,7 +328,7 @@ const PaymentSuccess = () => {
             customerLicenseExpiry: cleanedSessionData.customerLicenseExpiry,
             customerAddress: cleanedSessionData.customerAddress,
             reservationRef: bookingReservationRef,
-            vehicleImage: cleanedSessionData.vehicleImage || '',
+            vehicleImage: vehicleImage,
             insuranceName: cleanedSessionData.insuranceName,
             insurancePrice: cleanedSessionData.insurancePrice || 0,
             selectedExtras: cleanedSessionData.selectedExtras?.map(extra => ({
@@ -366,8 +362,6 @@ const PaymentSuccess = () => {
           
           console.log("Booking details set from session:", convertedDetails);
           
-          // Only clear session data if we genuinely had successful payment
-          // and we've managed to extract the data already
           if (paymentStatus === "success") {
             clearBookingData();
             console.log("Booking data cleared from session after successful payment (fallback path)");
@@ -397,14 +391,12 @@ const PaymentSuccess = () => {
       } else {
         const parts = pickupDate.split('/');
         if (parts.length === 3) {
-          // Try to parse as DD/MM/YYYY format
           const day = parseInt(parts[0]);
           const month = parseInt(parts[1]) - 1;
           const year = parseInt(parts[2]);
           pickup = new Date(year, month, day);
           
           if (!isValid(pickup)) {
-            // Try to parse as DD/MMM/YYYY format
             const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
             const monthIndex = monthNames.findIndex(m => parts[1].includes(m));
             if (monthIndex !== -1) {
@@ -419,14 +411,12 @@ const PaymentSuccess = () => {
       } else {
         const parts = dropoffDate.split('/');
         if (parts.length === 3) {
-          // Try to parse as DD/MM/YYYY format
           const day = parseInt(parts[0]);
           const month = parseInt(parts[1]) - 1;
           const year = parseInt(parts[2]);
           dropoff = new Date(year, month, day);
           
           if (!isValid(dropoff)) {
-            // Try to parse as DD/MMM/YYYY format
             const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
             const monthIndex = monthNames.findIndex(m => parts[1].includes(m));
             if (monthIndex !== -1) {
@@ -442,11 +432,11 @@ const PaymentSuccess = () => {
         return days > 0 ? days : 0;
       } else {
         console.error("Invalid date format for duration calculation:", { pickupDate, dropoffDate });
-        return 1; // Default to 1 day if calculation fails
+        return 1;
       }
     } catch (error) {
       console.error("Error calculating rental duration:", error);
-      return 1; // Default to 1 day if error occurs
+      return 1;
     }
   };
 
@@ -476,17 +466,14 @@ const PaymentSuccess = () => {
     );
   }
 
-  // Format dates properly for display
   let formattedPickupDate = bookingDetails.pickupDate;
   let formattedDropoffDate = bookingDetails.dropoffDate;
   
-  // Attempt to parse and format dates consistently
   try {
     if (bookingDetails.pickupDate) {
       if (bookingDetails.pickupDate.includes('T') || bookingDetails.pickupDate.includes('-')) {
         formattedPickupDate = format(parseISO(bookingDetails.pickupDate), 'dd/MM/yyyy');
       } else if (bookingDetails.pickupDate.includes('/')) {
-        // Keep the original format if it's already in DD/MM/YYYY or DD/MMM/YYYY
         formattedPickupDate = bookingDetails.pickupDate;
       }
     }
@@ -495,13 +482,28 @@ const PaymentSuccess = () => {
       if (bookingDetails.dropoffDate.includes('T') || bookingDetails.dropoffDate.includes('-')) {
         formattedDropoffDate = format(parseISO(bookingDetails.dropoffDate), 'dd/MM/yyyy');
       } else if (bookingDetails.dropoffDate.includes('/')) {
-        // Keep the original format if it's already in DD/MM/YYYY or DD/MMM/YYYY
         formattedDropoffDate = bookingDetails.dropoffDate;
       }
     }
   } catch (error) {
     console.error("Error formatting dates:", error);
-    // Keep original values if formatting fails
+  }
+
+  const pickupLocationName = bookingDetails.pickupLocationName && 
+                            bookingDetails.pickupLocationName !== "undefined" ? 
+                            bookingDetails.pickupLocationName : "Not specified";
+
+  const dropoffLocationName = bookingDetails.dropoffLocationName && 
+                             bookingDetails.dropoffLocationName !== "undefined" ? 
+                             bookingDetails.dropoffLocationName : "Not specified";
+
+  let vehicleImageUrl = "";
+  if (bookingDetails.vehicleImage) {
+    if (bookingDetails.vehicleImage.includes('http')) {
+      vehicleImageUrl = bookingDetails.vehicleImage;
+    } else {
+      vehicleImageUrl = `https://rentalcarmanagerau.blob.core.windows.net/public/nzkuzarentals493/${bookingDetails.vehicleImage}`;
+    }
   }
 
   return (
@@ -516,12 +518,10 @@ const PaymentSuccess = () => {
 
         {bookingDetails && (
           <>
-            {bookingDetails.vehicleImage && !imageError && (
+            {vehicleImageUrl && !imageError && (
               <div className="w-full aspect-video rounded-lg overflow-hidden bg-gray-100 mb-6">
                 <img
-                  src={bookingDetails.vehicleImage.includes('http') ? 
-                      bookingDetails.vehicleImage : 
-                      `https://rentalcarmanagerau.blob.core.windows.net/public/nzkuzarentals493/${bookingDetails.vehicleImage}`}
+                  src={vehicleImageUrl}
                   alt={bookingDetails.vehicleName}
                   className="w-full h-full object-cover"
                   onError={handleImageError}
@@ -531,13 +531,13 @@ const PaymentSuccess = () => {
             
             <div className="flex items-center gap-2 mb-6">
               <Car className="h-6 w-6 text-gray-500" />
-              <h2 className="text-2xl font-semibold">{bookingDetails?.vehicleName}</h2>
+              <h2 className="text-2xl font-semibold">{bookingDetails.vehicleName}</h2>
             </div>
 
             <RentalDetails 
               vehicleName={bookingDetails.vehicleName}
-              pickupLocationName={bookingDetails.pickupLocationName || "Not specified"}
-              dropoffLocationName={bookingDetails.dropoffLocationName || "Not specified"}
+              pickupLocationName={pickupLocationName}
+              dropoffLocationName={dropoffLocationName}
               formattedPickupDate={formattedPickupDate}
               formattedDropoffDate={formattedDropoffDate}
               pickupTime={bookingDetails.pickupTime}
