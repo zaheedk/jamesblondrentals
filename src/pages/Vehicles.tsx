@@ -1,10 +1,9 @@
+
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
 import VehicleCard from "@/components/vehicles/VehicleCard";
 import { Vehicle, VehicleType } from "@/lib/types";
 import { Input } from "@/components/ui/input";
@@ -225,8 +224,6 @@ const Vehicles = () => {
   const hasApiError = driverAgesError || step2Error;
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
       <main className="flex-grow">
         <div className="bg-gray-50">
           <div className="container mx-auto px-4 py-8">
@@ -349,9 +346,8 @@ const Vehicles = () => {
           </div>
         </div>
       </main>
-      <Footer />
-    </div>
   );
 };
 
 export default Vehicles;
+
