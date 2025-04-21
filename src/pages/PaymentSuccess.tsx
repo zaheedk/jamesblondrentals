@@ -245,6 +245,15 @@ const PaymentSuccess = () => {
               console.log("Payment info from API:", paymentInfo);
               console.log("Customer info from API:", customerInfo);
               
+              // Use correct location fields and document path for image
+              let apiVehicleImageUrl = "";
+              if (bookingInfo.vehicleimage && bookingInfo.urlpathfordocuments) {
+                // Make sure only single slash
+                apiVehicleImageUrl = `${bookingInfo.urlpathfordocuments.replace(/\/$/, "")}/${bookingInfo.vehicleimage.replace(/^\//, "")}`;
+              } else if (bookingInfo.vehicleimage && !bookingInfo.urlpathfordocuments) {
+                apiVehicleImageUrl = bookingInfo.vehicleimage;
+              }
+
               const convertedDetails: BookingDetails = {
                 vehicleName: bookingInfo.vehiclecategory || sessionData?.vehicleName || 'Vehicle',
                 pickupDate: bookingInfo.pickupdate || sessionData?.pickupDate || '',
@@ -254,20 +263,21 @@ const PaymentSuccess = () => {
                 paymentAmount: paymentStatus === "success" ? (parseFloat(paymentInfo.paidamount) || sessionData?.paymentAmount || 0) : 0,
                 basePrice: parseFloat(bookingInfo.totalcost) || sessionData?.basePrice || 0,
                 reservationRef: bookingReservationRef,
-                vehicleImage: bookingInfo.vehicleimage || sessionData?.vehicleImage || '',
+                vehicleImage: apiVehicleImageUrl || sessionData?.vehicleImage || '',
                 insuranceName: bookingInfo.insuranceoption || sessionData?.insuranceName || '',
                 insurancePrice: parseFloat(bookingInfo.insuranceamount) || sessionData?.insurancePrice || 0,
                 selectedExtras: sessionData?.selectedExtras || [],
+                // Use pickuplocationname and dropofflocationname
                 pickupLocationName: bookingInfo.pickuplocationname || sessionData?.pickupLocationName || "Not specified",
                 dropoffLocationName: bookingInfo.dropofflocationname || sessionData?.dropoffLocationName || "Not specified",
                 totalRateAfterDiscount: parseFloat(bookingInfo.totalrateafterdiscount) || sessionData?.totalRateAfterDiscount || 0,
                 mandatoryFees: bookingInfo.mandatoryfees || sessionData?.mandatoryFees || [],
-                numberofdays: parseInt(bookingInfo.numberofdays) || 
-                           (sessionData?.pickupDate && sessionData?.dropoffDate ? 
-                             calculateRentalDuration(sessionData.pickupDate, sessionData.dropoffDate) : 0),
-                dailyrate: parseFloat(bookingInfo.dailyrate) || 
-                         (sessionData?.basePrice && sessionData?.numberofdays ? 
-                           sessionData.basePrice / sessionData.numberofdays : 0),
+                numberofdays: parseInt(bookingInfo.numberofdays) ||
+                  (sessionData?.pickupDate && sessionData?.dropoffDate ?
+                    calculateRentalDuration(sessionData.pickupDate, sessionData.dropoffDate) : 0),
+                dailyrate: parseFloat(bookingInfo.dailyrate) ||
+                  (sessionData?.basePrice && sessionData?.numberofdays ?
+                    sessionData.basePrice / sessionData.numberofdays : 0),
                 totalcost: parseFloat(bookingInfo.totalcost) || sessionData?.totalcost || 0,
                 payment: paymentStatus === "success" ? (parseFloat(paymentInfo.paidamount) || sessionData?.payment || 0) : 0,
                 balancedue: parseFloat(bookingInfo.balancedue) || sessionData?.balancedue || 0,
@@ -276,7 +286,6 @@ const PaymentSuccess = () => {
                 customerEmail: customerInfo.email || sessionData?.customerEmail || '',
                 customerPhone: customerInfo.phone || customerInfo.mobile || sessionData?.customerPhone || ''
               };
-
               setBookingDetails(convertedDetails);
               if (convertedDetails.pickupDate && convertedDetails.dropoffDate) {
                 const days = calculateRentalDuration(convertedDetails.pickupDate, convertedDetails.dropoffDate);
@@ -500,12 +509,8 @@ const PaymentSuccess = () => {
                              bookingDetails.dropoffLocationName : "Not specified";
 
   let vehicleImageUrl = "";
-  if (bookingDetails.vehicleImage) {
-    if (bookingDetails.vehicleImage.includes('http')) {
-      vehicleImageUrl = bookingDetails.vehicleImage;
-    } else {
-      vehicleImageUrl = `https://rentalcarmanagerau.blob.core.windows.net/public/nzkuzarentals493/${bookingDetails.vehicleImage}`;
-    }
+  if (bookingDetails?.vehicleImage) {
+    vehicleImageUrl = bookingDetails.vehicleImage;
   }
 
   return (
