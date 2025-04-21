@@ -60,6 +60,7 @@ interface ApiBookingResponse {
     bookinginfo?: any[];
     paymentinfo?: any[];
     customerinfo?: any[];
+    extrafees?: any[];
   };
 }
 
@@ -226,7 +227,7 @@ const PaymentSuccess = () => {
 
         if (bookingReservationRef) {
           try {
-            const response = await rcmApi.request('POST', 'bookinginfo', {
+            const response = await rcmApi.request<ApiBookingResponse>('POST', 'bookinginfo', {
               method: 'bookinginfo',
               reservationref: bookingReservationRef
             });
@@ -256,7 +257,7 @@ const PaymentSuccess = () => {
 
               // Try to pull mandatory fees from bookingInfo.mandatoryfees and from extrafees where isoptionalfee is false
               const apiMandatoryFeesFromOldField = bookingInfo.mandatoryfees || [];
-              const apiExtraFees = (response?.results?.extrafees ?? []);
+              const apiExtraFees = apiResponse.results.extrafees || [];
               // Only take non-optional fees from extrafees!
               const apiMandatoryFeesFromExtraFees = apiExtraFees
                 .filter((fee: any) => !fee.isoptionalfee)
