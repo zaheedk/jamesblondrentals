@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { MapPin, Clock } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 
 interface RentalDetailsProps {
   vehicleName: string;
@@ -43,13 +43,6 @@ const RentalDetails = ({
               <p className="text-gray-700">{dropoffLocationName || "Not specified"}</p>
               <p className="text-sm text-gray-600">{formattedDropoffDate} - {dropoffTime}</p>
             </div>
-          </div>
-        </div>
-        <div className="flex items-start gap-2">
-          <Clock className="h-4 w-4 mt-1" />
-          <div>
-            <p className="font-medium">Duration</p>
-            <p>{rentalDuration} day{rentalDuration !== 1 ? 's' : ''}</p>
           </div>
         </div>
       </div>
