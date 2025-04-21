@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -19,6 +18,8 @@ import {
 } from "@/components/ui/select";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
 
 interface RcmVehicleWithPricing {
   vehicle: RCMAvailableCar;
@@ -40,6 +41,7 @@ const Vehicles = () => {
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 500]);
   const [maxPriceAvailable, setMaxPriceAvailable] = useState<number>(500);
   const [searchTerm, setSearchTerm] = useState("");
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const pickupLocation = searchParams.get("pickupLocation") || "";
   const dropoffLocation = searchParams.get("dropoffLocation") || pickupLocation;
@@ -223,6 +225,18 @@ const Vehicles = () => {
 
   const hasApiError = driverAgesError || step2Error;
 
+  function getLocationName(locationId: string) {
+    if (locationId === "1") return "Kelston";
+    if (locationId === "2") return "Auckland Airport";
+    return locationId;
+  }
+
+  const isMobile = useIsMobile();
+
+  useEffect(() => {
+    setFiltersOpen(!isMobile);
+  }, [isMobile]);
+
   return (
       <main className="flex-grow">
         <div className="bg-gray-50">
@@ -232,20 +246,12 @@ const Vehicles = () => {
                 <h1 className="text-3xl font-bold mb-2">Available Vehicles</h1>
                 {pickupLocation && (
                   <p className="text-gray-600">
-                    Location: {pickupLocation}
+                    Location: {getLocationName(pickupLocation)}
                     {pickupDate && dropoffDate && (
                       <> | {pickupDate} - {dropoffDate}</>
                     )}
                   </p>
                 )}
-              </div>
-              <div className="w-full sm:w-64">
-                <Input
-                  placeholder="Search vehicles..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full"
-                />
               </div>
             </div>
             
@@ -261,63 +267,72 @@ const Vehicles = () => {
             )}
           </div>
         </div>
-
         <div className="container mx-auto px-4 py-8">
           <div className="flex flex-col lg:flex-row gap-8">
             <aside className="lg:w-1/4 space-y-6">
-              <Card className="p-4">
-                <h2 className="font-bold text-lg mb-4">Filters</h2>
-
-                <div className="space-y-6">
-                  <div>
-                    <Label className="text-base">Vehicle Type</Label>
-                    <Select
-                      value={vehicleType}
-                      onValueChange={(value) => setVehicleType(value as VehicleType | "all")}
+              <Collapsible open={filtersOpen} onOpenChange={setFiltersOpen}>
+                <div className="flex items-center justify-between">
+                  <h2 className="font-bold text-lg mb-4">Filters</h2>
+                  <CollapsibleTrigger asChild>
+                    <button
+                      className="lg:hidden text-primary px-2 py-1 rounded transition-colors hover:bg-primary/10"
                     >
-                      <SelectTrigger className="mt-2">
-                        <SelectValue placeholder="Select type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Types</SelectItem>
-                        {uniqueVehicleCategoryTypes.map((categoryType) => (
-                          <SelectItem key={categoryType.id} value={categoryType.id}>
-                            {categoryType.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label className="text-base">Price Range (total)</Label>
-                    <div className="mt-4">
-                      <div className="flex justify-between mb-2">
-                        <span className="text-sm">${priceRange[0]}</span>
-                        <span className="text-sm">${priceRange[1]}</span>
-                      </div>
-                      <Slider
-                        value={priceRange}
-                        min={0}
-                        max={maxPriceAvailable}
-                        step={10}
-                        minStepsBetweenThumbs={1}
-                        className="mt-2"
-                        onValueChange={(values: [number, number]) => {
-                          const newValues: [number, number] = [
-                            values[0],
-                            Math.min(values[1], maxPriceAvailable)
-                          ];
-                          console.log("New price range:", newValues);
-                          setPriceRange(newValues);
-                        }}
-                      />
-                    </div>
-                  </div>
+                      {filtersOpen ? "Hide Filters" : "Show Filters"}
+                    </button>
+                  </CollapsibleTrigger>
                 </div>
-              </Card>
+                <CollapsibleContent forceMount>
+                  <Card className="p-4">
+                    <div className="space-y-6">
+                      <div>
+                        <Label className="text-base">Vehicle Type</Label>
+                        <Select
+                          value={vehicleType}
+                          onValueChange={(value) => setVehicleType(value as VehicleType | "all")}
+                        >
+                          <SelectTrigger className="mt-2">
+                            <SelectValue placeholder="Select type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">All Types</SelectItem>
+                            {uniqueVehicleCategoryTypes.map((categoryType) => (
+                              <SelectItem key={categoryType.id} value={categoryType.id}>
+                                {categoryType.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label className="text-base">Price Range (total)</Label>
+                        <div className="mt-4">
+                          <div className="flex justify-between mb-2">
+                            <span className="text-sm">${priceRange[0]}</span>
+                            <span className="text-sm">${priceRange[1]}</span>
+                          </div>
+                          <Slider
+                            value={priceRange}
+                            min={0}
+                            max={maxPriceAvailable}
+                            step={10}
+                            minStepsBetweenThumbs={1}
+                            className="mt-2"
+                            onValueChange={(values: [number, number]) => {
+                              const newValues: [number, number] = [
+                                values[0],
+                                Math.min(values[1], maxPriceAvailable)
+                              ];
+                              console.log("New price range:", newValues);
+                              setPriceRange(newValues);
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                </CollapsibleContent>
+              </Collapsible>
             </aside>
-
             <div className="lg:w-3/4">
               {isLoading || isLoadingAges || isLoadingStep2 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -350,4 +365,3 @@ const Vehicles = () => {
 };
 
 export default Vehicles;
-
