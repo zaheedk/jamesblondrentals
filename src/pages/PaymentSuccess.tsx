@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -11,7 +10,7 @@ import { RCMBookingResponse } from "@/lib/api/rcm-api-types";
 import { differenceInDays, parseISO, isValid, format, addDays } from "date-fns";
 import PaymentStatusHeader from "@/components/payment/PaymentStatusHeader";
 import RentalDetails from "@/components/payment/RentalDetails";
-import DebugInfo from "@/components/payment/DebugInfo";
+import PaymentSummary from "@/components/payment/PaymentSummary";
 
 interface BookingDetails {
   vehicleName: string;
@@ -76,18 +75,6 @@ const PaymentSuccess = () => {
   const [rentalDuration, setRentalDuration] = useState<number>(0);
   const [imageError, setImageError] = useState<boolean>(false);
   const [apiResponse, setApiResponse] = useState<any>(null);
-  const [windcaveResponseDetails, setWindcaveResponseDetails] = useState<{
-    amount?: number;
-    transactionDate?: string;
-    status?: string;
-    transactionId?: string;
-    reservationRef?: string;
-    cardDetails?: {
-      cardholder?: string;
-      payType?: string;
-      cardNumber?: string;
-    };
-  }>({});
 
   const handleImageError = () => {
     console.log("Error loading vehicle image");
@@ -176,19 +163,17 @@ const PaymentSuccess = () => {
 
       const bookingResponse = await rcmApi.request<RCMBookingResponse>('POST', 'booking', requestPayload);
       
-      setApiResponse(bookingResponse);
       console.log('Complete API response from save quotation:', bookingResponse);
 
       if (bookingResponse.status === "OK") {
         toast.success("Quotation saved successfully!", {
-          description: `Check your email for the quote details. Response: ${JSON.stringify(bookingResponse.results || {})}`
+          description: `Check your email for the quote details.`
         });
       } else {
         throw new Error(bookingResponse.error || "Failed to save quotation");
       }
     } catch (error) {
       console.error("Failed to save quotation:", error);
-      setApiResponse(error);
       toast.error("Failed to save quotation", {
         description: error instanceof Error ? error.message : "Please try again or contact support"
       });
@@ -268,7 +253,7 @@ const PaymentSuccess = () => {
                 pickupTime: bookingInfo.pickuptime || sessionData?.pickupTime || '',
                 dropoffDate: bookingInfo.dropoffdate || sessionData?.dropoffDate || '',
                 dropoffTime: bookingInfo.dropofftime || sessionData?.dropoffTime || '',
-                paymentAmount: parseFloat(paymentInfo.paidamount) || sessionData?.paymentAmount || 0,
+                paymentAmount: paymentStatus === "success" ? (parseFloat(paymentInfo.paidamount) || sessionData?.paymentAmount || 0) : 0,
                 basePrice: parseFloat(bookingInfo.totalcost) || sessionData?.basePrice || 0,
                 reservationRef: bookingReservationRef,
                 vehicleImage: bookingInfo.vehicleimage || sessionData?.vehicleImage || '',
@@ -286,7 +271,7 @@ const PaymentSuccess = () => {
                          (sessionData?.basePrice && sessionData?.numberofdays ? 
                            sessionData.basePrice / sessionData.numberofdays : 0),
                 totalcost: parseFloat(bookingInfo.totalcost) || sessionData?.totalcost || 0,
-                payment: parseFloat(paymentInfo.paidamount) || sessionData?.payment || 0,
+                payment: paymentStatus === "success" ? (parseFloat(paymentInfo.paidamount) || sessionData?.payment || 0) : 0,
                 balancedue: parseFloat(bookingInfo.balancedue) || sessionData?.balancedue || 0,
                 customerFirstName: customerInfo.firstname || sessionData?.customerFirstName || '',
                 customerLastName: customerInfo.lastname || sessionData?.customerLastName || '',
@@ -325,7 +310,7 @@ const PaymentSuccess = () => {
             pickupTime: sessionData.pickupTime, 
             dropoffDate: sessionData.dropoffDate,
             dropoffTime: sessionData.dropoffTime,
-            paymentAmount: sessionData.paymentAmount || 0,
+            paymentAmount: paymentStatus === "success" ? (sessionData.paymentAmount || 0) : 0,
             basePrice: sessionData.basePrice || 0,
             paymentType: sessionData.paymentType,
             customerFirstName: sessionData.customerFirstName,
@@ -353,7 +338,7 @@ const PaymentSuccess = () => {
             numberofdays: sessionData.numberofdays || calculateRentalDuration(sessionData.pickupDate, sessionData.dropoffDate),
             dailyrate: sessionData.dailyrate || (sessionData.basePrice / calculateRentalDuration(sessionData.pickupDate, sessionData.dropoffDate)),
             totalcost: sessionData.totalcost || sessionData.basePrice,
-            payment: sessionData.payment || sessionData.paymentAmount,
+            payment: paymentStatus === "success" ? (sessionData.payment || sessionData.paymentAmount || 0) : 0,
             balancedue: sessionData.balancedue || 0
           };
           setBookingDetails(convertedDetails);
@@ -394,41 +379,43 @@ const PaymentSuccess = () => {
       if (pickupDate.includes('T') || pickupDate.includes('-')) {
         pickup = parseISO(pickupDate);
       } else {
-        const [day, month, year] = pickupDate.split('/').map(Number);
-        pickup = new Date(year, month - 1, day);
+        const parts = pickupDate.split('/');
+        if (parts.length === 3) {
+          // Try to parse as DD/MM/YYYY format
+          const day = parseInt(parts[0]);
+          const month = parseInt(parts[1]) - 1;
+          const year = parseInt(parts[2]);
+          pickup = new Date(year, month, day);
+          
+          if (!isValid(pickup)) {
+            // Try to parse as DD/MMM/YYYY format
+            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            const monthIndex = monthNames.findIndex(m => parts[1].includes(m));
+            if (monthIndex !== -1) {
+              pickup = new Date(parseInt(parts[2]), monthIndex, parseInt(parts[0]));
+            }
+          }
+        }
       }
       
       if (dropoffDate.includes('T') || dropoffDate.includes('-')) {
         dropoff = parseISO(dropoffDate);
       } else {
-        const [day, month, year] = dropoffDate.split('/').map(Number);
-        dropoff = new Date(year, month - 1, day);
-      }
-      
-      if (!isValid(pickup) && pickupDate.includes('/')) {
-        const parts = pickupDate.split('/');
-        if (parts.length === 3) {
-          const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-          const day = parseInt(parts[0]);
-          const monthIndex = monthNames.findIndex(m => parts[1].includes(m));
-          const year = parseInt(parts[2]);
-          
-          if (!isNaN(day) && monthIndex !== -1 && !isNaN(year)) {
-            pickup = new Date(year, monthIndex, day);
-          }
-        }
-      }
-      
-      if (!isValid(dropoff) && dropoffDate.includes('/')) {
         const parts = dropoffDate.split('/');
         if (parts.length === 3) {
-          const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+          // Try to parse as DD/MM/YYYY format
           const day = parseInt(parts[0]);
-          const monthIndex = monthNames.findIndex(m => parts[1].includes(m));
+          const month = parseInt(parts[1]) - 1;
           const year = parseInt(parts[2]);
+          dropoff = new Date(year, month, day);
           
-          if (!isNaN(day) && monthIndex !== -1 && !isNaN(year)) {
-            dropoff = new Date(year, monthIndex, day);
+          if (!isValid(dropoff)) {
+            // Try to parse as DD/MMM/YYYY format
+            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            const monthIndex = monthNames.findIndex(m => parts[1].includes(m));
+            if (monthIndex !== -1) {
+              dropoff = new Date(parseInt(parts[2]), monthIndex, parseInt(parts[0]));
+            }
           }
         }
       }
@@ -473,98 +460,33 @@ const PaymentSuccess = () => {
     );
   }
 
-  const formattedPickupDate = bookingDetails.pickupDate ? new Date(bookingDetails.pickupDate).toLocaleDateString() : "N/A";
-  const formattedDropoffDate = bookingDetails.dropoffDate ? new Date(bookingDetails.dropoffDate).toLocaleDateString() : "N/A";
-
-  const renderPaymentSummary = () => {
-    if (!bookingDetails) return null;
-
-    console.log('📦 Booking Details for payment summary:', {
-      numberofdays: bookingDetails.numberofdays,
-      dailyrate: bookingDetails.dailyrate,
-      totalcost: bookingDetails.totalcost,
-      payment: bookingDetails.payment,
-      balancedue: bookingDetails.balancedue,
-      basePrice: bookingDetails.basePrice
-    });
-
-    const rentalDays = bookingDetails.numberofdays || rentalDuration || 1;
-    const dailyRate = bookingDetails.dailyrate || (bookingDetails.basePrice / rentalDays);
-    const rentalValue = rentalDays * dailyRate;
+  // Format dates properly for display
+  let formattedPickupDate = bookingDetails.pickupDate;
+  let formattedDropoffDate = bookingDetails.dropoffDate;
+  
+  // Attempt to parse and format dates consistently
+  try {
+    if (bookingDetails.pickupDate) {
+      if (bookingDetails.pickupDate.includes('T') || bookingDetails.pickupDate.includes('-')) {
+        formattedPickupDate = format(parseISO(bookingDetails.pickupDate), 'dd/MM/yyyy');
+      } else if (bookingDetails.pickupDate.includes('/')) {
+        // Keep the original format if it's already in DD/MM/YYYY or DD/MMM/YYYY
+        formattedPickupDate = bookingDetails.pickupDate;
+      }
+    }
     
-    return (
-      <div className="bg-gray-50 rounded-lg p-4 mb-6">
-        <h3 className="text-lg font-semibold mb-4">Payment Summary</h3>
-        <div className="space-y-2">
-          <div className="flex justify-between">
-            <span>Rental Value ({rentalDays} days × ${dailyRate.toFixed(2)})</span>
-            <span>{formatCurrency(rentalValue)}</span>
-          </div>
-
-          {bookingDetails.insurancePrice > 0 && (
-            <div className="flex justify-between">
-              <span>{bookingDetails.insuranceName || 'Insurance'}</span>
-              <span>{formatCurrency(bookingDetails.insurancePrice)}</span>
-            </div>
-          )}
-
-          {bookingDetails.extraKmsPrice > 0 && (
-            <div className="flex justify-between">
-              <span>{bookingDetails.extraKmsName || 'Mileage Charge'}</span>
-              <span>{formatCurrency(bookingDetails.extraKmsPrice)}</span>
-            </div>
-          )}
-
-          {bookingDetails.selectedExtras && bookingDetails.selectedExtras.length > 0 && (
-            <>
-              <div className="border-t border-gray-300 my-2 pt-2">
-                <div className="font-medium mb-2">Extra Items</div>
-                {bookingDetails.selectedExtras.map((extra, index) => (
-                  <div key={index} className="flex justify-between text-sm">
-                    <span>{extra.name} {extra.quantity > 1 ? `(x${extra.quantity})` : ''}</span>
-                    <span>{formatCurrency(extra.price)}</span>
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-
-          {bookingDetails.mandatoryFees && bookingDetails.mandatoryFees.length > 0 && (
-            <>
-              <div className="border-t border-gray-300 my-2 pt-2">
-                <div className="font-medium mb-2">Mandatory Fees</div>
-                {bookingDetails.mandatoryFees.map((fee, index) => (
-                  <div key={index} className="flex justify-between text-sm">
-                    <span>{fee.name}</span>
-                    <span>{formatCurrency(fee.amount)}</span>
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-
-          <div className="border-t border-gray-300 my-2 pt-2">
-            <div className="flex justify-between font-semibold">
-              <span>Total Cost</span>
-              <span>{formatCurrency(bookingDetails.totalcost || (bookingDetails.basePrice + (bookingDetails.insurancePrice || 0) + (bookingDetails.extraKmsPrice || 0) + (bookingDetails.selectedExtras?.reduce((sum, extra) => sum + extra.price, 0) || 0)))}</span>
-            </div>
-          </div>
-
-          <div className="flex justify-between text-green-600">
-            <span>Paid</span>
-            <span>{formatCurrency(bookingDetails.payment || bookingDetails.paymentAmount || 0)}</span>
-          </div>
-
-          {(bookingDetails.balancedue || 0) > 0 && (
-            <div className="flex justify-between text-red-600 font-bold">
-              <span>Balance Due</span>
-              <span>{formatCurrency(bookingDetails.balancedue || 0)}</span>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  };
+    if (bookingDetails.dropoffDate) {
+      if (bookingDetails.dropoffDate.includes('T') || bookingDetails.dropoffDate.includes('-')) {
+        formattedDropoffDate = format(parseISO(bookingDetails.dropoffDate), 'dd/MM/yyyy');
+      } else if (bookingDetails.dropoffDate.includes('/')) {
+        // Keep the original format if it's already in DD/MM/YYYY or DD/MMM/YYYY
+        formattedDropoffDate = bookingDetails.dropoffDate;
+      }
+    }
+  } catch (error) {
+    console.error("Error formatting dates:", error);
+    // Keep original values if formatting fails
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -596,8 +518,8 @@ const PaymentSuccess = () => {
 
             <RentalDetails 
               vehicleName={bookingDetails.vehicleName}
-              pickupLocationName={bookingDetails.pickupLocationName || ""}
-              dropoffLocationName={bookingDetails.dropoffLocationName || ""}
+              pickupLocationName={bookingDetails.pickupLocationName || "Not specified"}
+              dropoffLocationName={bookingDetails.dropoffLocationName || "Not specified"}
               formattedPickupDate={formattedPickupDate}
               formattedDropoffDate={formattedDropoffDate}
               pickupTime={bookingDetails.pickupTime}
@@ -605,11 +527,18 @@ const PaymentSuccess = () => {
               rentalDuration={rentalDuration}
             />
 
-            {renderPaymentSummary()}
-
-            <DebugInfo 
-              apiResponse={apiResponse}
-              windcaveResponseDetails={windcaveResponseDetails}
+            <PaymentSummary
+              rentalDays={bookingDetails.numberofdays || rentalDuration || 1}
+              dailyRate={bookingDetails.dailyrate || (bookingDetails.basePrice / (bookingDetails.numberofdays || rentalDuration || 1))}
+              insuranceName={bookingDetails.insuranceName}
+              insurancePrice={bookingDetails.insurancePrice}
+              extraKmsName={bookingDetails.extraKmsName}
+              extraKmsPrice={bookingDetails.extraKmsPrice}
+              selectedExtras={bookingDetails.selectedExtras}
+              mandatoryFees={bookingDetails.mandatoryFees}
+              totalCost={bookingDetails.totalcost || bookingDetails.basePrice}
+              payment={paymentStatus === "success" ? (bookingDetails.payment || bookingDetails.paymentAmount || 0) : 0}
+              balanceDue={bookingDetails.balancedue || 0}
             />
             
             {paymentStatus === "success" ? (
