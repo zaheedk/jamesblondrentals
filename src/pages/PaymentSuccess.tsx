@@ -248,8 +248,10 @@ const PaymentSuccess = () => {
               let apiVehicleImageUrl = "";
               if (bookingInfo.vehicleimage && bookingInfo.urlpathfordocuments) {
                 apiVehicleImageUrl = `${bookingInfo.urlpathfordocuments.replace(/\/$/, "")}/${bookingInfo.vehicleimage.replace(/^\//, "")}`;
+                console.log("Created vehicle image URL from API data:", apiVehicleImageUrl);
               } else if (bookingInfo.vehicleimage && !bookingInfo.urlpathfordocuments) {
                 apiVehicleImageUrl = bookingInfo.vehicleimage;
+                console.log("Using raw vehicle image from API:", apiVehicleImageUrl);
               }
 
               const convertedDetails: BookingDetails = {
@@ -538,6 +540,12 @@ const PaymentSuccess = () => {
                   className="w-full h-full object-contain"
                   onError={handleImageError}
                 />
+              </div>
+            )}
+            
+            {imageError && (
+              <div className="w-full max-w-md mx-auto aspect-video rounded-lg overflow-hidden bg-gray-100 mb-6 max-h-[180px] flex items-center justify-center">
+                <Car className="h-24 w-24 text-gray-300" />
               </div>
             )}
             
