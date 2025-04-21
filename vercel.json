@@ -4,6 +4,10 @@
     {
       "source": "/api/rcm/:path*",
       "destination": "https://apis.rentalcarmanager.com/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ],
   "headers": [

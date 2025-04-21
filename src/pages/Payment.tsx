@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getBookingData, updateBookingData } from "@/lib/booking-session";
@@ -42,7 +43,9 @@ const Payment = () => {
     
     const createPayment = async () => {
       try {
-        const returnUrl = encodeURIComponent(`${window.location.origin}/payment`);
+        // Ensure we're using the absolute URL with origin to avoid routing issues
+        const origin = window.location.origin;
+        const returnUrl = encodeURIComponent(`${origin}/payment-success`);
         console.log('Return URL (encoded):', returnUrl);
         
         const requestPayload = {
