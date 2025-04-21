@@ -245,10 +245,8 @@ const PaymentSuccess = () => {
               console.log("Payment info from API:", paymentInfo);
               console.log("Customer info from API:", customerInfo);
               
-              // Use correct location fields and document path for image
               let apiVehicleImageUrl = "";
               if (bookingInfo.vehicleimage && bookingInfo.urlpathfordocuments) {
-                // Make sure only single slash
                 apiVehicleImageUrl = `${bookingInfo.urlpathfordocuments.replace(/\/$/, "")}/${bookingInfo.vehicleimage.replace(/^\//, "")}`;
               } else if (bookingInfo.vehicleimage && !bookingInfo.urlpathfordocuments) {
                 apiVehicleImageUrl = bookingInfo.vehicleimage;
@@ -267,7 +265,6 @@ const PaymentSuccess = () => {
                 insuranceName: bookingInfo.insuranceoption || sessionData?.insuranceName || '',
                 insurancePrice: parseFloat(bookingInfo.insuranceamount) || sessionData?.insurancePrice || 0,
                 selectedExtras: sessionData?.selectedExtras || [],
-                // Use pickuplocationname and dropofflocationname
                 pickupLocationName: bookingInfo.pickuplocationname || sessionData?.pickupLocationName || "Not specified",
                 dropoffLocationName: bookingInfo.dropofflocationname || sessionData?.dropoffLocationName || "Not specified",
                 totalRateAfterDiscount: parseFloat(bookingInfo.totalrateafterdiscount) || sessionData?.totalRateAfterDiscount || 0,
@@ -510,7 +507,15 @@ const PaymentSuccess = () => {
 
   let vehicleImageUrl = "";
   if (bookingDetails?.vehicleImage) {
-    vehicleImageUrl = bookingDetails.vehicleImage;
+    if (bookingDetails.vehicleImage.startsWith('http')) {
+      vehicleImageUrl = bookingDetails.vehicleImage;
+    } else {
+      vehicleImageUrl = `https://rentalcarmanagerau.blob.core.windows.net/public/nzkuzarentals493/${bookingDetails.vehicleImage.replace(/^\/+/, '')}`;
+    }
+    
+    vehicleImageUrl = vehicleImageUrl.replace(/([^:])\/+/g, '$1/');
+    
+    console.log("Vehicle image URL:", vehicleImageUrl);
   }
 
   return (
@@ -526,11 +531,11 @@ const PaymentSuccess = () => {
         {bookingDetails && (
           <>
             {vehicleImageUrl && !imageError && (
-              <div className="w-full aspect-video rounded-lg overflow-hidden bg-gray-100 mb-6 max-h-[180px]">
+              <div className="w-full max-w-md mx-auto aspect-video rounded-lg overflow-hidden bg-gray-100 mb-6 max-h-[180px]">
                 <img
                   src={vehicleImageUrl}
                   alt={bookingDetails.vehicleName}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain"
                   onError={handleImageError}
                 />
               </div>
