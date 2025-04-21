@@ -45,8 +45,8 @@ const Payment = () => {
       try {
         // Ensure we're using the absolute URL with origin to avoid routing issues
         const origin = window.location.origin;
-        const returnUrl = encodeURIComponent(`${origin}/payment-success`);
-        console.log('Return URL (encoded):', returnUrl);
+        const returnUrl = `${origin}/payment`;
+        console.log('Return URL:', returnUrl);
         
         const requestPayload = {
           method: "createdpspayment",
@@ -112,6 +112,7 @@ const Payment = () => {
       
       if (response && response.results) {
         const transactionId = response.results.TransactionId || 'N/A';
+        const reservationRefFromResponse = response.results.ReservationRef || reservationRef;
         
         let paymentStatus: "Approved" | "Failed" | "Pending" | "Unknown" = "Unknown";
         if (response.results.Status === "Approved") {
@@ -126,13 +127,13 @@ const Payment = () => {
         updateBookingData({ 
           transactionId: transactionId,
           paymentStatus: paymentStatus,
-          reservationRef: response.results.ReservationRef || reservationRef
+          reservationRef: reservationRefFromResponse
         });
         
         const params = new URLSearchParams();
         params.append('result', response.results.Status === 'Approved' ? 'success' : 'failed');
         params.append('txnId', transactionId);
-        params.append('reservationRef', response.results.ReservationRef || reservationRef);
+        params.append('reservationRef', reservationRefFromResponse);
         
         if (response.results.Status !== 'Approved') {
           params.append('message', response.results.ResponseText || 'Payment failed');
@@ -266,6 +267,3 @@ const Payment = () => {
       </div>
     </div>
   );
-};
-
-export default Payment;

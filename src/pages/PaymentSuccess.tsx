@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -59,6 +60,7 @@ interface ApiBookingResponse {
   results?: {
     bookinginfo?: any[];
     paymentinfo?: any[];
+    customerinfo?: any[];
     // Add other result properties as needed
   };
 }
@@ -225,7 +227,6 @@ const PaymentSuccess = () => {
           toast.success("Payment Successful", {
             description: "Your booking has been confirmed."
           });
-          clearBookingData();
         }
 
         const sessionData = getBookingData();
@@ -242,6 +243,7 @@ const PaymentSuccess = () => {
         if (bookingReservationRef) {
           console.log("Fetching booking details for reservation:", bookingReservationRef);
           try {
+            // Using the specific "bookinginfo" method as requested
             const response = await rcmApi.request('POST', 'bookinginfo', {
               method: 'bookinginfo',
               reservationref: bookingReservationRef
@@ -249,10 +251,16 @@ const PaymentSuccess = () => {
 
             const apiResponse = response as ApiBookingResponse;
             console.log("API Response for booking details:", apiResponse);
+            setApiResponse(apiResponse);
 
             if (apiResponse.status === "OK" && apiResponse.results) {
               const bookingInfo = apiResponse.results.bookinginfo?.[0] || {};
               const paymentInfo = apiResponse.results.paymentinfo?.[0] || {};
+              const customerInfo = apiResponse.results.customerinfo?.[0] || {};
+              
+              console.log("Booking info from API:", bookingInfo);
+              console.log("Payment info from API:", paymentInfo);
+              console.log("Customer info from API:", customerInfo);
               
               const convertedDetails: BookingDetails = {
                 vehicleName: bookingInfo.vehiclecategory || sessionData?.vehicleName || 'Vehicle',
@@ -279,7 +287,11 @@ const PaymentSuccess = () => {
                            sessionData.basePrice / sessionData.numberofdays : 0),
                 totalcost: parseFloat(bookingInfo.totalcost) || sessionData?.totalcost || 0,
                 payment: parseFloat(paymentInfo.paidamount) || sessionData?.payment || 0,
-                balancedue: parseFloat(bookingInfo.balancedue) || sessionData?.balancedue || 0
+                balancedue: parseFloat(bookingInfo.balancedue) || sessionData?.balancedue || 0,
+                customerFirstName: customerInfo.firstname || sessionData?.customerFirstName || '',
+                customerLastName: customerInfo.lastname || sessionData?.customerLastName || '',
+                customerEmail: customerInfo.email || sessionData?.customerEmail || '',
+                customerPhone: customerInfo.phone || customerInfo.mobile || sessionData?.customerPhone || ''
               };
 
               setBookingDetails(convertedDetails);
@@ -289,12 +301,22 @@ const PaymentSuccess = () => {
               }
               
               console.log("Booking details set from API:", convertedDetails);
+              
+              // Only clear session data after we've successfully retrieved and processed the API data
+              if (paymentStatus === "success") {
+                clearBookingData();
+                console.log("Booking data cleared from session after successful payment");
+              }
+            } else {
+              throw new Error(apiResponse.error || "Failed to fetch booking details");
             }
           } catch (apiError) {
             console.error("Error fetching booking details from API:", apiError);
+            // We'll fall back to session data below
           }
         }
         
+        // Fall back to session data if we couldn't get details from API
         if (!bookingDetails && sessionData) {
           console.log("Using session data as fallback for booking details");
           const convertedDetails: BookingDetails = {
@@ -342,11 +364,13 @@ const PaymentSuccess = () => {
           }
           
           console.log("Booking details set from session:", convertedDetails);
-        }
-        
-        if (paymentStatus === "success") {
-          clearBookingData();
-          console.log("Booking data cleared from session after successful payment");
+          
+          // Only clear session data if we genuinely had successful payment
+          // and we've managed to extract the data already
+          if (paymentStatus === "success") {
+            clearBookingData();
+            console.log("Booking data cleared from session after successful payment (fallback path)");
+          }
         }
         
         setIsLoading(false);
