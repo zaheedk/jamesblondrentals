@@ -254,6 +254,29 @@ const PaymentSuccess = () => {
                 console.log("Using raw vehicle image from API:", apiVehicleImageUrl);
               }
 
+              // Try to pull mandatory fees from bookingInfo.mandatoryfees and from extrafees where isoptionalfee is false
+              const apiMandatoryFeesFromOldField = bookingInfo.mandatoryfees || [];
+              const apiExtraFees = (response?.results?.extrafees ?? []);
+              // Only take non-optional fees from extrafees!
+              const apiMandatoryFeesFromExtraFees = apiExtraFees
+                .filter((fee: any) => !fee.isoptionalfee)
+                .map((fee: any) => ({
+                  name: fee.name,
+                  amount: typeof fee.fees === "number" ? fee.fees : parseFloat(fee.fees) || 0,
+                }));
+
+              const combinedMandatoryFees = [
+                ...(apiMandatoryFeesFromOldField.map((fee: any) => ({
+                  name: fee.name ?? "",
+                  amount: typeof fee.amount === "number"
+                    ? fee.amount
+                    : fee.amount
+                      ? parseFloat(fee.amount)
+                      : (typeof fee.totalfeeamount === "number" ? fee.totalfeeamount : parseFloat(fee.totalfeeamount) || 0),
+                })) ?? []),
+                ...apiMandatoryFeesFromExtraFees,
+              ];
+
               const convertedDetails: BookingDetails = {
                 vehicleName: bookingInfo.vehiclecategory || sessionData?.vehicleName || 'Vehicle',
                 pickupDate: bookingInfo.pickupdate || sessionData?.pickupDate || '',
@@ -270,7 +293,7 @@ const PaymentSuccess = () => {
                 pickupLocationName: bookingInfo.pickuplocationname || sessionData?.pickupLocationName || "Not specified",
                 dropoffLocationName: bookingInfo.dropofflocationname || sessionData?.dropoffLocationName || "Not specified",
                 totalRateAfterDiscount: parseFloat(bookingInfo.totalrateafterdiscount) || sessionData?.totalRateAfterDiscount || 0,
-                mandatoryFees: bookingInfo.mandatoryfees || sessionData?.mandatoryFees || [],
+                mandatoryFees: combinedMandatoryFees.length > 0 ? combinedMandatoryFees : (sessionData?.mandatoryFees || []),
                 numberofdays: parseInt(bookingInfo.numberofdays) ||
                   (sessionData?.pickupDate && sessionData?.dropoffDate ?
                     calculateRentalDuration(sessionData.pickupDate, sessionData.dropoffDate) : 0),
