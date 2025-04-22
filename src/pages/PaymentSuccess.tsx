@@ -64,6 +64,12 @@ interface ApiBookingResponse {
   };
 }
 
+declare global {
+  interface Window {
+    gtag: (...args: any[]) => void;
+  }
+}
+
 const PaymentSuccess = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -414,6 +420,42 @@ const PaymentSuccess = () => {
 
     fetchBookingDetails();
   }, [navigate, location, paymentStatus]);
+
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=G-MHKY18WZYH`;
+    document.head.appendChild(script);
+
+    script.onload = () => {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(...args: any[]){ window.dataLayer.push(args); }
+      gtag('js', new Date());
+      gtag('config', 'G-MHKY18WZYH');
+    };
+
+    return () => {
+      document.head.removeChild(script);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (paymentStatus === 'success' && bookingDetails) {
+      window.gtag('event', 'purchase', {
+        currency: 'NZD',
+        transaction_id: transactionId,
+        value: bookingDetails.paymentAmount,
+        items: [
+          {
+            item_id: bookingDetails.reservationRef,
+            item_name: bookingDetails.vehicleName,
+            price: bookingDetails.paymentAmount,
+            quantity: 1
+          }
+        ]
+      });
+    }
+  }, [paymentStatus, bookingDetails, transactionId]);
 
   const calculateRentalDuration = (pickupDate: string, dropoffDate: string) => {
     try {
