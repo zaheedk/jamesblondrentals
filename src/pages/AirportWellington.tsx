@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 const AirportWellington = () => (
@@ -41,6 +42,7 @@ const AirportWellington = () => (
         <li>24/7 pickup service available</li>
         <li>Complimentary shuttle transfers</li>
         <li>Fast and convenient service</li>
+        <li>Call Windy Depot on <a href="tel:0278374372" className="text-primary hover:underline">027 837 4372</a> to organize shuttle pickup</li>
       </ul>
     </section>
 
