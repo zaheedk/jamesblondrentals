@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -28,6 +27,9 @@ import Airport from "./pages/Airport";
 import AirportAbout from "./pages/AirportAbout";
 import AirportShuttle from "./pages/AirportShuttle";
 import AirportDirections from "./pages/AirportDirections";
+import AirportAuckland from "./pages/AirportAuckland";
+import AirportChristchurch from "./pages/AirportChristchurch";
+import AirportWellington from "./pages/AirportWellington";
 
 import FAQ from "./pages/FAQ";
 
@@ -66,6 +68,9 @@ const App = () => {
                 <Route path="about" element={<AirportAbout />} />
                 <Route path="shuttle" element={<AirportShuttle />} />
                 <Route path="directions" element={<AirportDirections />} />
+                <Route path="auckland" element={<AirportAuckland />} />
+                <Route path="christchurch" element={<AirportChristchurch />} />
+                <Route path="wellington" element={<AirportWellington />} />
               </Route>
               <Route path="/faq" element={<FAQ />} />
               <Route path="*" element={<NotFound />} />
