@@ -6,14 +6,19 @@ const AirportWellington = () => (
       <div className="grid md:grid-cols-2 gap-6">
         <div>
           <p className="text-gray-600 mb-4">
-            Our Wellington Airport car rental location offers convenient access to both the airport and city center. We provide complimentary pickup and drop-off services for all our customers.
+            Touching down in Wellington and need a ride you can count on? James Blond Rentals at Wellington Airport offers convenient, airport-close car and commercial vehicle hire. Our pickup location at 19 Shelly Bay Road, Miramar makes it quick and easy to get on the road right after landing.
           </p>
           <p className="text-gray-600 mb-4">
-            We offer a diverse range of vehicles to suit your needs, from compact cars to SUVs. All rentals include unlimited kilometres and standard insurance coverage.
+            We provide a full fleet of well-maintained vehicles including cars, SUVs, vans, minibuses, and trailers – all backed by our excellent service and 24/7 shuttle support.
           </p>
-          <h3 className="text-xl font-semibold mb-2">Opening Hours</h3>
-          <p className="text-gray-600">Monday to Sunday: 8:00am - 5:30pm</p>
-          <p className="text-gray-600 italic mt-2">After hours service available on request</p>
+          <div className="mt-6">
+            <h3 className="text-xl font-semibold mb-2">Contact Information</h3>
+            <p className="text-gray-600">Address:</p>
+            <p className="text-gray-600">19 Shelly Bay Road, Miramar</p>
+            <p className="text-gray-600 mb-2">Wellington 6022, New Zealand</p>
+            <p className="text-gray-600">Phone: <a href="tel:0800525663" className="text-primary hover:underline">0800 525 663</a></p>
+            <p className="text-gray-600">Email: <a href="mailto:info@jamesblond.co.nz" className="text-primary hover:underline">info@jamesblond.co.nz</a></p>
+          </div>
         </div>
         <div>
           <img 
@@ -29,11 +34,12 @@ const AirportWellington = () => (
     <section className="py-6 border-t">
       <h3 className="text-xl font-semibold mb-4">Shuttle Service</h3>
       <p className="text-gray-600 mb-4">
-        Our courtesy shuttle operates throughout our business hours. To arrange pickup, please call us once you've collected your luggage:
+        Available 24/7 for stress-free transfers to and from the terminal. Our dedicated shuttle service ensures you can get to your rental vehicle with ease, no matter when your flight arrives.
       </p>
       <ul className="list-disc list-inside text-gray-600 space-y-2 ml-4">
-        <li>Main Terminal: Outside the arrivals area</li>
-        <li>Look for our branded shuttle van</li>
+        <li>24/7 pickup service available</li>
+        <li>Complimentary shuttle transfers</li>
+        <li>Fast and convenient service</li>
       </ul>
     </section>
   </div>
