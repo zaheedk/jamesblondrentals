@@ -23,8 +23,8 @@ const AirportWellington = () => (
         </div>
         <div>
           <img 
-            src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" 
-            alt="Wellington Airport Location" 
+            src="https://images.unsplash.com/photo-1482938289607-e9573fc25ebb" 
+            alt="Wellington Landscape" 
             className="rounded-lg w-full h-64 object-cover"
             loading="lazy"
           />
