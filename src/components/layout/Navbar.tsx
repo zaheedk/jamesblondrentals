@@ -16,8 +16,11 @@ const Navbar = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <span className="text-xl font-bold text-primary">James Blond</span>
-            <span className="ml-1 text-xl font-light">Rentals</span>
+            <img 
+              src="/lovable-uploads/900107e8-dbcb-44ce-96a9-0588959abf24.png" 
+              alt="James Blond Rentals Logo" 
+              className="h-10 w-auto" 
+            />
           </Link>
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6">
