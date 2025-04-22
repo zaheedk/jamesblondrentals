@@ -4,6 +4,12 @@ import React from 'react';
 const AirportWellington = () => (
   <div className="space-y-6">
     <section className="mb-8">
+      <div className="text-center bg-secondary p-4 rounded-lg mb-6">
+        <p className="text-lg font-bold">
+          Need a shuttle? Call Windy Depot on <a href="tel:0278374372" className="text-primary hover:underline">027 837 4372</a> to organize your pickup
+        </p>
+      </div>
+
       <h2 className="text-2xl font-bold mb-4">Wellington Airport Car Rental</h2>
       <div className="grid md:grid-cols-2 gap-6">
         <div>
@@ -24,8 +30,8 @@ const AirportWellington = () => (
         </div>
         <div>
           <img 
-            src="https://images.unsplash.com/photo-1459767129954-1b1c1f9b9ace" 
-            alt="Wellington Airport Terminal" 
+            src="/lovable-uploads/cccdce30-4e44-423f-8a01-6db19d07e8fd.png" 
+            alt="Wellington Airport Interior" 
             className="rounded-lg w-full h-64 object-cover"
             loading="lazy"
           />
