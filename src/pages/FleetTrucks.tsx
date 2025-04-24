@@ -1,4 +1,3 @@
-import { Truck } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -104,9 +103,6 @@ const FleetTrucks = () => (
             </AspectRatio>
           )}
           <CardHeader>
-            <div className="flex items-center justify-center mb-4">
-              <Truck className="w-16 h-16 text-primary" />
-            </div>
             <CardTitle className="text-lg font-bold text-primary">{truck.title}</CardTitle>
             <CardDescription className="text-xl font-semibold">{truck.subtitle}</CardDescription>
           </CardHeader>
