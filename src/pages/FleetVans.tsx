@@ -1,3 +1,4 @@
+
 import { Truck } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -96,7 +97,8 @@ const vans = [
       "Deck: 2400(L) x 1800(W)",
       "Max Load: 1000kg",
       "Unlimited kilometres"
-    ]
+    ],
+    image: "/lovable-uploads/234be2bf-bb8a-4e38-90ba-899a4b1eaf38.png"
   },
   {
     id: "single-cab-ute-diesel",
@@ -109,7 +111,8 @@ const vans = [
       "Max Load: 1000kg",
       "25c per km mileage charge",
       "(first 100 kilometres free)​"
-    ]
+    ],
+    image: "/lovable-uploads/234be2bf-bb8a-4e38-90ba-899a4b1eaf38.png"
   }
 ];
 
