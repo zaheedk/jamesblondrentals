@@ -28,7 +28,8 @@ const cars = [
       "Apple / Android in-car system",
       "Smart Cruise Control",
       "System Lane exit / Driver attention alerts"
-    ]
+    ],
+    image: "/lovable-uploads/841454d4-8948-4c3b-ad99-d73b843deee8.png"
   },
   {
     category: "PREMIUM COMPACT SUV",
