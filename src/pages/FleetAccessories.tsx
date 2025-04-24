@@ -20,6 +20,7 @@ const accessories = [
   {
     title: "Straps & Ratchet",
     description: "Secure your cargo safely in the truck bed or van using our heavy-duty ratchet straps. Sold as a pair to provide extra stability and prevent shifting during transit.",
+    image: "/lovable-uploads/6242ae39-7570-4898-b18a-1fa9753856af.png",
   },
   {
     title: "Hand Trolley",
