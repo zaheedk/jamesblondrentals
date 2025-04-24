@@ -13,6 +13,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { format } from "date-fns";
 
 interface VehicleCategory {
   id: number;
@@ -45,7 +46,37 @@ interface CategoryListResponse {
 const FeaturedVehicles = () => {
   const [vehicles, setVehicles] = useState<VehicleCategory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { rcmApi } = useRcmApi();
+  const { rcmApi, useLocations } = useRcmApi();
+  const { data: locations = [] } = useLocations();
+  
+  // Generate search parameters for the "View All Vehicles" button
+  const getDefaultSearchParams = () => {
+    // Get tomorrow's date
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const pickupDate = format(tomorrow, 'dd/MM/yyyy');
+    
+    // Get day after tomorrow
+    const dayAfter = new Date(tomorrow);
+    dayAfter.setDate(dayAfter.getDate() + 1);
+    const dropoffDate = format(dayAfter, 'dd/MM/yyyy');
+    
+    // Default location (Auckland Airport)
+    const defaultLocationId = locations.length > 0 ? String(locations[0].id) : "7";
+    
+    const searchParams = new URLSearchParams({
+      pickupLocation: defaultLocationId,
+      dropoffLocation: defaultLocationId,
+      pickupDate,
+      dropoffDate,
+      pickupTime: "08:00",
+      dropoffTime: "08:00",
+      age: "4", // Default age group
+      carCategory: "0" // All categories
+    });
+    
+    return searchParams.toString();
+  };
   
   useEffect(() => {
     const fetchVehicles = async () => {
@@ -86,7 +117,7 @@ const FeaturedVehicles = () => {
           <h2 className="text-3xl font-bold mb-2">Premium Vehicles</h2>
           <p className="text-gray-600">Explore our exclusive premium collection</p>
         </div>
-        <Link to="/vehicles">
+        <Link to={`/vehicles?${getDefaultSearchParams()}`}>
           <Button variant="outline" className="mt-4 sm:mt-0">
             View All Vehicles
           </Button>
