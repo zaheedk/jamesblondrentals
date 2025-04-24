@@ -35,7 +35,8 @@ const trucks = [
       "Max Load: 2000kg",
       "Max Tail Lift Load: 400kg",
       "44c per km mileage charge"
-    ]
+    ],
+    image: "/lovable-uploads/d4f3f3f9-68b5-425e-83e7-7e468c0da49f.png"
   },
   {
     id: "2-tonne-box-16m3",
