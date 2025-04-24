@@ -1,6 +1,7 @@
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { Car, CarFront, Truck, Van } from "lucide-react";
 
 interface OptionSelectProps {
   id: string;
@@ -15,6 +16,20 @@ interface OptionSelectProps {
   allOptionId?: string | number;
   allOptionLabel?: string;
 }
+
+const getIconForCategory = (name: string) => {
+  const lowercaseName = name.toLowerCase();
+  
+  if (lowercaseName.includes('van')) {
+    return <Van className="mr-2 h-4 w-4" />;
+  } else if (lowercaseName.includes('truck')) {
+    return <Truck className="mr-2 h-4 w-4" />;
+  } else if (lowercaseName.includes('premium')) {
+    return <CarFront className="mr-2 h-4 w-4" />;
+  }
+  
+  return <Car className="mr-2 h-4 w-4" />;
+};
 
 export const OptionSelect = ({
   id,
@@ -50,18 +65,31 @@ export const OptionSelect = ({
       >
         <SelectTrigger id={id} className={isLoading ? "animate-pulse" : ""}>
           <SelectValue>
-            {value ? formatOptionName(getOptionName(value)) : defaultValue || placeholder}
+            {value ? (
+              <div className="flex items-center">
+                {id === "car-category" && getIconForCategory(getOptionName(value))}
+                <span>{formatOptionName(getOptionName(value))}</span>
+              </div>
+            ) : (
+              defaultValue || placeholder
+            )}
           </SelectValue>
         </SelectTrigger>
         <SelectContent>
           {options.length > 0 && (
             <SelectItem key="all" value={String(allOptionId)}>
-              {allOptionLabel}
+              <div className="flex items-center">
+                {id === "car-category" && <Car className="mr-2 h-4 w-4" />}
+                <span>{allOptionLabel}</span>
+              </div>
             </SelectItem>
           )}
           {options.map((option) => (
             <SelectItem key={option.id} value={String(option.id)}>
-              {formatOptionName(option.name)}
+              <div className="flex items-center">
+                {id === "car-category" && getIconForCategory(option.name)}
+                <span>{formatOptionName(option.name)}</span>
+              </div>
             </SelectItem>
           ))}
         </SelectContent>
@@ -69,3 +97,4 @@ export const OptionSelect = ({
     </div>
   );
 };
+
