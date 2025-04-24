@@ -1,8 +1,8 @@
-
 import { Truck } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 const vans = [
   {
@@ -18,7 +18,8 @@ const vans = [
       "Cargo: 2800(L) x 1400(W) x 1500(H)",
       "Max Load: 1000kg",
       "Unlimited Kilometres"
-    ]
+    ],
+    image: "/lovable-uploads/3cb301ec-ead2-492a-a9a0-3361c1876b76.png"
   },
   {
     id: "standard-van",
@@ -120,6 +121,15 @@ const FleetVans = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {vans.map((van) => (
         <Card key={van.id} className="flex flex-col h-full">
+          {van.image && (
+            <AspectRatio ratio={16/9} className="w-full">
+              <img 
+                src={van.image} 
+                alt={`${van.title}`} 
+                className="w-full h-full object-cover rounded-t-lg"
+              />
+            </AspectRatio>
+          )}
           <CardHeader>
             <CardTitle className="text-lg font-bold text-primary">{van.title}</CardTitle>
             <CardDescription className="text-xl font-semibold">{van.subtitle}</CardDescription>
