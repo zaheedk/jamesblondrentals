@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -71,7 +72,8 @@ const trailers = [
       specs: "5000(L) x 1900(W)",
     },
     maxLoad: "1940kg",
-    warning: "Towing vehicle must have WOF/REG"
+    warning: "Towing vehicle must have WOF/REG",
+    image: "/lovable-uploads/3f2ac575-135b-409f-b546-6ef7cdb9c9d9.png"
   }
 ];
 
