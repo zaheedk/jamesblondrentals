@@ -42,7 +42,8 @@ const cars = [
       "Apple / Android in-car system",
       "Smart Cruise Control",
       "System Lane exit / Driver attention alerts"
-    ]
+    ],
+    image: "/lovable-uploads/bdb0efeb-afa5-4ce7-b1fc-aace84a0222f.png"
   },
   {
     category: "PREMIUM AWD SUV",
