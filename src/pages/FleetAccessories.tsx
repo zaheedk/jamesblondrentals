@@ -15,6 +15,7 @@ const accessories = [
   {
     title: "Pallet Jack",
     description: "Ideal for lifting and transporting small to medium-sized pallets with ease. Built for durability and supports a maximum load of 1000kg for heavy-duty handling.",
+    image: "/lovable-uploads/7399d499-7037-41fe-b5c3-3d013ad2163e.png",
   },
   {
     title: "Straps & Ratchet",
