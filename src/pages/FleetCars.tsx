@@ -71,7 +71,8 @@ const cars = [
       "Air conditioning",
       "Bluetooth AUX and USB",
       "Adaptive Cruise Control System"
-    ]
+    ],
+    image: "/lovable-uploads/733eee77-e3c1-45e2-a28a-a44ef4299df4.png"
   },
   {
     category: "PREMIUM ECONOMY",
