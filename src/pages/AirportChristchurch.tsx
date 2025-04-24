@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 const AirportChristchurch = () => (
@@ -6,7 +5,7 @@ const AirportChristchurch = () => (
     <section className="mb-8">
       <div className="text-center bg-secondary p-4 rounded-lg mb-6">
         <p className="text-lg font-bold">
-          Need a shuttle? Call Green Motion on <a href="tel:0800247727" className="text-primary hover:underline">0800 24 77 27</a> or <a href="tel:0800468468" className="text-primary hover:underline">0800 468 468</a> to organize your pickup
+          Need a Shuttle? Call James Blond on <a href="tel:0800247727" className="text-primary hover:underline">0800 24 77 27</a> or <a href="tel:0800525663" className="text-primary hover:underline">0800 525 663</a> to organise your pick up
         </p>
       </div>
 
@@ -68,4 +67,3 @@ const AirportChristchurch = () => (
 );
 
 export default AirportChristchurch;
-
