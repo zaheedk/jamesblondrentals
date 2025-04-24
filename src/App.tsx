@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,6 +14,7 @@ import PaymentOptions from "./pages/PaymentOptions";
 import Payment from "./pages/Payment";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import About from "./pages/About";
+import ContactAuckland from "./pages/ContactAuckland";
 
 import Fleet from "./pages/Fleet";
 import FleetCars from "./pages/FleetCars";
@@ -73,6 +73,7 @@ const App = () => {
                 <Route path="christchurch" element={<AirportChristchurch />} />
                 <Route path="wellington" element={<AirportWellington />} />
               </Route>
+              <Route path="/contact/auckland" element={<ContactAuckland />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
