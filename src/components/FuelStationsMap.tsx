@@ -30,7 +30,7 @@ const fuelStations = [
 
 const FuelStationsMap = () => {
   return (
-    <LoadScript googleMapsApiKey="YOUR_GOOGLE_MAPS_API_KEY">
+    <LoadScript googleMapsApiKey="AIzaSyC2BGBMGyKkuOlkIcXj_EcmQ6k7gYcT-rg">
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={center}
