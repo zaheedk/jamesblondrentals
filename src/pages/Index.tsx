@@ -4,6 +4,36 @@ import Hero from "@/components/home/Hero";
 import FeaturedVehicles from "@/components/home/FeaturedVehicles";
 
 const Index = () => {
+  // Get tomorrow's date in dd/MM/yyyy format
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const pickupDate = tomorrow.toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  }).replace(/\//g, '/');
+
+  // Get the day after tomorrow
+  const dayAfter = new Date(tomorrow);
+  dayAfter.setDate(dayAfter.getDate() + 1);
+  const dropoffDate = dayAfter.toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  }).replace(/\//g, '/');
+
+  // Construct search URL with default parameters
+  const searchParams = new URLSearchParams({
+    pickupLocation: "2", // Auckland Airport location ID
+    dropoffLocation: "2",
+    pickupDate,
+    dropoffDate,
+    pickupTime: "08:00",
+    dropoffTime: "08:00",
+    age: "4", // Default age group
+    carCategory: "2" // Premium/SUV category
+  }).toString();
+
   return (
     <div>
       <Hero />
@@ -35,6 +65,7 @@ const Index = () => {
         </div>
       </section>
       
+      {/* Why Choose Section */}
       <section className="bg-gray-50 py-16">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">Why Choose James Blond Rentals</h2>
@@ -67,6 +98,7 @@ const Index = () => {
         </div>
       </section>
       
+      {/* CTA Section */}
       <section className="bg-primary py-16">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold text-white mb-4">Ready to Book Your Perfect Ride?</h2>
@@ -74,7 +106,7 @@ const Index = () => {
             Choose from our extensive fleet of vehicles and enjoy a smooth rental experience from start to finish.
           </p>
           <Button asChild className="bg-white text-primary hover:bg-gray-100">
-            <Link to="/vehicles">Browse All Vehicles</Link>
+            <Link to={`/vehicles?${searchParams}`}>Browse All Vehicles</Link>
           </Button>
         </div>
       </section>
