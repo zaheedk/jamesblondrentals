@@ -98,7 +98,8 @@ const cars = [
       "Air conditioning",
       "Bluetooth AUX and USB",
       "Adaptive Cruise Control System"
-    ]
+    ],
+    image: "/lovable-uploads/88ff5179-c7dc-499f-9b7d-e3d934ec686c.png"
   },
   {
     category: "PREMIUM ECONOMY WAGON",
