@@ -1,10 +1,9 @@
-
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import { Button } from "@/components/ui/button"; // Add this import for Button component
+import { Button } from "@/components/ui/button";
 import VehicleCard from "@/components/vehicles/VehicleCard";
 import { Vehicle, VehicleType } from "@/lib/types";
 import { Input } from "@/components/ui/input";
@@ -35,9 +34,10 @@ const Vehicles = () => {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { useDriverAges, useStep2Vehicles, useVehicleCategories, rcmApi } = useRcmApi();
+  const { useDriverAges, useStep2Vehicles, useVehicleCategories, useLocations, rcmApi } = useRcmApi();
   const { data: driverAges, isLoading: isLoadingAges, error: driverAgesError } = useDriverAges();
   const { data: categoryTypes } = useVehicleCategories();
+  const { data: locations = [] } = useLocations();
   const [uniqueVehicleCategoryTypes, setUniqueVehicleCategoryTypes] = useState<Array<{id: string, name: string}>>([]);
   const [showApiDetails, setShowApiDetails] = useState(false);
   const [activeTab, setActiveTab] = useState("results");
@@ -245,9 +245,8 @@ const Vehicles = () => {
   const hasApiError = driverAgesError || step2Error;
 
   function getLocationName(locationId: string) {
-    if (locationId === "1") return "Kelston";
-    if (locationId === "2") return "Auckland Airport";
-    return locationId;
+    const location = locations.find(loc => String(loc.id) === locationId);
+    return location ? location.name : locationId;
   }
 
   const isMobile = useIsMobile();
