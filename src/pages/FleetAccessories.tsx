@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from "@/components/ui/button";
 
@@ -25,10 +26,12 @@ const accessories = [
   {
     title: "Hand Trolley",
     description: "Reduce the strain of moving heavy items with this durable hand trolley. Its sturdy frame and smooth wheels make transporting goods quick and effortless.",
+    image: "/lovable-uploads/2462a28e-2cb6-44ef-82b9-b46b5559d465.png",
   },
   {
     title: "Large Hand Trolley",
     description: "Designed for larger, bulkier loads, this trolley makes lifting and transporting heavy items easier. Its reinforced frame provides extra stability for demanding tasks.",
+    image: "/lovable-uploads/2462a28e-2cb6-44ef-82b9-b46b5559d465.png",
   }
 ];
 
