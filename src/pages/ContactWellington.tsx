@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { MapPin, Phone, Mail, Facebook } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -83,7 +84,7 @@ const ContactWellington = () => {
             <h2 className="text-2xl font-semibold mb-6">Location</h2>
             <div className="aspect-video">
               <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3044.048034246072!2d174.90435287674043!3d-41.23354017131868!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6d38abe0ba3b16a5%3A0x8e5b3b5c2fec3821!2s48A%20Seaview%20Rd%2C%20Seaview%2C%20Lower%20Hutt%205010!5e0!3m2!1sen!2snz!4v1682305436010!5m2!1sen!2snz"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3044.048034246072!2d174.90435287674043!3d-41.23354017131868!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6d38abe0ba3b16a5%3A0x8e5b3b5c2fec3821!2s24%20Abel%20Smith%20St%2C%20Te%20Aro%2C%20Wellington%206011!5e0!3m2!1sen!2snz!4v1682305436010!5m2!1sen!2snz"
                 className="w-full h-full border-0"
                 allowFullScreen
                 loading="lazy"
