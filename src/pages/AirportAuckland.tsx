@@ -27,8 +27,8 @@ const AirportAuckland = () => (
         </div>
         <div>
           <img 
-            src="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b" 
-            alt="Auckland Airport Location" 
+            src="/lovable-uploads/6a274083-edb0-4ac2-8e40-4ac3703a8660.png" 
+            alt="Auckland International Airport" 
             className="rounded-lg w-full h-64 object-cover"
             loading="lazy"
           />
@@ -37,7 +37,7 @@ const AirportAuckland = () => (
     </section>
 
     <section className="py-6 border-t">
-      <h3 className="text-xl font-semibold mb-4">24/7 Airport Shuttle Service</h3>
+      <h3 className="text-xl font-semibold mb-4">24/7 Airport Shuttle Transfers</h3>
       <p className="text-gray-600 mb-4">
         Once your flight arrives and you've collected your bags, please call us on <a href="tel:0800525663" className="text-primary hover:underline">0800 525 663</a>. One of our friendly shuttle drivers will pick you up from the designated pickup zone.
       </p>
@@ -48,7 +48,7 @@ const AirportAuckland = () => (
           <ul className="list-disc list-inside text-gray-600 space-y-2 ml-4">
             <li>Exit the terminal and follow the signs for "Rental Car Shuttles" located outside Door 9</li>
             <li>Cross the first lane of traffic and wait at the courtesy shuttle pickup zone</li>
-            <li>Our blue and white James Blond shuttle van will arrive shortly</li>
+            <li>Our blue and white James Blond shuttle van will arrive shortly to take you to our Airpark Drive branch</li>
           </ul>
         </div>
         
@@ -57,7 +57,7 @@ const AirportAuckland = () => (
           <ul className="list-disc list-inside text-gray-600 space-y-2 ml-4">
             <li>Exit the terminal through Door 11 near the arrivals area and turn right</li>
             <li>Proceed along the covered walkway until you reach the offsite shuttle pickup bay</li>
-            <li>Watch for the James Blond shuttle van - our team will assist with your bags</li>
+            <li>Watch for the James Blond shuttle van - our team will be there to assist with your bags</li>
           </ul>
         </div>
 
@@ -75,3 +75,4 @@ const AirportAuckland = () => (
 );
 
 export default AirportAuckland;
+
