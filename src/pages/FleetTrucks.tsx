@@ -47,7 +47,8 @@ const trucks = [
       "Box: 3800(L) x 2000(W) x 2000(H)",
       "Max Load: 2000kg",
       "*47c per km mileage charge"
-    ]
+    ],
+    image: "/lovable-uploads/a00bb0d9-fccc-4d69-a9ab-28d894f74538.png"
   },
   {
     id: "2-tonne-tipper",
