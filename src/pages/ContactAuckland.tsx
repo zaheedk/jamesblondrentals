@@ -6,7 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 const ContactAuckland = () => {
   return (
     <div className="container mx-auto px-4 py-12">
-      <h1 className="text-4xl font-bold mb-8 text-center">Auckland - Kelston Branch</h1>
+      <h1 className="text-4xl font-bold mb-8 text-center">Auckland - Glen Eden Branch</h1>
       
       <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
         {/* Contact Information */}
@@ -18,8 +18,8 @@ const ContactAuckland = () => {
                 <MapPin className="w-5 h-5 mt-1 text-primary" />
                 <div>
                   <p className="font-medium">Address:</p>
-                  <p>19A Cartwright Road</p>
-                  <p>Kelston</p>
+                  <p>4004 Great North Road</p>
+                  <p>Glen Eden</p>
                   <p>Auckland 0602</p>
                 </div>
               </div>
@@ -28,7 +28,7 @@ const ContactAuckland = () => {
                 <Phone className="w-5 h-5 text-primary" />
                 <div>
                   <p className="font-medium">Phone:</p>
-                  <a href="tel:095559927" className="hover:text-primary">09 555 9927</a>
+                  <a href="tel:0800525663" className="hover:text-primary">0800 525 663</a>
                 </div>
               </div>
               
@@ -51,16 +51,8 @@ const ContactAuckland = () => {
             <h2 className="text-2xl font-semibold mb-6">Opening Hours</h2>
             <div className="space-y-2">
               <div className="flex justify-between">
-                <span className="font-medium">Monday - Friday:</span>
+                <span className="font-medium">Monday - Sunday:</span>
                 <span>8:00 AM - 5:00 PM</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-medium">Saturday:</span>
-                <span>8:00 AM - 4:00 PM</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-medium">Sunday:</span>
-                <span>9:00 AM - 4:00 PM</span>
               </div>
               <div className="mt-4 text-sm text-gray-600">
                 <p>After hours pick up and drop off available on request</p>
@@ -77,7 +69,7 @@ const ContactAuckland = () => {
             <h2 className="text-2xl font-semibold mb-6">Location</h2>
             <div className="aspect-video">
               <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3191.8973880842147!2d174.65477937680756!3d-36.87433347222694!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6d0d41408e40133b%3A0x888b33c5a8be092d!2s19A%20Cartwright%20Rd%2C%20Kelston%2C%20Auckland%200602!5e0!3m2!1sen!2snz!4v1682305436010!5m2!1sen!2snz"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3191.7967506288556!2d174.6639414768076!3d-36.87619637222694!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6d0d41f871c7a051%3A0xc19ca6448a87fc3b!2s4004%20Great%20North%20Rd%2C%20Glen%20Eden%2C%20Auckland%200602!5e0!3m2!1sen!2snz!4v1682305436010!5m2!1sen!2snz"
                 className="w-full h-full border-0"
                 allowFullScreen
                 loading="lazy"
