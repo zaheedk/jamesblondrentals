@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Hero from "@/components/home/Hero";
@@ -10,6 +9,31 @@ const Index = () => {
       <Hero />
       
       <FeaturedVehicles />
+      
+      {/* Book with Confidence Section */}
+      <section className="bg-white py-16">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-8">Book with Confidence</h2>
+          <div className="max-w-4xl mx-auto space-y-6 text-gray-600">
+            <p className="leading-relaxed">
+              'James Blond Rentals' is a well trusted name when it comes to car rental or truck rental company in Auckland. 
+              We understand the importance of convenience when it comes to renting a vehicle. Our online booking platform allows 
+              you to reserve your desired vehicle from the comfort of your own home, saving you time and eliminating the need 
+              for in-person visits.
+            </p>
+            <p className="leading-relaxed">
+              With a few clicks, you can select the dates, pick-up and drop-off locations, and choose from our extensive fleet 
+              of well-maintained rental cars, trucks, vans and more. Our user-friendly interface ensures a hassle-free booking 
+              process, making your travel arrangements a breeze.
+            </p>
+            <div className="bg-primary/5 p-6 rounded-lg mt-8 text-center">
+              <p className="text-xl font-semibold text-primary">
+                James Blond Guarantee! No hidden costs. No surprise taxes. Transparent Rental policy.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
       
       <section className="bg-gray-50 py-16">
         <div className="container mx-auto px-4">
