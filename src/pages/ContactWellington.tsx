@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { MapPin, Phone, Mail, Facebook } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -18,9 +17,9 @@ const ContactWellington = () => {
                 <MapPin className="w-5 h-5 mt-1 text-primary" />
                 <div>
                   <p className="font-medium">Address:</p>
-                  <p>48A Seaview Road</p>
-                  <p>Lower Hutt</p>
-                  <p>Wellington 5010</p>
+                  <p>24 Abel Smith Street</p>
+                  <p>Te Aro</p>
+                  <p>Wellington 6011</p>
                 </div>
               </div>
               
