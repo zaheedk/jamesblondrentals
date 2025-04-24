@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Hero from "@/components/home/Hero";
@@ -29,14 +28,14 @@ const Index = () => {
 
   // Construct search URL with default parameters
   const searchParams = new URLSearchParams({
-    pickupLocation: "7", // Auckland Airport location ID (updated from "2" to "7")
+    pickupLocation: "7", // Auckland Airport location ID
     dropoffLocation: "7",
     pickupDate,
     dropoffDate,
     pickupTime: "08:00",
     dropoffTime: "08:00",
     age: "4", // Default age group
-    carCategory: "3" // SUV category (updated from "2" to "3")
+    carCategory: "0" // All categories (changed from "3" to "0")
   }).toString();
 
   // Create request details object to display
@@ -49,7 +48,7 @@ const Index = () => {
     dropoffdate: dropoffDate, 
     dropofftime: "08:00",
     ageid: "4",
-    vehiclecategorytypeid: "3" // SUV
+    vehiclecategorytypeid: "0" // Changed from "3" to "0" for all categories
   };
 
   return (
