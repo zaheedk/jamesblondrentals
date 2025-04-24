@@ -67,7 +67,6 @@ const FuelStationsMap = () => {
               strokeWeight: 1,
               strokeColor: "#000",
               scale: 1.5,
-              anchor: { x: 12, y: 24 }
             }}
           />
         ))}
