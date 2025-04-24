@@ -23,7 +23,8 @@ const trucks = [
       "Box: 3100(L) x 1750(W) x 2050(H)",
       "Max Load: 2000kg",
       "44c per km mileage charge"
-    ]
+    ],
+    image: "/lovable-uploads/b1bd35e2-4d58-4900-86c5-dfe61a852d78.png"
   },
   {
     id: "2-tonne-box-12m3-tail",
