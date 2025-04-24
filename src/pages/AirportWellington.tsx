@@ -1,5 +1,6 @@
-
 import React from 'react';
+import { MapIcon } from 'lucide-react';
+import FuelStationsMapWellington from '../components/FuelStationsMapWellington';
 
 const AirportWellington = () => (
   <div className="space-y-6">
@@ -50,6 +51,42 @@ const AirportWellington = () => (
         <li>Fast and convenient service</li>
         <li>Call Windy Depot on <a href="tel:0278374372" className="text-primary hover:underline">027 837 4372</a> to organize shuttle pickup</li>
       </ul>
+    </section>
+
+    <section className="py-6 border-t">
+      <h2 className="text-2xl font-bold mb-4">Fuel Up Nearby</h2>
+      <div className="mb-6">
+        <FuelStationsMapWellington />
+      </div>
+      <div className="grid md:grid-cols-2 gap-6">
+        <div className="p-4 border rounded-lg">
+          <h3 className="text-xl font-semibold mb-2">Z-Broadway</h3>
+          <p className="text-gray-600">Broadway, Strathmore Park</p>
+          <a 
+            href="https://www.google.com/maps?q=Z+Broadway+Strathmore+Park" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center mt-2 text-primary hover:underline"
+          >
+            <MapIcon className="w-4 h-4 mr-1" />
+            View on map
+          </a>
+        </div>
+
+        <div className="p-4 border rounded-lg">
+          <h3 className="text-xl font-semibold mb-2">Mobil</h3>
+          <p className="text-gray-600">1 Bay Road, Kilbirnie</p>
+          <a 
+            href="https://www.google.com/maps?q=1+Bay+Road+Kilbirnie+Wellington" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center mt-2 text-primary hover:underline"
+          >
+            <MapIcon className="w-4 h-4 mr-1" />
+            View on map
+          </a>
+        </div>
+      </div>
     </section>
 
     <section className="py-6 border-t">
