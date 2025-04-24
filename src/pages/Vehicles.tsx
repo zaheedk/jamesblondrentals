@@ -20,6 +20,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface RcmVehicleWithPricing {
   vehicle: RCMAvailableCar;
@@ -32,10 +33,12 @@ const Vehicles = () => {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { useDriverAges, useStep2Vehicles, useVehicleCategories } = useRcmApi();
+  const { useDriverAges, useStep2Vehicles, useVehicleCategories, rcmApi } = useRcmApi();
   const { data: driverAges, isLoading: isLoadingAges, error: driverAgesError } = useDriverAges();
   const { data: categoryTypes } = useVehicleCategories();
   const [uniqueVehicleCategoryTypes, setUniqueVehicleCategoryTypes] = useState<Array<{id: string, name: string}>>([]);
+  const [showApiDetails, setShowApiDetails] = useState(false);
+  const [activeTab, setActiveTab] = useState("results");
 
   const [vehicleType, setVehicleType] = useState<VehicleType | "all">("all");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 500]);
@@ -79,6 +82,20 @@ const Vehicles = () => {
   console.log("Step2Params vehiclecategorytypeid:", step2Params?.vehiclecategorytypeid);
 
   const { data: step2Data, isLoading: isLoadingStep2, error: step2Error } = useStep2Vehicles(step2Params);
+
+  const apiRequestDetails = step2Params ? {
+    method: "step2",
+    ...step2Params
+  } : null;
+
+  const [apiResponse, setApiResponse] = useState<any>(null);
+
+  useEffect(() => {
+    if (rcmApi) {
+      const lastRequestDetails = rcmApi.getLastRequestDetails();
+      setApiResponse(lastRequestDetails);
+    }
+  }, [rcmApi, step2Data, step2Error]);
 
   useEffect(() => {
     if (!driverAges?.length) {
@@ -265,8 +282,81 @@ const Vehicles = () => {
                 </AlertDescription>
               </Alert>
             )}
+
+            <div className="mt-6">
+              <div className="flex justify-between items-center mb-2">
+                <h2 className="text-lg font-semibold">API Request Details</h2>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setShowApiDetails(!showApiDetails)}
+                >
+                  {showApiDetails ? "Hide Details" : "Show Details"}
+                </Button>
+              </div>
+              
+              {showApiDetails && (
+                <Card className="mb-6 overflow-hidden">
+                  <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                    <TabsList className="grid w-full grid-cols-2">
+                      <TabsTrigger value="request">Request</TabsTrigger>
+                      <TabsTrigger value="response">Response</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="request" className="p-4">
+                      <div className="space-y-4">
+                        <h3 className="font-semibold">API Request Parameters</h3>
+                        {apiRequestDetails ? (
+                          <>
+                            <div className="bg-gray-800 text-gray-100 p-4 rounded-md overflow-x-auto">
+                              <pre className="text-sm">
+                                {JSON.stringify(apiRequestDetails, null, 2)}
+                              </pre>
+                            </div>
+                            <div className="text-sm text-gray-600">
+                              <p><strong>URL Parameters:</strong> {new URLSearchParams(searchParams).toString()}</p>
+                            </div>
+                          </>
+                        ) : (
+                          <p className="text-sm text-gray-500">No request parameters available</p>
+                        )}
+                      </div>
+                    </TabsContent>
+                    <TabsContent value="response" className="p-4">
+                      <div className="space-y-4">
+                        <h3 className="font-semibold">API Response Details</h3>
+                        {apiResponse ? (
+                          <div className="space-y-3">
+                            <div className="text-sm space-y-1">
+                              <p><strong>Timestamp:</strong> {apiResponse.timestamp || 'N/A'}</p>
+                              <p><strong>URL:</strong> {apiResponse.url || 'N/A'}</p>
+                              <p><strong>Method:</strong> {apiResponse.method || 'N/A'}</p>
+                            </div>
+                            
+                            {apiResponse.error && (
+                              <div className="bg-red-50 text-red-800 p-4 rounded-md">
+                                <h4 className="font-medium">Error:</h4>
+                                <p className="text-sm">{apiResponse.error}</p>
+                              </div>
+                            )}
+                            
+                            <div className="bg-gray-800 text-gray-100 p-4 rounded-md overflow-x-auto">
+                              <pre className="text-sm">
+                                {JSON.stringify(apiResponse.response || {}, null, 2)}
+                              </pre>
+                            </div>
+                          </div>
+                        ) : (
+                          <p className="text-sm text-gray-500">No response data available</p>
+                        )}
+                      </div>
+                    </TabsContent>
+                  </Tabs>
+                </Card>
+              )}
+            </div>
           </div>
         </div>
+
         <div className="container mx-auto px-4 py-8">
           <div className="flex flex-col lg:flex-row gap-8">
             <aside className="lg:w-1/4 space-y-6">
