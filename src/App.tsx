@@ -16,6 +16,7 @@ import PaymentSuccess from "./pages/PaymentSuccess";
 import About from "./pages/About";
 import ContactAuckland from "./pages/ContactAuckland";
 import ContactWellington from "./pages/ContactWellington";
+import ContactChristchurch from "./pages/ContactChristchurch";
 
 import Fleet from "./pages/Fleet";
 import FleetCars from "./pages/FleetCars";
@@ -76,6 +77,7 @@ const App = () => {
               </Route>
               <Route path="/contact/auckland" element={<ContactAuckland />} />
               <Route path="/contact/wellington" element={<ContactWellington />} />
+              <Route path="/contact/christchurch" element={<ContactChristchurch />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
