@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { MapPin, Phone, Mail } from 'lucide-react';
+import { MapPin, Phone, Mail, Facebook } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 
 const ContactAuckland = () => {
@@ -38,6 +37,21 @@ const ContactAuckland = () => {
                   <p className="font-medium">Email:</p>
                   <a href="mailto:info@jamesblond.co.nz" className="hover:text-primary">
                     info@jamesblond.co.nz
+                  </a>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-3">
+                <Facebook className="w-5 h-5 text-primary" />
+                <div>
+                  <p className="font-medium">Facebook:</p>
+                  <a 
+                    href="https://www.facebook.com/jamesblond.auckland" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="hover:text-primary"
+                  >
+                    James Blond Auckland
                   </a>
                 </div>
               </div>
