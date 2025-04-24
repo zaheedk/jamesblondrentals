@@ -123,11 +123,12 @@ const FleetTrailers = () => (
 
             {/* 
               Since 'note' isn't defined on all trailer objects,
-              we need to check if it exists before trying to render it
+              handle it safely with proper type checking
             */}
-            {'note' in trailer && trailer.note && (
+            {('note' in trailer) && 
+              typeof trailer.note === 'string' && 
               <p className="text-gray-600 italic">{trailer.note}</p>
-            )}
+            }
           </CardContent>
           <CardFooter>
             <Button asChild className="w-full">
