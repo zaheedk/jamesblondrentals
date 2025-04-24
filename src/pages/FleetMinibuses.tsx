@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Bus, Bluetooth, AirVent, TowBar } from "lucide-react";
+import { Bus, Bluetooth, AirVent, Anchor } from "lucide-react";
 
 const minibuses = [
   {
@@ -83,7 +83,7 @@ const FleetMinibuses = () => (
                 <li key={index} className="flex items-center gap-2">
                   {spec.toLowerCase().includes("bluetooth") && <Bluetooth className="h-4 w-4 text-primary" />}
                   {spec.toLowerCase().includes("air conditioning") && <AirVent className="h-4 w-4 text-primary" />}
-                  {spec.toLowerCase().includes("tow bar") && <TowBar className="h-4 w-4 text-primary" />}
+                  {spec.toLowerCase().includes("tow bar") && <Anchor className="h-4 w-4 text-primary" />}
                   <span className="h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0" />
                   <span className="text-gray-600">{spec}</span>
                 </li>
