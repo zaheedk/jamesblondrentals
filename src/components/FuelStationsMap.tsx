@@ -1,7 +1,7 @@
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { GoogleMap, LoadScript, Marker, InfoWindow } from '@react-google-maps/api';
-import { MapPinIcon, Fuel } from 'lucide-react';
+import { Fuel } from 'lucide-react';
 
 const containerStyle = {
   width: '100%',
@@ -39,22 +39,22 @@ const FuelStationsMap = () => {
   const [selectedStation, setSelectedStation] = useState<typeof fuelStations[0] | null>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   
-  const handleMapLoad = () => {
+  const handleMapLoad = useCallback(() => {
     console.log('Google Maps loaded successfully');
     setMapLoaded(true);
-  };
+  }, []);
   
   return (
     <div className="relative w-full h-[400px] rounded-lg overflow-hidden">
       <LoadScript 
         googleMapsApiKey="AIzaSyC2BGBMGyKkuOlkIcXj_EcmQ6k7gYcT-rg"
-        onLoad={handleMapLoad}
-        onError={(error) => console.error('Google Maps loading error:', error)}
+        onLoad={() => console.log("Script loaded successfully")}
       >
         <GoogleMap
           mapContainerStyle={containerStyle}
           center={center}
           zoom={14}
+          onLoad={handleMapLoad}
           options={{
             disableDefaultUI: false,
             zoomControl: true,
@@ -62,20 +62,12 @@ const FuelStationsMap = () => {
             mapTypeControl: true
           }}
         >
-          {mapLoaded && fuelStations.map((station) => (
+          {fuelStations.map((station) => (
             <Marker
               key={station.id}
               position={station.position}
               onClick={() => setSelectedStation(station)}
-              icon={{
-                path: "M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z",
-                fillColor: "#FF0000",
-                fillOpacity: 0.9,
-                strokeWeight: 1,
-                strokeColor: "#000",
-                scale: 1.5,
-                rotation: 0
-              }}
+              // Using a standard marker without custom path
             />
           ))}
           
