@@ -35,7 +35,8 @@ const minibuses = [
       "Petrol",
       "Full-Height Seats",
       "Unlimited kilometres"
-    ]
+    ],
+    image: "/lovable-uploads/f40953dd-07c7-405f-a446-bbb6de3b2aac.png"
   },
   {
     id: "8-seat-van",
