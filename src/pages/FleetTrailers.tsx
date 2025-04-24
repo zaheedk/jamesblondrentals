@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -43,22 +42,6 @@ const trailers = [
     maxLoad: "500kg",
     warning: "not suited to 24-volt systems",
     image: "/lovable-uploads/ea4af725-7713-464d-83cb-34d5cd4c0e7f.png"
-  },
-  {
-    id: "furniture-trailer",
-    title: "FURNITURE TRAILER",
-    specs: [
-      "Large capacity (fit king-size bed)",
-      "Fit 7/8 inch standard NZ tow-ball",
-      "12-volt system for lights",
-    ],
-    dimensions: {
-      label: "Box",
-      specs: "2400(L) x1400(W) x2100(H)",
-    },
-    maxLoad: "650kg",
-    warning: "not suited to 24-volt systems",
-    note: "Early booking essential"
   },
   {
     id: "car-transporter",
