@@ -50,7 +50,8 @@ const vans = [
       "Cargo: 1900(L) x 1400(W) x 1500(H)",
       "Max Load: 1000kg",
       "Unlimited Kilometres"
-    ]
+    ],
+    image: "/lovable-uploads/7924107a-afb6-4c13-aa1d-8dba18465760.png"
   },
   {
     id: "jumbo-van",
