@@ -58,7 +58,8 @@ const trucks = [
       "Tray: 3100(L) x 1600(W)",
       "Max Load: 2000kg",
       "35c per km mileage charge"
-    ]
+    ],
+    image: "/lovable-uploads/ca896f7e-9bda-4926-b23c-e80cbeb348cb.png"
   },
   {
     id: "3-tonne-box-18m3",
