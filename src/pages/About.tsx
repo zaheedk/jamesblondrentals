@@ -9,32 +9,9 @@ const About = () => (
     <section className="text-center max-w-4xl mx-auto">
       <h1 className="text-4xl font-bold mb-6">About James Blond Car and Truck Rental</h1>
       <p className="text-xl text-gray-600">
-        We are New Zealand's premier car and truck rental company, providing quality vehicles for tourists and locals alike since 1989.
+        Established in 2004, James Blond Rentals has evolved into one of the leading car rental companies, 
+        known for its commitment to excellence and customer satisfaction.
       </p>
-    </section>
-
-    {/* Story Section */}
-    <section className="grid md:grid-cols-2 gap-8 items-center">
-      <div>
-        <h2 className="text-3xl font-bold mb-6">Our Story</h2>
-        <p className="text-gray-600 mb-4">
-          James Blond has been providing rental vehicles to New Zealanders and tourists since 1989. 
-          Founded on the principles of excellent service and competitive pricing, we've grown into 
-          one of Auckland's most trusted vehicle rental companies.
-        </p>
-        <p className="text-gray-600">
-          Our fleet includes a wide range of vehicles from compact cars to trucks, vans, and 
-          minibuses. We take pride in maintaining our vehicles to the highest standards and 
-          offering competitive rates without compromising on quality or service.
-        </p>
-      </div>
-      <div className="relative h-[400px]">
-        <img 
-          src="https://jamesblond.co.nz/wp-content/uploads/2023/05/James-Blond-Car-Rentals-Auckland-1-1.png" 
-          alt="James Blond Rental Fleet" 
-          className="rounded-lg object-cover w-full h-full"
-        />
-      </div>
     </section>
 
     {/* Stats Section */}
@@ -42,22 +19,22 @@ const About = () => (
       <Card>
         <CardContent className="p-6 text-center">
           <Award className="w-12 h-12 mx-auto mb-4 text-primary" />
-          <h3 className="text-2xl font-bold mb-2">34+ Years</h3>
-          <p className="text-gray-600">Of Experience</p>
+          <h3 className="text-2xl font-bold mb-2">Since 2004</h3>
+          <p className="text-gray-600">Years of Excellence</p>
         </CardContent>
       </Card>
       <Card>
         <CardContent className="p-6 text-center">
           <Users className="w-12 h-12 mx-auto mb-4 text-primary" />
-          <h3 className="text-2xl font-bold mb-2">10,000+</h3>
-          <p className="text-gray-600">Happy Customers</p>
+          <h3 className="text-2xl font-bold mb-2">100,000+</h3>
+          <p className="text-gray-600">Satisfied Customers</p>
         </CardContent>
       </Card>
       <Card>
         <CardContent className="p-6 text-center">
           <Star className="w-12 h-12 mx-auto mb-4 text-primary" />
-          <h3 className="text-2xl font-bold mb-2">4.8/5</h3>
-          <p className="text-gray-600">Customer Rating</p>
+          <h3 className="text-2xl font-bold mb-2">Premium</h3>
+          <p className="text-gray-600">Vehicle Selection</p>
         </CardContent>
       </Card>
       <Card>
@@ -69,26 +46,47 @@ const About = () => (
       </Card>
     </section>
 
-    {/* Values Section */}
-    <section>
-      <h2 className="text-3xl font-bold mb-8 text-center">Our Values</h2>
-      <div className="grid md:grid-cols-3 gap-8">
-        <div className="text-center">
-          <h3 className="text-xl font-bold mb-4">Customer First</h3>
-          <p className="text-gray-600">
-            We prioritize your needs and satisfaction, ensuring a seamless rental experience from start to finish.
+    {/* Main Content */}
+    <section className="max-w-4xl mx-auto space-y-8">
+      <div className="prose max-w-none">
+        <p className="text-gray-600 leading-relaxed">
+          With a client base exceeding 100,000 satisfied customers, James Blond Rentals offers a diverse 
+          and expansive fleet, including premium vehicles and executive-class options to cater to 
+          discerning travelers.
+        </p>
+        
+        <p className="text-gray-600 leading-relaxed">
+          Whether you're seeking an affordable rental or a luxurious driving experience, James Blond 
+          Rentals ensures you'll find the perfect vehicle for your needs. With convenient locations, 
+          including service from both domestic and international terminals at Auckland Airport, the 
+          company provides seamless access to top-quality rental options.
+        </p>
+
+        <p className="text-gray-600 leading-relaxed">
+          James Blond Rentals is dedicated to delivering the very best in commercial and car rental 
+          experiences, combining global reach with unparalleled quality and service.
+        </p>
+      </div>
+    </section>
+
+    {/* Vehicle Options */}
+    <section className="bg-gray-50 rounded-lg p-8">
+      <h2 className="text-3xl font-bold mb-8 text-center">Our Vehicle Range</h2>
+      <div className="grid md:grid-cols-2 gap-8">
+        <div>
+          <h3 className="text-xl font-semibold mb-4">Group Travel Solutions</h3>
+          <p className="text-gray-600 mb-4">
+            For larger groups, we offer 10-seater and 12-seater minivan rentals, perfect for family 
+            trips, group vacations, or business events. Our 7-seater and 8-seater options provide 
+            the perfect balance for smaller groups needing extra space.
           </p>
         </div>
-        <div className="text-center">
-          <h3 className="text-xl font-bold mb-4">Quality Service</h3>
-          <p className="text-gray-600">
-            Our well-maintained fleet and professional team guarantee reliable service every time.
-          </p>
-        </div>
-        <div className="text-center">
-          <h3 className="text-xl font-bold mb-4">Competitive Pricing</h3>
-          <p className="text-gray-600">
-            We offer great value without compromising on the quality of our vehicles or service.
+        <div>
+          <h3 className="text-xl font-semibold mb-4">Eco-Friendly Options</h3>
+          <p className="text-gray-600 mb-4">
+            Our hybrid cars combine fuel efficiency with lower emissions, perfect for eco-conscious 
+            drivers. We also offer SUVs for those seeking both power and space, ideal for any terrain 
+            or adventure.
           </p>
         </div>
       </div>
@@ -96,8 +94,8 @@ const About = () => (
 
     {/* CTA Section */}
     <section className="bg-primary text-white rounded-lg p-12 text-center">
-      <h2 className="text-3xl font-bold mb-4">Ready to Hit the Road?</h2>
-      <p className="text-xl mb-8">Experience the James Blond difference today.</p>
+      <h2 className="text-3xl font-bold mb-4">Ready to Start Your Journey?</h2>
+      <p className="text-xl mb-8">Find the perfect vehicle for your next adventure.</p>
       <a 
         href="/fleet" 
         className="inline-block bg-white text-primary px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
