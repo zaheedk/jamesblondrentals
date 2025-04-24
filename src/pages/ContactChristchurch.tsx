@@ -18,7 +18,7 @@ const ContactChristchurch = () => {
                 <MapPin className="w-5 h-5 mt-1 text-primary" />
                 <div>
                   <p className="font-medium">Address:</p>
-                  <p>17/25 Logistics Drive</p>
+                  <p>25 Logistics Drive</p>
                   <p>Harewood</p>
                   <p>Christchurch 8544</p>
                 </div>
@@ -36,8 +36,8 @@ const ContactChristchurch = () => {
                 <Mail className="w-5 h-5 text-primary" />
                 <div>
                   <p className="font-medium">Email:</p>
-                  <a href="mailto:info@jamesblond.co.nz" className="hover:text-primary">
-                    info@jamesblond.co.nz
+                  <a href="mailto:christchurch@jamesblond.co.nz" className="hover:text-primary">
+                    christchurch@jamesblond.co.nz
                   </a>
                 </div>
               </div>
