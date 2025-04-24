@@ -54,6 +54,24 @@ const AirportWellington = () => (
     </section>
 
     <section className="py-6 border-t">
+      <h3 className="text-xl font-semibold mb-4">What You'll Need on Arrival</h3>
+      <p className="text-gray-600 mb-4">
+        Please ensure you bring the following with you when collecting your rental:
+      </p>
+      <ul className="list-disc list-inside text-gray-600 space-y-2 ml-4">
+        <li>
+          <span className="font-semibold">🪪 Full Driver's Licence</span> – Must be a full and valid licence, in English or accompanied by an approved translation.
+        </li>
+        <li>
+          <span className="font-semibold">💳 Credit or Debit Card</span> – Required for bond and payment. Prepaid cards are not accepted.
+        </li>
+      </ul>
+      <p className="text-gray-600 mt-4">
+        You must be at least 21 years old to rent a vehicle. Additional ID may be requested.
+      </p>
+    </section>
+
+    <section className="py-6 border-t">
       <h2 className="text-2xl font-bold mb-4">Fuel Up Nearby</h2>
       <div className="mb-6">
         <FuelStationsMapWellington />
@@ -87,24 +105,6 @@ const AirportWellington = () => (
           </a>
         </div>
       </div>
-    </section>
-
-    <section className="py-6 border-t">
-      <h3 className="text-xl font-semibold mb-4">What You'll Need on Arrival</h3>
-      <p className="text-gray-600 mb-4">
-        Please ensure you bring the following with you when collecting your rental:
-      </p>
-      <ul className="list-disc list-inside text-gray-600 space-y-2 ml-4">
-        <li>
-          <span className="font-semibold">🪪 Full Driver's Licence</span> – Must be a full and valid licence, in English or accompanied by an approved translation.
-        </li>
-        <li>
-          <span className="font-semibold">💳 Credit or Debit Card</span> – Required for bond and payment. Prepaid cards are not accepted.
-        </li>
-      </ul>
-      <p className="text-gray-600 mt-4">
-        You must be at least 21 years old to rent a vehicle. Additional ID may be requested.
-      </p>
     </section>
   </div>
 );
