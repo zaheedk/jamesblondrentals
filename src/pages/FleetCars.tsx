@@ -84,7 +84,8 @@ const cars = [
       "Reversing Camera",
       "Air conditioning",
       "Bluetooth AUX and USB"
-    ]
+    ],
+    image: "/lovable-uploads/e7217b00-38b3-40d6-9ef7-fdc2760ee602.png"
   },
   {
     category: "PREMIUM MIDSIZE",
