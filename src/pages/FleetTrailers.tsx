@@ -1,9 +1,9 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 const trailers = [
   {
@@ -20,7 +20,8 @@ const trailers = [
       specs: "2400(L) x 1200(W)",
     },
     maxLoad: "750kg",
-    warning: "not suited to 24-volt systems"
+    warning: "not suited to 24-volt systems",
+    image: "/lovable-uploads/ca4fe6a5-97a6-4d6c-a675-a0ad2e3e4856.png"
   },
   {
     id: "luggage-trailer",
@@ -85,6 +86,15 @@ const FleetTrailers = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
       {trailers.map((trailer) => (
         <Card key={trailer.id} className="flex flex-col">
+          {trailer.image && (
+            <AspectRatio ratio={16/9} className="w-full">
+              <img 
+                src={trailer.image} 
+                alt={`${trailer.title}`} 
+                className="w-full h-full object-cover rounded-t-lg"
+              />
+            </AspectRatio>
+          )}
           <CardHeader>
             <CardTitle className="text-lg font-bold text-primary">{trailer.title}</CardTitle>
           </CardHeader>
