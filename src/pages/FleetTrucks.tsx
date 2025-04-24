@@ -1,4 +1,3 @@
-
 import { Truck } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -14,7 +13,8 @@ const trucks = [
       "Box: 3100(L) x 1600(W) x 1800(H)",
       "Max Load: 2000kg",
       "Depending on availability* 42c per km mileage charge"
-    ]
+    ],
+    image: "/lovable-uploads/072db196-b7e0-4726-bd11-9dd208534e9e.png"
   },
   {
     id: "2-tonne-box-12m3",
@@ -94,6 +94,15 @@ const FleetTrucks = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {trucks.map((truck) => (
         <Card key={truck.id} className="flex flex-col h-full">
+          {truck.image && (
+            <AspectRatio ratio={16/9} className="w-full">
+              <img 
+                src={truck.image} 
+                alt={`${truck.title}`} 
+                className="w-full h-full object-cover rounded-t-lg"
+              />
+            </AspectRatio>
+          )}
           <CardHeader>
             <div className="flex items-center justify-center mb-4">
               <Truck className="w-16 h-16 text-primary" />
