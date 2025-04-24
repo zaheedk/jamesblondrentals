@@ -1,8 +1,142 @@
 
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+
+const cars = [
+  {
+    category: "PREMIUM 7-SEAT AWD SUV",
+    model: "KIA Sorento 2.2L Diesel",
+    features: [
+      "Automatic IVT Transmission",
+      "5-star ANCAP safety rating",
+      "Reversing Camera",
+      "Air conditioning",
+      "Apple / Android in-car system",
+      "Smart Cruise Control",
+      "System Lane exit / Driver attention alerts"
+    ]
+  },
+  {
+    category: "PREMIUM 2WD SUV",
+    model: "Kia Sportage 2.0L",
+    features: [
+      "Automatic IVT Transmission",
+      "5-star ANCAP safety rating",
+      "Reversing Camera",
+      "Air conditioning",
+      "Apple / Android in-car system",
+      "Smart Cruise Control",
+      "System Lane exit / Driver attention alerts"
+    ]
+  },
+  {
+    category: "PREMIUM COMPACT SUV",
+    model: "KIA Seltos 2.0L",
+    features: [
+      "Automatic IVT Transmission",
+      "5-star ANCAP safety rating",
+      "Reversing Camera",
+      "Air conditioning",
+      "Apple / Android in-car system",
+      "Smart Cruise Control",
+      "System Lane exit / Driver attention alerts"
+    ]
+  },
+  {
+    category: "PREMIUM AWD SUV",
+    model: "Toyota Highlander 3.5L V6",
+    features: [
+      "Automatic Transmission",
+      "5-star ANCAP safety rating",
+      "Reversing Camera",
+      "Air conditioning",
+      "All wheel drive (AWD)",
+      "Bluetooth AUX and USB",
+      "7 seat option (reduces luggage space)"
+    ]
+  },
+  {
+    category: "PREMIUM 4WD SUV",
+    model: "Toyota RAV4 2.5L",
+    features: [
+      "Automatic Transmission",
+      "5-star ANCAP safety rating",
+      "5-star Fuel economy rating",
+      "All wheel drive (AWD)",
+      "Reversing Camera",
+      "Air conditioning",
+      "Bluetooth AUX and USB",
+      "Adaptive Cruise Control System"
+    ]
+  },
+  {
+    category: "PREMIUM ECONOMY",
+    model: "Suzuki Swift 1.3L",
+    features: [
+      "Automatic Transmission",
+      "5-star ANCAP safety rating",
+      "5-star Fuel economy rating",
+      "Reversing Camera",
+      "Air conditioning",
+      "Bluetooth AUX and USB"
+    ]
+  },
+  {
+    category: "PREMIUM MIDSIZE",
+    model: "Toyota Corolla Hatch 2L",
+    features: [
+      "Automatic Transmission",
+      "5-star ANCAP safety rating",
+      "6-star Fuel economy rating",
+      "Reversing Camera",
+      "Air conditioning",
+      "Bluetooth AUX and USB",
+      "Adaptive Cruise Control System"
+    ]
+  },
+  {
+    category: "PREMIUM ECONOMY WAGON",
+    model: "Toyota Corolla Wagon 1.5L",
+    features: [
+      "Automatic Transmission",
+      "5-star ANCAP safety rating",
+      "Reversing Camera",
+      "Air conditioning",
+      "Bluetooth AUX and USB"
+    ]
+  }
+];
+
 const FleetCars = () => (
-  <div className="mt-8">
-    <h2 className="text-2xl font-bold mb-4">Cars</h2>
-    <p className="text-gray-600">Our range of cars suit every need, from compact to full size. Example static page.</p>
+  <div className="container mx-auto px-4 py-8">
+    <div className="text-center mb-12">
+      <h1 className="text-3xl font-bold mb-4">Versatile Cars & SUVs – Drive with Confidence</h1>
+    </div>
+    
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {cars.map((car, index) => (
+        <Card key={index} className="flex flex-col h-full">
+          <CardHeader>
+            <CardTitle className="text-lg font-bold text-primary">{car.category}</CardTitle>
+            <CardDescription className="text-xl font-semibold">{car.model}</CardDescription>
+          </CardHeader>
+          <CardContent className="flex-grow">
+            <ul className="space-y-2">
+              {car.features.map((feature, featureIndex) => (
+                <li key={featureIndex} className="flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0" />
+                  <span className="text-gray-600">{feature}</span>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+          <CardFooter>
+            <Button className="w-full">Know More</Button>
+          </CardFooter>
+        </Card>
+      ))}
+    </div>
   </div>
 );
+
 export default FleetCars;
