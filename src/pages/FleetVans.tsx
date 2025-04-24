@@ -34,7 +34,8 @@ const vans = [
       "Cargo: 2800(L) x 1400(W) x 1500(H)",
       "Max Load: 1000kg",
       "Unlimited Kilometres"
-    ]
+    ],
+    image: "/lovable-uploads/40c4c11d-0a27-40d6-9c5c-3fdbb1c138a0.png"
   },
   {
     id: "standard-rear-seat-van",
