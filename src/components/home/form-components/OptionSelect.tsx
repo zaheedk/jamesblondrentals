@@ -45,9 +45,10 @@ export const OptionSelect = ({
   allOptionLabel = "All Categories"
 }: OptionSelectProps) => {
   const formatOptionName = (name: string) => {
+    // Always show 26+ for ages 26 and above
     const numericAge = parseInt(name);
     return (numericAge >= 26 && !isNaN(numericAge)) 
-      ? `${numericAge}+` 
+      ? "26+" 
       : name;
   };
 
