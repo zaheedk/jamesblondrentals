@@ -4,6 +4,7 @@ import { Link, Outlet } from "react-router-dom";
 const fleetLinks = [
   { name: "Cars", path: "/fleet/cars" },
   { name: "Vans", path: "/fleet/vans" },
+  { name: "UTEs", path: "/fleet/utes" },
   { name: "Trucks", path: "/fleet/trucks" },
   { name: "Minibuses", path: "/fleet/minibuses" },
   { name: "Trailers", path: "/fleet/trailers" },

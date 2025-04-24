@@ -1,5 +1,3 @@
-
-import { Truck } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -69,50 +67,6 @@ const vans = [
       "35c per km mileage charge"
     ],
     image: "/lovable-uploads/6dde201c-13f3-4671-9e88-6cc1a388d647.png"
-  },
-  {
-    id: "premium-double-cab-ute",
-    title: "PREMIUM DOUBLE CAB UTE - PETROL",
-    subtitle: "Toyota Hilux Workmate 2.7L petrol",
-    description: "Versatile double cab ute perfect for both work and recreational use.",
-    specs: [
-      "Automatic Transmission",
-      "Bluetooth",
-      "Roof Racks",
-      "Towbar",
-      "Tray: 1700 (L) x 1800 (W)",
-      "Max Load: 900kg",
-      "Max Towing: 3500kg",
-      "Unlimited kilometers"
-    ],
-    image: "/lovable-uploads/6213906e-4949-494b-b006-8d6e516cdd9a.png"
-  },
-  {
-    id: "single-cab-ute-petrol",
-    title: "SINGLE CAB UTE - PETROL",
-    subtitle: "Toyota Hilux 2.7L petrol",
-    description: "Reliable single cab ute with generous deck space for various loads.",
-    specs: [
-      "Automatic Transmission",
-      "Deck: 2400(L) x 1800(W)",
-      "Max Load: 1000kg",
-      "Unlimited kilometres"
-    ],
-    image: "/lovable-uploads/234be2bf-bb8a-4e38-90ba-899a4b1eaf38.png"
-  },
-  {
-    id: "single-cab-ute-diesel",
-    title: "SINGLE CAB UTE - DIESEL",
-    subtitle: "Toyota Hilux 3.0L diesel turbo",
-    description: "Powerful diesel ute perfect for heavy-duty work and towing.",
-    specs: [
-      "Automatic Transmission",
-      "Deck: 2400(L) x 1800(W)",
-      "Max Load: 1000kg",
-      "25c per km mileage charge",
-      "(first 100 kilometres free)​"
-    ],
-    image: "/lovable-uploads/234be2bf-bb8a-4e38-90ba-899a4b1eaf38.png"
   }
 ];
 

@@ -21,6 +21,7 @@ import ContactChristchurch from "./pages/ContactChristchurch";
 import Fleet from "./pages/Fleet";
 import FleetCars from "./pages/FleetCars";
 import FleetVans from "./pages/FleetVans";
+import FleetUtes from "./pages/FleetUtes";
 import VanDetail from "./pages/VanDetail";
 import FleetTrucks from "./pages/FleetTrucks";
 import FleetMinibuses from "./pages/FleetMinibuses";
@@ -67,6 +68,7 @@ const App = () => {
                 <Route path="cars" element={<FleetCars />} />
                 <Route path="vans" element={<FleetVans />} />
                 <Route path="vans/:vanId" element={<VanDetail />} />
+                <Route path="utes" element={<FleetUtes />} />
                 <Route path="trucks" element={<FleetTrucks />} />
                 <Route path="minibuses" element={<FleetMinibuses />} />
                 <Route path="trailers" element={<FleetTrailers />} />
