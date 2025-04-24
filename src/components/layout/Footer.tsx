@@ -12,7 +12,7 @@ const Footer = () => {
               Premium car rental service providing quality vehicles for your travel needs.
             </p>
             <div className="flex space-x-4">
-              <a href="https://facebook.com" className="text-gray-300 hover:text-white transition-colors">
+              <a href="https://www.facebook.com/jamesblond.auckland" className="text-gray-300 hover:text-white transition-colors">
                 <Facebook size={20} />
               </a>
               <a href="https://twitter.com" className="text-gray-300 hover:text-white transition-colors">
@@ -66,9 +66,9 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-bold mb-4">Contact Us</h3>
             <address className="text-gray-300 not-italic">
-              <p>123 Rental Street</p>
-              <p>Carville, CV 12345</p>
-              <p className="mt-2">Phone: (123) 456-7890</p>
+              <p>4004 Great North Road</p>
+              <p>Glen Eden, Auckland 0602</p>
+              <p className="mt-2">Phone: 0800 525 663</p>
               <p>Email: info@jamesblondrentals.com</p>
             </address>
           </div>

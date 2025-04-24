@@ -60,6 +60,12 @@ const Navbar = () => {
                         Trucks
                       </Link>
                       <Link 
+                        to="/fleet/utes" 
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
+                      >
+                        UTEs
+                      </Link>
+                      <Link 
                         to="/fleet/minibuses" 
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
                       >
