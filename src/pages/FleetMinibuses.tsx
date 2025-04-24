@@ -1,9 +1,7 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Bus, Bluetooth, AirVent, Anchor } from "lucide-react";
+import { Bluetooth, AirVent, Anchor } from "lucide-react";
 
 const minibuses = [
   {
@@ -67,7 +65,6 @@ const FleetMinibuses = () => (
         <Card key={minibus.id} className="flex flex-col h-full">
           <CardHeader>
             <div className="flex items-center justify-between mb-2">
-              <Bus className="h-8 w-8 text-primary" />
               {minibus.title.toLowerCase().includes("luxury") && (
                 <span className="bg-primary/10 text-primary text-sm px-2 py-1 rounded-full">
                   Luxury
