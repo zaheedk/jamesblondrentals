@@ -1,4 +1,3 @@
-
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 const Terms = () => {
@@ -8,8 +7,7 @@ const Terms = () => {
       <p className="mb-8 text-gray-700">
         Subject to the terms & conditions contained on the front and reverse hereof of which the hirer(s) acknowledges that they are aware, 
         the hirer agrees to rent the above vehicle and elects to pay all amounts payable under this agreement. By signing this contract, 
-        you hereby agree to these terms and authorise James Blond 2017 Ltd charging your credit card for the rental, the bond and any 
-        additional costs incurred.
+        you hereby agree to these terms and authorise Kanthawala Ltd charging your credit card for the rental, the bond and any additional costs incurred.
       </p>
 
       <Accordion type="single" collapsible>
@@ -37,7 +35,7 @@ const Terms = () => {
             <ul className="list-disc pl-6 space-y-2">
               <li>Maintaining water and oil levels is the hirer(s) responsibility. Any approved cost incurred will be 
                   reimbursed upon production of a receipt. Should any malfunction of the vehicle occur, any warning 
-                  light or any sign of overheating, you must stop the vehicle immediately and contact James Blond or 
+                  light or any sign of overheating, you must stop the vehicle immediately and contact Kanthawala Ltd or 
                   you will be held liable and loss of bond may occur.</li>
               <li>Vehicles are provided in a clean and tidy manner and should be returned in a similar state otherwise 
                   a cleaning fee will apply.</li>
