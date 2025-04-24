@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -50,7 +51,8 @@ const minibuses = [
       "Petrol",
       "Luxury",
       "Unlimited kilometres"
-    ]
+    ],
+    image: "/lovable-uploads/959f182c-4210-4140-a46a-86ced485f4bd.png"
   }
 ];
 
