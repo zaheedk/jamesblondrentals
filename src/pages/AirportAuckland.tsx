@@ -1,5 +1,7 @@
+
 import React from 'react';
 import { MapIcon } from 'lucide-react';
+import FuelStationsMap from '../components/FuelStationsMap';
 
 const AirportAuckland = () => (
   <div className="space-y-6">
@@ -74,6 +76,9 @@ const AirportAuckland = () => (
 
     <section className="py-6 border-t">
       <h2 className="text-2xl font-bold mb-4">Fuel Up Nearby</h2>
+      <div className="mb-6">
+        <FuelStationsMap />
+      </div>
       <div className="grid md:grid-cols-3 gap-6">
         <div className="p-4 border rounded-lg">
           <h3 className="text-xl font-semibold mb-2">Z - Tom Pearce Dr</h3>
