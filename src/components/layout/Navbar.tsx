@@ -21,7 +21,6 @@ const Navbar = () => {
     <nav className="bg-white shadow-sm sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          {/* Logo */}
           <Link to="/" className="flex items-center">
             <img 
               src="/lovable-uploads/900107e8-dbcb-44ce-96a9-0588959abf24.png" 
@@ -30,7 +29,6 @@ const Navbar = () => {
             />
           </Link>
 
-          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6">
             <Link to="/" className="text-gray-600 hover:text-primary transition-colors">
               Home
@@ -72,12 +70,6 @@ const Navbar = () => {
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
                       >
                         Trailers
-                      </Link>
-                      <Link 
-                        to="/fleet/furniture-truck" 
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
-                      >
-                        Furniture Truck
                       </Link>
                     </div>
                   </NavigationMenuContent>
@@ -126,7 +118,6 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {/* Mobile Menu Button */}
           <div className="md:hidden">
             <Button variant="ghost" size="icon" onClick={toggleMobileMenu}>
               {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -134,7 +125,6 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Menu */}
         {isMobileMenuOpen && (
           <div className="md:hidden mt-4 pb-4 animate-slide-in">
             <div className="flex flex-col space-y-3">
@@ -157,9 +147,6 @@ const Navbar = () => {
                 </Link>
                 <Link to="/fleet/trailers" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
                   Trailers
-                </Link>
-                <Link to="/fleet/furniture-truck" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
-                  Furniture Truck
                 </Link>
               </div>
               <Link to="/airport" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>
