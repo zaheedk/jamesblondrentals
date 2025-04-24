@@ -15,6 +15,7 @@ import Payment from "./pages/Payment";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import About from "./pages/About";
 import ContactAuckland from "./pages/ContactAuckland";
+import ContactWellington from "./pages/ContactWellington";
 
 import Fleet from "./pages/Fleet";
 import FleetCars from "./pages/FleetCars";
@@ -74,6 +75,7 @@ const App = () => {
                 <Route path="wellington" element={<AirportWellington />} />
               </Route>
               <Route path="/contact/auckland" element={<ContactAuckland />} />
+              <Route path="/contact/wellington" element={<ContactWellington />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
