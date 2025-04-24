@@ -56,7 +56,8 @@ const cars = [
       "All wheel drive (AWD)",
       "Bluetooth AUX and USB",
       "7 seat option (reduces luggage space)"
-    ]
+    ],
+    image: "/lovable-uploads/b6590bc2-c772-4b70-892b-9a5c173c4d15.png"
   },
   {
     category: "PREMIUM 4WD SUV",
