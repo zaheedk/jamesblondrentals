@@ -71,6 +71,12 @@ const Navbar = () => {
                       >
                         Trailers
                       </Link>
+                      <Link 
+                        to="/fleet/accessories" 
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
+                      >
+                        Accessories
+                      </Link>
                     </div>
                   </NavigationMenuContent>
                 </NavigationMenuItem>
@@ -147,6 +153,9 @@ const Navbar = () => {
                 </Link>
                 <Link to="/fleet/trailers" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
                   Trailers
+                </Link>
+                <Link to="/fleet/accessories" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
+                  Accessories
                 </Link>
               </div>
               <Link to="/airport" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>

@@ -25,7 +25,7 @@ import VanDetail from "./pages/VanDetail";
 import FleetTrucks from "./pages/FleetTrucks";
 import FleetMinibuses from "./pages/FleetMinibuses";
 import FleetTrailers from "./pages/FleetTrailers";
-import FleetFurnitureTruck from "./pages/FleetFurnitureTruck";
+import FleetAccessories from "./pages/FleetAccessories";
 
 import Airport from "./pages/Airport";
 import AirportShuttle from "./pages/AirportShuttle";
@@ -70,7 +70,7 @@ const App = () => {
                 <Route path="trucks" element={<FleetTrucks />} />
                 <Route path="minibuses" element={<FleetMinibuses />} />
                 <Route path="trailers" element={<FleetTrailers />} />
-                <Route path="furniture-truck" element={<FleetFurnitureTruck />} />
+                <Route path="accessories" element={<FleetAccessories />} />
               </Route>
               <Route path="/airport" element={<Airport />}>
                 <Route path="shuttle" element={<AirportShuttle />} />

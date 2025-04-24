@@ -7,7 +7,7 @@ const fleetLinks = [
   { name: "Trucks", path: "/fleet/trucks" },
   { name: "Minibuses", path: "/fleet/minibuses" },
   { name: "Trailers", path: "/fleet/trailers" },
-  { name: "Furniture Truck", path: "/fleet/furniture-truck" },
+  { name: "Accessories", path: "/fleet/accessories" },
 ];
 
 const Fleet = () => (
