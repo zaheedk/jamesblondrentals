@@ -1,7 +1,7 @@
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Car, CarFront, Truck, Van } from "lucide-react";
+import { Car, CarFront, Truck, Bus } from "lucide-react";
 
 interface OptionSelectProps {
   id: string;
@@ -21,7 +21,7 @@ const getIconForCategory = (name: string) => {
   const lowercaseName = name.toLowerCase();
   
   if (lowercaseName.includes('van')) {
-    return <Van className="mr-2 h-4 w-4" />;
+    return <Bus className="mr-2 h-4 w-4" />;
   } else if (lowercaseName.includes('truck')) {
     return <Truck className="mr-2 h-4 w-4" />;
   } else if (lowercaseName.includes('premium')) {
@@ -97,4 +97,3 @@ export const OptionSelect = ({
     </div>
   );
 };
-
