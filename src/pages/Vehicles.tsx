@@ -1,8 +1,10 @@
+
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
+import { Button } from "@/components/ui/button"; // Add this import for Button component
 import VehicleCard from "@/components/vehicles/VehicleCard";
 import { Vehicle, VehicleType } from "@/lib/types";
 import { Input } from "@/components/ui/input";
