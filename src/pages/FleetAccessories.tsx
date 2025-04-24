@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 
@@ -11,6 +10,7 @@ const accessories = [
   {
     title: "Booster Seat",
     description: "Designed for older toddlers who are not yet tall enough to use an adult seatbelt. Provides added height and security to keep your child safe on the road.",
+    image: "/lovable-uploads/aded4525-6592-42ec-9193-53b898de2c13.png",
   },
   {
     title: "Pallet Jack",
