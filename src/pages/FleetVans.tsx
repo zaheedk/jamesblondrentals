@@ -83,7 +83,8 @@ const vans = [
       "Max Load: 900kg",
       "Max Towing: 3500kg",
       "Unlimited kilometers"
-    ]
+    ],
+    image: "/lovable-uploads/6213906e-4949-494b-b006-8d6e516cdd9a.png"
   },
   {
     id: "single-cab-ute-petrol",
