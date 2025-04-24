@@ -1,4 +1,6 @@
 import React from 'react';
+import { MapIcon } from 'lucide-react';
+import FuelStationsMapChristchurch from '../components/FuelStationsMapChristchurch';
 
 const AirportChristchurch = () => (
   <div className="space-y-6">
@@ -60,6 +62,42 @@ const AirportChristchurch = () => (
             <li>After a quick check, we'll shuttle you directly to your terminal</li>
             <li>For early or after-hours returns, follow the signage to our drop-off box and contact our shuttle team</li>
           </ul>
+        </div>
+      </div>
+    </section>
+
+    <section className="py-6 border-t">
+      <h2 className="text-2xl font-bold mb-4">Fuel Up Nearby</h2>
+      <div className="mb-6">
+        <FuelStationsMapChristchurch />
+      </div>
+      <div className="grid md:grid-cols-2 gap-6">
+        <div className="p-4 border rounded-lg">
+          <h3 className="text-xl font-semibold mb-2">Allied Fuel</h3>
+          <p className="text-gray-600">75 Orchard Road, Christchurch Airport</p>
+          <a 
+            href="https://www.google.com/maps?q=75+Orchard+Road+Christchurch+Airport" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center mt-2 text-primary hover:underline"
+          >
+            <MapIcon className="w-4 h-4 mr-1" />
+            View on map
+          </a>
+        </div>
+
+        <div className="p-4 border rounded-lg">
+          <h3 className="text-xl font-semibold mb-2">BP</h3>
+          <p className="text-gray-600">661 Russley Road, Harewood</p>
+          <a 
+            href="https://www.google.com/maps?q=661+Russley+Road+Harewood+Christchurch" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center mt-2 text-primary hover:underline"
+          >
+            <MapIcon className="w-4 h-4 mr-1" />
+            View on map
+          </a>
         </div>
       </div>
     </section>
