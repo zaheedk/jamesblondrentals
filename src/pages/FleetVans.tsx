@@ -66,7 +66,8 @@ const vans = [
       "Cargo: 3300(L) x 1600(W) x 1900(H)",
       "Max Load: 1350kg",
       "35c per km mileage charge"
-    ]
+    ],
+    image: "/lovable-uploads/6dde201c-13f3-4671-9e88-6cc1a388d647.png"
   },
   {
     id: "premium-double-cab-ute",
