@@ -1,6 +1,6 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 const cars = [
   {
@@ -14,7 +14,8 @@ const cars = [
       "Apple / Android in-car system",
       "Smart Cruise Control",
       "System Lane exit / Driver attention alerts"
-    ]
+    ],
+    image: "/lovable-uploads/2aa5cc60-af01-4571-864b-f2955d9e129b.png"
   },
   {
     category: "PREMIUM 2WD SUV",
@@ -116,6 +117,15 @@ const FleetCars = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {cars.map((car, index) => (
         <Card key={index} className="flex flex-col h-full">
+          {car.image && (
+            <AspectRatio ratio={16/9} className="w-full">
+              <img 
+                src={car.image} 
+                alt={`${car.model}`} 
+                className="w-full h-full object-cover rounded-t-lg"
+              />
+            </AspectRatio>
+          )}
           <CardHeader>
             <CardTitle className="text-lg font-bold text-primary">{car.category}</CardTitle>
             <CardDescription className="text-xl font-semibold">{car.model}</CardDescription>
