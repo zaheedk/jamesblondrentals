@@ -13,6 +13,7 @@ import CustomerDetails from "./pages/CustomerDetails";
 import PaymentOptions from "./pages/PaymentOptions";
 import Payment from "./pages/Payment";
 import PaymentSuccess from "./pages/PaymentSuccess";
+import About from "./pages/About";
 
 import Fleet from "./pages/Fleet";
 import FleetCars from "./pages/FleetCars";
@@ -47,6 +48,7 @@ const App = () => {
           <AppLayout>
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/about" element={<About />} />
               <Route path="/vehicles" element={<Vehicles />} />
               <Route path="/vehicle/:id" element={<VehicleDetail />} />
               <Route path="/booking" element={<Booking />} />
@@ -65,7 +67,6 @@ const App = () => {
                 <Route path="furniture-truck" element={<FleetFurnitureTruck />} />
               </Route>
               <Route path="/airport" element={<Airport />}>
-                <Route path="about" element={<AirportAbout />} />
                 <Route path="shuttle" element={<AirportShuttle />} />
                 <Route path="directions" element={<AirportDirections />} />
                 <Route path="auckland" element={<AirportAuckland />} />

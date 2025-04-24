@@ -3,7 +3,7 @@ import React from 'react';
 import { Globe, Users, Award, Star } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 
-const AirportAbout = () => (
+const About = () => (
   <div className="container mx-auto px-4 py-12 space-y-16">
     {/* Hero Section */}
     <section className="text-center max-w-4xl mx-auto">
@@ -108,4 +108,4 @@ const AirportAbout = () => (
   </div>
 );
 
-export default AirportAbout;
+export default About;
