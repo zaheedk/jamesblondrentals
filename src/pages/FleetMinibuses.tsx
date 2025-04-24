@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Bluetooth, AirVent, Anchor } from "lucide-react";
 
 const minibuses = [
@@ -18,7 +19,8 @@ const minibuses = [
       "Diesel",
       "Full-Height Seats",
       "Unlimited kilometres"
-    ]
+    ],
+    image: "/lovable-uploads/bdd5521d-5fab-4187-8d79-fcf80b3f46db.png"
   },
   {
     id: "10-seat-minibus",
@@ -63,14 +65,21 @@ const FleetMinibuses = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {minibuses.map((minibus) => (
         <Card key={minibus.id} className="flex flex-col h-full">
+          {minibus.image && (
+            <AspectRatio ratio={16/9} className="w-full">
+              <img 
+                src={minibus.image} 
+                alt={`${minibus.title}`} 
+                className="w-full h-full object-cover rounded-t-lg"
+              />
+            </AspectRatio>
+          )}
           <CardHeader>
-            <div className="flex items-center justify-between mb-2">
-              {minibus.title.toLowerCase().includes("luxury") && (
-                <span className="bg-primary/10 text-primary text-sm px-2 py-1 rounded-full">
-                  Luxury
-                </span>
-              )}
-            </div>
+            {minibus.title.toLowerCase().includes("luxury") && (
+              <span className="bg-primary/10 text-primary text-sm px-2 py-1 rounded-full">
+                Luxury
+              </span>
+            )}
             <CardTitle className="text-lg font-bold text-primary">{minibus.title}</CardTitle>
             <CardDescription className="text-xl font-semibold">{minibus.subtitle}</CardDescription>
           </CardHeader>
