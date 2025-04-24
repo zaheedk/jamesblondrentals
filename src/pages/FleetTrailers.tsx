@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -120,7 +121,11 @@ const FleetTrailers = () => (
               </Alert>
             )}
 
-            {trailer.note && (
+            {/* 
+              Since 'note' isn't defined on all trailer objects,
+              we need to check if it exists before trying to render it
+            */}
+            {'note' in trailer && trailer.note && (
               <p className="text-gray-600 italic">{trailer.note}</p>
             )}
           </CardContent>
