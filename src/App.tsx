@@ -36,6 +36,7 @@ import AirportWellington from "./pages/AirportWellington";
 
 import FAQ from "./pages/FAQ";
 import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
 
 import AppLayout from "./components/layout/AppLayout";
 
@@ -60,6 +61,7 @@ const App = () => {
               <Route path="/payment" element={<Payment />} />
               <Route path="/payment-success" element={<PaymentSuccess />} />
               <Route path="/terms" element={<Terms />} />
+              <Route path="/privacy" element={<Privacy />} />
 
               <Route path="/fleet" element={<Fleet />}>
                 <Route path="cars" element={<FleetCars />} />
