@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -36,9 +35,55 @@ const Navbar = () => {
             <Link to="/" className="text-gray-600 hover:text-primary transition-colors">
               Home
             </Link>
-            <Link to="/fleet" className="text-gray-600 hover:text-primary transition-colors">
-              Fleet
-            </Link>
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="text-gray-600 hover:text-primary transition-colors bg-transparent">
+                    Fleet
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <div className="w-48 p-2">
+                      <Link 
+                        to="/fleet/cars" 
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
+                      >
+                        Cars
+                      </Link>
+                      <Link 
+                        to="/fleet/vans" 
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
+                      >
+                        Vans
+                      </Link>
+                      <Link 
+                        to="/fleet/trucks" 
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
+                      >
+                        Trucks
+                      </Link>
+                      <Link 
+                        to="/fleet/minibuses" 
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
+                      >
+                        Minibuses
+                      </Link>
+                      <Link 
+                        to="/fleet/trailers" 
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
+                      >
+                        Trailers
+                      </Link>
+                      <Link 
+                        to="/fleet/furniture-truck" 
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
+                      >
+                        Furniture Truck
+                      </Link>
+                    </div>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
             <Link to="/airport" className="text-gray-600 hover:text-primary transition-colors">
               Airport
             </Link>
@@ -96,9 +141,27 @@ const Navbar = () => {
               <Link to="/" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>
                 Home
               </Link>
-              <Link to="/fleet" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>
-                Fleet
-              </Link>
+              <div className="py-2 pl-4 space-y-2">
+                <p className="font-medium text-gray-600">Fleet:</p>
+                <Link to="/fleet/cars" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
+                  Cars
+                </Link>
+                <Link to="/fleet/vans" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
+                  Vans
+                </Link>
+                <Link to="/fleet/trucks" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
+                  Trucks
+                </Link>
+                <Link to="/fleet/minibuses" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
+                  Minibuses
+                </Link>
+                <Link to="/fleet/trailers" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
+                  Trailers
+                </Link>
+                <Link to="/fleet/furniture-truck" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
+                  Furniture Truck
+                </Link>
+              </div>
               <Link to="/airport" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>
                 Airport
               </Link>
