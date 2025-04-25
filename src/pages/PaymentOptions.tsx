@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -31,7 +30,6 @@ const PaymentOptions = () => {
   const [rawApiResponse, setRawApiResponse] = useState<any>(null);
   const [bookingInfoResponse, setBookingInfoResponse] = useState<any>(null);
   
-  // Add this to help fetch location details
   const { useLocationDetails } = useRcmApi();
   const { data: locationDetails } = useLocationDetails();
 
@@ -48,7 +46,6 @@ const PaymentOptions = () => {
     
     console.log("Full booking session data:", bookingData);
     
-    // Enhanced location handling logic
     const pickupLocationId = bookingData.pickupLocationId;
     const dropoffLocationId = bookingData.dropoffLocationId;
     
@@ -58,7 +55,6 @@ const PaymentOptions = () => {
       locations: locationDetails || []
     });
     
-    // Try to get location names from the API data first
     let pickupLocationName = "Location not available";
     let dropoffLocationName = "Location not available";
     
@@ -81,23 +77,34 @@ const PaymentOptions = () => {
         console.log("Found dropoff location:", dropoffLocationName);
       }
     } else {
-      // Fallback to session data if available
       pickupLocationName = bookingData.pickupLocationName || pickupLocationName;
       dropoffLocationName = bookingData.dropoffLocationName || dropoffLocationName;
     }
     
     console.log("Final location names:", { pickupLocationName, dropoffLocationName });
     
-    setBookingDetails({
+    setBookingDetails(prevState => ({
+      ...prevState,
       ...bookingData,
       pickupLocationName,
       dropoffLocationName
-    });
-    
+    }));
+
     let calculatedDays = 1;
+    let calculatedTotal = 0;
     
-    if (bookingData.numberofdays && typeof bookingData.numberofdays === 'number' && bookingData.numberofdays > 0) {
-      console.log("Using numberofdays from API response:", bookingData.numberofdays);
+    if (bookingInfoResponse?.status === "OK" && 
+        bookingInfoResponse?.results?.rateinfo?.[0]) {
+      const rateInfo = bookingInfoResponse.results.rateinfo[0];
+      calculatedDays = rateInfo.numberofdays || 1;
+      calculatedTotal = rateInfo.ratesubtotal || 0;
+      console.log("Using rate info from API:", { 
+        days: calculatedDays, 
+        subtotal: calculatedTotal 
+      });
+    } 
+    else if (bookingData.numberofdays && typeof bookingData.numberofdays === 'number' && bookingData.numberofdays > 0) {
+      console.log("Using numberofdays from booking data:", bookingData.numberofdays);
       calculatedDays = bookingData.numberofdays;
     } 
     else if (bookingData.pickupDate && bookingData.dropoffDate) {
@@ -119,42 +126,44 @@ const PaymentOptions = () => {
     setRentalDays(calculatedDays);
     updateBookingData({ rentalDays: calculatedDays });
     
-    const basePrice = bookingData.totalRateAfterDiscount || bookingData.basePrice || 0;
-    console.log("Using price for calculation:", basePrice, 
-      bookingData.totalRateAfterDiscount ? "(from totalRateAfterDiscount)" : "(from basePrice)");
-    
-    const insurancePrice = bookingData.insurancePrice || 0;
-    const extrasTotal = (bookingData.selectedExtras || []).reduce(
-      (sum: number, extra: any) => sum + (extra.price * extra.quantity), 
-      0
-    );
-    
-    const mandatoryTotal = (bookingData.mandatoryFees || []).reduce(
-      (sum: number, fee: any) => sum + fee.amount,
-      0
-    );
-    setMandatoryFeesTotal(mandatoryTotal);
-    
-    const calculatedTotal = basePrice + insurancePrice + extrasTotal;
-    setTotalAmount(calculatedTotal);
-    
-    console.log("Payment calculation details:", {
-      basePrice,
-      rentalDays: calculatedDays,
-      insurancePrice,
-      extrasTotal,
-      mandatoryTotal,
-      calculatedTotal,
-      fullData: bookingData
-    });
+    if (calculatedTotal > 0) {
+      setTotalAmount(calculatedTotal);
+    } else {
+      const basePrice = bookingData.totalRateAfterDiscount || bookingData.basePrice || 0;
+      console.log("Using price for calculation:", basePrice, 
+        bookingData.totalRateAfterDiscount ? "(from totalRateAfterDiscount)" : "(from basePrice)");
+      
+      const insurancePrice = bookingData.insurancePrice || 0;
+      const extrasTotal = (bookingData.selectedExtras || []).reduce(
+        (sum: number, extra: any) => sum + (extra.price * extra.quantity), 
+        0
+      );
+      
+      const mandatoryTotal = (bookingData.mandatoryFees || []).reduce(
+        (sum: number, fee: any) => sum + fee.amount,
+        0
+      );
+      setMandatoryFeesTotal(mandatoryTotal);
+      
+      const calculatedTotal = basePrice + insurancePrice + extrasTotal;
+      setTotalAmount(calculatedTotal);
+      
+      console.log("Payment calculation details:", {
+        basePrice,
+        rentalDays: calculatedDays,
+        insurancePrice,
+        extrasTotal,
+        mandatoryTotal,
+        calculatedTotal,
+        fullData: bookingData
+      });
+    }
 
-    // If we have a reservation reference, fetch booking details
     if (bookingData.reservationRef) {
       fetchBookingDetails(bookingData.reservationRef);
     }
-  }, [navigate, locationDetails]);
+  }, [navigate, locationDetails, bookingInfoResponse]);
 
-  // Function to fetch booking details if we have a reservation reference
   const fetchBookingDetails = async (reservationRef: string) => {
     try {
       console.log("Fetching booking details for reservation:", reservationRef);
@@ -198,7 +207,6 @@ const PaymentOptions = () => {
         const newPickupDate = addDays(today, 2);
         pickupDate = format(newPickupDate, "dd/MMM/yyyy");
         
-        // Fixed: Now using the already defined rentalDays variable
         const newDropoffDate = addDays(newPickupDate, rentalDays || 3);
         dropoffDate = format(newDropoffDate, "dd/MMM/yyyy");
         
@@ -443,7 +451,6 @@ const PaymentOptions = () => {
             </Button>
           </form>
           
-          {/* Debug Information Section */}
           <DebugInfo 
             apiResponse={rawApiResponse || bookingInfoResponse} 
             bookingData={bookingDetails}
