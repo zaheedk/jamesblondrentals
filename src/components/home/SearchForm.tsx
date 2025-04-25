@@ -216,7 +216,7 @@ const SearchForm = () => {
   useEffect(() => {
     if (rcmApi) {
       const lastRequestDetails = rcmApi.getLastRequestDetails();
-      setApiResponse(lastRequestDetails);
+      console.log('Last request details:', lastRequestDetails);
     }
   }, [rcmApi]);
 
@@ -224,7 +224,7 @@ const SearchForm = () => {
     const fetchStep1Response = async () => {
       try {
         const response = await rcmApi.getStep1();
-        setStep1Response(response);
+        console.log('Step1 response:', response);
       } catch (error) {
         console.error('Error fetching Step1 response:', error);
       }
