@@ -42,6 +42,15 @@ const PaymentSummary = ({
 }: PaymentSummaryProps) => {
   const rentalValue = rentalDays * dailyRate;
 
+  // Calculate total of mandatory fees
+  const mandatoryFeesTotal = mandatoryFees.reduce((sum, fee) => sum + fee.amount, 0);
+
+  // Calculate total extras
+  const extrasTotal = selectedExtras.reduce((sum, extra) => sum + extra.price, 0);
+
+  // Calculate actual total cost
+  const actualTotalCost = rentalValue + insurancePrice + extraKmsPrice + extrasTotal + mandatoryFeesTotal;
+
   return (
     <div className="bg-gray-50 rounded-lg p-4 mb-6">
       <h3 className="text-lg font-semibold mb-4">Payment Summary</h3>
@@ -96,7 +105,7 @@ const PaymentSummary = ({
         <div className="border-t border-gray-300 my-2 pt-2">
           <div className="flex justify-between font-semibold">
             <span>Total Cost</span>
-            <span>{formatCurrency(totalCost)}</span>
+            <span>{formatCurrency(actualTotalCost)}</span>
           </div>
         </div>
 
