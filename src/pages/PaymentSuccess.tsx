@@ -53,17 +53,6 @@ interface BookingDetails {
   extraKmsId?: string | number;
 }
 
-interface ApiBookingResponse {
-  status: string;
-  error: string;
-  results?: {
-    bookinginfo?: any[];
-    paymentinfo?: any[];
-    customerinfo?: any[];
-    extrafees?: any[];
-  };
-}
-
 declare global {
   interface Window {
     dataLayer: any[];
@@ -250,7 +239,6 @@ const PaymentSuccess = () => {
               console.log("Payment info from API:", paymentInfo);
               console.log("Customer info from API:", customerInfo);
               
-              // Calculate the total payment from all payment records
               const totalPayment = paymentInfo.reduce((sum, payment) => {
                 return sum + (parseFloat(payment.paidamount) || 0);
               }, 0);
@@ -402,7 +390,14 @@ const PaymentSuccess = () => {
                         cleanedSessionData.basePrice / cleanedSessionData.numberofdays : 0),
             totalcost: cleanedSessionData.totalcost || cleanedSessionData.basePrice || 0,
             payment: paymentStatus === "success" ? (cleanedSessionData.payment || cleanedSessionData.paymentAmount || 0) : 0,
-            balancedue: cleanedSessionData.balancedue || 0
+            balancedue: cleanedSessionData.balancedue || 0,
+            pickupLocationId: cleanedSessionData.pickupLocationId,
+            dropoffLocationId: cleanedSessionData.dropoffLocationId,
+            vehicleCategoryId: cleanedSessionData.vehicleCategoryId,
+            vehicleCategoryTypeId: cleanedSessionData.vehicleCategoryTypeId,
+            driverageId: cleanedSessionData.driverageId || cleanedSessionData.ageId,
+            insuranceId: cleanedSessionData.insuranceId,
+            extraKmsId: cleanedSessionData.extraKmsId
           };
           
           setBookingDetails(convertedDetails);
