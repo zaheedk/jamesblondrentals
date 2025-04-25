@@ -1,13 +1,10 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Hero from "@/components/home/Hero";
 import FeaturedVehicles from "@/components/home/FeaturedVehicles";
-import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 
 const Index = () => {
-  const [showApiDetails, setShowApiDetails] = useState(false);
-  
   // Get tomorrow's date in dd/MM/yyyy format
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
@@ -35,21 +32,8 @@ const Index = () => {
     pickupTime: "08:00",
     dropoffTime: "08:00",
     age: "4", // Default age group
-    carCategory: "0" // All categories (changed from "3" to "0")
+    carCategory: "0" // All categories
   }).toString();
-
-  // Create request details object to display
-  const requestDetails = {
-    method: "step2",
-    pickuplocationid: "7", // Auckland Airport
-    pickupdate: pickupDate,
-    pickuptime: "08:00",
-    dropofflocationid: "7",
-    dropoffdate: dropoffDate, 
-    dropofftime: "08:00",
-    ageid: "4",
-    vehiclecategorytypeid: "0" // Changed from "3" to "0" for all categories
-  };
 
   return (
     <div>
@@ -79,39 +63,6 @@ const Index = () => {
               </p>
             </div>
           </div>
-        </div>
-      </section>
-      
-      {/* API Request Details Section */}
-      <section className="bg-gray-100 py-8">
-        <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold">API Request Details</h2>
-            <Button 
-              variant="outline" 
-              onClick={() => setShowApiDetails(!showApiDetails)}
-            >
-              {showApiDetails ? "Hide Details" : "Show Details"}
-            </Button>
-          </div>
-          
-          {showApiDetails && (
-            <Card className="mb-6">
-              <CardContent className="pt-6">
-                <div className="space-y-4">
-                  <h3 className="font-semibold">Request to RCM API for "View All Vehicles"</h3>
-                  <div className="bg-gray-800 text-gray-100 p-4 rounded-md overflow-x-auto">
-                    <pre className="text-sm">
-                      {JSON.stringify(requestDetails, null, 2)}
-                    </pre>
-                  </div>
-                  <p className="text-sm text-gray-600">
-                    URL Parameters: {searchParams}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          )}
         </div>
       </section>
       
