@@ -130,7 +130,7 @@ const InsuranceSelection = () => {
 
   const handleBack = () => {
     // Navigate back to the vehicles page and ensure a complete refresh of the search
-    // We need to create the search parameters manually from the booking data
+    // without forcing a refetch that might cause API errors
     const data = getBookingData();
     if (!data) {
       navigate('/');
@@ -150,8 +150,7 @@ const InsuranceSelection = () => {
     
     navigate(`/vehicles?${searchParams.toString()}`, {
       state: { 
-        forceRefresh: true,
-        fromInsurancePage: true 
+        fromInsurancePage: true  // Only maintain the fromInsurancePage flag, remove forceRefresh
       }
     });
   };

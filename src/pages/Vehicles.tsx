@@ -29,6 +29,7 @@ const Vehicles = () => {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasAttemptedRefresh, setHasAttemptedRefresh] = useState(false);
   const { useDriverAges, useStep2Vehicles, useVehicleCategories, useLocations } = useRcmApi();
   const { data: driverAges, isLoading: isLoadingAges, error: driverAgesError } = useDriverAges();
   const { data: categoryTypes } = useVehicleCategories();
@@ -79,7 +80,8 @@ const Vehicles = () => {
   useEffect(() => {
     const shouldRefetchData = Boolean(
       (location.state?.forceRefresh || location.state?.fromInsurancePage) && 
-      step2Params
+      step2Params && 
+      !hasAttemptedRefresh
     );
     
     if (shouldRefetchData) {
@@ -89,12 +91,16 @@ const Vehicles = () => {
       });
       
       setIsLoading(true);
+      setHasAttemptedRefresh(true);
       refetchStep2();
       
-      // Clear the navigation state to prevent redundant refreshes
       window.history.replaceState({}, document.title);
     }
-  }, [location.state, refetchStep2, step2Params]);
+  }, [location.state, refetchStep2, step2Params, hasAttemptedRefresh]);
+
+  useEffect(() => {
+    setHasAttemptedRefresh(false);
+  }, [pickupLocation, dropoffLocation, pickupDate, dropoffDate, pickupTime, dropoffTime, age, carCategory]);
 
   useEffect(() => {
     if (!driverAges?.length) {
@@ -208,11 +214,27 @@ const Vehicles = () => {
     } else if (step2Error) {
       setIsLoading(false);
       console.error("Error fetching vehicles:", step2Error);
+      
+      try {
+        const cachedVehiclesData = sessionStorage.getItem(sessionVehiclesKey);
+        if (cachedVehiclesData && location.state?.fromInsurancePage) {
+          const parsedVehicles = JSON.parse(cachedVehiclesData) as Vehicle[];
+          console.log("Using cached vehicles data:", parsedVehicles.length);
+          setVehicles(parsedVehicles);
+          toast.info("Using previously loaded vehicles", {
+            description: "Couldn't refresh the data. Showing recent results."
+          });
+          return;
+        }
+      } catch (e) {
+        console.error("Error loading cached vehicles data:", e);
+      }
+      
       toast.error("Failed to load vehicles", { 
         description: "Please try another search or contact support."
       });
     }
-  }, [step2Data, step2Error, driverAges]);
+  }, [step2Data, step2Error, driverAges, location.state]);
 
   useEffect(() => {
     let results = [...vehicles];
@@ -313,13 +335,23 @@ const Vehicles = () => {
             </div>
           </div>
 
-          {hasApiError && (
+          {hasApiError && !hasAttemptedRefresh && (
             <Alert variant="destructive" className="mt-4">
               <AlertCircle className="h-4 w-4" />
               <AlertTitle>API Connection Error</AlertTitle>
               <AlertDescription>
                 We encountered a problem connecting to the reservation system. 
-                This may be due to invalid search parameters.
+                {vehicles.length > 0 ? " Showing previously loaded vehicles." : " This may be due to invalid search parameters."}
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {hasApiError && hasAttemptedRefresh && (
+            <Alert className="mt-4 bg-yellow-50 border-yellow-200">
+              <AlertCircle className="h-4 w-4 text-yellow-500" />
+              <AlertTitle>Using cached data</AlertTitle>
+              <AlertDescription>
+                We're showing the previously loaded vehicles. To refresh, try a new search.
               </AlertDescription>
             </Alert>
           )}
