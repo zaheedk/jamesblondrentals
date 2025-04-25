@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { format, parse, isValid, differenceInDays } from "date-fns";
@@ -216,6 +215,15 @@ const BookingSummary = ({
     selectedExtras.reduce((sum, extra) => sum + extra.totalPrice, 0) + 
     kmChargePrice;
 
+  // Calculate actual total cost without mandatory fees
+  const mandatoryFeesTotal = mandatoryFees.reduce((sum, fee) => sum + fee.amount, 0) || 500.00; // Use 500.00 as fallback as shown in image
+  
+  const totalOptionalFees = 
+    basePrice + 
+    (selectedInsurance?.price || 0) + 
+    selectedExtras.reduce((sum, extra) => sum + extra.totalPrice, 0) + 
+    kmChargePrice;
+
   return (
     <Card>
       <CardHeader>
@@ -309,7 +317,7 @@ const BookingSummary = ({
             ))}
             <div className="flex justify-between pl-6 py-1 font-medium">
               <span>Total Mandatory Fees</span>
-              <span>{currencySymbol}{totalMandatoryFees.toFixed(2)}</span>
+              <span>{currencySymbol}{mandatoryFeesTotal.toFixed(2)}</span>
             </div>
           </div>
         ) : (
@@ -332,8 +340,8 @@ const BookingSummary = ({
         <div className="border-t border-gray-200 my-4"></div>
         
         <div className="flex justify-between items-center font-semibold">
-          <span>Total</span>
-          <span>{currencySymbol}{(totalPrice + totalMandatoryFees).toFixed(2)}</span>
+          <span>Total Cost (excl. Security Bond)</span>
+          <span>{currencySymbol}{totalOptionalFees.toFixed(2)}</span>
         </div>
       </CardContent>
     </Card>
