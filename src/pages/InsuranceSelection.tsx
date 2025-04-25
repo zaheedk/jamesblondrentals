@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -130,8 +131,7 @@ const InsuranceSelection = () => {
   const handleBack = () => {
     navigate('/vehicles', { 
       state: { 
-        preserveSearch: true,
-        from: 'insuranceSelection'
+        requiresRefresh: true 
       } 
     });
   };

@@ -220,6 +220,8 @@ export function useRcmApi() {
       enabled: !!params && !!params.ageid,
       retry: API_RETRY_CONFIG.retries,
       retryDelay: API_RETRY_CONFIG.retryDelay,
+      staleTime: 1000 * 60 * 5,
+      refetchOnWindowFocus: false,
     });
   };
   

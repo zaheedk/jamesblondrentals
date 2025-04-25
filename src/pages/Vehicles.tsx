@@ -40,8 +40,6 @@ const Vehicles = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [selectedVehicleTypes, setSelectedVehicleTypes] = useState<string[]>([]);
-  
-  const sessionVehiclesKey = 'rcm-vehicles-data';
 
   const pickupLocation = searchParams.get("pickupLocation") || "";
   const dropoffLocation = searchParams.get("dropoffLocation") || pickupLocation;
@@ -73,7 +71,7 @@ const Vehicles = () => {
     vehiclecategorytypeid: carCategory
   } : null;
 
-  const { data: step2Data, isLoading: isLoadingStep2, error: step2Error } = useStep2Vehicles(step2Params);
+  const { data: step2Data, isLoading: isLoadingStep2, error: step2Error, refetch: refetchStep2 } = useStep2Vehicles(step2Params);
 
   const apiRequestDetails = step2Params ? {
     method: "step2",
@@ -83,21 +81,12 @@ const Vehicles = () => {
   const [apiResponse, setApiResponse] = useState<any>(null);
 
   useEffect(() => {
-    if (location.state && location.state.from === 'insuranceSelection') {
-      const savedVehicles = sessionStorage.getItem(sessionVehiclesKey);
-      if (savedVehicles) {
-        try {
-          const parsedVehicles = JSON.parse(savedVehicles);
-          setVehicles(parsedVehicles);
-          setFilteredVehicles(parsedVehicles);
-          setIsLoading(false);
-          console.log("Restored vehicles from session storage:", parsedVehicles.length);
-        } catch (e) {
-          console.error("Error parsing saved vehicles:", e);
-        }
-      }
+    if (location.state && location.state.requiresRefresh && step2Params) {
+      console.log("Refreshing vehicles data after navigation back...");
+      setIsLoading(true);
+      refetchStep2();
     }
-  }, [location.state]);
+  }, [location.state, refetchStep2, step2Params]);
 
   useEffect(() => {
     if (!driverAges?.length) {
