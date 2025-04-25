@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { formatCurrency } from '@/lib/utils';
 
@@ -34,6 +35,7 @@ const PaymentSummary = ({
   extraKmsName,
   extraKmsPrice = 0,
   selectedExtras = [],
+  mandatoryFees = [],
   totalCost,
 }: PaymentSummaryProps) => {
   const effectiveRentalDays = Math.max(1, rentalDays || 1);
@@ -48,6 +50,18 @@ const PaymentSummary = ({
           <span>Rental Value</span>
           <span>{formatCurrency(totalCost)}</span>
         </div>
+
+        {(mandatoryFees.length > 0) && (
+          <div className="border-t border-gray-300 my-2 pt-2">
+            <div className="font-medium mb-2">Mandatory Fees</div>
+            {mandatoryFees.map((fee, index) => (
+              <div key={index} className="flex justify-between text-sm">
+                <span>{fee.name}</span>
+                <span>{formatCurrency(fee.amount)}</span>
+              </div>
+            ))}
+          </div>
+        )}
 
         {(insurancePrice > 0 || extraKmsPrice > 0 || selectedExtras.length > 0) && (
           <div className="border-t border-gray-300 my-2 pt-2">
