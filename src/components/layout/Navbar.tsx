@@ -17,10 +17,14 @@ export function Navbar() {
         <Link to="/" className="flex items-center gap-2 font-semibold">
           {siteConfig.name}
         </Link>
-        {/* MainNav was removed as it doesn't exist */}
         <div className="ml-auto flex items-center space-x-4">
+          <Link to="/about" className="text-sm font-medium">About</Link>
+          <Link to="/vehicles" className="text-sm font-medium">Vehicles</Link>
+          <Link to="/fleet" className="text-sm font-medium">Fleet</Link>
+          <Link to="/airport" className="text-sm font-medium">Airport</Link>
+          <Link to="/faq" className="text-sm font-medium">FAQ</Link>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 ml-4">
           <Button asChild>
             <Link to={isHomePage ? "/booking" : "/"}>
               {isHomePage ? "Book Now" : "Home"}
