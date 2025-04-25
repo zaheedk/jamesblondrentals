@@ -250,6 +250,7 @@ const PaymentSuccess = () => {
 
         if (bookingReservationRef) {
           try {
+            console.log("Fetching booking info for reservation ref:", bookingReservationRef);
             const response = await rcmApi.request<RCMBookingResponse>('POST', 'bookinginfo', {
               method: 'bookinginfo',
               reservationref: bookingReservationRef
@@ -330,27 +331,30 @@ const PaymentSuccess = () => {
                 parseFloat(bookingInfo.totalrateafterdiscount) : 
                 bookingInfo.totalrateafterdiscount || 
                 sessionData?.totalRateAfterDiscount || 
-                0;
+                basePrice;
 
               const numberofdays = typeof bookingInfo.numberofdays === 'string' ? 
                 parseInt(bookingInfo.numberofdays) : 
                 bookingInfo.numberofdays || 
                 (sessionData?.pickupDate && sessionData?.dropoffDate ?
                   calculateRentalDuration(sessionData.pickupDate, sessionData.dropoffDate) : 
-                  0);
+                  1);
+                  
+              console.log("Rental days calculated:", numberofdays);
 
               const dailyrate = typeof bookingInfo.dailyrate === 'string' ? 
                 parseFloat(bookingInfo.dailyrate) : 
                 bookingInfo.dailyrate || 
-                (sessionData?.basePrice && sessionData?.numberofdays ?
-                  sessionData.basePrice / sessionData.numberofdays : 
+                (basePrice && numberofdays && numberofdays > 0 ?
+                  basePrice / numberofdays : 
                   0);
 
               const totalcost = typeof bookingInfo.totalcost === 'string' ? 
                 parseFloat(bookingInfo.totalcost) : 
                 bookingInfo.totalcost || 
+                totalRateAfterDiscount || 
                 sessionData?.totalcost || 
-                0;
+                basePrice;
 
               const payment = paymentStatus === "success" ? 
                 (totalPayment || 
@@ -362,6 +366,7 @@ const PaymentSuccess = () => {
               const balancedue = typeof bookingInfo.balancedue === 'string' ? 
                 parseFloat(bookingInfo.balancedue) : 
                 bookingInfo.balancedue || 
+                (totalcost - payment) || 
                 sessionData?.balancedue || 
                 0;
 
@@ -444,23 +449,42 @@ const PaymentSuccess = () => {
             }
           }
 
-          const pickupLocationFromSession = sessionData.pickupLocationName && 
-                                          sessionData.pickupLocationName !== "undefined" && 
-                                          sessionData.pickupLocationName !== null ? 
-                                          sessionData.pickupLocationName : "Location not available";
-                                          
-          const dropoffLocationFromSession = sessionData.dropoffLocationName && 
-                                           sessionData.dropoffLocationName !== "undefined" && 
-                                           sessionData.dropoffLocationName !== null ? 
-                                           sessionData.dropoffLocationName : "Location not available";
+          let pickupLocationFromSession = "Location not available";
+          let dropoffLocationFromSession = "Location not available";
+          
+          if (sessionData.pickupLocationName && 
+              sessionData.pickupLocationName !== "undefined" && 
+              sessionData.pickupLocationName !== null) {
+            pickupLocationFromSession = sessionData.pickupLocationName;
+          }
+          
+          if (sessionData.dropoffLocationName && 
+              sessionData.dropoffLocationName !== "undefined" && 
+              sessionData.dropoffLocationName !== null) {
+            dropoffLocationFromSession = sessionData.dropoffLocationName;
+          }
+          
+          console.log("Location names from session:", {
+            pickup: pickupLocationFromSession,
+            dropoff: dropoffLocationFromSession
+          });
 
           const numberofdays = cleanedSessionData.numberofdays || 
             (cleanedSessionData.pickupDate && cleanedSessionData.dropoffDate ? 
               calculateRentalDuration(cleanedSessionData.pickupDate, cleanedSessionData.dropoffDate) : 1);
+              
+          console.log("Rental days calculated from session:", numberofdays);
 
+          const basePrice = cleanedSessionData.basePrice || cleanedSessionData.totalRateAfterDiscount || 0;
           const dailyrate = cleanedSessionData.dailyrate || 
-            (cleanedSessionData.basePrice && numberofdays ? 
-              cleanedSessionData.basePrice / numberofdays : 0);
+            (basePrice && numberofdays && numberofdays > 0 ? 
+              basePrice / numberofdays : 0);
+
+          const totalcost = cleanedSessionData.totalcost || 
+                          cleanedSessionData.totalRateAfterDiscount || 
+                          cleanedSessionData.basePrice || 0;
+                          
+          console.log("Total cost from session:", totalcost);
 
           const paymentAmount = paymentStatus === "success" ? 
             (cleanedSessionData.payment || cleanedSessionData.paymentAmount || 1) : 0;
@@ -472,7 +496,7 @@ const PaymentSuccess = () => {
             dropoffDate: cleanedSessionData.dropoffDate || '',
             dropoffTime: cleanedSessionData.dropoffTime || '',
             paymentAmount: paymentAmount,
-            basePrice: cleanedSessionData.basePrice || 0,
+            basePrice: basePrice,
             paymentType: cleanedSessionData.paymentType,
             customerFirstName: cleanedSessionData.customerFirstName,
             customerLastName: cleanedSessionData.customerLastName,
@@ -494,13 +518,13 @@ const PaymentSuccess = () => {
             extraKmsPrice: cleanedSessionData.extraKmsPrice,
             pickupLocationName: pickupLocationFromSession,
             dropoffLocationName: dropoffLocationFromSession,
-            totalRateAfterDiscount: cleanedSessionData.totalRateAfterDiscount || 0,
+            totalRateAfterDiscount: cleanedSessionData.totalRateAfterDiscount || basePrice,
             mandatoryFees: cleanedSessionData.mandatoryFees || [],
             numberofdays: numberofdays,
             dailyrate: dailyrate,
-            totalcost: cleanedSessionData.totalcost || cleanedSessionData.basePrice || 0,
+            totalcost: totalcost,
             payment: paymentStatus === "success" ? (cleanedSessionData.payment || cleanedSessionData.paymentAmount || 0) : 0,
-            balancedue: cleanedSessionData.balancedue || 0,
+            balancedue: cleanedSessionData.balancedue || (totalcost - paymentAmount) || 0,
             pickupLocationId: cleanedSessionData.pickupLocationId,
             dropoffLocationId: cleanedSessionData.dropoffLocationId,
             vehicleCategoryId: cleanedSessionData.vehicleCategoryId,
@@ -737,7 +761,7 @@ const PaymentSuccess = () => {
           status={paymentStatus}
           errorMessage={errorMessage}
           transactionId={transactionId}
-          reservationRef={bookingDetails.reservationRef}
+          reservationRef={bookingDetails?.reservationRef}
         />
 
         {bookingDetails && (
@@ -766,8 +790,8 @@ const PaymentSuccess = () => {
 
             <RentalDetails 
               vehicleName={bookingDetails.vehicleName}
-              pickupLocationName={pickupLocationName}
-              dropoffLocationName={dropoffLocationName}
+              pickupLocationName={bookingDetails.pickupLocationName || "Location not available"}
+              dropoffLocationName={bookingDetails.dropoffLocationName || "Location not available"}
               formattedPickupDate={formattedPickupDate}
               formattedDropoffDate={formattedDropoffDate}
               pickupTime={bookingDetails.pickupTime}
@@ -784,8 +808,8 @@ const PaymentSuccess = () => {
               extraKmsPrice={bookingDetails.extraKmsPrice}
               selectedExtras={bookingDetails.selectedExtras}
               mandatoryFees={bookingDetails.mandatoryFees}
-              totalCost={bookingDetails.totalcost || bookingDetails.basePrice}
-              payment={bookingDetails.payment}
+              totalCost={bookingDetails.totalcost || bookingDetails.totalRateAfterDiscount || bookingDetails.basePrice}
+              payment={bookingDetails.payment || bookingDetails.paymentAmount}
               balanceDue={bookingDetails.balancedue}
             />
             

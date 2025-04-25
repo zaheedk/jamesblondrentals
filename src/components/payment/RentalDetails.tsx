@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { MapPin, Calendar, Clock } from 'lucide-react';
+import { MapPin, Calendar, Clock, Car } from 'lucide-react';
 
 interface RentalDetailsProps {
   vehicleName: string;
@@ -21,10 +21,22 @@ const RentalDetails = ({
   formattedDropoffDate,
   pickupTime,
   dropoffTime,
+  rentalDuration,
 }: RentalDetailsProps) => {
   return (
     <div className="bg-gray-50 rounded-lg p-4 mb-6">
       <h3 className="text-lg font-semibold mb-4">Rental Details</h3>
+      
+      {vehicleName && (
+        <div className="flex items-center gap-2 mb-4">
+          <Car className="h-4 w-4 mt-0.5" />
+          <div>
+            <p className="font-medium">Vehicle</p>
+            <p className="text-gray-700 font-bold">{vehicleName}</p>
+          </div>
+        </div>
+      )}
+      
       <div className="space-y-4">
         <div className="flex flex-col md:flex-row md:space-x-8">
           <div className="flex items-start gap-2 flex-1 mb-4 md:mb-0">
@@ -58,6 +70,15 @@ const RentalDetails = ({
             </div>
           </div>
         </div>
+        
+        {rentalDuration > 0 && (
+          <div className="flex items-center mt-2">
+            <Calendar className="h-4 w-4 mr-2" />
+            <p className="text-sm text-gray-600">
+              Total Rental Duration: <span className="font-medium">{rentalDuration} {rentalDuration === 1 ? 'day' : 'days'}</span>
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
