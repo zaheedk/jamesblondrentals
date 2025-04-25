@@ -65,7 +65,15 @@ const VehicleCard = ({
       ? parseFloat(vehicle.price) 
       : vehicle.price;
   
-  const isAvailable = vehicle.available === true || vehicle.available === 1 || vehicle.available === 2;
+  const isAvailable = (() => {
+    if (typeof vehicle.available === 'boolean') {
+      return vehicle.available === true;
+    }
+    if (typeof vehicle.available === 'number') {
+      return vehicle.available === 1 || vehicle.available === 2;
+    }
+    return false;
+  })();
 
   return (
     <Card className="overflow-hidden shadow-md h-full flex flex-col">
