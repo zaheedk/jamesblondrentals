@@ -1,8 +1,6 @@
-
 import { Link, Outlet, useLocation } from "react-router-dom";
-import { CalendarIcon, MapPinIcon, PhoneIcon, PlaneIcon } from "lucide-react";
+import { PlaneIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 
 const airportLinks = [
   { name: "Auckland Airport", path: "/airport/auckland" },
@@ -28,11 +26,20 @@ const Airport = () => {
 
           <div className="grid md:grid-cols-2 gap-6">
             {airportLinks.map(link => (
-              <Link key={link.path} to={link.path}>
-                <Button variant="outline" className="w-full justify-start gap-2">
-                  <PlaneIcon />
-                  {link.name}
-                </Button>
+              <Link 
+                key={link.path} 
+                to={link.path} 
+                className="block"
+              >
+                <div className="bg-[#9b87f5] hover:bg-[#7E69AB] transition-colors rounded-lg shadow-md">
+                  <Button 
+                    variant="ghost" 
+                    className="w-full justify-start gap-4 text-white hover:text-white/90 py-6"
+                  >
+                    <PlaneIcon className="w-6 h-6" />
+                    <span className="text-lg font-bold">{link.name}</span>
+                  </Button>
+                </div>
               </Link>
             ))}
           </div>
