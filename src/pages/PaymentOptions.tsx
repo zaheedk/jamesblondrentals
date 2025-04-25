@@ -67,12 +67,12 @@ const PaymentOptions = () => {
       );
       
       if (pickupLoc) {
-        pickupLocationName = pickupLoc.location || pickupLoc.name || pickupLocationName;
+        pickupLocationName = pickupLoc.location || pickupLocationName;
         console.log("Found pickup location:", pickupLocationName);
       }
       
       if (dropoffLoc) {
-        dropoffLocationName = dropoffLoc.location || dropoffLoc.name || dropoffLocationName;
+        dropoffLocationName = dropoffLoc.location || dropoffLocationName;
         console.log("Found dropoff location:", dropoffLocationName);
       }
     } else {
