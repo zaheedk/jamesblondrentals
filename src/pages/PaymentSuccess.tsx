@@ -246,12 +246,19 @@ const PaymentSuccess = () => {
 
             if (apiResponse.status === "OK" && apiResponse.results) {
               const bookingInfo = apiResponse.results.bookinginfo?.[0] || {};
-              const paymentInfo = apiResponse.results.paymentinfo?.[0] || {};
+              const paymentInfo = apiResponse.results.paymentinfo || [];
               const customerInfo = apiResponse.results.customerinfo?.[0] || {};
               
               console.log("Booking info from API:", bookingInfo);
               console.log("Payment info from API:", paymentInfo);
               console.log("Customer info from API:", customerInfo);
+              
+              // Calculate the total payment from all payment records
+              const totalPayment = paymentInfo.reduce((sum, payment) => {
+                return sum + (parseFloat(payment.paidamount) || 0);
+              }, 0);
+              
+              console.log("Total payment calculated from API:", totalPayment);
               
               let apiVehicleImageUrl = "";
               if (bookingInfo.vehicleimage) {
@@ -290,15 +297,15 @@ const PaymentSuccess = () => {
                 pickupTime: bookingInfo.pickuptime || sessionData?.pickupTime || '',
                 dropoffDate: bookingInfo.dropoffdate || sessionData?.dropoffDate || '',
                 dropoffTime: bookingInfo.dropofftime || sessionData?.dropoffTime || '',
-                paymentAmount: paymentStatus === "success" ? (parseFloat(paymentInfo.paidamount) || sessionData?.paymentAmount || 0) : 0,
+                paymentAmount: paymentStatus === "success" ? (totalPayment || parseFloat(bookingInfo.payment) || sessionData?.paymentAmount || 0) : 0,
                 basePrice: parseFloat(bookingInfo.totalcost) || sessionData?.basePrice || 0,
                 reservationRef: bookingReservationRef,
                 vehicleImage: apiVehicleImageUrl || sessionData?.vehicleImage || '',
                 insuranceName: bookingInfo.insuranceoption || sessionData?.insuranceName || '',
                 insurancePrice: parseFloat(bookingInfo.insuranceamount) || sessionData?.insurancePrice || 0,
                 selectedExtras: sessionData?.selectedExtras || [],
-                pickupLocationName: bookingInfo.pickuplocation || bookingInfo.pickuplocationname || sessionData?.pickupLocationName || "Not specified",
-                dropoffLocationName: bookingInfo.dropofflocation || bookingInfo.dropofflocationname || sessionData?.dropoffLocationName || "Not specified",
+                pickupLocationName: bookingInfo.pickuplocationname || bookingInfo.pickuplocation || sessionData?.pickupLocationName || "Not specified",
+                dropoffLocationName: bookingInfo.dropofflocationname || bookingInfo.dropofflocation || sessionData?.dropoffLocationName || "Not specified",
                 totalRateAfterDiscount: parseFloat(bookingInfo.totalrateafterdiscount) || sessionData?.totalRateAfterDiscount || 0,
                 mandatoryFees: combinedMandatoryFees.length > 0 ? combinedMandatoryFees : (sessionData?.mandatoryFees || []),
                 numberofdays: parseInt(bookingInfo.numberofdays) ||
@@ -308,7 +315,7 @@ const PaymentSuccess = () => {
                   (sessionData?.basePrice && sessionData?.numberofdays ?
                     sessionData.basePrice / sessionData.numberofdays : 0),
                 totalcost: parseFloat(bookingInfo.totalcost) || sessionData?.totalcost || 0,
-                payment: paymentStatus === "success" ? (parseFloat(paymentInfo.paidamount) || sessionData?.payment || 0) : 0,
+                payment: paymentStatus === "success" ? (totalPayment || parseFloat(bookingInfo.payment) || sessionData?.payment || 0) : 0,
                 balancedue: parseFloat(bookingInfo.balancedue) || sessionData?.balancedue || 0,
                 customerFirstName: customerInfo.firstname || sessionData?.customerFirstName || '',
                 customerLastName: customerInfo.lastname || sessionData?.customerLastName || '',
@@ -365,7 +372,7 @@ const PaymentSuccess = () => {
             pickupTime: cleanedSessionData.pickupTime || '', 
             dropoffDate: cleanedSessionData.dropoffDate || '',
             dropoffTime: cleanedSessionData.dropoffTime || '',
-            paymentAmount: paymentStatus === "success" ? (cleanedSessionData.paymentAmount || 0) : 0,
+            paymentAmount: paymentStatus === "success" ? (cleanedSessionData.payment || cleanedSessionData.paymentAmount || 1) : 0,
             basePrice: cleanedSessionData.basePrice || 0,
             paymentType: cleanedSessionData.paymentType,
             customerFirstName: cleanedSessionData.customerFirstName,
@@ -676,8 +683,8 @@ const PaymentSuccess = () => {
               selectedExtras={bookingDetails.selectedExtras}
               mandatoryFees={bookingDetails.mandatoryFees}
               totalCost={bookingDetails.totalcost || bookingDetails.basePrice}
-              payment={paymentStatus === "success" ? (bookingDetails.payment || bookingDetails.paymentAmount || 0) : 0}
-              balanceDue={bookingDetails.balancedue || 0}
+              payment={bookingDetails.payment}
+              balanceDue={bookingDetails.balancedue}
             />
             
             {paymentStatus === "success" ? (
