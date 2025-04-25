@@ -1,3 +1,4 @@
+
 export interface Vehicle {
   id: number;
   make: string;
@@ -10,7 +11,7 @@ export interface Vehicle {
   transmission: "automatic" | "manual";
   fuelType: "gasoline" | "diesel" | "electric" | "hybrid";
   fuelEfficiency: string;
-  available: boolean;
+  available: boolean | number; // Updated to accept number (1, 2, etc.) or boolean
   location: string;
   features: string[];
   images: string[];

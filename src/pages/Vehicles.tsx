@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
@@ -116,7 +117,7 @@ const Vehicles = () => {
       availablecars.forEach((car, index) => {
         console.log(`Car ${index + 1} Details:
           - Available: ${car.available}
-          - Available Message: ${car.availablemessage}
+          - Available Message: ${car.availablemessage || 'No message'}
           - Vehicle Category: ${car.vehiclecategory}
           - Vehicle Category ID: ${car.vehiclecategoryid}
           - Total Rate After Discount: ${car.totalrateafterdiscount}
@@ -136,6 +137,7 @@ const Vehicles = () => {
         const feeAmount = mandatoryFee ? Number(mandatoryFee.totalfeeamount) : 0;
         const totalPrice = car.totalrateafterdiscount + feeAmount;
         
+        // Make sure we're passing the raw available value to the component
         return {
           id: Number(car.vehiclecategoryid),
           make: car.vehiclecategory.split(' ')[0] || "Unknown",
@@ -148,7 +150,7 @@ const Vehicles = () => {
           transmission: "automatic",
           fuelType: "gasoline",
           fuelEfficiency: "N/A",
-          available: car.available === 1,
+          available: car.available, // Pass the raw number value (1 or 2) as is
           location: pickupLocation,
           features: [
             `${car.numberofadults} Adults`,
@@ -164,6 +166,11 @@ const Vehicles = () => {
           totalDays: carRates.length > 0 ? carRates[0].numberofdays : 1,
           discountAmount: car.totaldiscountamount
         };
+      });
+      
+      // Log the mapped vehicles' availability property
+      mappedVehicles.forEach((vehicle) => {
+        console.log(`Mapped vehicle ${vehicle.make} ${vehicle.model} - available: ${vehicle.available}, type: ${typeof vehicle.available}`);
       });
       
       setVehicles(mappedVehicles);

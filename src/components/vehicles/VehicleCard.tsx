@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -65,7 +66,10 @@ const VehicleCard = ({
       ? parseFloat(vehicle.price) 
       : vehicle.price;
   
+  // Updated isAvailable logic to handle available: 2 case and add console logging
   const isAvailable = (() => {
+    console.log(`Vehicle ${vehicle.make} ${vehicle.model} availability:`, vehicle.available, typeof vehicle.available);
+    
     if (typeof vehicle.available === 'boolean') {
       return vehicle.available === true;
     }
@@ -74,6 +78,8 @@ const VehicleCard = ({
     }
     return false;
   })();
+  
+  console.log(`Vehicle ${vehicle.make} ${vehicle.model} isAvailable:`, isAvailable);
 
   return (
     <Card className="overflow-hidden shadow-md h-full flex flex-col">
