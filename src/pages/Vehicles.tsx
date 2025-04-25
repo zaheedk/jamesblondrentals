@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useLocation } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
@@ -23,6 +23,7 @@ interface RcmVehicleWithPricing {
 
 const Vehicles = () => {
   const [searchParams] = useSearchParams();
+  const location = useLocation();
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -39,6 +40,8 @@ const Vehicles = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [selectedVehicleTypes, setSelectedVehicleTypes] = useState<string[]>([]);
+  
+  const sessionVehiclesKey = 'rcm-vehicles-data';
 
   const pickupLocation = searchParams.get("pickupLocation") || "";
   const dropoffLocation = searchParams.get("dropoffLocation") || pickupLocation;
@@ -80,10 +83,21 @@ const Vehicles = () => {
   const [apiResponse, setApiResponse] = useState<any>(null);
 
   useEffect(() => {
-    if (apiRequestDetails) {
-      console.log("API request details:", apiRequestDetails);
+    if (location.state && location.state.from === 'insuranceSelection') {
+      const savedVehicles = sessionStorage.getItem(sessionVehiclesKey);
+      if (savedVehicles) {
+        try {
+          const parsedVehicles = JSON.parse(savedVehicles);
+          setVehicles(parsedVehicles);
+          setFilteredVehicles(parsedVehicles);
+          setIsLoading(false);
+          console.log("Restored vehicles from session storage:", parsedVehicles.length);
+        } catch (e) {
+          console.error("Error parsing saved vehicles:", e);
+        }
+      }
     }
-  }, [apiRequestDetails, step2Data, step2Error]);
+  }, [location.state]);
 
   useEffect(() => {
     if (!driverAges?.length) {
@@ -95,15 +109,11 @@ const Vehicles = () => {
       
       const { availablecars, seasonalrates, mandatoryfees } = step2Data.results;
       
-      console.log("Available cars count:", availablecars.length);
-      
       const availableStatusCounts = availablecars.reduce((acc, car) => {
         const status = car.available;
         acc[status] = (acc[status] || 0) + 1;
         return acc;
       }, {} as Record<number, number>);
-      
-      console.log("Available status distribution:", availableStatusCounts);
       
       availablecars.forEach((car, index) => {
         console.log(`Car ${index + 1} Details:
@@ -163,6 +173,12 @@ const Vehicles = () => {
       });
       
       setVehicles(mappedVehicles);
+      
+      try {
+        sessionStorage.setItem(sessionVehiclesKey, JSON.stringify(mappedVehicles));
+      } catch (e) {
+        console.error("Error saving vehicles to session storage:", e);
+      }
       
       if (mappedVehicles.length > 0) {
         const prices = mappedVehicles.map(v => {

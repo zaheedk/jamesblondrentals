@@ -1,6 +1,5 @@
-
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { RCMInsuranceOption, RCMKmCharge } from '@/lib/api/rcm-api-types';
@@ -12,6 +11,7 @@ import { differenceInDays, parseISO } from 'date-fns';
 
 const InsuranceSelection = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { rcmApi } = useRcmApi();
 
   const [bookingData, setBookingData] = useState<BookingSessionData | null>(null);
@@ -127,6 +127,15 @@ const InsuranceSelection = () => {
     navigate('/extras-selection');
   };
 
+  const handleBack = () => {
+    navigate('/vehicles', { 
+      state: { 
+        preserveSearch: true,
+        from: 'insuranceSelection'
+      } 
+    });
+  };
+
   if (isLoading || !bookingData) {
     return (
       <div className="container mx-auto px-4 py-8 text-center">
@@ -160,7 +169,7 @@ const InsuranceSelection = () => {
           <div className="flex justify-between pt-4">
             <Button 
               variant="outline" 
-              onClick={() => navigate(-1)}
+              onClick={handleBack}
             >
               Back
             </Button>
