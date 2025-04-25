@@ -22,6 +22,7 @@ import { AlertCircle } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface RcmVehicleWithPricing {
   vehicle: RCMAvailableCar;
@@ -47,6 +48,7 @@ const Vehicles = () => {
   const [maxPriceAvailable, setMaxPriceAvailable] = useState<number>(500);
   const [searchTerm, setSearchTerm] = useState("");
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [selectedVehicleTypes, setSelectedVehicleTypes] = useState<string[]>([]);
 
   const pickupLocation = searchParams.get("pickupLocation") || "";
   const dropoffLocation = searchParams.get("dropoffLocation") || pickupLocation;
@@ -199,8 +201,11 @@ const Vehicles = () => {
   useEffect(() => {
     let results = [...vehicles];
     
-    if (vehicleType !== "all") {
-      results = results.filter(vehicle => vehicle.type === vehicleType);
+    // Filter by selected vehicle types
+    if (selectedVehicleTypes.length > 0) {
+      results = results.filter(vehicle => 
+        selectedVehicleTypes.includes(String(vehicle.type))
+      );
     }
     
     results = results.filter(vehicle => {
@@ -224,7 +229,7 @@ const Vehicles = () => {
     
     console.log(`Filtered vehicles: ${results.length} out of ${vehicles.length}`);
     setFilteredVehicles(results);
-  }, [vehicles, vehicleType, priceRange, searchTerm]);
+  }, [vehicles, selectedVehicleTypes, priceRange, searchTerm]);
 
   useEffect(() => {
     if (categoryTypes?.length) {
@@ -375,25 +380,34 @@ const Vehicles = () => {
                 <CollapsibleContent forceMount>
                   <Card className="p-4">
                     <div className="space-y-6">
-                      <div>
-                        <Label className="text-base">Vehicle Type</Label>
-                        <Select
-                          value={vehicleType}
-                          onValueChange={(value) => setVehicleType(value as VehicleType | "all")}
-                        >
-                          <SelectTrigger className="mt-2">
-                            <SelectValue placeholder="Select type" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="all">All Types</SelectItem>
-                            {uniqueVehicleCategoryTypes.map((categoryType) => (
-                              <SelectItem key={categoryType.id} value={categoryType.id}>
+                      <div className="space-y-4">
+                        <Label className="text-base">Vehicle Types</Label>
+                        <div className="grid grid-cols-2 gap-4">
+                          {uniqueVehicleCategoryTypes.map((categoryType) => (
+                            <div key={categoryType.id} className="flex items-center space-x-2">
+                              <Checkbox
+                                id={`type-${categoryType.id}`}
+                                checked={selectedVehicleTypes.includes(categoryType.id)}
+                                onCheckedChange={(checked) => {
+                                  setSelectedVehicleTypes(prev => {
+                                    if (checked) {
+                                      return [...prev, categoryType.id];
+                                    }
+                                    return prev.filter(id => id !== categoryType.id);
+                                  });
+                                }}
+                              />
+                              <Label
+                                htmlFor={`type-${categoryType.id}`}
+                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                              >
                                 {categoryType.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                              </Label>
+                            </div>
+                          ))}
+                        </div>
                       </div>
+
                       <div>
                         <Label className="text-base">Price Range (total)</Label>
                         <div className="mt-4">
