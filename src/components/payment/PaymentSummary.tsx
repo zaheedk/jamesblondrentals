@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { formatCurrency } from '@/lib/utils';
 
@@ -34,42 +35,19 @@ const PaymentSummary = ({
   extraKmsName,
   extraKmsPrice = 0,
   selectedExtras = [],
-  mandatoryFees = [],
   totalCost,
 }: PaymentSummaryProps) => {
-  // Ensure rentalDays is valid and at least 1
   const effectiveRentalDays = Math.max(1, rentalDays || 1);
-  
-  // Calculate the total rental value based on days * daily rate
-  const rentalValue = dailyRate * effectiveRentalDays;
-  
-  // Calculate total of optional extras (insurance + extra kms + selected extras)
   const extrasTotal = selectedExtras.reduce((sum, extra) => sum + extra.price, 0);
   const totalOptionalFees = insurancePrice + (extraKmsPrice || 0) + extrasTotal;
-  
-  // Calculate total mandatory fees
-  const mandatoryFeesTotal = mandatoryFees.reduce((sum, fee) => sum + fee.amount, 0);
-  
-  // For debugging
-  console.log("Payment Summary Calculations:", {
-    rentalDays: effectiveRentalDays,
-    dailyRate,
-    rentalValue,
-    insurancePrice,
-    extraKmsPrice,
-    extrasTotal,
-    totalOptionalFees,
-    mandatoryFeesTotal,
-    providedTotalCost: totalCost
-  });
 
   return (
     <div className="bg-gray-50 rounded-lg p-4 mb-6">
       <h3 className="text-lg font-semibold mb-4">Payment Summary</h3>
       <div className="space-y-2">
         <div className="flex justify-between">
-          <span>Rental Value ({effectiveRentalDays} day{effectiveRentalDays !== 1 ? 's' : ''} × {formatCurrency(dailyRate)})</span>
-          <span>{formatCurrency(rentalValue)}</span>
+          <span>Rental Value ({effectiveRentalDays} day{effectiveRentalDays !== 1 ? 's' : ''})</span>
+          <span>{formatCurrency(totalCost)}</span>
         </div>
 
         {(insurancePrice > 0 || extraKmsPrice > 0 || selectedExtras.length > 0) && (
@@ -104,22 +82,6 @@ const PaymentSummary = ({
           </div>
         )}
 
-        {mandatoryFees.length > 0 && (
-          <div className="border-t border-gray-300 my-2 pt-2">
-            <div className="font-medium mb-2">Mandatory Fees</div>
-            {mandatoryFees.map((fee, index) => (
-              <div key={index} className="flex justify-between text-sm">
-                <span>{fee.name}</span>
-                <span>{formatCurrency(fee.amount)}</span>
-              </div>
-            ))}
-            <div className="flex justify-between font-medium text-sm mt-1 pt-1 border-t border-dashed border-gray-200">
-              <span>Total Mandatory Fees</span>
-              <span>{formatCurrency(mandatoryFeesTotal)}</span>
-            </div>
-          </div>
-        )}
-
         <div className="border-t border-gray-300 my-2 pt-2">
           <div className="flex justify-between font-semibold">
             <span>Total Cost</span>
@@ -132,3 +94,4 @@ const PaymentSummary = ({
 };
 
 export default PaymentSummary;
+
