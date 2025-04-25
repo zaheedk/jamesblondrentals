@@ -104,9 +104,24 @@ const Vehicles = () => {
       const { availablecars, seasonalrates, mandatoryfees } = step2Data.results;
       
       console.log("Available cars count:", availablecars.length);
-      if (availablecars.length > 0) {
-        console.log("First available car:", availablecars[0]);
-      }
+      
+      const availableStatusCounts = availablecars.reduce((acc, car) => {
+        const status = car.available;
+        acc[status] = (acc[status] || 0) + 1;
+        return acc;
+      }, {} as Record<number, number>);
+      
+      console.log("Available status distribution:", availableStatusCounts);
+      
+      availablecars.forEach((car, index) => {
+        console.log(`Car ${index + 1} Details:
+          - Available: ${car.available}
+          - Available Message: ${car.availablemessage}
+          - Vehicle Category: ${car.vehiclecategory}
+          - Vehicle Category ID: ${car.vehiclecategoryid}
+          - Total Rate After Discount: ${car.totalrateafterdiscount}
+        `);
+      });
       
       const mappedVehicles: Vehicle[] = availablecars.map(car => {
         const carRates = seasonalrates.filter(rate => 
