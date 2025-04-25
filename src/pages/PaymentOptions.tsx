@@ -9,6 +9,8 @@ import { formatCurrency } from "@/lib/utils";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Car } from "lucide-react";
 import PaymentSummary from "@/components/payment/PaymentSummary";
+import RentalDetails from "@/components/payment/RentalDetails";
+import DebugInfo from "@/components/payment/DebugInfo";
 
 const DEPOSIT_AMOUNT = 50;
 
@@ -50,24 +52,19 @@ const PaymentOptions = () => {
       dropoffLocationName
     });
     
-    // Calculate rental days properly
     let calculatedDays = 1;
     
-    // First priority: Use numberofdays from API response
     if (bookingData.numberofdays && typeof bookingData.numberofdays === 'number' && bookingData.numberofdays > 0) {
       console.log("Using numberofdays from API response:", bookingData.numberofdays);
       calculatedDays = bookingData.numberofdays;
     } 
-    // Second priority: Calculate from dates
     else if (bookingData.pickupDate && bookingData.dropoffDate) {
       try {
         const pickupDate = new Date(bookingData.pickupDate);
         const dropoffDate = new Date(bookingData.dropoffDate);
         if (pickupDate && dropoffDate && !isNaN(pickupDate.getTime()) && !isNaN(dropoffDate.getTime())) {
-          // Calculate the difference in days
           const timeDiff = dropoffDate.getTime() - pickupDate.getTime();
           const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-          // If it's a same-day rental, count it as 1 day
           calculatedDays = Math.max(1, daysDiff);
           console.log("Calculated rental days from dates:", calculatedDays);
         }
@@ -77,11 +74,9 @@ const PaymentOptions = () => {
       }
     }
     
-    // Update state and booking data
     setRentalDays(calculatedDays);
     updateBookingData({ rentalDays: calculatedDays });
     
-    // Use the calculated days for the total amount
     const basePrice = bookingData.totalRateAfterDiscount || bookingData.basePrice || 0;
     console.log("Using price for calculation:", basePrice, 
       bookingData.totalRateAfterDiscount ? "(from totalRateAfterDiscount)" : "(from basePrice)");
@@ -98,7 +93,6 @@ const PaymentOptions = () => {
     );
     setMandatoryFeesTotal(mandatoryTotal);
     
-    // Important: Use the correct calculatedDays value for calculating total
     const calculatedTotal = basePrice + insurancePrice + extrasTotal;
     setTotalAmount(calculatedTotal);
     
@@ -111,6 +105,8 @@ const PaymentOptions = () => {
       calculatedTotal,
       fullData: bookingData
     });
+
+    console.log("Booking data from session:", bookingData);
   }, [navigate]);
 
   const handleImageError = () => {
@@ -176,6 +172,17 @@ const PaymentOptions = () => {
               </AspectRatio>
             </div>
           )}
+
+          <RentalDetails
+            vehicleName={bookingDetails?.vehicleName || ""}
+            pickupLocationName={bookingDetails?.pickupLocationName || ""}
+            dropoffLocationName={bookingDetails?.dropoffLocationName || ""}
+            formattedPickupDate={bookingDetails?.pickupDate || ""}
+            formattedDropoffDate={bookingDetails?.dropoffDate || ""}
+            pickupTime={bookingDetails?.pickupTime || ""}
+            dropoffTime={bookingDetails?.dropoffTime || ""}
+            rentalDuration={rentalDays}
+          />
 
           <PaymentSummary
             rentalDays={rentalDays}
@@ -243,6 +250,11 @@ const PaymentOptions = () => {
               </Button>
             </div>
           </form>
+          
+          <DebugInfo 
+            apiResponse={bookingDetails}
+            windcaveResponseDetails={{}}
+          />
         </div>
       </div>
     </div>
