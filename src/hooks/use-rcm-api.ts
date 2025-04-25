@@ -125,8 +125,12 @@ export function useRcmApi() {
           if (response.status === "OK" && response.results?.driverages) {
             const driverAges = Array.from(response.results.driverages);
             
+            const twentySixPlusAge = driverAges.find(
+              age => age.driverage === '26+' || age.driverage === '26'
+            );
+            
             driverAges.forEach(age => {
-              age.isdefault = age.driverage === '26+' || age.driverage === '26';
+              age.isdefault = age === twentySixPlusAge;
             });
             
             console.log('Driver ages data:', driverAges);
