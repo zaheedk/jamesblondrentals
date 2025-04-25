@@ -119,8 +119,8 @@ export function ApiStatusIndicator() {
       
       rcmApi.initialize({
         apiUrl: newUrl,
-        apiKey: rcmApi.config.apiKey,
-        apiSecret: rcmApi.config.apiSecret
+        apiKey: import.meta.env.VITE_RCM_API_KEY || rcmApi.config.apiKey,
+        apiSecret: import.meta.env.VITE_RCM_API_SECRET || rcmApi.config.apiSecret
       });
       
       toast.success('API configuration updated', {

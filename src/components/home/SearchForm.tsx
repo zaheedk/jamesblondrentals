@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -91,7 +92,7 @@ const SearchForm = () => {
     initializeApi({
       apiKey: import.meta.env.VITE_RCM_API_KEY,
       apiSecret: import.meta.env.VITE_RCM_API_SECRET,
-      apiUrl: "/api/rcm/booking/v3.2/",
+      apiUrl: "/api/rcm/booking/v3.2",
       useMockData: false
     }).catch(error => {
       console.error('Failed to initialize API:', error);

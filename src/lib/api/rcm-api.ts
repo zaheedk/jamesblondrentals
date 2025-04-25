@@ -19,8 +19,8 @@ import type {
 
 // API Configuration
 const DEFAULT_CONFIG: RCMApiConfig = {
-  apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
-  apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
+  apiKey: import.meta.env.VITE_RCM_API_KEY || "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
+  apiSecret: import.meta.env.VITE_RCM_API_SECRET || "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
   apiUrl: "/api/rcm/booking/v3.2"
 };
 
