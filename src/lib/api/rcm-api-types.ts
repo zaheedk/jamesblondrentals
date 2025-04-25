@@ -1,3 +1,4 @@
+
 // RCM API type definitions
 
 export interface RCMVehicle {
@@ -214,6 +215,57 @@ export interface RCMBookingResponseResults {
   confirmationno?: string;
   reservationno?: string | number;
   totalamount?: number;
+  // Adding the missing properties used in PaymentSuccess.tsx
+  bookinginfo?: Array<{
+    vehiclecategory?: string;
+    pickupdate?: string;
+    pickuptime?: string;
+    dropoffdate?: string;
+    dropofftime?: string;
+    totalcost?: string | number;
+    payment?: string | number;
+    insuranceoption?: string;
+    insuranceamount?: string | number;
+    pickuplocationname?: string;
+    pickuplocation?: string;
+    dropofflocationname?: string;
+    dropofflocation?: string;
+    totalrateafterdiscount?: string | number;
+    numberofdays?: string | number;
+    dailyrate?: string | number;
+    balancedue?: string | number;
+    vehicleimage?: string;
+    urlpathfordocuments?: string;
+    mandatoryfees?: Array<{
+      name?: string;
+      amount?: string | number;
+      totalfeeamount?: string | number;
+    }>;
+  }>;
+  paymentinfo?: Array<{
+    paidamount: string | number;
+    paymentdate?: string;
+    paymentmethod?: string;
+  }>;
+  customerinfo?: Array<{
+    firstname?: string;
+    lastname?: string;
+    email?: string;
+    phone?: string;
+    mobile?: string;
+    dateofbirth?: string;
+    licenseexpires?: string;
+    address?: string;
+    city?: string;
+    state?: string;
+    postcode?: string;
+    country?: string;
+  }>;
+  extrafees?: Array<{
+    name: string;
+    fees: string | number;
+    isoptionalfee: boolean;
+  }>;
 }
 
 export interface RCMBookingResponse {
