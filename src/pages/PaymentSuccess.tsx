@@ -253,13 +253,15 @@ const PaymentSuccess = () => {
               console.log("Payment info from API:", paymentInfo);
               console.log("Customer info from API:", customerInfo);
               
+              // Fix the vehicle image URL creation
               let apiVehicleImageUrl = "";
-              if (bookingInfo.vehicleimage && bookingInfo.urlpathfordocuments) {
-                apiVehicleImageUrl = `${bookingInfo.urlpathfordocuments.replace(/\/$/, "")}/${bookingInfo.vehicleimage.replace(/^\//, "")}`;
+              if (bookingInfo.vehicleimage) {
+                if (bookingInfo.urlpathfordocuments) {
+                  apiVehicleImageUrl = `${bookingInfo.urlpathfordocuments.replace(/\/$/, "")}/${bookingInfo.vehicleimage.replace(/^\//, "")}`;
+                } else {
+                  apiVehicleImageUrl = bookingInfo.vehicleimage;
+                }
                 console.log("Created vehicle image URL from API data:", apiVehicleImageUrl);
-              } else if (bookingInfo.vehicleimage && !bookingInfo.urlpathfordocuments) {
-                apiVehicleImageUrl = bookingInfo.vehicleimage;
-                console.log("Using raw vehicle image from API:", apiVehicleImageUrl);
               }
 
               // Try to pull mandatory fees from bookingInfo.mandatoryfees and from extrafees where isoptionalfee is false
@@ -347,9 +349,19 @@ const PaymentSuccess = () => {
             return value;
           }));
           
+          // Fix the vehicle image URL
           let vehicleImage = cleanedSessionData.vehicleImage || '';
-          if (vehicleImage && !vehicleImage.includes('http')) {
-            vehicleImage = `https://rentalcarmanagerau.blob.core.windows.net/public/nzkuzarentals493/${vehicleImage}`;
+          if (vehicleImage) {
+            // Remove any duplicate URL patterns
+            if (vehicleImage.includes('rentalcarmanagerau.blob.core.windows.net') && 
+                vehicleImage.indexOf('rentalcarmanagerau.blob.core.windows.net') !== 
+                vehicleImage.lastIndexOf('rentalcarmanagerau.blob.core.windows.net')) {
+              const baseUrl = 'https://rentalcarmanagerau.blob.core.windows.net/public/nzkuzarentals493/';
+              const filename = vehicleImage.split('/').pop();
+              vehicleImage = baseUrl + filename;
+            } else if (!vehicleImage.includes('http')) {
+              vehicleImage = `https://rentalcarmanagerau.blob.core.windows.net/public/nzkuzarentals493/${vehicleImage}`;
+            }
           }
           
           const convertedDetails: BookingDetails = {
@@ -577,7 +589,16 @@ const PaymentSuccess = () => {
   let vehicleImageUrl = "";
   if (bookingDetails?.vehicleImage) {
     if (bookingDetails.vehicleImage.startsWith('http')) {
-      vehicleImageUrl = bookingDetails.vehicleImage;
+      // Fix duplicated URL paths if they exist
+      if (bookingDetails.vehicleImage.includes('rentalcarmanagerau.blob.core.windows.net') && 
+          bookingDetails.vehicleImage.indexOf('rentalcarmanagerau.blob.core.windows.net') !== 
+          bookingDetails.vehicleImage.lastIndexOf('rentalcarmanagerau.blob.core.windows.net')) {
+        const baseUrl = 'https://rentalcarmanagerau.blob.core.windows.net/public/nzkuzarentals493/';
+        const filename = bookingDetails.vehicleImage.split('/').pop();
+        vehicleImageUrl = baseUrl + filename;
+      } else {
+        vehicleImageUrl = bookingDetails.vehicleImage;
+      }
     } else {
       vehicleImageUrl = `https://rentalcarmanagerau.blob.core.windows.net/public/nzkuzarentals493/${bookingDetails.vehicleImage.replace(/^\/+/, '')}`;
     }
