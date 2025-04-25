@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -20,6 +21,7 @@ const PaymentOptions = () => {
   const [totalAmount, setTotalAmount] = useState(0);
   const [mandatoryFeesTotal, setMandatoryFeesTotal] = useState(0);
   const [imageError, setImageError] = useState(false);
+  const [rentalDays, setRentalDays] = useState(1);
 
   useEffect(() => {
     const bookingData = getBookingData();
@@ -49,6 +51,23 @@ const PaymentOptions = () => {
       dropoffLocationName
     });
     
+    // Calculate rental days if available
+    if (bookingData.rentalDays) {
+      setRentalDays(bookingData.rentalDays);
+    } else if (bookingData.pickupDate && bookingData.dropoffDate) {
+      try {
+        const pickupDate = new Date(bookingData.pickupDate);
+        const dropoffDate = new Date(bookingData.dropoffDate);
+        if (pickupDate && dropoffDate && !isNaN(pickupDate.getTime()) && !isNaN(dropoffDate.getTime())) {
+          const days = Math.ceil((dropoffDate.getTime() - pickupDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+          setRentalDays(days > 0 ? days : 1);
+        }
+      } catch (error) {
+        console.error("Error calculating rental days:", error);
+        setRentalDays(1); // Default to 1 day if calculation fails
+      }
+    }
+    
     const basePrice = bookingData.totalRateAfterDiscount || bookingData.basePrice || 0;
     console.log("Using price for calculation:", basePrice, 
       bookingData.totalRateAfterDiscount ? "(from totalRateAfterDiscount)" : "(from basePrice)");
@@ -65,11 +84,12 @@ const PaymentOptions = () => {
     );
     setMandatoryFeesTotal(mandatoryTotal);
     
-    const calculatedTotal = basePrice + insurancePrice + extrasTotal;
+    const calculatedTotal = basePrice * rentalDays + insurancePrice + extrasTotal;
     setTotalAmount(calculatedTotal);
     
     console.log("Payment calculation details:", {
       basePrice,
+      rentalDays,
       insurancePrice,
       extrasTotal,
       mandatoryTotal,
@@ -143,14 +163,14 @@ const PaymentOptions = () => {
           )}
 
           <PaymentSummary
-            rentalDays={1}
-            dailyRate={bookingDetails.basePrice || 0}
-            insuranceName={bookingDetails.insuranceName}
-            insurancePrice={bookingDetails.insurancePrice}
-            extraKmsName={bookingDetails.extraKmsName}
-            extraKmsPrice={bookingDetails.extraKmsPrice}
-            selectedExtras={bookingDetails.selectedExtras}
-            mandatoryFees={bookingDetails.mandatoryFees}
+            rentalDays={rentalDays}
+            dailyRate={bookingDetails?.basePrice || 0}
+            insuranceName={bookingDetails?.insuranceName}
+            insurancePrice={bookingDetails?.insurancePrice}
+            extraKmsName={bookingDetails?.extraKmsName}
+            extraKmsPrice={bookingDetails?.extraKmsPrice}
+            selectedExtras={bookingDetails?.selectedExtras}
+            mandatoryFees={bookingDetails?.mandatoryFees}
             totalCost={totalAmount}
             payment={paymentType === "deposit" ? DEPOSIT_AMOUNT : totalAmount}
             balanceDue={paymentType === "deposit" ? totalAmount - DEPOSIT_AMOUNT : 0}

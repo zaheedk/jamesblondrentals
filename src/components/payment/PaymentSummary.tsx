@@ -38,6 +38,7 @@ const PaymentSummary = ({
   mandatoryFees = [],
   totalCost,
 }: PaymentSummaryProps) => {
+  // Calculate the total rental value based on days * daily rate
   const rentalValue = rentalDays * dailyRate;
   
   // Calculate total of optional extras (insurance + extra kms + selected extras)
@@ -49,6 +50,8 @@ const PaymentSummary = ({
   
   // For debugging
   console.log("Payment Summary Calculations:", {
+    rentalDays,
+    dailyRate,
     rentalValue,
     insurancePrice,
     extraKmsPrice,
