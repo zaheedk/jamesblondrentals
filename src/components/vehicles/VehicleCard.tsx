@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -60,13 +59,14 @@ const VehicleCard = ({
     setImageError(true);
   };
 
-  // Determine which price to display
   const displayPrice = totalRateAfterDiscount !== undefined
     ? totalRateAfterDiscount
     : typeof vehicle.price === 'string' 
       ? parseFloat(vehicle.price) 
       : vehicle.price;
   
+  const isAvailable = vehicle.available === true || vehicle.available === 1 || vehicle.available === 2;
+
   return (
     <Card className="overflow-hidden shadow-md h-full flex flex-col">
       <AspectRatio ratio={4/3} className="overflow-hidden bg-white">
@@ -116,7 +116,7 @@ const VehicleCard = ({
         </div>
       </CardContent>
       <CardFooter className="pt-2">
-        {vehicle.available ? (
+        {isAvailable ? (
           <BookingForm
             vehicle={vehicle}
             pickupLocationId={pickupLocation}
