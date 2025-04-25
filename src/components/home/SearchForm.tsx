@@ -105,15 +105,17 @@ const SearchForm = () => {
     
     if (!pickupDate) {
       const defaultPickup = getDefaultPickupDate();
+      console.log('Default pickup date:', defaultPickup);
       setPickupDate(defaultPickup);
       
       const defaultDropoff = getDefaultDropoffDate(defaultPickup);
+      console.log('Default dropoff date:', defaultDropoff);
       setDropoffDate(defaultDropoff);
-      console.log('Default dates set', { defaultPickup, defaultDropoff });
     }
     
     if (!pickupTime && pickupTimeOptions.length > 0) {
       const defaultTime = format(getDefaultPickupDate(), 'HH:mm');
+      console.log('Default pickup time:', defaultTime);
       const availableTime = pickupTimeOptions.find(t => t >= defaultTime) || pickupTimeOptions[0];
       setPickupTime(availableTime);
     }

@@ -1,4 +1,4 @@
-import { format, parse, isAfter, isBefore, addMinutes, addDays, addHours } from "date-fns";
+import { format, parse, isAfter, isBefore, addDays, addHours, addMinutes } from "date-fns";
 import { 
   RCMLocation, 
   RCMOfficeTime,
@@ -141,30 +141,31 @@ export const combineDateTime = (date: Date, time: string): Date => {
 
 export const getDefaultPickupDate = (): Date => {
   const now = new Date();
-  const twoHoursFromNow = addHours(now, 2);
-  const tomorrow = addDays(new Date(), 1);
+  const hours = now.getHours();
+  const minutes = now.getMinutes();
   
-  // Set to start of day for comparison
-  tomorrow.setHours(8, 0, 0, 0);
-  
-  // If it's past office hours (assuming 17:00 is end time), return tomorrow
-  if (now.getHours() >= 17) {
-    return tomorrow;
-  }
-  
-  // If it's before office hours (assuming 8:00 is start time), return today at 8:00
-  if (now.getHours() < 8) {
-    const todayAt8 = new Date(now);
-    todayAt8.setHours(8, 0, 0, 0);
-    return todayAt8;
-  }
-  
-  // Return 2 hours from now, rounded to next 30 minute interval
-  const minutes = twoHoursFromNow.getMinutes();
+  // Round up to the next 30-minute interval and add 2 hours for processing
   const roundedMinutes = Math.ceil(minutes / 30) * 30;
-  twoHoursFromNow.setMinutes(roundedMinutes, 0, 0);
+  let defaultDate = addMinutes(now, roundedMinutes - minutes);
+  defaultDate = addHours(defaultDate, 2);
   
-  return twoHoursFromNow;
+  // If it's before 8 AM, set time to 8 AM today
+  if (hours < 8) {
+    defaultDate.setHours(8, 0, 0, 0);
+    return defaultDate;
+  }
+  
+  // If it's after 5 PM (17:00), set to 8 AM tomorrow
+  if (hours >= 17) {
+    defaultDate = addDays(new Date(), 1);
+    defaultDate.setHours(8, 0, 0, 0);
+    return defaultDate;
+  }
+  
+  // Return the rounded time (current time + 2 hours, rounded to next 30 mins)
+  defaultDate.setSeconds(0);
+  defaultDate.setMilliseconds(0);
+  return defaultDate;
 };
 
 export const getDefaultDropoffDate = (pickupDate: Date): Date => {
