@@ -8,7 +8,7 @@ interface OptionSelectProps {
   label: string;
   value: string;
   onValueChange: (value: string) => void;
-  options: { id: string | number; name: string }[];
+  options: { id: string | number; name: string; isdefault?: boolean }[];
   getOptionName: (id: string) => string;
   isLoading: boolean;
   defaultValue?: string;
@@ -53,6 +53,17 @@ export const OptionSelect = ({
   };
 
   console.log(`OptionSelect ${id} rendering with value:`, value);
+  
+  // If this is the driver-age select and we have no value set yet but have options,
+  // try to find and use the default value
+  if (id === "driver-age" && (!value || value === "0") && options.length > 0) {
+    const defaultOption = options.find(opt => opt.isdefault === true);
+    
+    if (defaultOption) {
+      console.log(`Setting default driver age to ${defaultOption.id} (${defaultOption.name})`);
+      setTimeout(() => onValueChange(String(defaultOption.id)), 0);
+    }
+  }
 
   return (
     <div className="space-y-2">

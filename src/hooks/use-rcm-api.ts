@@ -129,11 +129,20 @@ export function useRcmApi() {
               age => age.driverage === '26+' || age.driverage === '26'
             );
             
-            driverAges.forEach(age => {
-              age.isdefault = age === twentySixPlusAge;
-            });
+            if (twentySixPlusAge) {
+              driverAges.forEach(age => {
+                age.isdefault = false;
+              });
+              
+              twentySixPlusAge.isdefault = true;
+              
+              console.log('26+ age found and set as default:', twentySixPlusAge);
+            } else {
+              console.warn('Could not find 26+ age option');
+            }
             
             console.log('Driver ages data:', driverAges);
+            console.log('Default age:', driverAges.find(age => age.isdefault));
             return driverAges;
           }
           throw new Error("No driver ages data received");
