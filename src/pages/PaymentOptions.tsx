@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -33,7 +32,22 @@ const PaymentOptions = () => {
       return;
     }
     
-    setBookingDetails(bookingData);
+    const pickupLocationName = bookingData.pickupLocationName || "Location not available";
+    const dropoffLocationName = bookingData.dropoffLocationName || "Location not available";
+    
+    if (bookingData.pickupLocationName !== pickupLocationName || 
+        bookingData.dropoffLocationName !== dropoffLocationName) {
+      updateBookingData({
+        pickupLocationName,
+        dropoffLocationName
+      });
+    }
+    
+    setBookingDetails({
+      ...bookingData,
+      pickupLocationName,
+      dropoffLocationName
+    });
     
     const basePrice = bookingData.totalRateAfterDiscount || bookingData.basePrice || 0;
     console.log("Using price for calculation:", basePrice, 
@@ -51,11 +65,9 @@ const PaymentOptions = () => {
     );
     setMandatoryFeesTotal(mandatoryTotal);
     
-    // Calculate total WITHOUT mandatory fees
     const calculatedTotal = basePrice + insurancePrice + extrasTotal;
     setTotalAmount(calculatedTotal);
     
-    // Debug the price calculations
     console.log("Payment calculation details:", {
       basePrice,
       insurancePrice,

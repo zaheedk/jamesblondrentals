@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -101,7 +100,7 @@ const PaymentSuccess = () => {
         
         const rentalDays = rentalDuration || 3;
         const newDropoffDate = addDays(newPickupDate, rentalDays);
-        dropoffDate = format(newDropoffDate, "dd/MMM/yyyy");
+        dropoffDate = format(newDropupDate, "dd/MMM/yyyy");
         
         console.log(`Updated dates: Pickup ${pickupDate}, Dropoff ${dropoffDate}`);
       }
@@ -126,7 +125,6 @@ const PaymentSuccess = () => {
         console.error("Failed to fetch customer details:", error);
       }
 
-      // Convert any string values to appropriate types for the request payload
       const vehicleCategoryId = typeof bookingDetails.vehicleCategoryId === 'string' 
         ? parseInt(bookingDetails.vehicleCategoryId) || 6 
         : bookingDetails.vehicleCategoryId || 6;
@@ -309,7 +307,6 @@ const PaymentSuccess = () => {
                 ...apiMandatoryFeesFromExtraFees,
               ];
               
-              // Ensure proper number conversion for numeric fields
               const paymentAmount = paymentStatus === "success" ? 
                 (totalPayment || 
                   (typeof bookingInfo.payment === 'string' ? parseFloat(bookingInfo.payment) : bookingInfo.payment) || 
@@ -368,6 +365,14 @@ const PaymentSuccess = () => {
                 sessionData?.balancedue || 
                 0;
 
+              const pickupLocationFromApi = bookingInfo.pickuplocationname || 
+                                          bookingInfo.pickuplocation || 
+                                          "Location not available";
+                                          
+              const dropoffLocationFromApi = bookingInfo.dropofflocationname || 
+                                           bookingInfo.dropofflocation || 
+                                           "Location not available";
+
               const convertedDetails: BookingDetails = {
                 vehicleName: bookingInfo.vehiclecategory || sessionData?.vehicleName || 'Vehicle',
                 pickupDate: bookingInfo.pickupdate || sessionData?.pickupDate || '',
@@ -381,8 +386,8 @@ const PaymentSuccess = () => {
                 insuranceName: bookingInfo.insuranceoption || sessionData?.insuranceName || '',
                 insurancePrice: insurancePrice,
                 selectedExtras: sessionData?.selectedExtras || [],
-                pickupLocationName: bookingInfo.pickuplocationname || bookingInfo.pickuplocation || sessionData?.pickupLocationName || "Not specified",
-                dropoffLocationName: bookingInfo.dropofflocationname || bookingInfo.dropofflocation || sessionData?.dropoffLocationName || "Not specified",
+                pickupLocationName: pickupLocationFromApi,
+                dropoffLocationName: dropoffLocationFromApi,
                 totalRateAfterDiscount: totalRateAfterDiscount,
                 mandatoryFees: combinedMandatoryFees.length > 0 ? combinedMandatoryFees : (sessionData?.mandatoryFees || []),
                 numberofdays: numberofdays,
@@ -439,7 +444,16 @@ const PaymentSuccess = () => {
             }
           }
 
-          // Ensure proper number conversion for session data
+          const pickupLocationFromSession = sessionData.pickupLocationName && 
+                                          sessionData.pickupLocationName !== "undefined" && 
+                                          sessionData.pickupLocationName !== null ? 
+                                          sessionData.pickupLocationName : "Location not available";
+                                          
+          const dropoffLocationFromSession = sessionData.dropoffLocationName && 
+                                           sessionData.dropoffLocationName !== "undefined" && 
+                                           sessionData.dropoffLocationName !== null ? 
+                                           sessionData.dropoffLocationName : "Location not available";
+
           const numberofdays = cleanedSessionData.numberofdays || 
             (cleanedSessionData.pickupDate && cleanedSessionData.dropoffDate ? 
               calculateRentalDuration(cleanedSessionData.pickupDate, cleanedSessionData.dropoffDate) : 1);
@@ -478,8 +492,8 @@ const PaymentSuccess = () => {
             })) || [],
             extraKmsName: cleanedSessionData.extraKmsName,
             extraKmsPrice: cleanedSessionData.extraKmsPrice,
-            pickupLocationName: cleanedSessionData.pickupLocationName || "Not specified",
-            dropoffLocationName: cleanedSessionData.dropoffLocationName || "Not specified",
+            pickupLocationName: pickupLocationFromSession,
+            dropoffLocationName: dropoffLocationFromSession,
             totalRateAfterDiscount: cleanedSessionData.totalRateAfterDiscount || 0,
             mandatoryFees: cleanedSessionData.mandatoryFees || [],
             numberofdays: numberofdays,
@@ -687,13 +701,13 @@ const PaymentSuccess = () => {
     console.error("Error formatting dates:", error);
   }
 
-  const pickupLocationName = bookingDetails.pickupLocationName && 
-                            bookingDetails.pickupLocationName !== "undefined" ? 
-                            bookingDetails.pickupLocationName : "Not specified";
+  const pickupLocationName = bookingDetails?.pickupLocationName && 
+                           bookingDetails.pickupLocationName !== "undefined" ? 
+                           bookingDetails.pickupLocationName : "Location not available";
 
-  const dropoffLocationName = bookingDetails.dropoffLocationName && 
-                             bookingDetails.dropoffLocationName !== "undefined" ? 
-                             bookingDetails.dropoffLocationName : "Not specified";
+  const dropoffLocationName = bookingDetails?.dropoffLocationName && 
+                            bookingDetails.dropoffLocationName !== "undefined" ? 
+                            bookingDetails.dropoffLocationName : "Location not available";
 
   let vehicleImageUrl = "";
   if (bookingDetails?.vehicleImage) {
