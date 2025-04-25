@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -8,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { addDays, isBefore, format } from "date-fns";
 import { toast } from "sonner";
 import { useRcmApi } from "@/hooks/use-rcm-api";
-import { rcmApi } from "@/lib/api/rcm-api"; // Added import for rcmApi
+import { rcmApi } from "@/lib/api/rcm-api";
 
 import { LocationSelect } from "./form-components/LocationSelect";
 import { DateSelect } from "./form-components/DateSelect";
@@ -43,6 +42,7 @@ const SearchForm = () => {
   const [minPickupDate, setMinPickupDate] = useState<Date>(new Date());
   const [showApiDetails, setShowApiDetails] = useState(false);
   const [apiResponse, setApiResponse] = useState<any>(null);
+  const [step1Response, setStep1Response] = useState<any>(null);
 
   const { 
     initializeApi,
@@ -92,7 +92,7 @@ const SearchForm = () => {
       apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
       apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
       apiUrl: "/api/rcm/booking/v3.2/",
-      useMockData: false // Force real API connection only
+      useMockData: false
     }).catch(error => {
       console.error('Failed to initialize API:', error);
       toast.error("Error connecting to booking system", {
@@ -175,7 +175,6 @@ const SearchForm = () => {
         console.log(`Setting pickup date to next day: ${nextDay.toISOString()}`);
         setPickupDate(nextDay);
         
-        // Also update dropoff date to maintain at least one day difference
         if (dropoffDate && !isBefore(dropoffDate, nextDay)) {
           const newDropoffDate = addDays(nextDay, 1);
           console.log(`Updating dropoff date to: ${newDropoffDate.toISOString()}`);
@@ -212,6 +211,19 @@ const SearchForm = () => {
       setApiResponse(lastRequestDetails);
     }
   }, [rcmApi]);
+
+  useEffect(() => {
+    const fetchStep1Response = async () => {
+      try {
+        const response = await rcmApi.getStep1();
+        setStep1Response(response);
+      } catch (error) {
+        console.error('Error fetching Step1 response:', error);
+      }
+    };
+
+    fetchStep1Response();
+  }, []);
 
   const getDefaultAgeId = () => {
     if (!driverAges?.length) return "";
@@ -297,10 +309,10 @@ const SearchForm = () => {
           <Card className="mb-6">
             <CardContent className="pt-6">
               <div className="space-y-4">
-                <h3 className="font-semibold">API Response:</h3>
+                <h3 className="font-semibold">Step1 API Response:</h3>
                 <div className="bg-gray-800 text-gray-100 p-4 rounded-md overflow-x-auto">
                   <pre className="text-sm">
-                    {JSON.stringify(apiResponse, null, 2)}
+                    {JSON.stringify(step1Response, null, 2)}
                   </pre>
                 </div>
               </div>
