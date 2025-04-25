@@ -23,10 +23,17 @@ export const DateSelect = ({
   onDateChange,
   disableDate
 }: DateSelectProps) => {
+  const [open, setOpen] = useState(false);
+
+  const handleDateSelect = (newDate: Date | undefined) => {
+    onDateChange(newDate);
+    setOpen(false); // Close the popover after date selection
+  };
+
   return (
     <div className="space-y-2">
       <Label htmlFor={id}>{label}</Label>
-      <Popover>
+      <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
@@ -44,7 +51,7 @@ export const DateSelect = ({
           <Calendar
             mode="single"
             selected={date}
-            onSelect={onDateChange}
+            onSelect={handleDateSelect}
             initialFocus
             disabled={disableDate}
             className="p-3 pointer-events-auto"
