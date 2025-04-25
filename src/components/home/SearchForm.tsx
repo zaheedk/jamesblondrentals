@@ -89,8 +89,8 @@ const SearchForm = () => {
   
   useEffect(() => {
     initializeApi({
-      apiKey: "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
-      apiSecret: "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
+      apiKey: import.meta.env.VITE_RCM_API_KEY,
+      apiSecret: import.meta.env.VITE_RCM_API_SECRET,
       apiUrl: "/api/rcm/booking/v3.2/",
       useMockData: false
     }).catch(error => {
