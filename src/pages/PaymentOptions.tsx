@@ -6,6 +6,8 @@ import { toast } from "sonner";
 import { getBookingData, updateBookingData } from "@/lib/booking-session";
 import { Label } from "@/components/ui/label";
 import { formatCurrency } from "@/lib/utils";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Car } from "lucide-react";
 
 const DEPOSIT_AMOUNT = 50;
 
@@ -16,6 +18,7 @@ const PaymentOptions = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [totalAmount, setTotalAmount] = useState(0);
   const [mandatoryFeesTotal, setMandatoryFeesTotal] = useState(0);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     const bookingData = getBookingData();
@@ -49,6 +52,11 @@ const PaymentOptions = () => {
     const calculatedTotal = basePrice + insurancePrice + extrasTotal;
     setTotalAmount(calculatedTotal);
   }, [navigate]);
+
+  const handleImageError = () => {
+    console.log("Error loading vehicle image");
+    setImageError(true);
+  };
 
   if (!bookingDetails) {
     return (
@@ -90,6 +98,25 @@ const PaymentOptions = () => {
         <h1 className="text-3xl font-bold mb-6">Payment Options</h1>
         
         <div className="bg-white shadow-md rounded-lg p-6">
+          {bookingDetails?.vehicleImage && !imageError ? (
+            <div className="w-full mb-6">
+              <AspectRatio ratio={4/3} className="bg-gray-100 rounded-lg overflow-hidden">
+                <img
+                  src={bookingDetails.vehicleImage}
+                  alt={bookingDetails.vehicleName}
+                  className="w-full h-full object-contain"
+                  onError={handleImageError}
+                />
+              </AspectRatio>
+            </div>
+          ) : (
+            <div className="w-full mb-6">
+              <AspectRatio ratio={4/3} className="bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
+                <Car className="h-24 w-24 text-gray-300" />
+              </AspectRatio>
+            </div>
+          )}
+          
           <div className="mb-6">
             <h2 className="text-xl font-semibold mb-2">Vehicle Booking Summary</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
