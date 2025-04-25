@@ -113,6 +113,7 @@ const PaymentSummary = ({
           </div>
         </div>
 
+        {/* Fix: Updated payment section to always display the payment amount */}
         <div className="flex justify-between text-green-600">
           <span>Paid</span>
           <span>{formatCurrency(payment)}</span>
