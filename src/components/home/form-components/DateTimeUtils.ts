@@ -31,12 +31,6 @@ export const disablePastDates = (date: Date, locationId: string, locationDetails
   return false;
 };
 
-function addDays(date: Date, days: number): Date {
-  const result = new Date(date);
-  result.setDate(result.getDate() + days);
-  return result;
-}
-
 export const getLocationTimeOptions = (
   locationId: string,
   date: Date,
