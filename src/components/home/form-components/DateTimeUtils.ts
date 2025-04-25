@@ -1,3 +1,4 @@
+
 import { format, parse, isAfter, isBefore, addMinutes } from "date-fns";
 import { 
   RCMLocation, 
@@ -55,13 +56,28 @@ export const getLocationTimeOptions = (
   console.log(`Location ${locationId} requires ${location.noticerequired_numberofdays} days notice`);
 
   const dayOfWeek = date.getDay();
-  const hoursForLocation = officeHours.find(
+  
+  // First try to find hours for the specific day
+  let hoursForLocation = officeHours.find(
     hour => String(hour.locationid) === locationId && hour.dayofweek === dayOfWeek
   );
 
+  // If no hours found for this day, try to find default hours
   if (!hoursForLocation) {
-    console.error(`No office hours found for location ${locationId} on day ${dayOfWeek}`);
-    return [];
+    console.log(`No hours found for day ${dayOfWeek}, looking for default hours`);
+    
+    // Try to find hours for any day for this location
+    const anyHoursForLocation = officeHours.find(
+      hour => String(hour.locationid) === locationId
+    );
+    
+    if (anyHoursForLocation) {
+      console.log(`Found default hours from day ${anyHoursForLocation.dayofweek}`);
+      hoursForLocation = anyHoursForLocation;
+    } else {
+      console.error(`No office hours found for location ${locationId} on any day`);
+      return [];
+    }
   }
 
   let startTime = "00:00";
