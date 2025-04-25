@@ -1,8 +1,11 @@
-import { Link, useLocation } from "react-router-dom";
 
-import { siteConfig } from "@/config/site";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { MainNav } from "@/components/layout/main-nav";
+
+// Simple site config object to replace the missing import
+const siteConfig = {
+  name: "James Blond Rentals"
+};
 
 export function Navbar() {
   const location = useLocation();
@@ -14,7 +17,7 @@ export function Navbar() {
         <Link to="/" className="flex items-center gap-2 font-semibold">
           {siteConfig.name}
         </Link>
-        <MainNav className="mx-6" />
+        {/* MainNav was removed as it doesn't exist */}
         <div className="ml-auto flex items-center space-x-4">
         </div>
         <div className="flex items-center gap-4">
