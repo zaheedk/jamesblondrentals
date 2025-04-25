@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -29,6 +30,7 @@ const PaymentOptions = () => {
   const [rentalDays, setRentalDays] = useState(1);
   const [rawApiResponse, setRawApiResponse] = useState<any>(null);
   const [bookingInfoResponse, setBookingInfoResponse] = useState<any>(null);
+  const [totalCost, setTotalCost] = useState(0);
   
   const { useLocationDetails } = useRcmApi();
   const { data: locationDetails } = useLocationDetails();
@@ -159,10 +161,25 @@ const PaymentOptions = () => {
       });
     }
 
+    // Calculate total cost including mandatory fees
+    const mandatoryTotal = (bookingData.mandatoryFees || []).reduce(
+      (sum: number, fee: any) => sum + fee.amount,
+      0
+    );
+    
+    const fullTotal = totalAmount + mandatoryTotal;
+    setTotalCost(fullTotal);
+    
+    console.log("Total cost calculation:", {
+      totalAmount,
+      mandatoryTotal,
+      fullTotal
+    });
+
     if (bookingData.reservationRef) {
       fetchBookingDetails(bookingData.reservationRef);
     }
-  }, [navigate, locationDetails, bookingInfoResponse]);
+  }, [navigate, locationDetails, bookingInfoResponse, totalAmount]);
 
   const fetchBookingDetails = async (reservationRef: string) => {
     try {
@@ -329,7 +346,8 @@ const PaymentOptions = () => {
     setIsLoading(true);
     
     try {
-      const amountToPay = paymentType === "deposit" ? DEPOSIT_AMOUNT : totalAmount;
+      // Use totalCost instead of totalAmount for full payment
+      const amountToPay = paymentType === "deposit" ? DEPOSIT_AMOUNT : totalCost;
       
       updateBookingData({
         paymentAmount: amountToPay,
@@ -392,9 +410,9 @@ const PaymentOptions = () => {
             extraKmsPrice={bookingDetails?.extraKmsPrice}
             selectedExtras={bookingDetails?.selectedExtras}
             mandatoryFees={bookingDetails?.mandatoryFees}
-            totalCost={totalAmount}
-            payment={paymentType === "deposit" ? DEPOSIT_AMOUNT : totalAmount}
-            balanceDue={paymentType === "deposit" ? totalAmount - DEPOSIT_AMOUNT : 0}
+            totalCost={totalCost}
+            payment={paymentType === "deposit" ? DEPOSIT_AMOUNT : totalCost}
+            balanceDue={paymentType === "deposit" ? totalCost - DEPOSIT_AMOUNT : 0}
           />
           
           <div className="mb-6">
@@ -407,9 +425,9 @@ const PaymentOptions = () => {
                 <RadioGroupItem value="full" id="payment-full" />
                 <Label htmlFor="payment-full" className="flex-grow cursor-pointer">
                   <div className="font-medium">Pay in Full</div>
-                  <div className="text-sm text-gray-600">Pay {formatCurrency(totalAmount)} now</div>
+                  <div className="text-sm text-gray-600">Pay {formatCurrency(totalCost)} now</div>
                 </Label>
-                <div className="font-bold">{formatCurrency(totalAmount)}</div>
+                <div className="font-bold">{formatCurrency(totalCost)}</div>
               </div>
               
               <div className="flex items-center space-x-2 border p-3 rounded-md">
@@ -417,7 +435,7 @@ const PaymentOptions = () => {
                 <Label htmlFor="payment-deposit" className="flex-grow cursor-pointer">
                   <div className="font-medium">Pay Deposit</div>
                   <div className="text-sm text-gray-600">
-                    Pay {formatCurrency(DEPOSIT_AMOUNT)} now, {formatCurrency(totalAmount - DEPOSIT_AMOUNT)} at pickup
+                    Pay {formatCurrency(DEPOSIT_AMOUNT)} now, {formatCurrency(totalCost - DEPOSIT_AMOUNT)} at pickup
                   </div>
                 </Label>
                 <div className="font-bold">{formatCurrency(DEPOSIT_AMOUNT)}</div>
@@ -436,7 +454,7 @@ const PaymentOptions = () => {
                   <span className="animate-spin mr-2">◌</span> Processing...
                 </>
               ) : (
-                `Proceed to Pay ${paymentType === "deposit" ? formatCurrency(DEPOSIT_AMOUNT) : formatCurrency(totalAmount)}`
+                `Proceed to Pay ${paymentType === "deposit" ? formatCurrency(DEPOSIT_AMOUNT) : formatCurrency(totalCost)}`
               )}
             </Button>
             
