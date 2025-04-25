@@ -129,8 +129,7 @@ const InsuranceSelection = () => {
   };
 
   const handleBack = () => {
-    // Navigate back to the vehicles page and ensure a complete refresh of the search
-    // without forcing a refetch that might cause API errors
+    // Navigate back to the vehicles page without applying category filter
     const data = getBookingData();
     if (!data) {
       navigate('/');
@@ -145,12 +144,13 @@ const InsuranceSelection = () => {
     if (data.pickupTime) searchParams.set("pickupTime", data.pickupTime.toString());
     if (data.dropoffTime) searchParams.set("dropoffTime", data.dropoffTime.toString());
     if (data.ageId) searchParams.set("age", data.ageId.toString());
-    if (data.vehicleCategoryTypeId) searchParams.set("carCategory", data.vehicleCategoryTypeId.toString());
+    // Removed the vehicleCategoryTypeId parameter to avoid filtering
     if (data.promoCode) searchParams.set("promoCode", data.promoCode);
     
     navigate(`/vehicles?${searchParams.toString()}`, {
       state: { 
-        fromInsurancePage: true  // Only maintain the fromInsurancePage flag, remove forceRefresh
+        fromInsurancePage: true,
+        resetCategoryFilter: true  // Add flag to indicate category filter should be reset
       }
     });
   };

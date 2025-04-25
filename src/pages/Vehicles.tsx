@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useLocation } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -95,6 +96,12 @@ const Vehicles = () => {
       refetchStep2();
       
       window.history.replaceState({}, document.title);
+    }
+
+    // Reset category filter when coming back from insurance page with resetCategoryFilter flag
+    if (location.state?.resetCategoryFilter) {
+      console.log("Resetting category filters after returning from insurance page");
+      setSelectedVehicleTypes([]);
     }
   }, [location.state, refetchStep2, step2Params, hasAttemptedRefresh]);
 
