@@ -60,7 +60,7 @@ export interface BookingSessionData {
     amount: number;
   }>;
   // Add these new fields from the API response
-  numberofdays?: number;
+  numberofdays?: number;  // This is the API field for number of days
   dailyrate?: number;
   totalcost?: number;
   payment?: number;

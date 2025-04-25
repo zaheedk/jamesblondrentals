@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -50,19 +51,27 @@ const PaymentOptions = () => {
       dropoffLocationName
     });
     
-    if (bookingData.numberofdays) {
+    // First priority: Use numberofdays from API response
+    if (bookingData.numberofdays && typeof bookingData.numberofdays === 'number' && bookingData.numberofdays > 0) {
+      console.log("Using numberofdays from API response:", bookingData.numberofdays);
       setRentalDays(bookingData.numberofdays);
-    } else if (bookingData.rentalDays) {
+      updateBookingData({ rentalDays: bookingData.numberofdays });
+    } 
+    // Second priority: Use previously calculated rentalDays
+    else if (bookingData.rentalDays && typeof bookingData.rentalDays === 'number' && bookingData.rentalDays > 0) {
+      console.log("Using existing rentalDays:", bookingData.rentalDays);
       setRentalDays(bookingData.rentalDays);
-    } else if (bookingData.pickupDate && bookingData.dropoffDate) {
+    } 
+    // Third priority: Calculate from dates
+    else if (bookingData.pickupDate && bookingData.dropoffDate) {
       try {
         const pickupDate = new Date(bookingData.pickupDate);
         const dropoffDate = new Date(bookingData.dropoffDate);
         if (pickupDate && dropoffDate && !isNaN(pickupDate.getTime()) && !isNaN(dropoffDate.getTime())) {
           const days = Math.ceil((dropoffDate.getTime() - pickupDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
           const calculatedDays = days > 0 ? days : 1;
+          console.log("Calculated rental days from dates:", calculatedDays);
           setRentalDays(calculatedDays);
-          
           updateBookingData({ rentalDays: calculatedDays });
         }
       } catch (error) {
@@ -87,12 +96,14 @@ const PaymentOptions = () => {
     );
     setMandatoryFeesTotal(mandatoryTotal);
     
-    const calculatedTotal = basePrice * rentalDays + insurancePrice + extrasTotal;
+    // Important: Use the correct rentalDays value for calculating total
+    const daysForCalculation = bookingData.numberofdays || bookingData.rentalDays || 1;
+    const calculatedTotal = basePrice * daysForCalculation + insurancePrice + extrasTotal;
     setTotalAmount(calculatedTotal);
     
     console.log("Payment calculation details:", {
       basePrice,
-      rentalDays,
+      rentalDays: daysForCalculation,
       insurancePrice,
       extrasTotal,
       mandatoryTotal,

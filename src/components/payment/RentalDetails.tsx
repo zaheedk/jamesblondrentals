@@ -23,6 +23,9 @@ const RentalDetails = ({
   dropoffTime,
   rentalDuration
 }: RentalDetailsProps) => {
+  // Ensure rental duration is always at least 1 day
+  const effectiveRentalDuration = Math.max(1, rentalDuration || 1);
+  
   return (
     <div className="bg-gray-50 rounded-lg p-4 mb-6">
       <h3 className="text-lg font-semibold mb-4">Rental Details</h3>
@@ -62,7 +65,7 @@ const RentalDetails = ({
         
         <div className="flex items-center mt-2">
           <Calendar className="h-4 w-4 mr-1" />
-          <p className="font-medium">Rental Duration: <span className="text-gray-700">{rentalDuration} day{rentalDuration !== 1 ? 's' : ''}</span></p>
+          <p className="font-medium">Rental Duration: <span className="text-gray-700">{effectiveRentalDuration} day{effectiveRentalDuration !== 1 ? 's' : ''}</span></p>
         </div>
       </div>
     </div>

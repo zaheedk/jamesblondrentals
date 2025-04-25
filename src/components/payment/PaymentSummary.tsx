@@ -38,8 +38,11 @@ const PaymentSummary = ({
   mandatoryFees = [],
   totalCost,
 }: PaymentSummaryProps) => {
+  // Ensure rentalDays is valid and at least 1
+  const effectiveRentalDays = Math.max(1, rentalDays || 1);
+  
   // Calculate the total rental value based on days * daily rate
-  const rentalValue = rentalDays * dailyRate;
+  const rentalValue = effectiveRentalDays * dailyRate;
   
   // Calculate total of optional extras (insurance + extra kms + selected extras)
   const extrasTotal = selectedExtras.reduce((sum, extra) => sum + extra.price, 0);
@@ -54,7 +57,7 @@ const PaymentSummary = ({
   
   // For debugging
   console.log("Payment Summary Calculations:", {
-    rentalDays,
+    rentalDays: effectiveRentalDays,
     dailyRate,
     rentalValue,
     insurancePrice,
@@ -72,7 +75,7 @@ const PaymentSummary = ({
       <h3 className="text-lg font-semibold mb-4">Payment Summary</h3>
       <div className="space-y-2">
         <div className="flex justify-between">
-          <span>Rental Value ({rentalDays} days × {formatCurrency(dailyRate)})</span>
+          <span>Rental Value ({effectiveRentalDays} day{effectiveRentalDays !== 1 ? 's' : ''} × {formatCurrency(dailyRate)})</span>
           <span>{formatCurrency(rentalValue)}</span>
         </div>
 
