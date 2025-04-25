@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useLocation } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -23,6 +22,8 @@ interface RcmVehicleWithPricing {
 }
 
 const Vehicles = () => {
+  const sessionVehiclesKey = 'rcm-vehicles-data';
+  
   const [searchParams] = useSearchParams();
   const location = useLocation();
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
@@ -42,8 +43,6 @@ const Vehicles = () => {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [selectedVehicleTypes, setSelectedVehicleTypes] = useState<string[]>([]);
   
-  const sessionVehiclesKey = 'rcm-vehicles-data';
-
   const pickupLocation = searchParams.get("pickupLocation") || "";
   const dropoffLocation = searchParams.get("dropoffLocation") || pickupLocation;
   const pickupDate = searchParams.get("pickupDate") || "";
@@ -75,23 +74,23 @@ const Vehicles = () => {
   } : null;
 
   const { data: step2Data, isLoading: isLoadingStep2, error: step2Error, refetch: refetchStep2 } = useStep2Vehicles(step2Params);
-
-  const apiRequestDetails = step2Params ? {
-    method: "step2",
-    ...step2Params
-  } : null;
-
   const [apiResponse, setApiResponse] = useState<any>(null);
 
   useEffect(() => {
-    // Check if we need to refresh the vehicles data
-    // This happens when:
-    // 1. When the location.state contains requiresRefresh or forceRefresh
-    // 2. When step2Params are available (valid search criteria) and component mounts
-    if ((location.state?.requiresRefresh || location.state?.forceRefresh) && step2Params) {
-      console.log("Refreshing vehicles data after navigation back...");
+    const shouldRefetchData = Boolean(
+      (location.state?.forceRefresh || location.state?.fromInsurancePage) && 
+      step2Params
+    );
+    
+    if (shouldRefetchData) {
+      console.log("Refreshing vehicles data after navigation back...", {
+        params: step2Params,
+        state: location.state
+      });
+      
       setIsLoading(true);
       refetchStep2();
+      
       // Clear the navigation state to prevent redundant refreshes
       window.history.replaceState({}, document.title);
     }

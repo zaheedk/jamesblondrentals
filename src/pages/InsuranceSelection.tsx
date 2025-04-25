@@ -129,11 +129,30 @@ const InsuranceSelection = () => {
   };
 
   const handleBack = () => {
-    // Force a full refresh when navigating back to the vehicles page
-    // This ensures that the vehicles search is re-executed
-    const searchParams = new URLSearchParams(location.search);
+    // Navigate back to the vehicles page and ensure a complete refresh of the search
+    // We need to create the search parameters manually from the booking data
+    const data = getBookingData();
+    if (!data) {
+      navigate('/');
+      return;
+    }
+    
+    const searchParams = new URLSearchParams();
+    if (data.pickupLocationId) searchParams.set("pickupLocation", data.pickupLocationId.toString());
+    if (data.dropoffLocationId) searchParams.set("dropoffLocation", data.dropoffLocationId.toString());
+    if (data.pickupDate) searchParams.set("pickupDate", data.pickupDate.toString());
+    if (data.dropoffDate) searchParams.set("dropoffDate", data.dropoffDate.toString());
+    if (data.pickupTime) searchParams.set("pickupTime", data.pickupTime.toString());
+    if (data.dropoffTime) searchParams.set("dropoffTime", data.dropoffTime.toString());
+    if (data.ageId) searchParams.set("age", data.ageId.toString());
+    if (data.vehicleCategoryTypeId) searchParams.set("carCategory", data.vehicleCategoryTypeId.toString());
+    if (data.promoCode) searchParams.set("promoCode", data.promoCode);
+    
     navigate(`/vehicles?${searchParams.toString()}`, {
-      state: { forceRefresh: true }
+      state: { 
+        forceRefresh: true,
+        fromInsurancePage: true 
+      }
     });
   };
 
