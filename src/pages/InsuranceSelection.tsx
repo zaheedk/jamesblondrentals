@@ -129,10 +129,11 @@ const InsuranceSelection = () => {
   };
 
   const handleBack = () => {
-    navigate('/vehicles', { 
-      state: { 
-        requiresRefresh: true 
-      } 
+    // Force a full refresh when navigating back to the vehicles page
+    // This ensures that the vehicles search is re-executed
+    const searchParams = new URLSearchParams(location.search);
+    navigate(`/vehicles?${searchParams.toString()}`, {
+      state: { forceRefresh: true }
     });
   };
 

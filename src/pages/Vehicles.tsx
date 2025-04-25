@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useLocation } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -83,10 +84,16 @@ const Vehicles = () => {
   const [apiResponse, setApiResponse] = useState<any>(null);
 
   useEffect(() => {
-    if (location.state && location.state.requiresRefresh && step2Params) {
+    // Check if we need to refresh the vehicles data
+    // This happens when:
+    // 1. When the location.state contains requiresRefresh or forceRefresh
+    // 2. When step2Params are available (valid search criteria) and component mounts
+    if ((location.state?.requiresRefresh || location.state?.forceRefresh) && step2Params) {
       console.log("Refreshing vehicles data after navigation back...");
       setIsLoading(true);
       refetchStep2();
+      // Clear the navigation state to prevent redundant refreshes
+      window.history.replaceState({}, document.title);
     }
   }, [location.state, refetchStep2, step2Params]);
 
