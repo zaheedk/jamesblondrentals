@@ -60,11 +60,20 @@ const VehicleCard = ({
     setImageError(true);
   };
 
+  // Ensure we're using the correct price for display
   const displayPrice = totalRateAfterDiscount !== undefined
     ? totalRateAfterDiscount
     : typeof vehicle.price === 'string' 
       ? parseFloat(vehicle.price) 
       : vehicle.price;
+  
+  // Log the price information for debugging
+  console.log(`Vehicle ${vehicle.make} ${vehicle.model} price:`, {
+    displayPrice,
+    totalRateAfterDiscount,
+    vehiclePrice: vehicle.price,
+    type: typeof vehicle.price
+  });
   
   // Updated isAvailable logic to handle available: 2 case and add console logging
   const isAvailable = (() => {

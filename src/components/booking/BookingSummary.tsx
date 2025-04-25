@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { format, parse, isValid, differenceInDays } from "date-fns";
@@ -207,22 +208,25 @@ const BookingSummary = ({
     setImageError(true);
   };
 
-  const totalMandatoryFees = mandatoryFees.reduce((sum, fee) => sum + fee.amount, 0) || 500.00; // Use 500.00 as fallback as shown in image
-  
-  const totalPrice = 
-    basePrice + 
-    (selectedInsurance?.price || 0) + 
-    selectedExtras.reduce((sum, extra) => sum + extra.totalPrice, 0) + 
-    kmChargePrice;
-
-  // Calculate actual total cost without mandatory fees
+  // Calculate mandatory fees total
   const mandatoryFeesTotal = mandatoryFees.reduce((sum, fee) => sum + fee.amount, 0) || 500.00; // Use 500.00 as fallback as shown in image
   
+  // Calculate total price including optional items but excluding mandatory fees
   const totalOptionalFees = 
     basePrice + 
     (selectedInsurance?.price || 0) + 
     selectedExtras.reduce((sum, extra) => sum + extra.totalPrice, 0) + 
     kmChargePrice;
+
+  // Log the calculated prices for debugging
+  console.log("BookingSummary price calculations:", {
+    basePrice,
+    insurancePrice: selectedInsurance?.price || 0,
+    extrasTotal: selectedExtras.reduce((sum, extra) => sum + extra.totalPrice, 0),
+    kmChargePrice,
+    mandatoryFeesTotal,
+    totalOptionalFees
+  });
 
   return (
     <Card>
