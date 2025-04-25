@@ -32,7 +32,7 @@ const Vehicles = () => {
   const { data: categoryTypes } = useVehicleCategories();
   const { data: locations = [] } = useLocations();
   const [uniqueVehicleCategoryTypes, setUniqueVehicleCategoryTypes] = useState<Array<{id: string, name: string}>>([]);
-  const [showApiDetails, setShowApiDetails] = useState(false);
+  const [showApiDetails, setShowApiDetails] = useState(true);
   const [activeTab, setActiveTab] = useState("results");
 
   const [vehicleType, setVehicleType] = useState<VehicleType | "all">("all");
@@ -252,139 +252,166 @@ const Vehicles = () => {
   }, [isMobile]);
 
   return (
-      <main className="flex-grow">
-        <div className="bg-gray-50">
-          <div className="container mx-auto px-4 py-8">
-            <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
-              <div>
-                <h1 className="text-3xl font-bold mb-2">Available Vehicles</h1>
-                {pickupLocation && (
-                  <p className="text-gray-600">
-                    Location: {getLocationName(pickupLocation)}
-                    {pickupDate && dropoffDate && (
-                      <> | {pickupDate} - {dropoffDate}</>
-                    )}
-                  </p>
-                )}
-              </div>
-            </div>
-            
-            {hasApiError && (
-              <Alert variant="destructive" className="mt-4">
-                <AlertCircle className="h-4 w-4" />
-                <AlertTitle>API Connection Error</AlertTitle>
-                <AlertDescription>
-                  We encountered a problem connecting to the reservation system. 
-                  This may be due to invalid search parameters.
-                </AlertDescription>
-              </Alert>
-            )}
-          </div>
-        </div>
-
+    <main className="flex-grow">
+      <div className="bg-gray-50">
         <div className="container mx-auto px-4 py-8">
-          <div className="flex flex-col lg:flex-row gap-8">
-            <aside className="lg:w-1/4 space-y-6">
-              <Collapsible open={filtersOpen} onOpenChange={setFiltersOpen}>
-                <div className="flex items-center justify-between">
-                  <h2 className="font-bold text-lg mb-4">Filters</h2>
-                  <CollapsibleTrigger asChild>
-                    <button
-                      className="lg:hidden text-primary px-2 py-1 rounded transition-colors hover:bg-primary/10"
-                    >
-                      {filtersOpen ? "Hide Filters" : "Show Filters"}
-                    </button>
-                  </CollapsibleTrigger>
-                </div>
-                <CollapsibleContent forceMount>
-                  <Card className="p-4">
-                    <div className="space-y-6">
-                      <div className="space-y-4">
-                        <Label className="text-base font-bold">Vehicle Types</Label>
-                        <div className="grid grid-cols-2 gap-4">
-                          {uniqueVehicleCategoryTypes.map((categoryType) => (
-                            <div key={categoryType.id} className="flex items-center space-x-2">
-                              <Checkbox
-                                id={`type-${categoryType.id}`}
-                                checked={selectedVehicleTypes.includes(categoryType.id)}
-                                onCheckedChange={(checked) => {
-                                  setSelectedVehicleTypes(prev => {
-                                    if (checked) {
-                                      return [...prev, categoryType.id];
-                                    }
-                                    return prev.filter(id => id !== categoryType.id);
-                                  });
-                                }}
-                              />
-                              <Label
-                                htmlFor={`type-${categoryType.id}`}
-                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                              >
-                                {categoryType.name}
-                              </Label>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label className="text-base font-bold">Price Range (total)</Label>
-                        <div className="mt-4">
-                          <div className="flex justify-between mb-2">
-                            <span className="text-sm">${priceRange[0]}</span>
-                            <span className="text-sm">${priceRange[1]}</span>
-                          </div>
-                          <Slider
-                            value={priceRange}
-                            min={0}
-                            max={maxPriceAvailable}
-                            step={10}
-                            minStepsBetweenThumbs={1}
-                            className="mt-2"
-                            onValueChange={(values: [number, number]) => {
-                              const newValues: [number, number] = [
-                                values[0],
-                                Math.min(values[1], maxPriceAvailable)
-                              ];
-                              console.log("New price range:", newValues);
-                              setPriceRange(newValues);
-                            }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </Card>
-                </CollapsibleContent>
-              </Collapsible>
-            </aside>
-            <div className="lg:w-3/4">
-              {isLoading || isLoadingAges || isLoadingStep2 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="rounded-lg shadow animate-pulse bg-gray-200 h-80"></div>
-                  ))}
-                </div>
-              ) : filteredVehicles.length === 0 ? (
-                <div className="text-center py-12">
-                  <h3 className="text-xl font-semibold mb-2">No vehicles match your criteria</h3>
-                  <p className="text-gray-600">Try adjusting your filters to find more options</p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-                  {filteredVehicles.map((vehicle) => (
-                    <VehicleCard 
-                      key={vehicle.id} 
-                      vehicle={vehicle} 
-                      totalRateAfterDiscount={typeof vehicle.price === 'number' ? vehicle.price : parseFloat(vehicle.price)}
-                      totalDiscountAmount={vehicle.discountAmount}
-                    />
-                  ))}
-                </div>
+          <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">Available Vehicles</h1>
+              {pickupLocation && (
+                <p className="text-gray-600">
+                  Location: {getLocationName(pickupLocation)}
+                  {pickupDate && dropoffDate && (
+                    <> | {pickupDate} - {dropoffDate}</>
+                  )}
+                </p>
               )}
             </div>
           </div>
+          
+          <div className="mt-4 bg-white p-4 rounded-lg shadow">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold">Search Parameters</h2>
+              <Button 
+                variant="outline" 
+                onClick={() => setShowApiDetails(!showApiDetails)}
+              >
+                {showApiDetails ? "Hide Details" : "Show Details"}
+              </Button>
+            </div>
+            
+            {showApiDetails && apiRequestDetails && (
+              <Card className="mb-6">
+                <CardContent className="pt-6">
+                  <div className="space-y-4">
+                    <h3 className="font-semibold">Request Parameters:</h3>
+                    <div className="bg-gray-800 text-gray-100 p-4 rounded-md overflow-x-auto">
+                      <pre className="text-sm">
+                        {JSON.stringify(apiRequestDetails, null, 2)}
+                      </pre>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          {hasApiError && (
+            <Alert variant="destructive" className="mt-4">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>API Connection Error</AlertTitle>
+              <AlertDescription>
+                We encountered a problem connecting to the reservation system. 
+                This may be due to invalid search parameters.
+              </AlertDescription>
+            </Alert>
+          )}
         </div>
-      </main>
+      </div>
+
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex flex-col lg:flex-row gap-8">
+          <aside className="lg:w-1/4 space-y-6">
+            <Collapsible open={filtersOpen} onOpenChange={setFiltersOpen}>
+              <div className="flex items-center justify-between">
+                <h2 className="font-bold text-lg mb-4">Filters</h2>
+                <CollapsibleTrigger asChild>
+                  <button
+                    className="lg:hidden text-primary px-2 py-1 rounded transition-colors hover:bg-primary/10"
+                  >
+                    {filtersOpen ? "Hide Filters" : "Show Filters"}
+                  </button>
+                </CollapsibleTrigger>
+              </div>
+              <CollapsibleContent forceMount>
+                <Card className="p-4">
+                  <div className="space-y-6">
+                    <div className="space-y-4">
+                      <Label className="text-base font-bold">Vehicle Types</Label>
+                      <div className="grid grid-cols-2 gap-4">
+                        {uniqueVehicleCategoryTypes.map((categoryType) => (
+                          <div key={categoryType.id} className="flex items-center space-x-2">
+                            <Checkbox
+                              id={`type-${categoryType.id}`}
+                              checked={selectedVehicleTypes.includes(categoryType.id)}
+                              onCheckedChange={(checked) => {
+                                setSelectedVehicleTypes(prev => {
+                                  if (checked) {
+                                    return [...prev, categoryType.id];
+                                  }
+                                  return prev.filter(id => id !== categoryType.id);
+                                });
+                              }}
+                            />
+                            <Label
+                              htmlFor={`type-${categoryType.id}`}
+                              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                            >
+                              {categoryType.name}
+                            </Label>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label className="text-base font-bold">Price Range (total)</Label>
+                      <div className="mt-4">
+                        <div className="flex justify-between mb-2">
+                          <span className="text-sm">${priceRange[0]}</span>
+                          <span className="text-sm">${priceRange[1]}</span>
+                        </div>
+                        <Slider
+                          value={priceRange}
+                          min={0}
+                          max={maxPriceAvailable}
+                          step={10}
+                          minStepsBetweenThumbs={1}
+                          className="mt-2"
+                          onValueChange={(values: [number, number]) => {
+                            const newValues: [number, number] = [
+                              values[0],
+                              Math.min(values[1], maxPriceAvailable)
+                            ];
+                            console.log("New price range:", newValues);
+                            setPriceRange(newValues);
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              </CollapsibleContent>
+            </Collapsible>
+          </aside>
+          <div className="lg:w-3/4">
+            {isLoading || isLoadingAges || isLoadingStep2 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="rounded-lg shadow animate-pulse bg-gray-200 h-80"></div>
+                ))}
+              </div>
+            ) : filteredVehicles.length === 0 ? (
+              <div className="text-center py-12">
+                <h3 className="text-xl font-semibold mb-2">No vehicles match your criteria</h3>
+                <p className="text-gray-600">Try adjusting your filters to find more options</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+                {filteredVehicles.map((vehicle) => (
+                  <VehicleCard 
+                    key={vehicle.id} 
+                    vehicle={vehicle} 
+                    totalRateAfterDiscount={typeof vehicle.price === 'number' ? vehicle.price : parseFloat(vehicle.price)}
+                    totalDiscountAmount={vehicle.discountAmount}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </main>
   );
 };
 
