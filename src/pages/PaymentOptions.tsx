@@ -117,97 +117,15 @@ const PaymentOptions = () => {
             </div>
           )}
           
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold mb-2">Vehicle Booking Summary</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <p><span className="font-medium">Vehicle:</span> {bookingDetails?.vehicleName}</p>
-                <p><span className="font-medium">Pickup:</span> {bookingDetails?.pickupDate} at {bookingDetails?.pickupTime}</p>
-                <p><span className="font-medium">Return:</span> {bookingDetails?.dropoffDate} at {bookingDetails?.dropoffTime}</p>
-              </div>
-              <div className="space-y-1">
-                <p>
-                  <span className="font-medium">Base Amount:</span> {
-                    bookingDetails?.totalRateAfterDiscount ? 
-                    <>
-                      {formatCurrency(bookingDetails.totalRateAfterDiscount)}
-                      {bookingDetails.totalDiscountAmount > 0 && 
-                        <span className="text-green-600 text-sm ml-1">
-                          (Saved {formatCurrency(bookingDetails.totalDiscountAmount)})
-                        </span>
-                      }
-                    </> :
-                    formatCurrency(bookingDetails?.basePrice || 0)
-                  }
-                </p>
-                {bookingDetails?.insurancePrice > 0 && (
-                  <p><span className="font-medium">Insurance:</span> {formatCurrency(bookingDetails.insurancePrice)}</p>
-                )}
-                {bookingDetails?.selectedExtras?.length > 0 && (
-                  <p><span className="font-medium">Extras:</span> {formatCurrency(bookingDetails.selectedExtras.reduce(
-                    (sum: number, extra: any) => sum + (extra.price * extra.quantity), 
-                    0
-                  ))}</p>
-                )}
-                
-                {bookingDetails?.mandatoryFees && bookingDetails.mandatoryFees.length > 0 && (
-                  <div className="mt-2">
-                    {bookingDetails.mandatoryFees.map((fee: any, index: number) => (
-                      <p key={index} className="text-sm">
-                        {fee.name}: {formatCurrency(fee.amount)}
-                      </p>
-                    ))}
-                  </div>
-                )}
-                
-                <p className="font-medium mt-2 text-lg">
-                  Total Amount: {formatCurrency(totalAmount + mandatoryFeesTotal)}
-                </p>
-              </div>
-            </div>
-          </div>
-          
           <form onSubmit={handleSubmit}>
-            <div className="mb-6">
-              <h2 className="text-xl font-semibold mb-4">Choose Payment Option</h2>
-              
-              <RadioGroup
-                value={paymentType}
-                onValueChange={(value) => setPaymentType(value as "deposit" | "full")}
-                className="flex flex-col space-y-4"
-              >
-                <div className="flex items-center space-x-2 border p-4 rounded-md hover:bg-gray-50">
-                  <RadioGroupItem value="deposit" id="deposit" />
-                  <Label htmlFor="deposit" className="flex-1 cursor-pointer">
-                    <div>
-                      <p className="font-medium">Pay Deposit Only</p>
-                      <p className="text-gray-600 text-sm">Pay {formatCurrency(DEPOSIT_AMOUNT)} now and the remaining {formatCurrency((totalAmount + mandatoryFeesTotal) - DEPOSIT_AMOUNT)} upon collection</p>
-                    </div>
-                  </Label>
-                  <div className="text-lg font-semibold">{formatCurrency(DEPOSIT_AMOUNT)}</div>
-                </div>
-                
-                <div className="flex items-center space-x-2 border p-4 rounded-md hover:bg-gray-50">
-                  <RadioGroupItem value="full" id="full" />
-                  <Label htmlFor="full" className="flex-1 cursor-pointer">
-                    <div>
-                      <p className="font-medium">Pay Full Amount</p>
-                      <p className="text-gray-600 text-sm">Pay the full amount now</p>
-                    </div>
-                  </Label>
-                  <div className="text-lg font-semibold">{formatCurrency(totalAmount + mandatoryFeesTotal)}</div>
-                </div>
-              </RadioGroup>
-            </div>
-            
             <div className="flex justify-between">
               <Button 
                 type="button" 
                 variant="outline" 
-                onClick={() => navigate(-1)}
+                onClick={() => navigate("/vehicles")}
                 disabled={isLoading}
               >
-                Back
+                Back to Vehicles
               </Button>
               <Button 
                 type="submit"
