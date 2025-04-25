@@ -123,8 +123,14 @@ export function useRcmApi() {
         try {
           const response = await rcmApi.getStep1();
           if (response.status === "OK" && response.results?.driverages) {
-            console.log('Driver ages data:', response.results.driverages);
-            return Array.from(response.results.driverages);
+            const driverAges = Array.from(response.results.driverages);
+            
+            driverAges.forEach(age => {
+              age.isdefault = age.driverage === '26+' || age.driverage === '26';
+            });
+            
+            console.log('Driver ages data:', driverAges);
+            return driverAges;
           }
           throw new Error("No driver ages data received");
         } catch (error) {
