@@ -7,7 +7,7 @@ import { getBookingData, updateBookingData } from "@/lib/booking-session";
 import { Label } from "@/components/ui/label";
 import { formatCurrency } from "@/lib/utils";
 
-const DEPOSIT_AMOUNT = 1;
+const DEPOSIT_AMOUNT = 50;
 
 const PaymentOptions = () => {
   const navigate = useNavigate();
