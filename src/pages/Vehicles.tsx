@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
@@ -78,14 +79,16 @@ const Vehicles = () => {
     ...step2Params
   } : null;
 
+  // Remove references to apiResponse state and rcmApi
   const [apiResponse, setApiResponse] = useState<any>(null);
 
+  // Remove the useEffect that was using rcmApi
   useEffect(() => {
-    if (rcmApi) {
-      const lastRequestDetails = rcmApi.getLastRequestDetails();
-      setApiResponse(lastRequestDetails);
+    // Just log API request details without using rcmApi
+    if (apiRequestDetails) {
+      console.log("API request details:", apiRequestDetails);
     }
-  }, [rcmApi, step2Data, step2Error]);
+  }, [apiRequestDetails, step2Data, step2Error]);
 
   useEffect(() => {
     if (!driverAges?.length) {
