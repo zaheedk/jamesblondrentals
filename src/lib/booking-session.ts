@@ -66,6 +66,7 @@ export interface BookingSessionData {
   payment?: number;
   balancedue?: number;
   transmission?: number; // Added for API compatibility
+  promoCode?: string;    // Add the promoCode property to fix the TypeScript error
 }
 
 export const BOOKING_SESSION_KEY = 'rcm_booking_data';
