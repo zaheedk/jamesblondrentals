@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -113,7 +112,18 @@ const SearchForm = () => {
       setDropoffDate(defaultDropoff);
       console.log('Default dates set', { today, defaultDropoff });
     }
-  }, []);
+    
+    if (!pickupTime && pickupTimeOptions.length > 0) {
+      setPickupTime(pickupTimeOptions[0]);
+    }
+  }, [pickupTimeOptions]);
+
+  useEffect(() => {
+    if (pickupTime && dropoffTimeOptions.length > 0 && !dropoffTime) {
+      console.log('Setting default dropoff time to match pickup time:', pickupTime);
+      setDropoffTime(dropoffTimeOptions.includes(pickupTime) ? pickupTime : dropoffTimeOptions[0]);
+    }
+  }, [pickupTime, dropoffTimeOptions]);
 
   useEffect(() => {
     if (pickupLocation && locationDetails.length > 0) {
