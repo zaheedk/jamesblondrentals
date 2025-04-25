@@ -81,7 +81,6 @@ const PaymentSuccess = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [rentalDuration, setRentalDuration] = useState<number>(0);
   const [imageError, setImageError] = useState<boolean>(false);
-  const [apiRawResponse, setApiRawResponse] = React.useState<any | null>(null);
 
   const handleImageError = () => {
     console.log("Error loading vehicle image");
@@ -238,8 +237,6 @@ const PaymentSuccess = () => {
               method: 'bookinginfo',
               reservationref: bookingReservationRef
             });
-
-            setApiRawResponse(response);
 
             const apiResponse = response as ApiBookingResponse;
             console.log("API Response for booking details:", apiResponse);
@@ -707,15 +704,6 @@ const PaymentSuccess = () => {
                 >
                   SAVE QUOTATION
                 </Button>
-              </div>
-            )}
-            
-            {apiRawResponse && (
-              <div className="bg-gray-100 rounded-lg p-4 mt-6 max-h-64 overflow-auto">
-                <h3 className="text-lg font-semibold mb-2">Raw API Response Debug Info</h3>
-                <pre className="text-xs whitespace-pre-wrap">
-                  {JSON.stringify(apiRawResponse, null, 2)}
-                </pre>
               </div>
             )}
           </>
