@@ -37,21 +37,14 @@ const PaymentSummary = ({
   selectedExtras = [],
   mandatoryFees = [],
   totalCost,
-  payment,
-  balanceDue
 }: PaymentSummaryProps) => {
   const rentalValue = rentalDays * dailyRate;
-
-  // Calculate total of mandatory fees (like security bond)
-  const mandatoryFeesTotal = mandatoryFees.reduce((sum, fee) => sum + fee.amount, 0);
   
-  // Calculate total of optional extras
+  // Calculate total of optional extras (insurance + extra kms + selected extras)
   const extrasTotal = selectedExtras.reduce((sum, extra) => sum + extra.price, 0);
-  
-  // Calculate total optional fees (insurance + extra kms + selected extras)
   const totalOptionalFees = insurancePrice + extraKmsPrice + extrasTotal;
   
-  // Calculate total cost excluding mandatory fees (like security bond)
+  // Calculate total cost excluding mandatory fees
   const totalExcludingMandatory = rentalValue + totalOptionalFees;
   
   // For debugging
@@ -60,7 +53,6 @@ const PaymentSummary = ({
     insurancePrice,
     extraKmsPrice,
     extrasTotal,
-    mandatoryFeesTotal,
     totalOptionalFees,
     totalExcludingMandatory,
     providedTotalCost: totalCost
@@ -107,41 +99,12 @@ const PaymentSummary = ({
           </div>
         )}
 
-        {mandatoryFees.length > 0 && (
-          <div className="border-t border-gray-300 my-2 pt-2">
-            <div className="font-medium mb-2">Mandatory Fees</div>
-            {mandatoryFees.map((fee, index) => (
-              <div key={index} className="flex justify-between text-sm">
-                <span>{fee.name}</span>
-                <span>{formatCurrency(fee.amount)}</span>
-              </div>
-            ))}
-            <div className="flex justify-between font-medium text-sm mt-1 pt-1 border-t border-dashed border-gray-200">
-              <span>Total Mandatory Fees</span>
-              <span>{formatCurrency(mandatoryFeesTotal)}</span>
-            </div>
-          </div>
-        )}
-
         <div className="border-t border-gray-300 my-2 pt-2">
           <div className="flex justify-between font-semibold">
-            <span>Total Cost (excl. Mandatory Fees)</span>
+            <span>Total Cost</span>
             <span>{formatCurrency(totalExcludingMandatory)}</span>
           </div>
         </div>
-
-        {/* Always display the payment amount */}
-        <div className="flex justify-between text-green-600">
-          <span>Paid</span>
-          <span>{formatCurrency(payment)}</span>
-        </div>
-
-        {balanceDue > 0 && (
-          <div className="flex justify-between text-red-600 font-bold">
-            <span>Balance Due</span>
-            <span>{formatCurrency(balanceDue)}</span>
-          </div>
-        )}
       </div>
     </div>
   );
