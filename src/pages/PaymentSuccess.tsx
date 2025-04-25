@@ -100,7 +100,7 @@ const PaymentSuccess = () => {
         
         const rentalDays = rentalDuration || 3;
         const newDropoffDate = addDays(newPickupDate, rentalDays);
-        dropoffDate = format(newDropupDate, "dd/MMM/yyyy");
+        dropoffDate = format(newDropoffDate, "dd/MMM/yyyy");
         
         console.log(`Updated dates: Pickup ${pickupDate}, Dropoff ${dropoffDate}`);
       }
