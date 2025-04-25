@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -222,12 +223,12 @@ const PaymentSuccess = () => {
 
         if (bookingReservationRef) {
           try {
-            const response = await rcmApi.request<ApiBookingResponse>('POST', 'bookinginfo', {
+            const response = await rcmApi.request<RCMBookingResponse>('POST', 'bookinginfo', {
               method: 'bookinginfo',
               reservationref: bookingReservationRef
             });
 
-            const apiResponse = response as ApiBookingResponse;
+            const apiResponse = response as RCMBookingResponse;
             console.log("API Response for booking details:", apiResponse);
 
             if (apiResponse.status === "OK" && apiResponse.results) {
