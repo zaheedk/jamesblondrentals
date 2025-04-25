@@ -99,6 +99,18 @@ const PaymentSummary = ({
           </div>
         )}
 
+        {mandatoryFees.length > 0 && (
+          <div className="border-t border-gray-300 my-2 pt-2">
+            <div className="font-medium mb-2">Mandatory Fees</div>
+            {mandatoryFees.map((fee, index) => (
+              <div key={index} className="flex justify-between text-sm">
+                <span>{fee.name}</span>
+                <span>{formatCurrency(fee.amount)}</span>
+              </div>
+            ))}
+          </div>
+        )}
+
         <div className="border-t border-gray-300 my-2 pt-2">
           <div className="flex justify-between font-semibold">
             <span>Total Cost</span>
