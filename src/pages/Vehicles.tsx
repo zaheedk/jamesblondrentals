@@ -10,19 +10,11 @@ import { Input } from "@/components/ui/input";
 import { useRcmApi } from "@/hooks/use-rcm-api";
 import { RCMAvailableCar, RCMMandatoryFee, RCMSeasonalRate } from "@/lib/api/rcm-api-types";
 import { toast } from "sonner";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Checkbox } from "@/components/ui/checkbox";
 
 interface RcmVehicleWithPricing {
   vehicle: RCMAvailableCar;
@@ -201,7 +193,6 @@ const Vehicles = () => {
   useEffect(() => {
     let results = [...vehicles];
     
-    // Filter by selected vehicle types
     if (selectedVehicleTypes.length > 0) {
       results = results.filter(vehicle => 
         selectedVehicleTypes.includes(String(vehicle.type))
@@ -288,78 +279,6 @@ const Vehicles = () => {
                 </AlertDescription>
               </Alert>
             )}
-
-            <div className="mt-6">
-              <div className="flex justify-between items-center mb-2">
-                <h2 className="text-lg font-semibold">API Request Details</h2>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => setShowApiDetails(!showApiDetails)}
-                >
-                  {showApiDetails ? "Hide Details" : "Show Details"}
-                </Button>
-              </div>
-              
-              {showApiDetails && (
-                <Card className="mb-6 overflow-hidden">
-                  <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                    <TabsList className="grid w-full grid-cols-2">
-                      <TabsTrigger value="request">Request</TabsTrigger>
-                      <TabsTrigger value="response">Response</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="request" className="p-4">
-                      <div className="space-y-4">
-                        <h3 className="font-semibold">API Request Parameters</h3>
-                        {apiRequestDetails ? (
-                          <>
-                            <div className="bg-gray-800 text-gray-100 p-4 rounded-md overflow-x-auto">
-                              <pre className="text-sm">
-                                {JSON.stringify(apiRequestDetails, null, 2)}
-                              </pre>
-                            </div>
-                            <div className="text-sm text-gray-600">
-                              <p><strong>URL Parameters:</strong> {new URLSearchParams(searchParams).toString()}</p>
-                            </div>
-                          </>
-                        ) : (
-                          <p className="text-sm text-gray-500">No request parameters available</p>
-                        )}
-                      </div>
-                    </TabsContent>
-                    <TabsContent value="response" className="p-4">
-                      <div className="space-y-4">
-                        <h3 className="font-semibold">API Response Details</h3>
-                        {apiResponse ? (
-                          <div className="space-y-3">
-                            <div className="text-sm space-y-1">
-                              <p><strong>Timestamp:</strong> {apiResponse.timestamp || 'N/A'}</p>
-                              <p><strong>URL:</strong> {apiResponse.url || 'N/A'}</p>
-                              <p><strong>Method:</strong> {apiResponse.method || 'N/A'}</p>
-                            </div>
-                            
-                            {apiResponse.error && (
-                              <div className="bg-red-50 text-red-800 p-4 rounded-md">
-                                <h4 className="font-medium">Error:</h4>
-                                <p className="text-sm">{apiResponse.error}</p>
-                              </div>
-                            )}
-                            
-                            <div className="bg-gray-800 text-gray-100 p-4 rounded-md overflow-x-auto">
-                              <pre className="text-sm">
-                                {JSON.stringify(apiResponse.response || {}, null, 2)}
-                              </pre>
-                            </div>
-                          </div>
-                        ) : (
-                          <p className="text-sm text-gray-500">No response data available</p>
-                        )}
-                      </div>
-                    </TabsContent>
-                  </Tabs>
-                </Card>
-              )}
-            </div>
           </div>
         </div>
 
@@ -381,7 +300,7 @@ const Vehicles = () => {
                   <Card className="p-4">
                     <div className="space-y-6">
                       <div className="space-y-4">
-                        <Label className="text-base">Vehicle Types</Label>
+                        <Label className="text-base font-bold">Vehicle Types</Label>
                         <div className="grid grid-cols-2 gap-4">
                           {uniqueVehicleCategoryTypes.map((categoryType) => (
                             <div key={categoryType.id} className="flex items-center space-x-2">
@@ -409,7 +328,7 @@ const Vehicles = () => {
                       </div>
 
                       <div>
-                        <Label className="text-base">Price Range (total)</Label>
+                        <Label className="text-base font-bold">Price Range (total)</Label>
                         <div className="mt-4">
                           <div className="flex justify-between mb-2">
                             <span className="text-sm">${priceRange[0]}</span>
