@@ -45,8 +45,12 @@ const PaymentSummary = ({
   const extrasTotal = selectedExtras.reduce((sum, extra) => sum + extra.price, 0);
   const totalOptionalFees = insurancePrice + extraKmsPrice + extrasTotal;
   
-  // Calculate total cost excluding mandatory fees
+  // Calculate total mandatory fees
+  const mandatoryFeesTotal = mandatoryFees.reduce((sum, fee) => sum + fee.amount, 0);
+  
+  // Calculate total cost including all fees
   const totalExcludingMandatory = rentalValue + totalOptionalFees;
+  const calculatedTotalWithAllFees = totalExcludingMandatory + mandatoryFeesTotal;
   
   // For debugging
   console.log("Payment Summary Calculations:", {
@@ -57,7 +61,9 @@ const PaymentSummary = ({
     extraKmsPrice,
     extrasTotal,
     totalOptionalFees,
+    mandatoryFeesTotal,
     totalExcludingMandatory,
+    calculatedTotalWithAllFees,
     providedTotalCost: totalCost
   });
 
@@ -111,13 +117,17 @@ const PaymentSummary = ({
                 <span>{formatCurrency(fee.amount)}</span>
               </div>
             ))}
+            <div className="flex justify-between font-medium text-sm mt-1 pt-1 border-t border-dashed border-gray-200">
+              <span>Total Mandatory Fees</span>
+              <span>{formatCurrency(mandatoryFeesTotal)}</span>
+            </div>
           </div>
         )}
 
         <div className="border-t border-gray-300 my-2 pt-2">
           <div className="flex justify-between font-semibold">
             <span>Total Cost</span>
-            <span>{formatCurrency(totalExcludingMandatory)}</span>
+            <span>{formatCurrency(calculatedTotalWithAllFees)}</span>
           </div>
         </div>
       </div>

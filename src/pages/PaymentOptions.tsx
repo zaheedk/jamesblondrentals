@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -51,8 +50,9 @@ const PaymentOptions = () => {
       dropoffLocationName
     });
     
-    // Calculate rental days if available
-    if (bookingData.rentalDays) {
+    if (bookingData.numberofdays) {
+      setRentalDays(bookingData.numberofdays);
+    } else if (bookingData.rentalDays) {
       setRentalDays(bookingData.rentalDays);
     } else if (bookingData.pickupDate && bookingData.dropoffDate) {
       try {
@@ -60,11 +60,14 @@ const PaymentOptions = () => {
         const dropoffDate = new Date(bookingData.dropoffDate);
         if (pickupDate && dropoffDate && !isNaN(pickupDate.getTime()) && !isNaN(dropoffDate.getTime())) {
           const days = Math.ceil((dropoffDate.getTime() - pickupDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-          setRentalDays(days > 0 ? days : 1);
+          const calculatedDays = days > 0 ? days : 1;
+          setRentalDays(calculatedDays);
+          
+          updateBookingData({ rentalDays: calculatedDays });
         }
       } catch (error) {
         console.error("Error calculating rental days:", error);
-        setRentalDays(1); // Default to 1 day if calculation fails
+        setRentalDays(1);
       }
     }
     
