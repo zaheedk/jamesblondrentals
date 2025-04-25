@@ -3,7 +3,7 @@ import { MapIcon } from 'lucide-react';
 import FuelStationsMapWellington from '../components/FuelStationsMapWellington';
 
 const AirportWellington = () => (
-  <div className="space-y-6">
+  <div className="container mx-auto px-4 py-8 space-y-6">
     <section className="mb-8">
       <div className="text-center bg-secondary p-4 rounded-lg mb-6">
         <p className="text-lg font-bold">
