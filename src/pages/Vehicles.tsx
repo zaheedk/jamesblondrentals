@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,7 +12,7 @@ import { RCMAvailableCar, RCMMandatoryFee, RCMSeasonalRate } from "@/lib/api/rcm
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, ChevronDown, ChevronUp } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
 
@@ -79,12 +78,9 @@ const Vehicles = () => {
     ...step2Params
   } : null;
 
-  // Remove references to apiResponse state and rcmApi
   const [apiResponse, setApiResponse] = useState<any>(null);
 
-  // Remove the useEffect that was using rcmApi
   useEffect(() => {
-    // Just log API request details without using rcmApi
     if (apiRequestDetails) {
       console.log("API request details:", apiRequestDetails);
     }
@@ -324,15 +320,20 @@ const Vehicles = () => {
             <Collapsible open={filtersOpen} onOpenChange={setFiltersOpen}>
               <div className="flex items-center justify-between">
                 <h2 className="font-bold text-lg mb-4">Filters</h2>
-                <CollapsibleTrigger asChild>
-                  <button
-                    className="lg:hidden text-primary px-2 py-1 rounded transition-colors hover:bg-primary/10"
-                  >
-                    {filtersOpen ? "Hide Filters" : "Show Filters"}
-                  </button>
-                </CollapsibleTrigger>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setFiltersOpen(!filtersOpen)}
+                  className="lg:hidden flex items-center gap-1"
+                >
+                  {filtersOpen ? (
+                    <>Hide Filters <ChevronUp className="h-4 w-4" /></>
+                  ) : (
+                    <>Show Filters <ChevronDown className="h-4 w-4" /></>
+                  )}
+                </Button>
               </div>
-              <CollapsibleContent forceMount>
+              <CollapsibleContent className={isMobile ? "" : "!block"}>
                 <Card className="p-4">
                   <div className="space-y-6">
                     <div className="space-y-4">
