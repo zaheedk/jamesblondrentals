@@ -59,21 +59,8 @@ export function useRcmApi() {
         } catch (error) {
           console.error('Location fetch error:', error);
           toast.error('API Connection Error', {
-            description: 'Failed to connect to RCM API. Switching to demo mode.'
+            description: 'Failed to connect to RCM API.'
           });
-          
-          // Suggest enabling mock mode
-          if (!rcmApi.shouldUseMockData()) {
-            rcmApi.initialize({
-              ...rcmApi.config,
-              useMockData: true
-            });
-            
-            toast.info('Demo Mode Activated', {
-              description: 'Using sample data until API connection is restored.'
-            });
-          }
-          
           throw error;
         }
       },

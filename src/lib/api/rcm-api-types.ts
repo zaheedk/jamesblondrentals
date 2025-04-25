@@ -1,4 +1,3 @@
-
 // RCM API type definitions
 
 export interface RCMVehicle {
@@ -55,7 +54,6 @@ export interface RCMOfficeTime {
   startpickup?: string;
   endpickup?: string;
   startdropoff?: string;
-  enddropoff?: string; // Added the missing property
   startdate?: string;
   enddate?: string;
 }

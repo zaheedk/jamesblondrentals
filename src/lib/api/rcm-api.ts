@@ -1,3 +1,4 @@
+
 import { generateSignature } from './rcm-signature';
 import type { 
   RCMApiConfig,
@@ -49,15 +50,14 @@ class RCMApiClient {
     if (config.apiKey) this.config.apiKey = config.apiKey;
     if (config.apiSecret) this.config.apiSecret = config.apiSecret;
     if (config.apiUrl) this.config.apiUrl = config.apiUrl.replace(/\/$/, '');
-    
-    this.useMockData = false;
-    this.apiConnectionFailed = false;
+    if (config.useMockData !== undefined) this.useMockData = config.useMockData;
     
     this.initialized = true;
     
     console.log('RCM API initialized with config:', {
       apiUrl: this.config.apiUrl,
-      apiKey: this.config.apiKey ? '******' : undefined
+      apiKey: this.config.apiKey ? '******' : undefined,
+      useMockData: this.useMockData
     });
   }
 
@@ -69,7 +69,7 @@ class RCMApiClient {
   }
 
   shouldUseMockData(): boolean {
-    return false;
+    return this.useMockData || this.apiConnectionFailed;
   }
 
   private createHeaders(method: string, body?: any): Headers {
@@ -92,7 +92,16 @@ class RCMApiClient {
     headers.append('Accept', 'application/json');
     headers.append('signature', signature); 
     
+    // Log signature for debugging purposes
     console.log('Generated signature for API request:', signature.substring(0, 10) + '...');
+    
+    // Store request headers for diagnostic purposes
+    const headerObj: Record<string, string> = {};
+    headers.forEach((value, key) => {
+      headerObj[key] = key === 'signature' ? value.substring(0, 10) + '...' : value;
+    });
+    
+    console.log('Request headers:', headerObj);
     
     return headers;
   }
@@ -101,12 +110,13 @@ class RCMApiClient {
     const baseUrl = this.config.apiUrl;
     const apiKey = this.config.apiKey;
     
-    // For direct API (not proxy), use this format
+    // Direct API URL format
     if (baseUrl.includes('apis.rentalcarmanager.com')) {
+      // Direct API URL format
       return `${baseUrl}?apikey=${apiKey}`;
     }
     
-    // For proxied API, use this format
+    // Proxy URL format (append API key to path)
     return `${baseUrl}/${apiKey}?apikey=${apiKey}`;
   }
 
@@ -118,8 +128,8 @@ class RCMApiClient {
     this.ensureInitialized();
 
     // If mock mode is enabled, don't make actual API calls
-    if (this.shouldUseMockData()) {
-      console.log(`[MOCK MODE] Using mock data for ${method} - ${requestMethod}`);
+    if (this.useMockData) {
+      console.log(`[MOCK MODE] Skipping actual API request for ${method} - ${requestMethod}`);
       this.lastRequestDetails = {
         url: "mock://api.example.com",
         method,
@@ -133,71 +143,18 @@ class RCMApiClient {
           status: "OK",
           results: {
             locations: [
-              { id: "1", location: "Mock Location 1", address: "123 Mock St", city: "Mock City", state: "CA", country: "USA", postcode: "12345", latitude: -36.8485, longitude: 174.7633, ispickupavailable: true, isdropoffavailable: true, isdefault: true, minimumbookingday: 1, noticerequired_numberofdays: 0 },
-              { id: "2", location: "Mock Location 2", address: "456 Test Ave", city: "Test Town", state: "NY", country: "USA", postcode: "54321", latitude: -36.8485, longitude: 174.7633, ispickupavailable: true, isdropoffavailable: true, isdefault: false, minimumbookingday: 1, noticerequired_numberofdays: 0 }
+              { id: "1", location: "Mock Location 1", address: "123 Mock St", city: "Mock City" },
+              { id: "2", location: "Mock Location 2", address: "456 Test Ave", city: "Test Town" }
             ],
             driverages: [
-              { id: "1", driverage: "18-24", isdefault: false },
-              { id: "2", driverage: "25+", isdefault: true },
-              { id: "3", driverage: "26+", isdefault: false }
+              { id: 1, driverage: "18-24", isdefault: false },
+              { id: 2, driverage: "25+", isdefault: true }
             ],
             categorytypes: [
-              { id: "1", vehiclecategorytype: "Economy", displayorder: 1 },
-              { id: "2", vehiclecategorytype: "Luxury", displayorder: 2 }
+              { id: 1, vehiclecategorytype: "Economy" },
+              { id: 2, vehiclecategorytype: "Luxury" }
             ],
-            officetimes: [
-              { 
-                locationid: "1", 
-                dayofweek: 1, 
-                openingtime: "08:00", 
-                closingtime: "17:00",
-                startpickup: "08:00",
-                endpickup: "16:30",
-                startdropoff: "08:00",
-                enddropoff: "17:00"
-              },
-              { 
-                locationid: "2", 
-                dayofweek: 1, 
-                openingtime: "08:00", 
-                closingtime: "17:00",
-                startpickup: "08:00",
-                endpickup: "16:30",
-                startdropoff: "08:00",
-                enddropoff: "17:00"
-              }
-            ]
-          }
-        } as unknown as T;
-      }
-      
-      if (requestMethod === "step2") {
-        return {
-          status: "OK",
-          results: {
-            availablecars: [
-              {
-                vehiclecategoryid: "101",
-                vehiclecategorytypeid: "1",
-                vehiclecategory: "Economy Car",
-                vehicledescription1: "Toyota Corolla or similar",
-                vehicledescription2: "Great for city driving",
-                vehicledescription3: "Fuel efficient",
-                imageurl: "https://example.com/car1.jpg",
-                totalrateafterdiscount: 299.99,
-                totaldiscountamount: 50.00,
-                avgrate: 99.99,
-                numberofdays: "3",
-                numberofadults: 5,
-                numberofchildren: 0,
-                numberoflargecases: 2,
-                numberofsmallcases: 3,
-                available: 5
-              }
-            ],
-            seasonalrates: [],
-            locationfees: [],
-            mandatoryfees: []
+            officetimes: []
           }
         } as unknown as T;
       }
@@ -213,51 +170,128 @@ class RCMApiClient {
     };
     
     try {
-      // Try direct API first if we're currently set to use direct API
-      if (this.config.apiUrl.includes('apis.rentalcarmanager.com')) {
-        try {
-          const result = await this.makeDirectApiRequest<T>(method, requestMethod, body);
-          this.apiConnectionFailed = false;
-          return result;
-        } catch (directError) {
-          console.error('Direct API request failed:', directError);
-          this.lastRequestDetails.error = directError instanceof Error ? directError.message : String(directError);
-          throw directError;
+      const apiUrl = this.buildApiUrl();
+      console.log(`Making ${method} request to ${apiUrl} for method ${requestMethod}`);
+      console.log(`Request time: ${requestStartTime.toISOString()}`);
+      console.log(`User agent: ${navigator.userAgent}`);
+      
+      const requestBody = { method: requestMethod, ...body };
+      const headers = this.createHeaders(method, requestBody);
+      
+      // Store request details for diagnostics
+      this.lastRequestDetails = {
+        url: apiUrl,
+        method,
+        headers: Object.fromEntries(headers.entries()),
+        body: requestBody,
+        timestamp: requestStartTime.toISOString()
+      };
+      
+      // Log complete request details for debugging
+      console.log('Complete request details:', {
+        url: apiUrl,
+        method,
+        headers: Object.fromEntries(headers.entries()),
+        body: requestBody
+      });
+      
+      const fetchStartTime = Date.now();
+      const response = await fetch(apiUrl, {
+        method,
+        headers,
+        body: JSON.stringify(requestBody),
+        credentials: 'same-origin',
+      });
+      const fetchEndTime = Date.now();
+      
+      console.log(`Fetch completed in ${fetchEndTime - fetchStartTime}ms`);
+
+      const contentType = response.headers.get("content-type") || "";
+      const status = response.status;
+      const statusText = response.statusText;
+      
+      console.log(`Response status: ${status} ${statusText}, Content-Type: ${contentType}`);
+      
+      // Log all response headers for debugging
+      const responseHeaders: Record<string, string> = {};
+      response.headers.forEach((value, key) => {
+        responseHeaders[key] = value;
+      });
+      console.log('Response headers:', responseHeaders);
+      
+      // Clone response to avoid consuming it
+      const responseClone = response.clone();
+      const textResponse = await responseClone.text();
+      
+      // Log the first part of the response for debugging
+      console.log('Response preview:', textResponse.substring(0, 200) + 
+                 (textResponse.length > 200 ? '...' : ''));
+      
+      if (contentType.includes("text/html")) {
+        console.error("Received HTML instead of JSON. This likely indicates a proxy configuration issue or CORS problem.");
+        console.error("Content type:", contentType);
+        
+        // Add more detailed logging for HTML responses
+        console.error("HTML response preview:", textResponse.substring(0, 500));
+        
+        // Try to extract useful information from HTML
+        const errorMessage = this.extractMessageFromHtml(textResponse);
+        if (errorMessage) {
+          console.error("Extracted message from HTML:", errorMessage);
         }
-      } else {
-        // Try proxied request first, then fallback to direct if it fails
-        try {
-          const result = await this.makeProxiedRequest<T>(method, requestMethod, body);
-          this.apiConnectionFailed = false;
-          return result;
-        } catch (proxyError) {
-          console.error('Proxied API request failed, trying direct API:', proxyError);
-          
-          // Fallback to direct API
-          try {
-            // Temporarily switch to direct API
-            const originalUrl = this.config.apiUrl;
-            this.config.apiUrl = 'https://apis.rentalcarmanager.com/booking/v3.2';
-            
-            const result = await this.makeDirectApiRequest<T>(method, requestMethod, body);
-            
-            // If successful, notify the user we switched to direct API
-            console.log('Successfully switched to direct API connection');
-            
-            // Reset the flag since we've successfully connected
-            this.apiConnectionFailed = false;
-            
-            return result;
-          } catch (directError) {
-            console.error('Both proxy and direct API requests failed');
-            this.lastRequestDetails.error = `Proxy error: ${proxyError instanceof Error ? proxyError.message : String(proxyError)}. Direct error: ${directError instanceof Error ? directError.message : String(directError)}`;
-            this.apiConnectionFailed = true;
-            throw directError;
-          }
+        
+        // Save error details
+        this.lastRequestDetails.error = `Received HTML instead of JSON. Status: ${status} ${statusText}`;
+        this.lastRequestDetails.response = {
+          status,
+          statusText,
+          contentType,
+          htmlPreview: textResponse.substring(0, 500),
+          extractedMessage: errorMessage
+        };
+        
+        // Flag API connection as failed
+        this.apiConnectionFailed = true;
+        
+        throw new Error(`Invalid API response format - received HTML instead of JSON. Status: ${status} ${statusText}`);
+      }
+
+      try {
+        // Try to parse as JSON
+        const jsonResponse = JSON.parse(textResponse);
+        console.log(`API parsed JSON response (${method} - ${requestMethod}):`, jsonResponse);
+        
+        // Save successful response
+        this.lastRequestDetails.response = jsonResponse;
+        
+        if (jsonResponse.status === "ERR") {
+          console.error('API returned error:', jsonResponse.error);
+          this.lastRequestDetails.error = jsonResponse.error || 'Unknown API error';
+          throw new Error(jsonResponse.error || 'Unknown API error');
         }
+        
+        // API connection succeeded
+        this.apiConnectionFailed = false;
+        
+        return jsonResponse;
+      } catch (parseError) {
+        console.error('Failed to parse response as JSON:', parseError);
+        
+        // Additional CORS troubleshooting for non-parseable responses
+        console.error('This might be a CORS issue or malformed JSON response');
+        
+        this.lastRequestDetails.error = `Failed to parse response as JSON: ${parseError instanceof Error ? parseError.message : String(parseError)}`;
+        this.lastRequestDetails.response = {
+          raw: textResponse.substring(0, 1000)
+        };
+        
+        // Flag API connection as failed
+        this.apiConnectionFailed = true;
+        
+        throw new Error(`Failed to parse API response: ${parseError instanceof Error ? parseError.message : String(parseError)}`);
       }
     } catch (error) {
-      console.error('RCM API request failed after all attempts:', error);
+      console.error('RCM API request failed:', error);
       
       if (!this.lastRequestDetails.error) {
         this.lastRequestDetails.error = error instanceof Error ? error.message : String(error);
@@ -268,90 +302,6 @@ class RCMApiClient {
       
       throw error;
     }
-  }
-  
-  private async makeProxiedRequest<T>(method: string, requestMethod: string, body?: any): Promise<T> {
-    const apiUrl = this.buildApiUrl();
-    console.log(`Making proxied ${method} request to ${apiUrl} for method ${requestMethod}`);
-    
-    const headers = this.createHeaders(method, body);
-    const requestBody = { method: requestMethod, ...body };
-    
-    // Store request details for diagnostics
-    this.lastRequestDetails = {
-      url: apiUrl,
-      method,
-      headers: Object.fromEntries(headers.entries()),
-      body: requestBody,
-      timestamp: new Date().toISOString()
-    };
-    
-    const fetchStartTime = Date.now();
-    const response = await fetch(apiUrl, {
-      method,
-      headers,
-      body: JSON.stringify(requestBody),
-      credentials: 'same-origin',
-    });
-    const fetchEndTime = Date.now();
-    
-    console.log(`Proxied fetch completed in ${fetchEndTime - fetchStartTime}ms`);
-    
-    const contentType = response.headers.get("content-type") || "";
-    if (!contentType.includes("application/json")) {
-      throw new Error(`Invalid response content type: ${contentType} (expected application/json)`);
-    }
-
-    const jsonResponse = await response.json();
-    
-    if (jsonResponse.status === "ERR") {
-      throw new Error(jsonResponse.error || 'Unknown API error');
-    }
-    
-    this.lastRequestDetails.response = jsonResponse;
-    return jsonResponse;
-  }
-  
-  private async makeDirectApiRequest<T>(method: string, requestMethod: string, body?: any): Promise<T> {
-    const apiUrl = 'https://apis.rentalcarmanager.com/booking/v3.2?apikey=' + this.config.apiKey;
-    console.log(`Making direct ${method} request to ${apiUrl} for method ${requestMethod}`);
-    
-    const headers = this.createHeaders(method, body);
-    const requestBody = { method: requestMethod, ...body };
-    
-    // Store request details for diagnostics
-    this.lastRequestDetails = {
-      url: apiUrl,
-      method,
-      headers: Object.fromEntries(headers.entries()),
-      body: requestBody,
-      timestamp: new Date().toISOString()
-    };
-    
-    const fetchStartTime = Date.now();
-    const response = await fetch(apiUrl, {
-      method,
-      headers,
-      body: JSON.stringify(requestBody),
-      mode: 'cors',
-    });
-    const fetchEndTime = Date.now();
-    
-    console.log(`Direct fetch completed in ${fetchEndTime - fetchStartTime}ms`);
-    
-    const contentType = response.headers.get("content-type") || "";
-    if (!contentType.includes("application/json")) {
-      throw new Error(`Invalid response content type: ${contentType} (expected application/json)`);
-    }
-
-    const jsonResponse = await response.json();
-    
-    if (jsonResponse.status === "ERR") {
-      throw new Error(jsonResponse.error || 'Unknown API error');
-    }
-    
-    this.lastRequestDetails.response = jsonResponse;
-    return jsonResponse;
   }
   
   // Helper function to extract meaningful message from HTML response

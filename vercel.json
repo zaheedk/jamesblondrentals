@@ -15,10 +15,7 @@
       "source": "/api/rcm/(.*)",
       "headers": [
         { "key": "Content-Type", "value": "application/json" },
-        { "key": "Accept", "value": "application/json" },
-        { "key": "Access-Control-Allow-Origin", "value": "*" },
-        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
-        { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization, Accept, signature" }
+        { "key": "Accept", "value": "application/json" }
       ]
     }
   ]
