@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
@@ -28,12 +27,11 @@ const Vehicles = () => {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { useDriverAges, useStep2Vehicles, useVehicleCategories, useLocations, rcmApi } = useRcmApi();
+  const { useDriverAges, useStep2Vehicles, useVehicleCategories, useLocations } = useRcmApi();
   const { data: driverAges, isLoading: isLoadingAges, error: driverAgesError } = useDriverAges();
   const { data: categoryTypes } = useVehicleCategories();
   const { data: locations = [] } = useLocations();
   const [uniqueVehicleCategoryTypes, setUniqueVehicleCategoryTypes] = useState<Array<{id: string, name: string}>>([]);
-  const [showApiDetails, setShowApiDetails] = useState(true);
   const [activeTab, setActiveTab] = useState("results");
 
   const [vehicleType, setVehicleType] = useState<VehicleType | "all">("all");
@@ -72,11 +70,6 @@ const Vehicles = () => {
     ageid: getValidAgeId(),
     vehiclecategorytypeid: carCategory
   } : null;
-
-  console.log("Car Category Selected (raw):", carCategory);
-  console.log("Car Category Type:", typeof carCategory);
-  console.log("Step2Params (full):", JSON.stringify(step2Params, null, 2));
-  console.log("Step2Params vehiclecategorytypeid:", step2Params?.vehiclecategorytypeid);
 
   const { data: step2Data, isLoading: isLoadingStep2, error: step2Error } = useStep2Vehicles(step2Params);
 
@@ -137,7 +130,6 @@ const Vehicles = () => {
         const feeAmount = mandatoryFee ? Number(mandatoryFee.totalfeeamount) : 0;
         const totalPrice = car.totalrateafterdiscount + feeAmount;
         
-        // Make sure we're passing the raw available value to the component
         return {
           id: Number(car.vehiclecategoryid),
           make: car.vehiclecategory.split(' ')[0] || "Unknown",
@@ -150,7 +142,7 @@ const Vehicles = () => {
           transmission: "automatic",
           fuelType: "gasoline",
           fuelEfficiency: "N/A",
-          available: car.available, // Pass the raw number value (1 or 2) as is
+          available: car.available,
           location: pickupLocation,
           features: [
             `${car.numberofadults} Adults`,
@@ -168,7 +160,6 @@ const Vehicles = () => {
         };
       });
       
-      // Log the mapped vehicles' availability property
       mappedVehicles.forEach((vehicle) => {
         console.log(`Mapped vehicle ${vehicle.make} ${vehicle.model} - available: ${vehicle.available}, type: ${typeof vehicle.available}`);
       });
@@ -309,46 +300,6 @@ const Vehicles = () => {
                 </p>
               )}
             </div>
-          </div>
-          
-          <div className="mt-4 bg-white p-4 rounded-lg shadow">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold">API Details</h2>
-              <Button 
-                variant="outline" 
-                onClick={() => setShowApiDetails(!showApiDetails)}
-              >
-                {showApiDetails ? "Hide Details" : "Show Details"}
-              </Button>
-            </div>
-            
-            {showApiDetails && apiRequestDetails && (
-              <Card className="mb-6">
-                <CardContent className="pt-6">
-                  <div className="space-y-4">
-                    <div>
-                      <h3 className="font-semibold">Request Parameters:</h3>
-                      <div className="bg-gray-800 text-gray-100 p-4 rounded-md overflow-x-auto">
-                        <pre className="text-sm">
-                          {JSON.stringify(apiRequestDetails, null, 2)}
-                        </pre>
-                      </div>
-                    </div>
-                    
-                    {apiResponse && (
-                      <div>
-                        <h3 className="font-semibold mt-4">API Response:</h3>
-                        <div className="bg-gray-800 text-gray-100 p-4 rounded-md overflow-x-auto">
-                          <pre className="text-sm">
-                            {JSON.stringify(apiResponse, null, 2)}
-                          </pre>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
           </div>
 
           {hasApiError && (
