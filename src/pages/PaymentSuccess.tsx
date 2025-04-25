@@ -253,7 +253,6 @@ const PaymentSuccess = () => {
               console.log("Payment info from API:", paymentInfo);
               console.log("Customer info from API:", customerInfo);
               
-              // Fix the vehicle image URL creation
               let apiVehicleImageUrl = "";
               if (bookingInfo.vehicleimage) {
                 if (bookingInfo.urlpathfordocuments) {
@@ -264,10 +263,8 @@ const PaymentSuccess = () => {
                 console.log("Created vehicle image URL from API data:", apiVehicleImageUrl);
               }
 
-              // Try to pull mandatory fees from bookingInfo.mandatoryfees and from extrafees where isoptionalfee is false
               const apiMandatoryFeesFromOldField = bookingInfo.mandatoryfees || [];
               const apiExtraFees = apiResponse.results.extrafees || [];
-              // Only take non-optional fees from extrafees!
               const apiMandatoryFeesFromExtraFees = apiExtraFees
                 .filter((fee: any) => !fee.isoptionalfee)
                 .map((fee: any) => ({
@@ -300,8 +297,8 @@ const PaymentSuccess = () => {
                 insuranceName: bookingInfo.insuranceoption || sessionData?.insuranceName || '',
                 insurancePrice: parseFloat(bookingInfo.insuranceamount) || sessionData?.insurancePrice || 0,
                 selectedExtras: sessionData?.selectedExtras || [],
-                pickupLocationName: bookingInfo.pickuplocationname || sessionData?.pickupLocationName || "Not specified",
-                dropoffLocationName: bookingInfo.dropofflocationname || sessionData?.dropoffLocationName || "Not specified",
+                pickupLocationName: bookingInfo.pickuplocation || bookingInfo.pickuplocationname || sessionData?.pickupLocationName || "Not specified",
+                dropoffLocationName: bookingInfo.dropofflocation || bookingInfo.dropofflocationname || sessionData?.dropoffLocationName || "Not specified",
                 totalRateAfterDiscount: parseFloat(bookingInfo.totalrateafterdiscount) || sessionData?.totalRateAfterDiscount || 0,
                 mandatoryFees: combinedMandatoryFees.length > 0 ? combinedMandatoryFees : (sessionData?.mandatoryFees || []),
                 numberofdays: parseInt(bookingInfo.numberofdays) ||
@@ -349,10 +346,8 @@ const PaymentSuccess = () => {
             return value;
           }));
           
-          // Fix the vehicle image URL
           let vehicleImage = cleanedSessionData.vehicleImage || '';
           if (vehicleImage) {
-            // Remove any duplicate URL patterns
             if (vehicleImage.includes('rentalcarmanagerau.blob.core.windows.net') && 
                 vehicleImage.indexOf('rentalcarmanagerau.blob.core.windows.net') !== 
                 vehicleImage.lastIndexOf('rentalcarmanagerau.blob.core.windows.net')) {
@@ -589,7 +584,6 @@ const PaymentSuccess = () => {
   let vehicleImageUrl = "";
   if (bookingDetails?.vehicleImage) {
     if (bookingDetails.vehicleImage.startsWith('http')) {
-      // Fix duplicated URL paths if they exist
       if (bookingDetails.vehicleImage.includes('rentalcarmanagerau.blob.core.windows.net') && 
           bookingDetails.vehicleImage.indexOf('rentalcarmanagerau.blob.core.windows.net') !== 
           bookingDetails.vehicleImage.lastIndexOf('rentalcarmanagerau.blob.core.windows.net')) {
