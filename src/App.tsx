@@ -40,6 +40,7 @@ import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 
 import AppLayout from "./components/layout/AppLayout";
+import VanDetail from "./pages/VanDetail";
 
 const App = () => {
   const [queryClient] = useState(() => new QueryClient());
