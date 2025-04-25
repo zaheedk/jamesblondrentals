@@ -40,9 +40,6 @@ const SearchForm = () => {
   const [pickupTimeOptions, setPickupTimeOptions] = useState<string[]>([]);
   const [dropoffTimeOptions, setDropoffTimeOptions] = useState<string[]>([]);
   const [minPickupDate, setMinPickupDate] = useState<Date>(new Date());
-  const [showApiDetails, setShowApiDetails] = useState(false);
-  const [apiResponse, setApiResponse] = useState<any>(null);
-  const [step1Response, setStep1Response] = useState<any>(null);
 
   const { 
     initializeApi,
@@ -308,28 +305,7 @@ const SearchForm = () => {
       <CardContent className="p-6">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold">Find Your Vehicle</h3>
-          <Button 
-            variant="outline" 
-            onClick={() => setShowApiDetails(!showApiDetails)}
-          >
-            {showApiDetails ? "Hide API Details" : "Show API Details"}
-          </Button>
         </div>
-
-        {showApiDetails && (
-          <Card className="mb-6">
-            <CardContent className="pt-6">
-              <div className="space-y-4">
-                <h3 className="font-semibold">Step1 API Response:</h3>
-                <div className="bg-gray-800 text-gray-100 p-4 rounded-md overflow-x-auto">
-                  <pre className="text-sm">
-                    {JSON.stringify(step1Response, null, 2)}
-                  </pre>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
 
         <form onSubmit={handleSearch}>
           <div className="space-y-6">
