@@ -238,6 +238,26 @@ const Vehicles = () => {
     }
   }, [categoryTypes]);
 
+  useEffect(() => {
+    if (step2Data?.status === "OK" && step2Data.results) {
+      const { availablecars } = step2Data.results;
+      
+      const vehiclesWithCategoryId1 = availablecars.filter(car => 
+        String(car.vehiclecategoryid) === "1"
+      );
+      
+      console.log("Vehicles with vehiclecategoryid = 1:", vehiclesWithCategoryId1);
+      
+      vehiclesWithCategoryId1.forEach(car => {
+        console.log(`Vehicle Category ID 1 Details:
+          - Available: ${car.available}
+          - Vehicle Category: ${car.vehiclecategory}
+          - Total Rate After Discount: ${car.totalrateafterdiscount}
+        `);
+      });
+    }
+  }, [step2Data, step2Error, driverAges]);
+
   const hasApiError = driverAgesError || step2Error;
 
   function getLocationName(locationId: string) {
