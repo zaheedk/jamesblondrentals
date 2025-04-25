@@ -1,4 +1,3 @@
-
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { CalendarIcon, MapPinIcon, PhoneIcon, PlaneIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";

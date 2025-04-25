@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -22,7 +23,6 @@ import Fleet from "./pages/Fleet";
 import FleetCars from "./pages/FleetCars";
 import FleetVans from "./pages/FleetVans";
 import FleetUtes from "./pages/FleetUtes";
-import VanDetail from "./pages/VanDetail";
 import FleetTrucks from "./pages/FleetTrucks";
 import FleetMinibuses from "./pages/FleetMinibuses";
 import FleetTrailers from "./pages/FleetTrailers";
@@ -74,13 +74,14 @@ const App = () => {
                 <Route path="trailers" element={<FleetTrailers />} />
                 <Route path="accessories" element={<FleetAccessories />} />
               </Route>
-              <Route path="/airport" element={<Airport />}>
-                <Route path="shuttle" element={<AirportShuttle />} />
-                <Route path="directions" element={<AirportDirections />} />
-                <Route path="auckland" element={<AirportAuckland />} />
-                <Route path="christchurch" element={<AirportChristchurch />} />
-                <Route path="wellington" element={<AirportWellington />} />
-              </Route>
+              
+              <Route path="/airport" element={<Airport />} />
+              <Route path="/airport/shuttle" element={<AirportShuttle />} />
+              <Route path="/airport/directions" element={<AirportDirections />} />
+              <Route path="/airport/auckland" element={<AirportAuckland />} />
+              <Route path="/airport/christchurch" element={<AirportChristchurch />} />
+              <Route path="/airport/wellington" element={<AirportWellington />} />
+              
               <Route path="/contact/auckland" element={<ContactAuckland />} />
               <Route path="/contact/wellington" element={<ContactWellington />} />
               <Route path="/contact/christchurch" element={<ContactChristchurch />} />
