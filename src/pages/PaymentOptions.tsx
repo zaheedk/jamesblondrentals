@@ -35,16 +35,14 @@ const PaymentOptions = () => {
       return;
     }
     
+    console.log("Booking Data Locations:", {
+      pickupLocation: bookingData.pickupLocationName,
+      dropoffLocation: bookingData.dropoffLocationName,
+      fullBookingData: bookingData
+    });
+    
     const pickupLocationName = bookingData.pickupLocationName || "Location not available";
     const dropoffLocationName = bookingData.dropoffLocationName || "Location not available";
-    
-    if (bookingData.pickupLocationName !== pickupLocationName || 
-        bookingData.dropoffLocationName !== dropoffLocationName) {
-      updateBookingData({
-        pickupLocationName,
-        dropoffLocationName
-      });
-    }
     
     setBookingDetails({
       ...bookingData,

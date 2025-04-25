@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { formatCurrency } from '@/lib/utils';
 
@@ -46,7 +45,7 @@ const PaymentSummary = ({
       <h3 className="text-lg font-semibold mb-4">Payment Summary</h3>
       <div className="space-y-2">
         <div className="flex justify-between">
-          <span>Rental Value ({effectiveRentalDays} day{effectiveRentalDays !== 1 ? 's' : ''})</span>
+          <span>Rental Value</span>
           <span>{formatCurrency(totalCost)}</span>
         </div>
 
@@ -94,4 +93,3 @@ const PaymentSummary = ({
 };
 
 export default PaymentSummary;
-
