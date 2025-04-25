@@ -66,8 +66,8 @@ interface ApiBookingResponse {
 
 declare global {
   interface Window {
-    gtag: (...args: any[]) => void;
     dataLayer: any[];
+    gtag?: (...args: any[]) => void;
   }
 }
 
@@ -430,39 +430,58 @@ const PaymentSuccess = () => {
   }, [navigate, location, paymentStatus]);
 
   useEffect(() => {
-    const script = document.createElement('script');
-    script.async = true;
-    script.src = `https://www.googletagmanager.com/gtag/js?id=G-MHKY18WZYH`;
-    document.head.appendChild(script);
-
-    script.onload = () => {
-      window.dataLayer = window.dataLayer || [];
-      function gtag(...args: any[]){ window.dataLayer.push(args); }
-      gtag('js', new Date());
-      gtag('config', 'G-MHKY18WZYH');
-    };
-
-    return () => {
-      document.head.removeChild(script);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (paymentStatus === 'success' && bookingDetails) {
-      window.gtag('event', 'purchase', {
-        currency: 'NZD',
-        transaction_id: transactionId,
-        value: bookingDetails.paymentAmount,
-        items: [
-          {
-            item_id: bookingDetails.reservationRef,
-            item_name: bookingDetails.vehicleName,
-            price: bookingDetails.paymentAmount,
-            quantity: 1
+    const loadGoogleAnalytics = () => {
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=G-MHKY18WZYH`;
+      
+      script.onload = () => {
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function(...args: any[]){ window.dataLayer.push(arguments); };
+        
+        window.gtag('js', new Date());
+        window.gtag('config', 'G-MHKY18WZYH');
+        
+        if (paymentStatus === 'success' && bookingDetails) {
+          try {
+            window.gtag('event', 'purchase', {
+              currency: 'NZD',
+              transaction_id: transactionId || 'unknown',
+              value: bookingDetails.paymentAmount || 0,
+              items: [
+                {
+                  item_id: bookingDetails.reservationRef || 'unknown',
+                  item_name: bookingDetails.vehicleName || 'Vehicle',
+                  price: bookingDetails.paymentAmount || 0,
+                  quantity: 1
+                }
+              ]
+            });
+            console.log('Google Analytics purchase event tracked successfully');
+          } catch (error) {
+            console.error('Error tracking purchase event:', error);
           }
-        ]
-      });
-    }
+        }
+      };
+      
+      script.onerror = () => {
+        console.error('Failed to load Google Analytics script');
+      };
+      
+      document.head.appendChild(script);
+      
+      return () => {
+        try {
+          if (document.head.contains(script)) {
+            document.head.removeChild(script);
+          }
+        } catch (error) {
+          console.error('Error cleaning up GA script:', error);
+        }
+      };
+    };
+    
+    loadGoogleAnalytics();
   }, [paymentStatus, bookingDetails, transactionId]);
 
   const calculateRentalDuration = (pickupDate: string, dropoffDate: string) => {
