@@ -42,64 +42,68 @@ const PaymentSummary = ({
 }: PaymentSummaryProps) => {
   const rentalValue = rentalDays * dailyRate;
 
-  // Calculate total of mandatory fees
-  const mandatoryFeesTotal = mandatoryFees.reduce((sum, fee) => sum + fee.amount, 0);
-
-  // Calculate total extras
-  const extrasTotal = selectedExtras.reduce((sum, extra) => sum + extra.price, 0);
-
   // Calculate actual total cost
+  const mandatoryFeesTotal = mandatoryFees.reduce((sum, fee) => sum + fee.amount, 0);
+  const extrasTotal = selectedExtras.reduce((sum, extra) => sum + extra.price, 0);
   const actualTotalCost = rentalValue + insurancePrice + extraKmsPrice + extrasTotal + mandatoryFeesTotal;
+
+  const totalOptionalFees = insurancePrice + extraKmsPrice + extrasTotal;
 
   return (
     <div className="bg-gray-50 rounded-lg p-4 mb-6">
       <h3 className="text-lg font-semibold mb-4">Payment Summary</h3>
       <div className="space-y-2">
         <div className="flex justify-between">
-          <span>Rental Value ({rentalDays} days × ${dailyRate.toFixed(2)})</span>
+          <span>Rental Value ({rentalDays} days × {formatCurrency(dailyRate)})</span>
           <span>{formatCurrency(rentalValue)}</span>
         </div>
 
-        {insurancePrice > 0 && (
-          <div className="flex justify-between">
-            <span>{insuranceName || 'Insurance'}</span>
-            <span>{formatCurrency(insurancePrice)}</span>
-          </div>
-        )}
+        {(insurancePrice > 0 || extraKmsPrice > 0 || selectedExtras.length > 0) && (
+          <div className="border-t border-gray-300 my-2 pt-2">
+            <div className="font-medium mb-2">Optional Extras & Fees</div>
+            {insurancePrice > 0 && (
+              <div className="flex justify-between text-sm">
+                <span>{insuranceName || 'Insurance'}</span>
+                <span>{formatCurrency(insurancePrice)}</span>
+              </div>
+            )}
 
-        {extraKmsPrice > 0 && (
-          <div className="flex justify-between">
-            <span>{extraKmsName || 'Mileage Charge'}</span>
-            <span>{formatCurrency(extraKmsPrice)}</span>
-          </div>
-        )}
+            {extraKmsPrice > 0 && (
+              <div className="flex justify-between text-sm">
+                <span>{extraKmsName || 'Mileage Charge'}</span>
+                <span>{formatCurrency(extraKmsPrice)}</span>
+              </div>
+            )}
 
-        {selectedExtras.length > 0 && (
-          <>
-            <div className="border-t border-gray-300 my-2 pt-2">
-              <div className="font-medium mb-2">Extra Items</div>
-              {selectedExtras.map((extra, index) => (
-                <div key={index} className="flex justify-between text-sm">
-                  <span>{extra.name} {extra.quantity > 1 ? `(x${extra.quantity})` : ''}</span>
-                  <span>{formatCurrency(extra.price)}</span>
-                </div>
-              ))}
-            </div>
-          </>
+            {selectedExtras.length > 0 && selectedExtras.map((extra, index) => (
+              <div key={index} className="flex justify-between text-sm">
+                <span>{extra.name} {extra.quantity > 1 ? `(x${extra.quantity})` : ''}</span>
+                <span>{formatCurrency(extra.price)}</span>
+              </div>
+            ))}
+            {totalOptionalFees > 0 && (
+              <div className="flex justify-between font-medium text-sm mt-1 pt-1 border-t border-dashed border-gray-200">
+                <span>Total Optional Fees</span>
+                <span>{formatCurrency(totalOptionalFees)}</span>
+              </div>
+            )}
+          </div>
         )}
 
         {mandatoryFees.length > 0 && (
-          <>
-            <div className="border-t border-gray-300 my-2 pt-2">
-              <div className="font-medium mb-2">Mandatory Fees</div>
-              {mandatoryFees.map((fee, index) => (
-                <div key={index} className="flex justify-between text-sm">
-                  <span>{fee.name}</span>
-                  <span>{formatCurrency(fee.amount)}</span>
-                </div>
-              ))}
+          <div className="border-t border-gray-300 my-2 pt-2">
+            <div className="font-medium mb-2">Mandatory Fees</div>
+            {mandatoryFees.map((fee, index) => (
+              <div key={index} className="flex justify-between text-sm">
+                <span>{fee.name}</span>
+                <span>{formatCurrency(fee.amount)}</span>
+              </div>
+            ))}
+            <div className="flex justify-between font-medium text-sm mt-1 pt-1 border-t border-dashed border-gray-200">
+              <span>Total Mandatory Fees</span>
+              <span>{formatCurrency(mandatoryFeesTotal)}</span>
             </div>
-          </>
+          </div>
         )}
 
         <div className="border-t border-gray-300 my-2 pt-2">
