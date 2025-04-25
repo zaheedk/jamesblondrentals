@@ -1,4 +1,3 @@
-
 import { format, parse, isAfter, isBefore, addMinutes } from "date-fns";
 import { 
   RCMLocation, 
@@ -72,10 +71,8 @@ export const getLocationTimeOptions = (
     startTime = hoursForLocation.startpickup || "00:00";
     endTime = hoursForLocation.endpickup || "23:55";
   } else {
-    // For dropoff, let's use the opening and closing times if specific dropoff times aren't defined
-    // or use specific dropoff time if available
     startTime = hoursForLocation.startdropoff || hoursForLocation.openingtime || "00:00";
-    endTime = hoursForLocation.closingtime || "23:55";
+    endTime = hoursForLocation.endpickup || hoursForLocation.closingtime || "23:55";
   }
 
   console.log(`Office hours for ${type} at location ${locationId} on day ${dayOfWeek}: ${startTime} - ${endTime}`);
@@ -110,7 +107,6 @@ const generateTimeOptions = (startTime: string, endTime: string, date: Date): st
       currentTime = addMinutes(currentTime, 30);
     }
     
-    // Add the end time if it's not already included and it's valid
     const endTimeString = format(endDate, "HH:mm");
     if (!options.includes(endTimeString)) {
       if (!isToday || isAfter(endDate, currentDate)) {
