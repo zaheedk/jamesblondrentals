@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -35,7 +34,7 @@ const SearchForm = () => {
   const [age, setAge] = useState("");
   const [carCategory, setCarCategory] = useState("0");
   const [promoCode, setPromoCode] = useState("");
-  
+
   const [minDropoffDate, setMinDropoffDate] = useState<Date>(addDays(new Date(), 1));
   const [isLoading, setIsLoading] = useState(false);
   const [pickupTimeOptions, setPickupTimeOptions] = useState<string[]>([]);
@@ -101,18 +100,20 @@ const SearchForm = () => {
 
   useEffect(() => {
     console.log('Setting default dates');
-    const today = new Date();
     
     if (!pickupDate) {
-      setPickupDate(today);
+      const defaultPickup = getDefaultPickupDate();
+      setPickupDate(defaultPickup);
       
-      const defaultDropoff = addDays(today, 3);
+      const defaultDropoff = getDefaultDropoffDate(defaultPickup);
       setDropoffDate(defaultDropoff);
-      console.log('Default dates set', { today, defaultDropoff });
+      console.log('Default dates set', { defaultPickup, defaultDropoff });
     }
     
     if (!pickupTime && pickupTimeOptions.length > 0) {
-      setPickupTime(pickupTimeOptions[0]);
+      const defaultTime = format(getDefaultPickupDate(), 'HH:mm');
+      const availableTime = pickupTimeOptions.find(t => t >= defaultTime) || pickupTimeOptions[0];
+      setPickupTime(availableTime);
     }
   }, [pickupTimeOptions]);
 
