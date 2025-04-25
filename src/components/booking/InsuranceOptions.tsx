@@ -30,6 +30,13 @@ const InsuranceOptions = ({
     );
   }
 
+  // Sort insurance options by total insurance amount
+  const sortedInsuranceOptions = [...insuranceOptions].sort((a, b) => {
+    const amountA = parseFloat(a.totalinsuranceamount.toString()) || 0;
+    const amountB = parseFloat(b.totalinsuranceamount.toString()) || 0;
+    return amountA - amountB;
+  });
+
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-semibold">Insurance Options</h3>
@@ -39,7 +46,7 @@ const InsuranceOptions = ({
           onValueChange={(value) => onSelectInsurance(value)}
           className="space-y-2"
         >
-          {insuranceOptions.map((insurance) => (
+          {sortedInsuranceOptions.map((insurance) => (
             <div
               key={insurance.id}
               className="flex items-center justify-between border-b border-gray-100 py-2 last:border-0"
