@@ -129,6 +129,7 @@ export interface RCMAvailableCar {
   numberoflargecases: number;
   numberofsmallcases: number;
   available: number;
+  availablemessage?: string; // Added missing property
 }
 
 export interface RCMStep2Results {
