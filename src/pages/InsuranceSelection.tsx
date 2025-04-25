@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -159,7 +160,7 @@ const InsuranceSelection = () => {
           <div className="flex justify-between pt-4">
             <Button 
               variant="outline" 
-              onClick={() => navigate('/vehicles')}
+              onClick={() => navigate(-1)}
             >
               Back
             </Button>
