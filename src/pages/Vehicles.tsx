@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
@@ -272,7 +271,7 @@ const Vehicles = () => {
           
           <div className="mt-4 bg-white p-4 rounded-lg shadow">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold">Search Parameters</h2>
+              <h2 className="text-lg font-semibold">API Details</h2>
               <Button 
                 variant="outline" 
                 onClick={() => setShowApiDetails(!showApiDetails)}
@@ -285,12 +284,25 @@ const Vehicles = () => {
               <Card className="mb-6">
                 <CardContent className="pt-6">
                   <div className="space-y-4">
-                    <h3 className="font-semibold">Request Parameters:</h3>
-                    <div className="bg-gray-800 text-gray-100 p-4 rounded-md overflow-x-auto">
-                      <pre className="text-sm">
-                        {JSON.stringify(apiRequestDetails, null, 2)}
-                      </pre>
+                    <div>
+                      <h3 className="font-semibold">Request Parameters:</h3>
+                      <div className="bg-gray-800 text-gray-100 p-4 rounded-md overflow-x-auto">
+                        <pre className="text-sm">
+                          {JSON.stringify(apiRequestDetails, null, 2)}
+                        </pre>
+                      </div>
                     </div>
+                    
+                    {apiResponse && (
+                      <div>
+                        <h3 className="font-semibold mt-4">API Response:</h3>
+                        <div className="bg-gray-800 text-gray-100 p-4 rounded-md overflow-x-auto">
+                          <pre className="text-sm">
+                            {JSON.stringify(apiResponse, null, 2)}
+                          </pre>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
