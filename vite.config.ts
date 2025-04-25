@@ -22,7 +22,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => ({
           'Accept': 'application/json'
         },
         configure: (proxy, _options) => {
-          proxy.on('error', (err: Error, req, res: ServerResponse) => {
+          proxy.on('error', (err: Error, req: IncomingMessage & { body?: any }, res: ServerResponse) => {
             console.error('Proxy error:', err);
             
             // Send a more informative error response instead of default error page
@@ -41,7 +41,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => ({
             }
           });
           
-          proxy.on('proxyReq', (proxyReq, req: IncomingMessage, _res) => {
+          proxy.on('proxyReq', (proxyReq, req: IncomingMessage & { body?: any }, _res) => {
             const url = new URL(proxyReq.path || '/', 'https://apis.rentalcarmanager.com');
             console.log(`Proxying ${req.method} request to: ${url.toString()}`);
             

@@ -1,4 +1,3 @@
-
 import { generateSignature } from './rcm-signature';
 import type { 
   RCMApiConfig,
@@ -50,15 +49,15 @@ class RCMApiClient {
     if (config.apiKey) this.config.apiKey = config.apiKey;
     if (config.apiSecret) this.config.apiSecret = config.apiSecret;
     if (config.apiUrl) this.config.apiUrl = config.apiUrl.replace(/\/$/, '');
-    if (config.useMockData !== undefined) this.useMockData = config.useMockData;
+    
+    this.useMockData = false;
+    this.apiConnectionFailed = false;
     
     this.initialized = true;
-    this.apiConnectionFailed = false; // Reset connection status on initialization
     
     console.log('RCM API initialized with config:', {
       apiUrl: this.config.apiUrl,
-      apiKey: this.config.apiKey ? '******' : undefined,
-      useMockData: this.useMockData
+      apiKey: this.config.apiKey ? '******' : undefined
     });
   }
 
@@ -70,7 +69,7 @@ class RCMApiClient {
   }
 
   shouldUseMockData(): boolean {
-    return this.useMockData || this.apiConnectionFailed;
+    return false;
   }
 
   private createHeaders(method: string, body?: any): Headers {
