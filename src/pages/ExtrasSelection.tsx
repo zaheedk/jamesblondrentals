@@ -198,14 +198,14 @@ const ExtrasSelectionPage = () => {
           />
           
           <div className="flex justify-between pt-4">
+            <Button onClick={handleProceedToDetails}>
+              Continue to Customer Details
+            </Button>
             <Button 
               variant="outline" 
               onClick={() => navigate('/insurance-selection')}
             >
               Back to Insurance
-            </Button>
-            <Button onClick={handleProceedToDetails}>
-              Continue to Customer Details
             </Button>
           </div>
         </div>
@@ -215,3 +215,4 @@ const ExtrasSelectionPage = () => {
 };
 
 export default ExtrasSelectionPage;
+
