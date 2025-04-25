@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -197,7 +196,7 @@ const ExtrasSelectionPage = () => {
             optionalFees={optionalFees}
           />
           
-          <div className="flex justify-between pt-4">
+          <div className="flex flex-col gap-4 pt-4">
             <Button onClick={handleProceedToDetails}>
               Continue to Customer Details
             </Button>
@@ -215,4 +214,3 @@ const ExtrasSelectionPage = () => {
 };
 
 export default ExtrasSelectionPage;
-
