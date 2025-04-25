@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -47,6 +48,7 @@ const FeaturedVehicles = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showApiDetails, setShowApiDetails] = useState(false);
   const [apiResponse, setApiResponse] = useState<any>(null);
+  const [searchParams, setSearchParams] = useState(""); // Added missing state variable
   const { rcmApi, useLocations } = useRcmApi();
   const { data: locations = [] } = useLocations();
   
