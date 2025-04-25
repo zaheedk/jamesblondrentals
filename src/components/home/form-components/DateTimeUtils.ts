@@ -1,3 +1,4 @@
+
 import { format, parse, isAfter, isBefore, addMinutes } from "date-fns";
 import { 
   RCMLocation, 
@@ -71,8 +72,9 @@ export const getLocationTimeOptions = (
     startTime = hoursForLocation.startpickup || "00:00";
     endTime = hoursForLocation.endpickup || "23:55";
   } else {
+    // For dropoff, use specific dropoff times if available
     startTime = hoursForLocation.startdropoff || hoursForLocation.openingtime || "00:00";
-    endTime = hoursForLocation.endpickup || hoursForLocation.closingtime || "23:55";
+    endTime = hoursForLocation.enddropoff || hoursForLocation.endpickup || hoursForLocation.closingtime || "23:55";
   }
 
   console.log(`Office hours for ${type} at location ${locationId} on day ${dayOfWeek}: ${startTime} - ${endTime}`);
