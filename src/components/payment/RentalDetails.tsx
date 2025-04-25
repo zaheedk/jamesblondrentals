@@ -23,7 +23,7 @@ const RentalDetails = ({
   dropoffTime,
   rentalDuration
 }: RentalDetailsProps) => {
-  // Ensure rental duration is always at least 1 day
+  // Use the provided rentalDuration directly from props
   const effectiveRentalDuration = Math.max(1, rentalDuration || 1);
   
   return (

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -51,35 +50,38 @@ const PaymentOptions = () => {
       dropoffLocationName
     });
     
+    // Calculate rental days properly
+    let calculatedDays = 1;
+    
     // First priority: Use numberofdays from API response
     if (bookingData.numberofdays && typeof bookingData.numberofdays === 'number' && bookingData.numberofdays > 0) {
       console.log("Using numberofdays from API response:", bookingData.numberofdays);
-      setRentalDays(bookingData.numberofdays);
-      updateBookingData({ rentalDays: bookingData.numberofdays });
+      calculatedDays = bookingData.numberofdays;
     } 
-    // Second priority: Use previously calculated rentalDays
-    else if (bookingData.rentalDays && typeof bookingData.rentalDays === 'number' && bookingData.rentalDays > 0) {
-      console.log("Using existing rentalDays:", bookingData.rentalDays);
-      setRentalDays(bookingData.rentalDays);
-    } 
-    // Third priority: Calculate from dates
+    // Second priority: Calculate from dates
     else if (bookingData.pickupDate && bookingData.dropoffDate) {
       try {
         const pickupDate = new Date(bookingData.pickupDate);
         const dropoffDate = new Date(bookingData.dropoffDate);
         if (pickupDate && dropoffDate && !isNaN(pickupDate.getTime()) && !isNaN(dropoffDate.getTime())) {
-          const days = Math.ceil((dropoffDate.getTime() - pickupDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-          const calculatedDays = days > 0 ? days : 1;
+          // Calculate the difference in days
+          const timeDiff = dropoffDate.getTime() - pickupDate.getTime();
+          const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+          // If it's a same-day rental, count it as 1 day
+          calculatedDays = Math.max(1, daysDiff);
           console.log("Calculated rental days from dates:", calculatedDays);
-          setRentalDays(calculatedDays);
-          updateBookingData({ rentalDays: calculatedDays });
         }
       } catch (error) {
         console.error("Error calculating rental days:", error);
-        setRentalDays(1);
+        calculatedDays = 1;
       }
     }
     
+    // Update state and booking data
+    setRentalDays(calculatedDays);
+    updateBookingData({ rentalDays: calculatedDays });
+    
+    // Use the calculated days for the total amount
     const basePrice = bookingData.totalRateAfterDiscount || bookingData.basePrice || 0;
     console.log("Using price for calculation:", basePrice, 
       bookingData.totalRateAfterDiscount ? "(from totalRateAfterDiscount)" : "(from basePrice)");
@@ -96,14 +98,13 @@ const PaymentOptions = () => {
     );
     setMandatoryFeesTotal(mandatoryTotal);
     
-    // Important: Use the correct rentalDays value for calculating total
-    const daysForCalculation = bookingData.numberofdays || bookingData.rentalDays || 1;
-    const calculatedTotal = basePrice * daysForCalculation + insurancePrice + extrasTotal;
+    // Important: Use the correct calculatedDays value for calculating total
+    const calculatedTotal = basePrice + insurancePrice + extrasTotal;
     setTotalAmount(calculatedTotal);
     
     console.log("Payment calculation details:", {
       basePrice,
-      rentalDays: daysForCalculation,
+      rentalDays: calculatedDays,
       insurancePrice,
       extrasTotal,
       mandatoryTotal,

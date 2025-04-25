@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { formatCurrency } from '@/lib/utils';
 
@@ -42,18 +41,14 @@ const PaymentSummary = ({
   const effectiveRentalDays = Math.max(1, rentalDays || 1);
   
   // Calculate the total rental value based on days * daily rate
-  const rentalValue = effectiveRentalDays * dailyRate;
+  const rentalValue = dailyRate * effectiveRentalDays;
   
   // Calculate total of optional extras (insurance + extra kms + selected extras)
   const extrasTotal = selectedExtras.reduce((sum, extra) => sum + extra.price, 0);
-  const totalOptionalFees = insurancePrice + extraKmsPrice + extrasTotal;
+  const totalOptionalFees = insurancePrice + (extraKmsPrice || 0) + extrasTotal;
   
   // Calculate total mandatory fees
   const mandatoryFeesTotal = mandatoryFees.reduce((sum, fee) => sum + fee.amount, 0);
-  
-  // Calculate total cost including all fees
-  const totalExcludingMandatory = rentalValue + totalOptionalFees;
-  const calculatedTotalWithAllFees = totalExcludingMandatory + mandatoryFeesTotal;
   
   // For debugging
   console.log("Payment Summary Calculations:", {
@@ -65,8 +60,6 @@ const PaymentSummary = ({
     extrasTotal,
     totalOptionalFees,
     mandatoryFeesTotal,
-    totalExcludingMandatory,
-    calculatedTotalWithAllFees,
     providedTotalCost: totalCost
   });
 
@@ -130,7 +123,7 @@ const PaymentSummary = ({
         <div className="border-t border-gray-300 my-2 pt-2">
           <div className="flex justify-between font-semibold">
             <span>Total Cost</span>
-            <span>{formatCurrency(calculatedTotalWithAllFees)}</span>
+            <span>{formatCurrency(totalCost)}</span>
           </div>
         </div>
       </div>
