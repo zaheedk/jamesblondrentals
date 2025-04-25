@@ -106,11 +106,6 @@ const FleetVans = () => (
               ))}
             </ul>
           </CardContent>
-          <CardFooter>
-            <Button asChild className="w-full">
-              <Link to={`/fleet/vans/${van.id}`}>Know More</Link>
-            </Button>
-          </CardFooter>
         </Card>
       ))}
     </div>

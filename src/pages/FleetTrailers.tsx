@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -130,11 +129,6 @@ const FleetTrailers = () => (
               <p className="text-gray-600 italic">{trailer.note}</p>
             }
           </CardContent>
-          <CardFooter>
-            <Button asChild className="w-full">
-              <Link to={`/fleet/trailers/${trailer.id}`}>Know More</Link>
-            </Button>
-          </CardFooter>
         </Card>
       ))}
     </div>

@@ -146,9 +146,6 @@ const FleetCars = () => (
               ))}
             </ul>
           </CardContent>
-          <CardFooter>
-            <Button className="w-full">Know More</Button>
-          </CardFooter>
         </Card>
       ))}
     </div>

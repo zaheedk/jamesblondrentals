@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 
@@ -61,11 +60,6 @@ const FleetAccessories = () => {
             <p className="text-gray-600 mb-6 text-center">
               {item.description}
             </p>
-            <div className="text-center">
-              <Button variant="outline" className="hover:bg-primary hover:text-white transition-colors">
-                Know More
-              </Button>
-            </div>
           </div>
         ))}
       </div>

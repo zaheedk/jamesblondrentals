@@ -1,7 +1,6 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 const utes = [
@@ -87,11 +86,6 @@ const FleetUtes = () => (
               ))}
             </ul>
           </CardContent>
-          <CardFooter>
-            <Button asChild className="w-full">
-              <Link to={`/fleet/utes/${ute.id}`}>Know More</Link>
-            </Button>
-          </CardFooter>
         </Card>
       ))}
     </div>
