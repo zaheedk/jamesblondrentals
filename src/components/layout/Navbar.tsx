@@ -88,9 +88,37 @@ const Navbar = () => {
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
-            <Link to="/airport" className="text-gray-600 hover:text-primary transition-colors">
-              Airport
-            </Link>
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="text-gray-600 hover:text-primary transition-colors bg-transparent">
+                    Airport
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <div className="w-48 p-2">
+                      <Link 
+                        to="/airport/auckland" 
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
+                      >
+                        Auckland
+                      </Link>
+                      <Link 
+                        to="/airport/wellington" 
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
+                      >
+                        Wellington
+                      </Link>
+                      <Link 
+                        to="/airport/christchurch" 
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
+                      >
+                        Christchurch
+                      </Link>
+                    </div>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
             <Link to="/faq" className="text-gray-600 hover:text-primary transition-colors">
               FAQ
             </Link>
@@ -154,6 +182,9 @@ const Navbar = () => {
                 <Link to="/fleet/trucks" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
                   Trucks
                 </Link>
+                <Link to="/fleet/utes" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
+                  UTEs
+                </Link>
                 <Link to="/fleet/minibuses" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
                   Minibuses
                 </Link>
@@ -164,9 +195,18 @@ const Navbar = () => {
                   Accessories
                 </Link>
               </div>
-              <Link to="/airport" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>
-                Airport
-              </Link>
+              <div className="py-2 pl-4 space-y-2">
+                <p className="font-medium text-gray-600">Airport:</p>
+                <Link to="/airport/auckland" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
+                  Auckland
+                </Link>
+                <Link to="/airport/wellington" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
+                  Wellington
+                </Link>
+                <Link to="/airport/christchurch" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
+                  Christchurch
+                </Link>
+              </div>
               <Link to="/faq" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>
                 FAQ
               </Link>
