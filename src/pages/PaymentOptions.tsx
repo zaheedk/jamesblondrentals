@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -49,8 +50,19 @@ const PaymentOptions = () => {
     );
     setMandatoryFeesTotal(mandatoryTotal);
     
+    // Calculate total WITHOUT mandatory fees
     const calculatedTotal = basePrice + insurancePrice + extrasTotal;
     setTotalAmount(calculatedTotal);
+    
+    // Debug the price calculations
+    console.log("Payment calculation details:", {
+      basePrice,
+      insurancePrice,
+      extrasTotal,
+      mandatoryTotal,
+      calculatedTotal,
+      fullData: bookingData
+    });
   }, [navigate]);
 
   const handleImageError = () => {
@@ -74,7 +86,10 @@ const PaymentOptions = () => {
     setIsLoading(true);
     
     try {
-      const amountToPay = paymentType === "deposit" ? DEPOSIT_AMOUNT : (totalAmount + mandatoryFeesTotal);
+      // Only add mandatory fees for full payment, not for deposit
+      const amountToPay = paymentType === "deposit" 
+        ? DEPOSIT_AMOUNT 
+        : totalAmount;  // No longer adding mandatory fees here
       
       updateBookingData({
         paymentAmount: amountToPay,
@@ -117,6 +132,50 @@ const PaymentOptions = () => {
             </div>
           )}
           
+          <div className="mb-6">
+            <h3 className="text-lg font-medium mb-2">Payment Summary</h3>
+            <div className="flex justify-between mb-1">
+              <span>Vehicle rental:</span>
+              <span>{formatCurrency(totalAmount)}</span>
+            </div>
+            {mandatoryFeesTotal > 0 && (
+              <div className="text-sm text-gray-600">
+                <div className="flex justify-between">
+                  <span>Security deposit (paid at pickup):</span>
+                  <span>{formatCurrency(mandatoryFeesTotal)}</span>
+                </div>
+              </div>
+            )}
+          </div>
+          
+          <div className="mb-6">
+            <RadioGroup 
+              value={paymentType} 
+              onValueChange={(value) => setPaymentType(value as "deposit" | "full")}
+              className="space-y-3"
+            >
+              <div className="flex items-center space-x-2 border p-3 rounded-md">
+                <RadioGroupItem value="full" id="payment-full" />
+                <Label htmlFor="payment-full" className="flex-grow cursor-pointer">
+                  <div className="font-medium">Pay in Full</div>
+                  <div className="text-sm text-gray-600">Pay {formatCurrency(totalAmount)} now</div>
+                </Label>
+                <div className="font-bold">{formatCurrency(totalAmount)}</div>
+              </div>
+              
+              <div className="flex items-center space-x-2 border p-3 rounded-md">
+                <RadioGroupItem value="deposit" id="payment-deposit" />
+                <Label htmlFor="payment-deposit" className="flex-grow cursor-pointer">
+                  <div className="font-medium">Pay Deposit</div>
+                  <div className="text-sm text-gray-600">
+                    Pay {formatCurrency(DEPOSIT_AMOUNT)} now, {formatCurrency(totalAmount - DEPOSIT_AMOUNT)} at pickup
+                  </div>
+                </Label>
+                <div className="font-bold">{formatCurrency(DEPOSIT_AMOUNT)}</div>
+              </div>
+            </RadioGroup>
+          </div>
+          
           <form onSubmit={handleSubmit}>
             <div className="flex justify-between">
               <Button 
@@ -136,7 +195,7 @@ const PaymentOptions = () => {
                     <span className="animate-spin mr-2">◌</span> Processing...
                   </>
                 ) : (
-                  `Proceed to Pay ${paymentType === "deposit" ? formatCurrency(DEPOSIT_AMOUNT) : formatCurrency(totalAmount + mandatoryFeesTotal)}`
+                  `Proceed to Pay ${paymentType === "deposit" ? formatCurrency(DEPOSIT_AMOUNT) : formatCurrency(totalAmount)}`
                 )}
               </Button>
             </div>

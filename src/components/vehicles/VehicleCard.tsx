@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -60,22 +59,20 @@ const VehicleCard = ({
     setImageError(true);
   };
 
-  // Ensure we're using the correct price for display
   const displayPrice = totalRateAfterDiscount !== undefined
     ? totalRateAfterDiscount
     : typeof vehicle.price === 'string' 
       ? parseFloat(vehicle.price) 
       : vehicle.price;
   
-  // Log the price information for debugging
-  console.log(`Vehicle ${vehicle.make} ${vehicle.model} price:`, {
+  console.log(`Vehicle ${vehicle.make} ${vehicle.model} price details:`, {
     displayPrice,
     totalRateAfterDiscount,
     vehiclePrice: vehicle.price,
-    type: typeof vehicle.price
+    type: typeof vehicle.price,
+    rawVehicle: vehicle
   });
   
-  // Updated isAvailable logic to handle available: 2 case and add console logging
   const isAvailable = (() => {
     console.log(`Vehicle ${vehicle.make} ${vehicle.model} availability:`, vehicle.available, typeof vehicle.available);
     
@@ -87,8 +84,6 @@ const VehicleCard = ({
     }
     return false;
   })();
-  
-  console.log(`Vehicle ${vehicle.make} ${vehicle.model} isAvailable:`, isAvailable);
 
   return (
     <Card className="overflow-hidden shadow-md h-full flex flex-col">

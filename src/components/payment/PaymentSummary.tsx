@@ -42,12 +42,29 @@ const PaymentSummary = ({
 }: PaymentSummaryProps) => {
   const rentalValue = rentalDays * dailyRate;
 
-  // Calculate actual total cost
+  // Calculate total of mandatory fees (like security bond)
   const mandatoryFeesTotal = mandatoryFees.reduce((sum, fee) => sum + fee.amount, 0);
+  
+  // Calculate total of optional extras
   const extrasTotal = selectedExtras.reduce((sum, extra) => sum + extra.price, 0);
-  const actualTotalCost = rentalValue + insurancePrice + extraKmsPrice + extrasTotal + mandatoryFeesTotal;
-
+  
+  // Calculate total optional fees (insurance + extra kms + selected extras)
   const totalOptionalFees = insurancePrice + extraKmsPrice + extrasTotal;
+  
+  // Calculate total cost excluding mandatory fees (like security bond)
+  const totalExcludingMandatory = rentalValue + totalOptionalFees;
+  
+  // For debugging
+  console.log("Payment Summary Calculations:", {
+    rentalValue,
+    insurancePrice,
+    extraKmsPrice,
+    extrasTotal,
+    mandatoryFeesTotal,
+    totalOptionalFees,
+    totalExcludingMandatory,
+    providedTotalCost: totalCost
+  });
 
   return (
     <div className="bg-gray-50 rounded-lg p-4 mb-6">
@@ -108,8 +125,8 @@ const PaymentSummary = ({
 
         <div className="border-t border-gray-300 my-2 pt-2">
           <div className="flex justify-between font-semibold">
-            <span>Total Cost</span>
-            <span>{formatCurrency(actualTotalCost)}</span>
+            <span>Total Cost (excl. Mandatory Fees)</span>
+            <span>{formatCurrency(totalExcludingMandatory)}</span>
           </div>
         </div>
 
