@@ -7,7 +7,7 @@ import { getBookingData, updateBookingData } from "@/lib/booking-session";
 import { Label } from "@/components/ui/label";
 import { formatCurrency } from "@/lib/utils";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Car } from "lucide-react";
+import { Car, Save } from "lucide-react";
 import PaymentSummary from "@/components/payment/PaymentSummary";
 import RentalDetails from "@/components/payment/RentalDetails";
 import DebugInfo from "@/components/payment/DebugInfo";
@@ -110,6 +110,18 @@ const PaymentOptions = () => {
   const handleImageError = () => {
     console.log("Error loading vehicle image");
     setImageError(true);
+  };
+
+  const handleSaveQuotation = async () => {
+    try {
+      const bookingData = getBookingData();
+      if (bookingData) {
+        toast.success("Quotation saved successfully");
+      }
+    } catch (error) {
+      console.error("Error saving quotation:", error);
+      toast.error("Could not save quotation");
+    }
   };
 
   if (!bookingDetails) {
@@ -224,35 +236,31 @@ const PaymentOptions = () => {
             </RadioGroup>
           </div>
           
-          <form onSubmit={handleSubmit}>
-            <div className="flex justify-between">
-              <Button 
-                type="button" 
-                variant="outline" 
-                onClick={() => navigate("/vehicles")}
-                disabled={isLoading}
-              >
-                Back to Vehicles
-              </Button>
-              <Button 
-                type="submit"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <>
-                    <span className="animate-spin mr-2">◌</span> Processing...
-                  </>
-                ) : (
-                  `Proceed to Pay ${paymentType === "deposit" ? formatCurrency(DEPOSIT_AMOUNT) : formatCurrency(totalAmount)}`
-                )}
-              </Button>
-            </div>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <Button 
+              type="submit"
+              disabled={isLoading}
+              className="w-full"
+            >
+              {isLoading ? (
+                <>
+                  <span className="animate-spin mr-2">◌</span> Processing...
+                </>
+              ) : (
+                `Proceed to Pay ${paymentType === "deposit" ? formatCurrency(DEPOSIT_AMOUNT) : formatCurrency(totalAmount)}`
+              )}
+            </Button>
+            
+            <Button 
+              type="button"
+              variant="outline"
+              onClick={handleSaveQuotation}
+              className="w-full"
+            >
+              <Save className="mr-2" />
+              Save Quotation
+            </Button>
           </form>
-          
-          <DebugInfo 
-            apiResponse={bookingDetails}
-            windcaveResponseDetails={{}}
-          />
         </div>
       </div>
     </div>

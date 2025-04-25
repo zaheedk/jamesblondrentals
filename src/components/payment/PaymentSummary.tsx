@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { formatCurrency } from '@/lib/utils';
 
@@ -50,6 +49,13 @@ const PaymentSummary = ({
           <span>Rental Value</span>
           <span>{formatCurrency(totalCost)}</span>
         </div>
+        
+        <div className="border-t border-gray-300 my-2 pt-2">
+          <div className="flex justify-between font-semibold">
+            <span>Total Cost</span>
+            <span>{formatCurrency(totalCost)}</span>
+          </div>
+        </div>
 
         {(mandatoryFees.length > 0) && (
           <div className="border-t border-gray-300 my-2 pt-2">
@@ -94,13 +100,6 @@ const PaymentSummary = ({
             )}
           </div>
         )}
-
-        <div className="border-t border-gray-300 my-2 pt-2">
-          <div className="flex justify-between font-semibold">
-            <span>Total Cost</span>
-            <span>{formatCurrency(totalCost)}</span>
-          </div>
-        </div>
       </div>
     </div>
   );
