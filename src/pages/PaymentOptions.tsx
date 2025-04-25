@@ -137,8 +137,8 @@ const PaymentOptions = () => {
         const newPickupDate = addDays(today, 2);
         pickupDate = format(newPickupDate, "dd/MMM/yyyy");
         
-        const rentalDays = rentalDays || 3;
-        const newDropoffDate = addDays(newPickupDate, rentalDays);
+        // Fixed: Now using the already defined rentalDays variable
+        const newDropoffDate = addDays(newPickupDate, rentalDays || 3);
         dropoffDate = format(newDropoffDate, "dd/MMM/yyyy");
         
         console.log(`Updated dates: Pickup ${pickupDate}, Dropoff ${dropoffDate}`);
