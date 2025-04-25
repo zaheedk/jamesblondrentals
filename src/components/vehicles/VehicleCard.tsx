@@ -59,18 +59,13 @@ const VehicleCard = ({
     setImageError(true);
   };
 
-  const displayPrice = totalRateAfterDiscount !== undefined
-    ? totalRateAfterDiscount
-    : typeof vehicle.price === 'string' 
-      ? parseFloat(vehicle.price) 
-      : vehicle.price;
+  const displayPrice = vehicle.dailyRate || 
+    (typeof vehicle.price === 'string' ? parseFloat(vehicle.price) : vehicle.price);
   
-  console.log(`Vehicle ${vehicle.make} ${vehicle.model} price details:`, {
-    displayPrice,
-    totalRateAfterDiscount,
+  console.log(`Vehicle ${vehicle.make} ${vehicle.model} price calculation:`, {
+    dailyRate: vehicle.dailyRate,
     vehiclePrice: vehicle.price,
-    type: typeof vehicle.price,
-    rawVehicle: vehicle
+    finalDisplayPrice: displayPrice
   });
   
   const isAvailable = (() => {
@@ -109,13 +104,7 @@ const VehicleCard = ({
             <div className="font-bold text-lg">
               ${typeof displayPrice === 'number' ? displayPrice.toFixed(2) : '0.00'}
             </div>
-            <div className="text-xs text-gray-500">
-              {vehicle.priceUnit === 'day' 
-                ? 'per day' 
-                : vehicle.priceUnit === 'total' 
-                  ? 'total' 
-                  : ''}
-            </div>
+            <div className="text-xs text-gray-500">per day</div>
           </div>
         </div>
       </CardHeader>
