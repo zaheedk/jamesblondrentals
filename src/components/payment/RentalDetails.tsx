@@ -23,9 +23,6 @@ const RentalDetails = ({
   dropoffTime,
   rentalDuration
 }: RentalDetailsProps) => {
-  // Use the provided rentalDuration directly from props
-  const effectiveRentalDuration = Math.max(1, rentalDuration || 1);
-  
   return (
     <div className="bg-gray-50 rounded-lg p-4 mb-6">
       <h3 className="text-lg font-semibold mb-4">Rental Details</h3>
@@ -61,11 +58,6 @@ const RentalDetails = ({
               </div>
             </div>
           </div>
-        </div>
-        
-        <div className="flex items-center mt-2">
-          <Calendar className="h-4 w-4 mr-1" />
-          <p className="font-medium">Rental Duration: <span className="text-gray-700">{effectiveRentalDuration} day{effectiveRentalDuration !== 1 ? 's' : ''}</span></p>
         </div>
       </div>
     </div>
