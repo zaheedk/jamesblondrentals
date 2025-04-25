@@ -10,10 +10,11 @@ import { useRcmApi } from '@/hooks/use-rcm-api';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 
 export function ApiStatusIndicator() {
   const { connectionStatus, runDiagnostics, checkInternetConnection } = useApiDiagnostics();
-  const { rcmApi } = useRcmApi();
+  const { rcmApi, initializeApi } = useRcmApi();
   const [isRunning, setIsRunning] = useState(false);
   const [lastRun, setLastRun] = useState<Date | null>(null);
   const [isMockMode, setIsMockMode] = useState(false);
@@ -101,6 +102,14 @@ export function ApiStatusIndicator() {
       }
       
       setLastRun(new Date());
+      
+      // Check if API is in mock mode
+      // @ts-ignore - accessing private property for diagnostic purposes
+      if (rcmApi && typeof rcmApi.shouldUseMockData === 'function') {
+        // @ts-ignore - accessing private property for diagnostic purposes
+        setIsMockMode(rcmApi.shouldUseMockData());
+      }
+      
     } catch (error) {
       console.error('Error running diagnostics:', error);
       toast.error('Diagnostics failed', {
@@ -117,10 +126,11 @@ export function ApiStatusIndicator() {
         ? 'https://apis.rentalcarmanager.com/booking/v3.2'
         : '/api/rcm/booking/v3.2';
       
-      rcmApi.initialize({
+      initializeApi({
         apiUrl: newUrl,
         apiKey: import.meta.env.VITE_RCM_API_KEY || rcmApi.config.apiKey,
-        apiSecret: import.meta.env.VITE_RCM_API_SECRET || rcmApi.config.apiSecret
+        apiSecret: import.meta.env.VITE_RCM_API_SECRET || rcmApi.config.apiSecret,
+        useMockData: false // Explicitly disable mock mode when updating config
       });
       
       toast.success('API configuration updated', {
@@ -134,6 +144,27 @@ export function ApiStatusIndicator() {
       
       setApiEndpoint(newUrl);
       setIsConfigOpen(false);
+    }
+  };
+  
+  const toggleMockMode = () => {
+    if (rcmApi && rcmApi.initialize) {
+      const newMockMode = !isMockMode;
+      
+      initializeApi({
+        apiUrl: rcmApi.config.apiUrl,
+        apiKey: rcmApi.config.apiKey,
+        apiSecret: rcmApi.config.apiSecret,
+        useMockData: newMockMode
+      });
+      
+      setIsMockMode(newMockMode);
+      
+      toast.success(`${newMockMode ? 'Enabled' : 'Disabled'} demo mode`, {
+        description: newMockMode 
+          ? 'Now using sample data instead of real API' 
+          : 'Now using real API data'
+      });
     }
   };
   
@@ -175,20 +206,30 @@ export function ApiStatusIndicator() {
                     />
                   </div>
                   
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      id="direct-api"
-                      checked={directApiToggle}
-                      onChange={() => setDirectApiToggle(!directApiToggle)}
-                    />
+                  <div className="flex items-center justify-between space-x-2">
                     <Label htmlFor="direct-api" className="text-sm cursor-pointer">
                       Use direct API endpoint (bypasses proxy)
                     </Label>
+                    <Switch
+                      id="direct-api"
+                      checked={directApiToggle}
+                      onCheckedChange={setDirectApiToggle}
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between space-x-2">
+                    <Label htmlFor="mock-mode" className="text-sm cursor-pointer">
+                      Enable demo mode (mock data)
+                    </Label>
+                    <Switch
+                      id="mock-mode"
+                      checked={isMockMode}
+                      onCheckedChange={toggleMockMode}
+                    />
                   </div>
                   
                   <div className="text-xs text-gray-500 mt-2">
-                    <p>Note: In development, you may need to use the direct API endpoint if the proxy is not working correctly.</p>
+                    <p>Note: Direct API endpoint may be required if the proxy server is misconfigured.</p>
                   </div>
                   
                   <Button onClick={handleUpdateApiConfig} className="w-full">
@@ -245,7 +286,7 @@ export function ApiStatusIndicator() {
         
         <div className="text-sm text-gray-600">
           <p>Last check: {lastRun ? lastRun.toLocaleTimeString() : 'Not checked yet'}</p>
-          <p className="text-xs text-muted-foreground mt-1">API Mode: {directApiToggle ? 'Direct API' : 'Proxy'}</p>
+          <p className="text-xs text-muted-foreground mt-1">API Mode: {directApiToggle ? 'Direct API' : 'Proxy'} {isMockMode ? '(Demo)' : ''}</p>
           
           {isMockMode && (
             <div className="mt-2 p-2 bg-yellow-50 text-yellow-800 text-xs rounded">
