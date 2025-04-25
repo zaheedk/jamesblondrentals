@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -62,10 +63,14 @@ const VehicleCard = ({
   const displayPrice = vehicle.dailyRate || 
     (typeof vehicle.price === 'string' ? parseFloat(vehicle.price) : vehicle.price);
   
+  const totalRentalValue = displayPrice * (vehicle.totalDays || 1);
+  
   console.log(`Vehicle ${vehicle.make} ${vehicle.model} price calculation:`, {
     dailyRate: vehicle.dailyRate,
     vehiclePrice: vehicle.price,
-    finalDisplayPrice: displayPrice
+    totalDays: vehicle.totalDays,
+    finalDisplayPrice: displayPrice,
+    totalRentalValue
   });
   
   const isAvailable = (() => {
@@ -105,6 +110,11 @@ const VehicleCard = ({
               ${typeof displayPrice === 'number' ? displayPrice.toFixed(2) : '0.00'}
             </div>
             <div className="text-xs text-gray-500">per day</div>
+            {vehicle.totalDays && (
+              <div className="text-sm font-medium text-primary mt-1">
+                Total: ${totalRentalValue.toFixed(2)}
+              </div>
+            )}
           </div>
         </div>
       </CardHeader>
