@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { formatCurrency } from "@/lib/utils";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Car } from "lucide-react";
+import PaymentSummary from "@/components/payment/PaymentSummary";
 
 const DEPOSIT_AMOUNT = 50;
 
@@ -86,10 +87,7 @@ const PaymentOptions = () => {
     setIsLoading(true);
     
     try {
-      // Only add mandatory fees for full payment, not for deposit
-      const amountToPay = paymentType === "deposit" 
-        ? DEPOSIT_AMOUNT 
-        : totalAmount;  // No longer adding mandatory fees here
+      const amountToPay = paymentType === "deposit" ? DEPOSIT_AMOUNT : totalAmount;
       
       updateBookingData({
         paymentAmount: amountToPay,
@@ -131,22 +129,20 @@ const PaymentOptions = () => {
               </AspectRatio>
             </div>
           )}
-          
-          <div className="mb-6">
-            <h3 className="text-lg font-medium mb-2">Payment Summary</h3>
-            <div className="flex justify-between mb-1">
-              <span>Vehicle rental:</span>
-              <span>{formatCurrency(totalAmount)}</span>
-            </div>
-            {mandatoryFeesTotal > 0 && (
-              <div className="text-sm text-gray-600">
-                <div className="flex justify-between">
-                  <span>Security deposit (paid at pickup):</span>
-                  <span>{formatCurrency(mandatoryFeesTotal)}</span>
-                </div>
-              </div>
-            )}
-          </div>
+
+          <PaymentSummary
+            rentalDays={1}
+            dailyRate={bookingDetails.basePrice || 0}
+            insuranceName={bookingDetails.insuranceName}
+            insurancePrice={bookingDetails.insurancePrice}
+            extraKmsName={bookingDetails.extraKmsName}
+            extraKmsPrice={bookingDetails.extraKmsPrice}
+            selectedExtras={bookingDetails.selectedExtras}
+            mandatoryFees={bookingDetails.mandatoryFees}
+            totalCost={totalAmount}
+            payment={paymentType === "deposit" ? DEPOSIT_AMOUNT : totalAmount}
+            balanceDue={paymentType === "deposit" ? totalAmount - DEPOSIT_AMOUNT : 0}
+          />
           
           <div className="mb-6">
             <RadioGroup 
