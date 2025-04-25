@@ -126,21 +126,50 @@ const PaymentSuccess = () => {
         console.error("Failed to fetch customer details:", error);
       }
 
+      // Convert any string values to appropriate types for the request payload
+      const vehicleCategoryId = typeof bookingDetails.vehicleCategoryId === 'string' 
+        ? parseInt(bookingDetails.vehicleCategoryId) || 6 
+        : bookingDetails.vehicleCategoryId || 6;
+        
+      const vehicleCategoryTypeId = typeof bookingDetails.vehicleCategoryTypeId === 'string' 
+        ? parseInt(bookingDetails.vehicleCategoryTypeId) || 6 
+        : bookingDetails.vehicleCategoryTypeId || 6;
+        
+      const pickupLocationId = typeof bookingDetails.pickupLocationId === 'string' 
+        ? parseInt(bookingDetails.pickupLocationId) || 1 
+        : bookingDetails.pickupLocationId || 1;
+        
+      const dropoffLocationId = typeof bookingDetails.dropoffLocationId === 'string' 
+        ? parseInt(bookingDetails.dropoffLocationId) || 1 
+        : bookingDetails.dropoffLocationId || 1;
+        
+      const ageid = typeof bookingDetails.driverageId === 'string' 
+        ? parseInt(bookingDetails.driverageId) || 4 
+        : bookingDetails.driverageId || 4;
+        
+      const insuranceid = typeof bookingDetails.insuranceId === 'string' 
+        ? parseInt(bookingDetails.insuranceId) || 0 
+        : bookingDetails.insuranceId || 0;
+        
+      const extrakmsid = typeof bookingDetails.extraKmsId === 'string' 
+        ? parseInt(bookingDetails.extraKmsId) || 0 
+        : bookingDetails.extraKmsId || 0;
+
       const requestPayload = {
-        vehiclecategoryid: bookingDetails.vehicleCategoryId || sessionData?.vehicleCategoryId || 6,
-        vehiclecategorytypeid: bookingDetails.vehicleCategoryTypeId || sessionData?.vehicleCategoryTypeId || 6,
-        pickuplocationid: bookingDetails.pickupLocationId || sessionData?.pickupLocationId || 1,
+        vehiclecategoryid: vehicleCategoryId,
+        vehiclecategorytypeid: vehicleCategoryTypeId,
+        pickuplocationid: pickupLocationId,
         pickupdate: pickupDate,
         pickuptime: bookingDetails.pickupTime,
-        dropofflocationid: bookingDetails.dropoffLocationId || sessionData?.dropoffLocationId || 1,
+        dropofflocationid: dropoffLocationId,
         dropoffdate: dropoffDate,
         dropofftime: bookingDetails.dropoffTime,
-        ageid: bookingDetails.driverageId || sessionData?.ageId || 4,
+        ageid: ageid,
         bookingtype: 1,
         emailoption: 1,
         transmission: sessionData?.transmission || 0,
-        insuranceid: bookingDetails.insuranceId || sessionData?.insuranceId || 0,
-        extrakmsid: bookingDetails.extraKmsId || sessionData?.extraKmsId || 0,
+        insuranceid: insuranceid,
+        extrakmsid: extrakmsid,
         customer: {
           firstname: customerInfo?.firstname || bookingDetails.customerFirstName || sessionData?.customerFirstName || "Guest",
           lastname: customerInfo?.lastname || bookingDetails.customerLastName || sessionData?.customerLastName || "Customer",
@@ -241,7 +270,10 @@ const PaymentSuccess = () => {
               console.log("Customer info from API:", customerInfo);
               
               const totalPayment = paymentInfo.reduce((sum, payment) => {
-                return sum + (parseFloat(payment.paidamount) || 0);
+                const paymentAmount = typeof payment.paidamount === 'string' 
+                  ? parseFloat(payment.paidamount) || 0 
+                  : payment.paidamount || 0;
+                return sum + paymentAmount;
               }, 0);
               
               console.log("Total payment calculated from API:", totalPayment);
@@ -276,6 +308,65 @@ const PaymentSuccess = () => {
                 })) ?? []),
                 ...apiMandatoryFeesFromExtraFees,
               ];
+              
+              // Ensure proper number conversion for numeric fields
+              const paymentAmount = paymentStatus === "success" ? 
+                (totalPayment || 
+                  (typeof bookingInfo.payment === 'string' ? parseFloat(bookingInfo.payment) : bookingInfo.payment) || 
+                  sessionData?.paymentAmount || 
+                  0) : 
+                0;
+
+              const basePrice = typeof bookingInfo.totalcost === 'string' ? 
+                parseFloat(bookingInfo.totalcost) : 
+                bookingInfo.totalcost || 
+                sessionData?.basePrice || 
+                0;
+
+              const insurancePrice = typeof bookingInfo.insuranceamount === 'string' ? 
+                parseFloat(bookingInfo.insuranceamount) : 
+                bookingInfo.insuranceamount || 
+                sessionData?.insurancePrice || 
+                0;
+
+              const totalRateAfterDiscount = typeof bookingInfo.totalrateafterdiscount === 'string' ? 
+                parseFloat(bookingInfo.totalrateafterdiscount) : 
+                bookingInfo.totalrateafterdiscount || 
+                sessionData?.totalRateAfterDiscount || 
+                0;
+
+              const numberofdays = typeof bookingInfo.numberofdays === 'string' ? 
+                parseInt(bookingInfo.numberofdays) : 
+                bookingInfo.numberofdays || 
+                (sessionData?.pickupDate && sessionData?.dropoffDate ?
+                  calculateRentalDuration(sessionData.pickupDate, sessionData.dropoffDate) : 
+                  0);
+
+              const dailyrate = typeof bookingInfo.dailyrate === 'string' ? 
+                parseFloat(bookingInfo.dailyrate) : 
+                bookingInfo.dailyrate || 
+                (sessionData?.basePrice && sessionData?.numberofdays ?
+                  sessionData.basePrice / sessionData.numberofdays : 
+                  0);
+
+              const totalcost = typeof bookingInfo.totalcost === 'string' ? 
+                parseFloat(bookingInfo.totalcost) : 
+                bookingInfo.totalcost || 
+                sessionData?.totalcost || 
+                0;
+
+              const payment = paymentStatus === "success" ? 
+                (totalPayment || 
+                  (typeof bookingInfo.payment === 'string' ? parseFloat(bookingInfo.payment) : bookingInfo.payment) || 
+                  sessionData?.payment || 
+                  0) : 
+                0;
+
+              const balancedue = typeof bookingInfo.balancedue === 'string' ? 
+                parseFloat(bookingInfo.balancedue) : 
+                bookingInfo.balancedue || 
+                sessionData?.balancedue || 
+                0;
 
               const convertedDetails: BookingDetails = {
                 vehicleName: bookingInfo.vehiclecategory || sessionData?.vehicleName || 'Vehicle',
@@ -283,26 +374,22 @@ const PaymentSuccess = () => {
                 pickupTime: bookingInfo.pickuptime || sessionData?.pickupTime || '',
                 dropoffDate: bookingInfo.dropoffdate || sessionData?.dropoffDate || '',
                 dropoffTime: bookingInfo.dropofftime || sessionData?.dropoffTime || '',
-                paymentAmount: paymentStatus === "success" ? (totalPayment || parseFloat(bookingInfo.payment) || sessionData?.paymentAmount || 0) : 0,
-                basePrice: parseFloat(bookingInfo.totalcost) || sessionData?.basePrice || 0,
+                paymentAmount: paymentAmount,
+                basePrice: basePrice,
                 reservationRef: bookingReservationRef,
                 vehicleImage: apiVehicleImageUrl || sessionData?.vehicleImage || '',
                 insuranceName: bookingInfo.insuranceoption || sessionData?.insuranceName || '',
-                insurancePrice: parseFloat(bookingInfo.insuranceamount) || sessionData?.insurancePrice || 0,
+                insurancePrice: insurancePrice,
                 selectedExtras: sessionData?.selectedExtras || [],
                 pickupLocationName: bookingInfo.pickuplocationname || bookingInfo.pickuplocation || sessionData?.pickupLocationName || "Not specified",
                 dropoffLocationName: bookingInfo.dropofflocationname || bookingInfo.dropofflocation || sessionData?.dropoffLocationName || "Not specified",
-                totalRateAfterDiscount: parseFloat(bookingInfo.totalrateafterdiscount) || sessionData?.totalRateAfterDiscount || 0,
+                totalRateAfterDiscount: totalRateAfterDiscount,
                 mandatoryFees: combinedMandatoryFees.length > 0 ? combinedMandatoryFees : (sessionData?.mandatoryFees || []),
-                numberofdays: parseInt(bookingInfo.numberofdays) ||
-                  (sessionData?.pickupDate && sessionData?.dropoffDate ?
-                    calculateRentalDuration(sessionData.pickupDate, sessionData.dropoffDate) : 0),
-                dailyrate: parseFloat(bookingInfo.dailyrate) ||
-                  (sessionData?.basePrice && sessionData?.numberofdays ?
-                    sessionData.basePrice / sessionData.numberofdays : 0),
-                totalcost: parseFloat(bookingInfo.totalcost) || sessionData?.totalcost || 0,
-                payment: paymentStatus === "success" ? (totalPayment || parseFloat(bookingInfo.payment) || sessionData?.payment || 0) : 0,
-                balancedue: parseFloat(bookingInfo.balancedue) || sessionData?.balancedue || 0,
+                numberofdays: numberofdays,
+                dailyrate: dailyrate,
+                totalcost: totalcost,
+                payment: payment,
+                balancedue: balancedue,
                 customerFirstName: customerInfo.firstname || sessionData?.customerFirstName || '',
                 customerLastName: customerInfo.lastname || sessionData?.customerLastName || '',
                 customerEmail: customerInfo.email || sessionData?.customerEmail || '',
@@ -351,6 +438,18 @@ const PaymentSuccess = () => {
               vehicleImage = `https://rentalcarmanagerau.blob.core.windows.net/public/nzkuzarentals493/${vehicleImage}`;
             }
           }
+
+          // Ensure proper number conversion for session data
+          const numberofdays = cleanedSessionData.numberofdays || 
+            (cleanedSessionData.pickupDate && cleanedSessionData.dropoffDate ? 
+              calculateRentalDuration(cleanedSessionData.pickupDate, cleanedSessionData.dropoffDate) : 1);
+
+          const dailyrate = cleanedSessionData.dailyrate || 
+            (cleanedSessionData.basePrice && numberofdays ? 
+              cleanedSessionData.basePrice / numberofdays : 0);
+
+          const paymentAmount = paymentStatus === "success" ? 
+            (cleanedSessionData.payment || cleanedSessionData.paymentAmount || 1) : 0;
           
           const convertedDetails: BookingDetails = {
             vehicleName: cleanedSessionData.vehicleName || 'Vehicle',
@@ -358,7 +457,7 @@ const PaymentSuccess = () => {
             pickupTime: cleanedSessionData.pickupTime || '', 
             dropoffDate: cleanedSessionData.dropoffDate || '',
             dropoffTime: cleanedSessionData.dropoffTime || '',
-            paymentAmount: paymentStatus === "success" ? (cleanedSessionData.payment || cleanedSessionData.paymentAmount || 1) : 0,
+            paymentAmount: paymentAmount,
             basePrice: cleanedSessionData.basePrice || 0,
             paymentType: cleanedSessionData.paymentType,
             customerFirstName: cleanedSessionData.customerFirstName,
@@ -383,12 +482,8 @@ const PaymentSuccess = () => {
             dropoffLocationName: cleanedSessionData.dropoffLocationName || "Not specified",
             totalRateAfterDiscount: cleanedSessionData.totalRateAfterDiscount || 0,
             mandatoryFees: cleanedSessionData.mandatoryFees || [],
-            numberofdays: cleanedSessionData.numberofdays || 
-                        (cleanedSessionData.pickupDate && cleanedSessionData.dropoffDate ? 
-                          calculateRentalDuration(cleanedSessionData.pickupDate, cleanedSessionData.dropoffDate) : 1),
-            dailyrate: cleanedSessionData.dailyrate || 
-                      (cleanedSessionData.basePrice && cleanedSessionData.numberofdays ? 
-                        cleanedSessionData.basePrice / cleanedSessionData.numberofdays : 0),
+            numberofdays: numberofdays,
+            dailyrate: dailyrate,
             totalcost: cleanedSessionData.totalcost || cleanedSessionData.basePrice || 0,
             payment: paymentStatus === "success" ? (cleanedSessionData.payment || cleanedSessionData.paymentAmount || 0) : 0,
             balancedue: cleanedSessionData.balancedue || 0,
