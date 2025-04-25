@@ -1,6 +1,8 @@
+
 import { Link, Outlet, useLocation } from "react-router-dom";
-import { PlaneIcon } from "lucide-react";
+import { CalendarIcon, MapPinIcon, PhoneIcon, PlaneIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 const airportLinks = [
   { name: "Auckland Airport", path: "/airport/auckland" },
