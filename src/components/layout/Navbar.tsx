@@ -22,7 +22,9 @@ export function Navbar() {
         </div>
         <div className="flex items-center gap-4">
           <Button asChild>
-            <Link to={isHomePage ? "/booking" : "/"}>Book Now</Link>
+            <Link to={isHomePage ? "/booking" : "/"}>
+              {isHomePage ? "Book Now" : "Home"}
+            </Link>
           </Button>
         </div>
       </nav>
