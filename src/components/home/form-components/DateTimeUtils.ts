@@ -1,11 +1,12 @@
+
 import { format, parse, isAfter, isBefore, addMinutes } from "date-fns";
 import { 
   RCMLocation, 
-  RCMOfficeHours,
-  RCMLocationDetails 
+  RCMOfficeTime,
+  RCMLocationDetail 
 } from "@/lib/api/rcm-api-types";
 
-export const disablePastDates = (date: Date, locationId: string, locationDetails: RCMLocationDetails[]): boolean => {
+export const disablePastDates = (date: Date, locationId: string, locationDetails: RCMLocationDetail[]): boolean => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   
@@ -41,8 +42,8 @@ export const getLocationTimeOptions = (
   locationId: string,
   date: Date,
   type: 'pickup' | 'dropoff',
-  officeHours: RCMOfficeHours[],
-  locationDetails: RCMLocationDetails[]
+  officeHours: RCMOfficeTime[],
+  locationDetails: RCMLocationDetail[]
 ): string[] => {
   console.log(`Finding hours for location ${locationId} on day ${date.getDay()} (JS day: ${date.getDay()})`);
   
