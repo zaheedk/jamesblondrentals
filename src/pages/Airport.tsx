@@ -33,10 +33,10 @@ const Airport = () => {
                 to={link.path} 
                 className="block"
               >
-                <div className="bg-[#9b87f5] hover:bg-[#7E69AB] transition-colors rounded-lg shadow-md">
+                <div className="bg-[#0EA5E9] hover:bg-white transition-colors rounded-lg shadow-md">
                   <Button 
                     variant="ghost" 
-                    className="w-full justify-start gap-4 text-white hover:text-white/90 py-6"
+                    className="w-full justify-start gap-4 text-white hover:text-[#0EA5E9] py-6"
                   >
                     <PlaneIcon className="w-6 h-6" />
                     <span className="text-lg font-bold">{link.name}</span>
