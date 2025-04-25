@@ -11,6 +11,7 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Car, Save } from "lucide-react";
 import PaymentSummary from "@/components/payment/PaymentSummary";
 import RentalDetails from "@/components/payment/RentalDetails";
+import DebugInfo from "@/components/payment/DebugInfo";
 import { rcmApi } from "@/lib/api/rcm-api";
 import { RCMBookingResponse } from "@/lib/api/rcm-api-types";
 import { format, addDays } from "date-fns";
@@ -27,6 +28,8 @@ const PaymentOptions = () => {
   const [mandatoryFeesTotal, setMandatoryFeesTotal] = useState(0);
   const [imageError, setImageError] = useState(false);
   const [rentalDays, setRentalDays] = useState(1);
+  const [rawApiResponse, setRawApiResponse] = useState<any>(null);
+  const [bookingInfoResponse, setBookingInfoResponse] = useState<any>(null);
   
   // Add this to help fetch location details
   const { useLocationDetails } = useRcmApi();
@@ -42,6 +45,8 @@ const PaymentOptions = () => {
       navigate("/");
       return;
     }
+    
+    console.log("Full booking session data:", bookingData);
     
     // Enhanced location handling logic
     const pickupLocationId = bookingData.pickupLocationId;
@@ -143,8 +148,28 @@ const PaymentOptions = () => {
       fullData: bookingData
     });
 
-    console.log("Booking data from session:", bookingData);
+    // If we have a reservation reference, fetch booking details
+    if (bookingData.reservationRef) {
+      fetchBookingDetails(bookingData.reservationRef);
+    }
   }, [navigate, locationDetails]);
+
+  // Function to fetch booking details if we have a reservation reference
+  const fetchBookingDetails = async (reservationRef: string) => {
+    try {
+      console.log("Fetching booking details for reservation:", reservationRef);
+      const response = await rcmApi.request('POST', 'bookinginfo', {
+        method: 'bookinginfo',
+        reservationref: reservationRef
+      });
+      
+      console.log("Booking info API response:", response);
+      setBookingInfoResponse(response);
+      
+    } catch (error) {
+      console.error("Failed to fetch booking details:", error);
+    }
+  };
 
   const handleImageError = () => {
     console.log("Error loading vehicle image");
@@ -190,6 +215,7 @@ const PaymentOptions = () => {
           });
           
           const apiResponse = response as { status: string, results?: any, error?: string };
+          setRawApiResponse(apiResponse);
           
           if (apiResponse.status === "OK" && apiResponse.results?.customerinfo?.[0]) {
             customerInfo = apiResponse.results.customerinfo[0];
@@ -261,6 +287,7 @@ const PaymentOptions = () => {
 
       const bookingResponse = await rcmApi.request<RCMBookingResponse>('POST', 'booking', requestPayload);
       
+      setRawApiResponse(bookingResponse);
       console.log('Complete API response from save quotation:', bookingResponse);
 
       if (bookingResponse.status === "OK") {
@@ -415,6 +442,12 @@ const PaymentOptions = () => {
               Save Quotation
             </Button>
           </form>
+          
+          {/* Debug Information Section */}
+          <DebugInfo 
+            apiResponse={rawApiResponse || bookingInfoResponse} 
+            bookingData={bookingDetails}
+          />
         </div>
       </div>
     </div>

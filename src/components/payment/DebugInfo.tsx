@@ -3,7 +3,8 @@ import React from 'react';
 
 interface DebugInfoProps {
   apiResponse: any;
-  windcaveResponseDetails: {
+  bookingData?: any;
+  windcaveResponseDetails?: {
     amount?: number;
     transactionDate?: string;
     status?: string;
@@ -17,14 +18,27 @@ interface DebugInfoProps {
   };
 }
 
-const DebugInfo = ({ apiResponse, windcaveResponseDetails }: DebugInfoProps) => {
-  if (!apiResponse && !windcaveResponseDetails.status) return null;
+const DebugInfo = ({ apiResponse, bookingData, windcaveResponseDetails = {} }: DebugInfoProps) => {
+  const hasData = apiResponse || bookingData || windcaveResponseDetails.status;
+  
+  if (!hasData) return null;
 
   return (
-    <>
+    <div className="mt-8 border-t pt-4">
+      <h2 className="text-xl font-bold mb-2">Debug Information</h2>
+      
+      {bookingData && (
+        <div className="bg-gray-100 rounded-lg p-4 mb-4 overflow-auto max-h-60">
+          <h3 className="text-lg font-semibold mb-2">Booking Session Data</h3>
+          <pre className="text-xs whitespace-pre-wrap">
+            {JSON.stringify(bookingData, null, 2)}
+          </pre>
+        </div>
+      )}
+      
       {apiResponse && (
-        <div className="bg-gray-100 rounded-lg p-4 mt-4 mb-4 overflow-auto max-h-60">
-          <h3 className="text-xl font-semibold mb-2">API Response Debug</h3>
+        <div className="bg-gray-100 rounded-lg p-4 mb-4 overflow-auto max-h-60">
+          <h3 className="text-lg font-semibold mb-2">API Response Data</h3>
           <pre className="text-xs whitespace-pre-wrap">
             {JSON.stringify(apiResponse, null, 2)}
           </pre>
@@ -52,7 +66,7 @@ const DebugInfo = ({ apiResponse, windcaveResponseDetails }: DebugInfoProps) => 
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 
