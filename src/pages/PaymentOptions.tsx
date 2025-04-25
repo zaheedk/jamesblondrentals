@@ -14,6 +14,7 @@ import RentalDetails from "@/components/payment/RentalDetails";
 import { rcmApi } from "@/lib/api/rcm-api";
 import { RCMBookingResponse } from "@/lib/api/rcm-api-types";
 import { format, addDays } from "date-fns";
+import { useRcmApi } from "@/hooks/use-rcm-api";
 
 const DEPOSIT_AMOUNT = 50;
 
@@ -26,6 +27,10 @@ const PaymentOptions = () => {
   const [mandatoryFeesTotal, setMandatoryFeesTotal] = useState(0);
   const [imageError, setImageError] = useState(false);
   const [rentalDays, setRentalDays] = useState(1);
+  
+  // Add this to help fetch location details
+  const { useLocationDetails } = useRcmApi();
+  const { data: locationDetails } = useLocationDetails();
 
   useEffect(() => {
     const bookingData = getBookingData();
@@ -38,14 +43,45 @@ const PaymentOptions = () => {
       return;
     }
     
-    console.log("Booking Data Locations:", {
-      pickupLocation: bookingData.pickupLocationName,
-      dropoffLocation: bookingData.dropoffLocationName,
-      fullBookingData: bookingData
+    // Enhanced location handling logic
+    const pickupLocationId = bookingData.pickupLocationId;
+    const dropoffLocationId = bookingData.dropoffLocationId;
+    
+    console.log("Location IDs:", { 
+      pickupLocationId, 
+      dropoffLocationId,
+      locations: locationDetails || []
     });
     
-    const pickupLocationName = bookingData.pickupLocationName || "Location not available";
-    const dropoffLocationName = bookingData.dropoffLocationName || "Location not available";
+    // Try to get location names from the API data first
+    let pickupLocationName = "Location not available";
+    let dropoffLocationName = "Location not available";
+    
+    if (locationDetails && locationDetails.length > 0) {
+      const pickupLoc = locationDetails.find(
+        (loc: any) => String(loc.id) === String(pickupLocationId)
+      );
+      
+      const dropoffLoc = locationDetails.find(
+        (loc: any) => String(loc.id) === String(dropoffLocationId)
+      );
+      
+      if (pickupLoc) {
+        pickupLocationName = pickupLoc.location || pickupLoc.name || pickupLocationName;
+        console.log("Found pickup location:", pickupLocationName);
+      }
+      
+      if (dropoffLoc) {
+        dropoffLocationName = dropoffLoc.location || dropoffLoc.name || dropoffLocationName;
+        console.log("Found dropoff location:", dropoffLocationName);
+      }
+    } else {
+      // Fallback to session data if available
+      pickupLocationName = bookingData.pickupLocationName || pickupLocationName;
+      dropoffLocationName = bookingData.dropoffLocationName || dropoffLocationName;
+    }
+    
+    console.log("Final location names:", { pickupLocationName, dropoffLocationName });
     
     setBookingDetails({
       ...bookingData,
@@ -108,7 +144,7 @@ const PaymentOptions = () => {
     });
 
     console.log("Booking data from session:", bookingData);
-  }, [navigate]);
+  }, [navigate, locationDetails]);
 
   const handleImageError = () => {
     console.log("Error loading vehicle image");

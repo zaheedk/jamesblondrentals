@@ -21,7 +21,6 @@ const RentalDetails = ({
   formattedDropoffDate,
   pickupTime,
   dropoffTime,
-  rentalDuration
 }: RentalDetailsProps) => {
   return (
     <div className="bg-gray-50 rounded-lg p-4 mb-6">
