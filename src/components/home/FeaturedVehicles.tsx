@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -46,9 +45,7 @@ interface CategoryListResponse {
 const FeaturedVehicles = () => {
   const [vehicles, setVehicles] = useState<VehicleCategory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [showApiDetails, setShowApiDetails] = useState(false);
-  const [apiResponse, setApiResponse] = useState<any>(null);
-  const [searchParams, setSearchParams] = useState(""); // Added missing state variable
+  const [searchParams, setSearchParams] = useState(""); 
   const { rcmApi, useLocations } = useRcmApi();
   const { data: locations = [] } = useLocations();
   
@@ -138,8 +135,6 @@ const FeaturedVehicles = () => {
           method: 'categorylist'
         });
         
-        setApiResponse(response);
-        
         if (response.status === "OK") {
           const premiumVehicles = response.results.filter((vehicle) => 
             vehicle.vehiclecategoryname.toLowerCase().includes('premium')
@@ -176,9 +171,6 @@ const FeaturedVehicles = () => {
           <p className="text-gray-600">Explore our exclusive premium collection</p>
         </div>
         <div className="flex gap-4 items-center">
-          <Button variant="outline" onClick={() => setShowApiDetails(!showApiDetails)}>
-            {showApiDetails ? "Hide API Details" : "Show API Details"}
-          </Button>
           <Link to={`/vehicles?${searchParams}`}>
             <Button variant="outline">
               View All Vehicles
@@ -186,21 +178,6 @@ const FeaturedVehicles = () => {
           </Link>
         </div>
       </div>
-
-      {showApiDetails && apiResponse && (
-        <Card className="mb-6">
-          <CardContent className="pt-6">
-            <div className="space-y-4">
-              <h3 className="font-semibold">API Response:</h3>
-              <div className="bg-gray-800 text-gray-100 p-4 rounded-md overflow-x-auto">
-                <pre className="text-sm whitespace-pre-wrap">
-                  {JSON.stringify(apiResponse, null, 2)}
-                </pre>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
       
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
