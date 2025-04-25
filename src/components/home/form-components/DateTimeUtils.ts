@@ -72,8 +72,10 @@ export const getLocationTimeOptions = (
     startTime = hoursForLocation.startpickup || "00:00";
     endTime = hoursForLocation.endpickup || "23:55";
   } else {
-    startTime = hoursForLocation.startdropoff || "00:00";
-    endTime = hoursForLocation.enddropoff || "23:55";
+    // For dropoff, let's use the opening and closing times if specific dropoff times aren't defined
+    // or use specific dropoff time if available
+    startTime = hoursForLocation.startdropoff || hoursForLocation.openingtime || "00:00";
+    endTime = hoursForLocation.closingtime || "23:55";
   }
 
   console.log(`Office hours for ${type} at location ${locationId} on day ${dayOfWeek}: ${startTime} - ${endTime}`);
