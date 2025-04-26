@@ -177,17 +177,28 @@ const PaymentOptions = () => {
       
       console.log("Booking info API response:", response);
       
-      if (response.status === "OK" && response.results?.bookinginfo?.[0]?.totalcost) {
-        // Convert totalcost to number before setting state
-        const totalCostValue = Number(response.results.bookinginfo[0].totalcost);
+      if (response.status === "OK") {
+        if (response.results?.bookinginfo?.[0]?.totalcost) {
+          // Convert totalcost to number before setting state
+          const totalCostValue = Number(response.results.bookinginfo[0].totalcost);
+          
+          // Check if conversion was successful (not NaN)
+          if (!isNaN(totalCostValue)) {
+            setBookingInfoTotalCost(totalCostValue);
+            setTotalCost(totalCostValue);
+            console.log("Set total cost from booking info:", totalCostValue);
+          } else {
+            console.warn("Invalid totalcost value:", response.results.bookinginfo[0].totalcost);
+          }
+        }
         
-        // Check if conversion was successful (not NaN)
-        if (!isNaN(totalCostValue)) {
-          setBookingInfoTotalCost(totalCostValue);
-          setTotalCost(totalCostValue);
-          console.log("Set total cost from booking info:", totalCostValue);
-        } else {
-          console.warn("Invalid totalcost value:", response.results.bookinginfo[0].totalcost);
+        // Set number of days from booking info if available
+        if (response.results?.bookinginfo?.[0]?.numberofdays) {
+          const daysValue = Number(response.results.bookinginfo[0].numberofdays);
+          if (!isNaN(daysValue) && daysValue > 0) {
+            setRentalDays(daysValue);
+            console.log("Set rental days from booking info:", daysValue);
+          }
         }
       }
       
