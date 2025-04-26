@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -15,7 +14,6 @@ import { rcmApi } from "@/lib/api/rcm-api";
 import { RCMBookingResponse } from "@/lib/api/rcm-api-types";
 import { format, addDays } from "date-fns";
 import { useRcmApi } from "@/hooks/use-rcm-api";
-import DebugInfo from "@/components/payment/DebugInfo";
 
 const DEPOSIT_AMOUNT = 50;
 
@@ -30,7 +28,6 @@ const PaymentOptions = () => {
   const [rentalDays, setRentalDays] = useState(1);
   const [totalCost, setTotalCost] = useState(0);
   const [bookingInfoTotalCost, setBookingInfoTotalCost] = useState<number | undefined>(undefined);
-  const [apiResponse, setApiResponse] = useState<any>(null);
 
   const { useLocationDetails } = useRcmApi();
   const { data: locationDetails } = useLocationDetails();
@@ -179,8 +176,6 @@ const PaymentOptions = () => {
       });
       
       console.log("Booking info API response:", response);
-      
-      setApiResponse(response);
       
       if (response.status === "OK" && response.results?.bookinginfo?.[0]?.totalcost) {
         // Convert totalcost to number before setting state
@@ -471,11 +466,6 @@ const PaymentOptions = () => {
             </Button>
           </form>
         </div>
-        
-        <DebugInfo 
-          apiResponse={apiResponse} 
-          bookingData={bookingDetails} 
-        />
       </div>
     </div>
   );
