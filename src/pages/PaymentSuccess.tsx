@@ -293,19 +293,17 @@ const PaymentSuccess = () => {
                 .filter((fee: any) => !fee.isoptionalfee)
                 .map((fee: any) => ({
                   name: fee.name,
-                  amount: typeof fee.fees === "number" ? fee.fees : parseFloat(fee.fees) || 0,
-                  quantity: fee.qtyapply ? (fee.qty || 1) : 1
+                  amount: fee.totalfeeamount || (typeof fee.fees === "number" ? fee.fees : parseFloat(fee.fees) || 0),
+                  quantity: fee.qty || 1
                 }));
 
               const combinedMandatoryFees = [
                 ...(apiMandatoryFeesFromOldField.map((fee: any) => ({
                   name: fee.name ?? "",
-                  amount: typeof fee.amount === "number"
-                    ? fee.amount
-                    : fee.amount
-                      ? parseFloat(fee.amount)
-                      : (typeof fee.totalfeeamount === "number" ? fee.totalfeeamount : parseFloat(fee.totalfeeamount) || 0),
-                  quantity: fee.quantity || fee.qty || 1
+                  amount: fee.totalfeeamount || 
+                         (typeof fee.amount === "number" ? fee.amount :
+                          parseFloat(fee.amount) || 0),
+                  quantity: fee.qty || 1
                 })) ?? []),
                 ...apiMandatoryFeesFromExtraFees,
               ];
@@ -431,7 +429,6 @@ const PaymentSuccess = () => {
             }
           } catch (apiError) {
             console.error("Error fetching booking details from API:", apiError);
-            // We'll fall back to session data below
           }
         }
         
@@ -494,15 +491,14 @@ const PaymentSuccess = () => {
           const paymentAmount = paymentStatus === "success" ? 
             (cleanedSessionData.payment || cleanedSessionData.paymentAmount || 1) : 0;
           
-          // Create the mandatory fees with quantity first
           const mandatoryFeesWithQuantity = (cleanedSessionData.mandatoryFees || []).map(fee => ({
             ...fee,
-            quantity: fee.quantity || 1
+            amount: fee.totalfeeamount || fee.amount || 0,
+            quantity: fee.qty || fee.quantity || 1
           }));
           
-          // Then calculate the total using the fees with quantity
           const mandatoryFeesTotal = mandatoryFeesWithQuantity.reduce(
-            (sum, fee) => sum + ((fee.amount || 0) * (fee.quantity || 1)), 
+            (sum, fee) => sum + (fee.totalfeeamount || (fee.amount * (fee.quantity || 1))), 
             0
           );
           
