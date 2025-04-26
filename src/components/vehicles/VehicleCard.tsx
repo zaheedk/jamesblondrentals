@@ -45,7 +45,7 @@ const VehicleCard = ({
   
   const handleBookNow = () => {
     // Convert vehicle.type to string to fix TypeScript error
-    const vehicleCategoryTypeId = vehicle.type.toString();
+    const vehicleCategoryTypeId = String(vehicle.type);
     
     updateBookingData({
       vehicleId: vehicle.id,
