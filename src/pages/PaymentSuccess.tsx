@@ -38,7 +38,7 @@ interface BookingDetails {
   pickupLocationName?: string;
   dropoffLocationName?: string;
   totalRateAfterDiscount?: number;
-  mandatoryFees?: Array<{name: string; amount: number; quantity: number}>;
+  mandatoryFees?: Array<{name: string; amount: number; quantity?: number}>;
   numberofdays?: number;
   dailyrate?: number;
   totalcost?: number;
@@ -494,8 +494,15 @@ const PaymentSuccess = () => {
           const paymentAmount = paymentStatus === "success" ? 
             (cleanedSessionData.payment || cleanedSessionData.paymentAmount || 1) : 0;
           
-          const mandatoryFeesTotal = (cleanedSessionData.mandatoryFees || []).reduce(
-            (sum, fee) => sum + (fee.amount || 0), 
+          // Create the mandatory fees with quantity first
+          const mandatoryFeesWithQuantity = (cleanedSessionData.mandatoryFees || []).map(fee => ({
+            ...fee,
+            quantity: fee.quantity || 1
+          }));
+          
+          // Then calculate the total using the fees with quantity
+          const mandatoryFeesTotal = mandatoryFeesWithQuantity.reduce(
+            (sum, fee) => sum + ((fee.amount || 0) * (fee.quantity || 1)), 
             0
           );
           
@@ -506,16 +513,6 @@ const PaymentSuccess = () => {
           
           const allCosts = totalcost + mandatoryFeesTotal + extrasTotal;
           const balanceDue = allCosts - paymentAmount;
-          
-          const mandatoryFeesWithQuantity = (cleanedSessionData.mandatoryFees || []).map(fee => ({
-            ...fee,
-            quantity: fee.quantity || 1
-          }));
-          
-          const mandatoryFeesTotal = mandatoryFeesWithQuantity.reduce(
-            (sum, fee) => sum + ((fee.amount || 0) * (fee.quantity || 1)), 
-            0
-          );
           
           const convertedDetails: BookingDetails = {
             vehicleName: cleanedSessionData.vehicleName || 'Vehicle',
