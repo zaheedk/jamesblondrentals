@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -25,18 +26,18 @@ const Navbar = () => {
             <img 
               src="/lovable-uploads/900107e8-dbcb-44ce-96a9-0588959abf24.png" 
               alt="James Blond Rentals Logo" 
-              className="h-16 w-auto"
+              className="h-16 w-auto" // Increased from h-10 to h-16
             />
           </Link>
 
           <div className="hidden md:flex items-center space-x-6">
-            <Link to="/" className="text-gray-600 hover:text-primary transition-colors font-bold">
+            <Link to="/" className="text-gray-600 hover:text-primary transition-colors">
               Home
             </Link>
             <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="text-gray-600 hover:text-primary transition-colors bg-transparent font-bold">
+                  <NavigationMenuTrigger className="text-gray-600 hover:text-primary transition-colors bg-transparent">
                     Fleet
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
@@ -91,7 +92,7 @@ const Navbar = () => {
             <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="text-gray-600 hover:text-primary transition-colors bg-transparent font-bold">
+                  <NavigationMenuTrigger className="text-gray-600 hover:text-primary transition-colors bg-transparent">
                     Airport
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
@@ -119,13 +120,13 @@ const Navbar = () => {
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
-            <Link to="/faq" className="text-gray-600 hover:text-primary transition-colors font-bold">
+            <Link to="/faq" className="text-gray-600 hover:text-primary transition-colors">
               FAQ
             </Link>
             <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="text-gray-600 hover:text-primary transition-colors bg-transparent font-bold">
+                  <NavigationMenuTrigger className="text-gray-600 hover:text-primary transition-colors bg-transparent">
                     Contact
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
@@ -153,7 +154,7 @@ const Navbar = () => {
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
-            <Link to="/about" className="text-gray-600 hover:text-primary transition-colors font-bold">
+            <Link to="/about" className="text-gray-600 hover:text-primary transition-colors">
               About
             </Link>
           </div>
