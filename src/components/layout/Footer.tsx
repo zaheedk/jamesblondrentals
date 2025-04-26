@@ -1,7 +1,34 @@
+
 import { Link } from "react-router-dom";
 import { Facebook, Instagram, Twitter } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 const Footer = () => {
+  const location = useLocation();
+  
+  // Define the routes where we want a minimized footer
+  const bookingRoutes = [
+    '/booking', 
+    '/insurance-selection', 
+    '/extras-selection', 
+    '/customer-details', 
+    '/payment-options', 
+    '/payment',
+    '/payment-success'
+  ];
+
+  const isBookingRoute = bookingRoutes.some(route => location.pathname.startsWith(route));
+
+  if (isBookingRoute) {
+    return (
+      <footer className="bg-gray-900 text-white mt-auto py-2">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-sm">James Blond Rentals Booking Process</p>
+        </div>
+      </footer>
+    );
+  }
+
   return (
     <footer className="bg-gray-900 text-white mt-auto">
       <div className="container mx-auto px-4 py-12">
