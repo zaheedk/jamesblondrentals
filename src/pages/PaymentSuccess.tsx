@@ -391,6 +391,8 @@ const PaymentSuccess = () => {
                                            sessionData?.dropoffLocationName || 
                                            "Location not available";
 
+              const calculatedBalanceDue = balanceDue > 0 ? balanceDue : 0;
+
               const convertedDetails: BookingDetails = {
                 vehicleName: bookingInfo.vehiclecategory || sessionData?.vehicleName || 'Vehicle',
                 pickupDate: bookingInfo.pickupdate || sessionData?.pickupDate || '',
@@ -412,7 +414,7 @@ const PaymentSuccess = () => {
                 dailyrate: dailyrate,
                 totalcost: totalcost,
                 payment: payment,
-                balancedue: balancedue,
+                balancedue: balanceDue,
                 customerFirstName: customerInfo.firstname || sessionData?.customerFirstName || '',
                 customerLastName: customerInfo.lastname || sessionData?.customerLastName || '',
                 customerEmail: customerInfo.email || sessionData?.customerEmail || '',
@@ -521,6 +523,8 @@ const PaymentSuccess = () => {
           const allCosts = totalcost + mandatoryFeesTotal + extrasTotal;
           const balanceDue = allCosts - paymentAmount;
           
+          const calculatedBalanceDue = balanceDue > 0 ? balanceDue : 0;
+
           const convertedDetails: BookingDetails = {
             vehicleName: cleanedSessionData.vehicleName || 'Vehicle',
             pickupDate: cleanedSessionData.pickupDate || '',
