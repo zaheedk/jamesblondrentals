@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { MapPin, Calendar, Clock, Car } from 'lucide-react';
 
@@ -81,7 +80,7 @@ const RentalDetails = ({
         <div className="flex items-center mt-2">
           <Calendar className="h-4 w-4 mr-2" />
           <p className="text-sm text-gray-600">
-            Total Rental Duration: <span className="font-medium">{rentalDuration > 0 ? rentalDuration : 1} {rentalDuration === 1 ? 'day' : 'days'}</span>
+            Total Rental Duration: <span className="font-medium">{rentalDuration || 1} {rentalDuration === 1 ? 'day' : 'days'}</span>
           </p>
         </div>
       </div>
