@@ -21,7 +21,8 @@ import {
   getDefaultDropoffDate
 } from "./form-components/DateTimeUtils";
 
-const DEFAULT_LOCATION_ID = "625";
+// Update location ID if needed - we'll find Kelston location dynamically instead
+const DEFAULT_LOCATION_ID = ""; // Empty to force finding Kelston
 
 const SearchForm = () => {
   const navigate = useNavigate();
@@ -118,7 +119,16 @@ const SearchForm = () => {
       try {
         // Set default location
         if (!pickupLocation && locations.length > 0) {
-          const defaultLocation = locations.find(loc => String(loc.id) === DEFAULT_LOCATION_ID) || locations[0];
+          // Look for Kelston first
+          const kelstonLocation = locations.find(loc => 
+            loc.name.toLowerCase().includes('kelston')
+          );
+          
+          const defaultLocation = kelstonLocation || 
+                                  locations.find(loc => String(loc.id) === DEFAULT_LOCATION_ID) || 
+                                  locations[0];
+          
+          console.log("Setting default pickup location:", defaultLocation.name);
           setPickupLocation(String(defaultLocation.id));
           if (sameLocation) {
             setDropoffLocation(String(defaultLocation.id));
