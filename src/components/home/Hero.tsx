@@ -4,9 +4,10 @@ import SearchForm from "./SearchForm";
 const Hero = () => {
   return (
     <div className="relative bg-cover bg-center text-white" style={{
-      backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('/lovable-uploads/39f32c2b-71d3-45bc-9fce-b629292433fe.png')`,
+      backgroundImage: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05')`,
       backgroundSize: 'cover',
-      backgroundPosition: 'center'
+      backgroundPosition: 'center',
+      height: '600px'
     }}>
       <div className="container mx-auto px-4 py-16 sm:py-24 md:py-32 relative z-10">
         <div className="max-w-3xl mx-auto text-center mb-8">
