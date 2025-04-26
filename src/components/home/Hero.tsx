@@ -3,9 +3,11 @@ import SearchForm from "./SearchForm";
 
 const Hero = () => {
   return (
-    <div className="relative bg-gradient-to-r from-gray-900 to-blue-900 text-white">
-      <div className="absolute inset-0 bg-black opacity-50"></div>
-      
+    <div className="relative bg-cover bg-center text-white" style={{
+      backgroundImage: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/lovable-uploads/469-NZ-landscape.jpg')`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center'
+    }}>
       <div className="container mx-auto px-4 py-16 sm:py-24 md:py-32 relative z-10">
         <div className="max-w-3xl mx-auto text-center mb-8">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
