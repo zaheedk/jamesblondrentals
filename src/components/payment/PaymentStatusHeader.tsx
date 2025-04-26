@@ -9,17 +9,13 @@ interface PaymentStatusHeaderProps {
   errorMessage?: string;
   transactionId: string;
   reservationRef?: string;
-  onSaveQuotation?: () => void;
-  showSaveQuotation?: boolean;
 }
 
 const PaymentStatusHeader = ({ 
   status, 
   errorMessage, 
   transactionId, 
-  reservationRef,
-  onSaveQuotation,
-  showSaveQuotation = false
+  reservationRef
 }: PaymentStatusHeaderProps) => {
   if (status === 'success') {
     return (
@@ -60,15 +56,6 @@ const PaymentStatusHeader = ({
       <p className="text-gray-600 mb-4">
         Transaction ID: {transactionId || "N/A"}
       </p>
-      
-      {showSaveQuotation && onSaveQuotation && (
-        <Button 
-          onClick={onSaveQuotation} 
-          className="bg-[#342F63] hover:bg-[#25224A] text-white px-8 py-2 rounded-full text-lg mt-4"
-        >
-          SAVE QUOTATION
-        </Button>
-      )}
     </div>
   );
 };
