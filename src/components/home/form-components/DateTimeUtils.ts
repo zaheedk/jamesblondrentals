@@ -41,10 +41,17 @@ export const getLocationTimeOptions = (
 ): string[] => {
   console.log(`Finding hours for location ${locationId} on day ${date.getDay()} (JS day: ${date.getDay()})`);
   
+  // Guard against empty locationId or invalid inputs
+  if (!locationId || !date || !officeHours || !locationDetails) {
+    console.log(`Missing required data for time options. LocationID: ${locationId}, Date: ${date}`);
+    return [];
+  }
+  
   const location = locationDetails.find(loc => String(loc.id) === locationId);
   if (!location) {
-    console.error(`Location ${locationId} not found in location details`);
-    return [];
+    console.log(`Location ${locationId} not found in location details. Using default hours.`);
+    // Return some default times rather than an empty array
+    return ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
   }
 
   console.log(`Location ${locationId} requires ${location.noticerequired_numberofdays} days notice`);
@@ -69,8 +76,9 @@ export const getLocationTimeOptions = (
       console.log(`Found default hours from day ${anyHoursForLocation.dayofweek}`);
       hoursForLocation = anyHoursForLocation;
     } else {
-      console.error(`No office hours found for location ${locationId} on any day`);
-      return [];
+      console.log(`No office hours found for location ${locationId} on any day. Using default hours.`);
+      // Return default times
+      return ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
     }
   }
 
@@ -78,11 +86,11 @@ export const getLocationTimeOptions = (
   let endTime = "23:55";
 
   if (type === 'pickup') {
-    startTime = hoursForLocation.startpickup || "00:00";
-    endTime = hoursForLocation.endpickup || "23:55";
+    startTime = hoursForLocation.startpickup || "09:00";
+    endTime = hoursForLocation.endpickup || "17:00";
   } else {
-    startTime = hoursForLocation.startdropoff || hoursForLocation.openingtime || "00:00";
-    endTime = hoursForLocation.endpickup || hoursForLocation.closingtime || "23:55";
+    startTime = hoursForLocation.startdropoff || hoursForLocation.openingtime || "09:00";
+    endTime = hoursForLocation.endpickup || hoursForLocation.closingtime || "17:00";
   }
 
   console.log(`Office hours for ${type} at location ${locationId} on day ${dayOfWeek}: ${startTime} - ${endTime}`);
@@ -91,7 +99,7 @@ export const getLocationTimeOptions = (
   
   console.log(`Generated ${timeOptions.length} time options`);
   
-  return timeOptions;
+  return timeOptions.length > 0 ? timeOptions : ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
 };
 
 const generateTimeOptions = (startTime: string, endTime: string, date: Date): string[] => {

@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -7,7 +8,6 @@ import { Label } from "@/components/ui/label";
 import { addDays, isBefore, format } from "date-fns";
 import { toast } from "sonner";
 import { useRcmApi } from "@/hooks/use-rcm-api";
-import { rcmApi } from "@/lib/api/rcm-api";
 
 import { LocationSelect } from "./form-components/LocationSelect";
 import { DateSelect } from "./form-components/DateSelect";
@@ -36,6 +36,8 @@ const SearchForm = () => {
   const [age, setAge] = useState("");
   const [carCategory, setCarCategory] = useState("0");
   const [promoCode, setPromoCode] = useState("");
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [isProcessingDates, setIsProcessingDates] = useState(false);
 
   const [minDropoffDate, setMinDropoffDate] = useState<Date>(addDays(new Date(), 1));
   const [isLoading, setIsLoading] = useState(false);
@@ -100,151 +102,113 @@ const SearchForm = () => {
     });
   }, [initializeApi]);
 
+  // Set up initial values once data is loaded
   useEffect(() => {
-    console.log('Setting default dates');
-    
-    if (!pickupDate) {
-      const defaultPickup = getDefaultPickupDate();
-      console.log('Default pickup date:', defaultPickup);
-      setPickupDate(defaultPickup);
-      
-      const defaultDropoff = getDefaultDropoffDate(defaultPickup);
-      console.log('Default dropoff date:', defaultDropoff);
-      setDropoffDate(defaultDropoff);
-    }
-    
-    if (!pickupTime && pickupTimeOptions.length > 0) {
-      const defaultTime = format(getDefaultPickupDate(), 'HH:mm');
-      console.log('Default pickup time:', defaultTime);
-      const availableTime = pickupTimeOptions.find(t => t >= defaultTime) || pickupTimeOptions[0];
-      setPickupTime(availableTime);
-    }
-  }, [pickupTimeOptions]);
+    if (isInitialized || isProcessingDates) return;
 
-  useEffect(() => {
-    if (pickupDate) {
-      const newDropoffDate = getDefaultDropoffDate(pickupDate);
-      console.log('Updating dropoff date based on pickup date:', newDropoffDate);
-      setDropoffDate(newDropoffDate);
-    }
-  }, [pickupDate]);
+    const shouldInitialize = 
+      locations.length > 0 && 
+      driverAges.length > 0 && 
+      !isLoadingLocations && 
+      !isLoadingAges;
 
-  useEffect(() => {
-    if (pickupTime && dropoffTimeOptions.length > 0 && !dropoffTime) {
-      console.log('Setting default dropoff time to match pickup time:', pickupTime);
-      setDropoffTime(dropoffTimeOptions.includes(pickupTime) ? pickupTime : dropoffTimeOptions[0]);
-    }
-  }, [pickupTime, dropoffTimeOptions]);
+    if (shouldInitialize) {
+      setIsProcessingDates(true);
 
-  useEffect(() => {
-    if (pickupLocation && locationDetails.length > 0) {
-      const selectedLocationDetail = locationDetails.find(
-        loc => String(loc.id) === pickupLocation
-      );
-      
-      if (selectedLocationDetail) {
-        const requiredNoticeDays = selectedLocationDetail.noticerequired_numberofdays || 0;
-        
-        let newMinPickupDate = new Date();
-        
-        if (requiredNoticeDays > 0) {
-          newMinPickupDate = addDays(new Date(), requiredNoticeDays);
-          console.log(`Location ${pickupLocation} requires ${requiredNoticeDays} days notice. Min pickup date set to ${newMinPickupDate.toISOString()}`);
-        }
-        
-        setMinPickupDate(newMinPickupDate);
-        
-        if (pickupDate && isBefore(pickupDate, newMinPickupDate)) {
-          const updatedDate = new Date(newMinPickupDate);
-          console.log(`Current pickup date ${pickupDate.toISOString()} is before min date ${newMinPickupDate.toISOString()}, updating to ${updatedDate.toISOString()}`);
-          setPickupDate(updatedDate);
-          
-          const newMinDropoffDate = addDays(updatedDate, 1);
-          if (dropoffDate && isBefore(dropoffDate, newMinDropoffDate)) {
-            setDropoffDate(newMinDropoffDate);
+      try {
+        // Set default location
+        if (!pickupLocation && locations.length > 0) {
+          const defaultLocation = locations.find(loc => String(loc.id) === DEFAULT_LOCATION_ID) || locations[0];
+          setPickupLocation(String(defaultLocation.id));
+          if (sameLocation) {
+            setDropoffLocation(String(defaultLocation.id));
           }
         }
-      }
-    }
-  }, [pickupLocation, locationDetails, pickupDate, dropoffDate]);
 
-  useEffect(() => {
-    if (pickupDate) {
-      setMinDropoffDate(pickupDate);
-      
-      if (dropoffDate && isBefore(dropoffDate, pickupDate)) {
-        setDropoffDate(addDays(pickupDate, 1));
-      }
-    }
-  }, [pickupDate, dropoffDate]);
-
-  useEffect(() => {
-    if (pickupLocation && pickupDate) {
-      console.log(`Fetching pickup time options for location ${pickupLocation} on ${pickupDate.toISOString()}`);
-      const options = getLocationTimeOptions(pickupLocation, pickupDate, 'pickup', officeHours, locationDetails);
-      console.log(`Got ${options.length} pickup time options`);
-      setPickupTimeOptions(options);
-      
-      if (options.length > 0 && !pickupTime) {
-        console.log(`Setting default pickup time to ${options[0]}`);
-        setPickupTime(options[0]);
-      } else if (options.length > 0 && pickupTime && !options.includes(pickupTime)) {
-        console.log(`Current pickup time ${pickupTime} not available, updating to ${options[0]}`);
-        setPickupTime(options[0]);
-      } else if (options.length === 0) {
-        console.log(`No pickup times available for location ${pickupLocation} on ${pickupDate.toISOString()}, trying next day`);
-        const nextDay = addDays(pickupDate, 1);
-        console.log(`Setting pickup date to next day: ${nextDay.toISOString()}`);
-        setPickupDate(nextDay);
-        
-        if (dropoffDate && !isBefore(dropoffDate, nextDay)) {
-          const newDropoffDate = addDays(nextDay, 1);
-          console.log(`Updating dropoff date to: ${newDropoffDate.toISOString()}`);
-          setDropoffDate(newDropoffDate);
+        // Set default driver age
+        if (!age && driverAges.length > 0) {
+          const defaultAge = driverAges.find(a => a.isdefault) || driverAges[0];
+          setAge(String(defaultAge.id));
         }
-        setPickupTime("");
+
+        // Set default dates only once
+        if (!pickupDate) {
+          const defaultPickup = getDefaultPickupDate();
+          console.log('Default pickup date:', defaultPickup);
+          setPickupDate(defaultPickup);
+          
+          const defaultDropoff = getDefaultDropoffDate(defaultPickup);
+          console.log('Default dropoff date:', defaultDropoff);
+          setDropoffDate(defaultDropoff);
+        }
+
+        setIsInitialized(true);
+      } finally {
+        setIsProcessingDates(false);
       }
     }
-  }, [pickupLocation, pickupDate, officeHours, locationDetails, pickupTime, dropoffDate]);
+  }, [
+    locations, 
+    driverAges, 
+    isLoadingLocations, 
+    isLoadingAges, 
+    pickupLocation, 
+    pickupDate, 
+    isInitialized,
+    isProcessingDates,
+    sameLocation,
+    age
+  ]);
 
+  // Update pickup time options whenever pickup location or date changes
   useEffect(() => {
+    if (isProcessingDates || !isInitialized) return;
+    if (!pickupLocation || !pickupDate) return;
+
+    console.log(`Fetching pickup time options for location ${pickupLocation} on ${pickupDate.toISOString()}`);
+    
+    const options = getLocationTimeOptions(pickupLocation, pickupDate, 'pickup', officeHours, locationDetails);
+    console.log(`Got ${options.length} pickup time options`);
+    setPickupTimeOptions(options);
+    
+    if (options.length > 0 && !pickupTime) {
+      console.log(`Setting default pickup time to ${options[0]}`);
+      setPickupTime(options[0]);
+    } else if (options.length > 0 && pickupTime && !options.includes(pickupTime)) {
+      console.log(`Current pickup time ${pickupTime} not available, updating to ${options[0]}`);
+      setPickupTime(options[0]);
+    }
+  }, [pickupLocation, pickupDate, officeHours, locationDetails, isInitialized, isProcessingDates, pickupTime]);
+
+  // Update dropoff time options whenever dropoff details change
+  useEffect(() => {
+    if (isProcessingDates || !isInitialized) return;
+
     const selectedLocation = sameLocation ? pickupLocation : dropoffLocation;
     
-    if (selectedLocation && dropoffDate) {
-      const options = getLocationTimeOptions(selectedLocation, dropoffDate, 'dropoff', officeHours, locationDetails);
-      setDropoffTimeOptions(options);
-      
-      if (options.length > 0 && !dropoffTime) {
-        console.log(`Setting default dropoff time to ${options[0]}`);
-        setDropoffTime(options[0]);
-      } else if (options.length > 0 && dropoffTime && !options.includes(dropoffTime)) {
-        console.log(`Current dropoff time ${dropoffTime} not available, updating to ${options[0]}`);
-        setDropoffTime(options[0]);
-      } else if (options.length === 0) {
-        console.log(`No dropoff times available for location ${selectedLocation} on ${dropoffDate.toISOString()}, clearing dropoff time`);
-        setDropoffTime("");
-      }
+    if (!selectedLocation || !dropoffDate) return;
+    
+    const options = getLocationTimeOptions(selectedLocation, dropoffDate, 'dropoff', officeHours, locationDetails);
+    setDropoffTimeOptions(options);
+    
+    if (options.length > 0 && !dropoffTime) {
+      console.log(`Setting default dropoff time to ${options[0]}`);
+      setDropoffTime(options[0]);
+    } else if (options.length > 0 && dropoffTime && !options.includes(dropoffTime)) {
+      console.log(`Current dropoff time ${dropoffTime} not available, updating to ${options[0]}`);
+      setDropoffTime(options[0]);
     }
-  }, [dropoffLocation, dropoffDate, sameLocation, pickupLocation, officeHours, locationDetails, dropoffTime]);
+  }, [dropoffLocation, dropoffDate, sameLocation, pickupLocation, officeHours, locationDetails, isInitialized, isProcessingDates, dropoffTime]);
 
-  useEffect(() => {
-    if (rcmApi) {
-      const lastRequestDetails = rcmApi.getLastRequestDetails();
-      console.log('Last request details:', lastRequestDetails);
-    }
-  }, [rcmApi]);
-
-  useEffect(() => {
-    const fetchStep1Response = async () => {
-      try {
-        const response = await rcmApi.getStep1();
-        console.log('Step1 response:', response);
-      } catch (error) {
-        console.error('Error fetching Step1 response:', error);
-      }
-    };
-
-    fetchStep1Response();
+  // Handle pickup date changes and update dropoff date accordingly
+  const handlePickupDateChange = useCallback((date: Date | undefined) => {
+    if (!date) return;
+    
+    setPickupDate(date);
+    
+    // Always set dropoff date to pickup date + 1 day
+    const newDropoffDate = getDefaultDropoffDate(date);
+    setDropoffDate(newDropoffDate);
   }, []);
 
   const getDefaultAgeId = () => {
@@ -252,12 +216,6 @@ const SearchForm = () => {
     const defaultAge = driverAges.find(a => a.isdefault) || driverAges[0];
     return defaultAge ? String(defaultAge.id) : "";
   };
-
-  useEffect(() => {
-    if (driverAges?.length && !age) {
-      setAge(getDefaultAgeId());
-    }
-  }, [driverAges]);
 
   const getDriverAgeName = (ageId: string) => {
     const ageObj = driverAges?.find(a => String(a.id) === ageId);
@@ -368,7 +326,7 @@ const SearchForm = () => {
                 id="pickup-date"
                 label="Pickup Date"
                 date={pickupDate}
-                onDateChange={setPickupDate}
+                onDateChange={handlePickupDateChange}
                 disableDate={(date) => disablePastDates(date, pickupLocation, locationDetails)}
               />
 
