@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useLocation } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -71,7 +72,7 @@ const Vehicles = () => {
     dropoffdate: dropoffDate,
     dropofftime: dropoffTime,
     ageid: getValidAgeId(),
-    vehiclecategorytypeid: carCategory
+    vehiclecategorytypeid: carCategory // This is correct - using carCategory for vehiclecategorytypeid
   } : null;
 
   const { data: step2Data, isLoading: isLoadingStep2, error: step2Error, refetch: refetchStep2 } = useStep2Vehicles(step2Params);
@@ -129,6 +130,7 @@ const Vehicles = () => {
           - Available Message: ${car.availablemessage || 'No message'}
           - Vehicle Category: ${car.vehiclecategory}
           - Vehicle Category ID: ${car.vehiclecategoryid}
+          - Vehicle Category Type ID: ${car.vehiclecategorytypeid}
           - Total Rate After Discount: ${car.totalrateafterdiscount}
         `);
       });
@@ -331,7 +333,7 @@ const Vehicles = () => {
               <h1 className="text-3xl font-bold mb-2">Available Vehicles</h1>
               {pickupLocation && (
                 <div className="text-gray-600">
-                  <p>Location: {getLocationName(pickupLocation)}</p>
+                  <p className="mb-1">Location: {getLocationName(pickupLocation)}</p>
                   {pickupDate && dropoffDate && (
                     <p>{pickupDate} - {dropoffDate}</p>
                   )}
