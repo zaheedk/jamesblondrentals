@@ -2,15 +2,25 @@
 import React from 'react';
 import { CheckCircle2, FrownIcon } from 'lucide-react';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 
 interface PaymentStatusHeaderProps {
   status: 'success' | 'failed' | 'pending';
   errorMessage?: string;
   transactionId: string;
   reservationRef?: string;
+  onSaveQuotation?: () => void;
+  showSaveQuotation?: boolean;
 }
 
-const PaymentStatusHeader = ({ status, errorMessage, transactionId, reservationRef }: PaymentStatusHeaderProps) => {
+const PaymentStatusHeader = ({ 
+  status, 
+  errorMessage, 
+  transactionId, 
+  reservationRef,
+  onSaveQuotation,
+  showSaveQuotation = false
+}: PaymentStatusHeaderProps) => {
   if (status === 'success') {
     return (
       <div className="text-center mb-8">
@@ -50,6 +60,15 @@ const PaymentStatusHeader = ({ status, errorMessage, transactionId, reservationR
       <p className="text-gray-600 mb-4">
         Transaction ID: {transactionId || "N/A"}
       </p>
+      
+      {showSaveQuotation && onSaveQuotation && (
+        <Button 
+          onClick={onSaveQuotation} 
+          className="bg-[#342F63] hover:bg-[#25224A] text-white px-8 py-2 rounded-full text-lg mt-4"
+        >
+          SAVE QUOTATION
+        </Button>
+      )}
     </div>
   );
 };
