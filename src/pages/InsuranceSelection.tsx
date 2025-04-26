@@ -169,25 +169,6 @@ const InsuranceSelection = () => {
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">Select Insurance Options</h1>
       
-      <div className="mb-6">
-        <Collapsible>
-          <CollapsibleTrigger className="flex items-center gap-2 text-left w-full p-4 hover:bg-gray-50 rounded-lg">
-            <ChevronDown className="h-4 w-4" />
-            <span className="font-medium">Important Insurance Information</span>
-          </CollapsibleTrigger>
-          <CollapsibleContent className="p-4 space-y-4 text-gray-700">
-            <div>
-              <h3 className="font-semibold mb-2">Excess</h3>
-              <p>This amount will be charged to your card in the event of any damage to the car. If the cost of the damage is lower than the excess, the difference will be refunded to you once the claim has been processed.</p>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-2">Bond</h3>
-              <p>When you pick up your car, this amount will be held on your credit card for 5-10 working days, depending on your bank and card type.</p>
-            </div>
-          </CollapsibleContent>
-        </Collapsible>
-      </div>
-      
       <div className="grid grid-cols-1 gap-8">
         <div className="space-y-8">
           {insuranceOptions.length > 0 && (
@@ -199,6 +180,25 @@ const InsuranceSelection = () => {
             />
           )}
           
+          <div className="mb-6">
+            <Collapsible>
+              <CollapsibleTrigger className="flex items-center gap-2 text-left w-full p-4 hover:bg-gray-50 rounded-lg">
+                <ChevronDown className="h-4 w-4" />
+                <span className="font-medium">Important Insurance Information</span>
+              </CollapsibleTrigger>
+              <CollapsibleContent className="p-4 space-y-4 text-gray-700">
+                <div>
+                  <h3 className="font-semibold mb-2">Excess</h3>
+                  <p>This amount will be charged to your card in the event of any damage to the car. If the cost of the damage is lower than the excess, the difference will be refunded to you once the claim has been processed.</p>
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-2">Bond</h3>
+                  <p>When you pick up your car, this amount will be held on your credit card for 5-10 working days, depending on your bank and card type.</p>
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
+          </div>
+
           {kmCharges.length > 0 && (
             <KmCharges 
               kmCharges={kmCharges}
