@@ -50,7 +50,7 @@ const VehicleCard = ({
       totalDiscountAmount
     });
     
-    navigate(`/booking?${buildQueryString()}&vehicleId=${vehicle.id}&vehicleCategoryTypeId=${vehicle.type}`);
+    navigate(`/booking?${buildQueryString()}&vehicleId=${vehicle.id}&vehicleCategoryTypeId=${String(vehicle.type)}`);
   };
   
   const viewDetailsUrl = `/vehicle/${vehicle.id}?${buildQueryString()}`;
