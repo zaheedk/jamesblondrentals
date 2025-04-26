@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -25,7 +26,7 @@ const Navbar = () => {
             <img 
               src="/lovable-uploads/900107e8-dbcb-44ce-96a9-0588959abf24.png" 
               alt="James Blond Rentals Logo" 
-              className="h-10 w-auto" 
+              className="h-16 w-auto" // Increased from h-10 to h-16
             />
           </Link>
 
