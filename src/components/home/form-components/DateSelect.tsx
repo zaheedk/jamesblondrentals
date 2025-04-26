@@ -27,7 +27,7 @@ export const DateSelect = ({
 
   const handleDateSelect = (newDate: Date | undefined) => {
     onDateChange(newDate);
-    setOpen(false); // Close the popover after date selection
+    setOpen(false);
   };
 
   return (

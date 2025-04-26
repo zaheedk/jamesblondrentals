@@ -122,6 +122,14 @@ const SearchForm = () => {
   }, [pickupTimeOptions]);
 
   useEffect(() => {
+    if (pickupDate) {
+      const newDropoffDate = getDefaultDropoffDate(pickupDate);
+      console.log('Updating dropoff date based on pickup date:', newDropoffDate);
+      setDropoffDate(newDropoffDate);
+    }
+  }, [pickupDate]);
+
+  useEffect(() => {
     if (pickupTime && dropoffTimeOptions.length > 0 && !dropoffTime) {
       console.log('Setting default dropoff time to match pickup time:', pickupTime);
       setDropoffTime(dropoffTimeOptions.includes(pickupTime) ? pickupTime : dropoffTimeOptions[0]);
