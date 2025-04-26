@@ -1,11 +1,10 @@
-
 import React from 'react';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { BadgeCheck, Users, Calendar, Fuel, Ban } from 'lucide-react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { Vehicle } from '@/lib/types';
-import { useBookingSession } from '@/lib/booking-session';
+import { updateBookingData } from '@/lib/booking-session';
 
 interface VehicleCardProps {
   vehicle: Vehicle;
@@ -22,7 +21,6 @@ const VehicleCard = ({
 }: VehicleCardProps) => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { setSelectedVehicle } = useBookingSession();
   
   const pickupLocation = searchParams.get("pickupLocation") || "";
   const dropoffLocation = searchParams.get("dropoffLocation") || pickupLocation;
@@ -45,8 +43,11 @@ const VehicleCard = ({
   };
   
   const handleBookNow = () => {
-    setSelectedVehicle({
-      ...vehicle,
+    // Instead of using the non-existent useBookingSession hook,
+    // we directly use updateBookingData from booking-session.ts
+    updateBookingData({
+      vehicleId: vehicle.id,
+      vehicleCategoryTypeId: vehicle.type,
       totalRateAfterDiscount,
       totalDiscountAmount
     });
