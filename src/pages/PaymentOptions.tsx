@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -182,9 +183,17 @@ const PaymentOptions = () => {
       setApiResponse(response);
       
       if (response.status === "OK" && response.results?.bookinginfo?.[0]?.totalcost) {
-        setBookingInfoTotalCost(response.results.bookinginfo[0].totalcost);
-        setTotalCost(response.results.bookinginfo[0].totalcost);
-        console.log("Set total cost from booking info:", response.results.bookinginfo[0].totalcost);
+        // Convert totalcost to number before setting state
+        const totalCostValue = Number(response.results.bookinginfo[0].totalcost);
+        
+        // Check if conversion was successful (not NaN)
+        if (!isNaN(totalCostValue)) {
+          setBookingInfoTotalCost(totalCostValue);
+          setTotalCost(totalCostValue);
+          console.log("Set total cost from booking info:", totalCostValue);
+        } else {
+          console.warn("Invalid totalcost value:", response.results.bookinginfo[0].totalcost);
+        }
       }
       
     } catch (error) {
