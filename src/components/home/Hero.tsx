@@ -4,7 +4,7 @@ import SearchForm from "./SearchForm";
 const Hero = () => {
   return (
     <div className="relative bg-cover bg-center text-white" style={{
-      backgroundImage: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/lovable-uploads/469-NZ-landscape.jpg')`,
+      backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('/lovable-uploads/c035e15d-1147-4064-8160-f30639544281.png')`,
       backgroundSize: 'cover',
       backgroundPosition: 'center'
     }}>
