@@ -14,7 +14,8 @@ const Footer = () => {
     '/customer-details', 
     '/payment-options', 
     '/payment',
-    '/payment-success'
+    '/payment-success',
+    '/vehicles'  // Added vehicles route
   ];
 
   const isBookingRoute = bookingRoutes.some(route => location.pathname.startsWith(route));
