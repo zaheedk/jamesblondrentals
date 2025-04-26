@@ -72,7 +72,7 @@ const Vehicles = () => {
     dropoffdate: dropoffDate,
     dropofftime: dropoffTime,
     ageid: getValidAgeId(),
-    vehiclecategorytypeid: carCategory // This is correct - using carCategory for vehiclecategorytypeid
+    vehiclecategorytypeid: carCategory
   } : null;
 
   const { data: step2Data, isLoading: isLoadingStep2, error: step2Error, refetch: refetchStep2 } = useStep2Vehicles(step2Params);
@@ -98,6 +98,7 @@ const Vehicles = () => {
       window.history.replaceState({}, document.title);
     }
 
+    // Reset category filter when coming back from insurance page with resetCategoryFilter flag
     if (location.state?.resetCategoryFilter) {
       console.log("Resetting category filters after returning from insurance page");
       setSelectedVehicleTypes([]);
@@ -130,7 +131,6 @@ const Vehicles = () => {
           - Available Message: ${car.availablemessage || 'No message'}
           - Vehicle Category: ${car.vehiclecategory}
           - Vehicle Category ID: ${car.vehiclecategoryid}
-          - Vehicle Category Type ID: ${car.vehiclecategorytypeid}
           - Total Rate After Discount: ${car.totalrateafterdiscount}
         `);
       });
@@ -332,12 +332,12 @@ const Vehicles = () => {
             <div>
               <h1 className="text-3xl font-bold mb-2">Available Vehicles</h1>
               {pickupLocation && (
-                <div className="text-gray-600">
-                  <p className="mb-1">Location: {getLocationName(pickupLocation)}</p>
+                <p className="text-gray-600">
+                  Location: {getLocationName(pickupLocation)}
                   {pickupDate && dropoffDate && (
-                    <p>{pickupDate} - {dropoffDate}</p>
+                    <> | {pickupDate} - {dropoffDate}</>
                   )}
-                </div>
+                </p>
               )}
             </div>
           </div>

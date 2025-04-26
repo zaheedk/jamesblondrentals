@@ -1,137 +1,159 @@
 
-import React from 'react';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { BadgeCheck, Users, Calendar, Fuel, Ban } from 'lucide-react';
-import { Link, useSearchParams, useNavigate } from 'react-router-dom';
-import { Vehicle } from '@/lib/types';
-import { updateBookingData } from '@/lib/booking-session';
+import React from "react";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Vehicle } from "@/lib/types";
+import { useSearchParams } from "react-router-dom";
+import BookingForm from "./BookingForm";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 interface VehicleCardProps {
   vehicle: Vehicle;
-  totalRateAfterDiscount: number;
+  totalRateAfterDiscount?: number;
   totalDiscountAmount?: number;
-  showViewDetailsButton?: boolean;
 }
 
 const VehicleCard = ({ 
   vehicle, 
   totalRateAfterDiscount,
-  totalDiscountAmount = 0,
-  showViewDetailsButton = true 
+  totalDiscountAmount
 }: VehicleCardProps) => {
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
+  const [imageError, setImageError] = React.useState(false);
   
   const pickupLocation = searchParams.get("pickupLocation") || "";
+  const pickupLocationName = searchParams.get("pickupLocationName") || "";
   const dropoffLocation = searchParams.get("dropoffLocation") || pickupLocation;
+  const dropoffLocationName = searchParams.get("dropoffLocationName") || pickupLocationName;
   const pickupDate = searchParams.get("pickupDate") || "";
   const dropoffDate = searchParams.get("dropoffDate") || "";
   const pickupTime = searchParams.get("pickupTime") || "";
   const dropoffTime = searchParams.get("dropoffTime") || "";
   const age = searchParams.get("age") || "";
   
-  const buildQueryString = () => {
-    const params = new URLSearchParams();
-    if (pickupLocation) params.append("pickupLocation", pickupLocation);
-    if (dropoffLocation) params.append("dropoffLocation", dropoffLocation);
-    if (pickupDate) params.append("pickupDate", pickupDate);
-    if (dropoffDate) params.append("dropoffDate", dropoffDate);
-    if (pickupTime) params.append("pickupTime", pickupTime);
-    if (dropoffTime) params.append("dropoffTime", dropoffTime);
-    if (age) params.append("age", age);
-    return params.toString();
+  const getImageUrl = () => {
+    if (imageError) {
+      return '/placeholder.svg';
+    }
+    
+    if (!vehicle.images || !Array.isArray(vehicle.images) || vehicle.images.length === 0) {
+      return '/placeholder.svg';
+    }
+    
+    const image = vehicle.images[0];
+    
+    if (typeof image === 'string') {
+      return image;
+    }
+    
+    if (image && typeof image === 'object' && 'url' in image) {
+      return (image as {url: string}).url;
+    }
+    
+    return '/placeholder.svg';
   };
   
-  const handleBookNow = () => {
-    // Convert vehicle.type to string to fix TypeScript error
-    const vehicleCategoryTypeId = String(vehicle.type);
-    
-    updateBookingData({
-      vehicleId: vehicle.id,
-      vehicleCategoryTypeId,
-      totalRateAfterDiscount,
-      totalDiscountAmount
-    });
-    
-    navigate(`/booking?${buildQueryString()}&vehicleId=${vehicle.id}&vehicleCategoryTypeId=${vehicleCategoryTypeId}`);
+  const imageUrl = getImageUrl();
+  
+  const handleImageError = () => {
+    console.log(`Image failed to load for vehicle: ${vehicle.make} ${vehicle.model}`);
+    setImageError(true);
   };
+
+  const displayPrice = vehicle.dailyRate || 
+    (typeof vehicle.price === 'string' ? parseFloat(vehicle.price) : vehicle.price);
   
-  const viewDetailsUrl = `/vehicle/${vehicle.id}?${buildQueryString()}`;
+  const totalRentalValue = displayPrice * (vehicle.totalDays || 1);
   
+  console.log(`Vehicle ${vehicle.make} ${vehicle.model} price calculation:`, {
+    dailyRate: vehicle.dailyRate,
+    vehiclePrice: vehicle.price,
+    totalDays: vehicle.totalDays,
+    finalDisplayPrice: displayPrice,
+    totalRentalValue
+  });
+  
+  const isAvailable = (() => {
+    console.log(`Vehicle ${vehicle.make} ${vehicle.model} availability:`, vehicle.available, typeof vehicle.available);
+    
+    if (typeof vehicle.available === 'boolean') {
+      return vehicle.available === true;
+    }
+    if (typeof vehicle.available === 'number') {
+      return vehicle.available === 1 || vehicle.available === 2;
+    }
+    return false;
+  })();
+
   return (
-    <Card className="h-full flex flex-col overflow-hidden">
-      <div className="relative">
+    <Card className="overflow-hidden shadow-md h-full flex flex-col">
+      <AspectRatio ratio={4/3} className="overflow-hidden bg-white">
         <img 
-          src={vehicle.images[0] || "/placeholder.svg"} 
+          src={imageUrl} 
           alt={`${vehicle.make} ${vehicle.model}`}
-          className="w-full h-48 object-cover"
+          className="w-full h-full object-contain"
+          onError={handleImageError}
         />
-        {!vehicle.available && (
-          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="bg-red-500 text-white px-3 py-1 rounded-full flex items-center text-sm">
-              <Ban className="h-4 w-4 mr-1" />
-              <span>Unavailable</span>
-            </div>
-          </div>
-        )}
-      </div>
-      
-      <CardContent className="flex-grow pt-4">
-        <div className="flex justify-between items-start mb-3">
-          <h3 className="font-bold text-lg">
-            {vehicle.make} {vehicle.model}
-          </h3>
-          <div className="bg-primary/10 text-primary px-2 py-1 rounded text-sm font-medium capitalize">
-            {vehicle.type}
-          </div>
-        </div>
-        
-        <div className="space-y-3 mb-4">
-          <div className="flex items-center text-gray-600">
-            <Users className="h-4 w-4 mr-2" />
-            <span>{vehicle.seats} Seats</span>
-          </div>
-          <div className="flex items-center text-gray-600">
-            <Calendar className="h-4 w-4 mr-2" />
-            <span>{vehicle.totalDays || 1} {vehicle.totalDays === 1 ? 'Day' : 'Days'}</span>
-          </div>
-          <div className="flex items-center text-gray-600">
-            <Fuel className="h-4 w-4 mr-2" />
-            <span>Fuel: {vehicle.fuelType}</span>
-          </div>
-        </div>
-      </CardContent>
-      
-      <CardFooter className="flex flex-col border-t pt-4">
-        <div className="w-full flex justify-between items-baseline mb-4">
+      </AspectRatio>
+      <CardHeader className="pb-2">
+        <div className="flex justify-between items-start">
           <div>
-            <div className="flex items-center">
-              <BadgeCheck className="h-4 w-4 text-green-500 mr-1" />
-              <span className="text-sm text-gray-600">Free cancellation</span>
+            <h3 className="font-bold text-xl">{vehicle.make} {vehicle.model}</h3>
+            <div className="text-sm text-gray-500">
+              {vehicle.type && <Badge variant="outline" className="mr-2">{vehicle.type}</Badge>}
+              {vehicle.seats && <span className="mr-2">{vehicle.seats} seats</span>}
+              {vehicle.transmission && <span>{vehicle.transmission}</span>}
             </div>
           </div>
           <div className="text-right">
-            <div className="text-lg font-bold text-primary">${totalRateAfterDiscount.toFixed(2)}</div>
-            {totalDiscountAmount > 0 && (
-              <div className="text-xs text-green-600">Save ${totalDiscountAmount.toFixed(2)}</div>
+            <div className="font-bold text-lg">
+              ${typeof displayPrice === 'number' ? displayPrice.toFixed(2) : '0.00'}
+            </div>
+            <div className="text-xs text-gray-500">per day</div>
+            {vehicle.totalDays && (
+              <div className="text-sm font-medium text-primary mt-1">
+                Total: ${totalRentalValue.toFixed(2)}
+              </div>
             )}
           </div>
         </div>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full">
-          {showViewDetailsButton && (
-            <Button variant="outline" asChild>
-              <Link to={viewDetailsUrl}>View Details</Link>
-            </Button>
-          )}
-          <Button 
-            disabled={!vehicle.available} 
-            onClick={handleBookNow}
-          >
-            Book Now
-          </Button>
+      </CardHeader>
+      <CardContent className="py-2 flex-grow">
+        <p className="text-sm text-gray-600 mb-3">
+          {vehicle.description?.substring(0, 120)}
+          {vehicle.description && vehicle.description.length > 120 ? '...' : ''}
+        </p>
+        <div className="grid grid-cols-2 gap-2 text-xs">
+          {vehicle.features && (Array.isArray(vehicle.features) ? vehicle.features : [vehicle.features]).slice(0, 4).map((feature, index) => (
+            <div key={index} className="flex items-center">
+              <span className="h-2 w-2 rounded-full bg-green-500 mr-1"></span>
+              <span className="text-gray-700">{feature}</span>
+            </div>
+          ))}
         </div>
+      </CardContent>
+      <CardFooter className="pt-2">
+        {isAvailable ? (
+          <BookingForm
+            vehicle={vehicle}
+            pickupLocationId={pickupLocation}
+            pickupLocationName={pickupLocationName}
+            dropoffLocationId={dropoffLocation}
+            dropoffLocationName={dropoffLocationName}
+            pickupDate={pickupDate}
+            dropoffDate={dropoffDate}
+            pickupTime={pickupTime}
+            dropoffTime={dropoffTime}
+            ageId={age}
+            vehicleImageUrl={imageUrl}
+            totalRateAfterDiscount={displayPrice}
+            totalDiscountAmount={totalDiscountAmount}
+          />
+        ) : (
+          <div className="w-full p-2 bg-gray-100 text-gray-500 text-center rounded">
+            Not Available
+          </div>
+        )}
       </CardFooter>
     </Card>
   );

@@ -2,7 +2,6 @@
 import React from 'react';
 import { CheckCircle2, FrownIcon } from 'lucide-react';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
 
 interface PaymentStatusHeaderProps {
   status: 'success' | 'failed' | 'pending';
@@ -11,12 +10,7 @@ interface PaymentStatusHeaderProps {
   reservationRef?: string;
 }
 
-const PaymentStatusHeader = ({ 
-  status, 
-  errorMessage, 
-  transactionId, 
-  reservationRef
-}: PaymentStatusHeaderProps) => {
+const PaymentStatusHeader = ({ status, errorMessage, transactionId, reservationRef }: PaymentStatusHeaderProps) => {
   if (status === 'success') {
     return (
       <div className="text-center mb-8">

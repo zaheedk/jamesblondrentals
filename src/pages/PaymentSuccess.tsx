@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { formatCurrency } from "@/lib/utils";
 import { rcmApi } from "@/lib/api/rcm-api";
 import { RCMBookingResponse } from "@/lib/api/rcm-api-types";
-import { differenceInDays, parseISO, isValid, format } from "date-fns";
+import { differenceInDays, parseISO, isValid, format, addDays } from "date-fns";
 import PaymentStatusHeader from "@/components/payment/PaymentStatusHeader";
 import RentalDetails from "@/components/payment/RentalDetails";
 import PaymentSummary from "@/components/payment/PaymentSummary";
@@ -74,6 +74,133 @@ const PaymentSuccess = () => {
   const handleImageError = () => {
     console.log("Error loading vehicle image");
     setImageError(true);
+  };
+
+  const handleSaveQuotation = async () => {
+    try {
+      if (!bookingDetails) {
+        toast.error("No booking details available to save quote");
+        return;
+      }
+
+      const sessionData = getBookingData();
+
+      const today = new Date();
+      const formattedToday = format(today, "dd/MMM/yyyy");
+      
+      let pickupDate = bookingDetails.pickupDate;
+      let dropoffDate = bookingDetails.dropoffDate;
+      
+      const isPickupToday = pickupDate.includes(formattedToday.split('/')[1]) && 
+                          pickupDate.includes(formattedToday.split('/')[0]);
+                          
+      if (isPickupToday) {
+        const newPickupDate = addDays(today, 2);
+        pickupDate = format(newPickupDate, "dd/MMM/yyyy");
+        
+        const rentalDays = rentalDuration || 3;
+        const newDropoffDate = addDays(newPickupDate, rentalDays);
+        dropoffDate = format(newDropoffDate, "dd/MMM/yyyy");
+        
+        console.log(`Updated dates: Pickup ${pickupDate}, Dropoff ${dropoffDate}`);
+      }
+
+      let customerInfo = null;
+      try {
+        if (bookingDetails.reservationRef) {
+          console.log("Fetching booking details for reservation:", bookingDetails.reservationRef);
+          const response = await rcmApi.request('POST', 'bookinginfo', {
+            method: 'bookinginfo',
+            reservationref: bookingDetails.reservationRef
+          });
+          
+          const apiResponse = response as { status: string, results?: any, error?: string };
+          
+          if (apiResponse.status === "OK" && apiResponse.results?.customerinfo?.[0]) {
+            customerInfo = apiResponse.results.customerinfo[0];
+            console.log("Retrieved customer info from API:", customerInfo);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch customer details:", error);
+      }
+
+      const vehicleCategoryId = typeof bookingDetails.vehicleCategoryId === 'string' 
+        ? parseInt(bookingDetails.vehicleCategoryId) || 6 
+        : bookingDetails.vehicleCategoryId || 6;
+        
+      const vehicleCategoryTypeId = typeof bookingDetails.vehicleCategoryTypeId === 'string' 
+        ? parseInt(bookingDetails.vehicleCategoryTypeId) || 6 
+        : bookingDetails.vehicleCategoryTypeId || 6;
+        
+      const pickupLocationId = typeof bookingDetails.pickupLocationId === 'string' 
+        ? parseInt(bookingDetails.pickupLocationId) || 1 
+        : bookingDetails.pickupLocationId || 1;
+        
+      const dropoffLocationId = typeof bookingDetails.dropoffLocationId === 'string' 
+        ? parseInt(bookingDetails.dropoffLocationId) || 1 
+        : bookingDetails.dropoffLocationId || 1;
+        
+      const ageid = typeof bookingDetails.driverageId === 'string' 
+        ? parseInt(bookingDetails.driverageId) || 4 
+        : bookingDetails.driverageId || 4;
+        
+      const insuranceid = typeof bookingDetails.insuranceId === 'string' 
+        ? parseInt(bookingDetails.insuranceId) || 0 
+        : bookingDetails.insuranceId || 0;
+        
+      const extrakmsid = typeof bookingDetails.extraKmsId === 'string' 
+        ? parseInt(bookingDetails.extraKmsId) || 0 
+        : bookingDetails.extraKmsId || 0;
+
+      const requestPayload = {
+        vehiclecategoryid: vehicleCategoryId,
+        vehiclecategorytypeid: vehicleCategoryTypeId,
+        pickuplocationid: pickupLocationId,
+        pickupdate: pickupDate,
+        pickuptime: bookingDetails.pickupTime,
+        dropofflocationid: dropoffLocationId,
+        dropoffdate: dropoffDate,
+        dropofftime: bookingDetails.dropoffTime,
+        ageid: ageid,
+        bookingtype: 1,
+        emailoption: 1,
+        transmission: sessionData?.transmission || 0,
+        insuranceid: insuranceid,
+        extrakmsid: extrakmsid,
+        customer: {
+          firstname: customerInfo?.firstname || bookingDetails.customerFirstName || sessionData?.customerFirstName || "Guest",
+          lastname: customerInfo?.lastname || bookingDetails.customerLastName || sessionData?.customerLastName || "Customer",
+          email: customerInfo?.email || bookingDetails.customerEmail || sessionData?.customerEmail || "quote@example.com",
+          phone: customerInfo?.phone || customerInfo?.mobile || bookingDetails.customerPhone || sessionData?.customerPhone || "",
+          dateofbirth: customerInfo?.dateofbirth || bookingDetails.customerDob || sessionData?.customerDob || "",
+          licenseexpires: customerInfo?.licenseexpires || bookingDetails.customerLicenseExpiry || sessionData?.customerLicenseExpiry || "",
+          address: customerInfo?.address || bookingDetails.customerAddress || sessionData?.customerAddress || "",
+          city: customerInfo?.city || "",
+          state: customerInfo?.state || "",
+          postcode: customerInfo?.postcode || ""
+        }
+      };
+      
+      console.log('Sending save quotation request with payload:', requestPayload);
+
+      const bookingResponse = await rcmApi.request<RCMBookingResponse>('POST', 'booking', requestPayload);
+      
+      console.log('Complete API response from save quotation:', bookingResponse);
+
+      if (bookingResponse.status === "OK") {
+        toast.success("Quotation saved successfully!", {
+          description: `Check your email for the quote details.`
+        });
+      } else {
+        throw new Error(bookingResponse.error || "Failed to save quotation");
+      }
+    } catch (error) {
+      console.error("Failed to save quotation:", error);
+      toast.error("Failed to save quotation", {
+        description: error instanceof Error ? error.message : "Please try again or contact support"
+      });
+    }
   };
 
   useEffect(() => {
@@ -752,12 +879,20 @@ const PaymentSuccess = () => {
                 Return to Home
               </Button>
             ) : (
-              <div className="flex justify-center">
+              <div className="flex flex-col md:flex-row gap-4 justify-center">
                 <Button 
                   onClick={() => navigate("/payment")}
                   className="bg-[#342F63] hover:bg-[#25224A] text-white px-8 py-2 rounded-full text-lg"
                 >
                   TRY AGAIN
+                </Button>
+                
+                <Button 
+                  variant="outline"
+                  onClick={handleSaveQuotation}
+                  className="bg-[#342F63] hover:bg-[#25224A] text-white px-8 py-2 rounded-full text-lg"
+                >
+                  SAVE QUOTATION
                 </Button>
               </div>
             )}
