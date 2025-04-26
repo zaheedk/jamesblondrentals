@@ -1,4 +1,6 @@
 
+import SearchForm from "./SearchForm";
+
 const Hero = () => {
   return (
     <div className="relative min-h-[600px]">
@@ -30,4 +32,3 @@ const Hero = () => {
 };
 
 export default Hero;
-
