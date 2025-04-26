@@ -4,8 +4,8 @@ import { MapPin, Calendar, Clock, Car } from 'lucide-react';
 
 interface RentalDetailsProps {
   vehicleName: string;
-  pickupLocationName: string;
-  dropoffLocationName: string;
+  pickupLocationName: string | null | undefined;
+  dropoffLocationName: string | null | undefined;
   formattedPickupDate: string;
   formattedDropoffDate: string;
   pickupTime: string;
@@ -23,10 +23,14 @@ const RentalDetails = ({
   dropoffTime,
   rentalDuration,
 }: RentalDetailsProps) => {
-  const displayPickupLocation = pickupLocationName && pickupLocationName !== "undefined" && pickupLocationName !== "null" ? 
+  const displayPickupLocation = pickupLocationName && 
+    pickupLocationName !== "undefined" && 
+    pickupLocationName !== "null" ? 
     pickupLocationName : "Not specified";
   
-  const displayDropoffLocation = dropoffLocationName && dropoffLocationName !== "undefined" && dropoffLocationName !== "null" ? 
+  const displayDropoffLocation = dropoffLocationName && 
+    dropoffLocationName !== "undefined" && 
+    dropoffLocationName !== "null" ? 
     dropoffLocationName : "Not specified";
 
   return (

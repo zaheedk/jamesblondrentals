@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -125,13 +126,45 @@ const PaymentSuccess = () => {
         console.error("Failed to fetch customer details:", error);
       }
 
-      const vehicleCategoryId = typeof bookingDetails.vehicleCategoryId === 'string' 
-        ? parseInt(bookingDetails.vehicleCategoryId) || 6 
-        : bookingDetails.vehicleCategoryId || 6;
+      // Default to standard category values that are known to work
+      let vehicleCategoryId = 6; // Default economy car
+      let vehicleCategoryTypeId = 1; // Default automatic
+      
+      // Try to get values from bookingDetails first
+      if (bookingDetails.vehicleCategoryId) {
+        vehicleCategoryId = typeof bookingDetails.vehicleCategoryId === 'string' 
+          ? parseInt(bookingDetails.vehicleCategoryId) || 6 
+          : bookingDetails.vehicleCategoryId || 6;
+      }
+      
+      // For vehicleCategoryTypeId, we'll use 1 (automatic) as default since 6 is invalid
+      if (bookingDetails.vehicleCategoryTypeId) {
+        // Even if provided, we'll ensure it's a valid value (1 or 2)
+        const parsedTypeId = typeof bookingDetails.vehicleCategoryTypeId === 'string'
+          ? parseInt(bookingDetails.vehicleCategoryTypeId)
+          : bookingDetails.vehicleCategoryTypeId;
         
-      const vehicleCategoryTypeId = typeof bookingDetails.vehicleCategoryTypeId === 'string' 
-        ? parseInt(bookingDetails.vehicleCategoryTypeId) || 6 
-        : bookingDetails.vehicleCategoryTypeId || 6;
+        // Only use 1 (automatic) or 2 (manual) as these are the valid values
+        vehicleCategoryTypeId = parsedTypeId === 2 ? 2 : 1;
+      }
+      
+      // For safeguard, also check session data
+      if (!bookingDetails.vehicleCategoryTypeId && sessionData?.vehicleCategoryTypeId) {
+        const parsedTypeId = typeof sessionData.vehicleCategoryTypeId === 'string'
+          ? parseInt(sessionData.vehicleCategoryTypeId)
+          : sessionData.vehicleCategoryTypeId;
+          
+        // Only use 1 (automatic) or 2 (manual) as these are the valid values
+        vehicleCategoryTypeId = parsedTypeId === 2 ? 2 : 1;
+      }
+      
+      // If we still don't have a valid vehicle type ID, use 1 (automatic) as default
+      if (vehicleCategoryTypeId !== 1 && vehicleCategoryTypeId !== 2) {
+        vehicleCategoryTypeId = 1;
+      }
+      
+      console.log("Using vehicle category ID:", vehicleCategoryId);
+      console.log("Using vehicle category type ID:", vehicleCategoryTypeId);
         
       const pickupLocationId = typeof bookingDetails.pickupLocationId === 'string' 
         ? parseInt(bookingDetails.pickupLocationId) || 1 
@@ -155,7 +188,7 @@ const PaymentSuccess = () => {
 
       const requestPayload = {
         vehiclecategoryid: vehicleCategoryId,
-        vehiclecategorytypeid: vehicleCategoryTypeId,
+        vehiclecategorytypeid: vehicleCategoryTypeId, // Using corrected value here
         pickuplocationid: pickupLocationId,
         pickupdate: pickupDate,
         pickuptime: bookingDetails.pickupTime,
