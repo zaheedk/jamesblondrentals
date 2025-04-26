@@ -172,7 +172,7 @@ const PaymentOptions = () => {
   const fetchBookingDetails = async (reservationRef: string) => {
     try {
       console.log("Fetching booking details for reservation:", reservationRef);
-      const response = await rcmApi.request('POST', 'bookinginfo', {
+      const response = await rcmApi.request<RCMBookingResponse>('POST', 'bookinginfo', {
         method: 'bookinginfo',
         reservationref: reservationRef
       });
@@ -181,18 +181,10 @@ const PaymentOptions = () => {
       
       setApiResponse(response);
       
-      const apiResponse = response as { 
-        status: string, 
-        results?: { 
-          totalcost?: number, 
-          customerinfo?: any[] 
-        }, 
-        error?: string 
-      };
-      
-      if (apiResponse.status === "OK" && apiResponse.results?.totalcost) {
-        setBookingInfoTotalCost(apiResponse.results.totalcost);
-        console.log("Set booking info total cost:", apiResponse.results.totalcost);
+      if (response.status === "OK" && response.results?.bookinginfo?.[0]?.totalcost) {
+        setBookingInfoTotalCost(response.results.bookinginfo[0].totalcost);
+        setTotalCost(response.results.bookinginfo[0].totalcost);
+        console.log("Set total cost from booking info:", response.results.bookinginfo[0].totalcost);
       }
       
     } catch (error) {
