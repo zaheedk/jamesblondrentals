@@ -38,7 +38,7 @@ interface BookingDetails {
   pickupLocationName?: string;
   dropoffLocationName?: string;
   totalRateAfterDiscount?: number;
-  mandatoryFees?: Array<{name: string; amount: number}>;
+  mandatoryFees?: Array<{name: string; amount: number; quantity: number}>;
   numberofdays?: number;
   dailyrate?: number;
   totalcost?: number;
@@ -294,6 +294,7 @@ const PaymentSuccess = () => {
                 .map((fee: any) => ({
                   name: fee.name,
                   amount: typeof fee.fees === "number" ? fee.fees : parseFloat(fee.fees) || 0,
+                  quantity: fee.qtyapply ? (fee.qty || 1) : 1
                 }));
 
               const combinedMandatoryFees = [
@@ -304,6 +305,7 @@ const PaymentSuccess = () => {
                     : fee.amount
                       ? parseFloat(fee.amount)
                       : (typeof fee.totalfeeamount === "number" ? fee.totalfeeamount : parseFloat(fee.totalfeeamount) || 0),
+                  quantity: fee.quantity || fee.qty || 1
                 })) ?? []),
                 ...apiMandatoryFeesFromExtraFees,
               ];
@@ -363,7 +365,11 @@ const PaymentSuccess = () => {
                   0) : 
                 0;
 
-              const mandatoryFeesTotal = combinedMandatoryFees.reduce((sum, fee) => sum + fee.amount, 0) || 0;
+              const mandatoryFeesTotal = combinedMandatoryFees.reduce((sum, fee) => {
+                const quantity = fee.quantity || 1;
+                return sum + (fee.amount * quantity);
+              }, 0);
+              
               const extrasTotal = (sessionData?.selectedExtras || []).reduce(
                 (sum, extra) => sum + (extra.price || 0), 
                 0
@@ -501,6 +507,16 @@ const PaymentSuccess = () => {
           const allCosts = totalcost + mandatoryFeesTotal + extrasTotal;
           const balanceDue = allCosts - paymentAmount;
           
+          const mandatoryFeesWithQuantity = (cleanedSessionData.mandatoryFees || []).map(fee => ({
+            ...fee,
+            quantity: fee.quantity || 1
+          }));
+          
+          const mandatoryFeesTotal = mandatoryFeesWithQuantity.reduce(
+            (sum, fee) => sum + ((fee.amount || 0) * (fee.quantity || 1)), 
+            0
+          );
+          
           const convertedDetails: BookingDetails = {
             vehicleName: cleanedSessionData.vehicleName || 'Vehicle',
             pickupDate: cleanedSessionData.pickupDate || '',
@@ -531,7 +547,7 @@ const PaymentSuccess = () => {
             pickupLocationName: pickupLocationFromSession,
             dropoffLocationName: dropoffLocationFromSession,
             totalRateAfterDiscount: cleanedSessionData.totalRateAfterDiscount || basePrice,
-            mandatoryFees: cleanedSessionData.mandatoryFees || [],
+            mandatoryFees: mandatoryFeesWithQuantity || [],
             numberofdays: numberofdays,
             dailyrate: dailyrate,
             totalcost: totalcost,

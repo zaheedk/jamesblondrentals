@@ -11,6 +11,7 @@ interface Extra {
 interface MandatoryFee {
   name: string;
   amount: number;
+  quantity?: number;
 }
 
 interface PaymentSummaryProps {
@@ -42,7 +43,13 @@ const PaymentSummary = ({
 }: PaymentSummaryProps) => {
   const effectiveRentalDays = Math.max(1, rentalDays || 1);
   const extrasTotal = selectedExtras.reduce((sum, extra) => sum + extra.price, 0);
-  const mandatoryFeesTotal = mandatoryFees.reduce((sum, fee) => sum + fee.amount, 0);
+  
+  // Calculate mandatory fees with quantity support
+  const mandatoryFeesTotal = mandatoryFees.reduce((sum, fee) => {
+    const quantity = fee.quantity || 1;
+    return sum + (fee.amount * quantity);
+  }, 0);
+  
   const totalOptionalFees = insurancePrice + (extraKmsPrice || 0) + extrasTotal;
   
   // Calculate the correct balance due which should include everything
@@ -62,8 +69,13 @@ const PaymentSummary = ({
             <div className="font-medium mb-2">Mandatory Fees</div>
             {mandatoryFees.map((fee, index) => (
               <div key={index} className="flex justify-between text-sm">
-                <span>{fee.name}</span>
-                <span>{formatCurrency(fee.amount)}</span>
+                <span>
+                  {fee.name}
+                  {fee.quantity && fee.quantity > 1 ? ` (x${fee.quantity})` : ''}
+                </span>
+                <span>
+                  {formatCurrency(fee.amount * (fee.quantity || 1))}
+                </span>
               </div>
             ))}
             {mandatoryFeesTotal > 0 && (
