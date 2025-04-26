@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -11,7 +10,6 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Car, Save } from "lucide-react";
 import PaymentSummary from "@/components/payment/PaymentSummary";
 import RentalDetails from "@/components/payment/RentalDetails";
-import DebugInfo from "@/components/payment/DebugInfo";
 import { rcmApi } from "@/lib/api/rcm-api";
 import { RCMBookingResponse } from "@/lib/api/rcm-api-types";
 import { format, addDays } from "date-fns";
@@ -28,8 +26,6 @@ const PaymentOptions = () => {
   const [mandatoryFeesTotal, setMandatoryFeesTotal] = useState(0);
   const [imageError, setImageError] = useState(false);
   const [rentalDays, setRentalDays] = useState(1);
-  const [rawApiResponse, setRawApiResponse] = useState<any>(null);
-  const [bookingInfoResponse, setBookingInfoResponse] = useState<any>(null);
   const [totalCost, setTotalCost] = useState(0);
   
   const { useLocationDetails } = useRcmApi();
@@ -95,17 +91,7 @@ const PaymentOptions = () => {
     let calculatedDays = 1;
     let calculatedTotal = 0;
     
-    if (bookingInfoResponse?.status === "OK" && 
-        bookingInfoResponse?.results?.rateinfo?.[0]) {
-      const rateInfo = bookingInfoResponse.results.rateinfo[0];
-      calculatedDays = rateInfo.numberofdays || 1;
-      calculatedTotal = rateInfo.ratesubtotal || 0;
-      console.log("Using rate info from API:", { 
-        days: calculatedDays, 
-        subtotal: calculatedTotal 
-      });
-    } 
-    else if (bookingData.numberofdays && typeof bookingData.numberofdays === 'number' && bookingData.numberofdays > 0) {
+    if (bookingData.numberofdays && typeof bookingData.numberofdays === 'number' && bookingData.numberofdays > 0) {
       console.log("Using numberofdays from booking data:", bookingData.numberofdays);
       calculatedDays = bookingData.numberofdays;
     } 
@@ -179,7 +165,7 @@ const PaymentOptions = () => {
     if (bookingData.reservationRef) {
       fetchBookingDetails(bookingData.reservationRef);
     }
-  }, [navigate, locationDetails, bookingInfoResponse, totalAmount]);
+  }, [navigate, locationDetails]);
 
   const fetchBookingDetails = async (reservationRef: string) => {
     try {
@@ -190,7 +176,6 @@ const PaymentOptions = () => {
       });
       
       console.log("Booking info API response:", response);
-      setBookingInfoResponse(response);
       
     } catch (error) {
       console.error("Failed to fetch booking details:", error);
@@ -240,7 +225,6 @@ const PaymentOptions = () => {
           });
           
           const apiResponse = response as { status: string, results?: any, error?: string };
-          setRawApiResponse(apiResponse);
           
           if (apiResponse.status === "OK" && apiResponse.results?.customerinfo?.[0]) {
             customerInfo = apiResponse.results.customerinfo[0];
@@ -312,7 +296,6 @@ const PaymentOptions = () => {
 
       const bookingResponse = await rcmApi.request<RCMBookingResponse>('POST', 'booking', requestPayload);
       
-      setRawApiResponse(bookingResponse);
       console.log('Complete API response from save quotation:', bookingResponse);
 
       if (bookingResponse.status === "OK") {
@@ -468,11 +451,6 @@ const PaymentOptions = () => {
               Save Quotation
             </Button>
           </form>
-          
-          <DebugInfo 
-            apiResponse={rawApiResponse || bookingInfoResponse} 
-            bookingData={bookingDetails}
-          />
         </div>
       </div>
     </div>
