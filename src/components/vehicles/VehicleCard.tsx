@@ -43,14 +43,16 @@ const VehicleCard = ({
   };
   
   const handleBookNow = () => {
+    const vehicleCategoryTypeId = vehicle.type.toString();
+    
     updateBookingData({
       vehicleId: vehicle.id,
-      vehicleCategoryTypeId: String(vehicle.type),
+      vehicleCategoryTypeId,
       totalRateAfterDiscount,
       totalDiscountAmount
     });
     
-    navigate(`/booking?${buildQueryString()}&vehicleId=${vehicle.id}&vehicleCategoryTypeId=${String(vehicle.type)}`);
+    navigate(`/booking?${buildQueryString()}&vehicleId=${vehicle.id}&vehicleCategoryTypeId=${vehicleCategoryTypeId}`);
   };
   
   const viewDetailsUrl = `/vehicle/${vehicle.id}?${buildQueryString()}`;
