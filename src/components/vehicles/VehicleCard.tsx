@@ -1,161 +1,73 @@
+import React from 'react';
+import { Car } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { formatCurrency } from '@/lib/utils';
+import type { RCMVehicle } from '@/lib/api/rcm-api-types';
 
-import React from "react";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Vehicle } from "@/lib/types";
-import { useSearchParams } from "react-router-dom";
-import BookingForm from "./BookingForm";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
+const VehicleCard = ({ vehicle, onClick }: { vehicle: RCMVehicle; onClick?: () => void }) => {
+  const navigate = useNavigate();
+  const imageError = false;
 
-interface VehicleCardProps {
-  vehicle: Vehicle;
-  totalRateAfterDiscount?: number;
-  totalDiscountAmount?: number;
-}
-
-const VehicleCard = ({ 
-  vehicle, 
-  totalRateAfterDiscount,
-  totalDiscountAmount
-}: VehicleCardProps) => {
-  const [searchParams] = useSearchParams();
-  const [imageError, setImageError] = React.useState(false);
-  
-  const pickupLocation = searchParams.get("pickupLocation") || "";
-  const pickupLocationName = searchParams.get("pickupLocationName") || "";
-  const dropoffLocation = searchParams.get("dropoffLocation") || pickupLocation;
-  const dropoffLocationName = searchParams.get("dropoffLocationName") || pickupLocationName;
-  const pickupDate = searchParams.get("pickupDate") || "";
-  const dropoffDate = searchParams.get("dropoffDate") || "";
-  const pickupTime = searchParams.get("pickupTime") || "";
-  const dropoffTime = searchParams.get("dropoffTime") || "";
-  const age = searchParams.get("age") || "";
-  
-  const getImageUrl = () => {
-    if (imageError) {
-      return '/placeholder.svg';
-    }
-    
-    if (!vehicle.images || !Array.isArray(vehicle.images) || vehicle.images.length === 0) {
-      return '/placeholder.svg';
-    }
-    
-    const image = vehicle.images[0];
-    
-    if (typeof image === 'string') {
-      return image;
-    }
-    
-    if (image && typeof image === 'object' && 'url' in image) {
-      return (image as {url: string}).url;
-    }
-    
-    return '/placeholder.svg';
-  };
-  
-  const imageUrl = getImageUrl();
-  
   const handleImageError = () => {
-    console.log(`Image failed to load for vehicle: ${vehicle.make} ${vehicle.model}`);
-    setImageError(true);
+    console.log("Error loading vehicle image");
   };
-
-  const displayPrice = vehicle.dailyRate || 
-    (typeof vehicle.price === 'string' ? parseFloat(vehicle.price) : vehicle.price);
   
-  const totalRentalValue = displayPrice * (vehicle.totalDays || 1);
-  
-  console.log(`Vehicle ${vehicle.make} ${vehicle.model} price calculation:`, {
-    dailyRate: vehicle.dailyRate,
-    vehiclePrice: vehicle.price,
-    totalDays: vehicle.totalDays,
-    finalDisplayPrice: displayPrice,
-    totalRentalValue
-  });
-  
-  const isAvailable = (() => {
-    console.log(`Vehicle ${vehicle.make} ${vehicle.model} availability:`, vehicle.available, typeof vehicle.available);
+  let vehicleImageUrl = "";
+  if (vehicle.image) {
+    if (vehicle.image.startsWith('http')) {
+      vehicleImageUrl = vehicle.image;
+    } else {
+      vehicleImageUrl = `https://rentalcarmanagerau.blob.core.windows.net/public/nzkuzarentals493/${vehicle.image.replace(/^\/+/, '')}`;
+    }
     
-    if (typeof vehicle.available === 'boolean') {
-      return vehicle.available === true;
+    vehicleImageUrl = vehicleImageUrl.replace(/([^:])\/+/g, '$1/');
+    
+    console.log("Vehicle image URL:", vehicleImageUrl);
+  }
+
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+    } else {
+      const vehicleCategoryId = String(vehicle.id);
+      const vehicleCategoryTypeId = String(vehicle.type || '1');
+      navigate(`/vehicle/${vehicleCategoryId}?type=${vehicleCategoryTypeId}`);
     }
-    if (typeof vehicle.available === 'number') {
-      return vehicle.available === 1 || vehicle.available === 2;
-    }
-    return false;
-  })();
+  };
 
   return (
-    <Card className="overflow-hidden shadow-md h-full flex flex-col">
-      <AspectRatio ratio={4/3} className="overflow-hidden bg-white">
-        <img 
-          src={imageUrl} 
-          alt={`${vehicle.make} ${vehicle.model}`}
-          className="w-full h-full object-contain"
-          onError={handleImageError}
-        />
-      </AspectRatio>
-      <CardHeader className="pb-2">
-        <div className="flex justify-between items-start">
-          <div>
-            <h3 className="font-bold text-xl">{vehicle.make} {vehicle.model}</h3>
-            <div className="text-sm text-gray-500">
-              {vehicle.type && <Badge variant="outline" className="mr-2">{vehicle.type}</Badge>}
-              {vehicle.seats && <span className="mr-2">{vehicle.seats} seats</span>}
-              {vehicle.transmission && <span>{vehicle.transmission}</span>}
-            </div>
-          </div>
-          <div className="text-right">
-            <div className="font-bold text-lg">
-              ${typeof displayPrice === 'number' ? displayPrice.toFixed(2) : '0.00'}
-            </div>
-            <div className="text-xs text-gray-500">per day</div>
-            {vehicle.totalDays && (
-              <div className="text-sm font-medium text-primary mt-1">
-                Total: ${totalRentalValue.toFixed(2)}
-              </div>
-            )}
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent className="py-2 flex-grow">
-        <p className="text-sm text-gray-600 mb-3">
-          {vehicle.description?.substring(0, 120)}
-          {vehicle.description && vehicle.description.length > 120 ? '...' : ''}
-        </p>
-        <div className="grid grid-cols-2 gap-2 text-xs">
-          {vehicle.features && (Array.isArray(vehicle.features) ? vehicle.features : [vehicle.features]).slice(0, 4).map((feature, index) => (
-            <div key={index} className="flex items-center">
-              <span className="h-2 w-2 rounded-full bg-green-500 mr-1"></span>
-              <span className="text-gray-700">{feature}</span>
-            </div>
-          ))}
-        </div>
-      </CardContent>
-      <CardFooter className="pt-2">
-        {isAvailable ? (
-          <BookingForm
-            vehicle={vehicle}
-            pickupLocationId={pickupLocation}
-            pickupLocationName={pickupLocationName}
-            dropoffLocationId={dropoffLocation}
-            dropoffLocationName={dropoffLocationName}
-            pickupDate={pickupDate}
-            dropoffDate={dropoffDate}
-            pickupTime={pickupTime}
-            dropoffTime={dropoffTime}
-            ageId={age}
-            vehicleImageUrl={imageUrl}
-            totalRateAfterDiscount={displayPrice}
-            totalDiscountAmount={totalDiscountAmount}
+    <div 
+      className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition duration-300"
+      onClick={handleClick}
+    >
+      <div className="relative">
+        {vehicleImageUrl && !imageError ? (
+          <img
+            src={vehicleImageUrl}
+            alt={vehicle.vehiclecategory}
+            className="w-full h-48 object-contain p-4"
+            onError={handleImageError}
           />
         ) : (
-          <div className="w-full p-2 bg-gray-100 text-gray-500 text-center rounded">
-            Not Available
+          <div className="w-full h-48 flex items-center justify-center bg-gray-100">
+            <Car className="h-24 w-24 text-gray-300" />
           </div>
         )}
-      </CardFooter>
-    </Card>
+      </div>
+      
+      <div className="p-4">
+        <h3 className="text-lg font-semibold text-gray-800 mb-2">{vehicle.vehiclecategory}</h3>
+        <p className="text-gray-600 text-sm mb-2">{vehicle.description}</p>
+        <div className="flex items-center justify-between">
+          <span className="text-xl font-bold text-blue-600">
+            {formatCurrency(vehicle.dailyrate)} / day
+          </span>
+          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            View Details
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
 
