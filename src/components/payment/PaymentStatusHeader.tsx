@@ -24,6 +24,11 @@ const PaymentStatusHeader = ({ status, errorMessage, transactionId, reservationR
             Reservation Reference: {reservationRef}
           </p>
         )}
+        {transactionId && (
+          <p className="text-gray-600 text-sm mt-2">
+            Transaction ID: {transactionId}
+          </p>
+        )}
       </div>
     );
   }

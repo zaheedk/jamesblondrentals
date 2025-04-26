@@ -308,6 +308,37 @@ const PaymentSuccess = () => {
                 ...apiMandatoryFeesFromExtraFees,
               ];
               
+              const pickupLocationFromApi = bookingInfo.pickuplocationname || 
+                                          bookingInfo.pickuplocation || 
+                                          sessionData?.pickupLocationName || 
+                                          "Location not available";
+                                          
+              const dropoffLocationFromApi = bookingInfo.dropofflocationname || 
+                                           bookingInfo.dropofflocation || 
+                                           sessionData?.dropoffLocationName || 
+                                           "Location not available";
+              
+              console.log("Location information from API:", {
+                pickup: pickupLocationFromApi,
+                dropoff: dropoffLocationFromApi
+              });
+              
+              let rentalDaysFromDates = 1;
+              if (bookingInfo.pickupdate && bookingInfo.dropoffdate) {
+                rentalDaysFromDates = calculateRentalDuration(
+                  bookingInfo.pickupdate, 
+                  bookingInfo.dropoffdate
+                );
+                console.log("Rental duration calculated from dates:", rentalDaysFromDates);
+              }
+              
+              const numberofdays = typeof bookingInfo.numberofdays === 'string' ? 
+                parseInt(bookingInfo.numberofdays) : 
+                bookingInfo.numberofdays || 
+                rentalDaysFromDates || 1;
+                
+              console.log("Rental days from API:", numberofdays);
+              
               const paymentAmount = paymentStatus === "success" ? 
                 (totalPayment || 
                   (typeof bookingInfo.payment === 'string' ? parseFloat(bookingInfo.payment) : bookingInfo.payment) || 
@@ -332,21 +363,6 @@ const PaymentSuccess = () => {
                 bookingInfo.totalrateafterdiscount || 
                 sessionData?.totalRateAfterDiscount || 
                 basePrice;
-
-              let rentalDaysFromDates = 1;
-              if (bookingInfo.pickupdate && bookingInfo.dropoffdate) {
-                rentalDaysFromDates = calculateRentalDuration(
-                  bookingInfo.pickupdate, 
-                  bookingInfo.dropoffdate
-                );
-              }
-              
-              const numberofdays = typeof bookingInfo.numberofdays === 'string' ? 
-                parseInt(bookingInfo.numberofdays) : 
-                bookingInfo.numberofdays || 
-                rentalDaysFromDates || 1;
-                
-              console.log("Rental days calculated:", numberofdays);
 
               const dailyrate = typeof bookingInfo.dailyrate === 'string' ? 
                 parseFloat(bookingInfo.dailyrate) : 
@@ -380,16 +396,6 @@ const PaymentSuccess = () => {
               
               const allCosts = totalcost + mandatoryFeesTotal + extrasTotal;
               const balanceDue = allCosts - payment;
-
-              const pickupLocationFromApi = bookingInfo.pickuplocationname || 
-                                          bookingInfo.pickuplocation || 
-                                          sessionData?.pickupLocationName || 
-                                          "Location not available";
-                                          
-              const dropoffLocationFromApi = bookingInfo.dropofflocationname || 
-                                           bookingInfo.dropofflocation || 
-                                           sessionData?.dropoffLocationName || 
-                                           "Location not available";
 
               const calculatedBalanceDue = balanceDue > 0 ? balanceDue : 0;
 
@@ -425,9 +431,11 @@ const PaymentSuccess = () => {
               
               if (convertedDetails.pickupDate && convertedDetails.dropoffDate) {
                 const days = calculateRentalDuration(convertedDetails.pickupDate, convertedDetails.dropoffDate);
-                setRentalDuration(days || 1);
+                setRentalDuration(days || numberofdays || 1);
+                console.log("Setting rental duration to:", days || numberofdays || 1);
               } else {
                 setRentalDuration(numberofdays || 1);
+                console.log("Setting rental duration to numberofdays:", numberofdays || 1);
               }
               
               console.log("Booking details set from API:", convertedDetails);
@@ -441,150 +449,14 @@ const PaymentSuccess = () => {
             }
           } catch (apiError) {
             console.error("Error fetching booking details from API:", apiError);
-          }
-        }
-        
-        if (!bookingDetails && sessionData) {
-          console.log("Using session data as fallback for booking details");
-
-          const cleanedSessionData = JSON.parse(JSON.stringify(sessionData, (key, value) => {
-            if (value && typeof value === 'object' && value._type === 'undefined') {
-              return undefined;
-            }
-            return value;
-          }));
-          
-          let vehicleImage = cleanedSessionData.vehicleImage || '';
-          if (vehicleImage) {
-            if (vehicleImage.includes('rentalcarmanagerau.blob.core.windows.net') && 
-                vehicleImage.indexOf('rentalcarmanagerau.blob.core.windows.net') !== 
-                vehicleImage.lastIndexOf('rentalcarmanagerau.blob.core.windows.net')) {
-              const baseUrl = 'https://rentalcarmanagerau.blob.core.windows.net/public/nzkuzarentals493/';
-              const filename = vehicleImage.split('/').pop();
-              vehicleImage = baseUrl + filename;
-            } else if (!vehicleImage.includes('http')) {
-              vehicleImage = `https://rentalcarmanagerau.blob.core.windows.net/public/nzkuzarentals493/${vehicleImage}`;
+            // Fall back to session data for failed API calls
+            if (sessionData) {
+              setUpSessionDataFallback(sessionData, paymentStatus);
             }
           }
-
-          let pickupLocationFromSession = cleanedSessionData.pickupLocationName || "Location not available";
-          let dropoffLocationFromSession = cleanedSessionData.dropoffLocationName || "Location not available";
-          
-          if (pickupLocationFromSession === "undefined" || pickupLocationFromSession === null) {
-            pickupLocationFromSession = "Location not available";
-          }
-          
-          if (dropoffLocationFromSession === "undefined" || dropoffLocationFromSession === null) {
-            dropoffLocationFromSession = "Location not available";
-          }
-          
-          console.log("Location names from session:", {
-            pickup: pickupLocationFromSession,
-            dropoff: dropoffLocationFromSession
-          });
-
-          const rentalDaysFromDates = cleanedSessionData.pickupDate && cleanedSessionData.dropoffDate ? 
-            calculateRentalDuration(cleanedSessionData.pickupDate, cleanedSessionData.dropoffDate) : 1;
-              
-          const numberofdays = cleanedSessionData.numberofdays || rentalDaysFromDates || 1;
-              
-          console.log("Rental days calculated from session:", numberofdays);
-
-          const basePrice = cleanedSessionData.basePrice || cleanedSessionData.totalRateAfterDiscount || 0;
-          const dailyrate = cleanedSessionData.dailyrate || 
-            (basePrice && numberofdays && numberofdays > 0 ? 
-              basePrice / numberofdays : 0);
-
-          const totalcost = cleanedSessionData.totalcost || 
-                          cleanedSessionData.totalRateAfterDiscount || 
-                          cleanedSessionData.basePrice || 0;
-                          
-          console.log("Total cost from session:", totalcost);
-
-          const paymentAmount = paymentStatus === "success" ? 
-            (cleanedSessionData.payment || cleanedSessionData.paymentAmount || 0) : 0;
-          
-          const mandatoryFeesWithQuantity = (cleanedSessionData.mandatoryFees || []).map(fee => ({
-            ...fee,
-            amount: fee.totalfeeamount || fee.amount || 0,
-            quantity: 1
-          }));
-          
-          const mandatoryFeesTotal = mandatoryFeesWithQuantity.reduce(
-            (sum, fee) => sum + (fee.amount || 0), 
-            0
-          );
-          
-          const extrasTotal = (cleanedSessionData.selectedExtras || []).reduce(
-            (sum, extra) => sum + (extra.price || 0), 
-            0
-          );
-          
-          const allCosts = totalcost + mandatoryFeesTotal + extrasTotal;
-          const balanceDue = allCosts - paymentAmount;
-          
-          const calculatedBalanceDue = balanceDue > 0 ? balanceDue : 0;
-
-          const convertedDetails: BookingDetails = {
-            vehicleName: cleanedSessionData.vehicleName || 'Vehicle',
-            pickupDate: cleanedSessionData.pickupDate || '',
-            pickupTime: cleanedSessionData.pickupTime || '', 
-            dropoffDate: cleanedSessionData.dropoffDate || '',
-            dropoffTime: cleanedSessionData.dropoffTime || '',
-            paymentAmount: paymentAmount,
-            basePrice: basePrice,
-            paymentType: cleanedSessionData.paymentType,
-            customerFirstName: cleanedSessionData.customerFirstName,
-            customerLastName: cleanedSessionData.customerLastName,
-            customerEmail: cleanedSessionData.customerEmail,
-            customerPhone: cleanedSessionData.customerPhone,
-            customerDob: cleanedSessionData.customerDob,
-            customerLicenseExpiry: cleanedSessionData.customerLicenseExpiry,
-            customerAddress: cleanedSessionData.customerAddress,
-            reservationRef: bookingReservationRef,
-            vehicleImage: vehicleImage,
-            insuranceName: cleanedSessionData.insuranceName,
-            insurancePrice: cleanedSessionData.insurancePrice || 0,
-            selectedExtras: cleanedSessionData.selectedExtras?.map(extra => ({
-              name: extra.name,
-              quantity: extra.quantity,
-              price: extra.price
-            })) || [],
-            extraKmsName: cleanedSessionData.extraKmsName,
-            extraKmsPrice: cleanedSessionData.extraKmsPrice,
-            pickupLocationName: pickupLocationFromSession,
-            dropoffLocationName: dropoffLocationFromSession,
-            totalRateAfterDiscount: cleanedSessionData.totalRateAfterDiscount || basePrice,
-            mandatoryFees: mandatoryFeesWithQuantity || [],
-            numberofdays: numberofdays,
-            dailyrate: dailyrate,
-            totalcost: totalcost,
-            payment: paymentAmount,
-            balancedue: balanceDue,
-            pickupLocationId: cleanedSessionData.pickupLocationId,
-            dropoffLocationId: cleanedSessionData.dropoffLocationId,
-            vehicleCategoryId: cleanedSessionData.vehicleCategoryId,
-            vehicleCategoryTypeId: cleanedSessionData.vehicleCategoryTypeId,
-            driverageId: cleanedSessionData.driverageId || cleanedSessionData.ageId,
-            insuranceId: cleanedSessionData.insuranceId,
-            extraKmsId: cleanedSessionData.extraKmsId
-          };
-          
-          setBookingDetails(convertedDetails);
-          
-          if (convertedDetails.pickupDate && convertedDetails.dropoffDate) {
-            const days = calculateRentalDuration(convertedDetails.pickupDate, convertedDetails.dropoffDate);
-            setRentalDuration(days || 1);
-          } else {
-            setRentalDuration(numberofdays || 1);
-          }
-          
-          console.log("Booking details set from session:", convertedDetails);
-          
-          if (paymentStatus === "success") {
-            clearBookingData();
-            console.log("Booking data cleared from session after successful payment (fallback path)");
-          }
+        } else if (sessionData) {
+          // No reservation reference but session data exists
+          setUpSessionDataFallback(sessionData, paymentStatus);
         }
         
         setIsLoading(false);
@@ -594,6 +466,153 @@ const PaymentSuccess = () => {
         toast.error("Error", {
           description: "Failed to load booking details."
         });
+      }
+    };
+
+    // Function to set up booking details from session data
+    const setUpSessionDataFallback = (sessionData, paymentStatus) => {
+      console.log("Using session data as fallback for booking details");
+
+      const cleanedSessionData = JSON.parse(JSON.stringify(sessionData, (key, value) => {
+        if (value && typeof value === 'object' && value._type === 'undefined') {
+          return undefined;
+        }
+        return value;
+      }));
+      
+      let vehicleImage = cleanedSessionData.vehicleImage || '';
+      if (vehicleImage) {
+        if (vehicleImage.includes('rentalcarmanagerau.blob.core.windows.net') && 
+            vehicleImage.indexOf('rentalcarmanagerau.blob.core.windows.net') !== 
+            vehicleImage.lastIndexOf('rentalcarmanagerau.blob.core.windows.net')) {
+          const baseUrl = 'https://rentalcarmanagerau.blob.core.windows.net/public/nzkuzarentals493/';
+          const filename = vehicleImage.split('/').pop();
+          vehicleImage = baseUrl + filename;
+        } else if (!vehicleImage.includes('http')) {
+          vehicleImage = `https://rentalcarmanagerau.blob.core.windows.net/public/nzkuzarentals493/${vehicleImage}`;
+        }
+      }
+
+      let pickupLocationFromSession = cleanedSessionData.pickupLocationName || "Location not available";
+      let dropoffLocationFromSession = cleanedSessionData.dropoffLocationName || "Location not available";
+      
+      if (pickupLocationFromSession === "undefined" || pickupLocationFromSession === "null" || pickupLocationFromSession === null) {
+        pickupLocationFromSession = "Location not available";
+      }
+      
+      if (dropoffLocationFromSession === "undefined" || dropoffLocationFromSession === "null" || dropoffLocationFromSession === null) {
+        dropoffLocationFromSession = "Location not available";
+      }
+      
+      console.log("Location names from session:", {
+        pickup: pickupLocationFromSession,
+        dropoff: dropoffLocationFromSession
+      });
+
+      const rentalDaysFromDates = cleanedSessionData.pickupDate && cleanedSessionData.dropoffDate ? 
+        calculateRentalDuration(cleanedSessionData.pickupDate, cleanedSessionData.dropoffDate) : 1;
+          
+      const numberofdays = cleanedSessionData.numberofdays || rentalDaysFromDates || 1;
+          
+      console.log("Rental days calculated from session:", numberofdays);
+
+      const basePrice = cleanedSessionData.basePrice || cleanedSessionData.totalRateAfterDiscount || 0;
+      const dailyrate = cleanedSessionData.dailyrate || 
+        (basePrice && numberofdays && numberofdays > 0 ? 
+          basePrice / numberofdays : 0);
+
+      const totalcost = cleanedSessionData.totalcost || 
+                      cleanedSessionData.totalRateAfterDiscount || 
+                      cleanedSessionData.basePrice || 0;
+                      
+      console.log("Total cost from session:", totalcost);
+
+      const paymentAmount = paymentStatus === "success" ? 
+        (cleanedSessionData.payment || cleanedSessionData.paymentAmount || 0) : 0;
+      
+      const mandatoryFeesWithQuantity = (cleanedSessionData.mandatoryFees || []).map(fee => ({
+        ...fee,
+        amount: fee.totalfeeamount || fee.amount || 0,
+        quantity: 1
+      }));
+      
+      const mandatoryFeesTotal = mandatoryFeesWithQuantity.reduce(
+        (sum, fee) => sum + (fee.amount || 0), 
+        0
+      );
+      
+      const extrasTotal = (cleanedSessionData.selectedExtras || []).reduce(
+        (sum, extra) => sum + (extra.price || 0), 
+        0
+      );
+      
+      const allCosts = totalcost + mandatoryFeesTotal + extrasTotal;
+      const balanceDue = allCosts - paymentAmount;
+      
+      const calculatedBalanceDue = balanceDue > 0 ? balanceDue : 0;
+
+      const convertedDetails: BookingDetails = {
+        vehicleName: cleanedSessionData.vehicleName || 'Vehicle',
+        pickupDate: cleanedSessionData.pickupDate || '',
+        pickupTime: cleanedSessionData.pickupTime || '', 
+        dropoffDate: cleanedSessionData.dropoffDate || '',
+        dropoffTime: cleanedSessionData.dropoffTime || '',
+        paymentAmount: paymentAmount,
+        basePrice: basePrice,
+        paymentType: cleanedSessionData.paymentType,
+        customerFirstName: cleanedSessionData.customerFirstName,
+        customerLastName: cleanedSessionData.customerLastName,
+        customerEmail: cleanedSessionData.customerEmail,
+        customerPhone: cleanedSessionData.customerPhone,
+        customerDob: cleanedSessionData.customerDob,
+        customerLicenseExpiry: cleanedSessionData.customerLicenseExpiry,
+        customerAddress: cleanedSessionData.customerAddress,
+        reservationRef: cleanedSessionData.reservationRef || cleanedSessionData.bookingReference || 
+                       cleanedSessionData.confirmationNumber || cleanedSessionData.reservationNo,
+        vehicleImage: vehicleImage,
+        insuranceName: cleanedSessionData.insuranceName,
+        insurancePrice: cleanedSessionData.insurancePrice || 0,
+        selectedExtras: cleanedSessionData.selectedExtras?.map(extra => ({
+          name: extra.name,
+          quantity: extra.quantity,
+          price: extra.price
+        })) || [],
+        extraKmsName: cleanedSessionData.extraKmsName,
+        extraKmsPrice: cleanedSessionData.extraKmsPrice,
+        pickupLocationName: pickupLocationFromSession,
+        dropoffLocationName: dropoffLocationFromSession,
+        totalRateAfterDiscount: cleanedSessionData.totalRateAfterDiscount || basePrice,
+        mandatoryFees: mandatoryFeesWithQuantity || [],
+        numberofdays: numberofdays,
+        dailyrate: dailyrate,
+        totalcost: totalcost,
+        payment: paymentAmount,
+        balancedue: balanceDue,
+        pickupLocationId: cleanedSessionData.pickupLocationId,
+        dropoffLocationId: cleanedSessionData.dropoffLocationId,
+        vehicleCategoryId: cleanedSessionData.vehicleCategoryId,
+        vehicleCategoryTypeId: cleanedSessionData.vehicleCategoryTypeId,
+        driverageId: cleanedSessionData.driverageId || cleanedSessionData.ageId,
+        insuranceId: cleanedSessionData.insuranceId,
+        extraKmsId: cleanedSessionData.extraKmsId
+      };
+      
+      setBookingDetails(convertedDetails);
+      
+      if (convertedDetails.pickupDate && convertedDetails.dropoffDate) {
+        const days = calculateRentalDuration(convertedDetails.pickupDate, convertedDetails.dropoffDate);
+        setRentalDuration(days || numberofdays || 1);
+        console.log("Setting rental duration from session to:", days || numberofdays || 1);
+      } else {
+        setRentalDuration(numberofdays || 1);
+        console.log("Setting rental duration from session to numberofdays:", numberofdays || 1);
+      }
+      
+      console.log("Booking details set from session:", convertedDetails);
+      
+      if (paymentStatus === "success") {
+        clearBookingData();
+        console.log("Booking data cleared from session after successful payment (fallback path)");
       }
     };
 

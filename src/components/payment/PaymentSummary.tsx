@@ -61,7 +61,7 @@ const PaymentSummary = ({
   const displayTotalCost = totalCost > 0 ? totalCost : calculatedTotalCost;
   
   // Calculate the correct balance due
-  const calculatedBalanceDue = displayTotalCost - payment;
+  const calculatedBalanceDue = balanceDue >= 0 ? balanceDue : Math.max(0, displayTotalCost - payment);
 
   return (
     <div className="bg-gray-50 rounded-lg p-4 mb-6">

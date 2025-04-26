@@ -24,10 +24,10 @@ const RentalDetails = ({
   rentalDuration,
 }: RentalDetailsProps) => {
   // Always ensure we have location names to display, regardless of payment status
-  const displayPickupLocation = pickupLocationName && pickupLocationName !== "undefined" ? 
+  const displayPickupLocation = pickupLocationName && pickupLocationName !== "undefined" && pickupLocationName !== "null" ? 
     pickupLocationName : "Not specified";
   
-  const displayDropoffLocation = dropoffLocationName && dropoffLocationName !== "undefined" ? 
+  const displayDropoffLocation = dropoffLocationName && dropoffLocationName !== "undefined" && dropoffLocationName !== "null" ? 
     dropoffLocationName : "Not specified";
 
   return (
