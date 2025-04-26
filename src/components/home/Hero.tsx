@@ -7,7 +7,7 @@ const Hero = () => {
       backgroundImage: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05')`,
       backgroundSize: 'cover',
       backgroundPosition: 'center',
-      height: '600px'
+      height: '800px' // Increased height from 600px to 800px for a longer hero image
     }}>
       <div className="container mx-auto px-4 py-16 sm:py-24 md:py-32 relative z-10">
         <div className="max-w-3xl mx-auto text-center mb-8">
