@@ -294,7 +294,7 @@ const PaymentSuccess = () => {
                 .map((fee: any) => ({
                   name: fee.name,
                   amount: fee.totalfeeamount || (typeof fee.fees === "number" ? fee.fees : parseFloat(fee.fees) || 0),
-                  quantity: fee.qty || 1
+                  quantity: 1
                 }));
 
               const combinedMandatoryFees = [
@@ -303,7 +303,7 @@ const PaymentSuccess = () => {
                   amount: fee.totalfeeamount || 
                          (typeof fee.amount === "number" ? fee.amount :
                           parseFloat(fee.amount) || 0),
-                  quantity: fee.qty || 1
+                  quantity: 1
                 })) ?? []),
                 ...apiMandatoryFeesFromExtraFees,
               ];
