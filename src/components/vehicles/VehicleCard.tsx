@@ -43,11 +43,9 @@ const VehicleCard = ({
   };
   
   const handleBookNow = () => {
-    // Instead of using the non-existent useBookingSession hook,
-    // we directly use updateBookingData from booking-session.ts
     updateBookingData({
       vehicleId: vehicle.id,
-      vehicleCategoryTypeId: vehicle.type,
+      vehicleCategoryTypeId: String(vehicle.type),
       totalRateAfterDiscount,
       totalDiscountAmount
     });
