@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useLocation } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -98,7 +97,6 @@ const Vehicles = () => {
       window.history.replaceState({}, document.title);
     }
 
-    // Reset category filter when coming back from insurance page with resetCategoryFilter flag
     if (location.state?.resetCategoryFilter) {
       console.log("Resetting category filters after returning from insurance page");
       setSelectedVehicleTypes([]);
@@ -332,12 +330,12 @@ const Vehicles = () => {
             <div>
               <h1 className="text-3xl font-bold mb-2">Available Vehicles</h1>
               {pickupLocation && (
-                <p className="text-gray-600">
-                  Location: {getLocationName(pickupLocation)}
+                <div className="text-gray-600">
+                  <p>Location: {getLocationName(pickupLocation)}</p>
                   {pickupDate && dropoffDate && (
-                    <> | {pickupDate} - {dropoffDate}</>
+                    <p>{pickupDate} - {dropoffDate}</p>
                   )}
-                </p>
+                </div>
               )}
             </div>
           </div>
