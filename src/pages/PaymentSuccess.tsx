@@ -101,11 +101,14 @@ const PaymentSuccess = () => {
         const rentalDays = rentalDuration || 3;
         const newDropoffDate = addDays(newPickupDate, rentalDays);
         dropoffDate = format(newDropoffDate, "dd/MMM/yyyy");
+        
+        console.log(`Updated dates: Pickup ${pickupDate}, Dropoff ${dropoffDate}`);
       }
 
       let customerInfo = null;
       try {
         if (bookingDetails.reservationRef) {
+          console.log("Fetching booking details for reservation:", bookingDetails.reservationRef);
           const response = await rcmApi.request('POST', 'bookinginfo', {
             method: 'bookinginfo',
             reservationref: bookingDetails.reservationRef
@@ -115,28 +118,56 @@ const PaymentSuccess = () => {
           
           if (apiResponse.status === "OK" && apiResponse.results?.customerinfo?.[0]) {
             customerInfo = apiResponse.results.customerinfo[0];
+            console.log("Retrieved customer info from API:", customerInfo);
           }
         }
       } catch (error) {
         console.error("Failed to fetch customer details:", error);
       }
 
+      const vehicleCategoryId = typeof bookingDetails.vehicleCategoryId === 'string' 
+        ? parseInt(bookingDetails.vehicleCategoryId) || 6 
+        : bookingDetails.vehicleCategoryId || 6;
+        
+      const vehicleCategoryTypeId = typeof bookingDetails.vehicleCategoryTypeId === 'string' 
+        ? parseInt(bookingDetails.vehicleCategoryTypeId) || 6 
+        : bookingDetails.vehicleCategoryTypeId || 6;
+        
+      const pickupLocationId = typeof bookingDetails.pickupLocationId === 'string' 
+        ? parseInt(bookingDetails.pickupLocationId) || 1 
+        : bookingDetails.pickupLocationId || 1;
+        
+      const dropoffLocationId = typeof bookingDetails.dropoffLocationId === 'string' 
+        ? parseInt(bookingDetails.dropoffLocationId) || 1 
+        : bookingDetails.dropoffLocationId || 1;
+        
+      const ageid = typeof bookingDetails.driverageId === 'string' 
+        ? parseInt(bookingDetails.driverageId) || 4 
+        : bookingDetails.driverageId || 4;
+        
+      const insuranceid = typeof bookingDetails.insuranceId === 'string' 
+        ? parseInt(bookingDetails.insuranceId) || 0 
+        : bookingDetails.insuranceId || 0;
+        
+      const extrakmsid = typeof bookingDetails.extraKmsId === 'string' 
+        ? parseInt(bookingDetails.extraKmsId) || 0 
+        : bookingDetails.extraKmsId || 0;
+
       const requestPayload = {
-        method: 'booking',
-        vehiclecategoryid: bookingDetails.vehicleCategoryId || sessionData?.vehicleCategoryId || 5,
-        vehiclecategorytypeid: bookingDetails.vehicleCategoryTypeId || sessionData?.vehicleCategoryTypeId || 1,
-        pickuplocationid: bookingDetails.pickupLocationId || sessionData?.pickupLocationId || 1,
+        vehiclecategoryid: vehicleCategoryId,
+        vehiclecategorytypeid: vehicleCategoryTypeId,
+        pickuplocationid: pickupLocationId,
         pickupdate: pickupDate,
         pickuptime: bookingDetails.pickupTime,
-        dropofflocationid: bookingDetails.dropoffLocationId || sessionData?.dropoffLocationId || 1,
+        dropofflocationid: dropoffLocationId,
         dropoffdate: dropoffDate,
         dropofftime: bookingDetails.dropoffTime,
-        ageid: bookingDetails.driverageId || sessionData?.driverageId || 4,
+        ageid: ageid,
         bookingtype: 1,
         emailoption: 1,
         transmission: sessionData?.transmission || 0,
-        insuranceid: bookingDetails.insuranceId || sessionData?.insuranceId || 0,
-        extrakmsid: bookingDetails.extraKmsId || sessionData?.extraKmsId || 0,
+        insuranceid: insuranceid,
+        extrakmsid: extrakmsid,
         customer: {
           firstname: customerInfo?.firstname || bookingDetails.customerFirstName || sessionData?.customerFirstName || "Guest",
           lastname: customerInfo?.lastname || bookingDetails.customerLastName || sessionData?.customerLastName || "Customer",
@@ -150,11 +181,13 @@ const PaymentSuccess = () => {
           postcode: customerInfo?.postcode || ""
         }
       };
-
+      
       console.log('Sending save quotation request with payload:', requestPayload);
 
       const bookingResponse = await rcmApi.request<RCMBookingResponse>('POST', 'booking', requestPayload);
       
+      console.log('Complete API response from save quotation:', bookingResponse);
+
       if (bookingResponse.status === "OK") {
         toast.success("Quotation saved successfully!", {
           description: `Check your email for the quote details.`
