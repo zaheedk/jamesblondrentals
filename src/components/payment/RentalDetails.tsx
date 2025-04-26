@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { MapPin, Calendar, Clock, Car } from 'lucide-react';
 
@@ -52,9 +53,7 @@ const RentalDetails = ({
               <p className="text-gray-700 font-bold">{displayPickupLocation}</p>
               <div className="flex items-center mt-1">
                 <Calendar className="h-4 w-4 mr-1" />
-                <p className="text-sm text-gray-600">{formattedPickupDate}</p>
-              </div>
-              <div className="flex items-center mt-1">
+                <p className="text-sm text-gray-600 mr-2">{formattedPickupDate}</p>
                 <Clock className="h-4 w-4 mr-1" />
                 <p className="text-sm text-gray-600">{pickupTime}</p>
               </div>
@@ -67,9 +66,7 @@ const RentalDetails = ({
               <p className="text-gray-700 font-bold">{displayDropoffLocation}</p>
               <div className="flex items-center mt-1">
                 <Calendar className="h-4 w-4 mr-1" />
-                <p className="text-sm text-gray-600">{formattedDropoffDate}</p>
-              </div>
-              <div className="flex items-center mt-1">
+                <p className="text-sm text-gray-600 mr-2">{formattedDropoffDate}</p>
                 <Clock className="h-4 w-4 mr-1" />
                 <p className="text-sm text-gray-600">{dropoffTime}</p>
               </div>
