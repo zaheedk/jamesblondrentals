@@ -41,19 +41,27 @@ const PaymentSummary = ({
   payment,
   balanceDue,
 }: PaymentSummaryProps) => {
+  // Ensure we always have valid rental days
   const effectiveRentalDays = Math.max(1, rentalDays || 1);
+  
   const extrasTotal = selectedExtras.reduce((sum, extra) => sum + extra.price, 0);
   
   // Calculate mandatory fees with quantity support
   const mandatoryFeesTotal = mandatoryFees.reduce((sum, fee) => {
-    const quantity = fee.quantity || 1;
-    return sum + (fee.amount * quantity);
+    // For mandatory fees, we can use the fee amount directly since we set quantity to 1
+    return sum + (fee.amount || 0);
   }, 0);
   
   const totalOptionalFees = insurancePrice + (extraKmsPrice || 0) + extrasTotal;
   
-  // Calculate the correct balance due which should include everything
-  const calculatedBalanceDue = totalCost - payment;
+  // Calculate the total cost (rental + all fees)
+  const calculatedTotalCost = (dailyRate * effectiveRentalDays) + mandatoryFeesTotal + totalOptionalFees;
+  
+  // Use the calculated total cost if the provided totalCost is invalid
+  const displayTotalCost = totalCost > 0 ? totalCost : calculatedTotalCost;
+  
+  // Calculate the correct balance due
+  const calculatedBalanceDue = displayTotalCost - payment;
 
   return (
     <div className="bg-gray-50 rounded-lg p-4 mb-6">
@@ -69,13 +77,8 @@ const PaymentSummary = ({
             <div className="font-medium mb-2">Mandatory Fees</div>
             {mandatoryFees.map((fee, index) => (
               <div key={index} className="flex justify-between text-sm">
-                <span>
-                  {fee.name}
-                  {fee.quantity && fee.quantity > 1 ? ` (x${fee.quantity})` : ''}
-                </span>
-                <span>
-                  {formatCurrency(fee.amount * (fee.quantity || 1))}
-                </span>
+                <span>{fee.name}</span>
+                <span>{formatCurrency(fee.amount)}</span>
               </div>
             ))}
             {mandatoryFeesTotal > 0 && (
@@ -122,7 +125,7 @@ const PaymentSummary = ({
         <div className="border-t border-gray-300 mt-2 pt-2">
           <div className="flex justify-between font-semibold">
             <span>Total Rental Cost</span>
-            <span>{formatCurrency(totalCost)}</span>
+            <span>{formatCurrency(displayTotalCost)}</span>
           </div>
           
           {payment > 0 && (

@@ -333,13 +333,19 @@ const PaymentSuccess = () => {
                 sessionData?.totalRateAfterDiscount || 
                 basePrice;
 
+              let rentalDaysFromDates = 1;
+              if (bookingInfo.pickupdate && bookingInfo.dropoffdate) {
+                rentalDaysFromDates = calculateRentalDuration(
+                  bookingInfo.pickupdate, 
+                  bookingInfo.dropoffdate
+                );
+              }
+              
               const numberofdays = typeof bookingInfo.numberofdays === 'string' ? 
                 parseInt(bookingInfo.numberofdays) : 
                 bookingInfo.numberofdays || 
-                (sessionData?.pickupDate && sessionData?.dropoffDate ?
-                  calculateRentalDuration(sessionData.pickupDate, sessionData.dropoffDate) : 
-                  1);
-                  
+                rentalDaysFromDates || 1;
+                
               console.log("Rental days calculated:", numberofdays);
 
               const dailyrate = typeof bookingInfo.dailyrate === 'string' ? 
@@ -364,16 +370,16 @@ const PaymentSuccess = () => {
                 0;
 
               const mandatoryFeesTotal = combinedMandatoryFees.reduce((sum, fee) => {
-                const quantity = fee.quantity || 1;
-                return sum + (fee.amount * quantity);
+                return sum + (fee.amount || 0);
               }, 0);
               
               const extrasTotal = (sessionData?.selectedExtras || []).reduce(
                 (sum, extra) => sum + (extra.price || 0), 
                 0
               );
+              
               const allCosts = totalcost + mandatoryFeesTotal + extrasTotal;
-              const balancedue = allCosts - payment;
+              const balanceDue = allCosts - payment;
 
               const pickupLocationFromApi = bookingInfo.pickuplocationname || 
                                           bookingInfo.pickuplocation || 
@@ -412,10 +418,14 @@ const PaymentSuccess = () => {
                 customerEmail: customerInfo.email || sessionData?.customerEmail || '',
                 customerPhone: customerInfo.phone || customerInfo.mobile || sessionData?.customerPhone || ''
               };
+              
               setBookingDetails(convertedDetails);
+              
               if (convertedDetails.pickupDate && convertedDetails.dropoffDate) {
                 const days = calculateRentalDuration(convertedDetails.pickupDate, convertedDetails.dropoffDate);
-                setRentalDuration(days);
+                setRentalDuration(days || 1);
+              } else {
+                setRentalDuration(numberofdays || 1);
               }
               
               console.log("Booking details set from API:", convertedDetails);
@@ -471,9 +481,10 @@ const PaymentSuccess = () => {
             dropoff: dropoffLocationFromSession
           });
 
-          const numberofdays = cleanedSessionData.numberofdays || 
-            (cleanedSessionData.pickupDate && cleanedSessionData.dropoffDate ? 
-              calculateRentalDuration(cleanedSessionData.pickupDate, cleanedSessionData.dropoffDate) : 1);
+          const rentalDaysFromDates = cleanedSessionData.pickupDate && cleanedSessionData.dropoffDate ? 
+            calculateRentalDuration(cleanedSessionData.pickupDate, cleanedSessionData.dropoffDate) : 1;
+              
+          const numberofdays = cleanedSessionData.numberofdays || rentalDaysFromDates || 1;
               
           console.log("Rental days calculated from session:", numberofdays);
 
@@ -489,16 +500,16 @@ const PaymentSuccess = () => {
           console.log("Total cost from session:", totalcost);
 
           const paymentAmount = paymentStatus === "success" ? 
-            (cleanedSessionData.payment || cleanedSessionData.paymentAmount || 1) : 0;
+            (cleanedSessionData.payment || cleanedSessionData.paymentAmount || 0) : 0;
           
           const mandatoryFeesWithQuantity = (cleanedSessionData.mandatoryFees || []).map(fee => ({
             ...fee,
             amount: fee.totalfeeamount || fee.amount || 0,
-            quantity: fee.qty || fee.quantity || 1
+            quantity: 1
           }));
           
           const mandatoryFeesTotal = mandatoryFeesWithQuantity.reduce(
-            (sum, fee) => sum + (fee.totalfeeamount || (fee.amount * (fee.quantity || 1))), 
+            (sum, fee) => sum + (fee.amount || 0), 
             0
           );
           
@@ -544,7 +555,7 @@ const PaymentSuccess = () => {
             numberofdays: numberofdays,
             dailyrate: dailyrate,
             totalcost: totalcost,
-            payment: paymentStatus === "success" ? (cleanedSessionData.payment || cleanedSessionData.paymentAmount || 0) : 0,
+            payment: paymentAmount,
             balancedue: balanceDue,
             pickupLocationId: cleanedSessionData.pickupLocationId,
             dropoffLocationId: cleanedSessionData.dropoffLocationId,
@@ -559,7 +570,9 @@ const PaymentSuccess = () => {
           
           if (convertedDetails.pickupDate && convertedDetails.dropoffDate) {
             const days = calculateRentalDuration(convertedDetails.pickupDate, convertedDetails.dropoffDate);
-            setRentalDuration(days);
+            setRentalDuration(days || 1);
+          } else {
+            setRentalDuration(numberofdays || 1);
           }
           
           console.log("Booking details set from session:", convertedDetails);
@@ -686,7 +699,7 @@ const PaymentSuccess = () => {
       if (isValid(pickup) && isValid(dropoff)) {
         const days = differenceInDays(dropoff, pickup) + 1;
         console.log(`Rental duration calculated: ${days} days`);
-        return days > 0 ? days : 0;
+        return days > 0 ? days : 1;
       } else {
         console.error("Invalid date format for duration calculation:", { pickupDate, dropoffDate });
         return 1;

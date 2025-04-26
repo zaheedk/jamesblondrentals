@@ -34,7 +34,14 @@ const PaymentStatusHeader = ({ status, errorMessage, transactionId, reservationR
         <FrownIcon className="h-12 w-12 text-red-500" />
       </div>
       <h1 className="text-3xl font-bold mb-2">Payment Failed</h1>
-      {/* Error message alert removed on purpose */}
+      
+      {errorMessage && (
+        <Alert variant="destructive" className="mb-4">
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>{errorMessage}</AlertDescription>
+        </Alert>
+      )}
+      
       <p className="text-gray-600 mb-4">
         Transaction ID: {transactionId || "N/A"}
       </p>
@@ -43,4 +50,3 @@ const PaymentStatusHeader = ({ status, errorMessage, transactionId, reservationR
 };
 
 export default PaymentStatusHeader;
-

@@ -23,7 +23,7 @@ const RentalDetails = ({
   dropoffTime,
   rentalDuration,
 }: RentalDetailsProps) => {
-  // Ensure we have valid location names to display
+  // Always ensure we have location names to display, regardless of payment status
   const displayPickupLocation = pickupLocationName && pickupLocationName !== "undefined" ? 
     pickupLocationName : "Not specified";
   
@@ -78,14 +78,12 @@ const RentalDetails = ({
           </div>
         </div>
         
-        {rentalDuration > 0 && (
-          <div className="flex items-center mt-2">
-            <Calendar className="h-4 w-4 mr-2" />
-            <p className="text-sm text-gray-600">
-              Total Rental Duration: <span className="font-medium">{rentalDuration} {rentalDuration === 1 ? 'day' : 'days'}</span>
-            </p>
-          </div>
-        )}
+        <div className="flex items-center mt-2">
+          <Calendar className="h-4 w-4 mr-2" />
+          <p className="text-sm text-gray-600">
+            Total Rental Duration: <span className="font-medium">{rentalDuration > 0 ? rentalDuration : 1} {rentalDuration === 1 ? 'day' : 'days'}</span>
+          </p>
+        </div>
       </div>
     </div>
   );
