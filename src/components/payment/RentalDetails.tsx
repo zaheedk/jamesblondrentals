@@ -51,11 +51,15 @@ const RentalDetails = ({
             <div>
               <p className="font-medium">Pickup Location</p>
               <p className="text-gray-700 font-bold">{displayPickupLocation}</p>
-              <div className="flex items-center mt-1">
-                <Calendar className="h-4 w-4 mr-1" />
-                <p className="text-sm text-gray-600 mr-2">{formattedPickupDate}</p>
-                <Clock className="h-4 w-4 mr-1" />
-                <p className="text-sm text-gray-600">{pickupTime}</p>
+              <div className="flex items-center mt-1 flex-wrap">
+                <div className="flex items-center whitespace-nowrap mr-2">
+                  <Calendar className="h-4 w-4 mr-1 flex-shrink-0" />
+                  <p className="text-sm text-gray-600">{formattedPickupDate}</p>
+                </div>
+                <div className="flex items-center whitespace-nowrap">
+                  <Clock className="h-4 w-4 mr-1 flex-shrink-0" />
+                  <p className="text-sm text-gray-600">{pickupTime}</p>
+                </div>
               </div>
             </div>
           </div>
@@ -64,11 +68,15 @@ const RentalDetails = ({
             <div>
               <p className="font-medium">Drop-off Location</p>
               <p className="text-gray-700 font-bold">{displayDropoffLocation}</p>
-              <div className="flex items-center mt-1">
-                <Calendar className="h-4 w-4 mr-1" />
-                <p className="text-sm text-gray-600 mr-2">{formattedDropoffDate}</p>
-                <Clock className="h-4 w-4 mr-1" />
-                <p className="text-sm text-gray-600">{dropoffTime}</p>
+              <div className="flex items-center mt-1 flex-wrap">
+                <div className="flex items-center whitespace-nowrap mr-2">
+                  <Calendar className="h-4 w-4 mr-1 flex-shrink-0" />
+                  <p className="text-sm text-gray-600">{formattedDropoffDate}</p>
+                </div>
+                <div className="flex items-center whitespace-nowrap">
+                  <Clock className="h-4 w-4 mr-1 flex-shrink-0" />
+                  <p className="text-sm text-gray-600">{dropoffTime}</p>
+                </div>
               </div>
             </div>
           </div>
