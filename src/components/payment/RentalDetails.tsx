@@ -23,7 +23,6 @@ const RentalDetails = ({
   dropoffTime,
   rentalDuration,
 }: RentalDetailsProps) => {
-  // Always ensure we have location names to display, regardless of payment status
   const displayPickupLocation = pickupLocationName && pickupLocationName !== "undefined" && pickupLocationName !== "null" ? 
     pickupLocationName : "Not specified";
   
@@ -48,34 +47,43 @@ const RentalDetails = ({
         <div className="flex flex-col md:flex-row md:space-x-8">
           <div className="flex items-start gap-2 flex-1 mb-4 md:mb-0">
             <MapPin className="h-4 w-4 mt-1" />
-            <div>
+            <div className="flex-1">
               <p className="font-medium">Pickup Location</p>
               <p className="text-gray-700 font-bold">{displayPickupLocation}</p>
-              <div className="flex items-center mt-1 flex-wrap">
-                <div className="flex items-center whitespace-nowrap mr-2">
-                  <Calendar className="h-4 w-4 mr-1 flex-shrink-0" />
-                  <p className="text-sm text-gray-600">{formattedPickupDate}</p>
+              <div className="grid grid-cols-2 gap-2 mt-2">
+                <div className="bg-white border rounded p-2">
+                  <div className="flex items-center gap-1">
+                    <Calendar className="h-4 w-4 text-gray-500" />
+                    <p className="text-sm text-gray-600">{formattedPickupDate}</p>
+                  </div>
                 </div>
-                <div className="flex items-center whitespace-nowrap">
-                  <Clock className="h-4 w-4 mr-1 flex-shrink-0" />
-                  <p className="text-sm text-gray-600">{pickupTime}</p>
+                <div className="bg-white border rounded p-2">
+                  <div className="flex items-center gap-1">
+                    <Clock className="h-4 w-4 text-gray-500" />
+                    <p className="text-sm text-gray-600">{pickupTime}</p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+          
           <div className="flex items-start gap-2 flex-1">
             <MapPin className="h-4 w-4 mt-1" />
-            <div>
+            <div className="flex-1">
               <p className="font-medium">Drop-off Location</p>
               <p className="text-gray-700 font-bold">{displayDropoffLocation}</p>
-              <div className="flex items-center mt-1 flex-wrap">
-                <div className="flex items-center whitespace-nowrap mr-2">
-                  <Calendar className="h-4 w-4 mr-1 flex-shrink-0" />
-                  <p className="text-sm text-gray-600">{formattedDropoffDate}</p>
+              <div className="grid grid-cols-2 gap-2 mt-2">
+                <div className="bg-white border rounded p-2">
+                  <div className="flex items-center gap-1">
+                    <Calendar className="h-4 w-4 text-gray-500" />
+                    <p className="text-sm text-gray-600">{formattedDropoffDate}</p>
+                  </div>
                 </div>
-                <div className="flex items-center whitespace-nowrap">
-                  <Clock className="h-4 w-4 mr-1 flex-shrink-0" />
-                  <p className="text-sm text-gray-600">{dropoffTime}</p>
+                <div className="bg-white border rounded p-2">
+                  <div className="flex items-center gap-1">
+                    <Clock className="h-4 w-4 text-gray-500" />
+                    <p className="text-sm text-gray-600">{dropoffTime}</p>
+                  </div>
                 </div>
               </div>
             </div>
