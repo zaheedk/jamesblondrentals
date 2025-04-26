@@ -23,6 +23,7 @@ interface PaymentSummaryProps {
   selectedExtras?: Extra[];
   mandatoryFees?: MandatoryFee[];
   totalCost: number;
+  bookingInfoTotalCost?: number;
   payment: number;
   balanceDue: number;
 }
@@ -37,6 +38,7 @@ const PaymentSummary = ({
   selectedExtras = [],
   mandatoryFees = [],
   totalCost,
+  bookingInfoTotalCost,
   payment,
   balanceDue,
 }: PaymentSummaryProps) => {
@@ -52,7 +54,8 @@ const PaymentSummary = ({
   
   const calculatedTotalCost = (dailyRate * effectiveRentalDays) + mandatoryFeesTotal + totalOptionalFees;
   
-  const displayTotalCost = totalCost > 0 ? totalCost : calculatedTotalCost;
+  const displayTotalCost = bookingInfoTotalCost || 
+    (totalCost > 0 ? totalCost : calculatedTotalCost);
   
   const calculatedBalanceDue = balanceDue >= 0 ? balanceDue : Math.max(0, displayTotalCost - payment);
 

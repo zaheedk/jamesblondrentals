@@ -27,7 +27,8 @@ const PaymentOptions = () => {
   const [imageError, setImageError] = useState(false);
   const [rentalDays, setRentalDays] = useState(1);
   const [totalCost, setTotalCost] = useState(0);
-  
+  const [bookingInfoTotalCost, setBookingInfoTotalCost] = useState<number | undefined>(undefined);
+
   const { useLocationDetails } = useRcmApi();
   const { data: locationDetails } = useLocationDetails();
 
@@ -147,7 +148,6 @@ const PaymentOptions = () => {
       });
     }
 
-    // Calculate total cost including mandatory fees
     const mandatoryTotal = (bookingData.mandatoryFees || []).reduce(
       (sum: number, fee: any) => sum + fee.amount,
       0
@@ -176,6 +176,20 @@ const PaymentOptions = () => {
       });
       
       console.log("Booking info API response:", response);
+      
+      const apiResponse = response as { 
+        status: string, 
+        results?: { 
+          totalcost?: number, 
+          customerinfo?: any[] 
+        }, 
+        error?: string 
+      };
+      
+      if (apiResponse.status === "OK" && apiResponse.results?.totalcost) {
+        setBookingInfoTotalCost(apiResponse.results.totalcost);
+        console.log("Set booking info total cost:", apiResponse.results.totalcost);
+      }
       
     } catch (error) {
       console.error("Failed to fetch booking details:", error);
@@ -329,7 +343,6 @@ const PaymentOptions = () => {
     setIsLoading(true);
     
     try {
-      // Use totalCost instead of totalAmount for full payment
       const amountToPay = paymentType === "deposit" ? DEPOSIT_AMOUNT : totalCost;
       
       updateBookingData({
@@ -394,6 +407,7 @@ const PaymentOptions = () => {
             selectedExtras={bookingDetails?.selectedExtras}
             mandatoryFees={bookingDetails?.mandatoryFees}
             totalCost={totalCost}
+            bookingInfoTotalCost={bookingInfoTotalCost}
             payment={paymentType === "deposit" ? DEPOSIT_AMOUNT : totalCost}
             balanceDue={paymentType === "deposit" ? totalCost - DEPOSIT_AMOUNT : 0}
           />
