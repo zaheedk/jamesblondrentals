@@ -14,6 +14,7 @@ import { rcmApi } from "@/lib/api/rcm-api";
 import { RCMBookingResponse } from "@/lib/api/rcm-api-types";
 import { format, addDays } from "date-fns";
 import { useRcmApi } from "@/hooks/use-rcm-api";
+import DebugInfo from "@/components/payment/DebugInfo";
 
 const DEPOSIT_AMOUNT = 50;
 
@@ -28,6 +29,7 @@ const PaymentOptions = () => {
   const [rentalDays, setRentalDays] = useState(1);
   const [totalCost, setTotalCost] = useState(0);
   const [bookingInfoTotalCost, setBookingInfoTotalCost] = useState<number | undefined>(undefined);
+  const [apiResponse, setApiResponse] = useState<any>(null);
 
   const { useLocationDetails } = useRcmApi();
   const { data: locationDetails } = useLocationDetails();
@@ -176,6 +178,8 @@ const PaymentOptions = () => {
       });
       
       console.log("Booking info API response:", response);
+      
+      setApiResponse(response);
       
       const apiResponse = response as { 
         status: string, 
@@ -466,6 +470,11 @@ const PaymentOptions = () => {
             </Button>
           </form>
         </div>
+        
+        <DebugInfo 
+          apiResponse={apiResponse} 
+          bookingData={bookingDetails} 
+        />
       </div>
     </div>
   );
