@@ -363,19 +363,22 @@ const PaymentSuccess = () => {
                   0) : 
                 0;
 
-              const balancedue = typeof bookingInfo.balancedue === 'string' ? 
-                parseFloat(bookingInfo.balancedue) : 
-                bookingInfo.balancedue || 
-                (totalcost - payment) || 
-                sessionData?.balancedue || 
-                0;
+              const mandatoryFeesTotal = combinedMandatoryFees.reduce((sum, fee) => sum + fee.amount, 0) || 0;
+              const extrasTotal = (sessionData?.selectedExtras || []).reduce(
+                (sum, extra) => sum + (extra.price || 0), 
+                0
+              );
+              const allCosts = totalcost + mandatoryFeesTotal + extrasTotal;
+              const balancedue = allCosts - payment;
 
               const pickupLocationFromApi = bookingInfo.pickuplocationname || 
                                           bookingInfo.pickuplocation || 
+                                          sessionData?.pickupLocationName || 
                                           "Location not available";
                                           
               const dropoffLocationFromApi = bookingInfo.dropofflocationname || 
                                            bookingInfo.dropofflocation || 
+                                           sessionData?.dropoffLocationName || 
                                            "Location not available";
 
               const convertedDetails: BookingDetails = {
@@ -449,19 +452,15 @@ const PaymentSuccess = () => {
             }
           }
 
-          let pickupLocationFromSession = "Location not available";
-          let dropoffLocationFromSession = "Location not available";
+          let pickupLocationFromSession = cleanedSessionData.pickupLocationName || "Location not available";
+          let dropoffLocationFromSession = cleanedSessionData.dropoffLocationName || "Location not available";
           
-          if (sessionData.pickupLocationName && 
-              sessionData.pickupLocationName !== "undefined" && 
-              sessionData.pickupLocationName !== null) {
-            pickupLocationFromSession = sessionData.pickupLocationName;
+          if (pickupLocationFromSession === "undefined" || pickupLocationFromSession === null) {
+            pickupLocationFromSession = "Location not available";
           }
           
-          if (sessionData.dropoffLocationName && 
-              sessionData.dropoffLocationName !== "undefined" && 
-              sessionData.dropoffLocationName !== null) {
-            dropoffLocationFromSession = sessionData.dropoffLocationName;
+          if (dropoffLocationFromSession === "undefined" || dropoffLocationFromSession === null) {
+            dropoffLocationFromSession = "Location not available";
           }
           
           console.log("Location names from session:", {
@@ -488,6 +487,19 @@ const PaymentSuccess = () => {
 
           const paymentAmount = paymentStatus === "success" ? 
             (cleanedSessionData.payment || cleanedSessionData.paymentAmount || 1) : 0;
+          
+          const mandatoryFeesTotal = (cleanedSessionData.mandatoryFees || []).reduce(
+            (sum, fee) => sum + (fee.amount || 0), 
+            0
+          );
+          
+          const extrasTotal = (cleanedSessionData.selectedExtras || []).reduce(
+            (sum, extra) => sum + (extra.price || 0), 
+            0
+          );
+          
+          const allCosts = totalcost + mandatoryFeesTotal + extrasTotal;
+          const balanceDue = allCosts - paymentAmount;
           
           const convertedDetails: BookingDetails = {
             vehicleName: cleanedSessionData.vehicleName || 'Vehicle',
@@ -524,7 +536,7 @@ const PaymentSuccess = () => {
             dailyrate: dailyrate,
             totalcost: totalcost,
             payment: paymentStatus === "success" ? (cleanedSessionData.payment || cleanedSessionData.paymentAmount || 0) : 0,
-            balancedue: cleanedSessionData.balancedue || (totalcost - paymentAmount) || 0,
+            balancedue: balanceDue,
             pickupLocationId: cleanedSessionData.pickupLocationId,
             dropoffLocationId: cleanedSessionData.dropoffLocationId,
             vehicleCategoryId: cleanedSessionData.vehicleCategoryId,
@@ -790,8 +802,8 @@ const PaymentSuccess = () => {
 
             <RentalDetails 
               vehicleName={bookingDetails.vehicleName}
-              pickupLocationName={bookingDetails.pickupLocationName || "Location not available"}
-              dropoffLocationName={bookingDetails.dropoffLocationName || "Location not available"}
+              pickupLocationName={pickupLocationName}
+              dropoffLocationName={dropoffLocationName}
               formattedPickupDate={formattedPickupDate}
               formattedDropoffDate={formattedDropoffDate}
               pickupTime={bookingDetails.pickupTime}

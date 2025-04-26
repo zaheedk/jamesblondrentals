@@ -44,6 +44,9 @@ const PaymentSummary = ({
   const extrasTotal = selectedExtras.reduce((sum, extra) => sum + extra.price, 0);
   const mandatoryFeesTotal = mandatoryFees.reduce((sum, fee) => sum + fee.amount, 0);
   const totalOptionalFees = insurancePrice + (extraKmsPrice || 0) + extrasTotal;
+  
+  // Calculate the correct balance due which should include everything
+  const calculatedBalanceDue = totalCost - payment;
 
   return (
     <div className="bg-gray-50 rounded-lg p-4 mb-6">
@@ -117,10 +120,10 @@ const PaymentSummary = ({
                 <span className="text-green-600">{formatCurrency(payment)}</span>
               </div>
               
-              {balanceDue > 0 && (
+              {calculatedBalanceDue > 0 && (
                 <div className="flex justify-between font-medium mt-1">
                   <span>Balance Due at Pickup</span>
-                  <span>{formatCurrency(balanceDue)}</span>
+                  <span>{formatCurrency(calculatedBalanceDue)}</span>
                 </div>
               )}
             </>

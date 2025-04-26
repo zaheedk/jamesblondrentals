@@ -23,6 +23,13 @@ const RentalDetails = ({
   dropoffTime,
   rentalDuration,
 }: RentalDetailsProps) => {
+  // Ensure we have valid location names to display
+  const displayPickupLocation = pickupLocationName && pickupLocationName !== "undefined" ? 
+    pickupLocationName : "Not specified";
+  
+  const displayDropoffLocation = dropoffLocationName && dropoffLocationName !== "undefined" ? 
+    dropoffLocationName : "Not specified";
+
   return (
     <div className="bg-gray-50 rounded-lg p-4 mb-6">
       <h3 className="text-lg font-semibold mb-4">Rental Details</h3>
@@ -43,7 +50,7 @@ const RentalDetails = ({
             <MapPin className="h-4 w-4 mt-1" />
             <div>
               <p className="font-medium">Pickup Location</p>
-              <p className="text-gray-700 font-bold">{pickupLocationName || "Not specified"}</p>
+              <p className="text-gray-700 font-bold">{displayPickupLocation}</p>
               <div className="flex items-center mt-1">
                 <Calendar className="h-4 w-4 mr-1" />
                 <p className="text-sm text-gray-600">{formattedPickupDate}</p>
@@ -58,7 +65,7 @@ const RentalDetails = ({
             <MapPin className="h-4 w-4 mt-1" />
             <div>
               <p className="font-medium">Drop-off Location</p>
-              <p className="text-gray-700 font-bold">{dropoffLocationName || "Not specified"}</p>
+              <p className="text-gray-700 font-bold">{displayDropoffLocation}</p>
               <div className="flex items-center mt-1">
                 <Calendar className="h-4 w-4 mr-1" />
                 <p className="text-sm text-gray-600">{formattedDropoffDate}</p>
