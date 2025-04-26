@@ -26,7 +26,14 @@ export const DateSelect = ({
   const [open, setOpen] = useState(false);
 
   const handleDateSelect = (newDate: Date | undefined) => {
-    onDateChange(newDate);
+    if (newDate) {
+      // Ensure consistent time part when selecting a date
+      const consistentDate = new Date(newDate);
+      consistentDate.setHours(12, 0, 0, 0);
+      onDateChange(consistentDate);
+    } else {
+      onDateChange(newDate);
+    }
     setOpen(false);
   };
 

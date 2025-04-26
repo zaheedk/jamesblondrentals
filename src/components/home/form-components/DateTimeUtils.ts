@@ -1,3 +1,4 @@
+
 import { format, parse, isAfter, isBefore, addDays, addHours, addMinutes } from "date-fns";
 import { 
   RCMLocation, 
@@ -140,34 +141,16 @@ export const combineDateTime = (date: Date, time: string): Date => {
 };
 
 export const getDefaultPickupDate = (): Date => {
-  const now = new Date();
-  const hours = now.getHours();
-  const minutes = now.getMinutes();
-  
-  // Round up to the next 30-minute interval and add 2 hours for processing
-  const roundedMinutes = Math.ceil(minutes / 30) * 30;
-  let defaultDate = addMinutes(now, roundedMinutes - minutes);
-  defaultDate = addHours(defaultDate, 2);
-  
-  // If it's before 8 AM, set time to 8 AM today
-  if (hours < 8) {
-    defaultDate.setHours(8, 0, 0, 0);
-    return defaultDate;
-  }
-  
-  // If it's after 5 PM (17:00), set to 8 AM tomorrow
-  if (hours >= 17) {
-    defaultDate = addDays(new Date(), 1);
-    defaultDate.setHours(8, 0, 0, 0);
-    return defaultDate;
-  }
-  
-  // Return the rounded time (current time + 2 hours, rounded to next 30 mins)
-  defaultDate.setSeconds(0);
-  defaultDate.setMilliseconds(0);
-  return defaultDate;
+  // Get tomorrow at noon (12:00)
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(12, 0, 0, 0);
+  return tomorrow;
 };
 
 export const getDefaultDropoffDate = (pickupDate: Date): Date => {
-  return addDays(pickupDate, 1);
+  // Return pickup date + 1 day at the same time
+  const dropoffDate = new Date(pickupDate);
+  dropoffDate.setDate(dropoffDate.getDate() + 1);
+  return dropoffDate;
 };
