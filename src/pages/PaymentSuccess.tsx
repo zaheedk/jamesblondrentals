@@ -396,6 +396,10 @@ const PaymentSuccess = () => {
               
               const allCosts = totalcost + mandatoryFeesTotal + extrasTotal;
               const balanceDue = allCosts - payment;
+              
+              const apiBalanceDue = typeof bookingInfo.balancedue === 'string' 
+                ? parseFloat(bookingInfo.balancedue) 
+                : bookingInfo.balancedue;
 
               const calculatedBalanceDue = balanceDue > 0 ? balanceDue : 0;
 
@@ -420,7 +424,7 @@ const PaymentSuccess = () => {
                 dailyrate: dailyrate,
                 totalcost: totalcost,
                 payment: payment,
-                balancedue: balanceDue,
+                balancedue: apiBalanceDue ?? calculatedBalanceDue,
                 customerFirstName: customerInfo.firstname || sessionData?.customerFirstName || '',
                 customerLastName: customerInfo.lastname || sessionData?.customerLastName || '',
                 customerEmail: customerInfo.email || sessionData?.customerEmail || '',

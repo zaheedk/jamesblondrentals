@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { formatCurrency } from '@/lib/utils';
 
@@ -41,27 +40,25 @@ const PaymentSummary = ({
   payment,
   balanceDue,
 }: PaymentSummaryProps) => {
-  // Ensure we always have valid rental days
   const effectiveRentalDays = Math.max(1, rentalDays || 1);
   
   const extrasTotal = selectedExtras.reduce((sum, extra) => sum + extra.price, 0);
   
-  // Calculate mandatory fees with quantity support
   const mandatoryFeesTotal = mandatoryFees.reduce((sum, fee) => {
-    // For mandatory fees, we can use the fee amount directly since we set quantity to 1
     return sum + (fee.amount || 0);
   }, 0);
   
   const totalOptionalFees = insurancePrice + (extraKmsPrice || 0) + extrasTotal;
   
-  // Calculate the total cost (rental + all fees)
   const calculatedTotalCost = (dailyRate * effectiveRentalDays) + mandatoryFeesTotal + totalOptionalFees;
   
-  // Use the calculated total cost if the provided totalCost is invalid
   const displayTotalCost = totalCost > 0 ? totalCost : calculatedTotalCost;
   
-  // Calculate the correct balance due
   const calculatedBalanceDue = balanceDue >= 0 ? balanceDue : Math.max(0, displayTotalCost - payment);
+
+  const displayBalanceDue = typeof balanceDue === 'number' && balanceDue >= 0 
+    ? balanceDue 
+    : calculatedBalanceDue;
 
   return (
     <div className="bg-gray-50 rounded-lg p-4 mb-6">
@@ -135,10 +132,10 @@ const PaymentSummary = ({
                 <span className="text-green-600">{formatCurrency(payment)}</span>
               </div>
               
-              {calculatedBalanceDue > 0 && (
+              {displayBalanceDue > 0 && (
                 <div className="flex justify-between font-medium mt-1">
                   <span>Balance Due at Pickup</span>
-                  <span>{formatCurrency(calculatedBalanceDue)}</span>
+                  <span>{formatCurrency(displayBalanceDue)}</span>
                 </div>
               )}
             </>
