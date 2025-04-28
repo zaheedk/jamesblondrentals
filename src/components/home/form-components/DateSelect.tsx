@@ -14,6 +14,7 @@ interface DateSelectProps {
   date: Date | undefined;
   onDateChange: (date: Date | undefined) => void;
   disableDate?: (date: Date) => boolean;
+  locationId?: string;
 }
 
 export const DateSelect = ({
@@ -21,7 +22,8 @@ export const DateSelect = ({
   label,
   date,
   onDateChange,
-  disableDate
+  disableDate,
+  locationId
 }: DateSelectProps) => {
   const [open, setOpen] = useState(false);
 
@@ -35,6 +37,31 @@ export const DateSelect = ({
       onDateChange(newDate);
     }
     setOpen(false);
+  };
+
+  // Check if the date is Sunday and if the location is Wellington - CBD
+  const isWellingtonSunday = (date: Date) => {
+    // We don't have the location names here, so we need to check by the ID
+    // Wellington - CBD is likely to have a specific ID that we need to identify
+    const isWellingtonLocation = locationId && 
+      ["63", "64", "65"].includes(locationId); // These IDs should be verified
+
+    if (isWellingtonLocation && date.getDay() === 0) { // 0 is Sunday
+      return true;
+    }
+    return false;
+  };
+
+  const combinedDisabledDate = (date: Date) => {
+    if (disableDate && disableDate(date)) {
+      return true;
+    }
+    
+    if (isWellingtonSunday(date)) {
+      return true;
+    }
+    
+    return false;
   };
 
   return (
@@ -60,7 +87,7 @@ export const DateSelect = ({
             selected={date}
             onSelect={handleDateSelect}
             initialFocus
-            disabled={disableDate}
+            disabled={combinedDisabledDate}
             className="p-3 pointer-events-auto"
           />
         </PopoverContent>

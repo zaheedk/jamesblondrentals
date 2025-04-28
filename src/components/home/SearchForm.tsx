@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -338,6 +337,7 @@ const SearchForm = () => {
                 date={pickupDate}
                 onDateChange={handlePickupDateChange}
                 disableDate={(date) => disablePastDates(date, pickupLocation, locationDetails)}
+                locationId={pickupLocation}
               />
 
               <TimeSelect
@@ -357,6 +357,7 @@ const SearchForm = () => {
                 date={dropoffDate}
                 onDateChange={setDropoffDate}
                 disableDate={(date) => isBefore(date, minDropoffDate)}
+                locationId={sameLocation ? pickupLocation : dropoffLocation}
               />
 
               <TimeSelect

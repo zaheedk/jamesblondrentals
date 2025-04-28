@@ -14,6 +14,18 @@ export const disablePastDates = (date: Date, locationId: string, locationDetails
     return true;
   }
   
+  // Check for Wellington - CBD and disable Sundays
+  const isWellingtonCBD = locationId && locationDetails.some(loc => 
+    String(loc.id) === locationId && 
+    loc.location?.toLowerCase().includes('wellington') && 
+    loc.location?.toLowerCase().includes('cbd')
+  );
+  
+  if (isWellingtonCBD && date.getDay() === 0) {
+    console.log('Disabling Sunday for Wellington - CBD');
+    return true;
+  }
+  
   if (locationId && locationDetails.length > 0) {
     const selectedLocationDetail = locationDetails.find(loc => String(loc.id) === locationId);
     
@@ -47,6 +59,21 @@ export const getLocationTimeOptions = (
     return [];
   }
   
+  // Check for Wellington - CBD Sunday restriction
+  const isWellingtonCBD = locationDetails.some(loc => 
+    String(loc.id) === locationId && 
+    loc.location?.toLowerCase().includes('wellington') && 
+    loc.location?.toLowerCase().includes('cbd')
+  );
+  
+  const dayOfWeek = date.getDay();
+  
+  // Wellington - CBD is closed on Sundays (day 0)
+  if (isWellingtonCBD && dayOfWeek === 0) {
+    console.log('Wellington - CBD is closed on Sundays');
+    return [];
+  }
+  
   const location = locationDetails.find(loc => String(loc.id) === locationId);
   if (!location) {
     console.log(`Location ${locationId} not found in location details. Using default hours.`);
@@ -56,8 +83,6 @@ export const getLocationTimeOptions = (
 
   console.log(`Location ${locationId} requires ${location.noticerequired_numberofdays} days notice`);
 
-  const dayOfWeek = date.getDay();
-  
   // First try to find hours for the specific day
   let hoursForLocation = officeHours.find(
     hour => String(hour.locationid) === locationId && hour.dayofweek === dayOfWeek
