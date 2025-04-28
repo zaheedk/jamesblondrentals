@@ -32,41 +32,74 @@ export const LocationSelect = ({
     const location = locations.find(loc => String(loc.id) === locationId);
     return location ? location.name : "";
   };
+  
+  // Function to detect if user is in Wellington region
+  const checkWellingtonRegion = async () => {
+    try {
+      const response = await fetch('https://ipapi.co/json/');
+      const data = await response.json();
+      return data.region?.toLowerCase().includes('wellington') && data.country === 'NZ';
+    } catch (error) {
+      console.error('Error detecting location:', error);
+      return false;
+    }
+  };
 
-  // Set default to Kelston when locations are loaded
+  // Set default location based on user's region
   useEffect(() => {
     if (locations.length > 0 && !value) {
-      console.log("LocationSelect: Looking for Kelston in", locations.map(loc => loc.name));
+      const setDefaultLocation = async () => {
+        const isWellington = await checkWellingtonRegion();
+        
+        if (isWellington) {
+          console.log("User is in Wellington region, setting Wellington CBD as default");
+          const wellingtonLocation = locations.find(loc => 
+            loc.name.toLowerCase().includes('wellington') && 
+            loc.name.toLowerCase().includes('cbd')
+          );
+          
+          if (wellingtonLocation) {
+            console.log(`Setting default location to Wellington CBD:`, wellingtonLocation.id);
+            onValueChange(String(wellingtonLocation.id));
+            return;
+          }
+        }
+        
+        // If not Wellington or Wellington location not found, fallback to previous logic
+        console.log("Using default location fallback logic");
+        
+        // Prioritize Kelston location
+        const kelstonLocation = locations.find(loc => 
+          loc.name.toLowerCase().includes('kelston')
+        );
+        
+        if (kelstonLocation) {
+          console.log(`Setting default location to Kelston:`, kelstonLocation.id);
+          onValueChange(String(kelstonLocation.id));
+          return;
+        } 
+        
+        // Use Auckland Airport as fallback only if Kelston isn't found
+        console.log("Kelston location not found, looking for alternatives");
+        const aucklandAirportLocation = locations.find(loc => 
+          loc.name.toLowerCase().includes('auckland') && 
+          loc.name.toLowerCase().includes('airport')
+        );
+        
+        if (aucklandAirportLocation) {
+          console.log(`Setting default location to Auckland Airport:`, aucklandAirportLocation.id);
+          onValueChange(String(aucklandAirportLocation.id));
+          return;
+        }
+        
+        // Last resort: use first available location
+        if (locations[0]) {
+          console.log(`Setting default location to first available:`, locations[0].id);
+          onValueChange(String(locations[0].id));
+        }
+      };
       
-      // Prioritize Kelston location
-      const kelstonLocation = locations.find(loc => 
-        loc.name.toLowerCase().includes('kelston')
-      );
-      
-      if (kelstonLocation) {
-        console.log(`Setting default location to Kelston:`, kelstonLocation.id);
-        onValueChange(String(kelstonLocation.id));
-        return;
-      } 
-      
-      // Use Auckland Airport as fallback only if Kelston isn't found
-      console.log("Kelston location not found, looking for alternatives");
-      const aucklandAirportLocation = locations.find(loc => 
-        loc.name.toLowerCase().includes('auckland') && 
-        loc.name.toLowerCase().includes('airport')
-      );
-      
-      if (aucklandAirportLocation) {
-        console.log(`Setting default location to Auckland Airport:`, aucklandAirportLocation.id);
-        onValueChange(String(aucklandAirportLocation.id));
-        return;
-      }
-      
-      // Last resort: use first available location
-      if (locations[0]) {
-        console.log(`Setting default location to first available:`, locations[0].id);
-        onValueChange(String(locations[0].id));
-      }
+      setDefaultLocation();
     }
   }, [locations, value, onValueChange]);
 
