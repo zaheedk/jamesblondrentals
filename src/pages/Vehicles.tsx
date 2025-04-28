@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useLocation } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -12,7 +11,7 @@ import { RCMAvailableCar, RCMMandatoryFee, RCMSeasonalRate } from "@/lib/api/rcm
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle, ChevronDown, ChevronUp } from "lucide-react";
+import { AlertCircle, ChevronDown, ChevronUp, Bug } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
 
@@ -31,6 +30,8 @@ const Vehicles = () => {
   const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [hasAttemptedRefresh, setHasAttemptedRefresh] = useState(false);
+  const [showApiResponse, setShowApiResponse] = useState(false);
+  const [apiResponse, setApiResponse] = useState<any>(null);
   const { useDriverAges, useStep2Vehicles, useVehicleCategories, useLocations } = useRcmApi();
   const { data: driverAges, isLoading: isLoadingAges, error: driverAgesError } = useDriverAges();
   const { data: categoryTypes } = useVehicleCategories();
@@ -76,7 +77,6 @@ const Vehicles = () => {
   } : null;
 
   const { data: step2Data, isLoading: isLoadingStep2, error: step2Error, refetch: refetchStep2 } = useStep2Vehicles(step2Params);
-  const [apiResponse, setApiResponse] = useState<any>(null);
 
   useEffect(() => {
     const shouldRefetchData = Boolean(
@@ -98,7 +98,6 @@ const Vehicles = () => {
       window.history.replaceState({}, document.title);
     }
 
-    // Reset category filter when coming back from insurance page with resetCategoryFilter flag
     if (location.state?.resetCategoryFilter) {
       console.log("Resetting category filters after returning from insurance page");
       setSelectedVehicleTypes([]);
@@ -118,6 +117,8 @@ const Vehicles = () => {
       setIsLoading(false);
       
       const { availablecars, seasonalrates, mandatoryfees } = step2Data.results;
+      
+      setApiResponse(step2Data);
       
       const availableStatusCounts = availablecars.reduce((acc, car) => {
         const status = car.available;
@@ -340,7 +341,22 @@ const Vehicles = () => {
                 </p>
               )}
             </div>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => setShowApiResponse(!showApiResponse)}
+              className="flex items-center gap-1"
+            >
+              <Bug className="h-4 w-4" />
+              {showApiResponse ? "Hide" : "Show"} RCM Response
+            </Button>
           </div>
+
+          {showApiResponse && apiResponse && (
+            <div className="mt-4 p-4 bg-black text-green-400 rounded overflow-auto max-h-96 text-xs font-mono">
+              <pre>{JSON.stringify(apiResponse, null, 2)}</pre>
+            </div>
+          )}
 
           {hasApiError && !hasAttemptedRefresh && (
             <Alert variant="destructive" className="mt-4">
