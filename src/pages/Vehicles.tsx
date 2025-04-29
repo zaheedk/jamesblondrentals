@@ -116,8 +116,6 @@ const Vehicles = () => {
       
       const { availablecars, seasonalrates, mandatoryfees } = step2Data.results;
       
-      setApiResponse(step2Data);
-      
       const availableStatusCounts = availablecars.reduce((acc, car) => {
         const status = car.available;
         acc[status] = (acc[status] || 0) + 1;
