@@ -17,6 +17,7 @@ import PaymentOptions from "./pages/PaymentOptions";
 import Payment from "./pages/Payment";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import About from "./pages/About";
+import Contact from "./pages/Contact"; // Add the new Contact page
 import ContactAuckland from "./pages/ContactAuckland";
 import ContactWellington from "./pages/ContactWellington";
 import ContactChristchurch from "./pages/ContactChristchurch";
@@ -57,6 +58,7 @@ const App = () => {
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} /> {/* Add the main contact route */}
               <Route path="/vehicles" element={<Vehicles />} />
               <Route path="/vehicle/:id" element={<VehicleDetail />} />
               <Route path="/booking" element={<Booking />} />

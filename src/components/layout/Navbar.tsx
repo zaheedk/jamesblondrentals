@@ -122,37 +122,9 @@ const Navbar = () => {
             <Link to="/faq" className="text-gray-600 hover:text-primary transition-colors font-bold">
               FAQ
             </Link>
-            <NavigationMenu>
-              <NavigationMenuList>
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger className="text-gray-600 hover:text-primary transition-colors bg-transparent font-bold">
-                    Contact
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <div className="w-48 p-2">
-                      <Link 
-                        to="/contact/auckland" 
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
-                      >
-                        Auckland
-                      </Link>
-                      <Link 
-                        to="/contact/wellington" 
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
-                      >
-                        Wellington
-                      </Link>
-                      <Link 
-                        to="/contact/christchurch" 
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
-                      >
-                        Christchurch
-                      </Link>
-                    </div>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-              </NavigationMenuList>
-            </NavigationMenu>
+            <Link to="/contact" className="text-gray-600 hover:text-primary transition-colors font-bold">
+              Contact
+            </Link>
             <Link to="/about" className="text-gray-600 hover:text-primary transition-colors font-bold">
               About
             </Link>
@@ -209,6 +181,9 @@ const Navbar = () => {
               </div>
               <Link to="/faq" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>
                 FAQ
+              </Link>
+              <Link to="/contact" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>
+                Contact
               </Link>
               <div className="py-2 pl-4 space-y-2">
                 <p className="font-medium text-gray-600">Contact:</p>
