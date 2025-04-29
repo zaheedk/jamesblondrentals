@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Facebook, Instagram, Twitter } from "lucide-react";
 import { useLocation } from "react-router-dom";
@@ -97,7 +96,7 @@ const Footer = () => {
               <p>4004 Great North Road</p>
               <p>Glen Eden, Auckland 0602</p>
               <p className="mt-2">Phone: 0800 525 663</p>
-              <p>Email: info@jamesblondrentals.com</p>
+              <p>Email: info@jamesblond.co.nz</p>
             </address>
           </div>
         </div>
