@@ -15,7 +15,7 @@ const Hero = () => {
       <div className="container mx-auto px-4 py-16 sm:py-24 md:py-32 relative z-10">
         <div className="max-w-3xl mx-auto text-center mb-8">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white">
-            Premium Car Rentals for Your Journey
+            Premium Car, Van and Truck Rentals for Your Journey
           </h1>
           <p className="text-lg md:text-xl text-white/90 mb-8">
             Explore our fleet of luxury and economy vehicles for any occasion.
