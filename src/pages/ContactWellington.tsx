@@ -66,8 +66,12 @@ const ContactWellington = () => {
             <h2 className="text-2xl font-semibold mb-6">Opening Hours</h2>
             <div className="space-y-2">
               <div className="flex justify-between">
-                <span className="font-medium">Monday - Sunday:</span>
+                <span className="font-medium">Monday - Saturday:</span>
                 <span>8:00 AM - 5:00 PM</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium">Sunday:</span>
+                <span>Closed</span>
               </div>
               <div className="mt-4 text-sm text-gray-600">
                 <p>After hours pick up and drop off available on request</p>
