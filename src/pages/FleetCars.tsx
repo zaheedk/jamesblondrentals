@@ -1,9 +1,12 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Link } from "react-router-dom";
 
 const cars = [
   {
+    id: "premium-seven-seat-suv",
     category: "PREMIUM 7-SEAT AWD SUV",
     model: "KIA Sorento 2.2L Diesel",
     features: [
@@ -146,6 +149,15 @@ const FleetCars = () => (
               ))}
             </ul>
           </CardContent>
+          <CardFooter>
+            {car.id ? (
+              <Link to={`/fleet/cars/${car.id}`} className="w-full">
+                <Button variant="outline" className="w-full">View Details</Button>
+              </Link>
+            ) : (
+              <Button variant="outline" className="w-full" disabled>Coming Soon</Button>
+            )}
+          </CardFooter>
         </Card>
       ))}
     </div>

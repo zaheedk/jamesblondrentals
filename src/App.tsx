@@ -34,8 +34,9 @@ import PremiumVanDetail from "./pages/PremiumVanDetail";
 import StandardVanDetail from "./pages/StandardVanDetail";
 import StandardRearSeatVanDetail from "./pages/StandardRearSeatVanDetail";
 import JumboVanDetail from "./pages/JumboVanDetail";
-import SingleCabUteDetail from "./pages/SingleCabUteDetail"; // Import the new Single Cab UTE detail page
-import PremiumDoubleCabUteDetail from "./pages/PremiumDoubleCabUteDetail"; // Import the new Premium Double Cab UTE detail page
+import SingleCabUteDetail from "./pages/SingleCabUteDetail"; 
+import PremiumDoubleCabUteDetail from "./pages/PremiumDoubleCabUteDetail"; 
+import PremiumSevenSeatSUVDetail from "./pages/PremiumSevenSeatSUVDetail"; // Import the new Premium SUV detail page
 
 import Airport from "./pages/Airport";
 import AirportShuttle from "./pages/AirportShuttle";
@@ -51,7 +52,7 @@ import Privacy from "./pages/Privacy";
 import AppLayout from "./components/layout/AppLayout";
 import VanDetail from "./pages/VanDetail";
 
-import SingleCabUteDieselDetail from "./pages/SingleCabUteDieselDetail"; // Import the Single Cab UTE Diesel detail page
+import SingleCabUteDieselDetail from "./pages/SingleCabUteDieselDetail";
 
 const App = () => {
   const [queryClient] = useState(() => new QueryClient());
@@ -66,7 +67,7 @@ const App = () => {
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} /> {/* Add the main contact route */}
+              <Route path="/contact" element={<Contact />} />
               <Route path="/vehicles" element={<Vehicles />} />
               <Route path="/vehicle/:id" element={<VehicleDetail />} />
               <Route path="/booking" element={<Booking />} />
@@ -81,6 +82,7 @@ const App = () => {
 
               <Route path="/fleet" element={<Fleet />}>
                 <Route path="cars" element={<FleetCars />} />
+                <Route path="cars/premium-seven-seat-suv" element={<PremiumSevenSeatSUVDetail />} /> {/* Add new route for Premium SUV */}
                 <Route path="vans" element={<FleetVans />} />
                 <Route path="vans/:vanId" element={<VanDetail />} />
                 <Route path="vans/premium-van" element={<PremiumVanDetail />} /> 
@@ -90,7 +92,7 @@ const App = () => {
                 <Route path="utes" element={<FleetUtes />} />
                 <Route path="utes/single-cab-ute-petrol" element={<SingleCabUteDetail />} />
                 <Route path="utes/single-cab-ute-diesel" element={<SingleCabUteDieselDetail />} />
-                <Route path="utes/premium-double-cab-ute" element={<PremiumDoubleCabUteDetail />} /> {/* Add the new Premium Double Cab UTE detail route */}
+                <Route path="utes/premium-double-cab-ute" element={<PremiumDoubleCabUteDetail />} />
                 <Route path="trucks" element={<FleetTrucks />} />
                 <Route path="minibuses" element={<FleetMinibuses />} />
                 <Route path="trailers" element={<FleetTrailers />} />
