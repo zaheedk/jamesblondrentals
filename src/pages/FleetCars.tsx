@@ -81,6 +81,7 @@ const cars = [
     image: "/lovable-uploads/733eee77-e3c1-45e2-a28a-a44ef4299df4.png"
   },
   {
+    id: "premium-economy",
     category: "PREMIUM ECONOMY",
     model: "Suzuki Swift 1.3L",
     features: [
