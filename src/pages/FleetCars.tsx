@@ -51,6 +51,7 @@ const cars = [
     image: "/lovable-uploads/bdb0efeb-afa5-4ce7-b1fc-aace84a0222f.png"
   },
   {
+    id: "premium-awd-suv",
     category: "PREMIUM AWD SUV",
     model: "Toyota Highlander 3.5L V6",
     features: [
