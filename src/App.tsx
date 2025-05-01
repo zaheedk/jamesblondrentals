@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -50,6 +49,8 @@ import Privacy from "./pages/Privacy";
 import AppLayout from "./components/layout/AppLayout";
 import VanDetail from "./pages/VanDetail";
 
+import SingleCabUteDieselDetail from "./pages/SingleCabUteDieselDetail"; // Import the new Single Cab UTE Diesel detail page
+
 const App = () => {
   const [queryClient] = useState(() => new QueryClient());
 
@@ -85,7 +86,8 @@ const App = () => {
                 <Route path="vans/standard-rear-seat-van" element={<StandardRearSeatVanDetail />} />
                 <Route path="vans/jumbo-van" element={<JumboVanDetail />} />
                 <Route path="utes" element={<FleetUtes />} />
-                <Route path="utes/single-cab-ute-petrol" element={<SingleCabUteDetail />} /> {/* Add the new Single Cab UTE detail route */}
+                <Route path="utes/single-cab-ute-petrol" element={<SingleCabUteDetail />} />
+                <Route path="utes/single-cab-ute-diesel" element={<SingleCabUteDieselDetail />} /> {/* Add the new Single Cab UTE Diesel detail route */}
                 <Route path="trucks" element={<FleetTrucks />} />
                 <Route path="minibuses" element={<FleetMinibuses />} />
                 <Route path="trailers" element={<FleetTrailers />} />
