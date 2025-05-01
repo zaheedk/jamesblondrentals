@@ -13,9 +13,6 @@ const PremiumSevenSeatSUVDetail = () => {
           <Link to="/fleet/cars">
             <Button variant="outline" size="sm">Back to Cars</Button>
           </Link>
-          <Link to="/booking">
-            <Button size="sm">Book Now</Button>
-          </Link>
         </div>
       </div>
 
