@@ -108,7 +108,7 @@ const FleetVans = () => (
             </ul>
           </CardContent>
           <CardFooter>
-            {/* Add links to detail pages for both Premium and Standard vans */}
+            {/* Add links to detail pages for all vans */}
             {van.id === "premium-van" && (
               <Link to="/fleet/vans/premium-van">
                 <Button variant="outline" className="w-full">View Details</Button>
@@ -116,6 +116,11 @@ const FleetVans = () => (
             )}
             {van.id === "standard-van" && (
               <Link to="/fleet/vans/standard-van">
+                <Button variant="outline" className="w-full">View Details</Button>
+              </Link>
+            )}
+            {van.id === "standard-rear-seat-van" && (
+              <Link to="/fleet/vans/standard-rear-seat-van">
                 <Button variant="outline" className="w-full">View Details</Button>
               </Link>
             )}
