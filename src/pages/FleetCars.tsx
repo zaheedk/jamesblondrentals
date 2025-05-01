@@ -21,6 +21,7 @@ const cars = [
     image: "/lovable-uploads/2aa5cc60-af01-4571-864b-f2955d9e129b.png"
   },
   {
+    id: "premium-2wd-suv", // Added ID for this car
     category: "PREMIUM 2WD SUV",
     model: "Kia Sportage 2.0L",
     features: [

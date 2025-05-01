@@ -36,7 +36,8 @@ import StandardRearSeatVanDetail from "./pages/StandardRearSeatVanDetail";
 import JumboVanDetail from "./pages/JumboVanDetail";
 import SingleCabUteDetail from "./pages/SingleCabUteDetail"; 
 import PremiumDoubleCabUteDetail from "./pages/PremiumDoubleCabUteDetail"; 
-import PremiumSevenSeatSUVDetail from "./pages/PremiumSevenSeatSUVDetail"; // Import the new Premium SUV detail page
+import PremiumSevenSeatSUVDetail from "./pages/PremiumSevenSeatSUVDetail";
+import Premium2WDSUVDetail from "./pages/Premium2WDSUVDetail"; // Import the new Premium 2WD SUV detail page
 
 import Airport from "./pages/Airport";
 import AirportShuttle from "./pages/AirportShuttle";
@@ -82,7 +83,8 @@ const App = () => {
 
               <Route path="/fleet" element={<Fleet />}>
                 <Route path="cars" element={<FleetCars />} />
-                <Route path="cars/premium-seven-seat-suv" element={<PremiumSevenSeatSUVDetail />} /> {/* Add new route for Premium SUV */}
+                <Route path="cars/premium-seven-seat-suv" element={<PremiumSevenSeatSUVDetail />} />
+                <Route path="cars/premium-2wd-suv" element={<Premium2WDSUVDetail />} /> {/* Add new route for Premium 2WD SUV */}
                 <Route path="vans" element={<FleetVans />} />
                 <Route path="vans/:vanId" element={<VanDetail />} />
                 <Route path="vans/premium-van" element={<PremiumVanDetail />} /> 
