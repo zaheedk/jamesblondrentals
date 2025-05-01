@@ -30,6 +30,7 @@ import FleetTrucks from "./pages/FleetTrucks";
 import FleetMinibuses from "./pages/FleetMinibuses";
 import FleetTrailers from "./pages/FleetTrailers";
 import FleetAccessories from "./pages/FleetAccessories";
+import PremiumVanDetail from "./pages/PremiumVanDetail"; // Import the new Premium Van detail page
 
 import Airport from "./pages/Airport";
 import AirportShuttle from "./pages/AirportShuttle";
@@ -75,6 +76,7 @@ const App = () => {
                 <Route path="cars" element={<FleetCars />} />
                 <Route path="vans" element={<FleetVans />} />
                 <Route path="vans/:vanId" element={<VanDetail />} />
+                <Route path="vans/premium-van" element={<PremiumVanDetail />} /> {/* Add the new Premium Van detail route */}
                 <Route path="utes" element={<FleetUtes />} />
                 <Route path="trucks" element={<FleetTrucks />} />
                 <Route path="minibuses" element={<FleetMinibuses />} />

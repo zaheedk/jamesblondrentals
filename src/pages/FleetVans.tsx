@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -106,6 +107,14 @@ const FleetVans = () => (
               ))}
             </ul>
           </CardContent>
+          <CardFooter>
+            {/* Add link to the detail page only for Premium Van */}
+            {van.id === "premium-van" && (
+              <Link to="/fleet/vans/premium-van">
+                <Button variant="outline" className="w-full">View Details</Button>
+              </Link>
+            )}
+          </CardFooter>
         </Card>
       ))}
     </div>
