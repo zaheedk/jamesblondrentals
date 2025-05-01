@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -34,6 +35,7 @@ import StandardVanDetail from "./pages/StandardVanDetail";
 import StandardRearSeatVanDetail from "./pages/StandardRearSeatVanDetail";
 import JumboVanDetail from "./pages/JumboVanDetail";
 import SingleCabUteDetail from "./pages/SingleCabUteDetail"; // Import the new Single Cab UTE detail page
+import PremiumDoubleCabUteDetail from "./pages/PremiumDoubleCabUteDetail"; // Import the new Premium Double Cab UTE detail page
 
 import Airport from "./pages/Airport";
 import AirportShuttle from "./pages/AirportShuttle";
@@ -49,7 +51,7 @@ import Privacy from "./pages/Privacy";
 import AppLayout from "./components/layout/AppLayout";
 import VanDetail from "./pages/VanDetail";
 
-import SingleCabUteDieselDetail from "./pages/SingleCabUteDieselDetail"; // Import the new Single Cab UTE Diesel detail page
+import SingleCabUteDieselDetail from "./pages/SingleCabUteDieselDetail"; // Import the Single Cab UTE Diesel detail page
 
 const App = () => {
   const [queryClient] = useState(() => new QueryClient());
@@ -87,7 +89,8 @@ const App = () => {
                 <Route path="vans/jumbo-van" element={<JumboVanDetail />} />
                 <Route path="utes" element={<FleetUtes />} />
                 <Route path="utes/single-cab-ute-petrol" element={<SingleCabUteDetail />} />
-                <Route path="utes/single-cab-ute-diesel" element={<SingleCabUteDieselDetail />} /> {/* Add the new Single Cab UTE Diesel detail route */}
+                <Route path="utes/single-cab-ute-diesel" element={<SingleCabUteDieselDetail />} />
+                <Route path="utes/premium-double-cab-ute" element={<PremiumDoubleCabUteDetail />} /> {/* Add the new Premium Double Cab UTE detail route */}
                 <Route path="trucks" element={<FleetTrucks />} />
                 <Route path="minibuses" element={<FleetMinibuses />} />
                 <Route path="trailers" element={<FleetTrailers />} />

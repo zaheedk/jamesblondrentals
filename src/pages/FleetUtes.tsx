@@ -87,13 +87,11 @@ const FleetUtes = () => (
               ))}
             </ul>
           </CardContent>
-          {(ute.id === "single-cab-ute-petrol" || ute.id === "single-cab-ute-diesel") && (
-            <CardFooter>
-              <Link to={`/fleet/utes/${ute.id}`}>
-                <Button variant="outline" className="w-full">View Details</Button>
-              </Link>
-            </CardFooter>
-          )}
+          <CardFooter>
+            <Link to={`/fleet/utes/${ute.id}`}>
+              <Button variant="outline" className="w-full">View Details</Button>
+            </Link>
+          </CardFooter>
         </Card>
       ))}
     </div>
