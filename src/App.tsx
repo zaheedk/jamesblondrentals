@@ -32,7 +32,8 @@ import FleetTrailers from "./pages/FleetTrailers";
 import FleetAccessories from "./pages/FleetAccessories";
 import PremiumVanDetail from "./pages/PremiumVanDetail"; 
 import StandardVanDetail from "./pages/StandardVanDetail";
-import StandardRearSeatVanDetail from "./pages/StandardRearSeatVanDetail"; // Import the new Standard Rear Seat Van detail page
+import StandardRearSeatVanDetail from "./pages/StandardRearSeatVanDetail";
+import JumboVanDetail from "./pages/JumboVanDetail"; // Import the new Jumbo Van detail page
 
 import Airport from "./pages/Airport";
 import AirportShuttle from "./pages/AirportShuttle";
@@ -80,7 +81,8 @@ const App = () => {
                 <Route path="vans/:vanId" element={<VanDetail />} />
                 <Route path="vans/premium-van" element={<PremiumVanDetail />} /> 
                 <Route path="vans/standard-van" element={<StandardVanDetail />} />
-                <Route path="vans/standard-rear-seat-van" element={<StandardRearSeatVanDetail />} /> {/* Add the new Standard Rear Seat Van detail route */}
+                <Route path="vans/standard-rear-seat-van" element={<StandardRearSeatVanDetail />} />
+                <Route path="vans/jumbo-van" element={<JumboVanDetail />} /> {/* Add the new Jumbo Van detail route */}
                 <Route path="utes" element={<FleetUtes />} />
                 <Route path="trucks" element={<FleetTrucks />} />
                 <Route path="minibuses" element={<FleetMinibuses />} />
