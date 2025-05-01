@@ -33,7 +33,8 @@ import FleetAccessories from "./pages/FleetAccessories";
 import PremiumVanDetail from "./pages/PremiumVanDetail"; 
 import StandardVanDetail from "./pages/StandardVanDetail";
 import StandardRearSeatVanDetail from "./pages/StandardRearSeatVanDetail";
-import JumboVanDetail from "./pages/JumboVanDetail"; // Import the new Jumbo Van detail page
+import JumboVanDetail from "./pages/JumboVanDetail";
+import SingleCabUteDetail from "./pages/SingleCabUteDetail"; // Import the new Single Cab UTE detail page
 
 import Airport from "./pages/Airport";
 import AirportShuttle from "./pages/AirportShuttle";
@@ -82,8 +83,9 @@ const App = () => {
                 <Route path="vans/premium-van" element={<PremiumVanDetail />} /> 
                 <Route path="vans/standard-van" element={<StandardVanDetail />} />
                 <Route path="vans/standard-rear-seat-van" element={<StandardRearSeatVanDetail />} />
-                <Route path="vans/jumbo-van" element={<JumboVanDetail />} /> {/* Add the new Jumbo Van detail route */}
+                <Route path="vans/jumbo-van" element={<JumboVanDetail />} />
                 <Route path="utes" element={<FleetUtes />} />
+                <Route path="utes/single-cab-ute-petrol" element={<SingleCabUteDetail />} /> {/* Add the new Single Cab UTE detail route */}
                 <Route path="trucks" element={<FleetTrucks />} />
                 <Route path="minibuses" element={<FleetMinibuses />} />
                 <Route path="trailers" element={<FleetTrailers />} />

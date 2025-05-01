@@ -1,6 +1,7 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 const utes = [
@@ -86,6 +87,13 @@ const FleetUtes = () => (
               ))}
             </ul>
           </CardContent>
+          {ute.id === "single-cab-ute-petrol" && (
+            <CardFooter>
+              <Link to="/fleet/utes/single-cab-ute-petrol">
+                <Button variant="outline" className="w-full">View Details</Button>
+              </Link>
+            </CardFooter>
+          )}
         </Card>
       ))}
     </div>
