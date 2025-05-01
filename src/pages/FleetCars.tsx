@@ -21,7 +21,7 @@ const cars = [
     image: "/lovable-uploads/2aa5cc60-af01-4571-864b-f2955d9e129b.png"
   },
   {
-    id: "premium-2wd-suv", // Added ID for this car
+    id: "premium-2wd-suv",
     category: "PREMIUM 2WD SUV",
     model: "Kia Sportage 2.0L",
     features: [
@@ -36,6 +36,7 @@ const cars = [
     image: "/lovable-uploads/841454d4-8948-4c3b-ad99-d73b843deee8.png"
   },
   {
+    id: "premium-compact-suv",
     category: "PREMIUM COMPACT SUV",
     model: "KIA Seltos 2.0L",
     features: [
