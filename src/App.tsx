@@ -49,8 +49,9 @@ import TwoTonneBoxTailLiftDetail from "./pages/TwoTonneBoxTailLiftDetail";
 import TwoTonneTipperDetail from "./pages/TwoTonneTipperDetail";
 import TwoTonneBox16m3Detail from "./pages/TwoTonneBox16m3Detail";
 import ThreeTonneBoxTailLiftDetail from "./pages/ThreeTonneBoxTailLiftDetail";
-import ThreeTonneBox19m3Detail from "./pages/ThreeTonneBox19m3Detail"; // Import the new page
-import TwelveSeaterMinibusDetail from "./pages/TwelveSeaterMinibusDetail"; // Import the new minibus page
+import ThreeTonneBox19m3Detail from "./pages/ThreeTonneBox19m3Detail"; 
+import TwelveSeaterMinibusDetail from "./pages/TwelveSeaterMinibusDetail"; 
+import TenSeaterMinibusDetail from "./pages/TenSeaterMinibusDetail"; // Import the new 10-seat minibus page
 
 import Airport from "./pages/Airport";
 import AirportShuttle from "./pages/AirportShuttle";
@@ -122,7 +123,8 @@ const App = () => {
                 <Route path="trucks/3-tonne-box-18m3" element={<ThreeTonneBoxTailLiftDetail />} />
                 <Route path="trucks/3-tonne-box-19m3" element={<ThreeTonneBox19m3Detail />} /> 
                 <Route path="minibuses" element={<FleetMinibuses />} />
-                <Route path="minibuses/12-seat-minibus" element={<TwelveSeaterMinibusDetail />} /> {/* Add the new route */}
+                <Route path="minibuses/12-seat-minibus" element={<TwelveSeaterMinibusDetail />} />
+                <Route path="minibuses/10-seat-minibus" element={<TenSeaterMinibusDetail />} /> {/* Add the new route */}
                 <Route path="trailers" element={<FleetTrailers />} />
                 <Route path="accessories" element={<FleetAccessories />} />
               </Route>

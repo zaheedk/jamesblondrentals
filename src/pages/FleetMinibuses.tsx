@@ -100,8 +100,8 @@ const FleetMinibuses = () => (
             </ul>
           </CardContent>
           <CardFooter>
-            {minibus.id === "12-seat-minibus" ? (
-              <Link to="/fleet/minibuses/12-seat-minibus" className="w-full">
+            {minibus.id === "12-seat-minibus" || minibus.id === "10-seat-minibus" ? (
+              <Link to={`/fleet/minibuses/${minibus.id}`} className="w-full">
                 <Button variant="outline" className="w-full">View Details</Button>
               </Link>
             ) : (
