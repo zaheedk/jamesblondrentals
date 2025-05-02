@@ -126,7 +126,7 @@ const FleetTrucks = () => (
           <CardFooter>
             {(truck.id === "2-tonne-box-9m3" || truck.id === "2-tonne-box-12m3" || 
               truck.id === "2-tonne-box-12m3-tail" || truck.id === "2-tonne-tipper" ||
-              truck.id === "3-tonne-box-18m3") ? (
+              truck.id === "2-tonne-box-16m3" || truck.id === "3-tonne-box-18m3") ? (
               <Link to={`/fleet/trucks/${truck.id}`} className="w-full">
                 <Button variant="outline" className="w-full">View Details</Button>
               </Link>
