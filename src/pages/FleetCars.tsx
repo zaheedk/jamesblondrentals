@@ -66,6 +66,7 @@ const cars = [
     image: "/lovable-uploads/b6590bc2-c772-4b70-892b-9a5c173c4d15.png"
   },
   {
+    id: "premium-4wd-suv",
     category: "PREMIUM 4WD SUV",
     model: "Toyota RAV4 2.5L",
     features: [
@@ -95,6 +96,7 @@ const cars = [
     image: "/lovable-uploads/e7217b00-38b3-40d6-9ef7-fdc2760ee602.png"
   },
   {
+    id: "premium-midsize",
     category: "PREMIUM MIDSIZE",
     model: "Toyota Corolla Hatch 2L",
     features: [
