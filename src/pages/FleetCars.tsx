@@ -111,6 +111,7 @@ const cars = [
     image: "/lovable-uploads/88ff5179-c7dc-499f-9b7d-e3d934ec686c.png"
   },
   {
+    id: "premium-economy-wagon",
     category: "PREMIUM ECONOMY WAGON",
     model: "Toyota Corolla Wagon 1.5L",
     features: [
@@ -119,7 +120,8 @@ const cars = [
       "Reversing Camera",
       "Air conditioning",
       "Bluetooth AUX and USB"
-    ]
+    ],
+    image: "/lovable-uploads/ca4fe6a5-97a6-4d6c-a675-a0ad2e3e4856.png"
   }
 ];
 
