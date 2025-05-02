@@ -40,6 +40,17 @@ const trucks = [
     image: "/lovable-uploads/d4f3f3f9-68b5-425e-83e7-7e468c0da49f.png"
   },
   {
+    id: "2-tonne-tipper",
+    title: "2 TONNE TIPPER",
+    subtitle: "Manual Transmission",
+    specs: [
+      "Tray: 3100(L) x 1600(W)",
+      "Max Load: 2000kg",
+      "39c per km mileage charge"
+    ],
+    image: "/lovable-uploads/ca896f7e-9bda-4926-b23c-e80cbeb348cb.png"
+  },
+  {
     id: "2-tonne-box-16m3",
     title: "2 TONNE BOX (16M³)",
     subtitle: "Manual Transmission",
@@ -50,17 +61,6 @@ const trucks = [
       "*47c per km mileage charge"
     ],
     image: "/lovable-uploads/a00bb0d9-fccc-4d69-a9ab-28d894f74538.png"
-  },
-  {
-    id: "2-tonne-tipper",
-    title: "2 TONNE TIPPER",
-    subtitle: "Manual Transmission",
-    specs: [
-      "Tray: 3100(L) x 1600(W)",
-      "Max Load: 2000kg",
-      "35c per km mileage charge"
-    ],
-    image: "/lovable-uploads/ca896f7e-9bda-4926-b23c-e80cbeb348cb.png"
   },
   {
     id: "3-tonne-box-18m3",
@@ -124,7 +124,8 @@ const FleetTrucks = () => (
             </ul>
           </CardContent>
           <CardFooter>
-            {(truck.id === "2-tonne-box-9m3" || truck.id === "2-tonne-box-12m3" || truck.id === "2-tonne-box-12m3-tail") ? (
+            {(truck.id === "2-tonne-box-9m3" || truck.id === "2-tonne-box-12m3" || 
+              truck.id === "2-tonne-box-12m3-tail" || truck.id === "2-tonne-tipper") ? (
               <Link to={`/fleet/trucks/${truck.id}`} className="w-full">
                 <Button variant="outline" className="w-full">View Details</Button>
               </Link>

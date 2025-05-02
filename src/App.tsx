@@ -45,7 +45,8 @@ import PremiumMidsizeDetail from "./pages/PremiumMidsizeDetail";
 import PremiumEconomyWagonDetail from "./pages/PremiumEconomyWagonDetail";
 import TwoTonneBoxTruckDetail from "./pages/TwoTonneBoxTruckDetail"; 
 import TwoTonneBox12m3Detail from "./pages/TwoTonneBox12m3Detail";
-import TwoTonneBoxTailLiftDetail from "./pages/TwoTonneBoxTailLiftDetail"; // Import the new truck detail page
+import TwoTonneBoxTailLiftDetail from "./pages/TwoTonneBoxTailLiftDetail"; 
+import TwoTonneTipperDetail from "./pages/TwoTonneTipperDetail"; // Import the new tipper truck detail page
 
 import Airport from "./pages/Airport";
 import AirportShuttle from "./pages/AirportShuttle";
@@ -111,7 +112,8 @@ const App = () => {
                 <Route path="trucks" element={<FleetTrucks />} />
                 <Route path="trucks/2-tonne-box-9m3" element={<TwoTonneBoxTruckDetail />} />
                 <Route path="trucks/2-tonne-box-12m3" element={<TwoTonneBox12m3Detail />} />
-                <Route path="trucks/2-tonne-box-12m3-tail" element={<TwoTonneBoxTailLiftDetail />} /> {/* Add the new route */}
+                <Route path="trucks/2-tonne-box-12m3-tail" element={<TwoTonneBoxTailLiftDetail />} /> 
+                <Route path="trucks/2-tonne-tipper" element={<TwoTonneTipperDetail />} /> {/* Add the new route */}
                 <Route path="minibuses" element={<FleetMinibuses />} />
                 <Route path="trailers" element={<FleetTrailers />} />
                 <Route path="accessories" element={<FleetAccessories />} />
