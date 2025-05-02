@@ -42,7 +42,8 @@ import PremiumCompactSUVDetail from "./pages/PremiumCompactSUVDetail";
 import PremiumAWDSUVDetail from "./pages/PremiumAWDSUVDetail";
 import PremiumEconomyDetail from "./pages/PremiumEconomyDetail";
 import PremiumMidsizeDetail from "./pages/PremiumMidsizeDetail";
-import PremiumEconomyWagonDetail from "./pages/PremiumEconomyWagonDetail"; // Import the new Premium Economy Wagon detail page
+import PremiumEconomyWagonDetail from "./pages/PremiumEconomyWagonDetail";
+import TwoTonneBoxTruckDetail from "./pages/TwoTonneBoxTruckDetail"; // Import the new truck detail page
 
 import Airport from "./pages/Airport";
 import AirportShuttle from "./pages/AirportShuttle";
@@ -106,6 +107,7 @@ const App = () => {
                 <Route path="utes/single-cab-ute-diesel" element={<SingleCabUteDieselDetail />} />
                 <Route path="utes/premium-double-cab-ute" element={<PremiumDoubleCabUteDetail />} />
                 <Route path="trucks" element={<FleetTrucks />} />
+                <Route path="trucks/2-tonne-box-9m3" element={<TwoTonneBoxTruckDetail />} /> {/* Add the new route */}
                 <Route path="minibuses" element={<FleetMinibuses />} />
                 <Route path="trailers" element={<FleetTrailers />} />
                 <Route path="accessories" element={<FleetAccessories />} />

@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -122,6 +123,15 @@ const FleetTrucks = () => (
               ))}
             </ul>
           </CardContent>
+          <CardFooter>
+            {truck.id === "2-tonne-box-9m3" ? (
+              <Link to={`/fleet/trucks/${truck.id}`} className="w-full">
+                <Button variant="outline" className="w-full">View Details</Button>
+              </Link>
+            ) : (
+              <Button variant="outline" className="w-full" disabled>Coming Soon</Button>
+            )}
+          </CardFooter>
         </Card>
       ))}
     </div>
