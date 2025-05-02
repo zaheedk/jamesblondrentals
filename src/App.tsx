@@ -50,6 +50,7 @@ import TwoTonneTipperDetail from "./pages/TwoTonneTipperDetail";
 import TwoTonneBox16m3Detail from "./pages/TwoTonneBox16m3Detail";
 import ThreeTonneBoxTailLiftDetail from "./pages/ThreeTonneBoxTailLiftDetail";
 import ThreeTonneBox19m3Detail from "./pages/ThreeTonneBox19m3Detail"; // Import the new page
+import TwelveSeaterMinibusDetail from "./pages/TwelveSeaterMinibusDetail"; // Import the new minibus page
 
 import Airport from "./pages/Airport";
 import AirportShuttle from "./pages/AirportShuttle";
@@ -119,8 +120,9 @@ const App = () => {
                 <Route path="trucks/2-tonne-tipper" element={<TwoTonneTipperDetail />} />
                 <Route path="trucks/2-tonne-box-16m3" element={<TwoTonneBox16m3Detail />} />
                 <Route path="trucks/3-tonne-box-18m3" element={<ThreeTonneBoxTailLiftDetail />} />
-                <Route path="trucks/3-tonne-box-19m3" element={<ThreeTonneBox19m3Detail />} /> {/* Add the new route */}
+                <Route path="trucks/3-tonne-box-19m3" element={<ThreeTonneBox19m3Detail />} /> 
                 <Route path="minibuses" element={<FleetMinibuses />} />
+                <Route path="minibuses/12-seat-minibus" element={<TwelveSeaterMinibusDetail />} /> {/* Add the new route */}
                 <Route path="trailers" element={<FleetTrailers />} />
                 <Route path="accessories" element={<FleetAccessories />} />
               </Route>
