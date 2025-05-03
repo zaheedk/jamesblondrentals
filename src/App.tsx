@@ -53,6 +53,7 @@ import ThreeTonneBox19m3Detail from "./pages/ThreeTonneBox19m3Detail";
 import TwelveSeaterMinibusDetail from "./pages/TwelveSeaterMinibusDetail"; 
 import TenSeaterMinibusDetail from "./pages/TenSeaterMinibusDetail"; 
 import MobilFuelDiscount from "./pages/MobilFuelDiscount"; // Import the new Mobil Fuel Discount page
+import CarRentalWellington from "./pages/CarRentalWellington"; // Import the new Wellington car rental page
 
 import Airport from "./pages/Airport";
 import AirportShuttle from "./pages/AirportShuttle";
@@ -95,7 +96,8 @@ const App = () => {
               <Route path="/payment-success" element={<PaymentSuccess />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/privacy" element={<Privacy />} />
-              <Route path="/hot-deals/mobil-fuel-discount" element={<MobilFuelDiscount />} /> {/* Add the new route */}
+              <Route path="/hot-deals/mobil-fuel-discount" element={<MobilFuelDiscount />} /> {/* Mobil fuel discount route */}
+              <Route path="/car-rental-wellington-new-zealand" element={<CarRentalWellington />} /> {/* New Wellington car rental page */}
 
               <Route path="/fleet" element={<Fleet />}>
                 <Route path="cars" element={<FleetCars />} />
