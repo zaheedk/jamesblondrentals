@@ -51,7 +51,8 @@ import TwoTonneBox16m3Detail from "./pages/TwoTonneBox16m3Detail";
 import ThreeTonneBoxTailLiftDetail from "./pages/ThreeTonneBoxTailLiftDetail";
 import ThreeTonneBox19m3Detail from "./pages/ThreeTonneBox19m3Detail"; 
 import TwelveSeaterMinibusDetail from "./pages/TwelveSeaterMinibusDetail"; 
-import TenSeaterMinibusDetail from "./pages/TenSeaterMinibusDetail"; // Import the new 10-seat minibus page
+import TenSeaterMinibusDetail from "./pages/TenSeaterMinibusDetail"; 
+import MobilFuelDiscount from "./pages/MobilFuelDiscount"; // Import the new Mobil Fuel Discount page
 
 import Airport from "./pages/Airport";
 import AirportShuttle from "./pages/AirportShuttle";
@@ -94,6 +95,7 @@ const App = () => {
               <Route path="/payment-success" element={<PaymentSuccess />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/privacy" element={<Privacy />} />
+              <Route path="/hot-deals/mobil-fuel-discount" element={<MobilFuelDiscount />} /> {/* Add the new route */}
 
               <Route path="/fleet" element={<Fleet />}>
                 <Route path="cars" element={<FleetCars />} />
@@ -124,7 +126,7 @@ const App = () => {
                 <Route path="trucks/3-tonne-box-19m3" element={<ThreeTonneBox19m3Detail />} /> 
                 <Route path="minibuses" element={<FleetMinibuses />} />
                 <Route path="minibuses/12-seat-minibus" element={<TwelveSeaterMinibusDetail />} />
-                <Route path="minibuses/10-seat-minibus" element={<TenSeaterMinibusDetail />} /> {/* Add the new route */}
+                <Route path="minibuses/10-seat-minibus" element={<TenSeaterMinibusDetail />} />
                 <Route path="trailers" element={<FleetTrailers />} />
                 <Route path="accessories" element={<FleetAccessories />} />
               </Route>
