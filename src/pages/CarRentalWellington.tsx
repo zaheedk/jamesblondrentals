@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Phone, Mail, ArrowRight, Fuel } from 'lucide-react';
@@ -14,11 +13,7 @@ const CarRentalWellington = () => {
       <section className="bg-primary/5 rounded-lg p-6 mb-12">
         <div className="grid md:grid-cols-2 gap-8 items-center">
           <div>
-            <h1 className="text-3xl font-bold mb-4">Wellington Car Rental</h1>
-            <p className="text-lg mb-4">
-              Discover Wellington with James Blond's reliable car rental service. We offer a wide range of vehicles 
-              to suit your needs, from compact cars to spacious vans.
-            </p>
+            {/* Title and description text removed */}
           </div>
           <div>
             <Card className="border-0 shadow-lg">
