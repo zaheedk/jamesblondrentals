@@ -19,14 +19,6 @@ const CarRentalWellington = () => {
               Discover Wellington with James Blond's reliable car rental service. We offer a wide range of vehicles 
               to suit your needs, from compact cars to spacious vans.
             </p>
-            <div className="flex items-center gap-2 mb-4">
-              <MapPin className="text-primary h-5 w-5" />
-              <span>24 Abel Smith Street, Te Aro, Wellington 6011</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Phone className="text-primary h-5 w-5" />
-              <span>Call us: <a href="tel:0800525663" className="text-primary hover:underline">0800 525 663</a></span>
-            </div>
           </div>
           <div>
             <Card className="border-0 shadow-lg">
