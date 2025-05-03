@@ -11,11 +11,8 @@ const CarRentalWellington = () => {
     <div className="container mx-auto px-4 py-8">
       {/* Hero Section */}
       <section className="bg-primary/5 rounded-lg p-6 mb-12">
-        <div className="grid md:grid-cols-2 gap-8 items-center">
-          <div>
-            {/* Title and description text removed */}
-          </div>
-          <div>
+        <div className="flex flex-col items-center">
+          <div className="w-full max-w-4xl">
             <Card className="border-0 shadow-lg">
               <CardContent className="p-0">
                 <div className="bg-primary p-4 text-white text-center rounded-t-lg">
