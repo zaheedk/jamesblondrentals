@@ -24,15 +24,7 @@ const MobilFuelDiscount = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 items-center">
-          <div className="relative rounded-lg overflow-hidden shadow-lg">
-            <img 
-              src="/lovable-uploads/e8d8dba0-1dd5-4b78-82d3-e6b8252406f3.png" 
-              alt="Mobil Fuel Discount Card" 
-              className="w-full h-auto"
-            />
-          </div>
-          
+        <div className="grid grid-cols-1 gap-8 mb-12">
           <div className="space-y-6">
             <div className="flex items-center gap-3 bg-primary/10 p-4 rounded-lg">
               <div className="bg-primary rounded-full p-3">
@@ -116,7 +108,7 @@ const MobilFuelDiscount = () => {
 
         <div className="mb-12">
           <h2 className="text-2xl font-bold mb-6">Find Your Nearest Mobil Station</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+          <div className="grid grid-cols-1 gap-8">
             <div>
               <p className="mb-4">
                 To find your nearest Mobil service station, scan the QR code on your James Blond key tag 
@@ -131,14 +123,6 @@ const MobilFuelDiscount = () => {
                   Find Nearest Station
                 </a>
               </Button>
-            </div>
-            <div className="flex justify-center">
-              <img 
-                src="/lovable-uploads/f035945f-e4b9-49f3-a2bf-4c38dd831b7e.png" 
-                alt="Instructions for Mobil Discount" 
-                className="max-w-full rounded-lg shadow-lg"
-                style={{ maxHeight: '400px' }}
-              />
             </div>
           </div>
         </div>
