@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Vehicle } from "@/lib/types";
 import { saveBookingData } from "@/lib/booking-session";
 import { parse, format } from "date-fns";
+import { toast } from "sonner";
 
 interface BookingFormProps {
   vehicle: Vehicle;
@@ -61,6 +62,8 @@ export default function BookingForm({
     
     let formattedPickupDate = pickupDate;
     let formattedDropoffDate = dropoffDate;
+    let parsedPickupDate: Date | null = null;
+    let parsedDropoffDate: Date | null = null;
     
     try {
       if (pickupDate) {
@@ -75,6 +78,7 @@ export default function BookingForm({
         }
         
         if (parsedDate && !isNaN(parsedDate.getTime())) {
+          parsedPickupDate = parsedDate;
           formattedPickupDate = format(parsedDate, 'dd/MM/yyyy');
         }
       }
@@ -91,6 +95,7 @@ export default function BookingForm({
         }
         
         if (parsedDate && !isNaN(parsedDate.getTime())) {
+          parsedDropoffDate = parsedDate;
           formattedDropoffDate = format(parsedDate, 'dd/MM/yyyy');
         }
       }
@@ -98,10 +103,28 @@ export default function BookingForm({
       console.error("Error formatting dates:", error);
     }
     
-    // Validate that if dates are the same, times are different
-    if (formattedPickupDate === formattedDropoffDate && pickupTime === dropoffTime) {
-      alert("For same-day rentals, drop-off time must be after pickup time");
-      return;
+    // Comprehensive date and time validation
+    if (parsedPickupDate && parsedDropoffDate) {
+      // Compare dates first
+      if (parsedDropoffDate < parsedPickupDate) {
+        toast.error("Drop-off date cannot be before pickup date");
+        return;
+      }
+      
+      // If dates are the same, validate times
+      if (parsedPickupDate.getTime() === parsedDropoffDate.getTime()) {
+        // Parse times to compare
+        const [pickupHour, pickupMinute] = pickupTime.split(':').map(Number);
+        const [dropoffHour, dropoffMinute] = dropoffTime.split(':').map(Number);
+        
+        const pickupTotalMinutes = pickupHour * 60 + pickupMinute;
+        const dropoffTotalMinutes = dropoffHour * 60 + dropoffMinute;
+        
+        if (dropoffTotalMinutes <= pickupTotalMinutes) {
+          toast.error("For same-day rentals, drop-off time must be after pickup time");
+          return;
+        }
+      }
     }
     
     console.log("Booking form dates:", { 

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { addDays, isBefore, format } from "date-fns";
+import { addDays, isBefore, format, parse } from "date-fns";
 import { toast } from "sonner";
 import { useRcmApi } from "@/hooks/use-rcm-api";
 
@@ -39,7 +39,7 @@ const SearchForm = () => {
   const [isInitialized, setIsInitialized] = useState(false);
   const [isProcessingDates, setIsProcessingDates] = useState(false);
 
-  const [minDropoffDate, setMinDropoffDate] = useState<Date>(new Date()); // Update to allow same day
+  const [minDropoffDate, setMinDropoffDate] = useState<Date>(new Date()); // Allow same day
   const [isLoading, setIsLoading] = useState(false);
   const [pickupTimeOptions, setPickupTimeOptions] = useState<string[]>([]);
   const [dropoffTimeOptions, setDropoffTimeOptions] = useState<string[]>([]);
@@ -207,7 +207,48 @@ const SearchForm = () => {
       console.log(`Current dropoff time ${dropoffTime} not available, updating to ${options[0]}`);
       setDropoffTime(options[0]);
     }
-  }, [dropoffLocation, dropoffDate, sameLocation, pickupLocation, officeHours, locationDetails, isInitialized, isProcessingDates, dropoffTime]);
+
+    // If same day rental, validate that dropoff time is after pickup time
+    if (pickupDate && dropoffDate && pickupDate.getTime() === dropoffDate.getTime() && pickupTime && dropoffTime) {
+      validateSameDayTimes();
+    }
+  }, [dropoffLocation, dropoffDate, sameLocation, pickupLocation, officeHours, locationDetails, isInitialized, isProcessingDates, dropoffTime, pickupTime, pickupDate]);
+
+  // Function to validate that dropoff time is after pickup time for same-day rentals
+  const validateSameDayTimes = () => {
+    if (!pickupTime || !dropoffTime || !pickupDate || !dropoffDate) return;
+    
+    // Only validate if it's the same day
+    if (pickupDate.getTime() !== dropoffDate.getTime()) return;
+    
+    // Parse times to compare
+    const [pickupHour, pickupMinute] = pickupTime.split(':').map(Number);
+    const [dropoffHour, dropoffMinute] = dropoffTime.split(':').map(Number);
+    
+    // Compare times (convert to minutes for easy comparison)
+    const pickupTotalMinutes = pickupHour * 60 + pickupMinute;
+    const dropoffTotalMinutes = dropoffHour * 60 + dropoffMinute;
+    
+    if (dropoffTotalMinutes <= pickupTotalMinutes) {
+      // Find first available time after pickup time
+      const availableTime = dropoffTimeOptions.find(time => {
+        const [hour, minute] = time.split(':').map(Number);
+        const totalMinutes = hour * 60 + minute;
+        return totalMinutes > pickupTotalMinutes;
+      });
+      
+      if (availableTime) {
+        console.log(`Adjusting dropoff time from ${dropoffTime} to ${availableTime} because it must be after pickup time`);
+        setDropoffTime(availableTime);
+      } else {
+        // If no later time available on same day, suggest next day
+        console.log("No later dropoff time available on same day, suggest choosing next day");
+        const nextDay = new Date(dropoffDate);
+        nextDay.setDate(nextDay.getDate() + 1);
+        setDropoffDate(nextDay);
+      }
+    }
+  };
 
   // Handle pickup date changes and update dropoff date accordingly
   const handlePickupDateChange = useCallback((date: Date | undefined) => {
@@ -224,6 +265,16 @@ const SearchForm = () => {
       setDropoffDate(newDropoffDate);
     }
   }, [dropoffDate]);
+
+  // Handle pickup time change
+  const handlePickupTimeChange = (time: string) => {
+    setPickupTime(time);
+    
+    // If same day rental, validate that dropoff time is after pickup time
+    if (pickupDate && dropoffDate && pickupDate.getTime() === dropoffDate.getTime()) {
+      setTimeout(() => validateSameDayTimes(), 0);
+    }
+  };
 
   const getDefaultAgeId = () => {
     if (!driverAges?.length) return "";
@@ -265,10 +316,21 @@ const SearchForm = () => {
       return;
     }
 
-    // Additional validation for same-day rentals
-    if (pickupDate?.getTime() === dropoffDate?.getTime() && 
-        pickupTime === dropoffTime) {
-      toast.error("For same-day rentals, drop-off time must be after pickup time");
+    // Additional validation for date and time combinations
+    if (pickupDate.getTime() === dropoffDate.getTime()) {
+      // For same-day rentals, validate times
+      const [pickupHour, pickupMinute] = pickupTime.split(':').map(Number);
+      const [dropoffHour, dropoffMinute] = dropoffTime.split(':').map(Number);
+      
+      const pickupTotalMinutes = pickupHour * 60 + pickupMinute;
+      const dropoffTotalMinutes = dropoffHour * 60 + dropoffMinute;
+      
+      if (dropoffTotalMinutes <= pickupTotalMinutes) {
+        toast.error("Drop-off time must be after pickup time for same-day rentals");
+        return;
+      }
+    } else if (isBefore(dropoffDate, pickupDate)) {
+      toast.error("Drop-off date cannot be before pickup date");
       return;
     }
     
@@ -356,7 +418,7 @@ const SearchForm = () => {
                 id="pickup-time"
                 label="Pickup Time"
                 time={pickupTime}
-                onTimeChange={setPickupTime}
+                onTimeChange={handlePickupTimeChange}
                 timeOptions={pickupTimeOptions}
                 isLoading={isLoadingOfficeHours}
                 disabled={!pickupLocation || !pickupDate || pickupTimeOptions.length === 0}
