@@ -39,7 +39,7 @@ const SearchForm = () => {
   const [isInitialized, setIsInitialized] = useState(false);
   const [isProcessingDates, setIsProcessingDates] = useState(false);
 
-  const [minDropoffDate, setMinDropoffDate] = useState<Date>(addDays(new Date(), 1));
+  const [minDropoffDate, setMinDropoffDate] = useState<Date>(new Date()); // Update to allow same day
   const [isLoading, setIsLoading] = useState(false);
   const [pickupTimeOptions, setPickupTimeOptions] = useState<string[]>([]);
   const [dropoffTimeOptions, setDropoffTimeOptions] = useState<string[]>([]);
@@ -215,10 +215,15 @@ const SearchForm = () => {
     
     setPickupDate(date);
     
-    // Always set dropoff date to pickup date + 1 day
-    const newDropoffDate = getDefaultDropoffDate(date);
-    setDropoffDate(newDropoffDate);
-  }, []);
+    // Set minDropoffDate to be the same as the pickup date (allowing same-day rentals)
+    setMinDropoffDate(date);
+    
+    // Only update dropoff date if it's before the new pickup date
+    if (dropoffDate && isBefore(dropoffDate, date)) {
+      const newDropoffDate = getDefaultDropoffDate(date);
+      setDropoffDate(newDropoffDate);
+    }
+  }, [dropoffDate]);
 
   const getDefaultAgeId = () => {
     if (!driverAges?.length) return "";
@@ -257,6 +262,13 @@ const SearchForm = () => {
     
     if (!pickupTime || !dropoffTime) {
       toast.error("Please select both pickup and drop-off times");
+      return;
+    }
+
+    // Additional validation for same-day rentals
+    if (pickupDate?.getTime() === dropoffDate?.getTime() && 
+        pickupTime === dropoffTime) {
+      toast.error("For same-day rentals, drop-off time must be after pickup time");
       return;
     }
     
@@ -358,6 +370,7 @@ const SearchForm = () => {
                 onDateChange={setDropoffDate}
                 disableDate={(date) => isBefore(date, minDropoffDate)}
                 locationId={sameLocation ? pickupLocation : dropoffLocation}
+                allowSameDay={true}
               />
 
               <TimeSelect

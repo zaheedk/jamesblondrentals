@@ -15,6 +15,7 @@ interface DateSelectProps {
   onDateChange: (date: Date | undefined) => void;
   disableDate?: (date: Date) => boolean;
   locationId?: string;
+  allowSameDay?: boolean;
 }
 
 export const DateSelect = ({
@@ -23,7 +24,8 @@ export const DateSelect = ({
   date,
   onDateChange,
   disableDate,
-  locationId
+  locationId,
+  allowSameDay = true // Default to allowing same day selections
 }: DateSelectProps) => {
   const [open, setOpen] = useState(false);
 

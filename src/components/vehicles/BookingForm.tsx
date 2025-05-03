@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Vehicle } from "@/lib/types";
@@ -95,6 +96,12 @@ export default function BookingForm({
       }
     } catch (error) {
       console.error("Error formatting dates:", error);
+    }
+    
+    // Validate that if dates are the same, times are different
+    if (formattedPickupDate === formattedDropoffDate && pickupTime === dropoffTime) {
+      alert("For same-day rentals, drop-off time must be after pickup time");
+      return;
     }
     
     console.log("Booking form dates:", { 

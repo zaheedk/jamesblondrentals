@@ -1,19 +1,19 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Hero from "@/components/home/Hero";
 import FeaturedVehicles from "@/components/home/FeaturedVehicles";
-import { format, addDays } from "date-fns";
+import { format } from "date-fns";
 
 const Index = () => {
-  // Get tomorrow's date at noon as the default pickup date
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  tomorrow.setHours(12, 0, 0, 0);
-  const pickupDate = format(tomorrow, "dd/MM/yyyy");
+  // Get today's date at noon as the default pickup date
+  const today = new Date();
+  today.setHours(12, 0, 0, 0);
+  const pickupDate = format(today, "dd/MM/yyyy");
 
-  // Get the day after tomorrow at noon as the default dropoff date
-  const dayAfter = addDays(tomorrow, 1);
-  const dropoffDate = format(dayAfter, "dd/MM/yyyy");
+  // Get the same day at a later time for dropoff as default
+  // Users can now select same-day dropoff
+  const dropoffDate = format(today, "dd/MM/yyyy");
 
   // Construct search URL with default parameters
   const searchParams = new URLSearchParams({
@@ -22,7 +22,7 @@ const Index = () => {
     pickupDate,
     dropoffDate,
     pickupTime: "12:00", // Consistent noon time
-    dropoffTime: "12:00", // Consistent noon time
+    dropoffTime: "16:00", // Default to 4:00 PM for same-day dropoff
     age: "4", // Default age group
     carCategory: "0" // All categories
   }).toString();
