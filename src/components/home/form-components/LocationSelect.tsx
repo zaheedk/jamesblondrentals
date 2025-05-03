@@ -1,8 +1,8 @@
-
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { RCMLocation } from "@/lib/api/rcm-api-types";
 import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 interface LocationSelectProps {
   id: string;
@@ -27,6 +27,10 @@ export const LocationSelect = ({
   disabled = false,
   placeholder
 }: LocationSelectProps) => {
+  // Get current route to determine default location context
+  const location = useLocation();
+  const isWellingtonPage = location.pathname.includes('wellington');
+  
   // Helper function to get location name
   const getLocationName = (locationId: string) => {
     const location = locations.find(loc => String(loc.id) === locationId);
@@ -49,6 +53,22 @@ export const LocationSelect = ({
   useEffect(() => {
     if (locations.length > 0 && !value) {
       const setDefaultLocation = async () => {
+        // If on Wellington page, always prefer Wellington CBD location
+        if (isWellingtonPage) {
+          console.log("On Wellington page, looking for Wellington CBD location");
+          const wellingtonLocation = locations.find(loc => 
+            loc.name.toLowerCase().includes('wellington') && 
+            loc.name.toLowerCase().includes('cbd')
+          );
+          
+          if (wellingtonLocation) {
+            console.log(`Setting default location to Wellington CBD:`, wellingtonLocation.id);
+            onValueChange(String(wellingtonLocation.id));
+            return;
+          }
+        }
+        
+        // Otherwise, try to detect if user is in Wellington
         const isWellington = await checkWellingtonRegion();
         
         if (isWellington) {
@@ -101,7 +121,7 @@ export const LocationSelect = ({
       
       setDefaultLocation();
     }
-  }, [locations, value, onValueChange]);
+  }, [locations, value, onValueChange, isWellingtonPage]);
 
   return (
     <div className="space-y-2">
