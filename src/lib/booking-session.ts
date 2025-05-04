@@ -68,6 +68,7 @@ export interface BookingSessionData {
   transmission?: number; // Added for API compatibility
   promoCode?: string;    // Add the promoCode property to fix the TypeScript error
   rentalDays?: number;   // Add the rentalDays property to fix the TypeScript error
+  rateType?: "hourly" | "daily"; // Add the rate type property
 }
 
 export const BOOKING_SESSION_KEY = 'rcm_booking_data';
