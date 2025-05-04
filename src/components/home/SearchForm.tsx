@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -258,9 +259,10 @@ const SearchForm = () => {
     console.log("Pickup date changed to:", date);
     setPickupDate(date);
     
-    // Set minDropoffDate to be the pickup date itself (not a new Date instance)
+    // Important: Create a new Date object based on the pickup date
     // This is crucial for allowing same-day selection
-    setMinDropoffDate(date);
+    const newMinDate = new Date(date);
+    setMinDropoffDate(newMinDate);
     
     // Only update dropoff date if it's before the new pickup date
     if (dropoffDate && isBefore(dropoffDate, date)) {
@@ -434,8 +436,8 @@ const SearchForm = () => {
                 date={dropoffDate}
                 onDateChange={setDropoffDate}
                 disableDate={(date) => {
-                  // Simple check - only disable dates before the pickup date
-                  return pickupDate ? isBefore(date, pickupDate) : true;
+                  // Allow same day by checking only if date is before pickup date
+                  return pickupDate ? date < pickupDate : true;
                 }}
                 locationId={sameLocation ? pickupLocation : dropoffLocation}
                 allowSameDay={true}
