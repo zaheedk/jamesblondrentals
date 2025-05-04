@@ -11,6 +11,7 @@ interface RentalDetailsProps {
   pickupTime: string;
   dropoffTime: string;
   rentalDuration: number;
+  rateType?: "hourly" | "daily";
 }
 
 const RentalDetails = ({
@@ -22,6 +23,7 @@ const RentalDetails = ({
   pickupTime,
   dropoffTime,
   rentalDuration,
+  rateType = "daily",
 }: RentalDetailsProps) => {
   const displayPickupLocation = pickupLocationName && 
     pickupLocationName !== "undefined" && 
@@ -32,6 +34,16 @@ const RentalDetails = ({
     dropoffLocationName !== "undefined" && 
     dropoffLocationName !== "null" ? 
     dropoffLocationName : "Not specified";
+
+  // Calculate hours for hourly rate display
+  const getDurationDisplay = () => {
+    if (rateType === "hourly") {
+      const hours = Math.round(rentalDuration * 24); // Convert days to hours
+      return `${hours} ${hours === 1 ? 'hour' : 'hours'}`;
+    } else {
+      return `${rentalDuration || 1} ${rentalDuration === 1 ? 'day' : 'days'}`;
+    }
+  };
 
   return (
     <div className="bg-gray-50 rounded-lg p-4 mb-6">
@@ -101,7 +113,7 @@ const RentalDetails = ({
         <div className="flex items-center mt-2">
           <Calendar className="h-4 w-4 mr-2" />
           <p className="text-sm text-gray-600">
-            Total Rental Duration: <span className="font-medium">{rentalDuration || 1} {rentalDuration === 1 ? 'day' : 'days'}</span>
+            Total Rental Duration: <span className="font-medium">{getDurationDisplay()}</span>
           </p>
         </div>
       </div>

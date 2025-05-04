@@ -103,6 +103,20 @@ const VehicleCard = ({
   const getRateLabel = () => {
     return isHourlyRate() ? 'per hour' : 'per day';
   };
+  
+  // Get the rental duration display (hours or days)
+  const getRentalDuration = () => {
+    if (!vehicle.totalDays) return null;
+    
+    if (isHourlyRate()) {
+      // For hourly vehicles, convert days to hours (assuming 24 hours per day)
+      const hours = Math.round(vehicle.totalDays * 24);
+      return `${hours} ${hours === 1 ? 'hour' : 'hours'}`;
+    } else {
+      // For daily vehicles, display days
+      return `${vehicle.totalDays} ${vehicle.totalDays === 1 ? 'day' : 'days'}`;
+    }
+  };
 
   return (
     <Card className="overflow-hidden shadow-md h-full flex flex-col">
@@ -132,6 +146,11 @@ const VehicleCard = ({
             {vehicle.totalDays && (
               <div className="text-sm font-medium text-primary mt-1">
                 Total: ${totalRentalValue.toFixed(2)}
+                {getRentalDuration() && (
+                  <span className="ml-1 text-xs text-gray-600 block">
+                    for {getRentalDuration()}
+                  </span>
+                )}
               </div>
             )}
           </div>
