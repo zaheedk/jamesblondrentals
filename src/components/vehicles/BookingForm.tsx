@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Vehicle } from "@/lib/types";
@@ -59,6 +58,20 @@ export default function BookingForm({
     }
     
     return '/placeholder.svg';
+  };
+
+  // Determine if vehicle is charged hourly or daily based on type
+  const isHourlyRate = () => {
+    const name = `${vehicle.make} ${vehicle.model}`.toLowerCase();
+    
+    // Check if vehicle is a truck or van that should use hourly rate
+    return (
+      name.includes('truck') || 
+      name.includes('box') || 
+      name.includes('tipper') || 
+      (name.includes('van') && !name.includes('premium')) ||
+      name.includes('jumbo')
+    );
   };
 
   const handleBookNow = (e: React.FormEvent) => {
@@ -163,7 +176,8 @@ export default function BookingForm({
     console.log("Saving booking data with rate details:", {
       totalRateAfterDiscount,
       totalDiscountAmount,
-      basePrice: vehicle.price
+      basePrice: vehicle.price,
+      rateType: isHourlyRate() ? 'hourly' : 'daily'
     });
     
     saveBookingData({
@@ -182,7 +196,8 @@ export default function BookingForm({
       basePrice: totalRateAfterDiscount || (typeof vehicle.price === 'number' ? vehicle.price : parseFloat(vehicle.price || '0')),
       totalRateAfterDiscount,
       totalDiscountAmount,
-      vehicleImage: vehicleImageUrl || getFirstVehicleImage(vehicle)
+      vehicleImage: vehicleImageUrl || getFirstVehicleImage(vehicle),
+      rateType: isHourlyRate() ? 'hourly' : 'daily' // Add rate type to booking data
     });
     
     navigate('/booking');
@@ -206,6 +221,7 @@ export default function BookingForm({
       <input type="hidden" name="vehicleImage" value={vehicleImageUrl || getFirstVehicleImage(vehicle)} />
       <input type="hidden" name="totalRateAfterDiscount" value={totalRateAfterDiscount?.toString() || ''} />
       <input type="hidden" name="totalDiscountAmount" value={totalDiscountAmount?.toString() || ''} />
+      <input type="hidden" name="rateType" value={isHourlyRate() ? 'hourly' : 'daily'} />
       
       <Button type="submit" className="w-full">
         Book Now

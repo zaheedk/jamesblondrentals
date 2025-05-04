@@ -84,6 +84,25 @@ const VehicleCard = ({
     }
     return false;
   })();
+  
+  // Determine if vehicle is charged hourly or daily based on type
+  const isHourlyRate = () => {
+    const name = `${vehicle.make} ${vehicle.model}`.toLowerCase();
+    
+    // Check if vehicle is a truck or van that should use hourly rate
+    return (
+      name.includes('truck') || 
+      name.includes('box') || 
+      name.includes('tipper') || 
+      (name.includes('van') && !name.includes('premium')) ||
+      name.includes('jumbo')
+    );
+  };
+  
+  // Get the appropriate rate label
+  const getRateLabel = () => {
+    return isHourlyRate() ? 'per hour' : 'per day';
+  };
 
   return (
     <Card className="overflow-hidden shadow-md h-full flex flex-col">
@@ -109,7 +128,7 @@ const VehicleCard = ({
             <div className="font-bold text-lg">
               ${typeof displayPrice === 'number' ? displayPrice.toFixed(2) : '0.00'}
             </div>
-            <div className="text-xs text-gray-500">per day</div>
+            <div className="text-xs text-gray-500">{getRateLabel()}</div>
             {vehicle.totalDays && (
               <div className="text-sm font-medium text-primary mt-1">
                 Total: ${totalRentalValue.toFixed(2)}
