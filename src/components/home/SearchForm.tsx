@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -226,25 +225,31 @@ const SearchForm = () => {
     const [pickupHour, pickupMinute] = pickupTime.split(':').map(Number);
     const [dropoffHour, dropoffMinute] = dropoffTime.split(':').map(Number);
     
-    // Compare times (convert to minutes for easy comparison)
+    // Convert to minutes for easy comparison
     const pickupTotalMinutes = pickupHour * 60 + pickupMinute;
     const dropoffTotalMinutes = dropoffHour * 60 + dropoffMinute;
     
-    if (dropoffTotalMinutes <= pickupTotalMinutes) {
-      // Find first available time after pickup time
+    // Allow as little as 15 minutes between pickup and dropoff
+    const minimumMinutesDifference = 15;
+    
+    if (dropoffTotalMinutes < pickupTotalMinutes + minimumMinutesDifference) {
+      // Find first available time at least minimumMinutesDifference after pickup time
       const availableTime = dropoffTimeOptions.find(time => {
         const [hour, minute] = time.split(':').map(Number);
         const totalMinutes = hour * 60 + minute;
-        return totalMinutes > pickupTotalMinutes;
+        return totalMinutes >= pickupTotalMinutes + minimumMinutesDifference;
       });
       
       if (availableTime) {
-        console.log(`Adjusting dropoff time from ${dropoffTime} to ${availableTime} because it must be after pickup time`);
+        console.log(`Adjusting dropoff time from ${dropoffTime} to ${availableTime} to ensure minimum ${minimumMinutesDifference} minute difference`);
         setDropoffTime(availableTime);
       } else {
-        // If no later time available on same day, suggest next day
-        console.log("No later dropoff time available on same day, suggest choosing next day");
-        toast.error("No later drop-off times available today. Please select a later date.");
+        // If no valid time available, suggest next day
+        console.log("No suitable dropoff time available that meets minimum time difference");
+        toast.error(`Dropoff must be at least ${minimumMinutesDifference} minutes after pickup`, {
+          description: "Please select a later time or date"
+        });
+        
         const nextDay = new Date(dropoffDate);
         nextDay.setDate(nextDay.getDate() + 1);
         setDropoffDate(nextDay);
@@ -323,15 +328,15 @@ const SearchForm = () => {
 
     // Additional validation for date and time combinations
     if (pickupDate && dropoffDate && pickupDate.toDateString() === dropoffDate.toDateString()) {
-      // For same-day rentals, validate times
+      // For same-day rentals, validate times with minimum 15 minutes difference
       const [pickupHour, pickupMinute] = pickupTime.split(':').map(Number);
       const [dropoffHour, dropoffMinute] = dropoffTime.split(':').map(Number);
       
       const pickupTotalMinutes = pickupHour * 60 + pickupMinute;
       const dropoffTotalMinutes = dropoffHour * 60 + dropoffMinute;
       
-      if (dropoffTotalMinutes <= pickupTotalMinutes) {
-        toast.error("Drop-off time must be after pickup time for same-day rentals");
+      if (dropoffTotalMinutes < pickupTotalMinutes + 15) {
+        toast.error("Drop-off time must be at least 15 minutes after pickup time");
         return;
       }
     } else if (pickupDate && dropoffDate && isBefore(dropoffDate, pickupDate)) {

@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Vehicle } from "@/lib/types";
@@ -103,11 +102,11 @@ export default function BookingForm({
       console.error("Error formatting dates:", error);
     }
     
-    // Comprehensive date and time validation
+    // Comprehensive date and time validation with 15-minute minimum
     if (parsedPickupDate && parsedDropoffDate) {
-      // For same dates, we need to compare times
+      // For same dates, compare times with 15-minute minimum
       if (parsedPickupDate.toDateString() === parsedDropoffDate.toDateString()) {
-        console.log("Same day booking detected, validating times");
+        console.log("Same day booking detected, validating times with 15-minute minimum");
         // Parse times to compare
         const [pickupHour, pickupMinute] = pickupTime.split(':').map(Number);
         const [dropoffHour, dropoffMinute] = dropoffTime.split(':').map(Number);
@@ -115,8 +114,8 @@ export default function BookingForm({
         const pickupTotalMinutes = pickupHour * 60 + pickupMinute;
         const dropoffTotalMinutes = dropoffHour * 60 + dropoffMinute;
         
-        if (dropoffTotalMinutes <= pickupTotalMinutes) {
-          toast.error("For same-day rentals, drop-off time must be after pickup time");
+        if (dropoffTotalMinutes < pickupTotalMinutes + 15) {
+          toast.error("Drop-off time must be at least 15 minutes after pickup time");
           return;
         }
       } else if (parsedDropoffDate < parsedPickupDate) {
