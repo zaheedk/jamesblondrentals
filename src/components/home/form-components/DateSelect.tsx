@@ -55,10 +55,12 @@ export const DateSelect = ({
   };
 
   const combinedDisabledDate = (date: Date) => {
+    // First check the passed in disable function
     if (disableDate && disableDate(date)) {
       return true;
     }
     
+    // Then check location-specific rules
     if (isWellingtonSunday(date)) {
       return true;
     }

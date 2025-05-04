@@ -258,14 +258,14 @@ const SearchForm = () => {
     console.log("Pickup date changed to:", date);
     setPickupDate(date);
     
-    // Always set minDropoffDate to be the same as the pickup date (allowing same-day rentals)
+    // Set minDropoffDate to be the pickup date itself (not a new Date instance)
+    // This is crucial for allowing same-day selection
     setMinDropoffDate(date);
     
     // Only update dropoff date if it's before the new pickup date
     if (dropoffDate && isBefore(dropoffDate, date)) {
       console.log("Dropoff date is before new pickup date, updating to same day");
-      const newDropoffDate = new Date(date);
-      setDropoffDate(newDropoffDate);
+      setDropoffDate(new Date(date)); // Create a new Date instance to avoid reference issues
     }
   }, [dropoffDate]);
 
@@ -320,7 +320,7 @@ const SearchForm = () => {
     }
 
     // Additional validation for date and time combinations
-    if (pickupDate.toDateString() === dropoffDate.toDateString()) {
+    if (pickupDate && dropoffDate && pickupDate.toDateString() === dropoffDate.toDateString()) {
       // For same-day rentals, validate times
       const [pickupHour, pickupMinute] = pickupTime.split(':').map(Number);
       const [dropoffHour, dropoffMinute] = dropoffTime.split(':').map(Number);
@@ -332,7 +332,7 @@ const SearchForm = () => {
         toast.error("Drop-off time must be after pickup time for same-day rentals");
         return;
       }
-    } else if (isBefore(dropoffDate, pickupDate)) {
+    } else if (pickupDate && dropoffDate && isBefore(dropoffDate, pickupDate)) {
       toast.error("Drop-off date cannot be before pickup date");
       return;
     }
@@ -433,11 +433,14 @@ const SearchForm = () => {
                 label="Dropoff Date"
                 date={dropoffDate}
                 onDateChange={setDropoffDate}
-                disableDate={(date) => isBefore(date, minDropoffDate)}
+                disableDate={(date) => {
+                  // Simple check - only disable dates before the pickup date
+                  return pickupDate ? isBefore(date, pickupDate) : true;
+                }}
                 locationId={sameLocation ? pickupLocation : dropoffLocation}
                 allowSameDay={true}
               />
-
+              
               <TimeSelect
                 id="dropoff-time"
                 label="Dropoff Time"
