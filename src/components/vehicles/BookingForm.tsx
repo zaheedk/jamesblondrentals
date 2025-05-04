@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Vehicle } from "@/lib/types";
@@ -106,6 +107,7 @@ export default function BookingForm({
     if (parsedPickupDate && parsedDropoffDate) {
       // For same dates, we need to compare times
       if (parsedPickupDate.toDateString() === parsedDropoffDate.toDateString()) {
+        console.log("Same day booking detected, validating times");
         // Parse times to compare
         const [pickupHour, pickupMinute] = pickupTime.split(':').map(Number);
         const [dropoffHour, dropoffMinute] = dropoffTime.split(':').map(Number);

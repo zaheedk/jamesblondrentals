@@ -255,14 +255,16 @@ const SearchForm = () => {
   const handlePickupDateChange = useCallback((date: Date | undefined) => {
     if (!date) return;
     
+    console.log("Pickup date changed to:", date);
     setPickupDate(date);
     
-    // Set minDropoffDate to be the same as the pickup date (allowing same-day rentals)
+    // Always set minDropoffDate to be the same as the pickup date (allowing same-day rentals)
     setMinDropoffDate(date);
     
     // Only update dropoff date if it's before the new pickup date
     if (dropoffDate && isBefore(dropoffDate, date)) {
-      const newDropoffDate = date; // Use same day as pickup date
+      console.log("Dropoff date is before new pickup date, updating to same day");
+      const newDropoffDate = new Date(date);
       setDropoffDate(newDropoffDate);
     }
   }, [dropoffDate]);
