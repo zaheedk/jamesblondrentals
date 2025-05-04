@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Vehicle } from "@/lib/types";
@@ -105,14 +104,8 @@ export default function BookingForm({
     
     // Comprehensive date and time validation
     if (parsedPickupDate && parsedDropoffDate) {
-      // Compare dates first
-      if (parsedDropoffDate < parsedPickupDate) {
-        toast.error("Drop-off date cannot be before pickup date");
-        return;
-      }
-      
-      // If dates are the same, validate times
-      if (parsedPickupDate.getTime() === parsedDropoffDate.getTime()) {
+      // For same dates, we need to compare times
+      if (parsedPickupDate.toDateString() === parsedDropoffDate.toDateString()) {
         // Parse times to compare
         const [pickupHour, pickupMinute] = pickupTime.split(':').map(Number);
         const [dropoffHour, dropoffMinute] = dropoffTime.split(':').map(Number);
@@ -124,6 +117,10 @@ export default function BookingForm({
           toast.error("For same-day rentals, drop-off time must be after pickup time");
           return;
         }
+      } else if (parsedDropoffDate < parsedPickupDate) {
+        // If not same day, just compare dates
+        toast.error("Drop-off date cannot be before pickup date");
+        return;
       }
     }
     

@@ -209,7 +209,7 @@ const SearchForm = () => {
     }
 
     // If same day rental, validate that dropoff time is after pickup time
-    if (pickupDate && dropoffDate && pickupDate.getTime() === dropoffDate.getTime() && pickupTime && dropoffTime) {
+    if (pickupDate && dropoffDate && pickupDate.toDateString() === dropoffDate.toDateString() && pickupTime && dropoffTime) {
       validateSameDayTimes();
     }
   }, [dropoffLocation, dropoffDate, sameLocation, pickupLocation, officeHours, locationDetails, isInitialized, isProcessingDates, dropoffTime, pickupTime, pickupDate]);
@@ -219,7 +219,7 @@ const SearchForm = () => {
     if (!pickupTime || !dropoffTime || !pickupDate || !dropoffDate) return;
     
     // Only validate if it's the same day
-    if (pickupDate.getTime() !== dropoffDate.getTime()) return;
+    if (pickupDate.toDateString() !== dropoffDate.toDateString()) return;
     
     // Parse times to compare
     const [pickupHour, pickupMinute] = pickupTime.split(':').map(Number);
@@ -243,6 +243,7 @@ const SearchForm = () => {
       } else {
         // If no later time available on same day, suggest next day
         console.log("No later dropoff time available on same day, suggest choosing next day");
+        toast.error("No later drop-off times available today. Please select a later date.");
         const nextDay = new Date(dropoffDate);
         nextDay.setDate(nextDay.getDate() + 1);
         setDropoffDate(nextDay);
@@ -261,7 +262,7 @@ const SearchForm = () => {
     
     // Only update dropoff date if it's before the new pickup date
     if (dropoffDate && isBefore(dropoffDate, date)) {
-      const newDropoffDate = getDefaultDropoffDate(date);
+      const newDropoffDate = date; // Use same day as pickup date
       setDropoffDate(newDropoffDate);
     }
   }, [dropoffDate]);
@@ -271,7 +272,7 @@ const SearchForm = () => {
     setPickupTime(time);
     
     // If same day rental, validate that dropoff time is after pickup time
-    if (pickupDate && dropoffDate && pickupDate.getTime() === dropoffDate.getTime()) {
+    if (pickupDate && dropoffDate && pickupDate.toDateString() === dropoffDate.toDateString()) {
       setTimeout(() => validateSameDayTimes(), 0);
     }
   };
@@ -317,7 +318,7 @@ const SearchForm = () => {
     }
 
     // Additional validation for date and time combinations
-    if (pickupDate.getTime() === dropoffDate.getTime()) {
+    if (pickupDate.toDateString() === dropoffDate.toDateString()) {
       // For same-day rentals, validate times
       const [pickupHour, pickupMinute] = pickupTime.split(':').map(Number);
       const [dropoffHour, dropoffMinute] = dropoffTime.split(':').map(Number);
