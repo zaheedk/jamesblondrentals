@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Vehicle } from "@/lib/types";
 import { saveBookingData } from "@/lib/booking-session";
 import { parse, format } from "date-fns";
+import { toZonedTime } from 'date-fns-tz';
 import { toast } from "sonner";
 
 interface BookingFormProps {
@@ -21,6 +22,9 @@ interface BookingFormProps {
   totalRateAfterDiscount?: number;
   totalDiscountAmount?: number;
 }
+
+// NZ timezone constant
+const NZ_TIMEZONE = 'Pacific/Auckland';
 
 export default function BookingForm({ 
   vehicle,
@@ -103,6 +107,9 @@ export default function BookingForm({
       console.error("Error formatting dates:", error);
     }
     
+    // Get current time in NZ timezone for validation
+    const nowInNZ = toZonedTime(new Date(), NZ_TIMEZONE);
+    
     // Comprehensive date and time validation with 15-minute minimum
     if (parsedPickupDate && parsedDropoffDate) {
       // Compare dates without time component first
@@ -132,6 +139,19 @@ export default function BookingForm({
           toast.error("Drop-off time must be at least 15 minutes after pickup time");
           return;
         }
+      }
+      
+      // Check if pickup is in the past (NZ time)
+      const pickupDateTime = new Date(parsedPickupDate);
+      pickupDateTime.setHours(
+        parseInt(pickupTime.split(':')[0], 10),
+        parseInt(pickupTime.split(':')[1], 10),
+        0, 0
+      );
+      
+      if (pickupDateTime < nowInNZ) {
+        toast.error("Pickup time cannot be in the past");
+        return;
       }
     }
     

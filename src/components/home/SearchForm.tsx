@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -18,7 +17,8 @@ import {
   getLocationTimeOptions, 
   combineDateTime,
   getDefaultPickupDate,
-  getDefaultDropoffDate
+  getDefaultDropoffDate,
+  getNowInNZ
 } from "./form-components/DateTimeUtils";
 
 // Update location ID if needed - we'll find Kelston location dynamically instead
@@ -40,11 +40,11 @@ const SearchForm = () => {
   const [isInitialized, setIsInitialized] = useState(false);
   const [isProcessingDates, setIsProcessingDates] = useState(false);
 
-  const [minDropoffDate, setMinDropoffDate] = useState<Date>(new Date()); // Allow same day
+  const [minDropoffDate, setMinDropoffDate] = useState<Date>(getNowInNZ()); // Allow same day
   const [isLoading, setIsLoading] = useState(false);
   const [pickupTimeOptions, setPickupTimeOptions] = useState<string[]>([]);
   const [dropoffTimeOptions, setDropoffTimeOptions] = useState<string[]>([]);
-  const [minPickupDate, setMinPickupDate] = useState<Date>(new Date());
+  const [minPickupDate, setMinPickupDate] = useState<Date>(getNowInNZ());
 
   const { 
     initializeApi,
@@ -141,7 +141,7 @@ const SearchForm = () => {
           setAge(String(defaultAge.id));
         }
 
-        // Set default dates only once
+        // Set default dates only once, now using NZ time-aware functions
         if (!pickupDate) {
           const defaultPickup = getDefaultPickupDate();
           console.log('Default pickup date:', defaultPickup);

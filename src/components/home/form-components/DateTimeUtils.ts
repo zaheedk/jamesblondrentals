@@ -1,16 +1,33 @@
 
 import { format, parse, isAfter, isBefore, addDays, addHours, addMinutes } from "date-fns";
+import { formatInTimeZone, toZonedTime } from 'date-fns-tz';
 import { 
   RCMLocation, 
   RCMOfficeTime,
   RCMLocationDetail 
 } from "@/lib/api/rcm-api-types";
 
+// New Zealand timezone
+const NZ_TIMEZONE = 'Pacific/Auckland';
+
+// Get current date/time in NZ timezone
+export const getNowInNZ = (): Date => {
+  return toZonedTime(new Date(), NZ_TIMEZONE);
+};
+
 export const disablePastDates = (date: Date, locationId: string, locationDetails: RCMLocationDetail[]): boolean => {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  // Get the current date in NZ time
+  const todayInNZ = getNowInNZ();
+  // Set to beginning of day for comparison
+  const todayStartInNZ = new Date(todayInNZ);
+  todayStartInNZ.setHours(0, 0, 0, 0);
   
-  if (date < today) {
+  // Convert the provided date to beginning of day for comparison
+  const startOfDate = new Date(date);
+  startOfDate.setHours(0, 0, 0, 0);
+  
+  // Disable past dates
+  if (startOfDate < todayStartInNZ) {
     return true;
   }
   
@@ -41,7 +58,56 @@ export const disablePastDates = (date: Date, locationId: string, locationDetails
     }
   }
   
+  // If today is selected, check if the current time prevents selecting any available pickup times
+  if (startOfDate.getTime() === todayStartInNZ.getTime()) {
+    // Find the location's operating hours for today
+    const operatingHours = getOperatingHours(locationId, date, 'pickup', locationDetails);
+    if (!operatingHours) {
+      // If no operating hours, disable today
+      return true;
+    }
+    
+    const latestPossibleTime = operatingHours.endTime;
+    if (!latestPossibleTime) {
+      return true;
+    }
+    
+    // Parse the latest possible time
+    const [latestHour, latestMinute] = latestPossibleTime.split(':').map(Number);
+    
+    // Current time in NZ
+    const currentNZHour = todayInNZ.getHours();
+    const currentNZMinute = todayInNZ.getMinutes();
+    
+    // If current NZ time is past or too close to the closing time, disable today
+    // Add a 30-minute buffer to ensure there's enough time for the pickup
+    if (currentNZHour > latestHour || (currentNZHour === latestHour && currentNZMinute > latestMinute - 30)) {
+      console.log('Current NZ time is past or too close to closing time, disabling today');
+      return true;
+    }
+  }
+  
   return false;
+};
+
+// Helper function to get operating hours
+const getOperatingHours = (
+  locationId: string, 
+  date: Date, 
+  type: 'pickup' | 'dropoff',
+  locationDetails: RCMLocationDetail[]
+): { startTime: string, endTime: string } | null => {
+  if (!locationId || locationDetails.length === 0) {
+    return { startTime: '09:00', endTime: '17:00' }; // Default values
+  }
+  
+  const location = locationDetails.find(loc => String(loc.id) === locationId);
+  if (!location) return { startTime: '09:00', endTime: '17:00' };
+  
+  // Get operation hours from the location
+  return type === 'pickup' 
+    ? { startTime: '09:00', endTime: '17:00' } // Replace with actual location hours 
+    : { startTime: '09:00', endTime: '17:00' };
 };
 
 export const getLocationTimeOptions = (
@@ -120,21 +186,29 @@ export const getLocationTimeOptions = (
 
   console.log(`Office hours for ${type} at location ${locationId} on day ${dayOfWeek}: ${startTime} - ${endTime}`);
 
-  const timeOptions = generateTimeOptions(startTime, endTime, date);
+  // Get current date/time in NZ timezone for filtering same-day options
+  const nowInNZ = getNowInNZ();
+  const isToday = nowInNZ.toDateString() === new Date(date).toDateString();
+
+  const timeOptions = generateTimeOptions(startTime, endTime, date, isToday, nowInNZ);
   
   console.log(`Generated ${timeOptions.length} time options`);
   
   return timeOptions.length > 0 ? timeOptions : ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
 };
 
-const generateTimeOptions = (startTime: string, endTime: string, date: Date): string[] => {
+const generateTimeOptions = (
+  startTime: string, 
+  endTime: string, 
+  date: Date, 
+  isToday: boolean,
+  currentTimeInNZ: Date
+): string[] => {
   const options: string[] = [];
-  const isToday = new Date().toDateString() === date.toDateString();
   
-  console.log(`Generating time options between ${startTime}-${endTime} for date: ${date.toISOString()}, today? ${isToday}`);
+  console.log(`Generating time options between ${startTime}-${endTime} for date: ${date.toISOString()}, today in NZ? ${isToday}`);
 
   try {
-    const currentDate = new Date();
     const startDate = parse(startTime, "HH:mm", date);
     const endDate = parse(endTime, "HH:mm", date);
     
@@ -143,7 +217,7 @@ const generateTimeOptions = (startTime: string, endTime: string, date: Date): st
     while (isBefore(currentTime, endDate)) {
       const timeString = format(currentTime, "HH:mm");
       
-      if (!isToday || isAfter(currentTime, currentDate)) {
+      if (!isToday || isAfter(currentTime, currentTimeInNZ)) {
         options.push(timeString);
       }
       
@@ -152,7 +226,7 @@ const generateTimeOptions = (startTime: string, endTime: string, date: Date): st
     
     const endTimeString = format(endDate, "HH:mm");
     if (!options.includes(endTimeString)) {
-      if (!isToday || isAfter(endDate, currentDate)) {
+      if (!isToday || isAfter(endDate, currentTimeInNZ)) {
         options.push(endTimeString);
       }
     }
@@ -174,11 +248,26 @@ export const combineDateTime = (date: Date, time: string): Date => {
 };
 
 export const getDefaultPickupDate = (): Date => {
-  // Get tomorrow at noon (12:00)
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  tomorrow.setHours(12, 0, 0, 0);
-  return tomorrow;
+  // Get current time in NZ
+  const nowInNZ = getNowInNZ();
+  
+  // Check if it's late in the day (past 5 PM NZ time)
+  const hour = nowInNZ.getHours();
+  const isLateDay = hour >= 17; // Past 5 PM
+  
+  // If late in the day, set default to tomorrow, otherwise today
+  let defaultPickupDate = new Date(nowInNZ);
+  
+  // If it's late in the day, set to tomorrow
+  if (isLateDay) {
+    defaultPickupDate = addDays(defaultPickupDate, 1);
+  }
+  
+  // Set to noon for consistency
+  defaultPickupDate.setHours(12, 0, 0, 0);
+  
+  console.log(`Default pickup date set to: ${defaultPickupDate.toISOString()}`);
+  return defaultPickupDate;
 };
 
 export const getDefaultDropoffDate = (pickupDate: Date): Date => {
