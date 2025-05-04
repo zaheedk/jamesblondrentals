@@ -265,14 +265,15 @@ const SearchForm = () => {
     console.log("Pickup date changed to:", date);
     setPickupDate(date);
     
-    // Important: Use the exact same date as minDropoffDate to allow same-day selection
-    // No need to create a new Date object as that can cause comparison issues
-    setMinDropoffDate(date);
+    // We need to set minDropoffDate, but we need to create a new Date object
+    // to avoid reference issues while still allowing same-day selection
+    const newMinDate = new Date(date.getTime());
+    setMinDropoffDate(newMinDate);
     
     // Only update dropoff date if it's before the new pickup date
     if (dropoffDate && isBefore(dropoffDate, date)) {
       console.log("Dropoff date is before new pickup date, updating to same day");
-      setDropoffDate(new Date(date)); // Create a new Date instance to avoid reference issues
+      setDropoffDate(new Date(date.getTime())); // Create a new Date instance to avoid reference issues
     }
   }, [dropoffDate]);
 
@@ -441,8 +442,17 @@ const SearchForm = () => {
                 date={dropoffDate}
                 onDateChange={setDropoffDate}
                 disableDate={(date) => {
-                  // Allow same day - only disable dates before pickup date
-                  return pickupDate ? date < pickupDate : true;
+                  // For drop-off date, only disable dates strictly before the pickup date
+                  if (!pickupDate) return true;
+                  
+                  // Compare dates by truncating time part to enable same day selection
+                  const dateWithoutTime = new Date(date);
+                  dateWithoutTime.setHours(0, 0, 0, 0);
+                  
+                  const pickupWithoutTime = new Date(pickupDate);
+                  pickupWithoutTime.setHours(0, 0, 0, 0);
+                  
+                  return dateWithoutTime < pickupWithoutTime;
                 }}
                 locationId={sameLocation ? pickupLocation : dropoffLocation}
                 allowSameDay={true}

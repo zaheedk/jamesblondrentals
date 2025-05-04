@@ -105,8 +105,21 @@ export default function BookingForm({
     
     // Comprehensive date and time validation with 15-minute minimum
     if (parsedPickupDate && parsedDropoffDate) {
+      // Compare dates without time component first
+      const pickupDay = new Date(parsedPickupDate);
+      pickupDay.setHours(0, 0, 0, 0);
+      
+      const dropoffDay = new Date(parsedDropoffDate);
+      dropoffDay.setHours(0, 0, 0, 0);
+      
+      if (dropoffDay < pickupDay) {
+        // Drop-off date is before pickup date
+        toast.error("Drop-off date cannot be before pickup date");
+        return;
+      }
+      
       // For same dates, compare times with 15-minute minimum
-      if (parsedPickupDate.toDateString() === parsedDropoffDate.toDateString()) {
+      if (pickupDay.getTime() === dropoffDay.getTime()) {
         console.log("Same day booking detected, validating times with 15-minute minimum");
         // Parse times to compare
         const [pickupHour, pickupMinute] = pickupTime.split(':').map(Number);
@@ -119,10 +132,6 @@ export default function BookingForm({
           toast.error("Drop-off time must be at least 15 minutes after pickup time");
           return;
         }
-      } else if (parsedDropoffDate < parsedPickupDate) {
-        // If not same day, just compare dates
-        toast.error("Drop-off date cannot be before pickup date");
-        return;
       }
     }
     
