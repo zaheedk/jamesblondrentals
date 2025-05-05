@@ -21,7 +21,7 @@ export interface Vehicle {
   dailyRate?: number;
   totalDays?: number;
   discountAmount?: number;
-  numberofhours?: number; // Added numberofhours from the API
+  numberofhours?: number | { _type: string; value: string }; // Updated to handle both number and object format
 }
 
 export type VehicleType = "economy" | "compact" | "midsize" | "suv" | "luxury" | "van" | "convertible";

@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -86,10 +85,29 @@ const VehicleCard = ({
     return false;
   })();
   
+  // Extract hours from the numberofhours property correctly
+  const getNumberOfHours = (): number | undefined => {
+    if (typeof vehicle.numberofhours === 'number') {
+      return vehicle.numberofhours;
+    }
+    
+    if (vehicle.numberofhours && 
+        typeof vehicle.numberofhours === 'object' && 
+        'value' in vehicle.numberofhours) {
+      const value = vehicle.numberofhours.value;
+      if (value !== 'undefined' && !isNaN(Number(value))) {
+        return Number(value);
+      }
+    }
+    
+    return undefined;
+  };
+  
   // Determine if vehicle is charged hourly or daily based on type or API data
   const isHourlyRate = () => {
     // If numberofhours is available and greater than 0, use hourly rate
-    if (vehicle.numberofhours && vehicle.numberofhours > 0) {
+    const hours = getNumberOfHours();
+    if (hours && hours > 0) {
       return true;
     }
     
@@ -108,8 +126,8 @@ const VehicleCard = ({
   // Get the rental duration display (hours or days)
   const getRentalDuration = () => {
     // First check if we have explicit hourly data from API
-    if (vehicle.numberofhours && vehicle.numberofhours > 0) {
-      const hours = vehicle.numberofhours;
+    const hours = getNumberOfHours();
+    if (hours && hours > 0) {
       return `${hours} ${hours === 1 ? 'hour' : 'hours'}`;
     }
     

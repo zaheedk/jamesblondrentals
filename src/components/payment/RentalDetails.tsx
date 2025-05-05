@@ -40,7 +40,7 @@ const RentalDetails = ({
   // Calculate hours for hourly rate display
   const getDurationDisplay = () => {
     // First check if we have explicit hourly data
-    if (numberOfHours && numberOfHours > 0) {
+    if (numberOfHours !== undefined && numberOfHours > 0) {
       return `${numberOfHours} ${numberOfHours === 1 ? 'hour' : 'hours'}`;
     }
     
