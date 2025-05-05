@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -95,7 +96,7 @@ const VehicleCard = ({
         typeof vehicle.numberofhours === 'object' && 
         'value' in vehicle.numberofhours) {
       const value = vehicle.numberofhours.value;
-      if (value !== 'undefined' && !isNaN(Number(value))) {
+      if (value && value !== 'undefined' && !isNaN(Number(value))) {
         return Number(value);
       }
     }
@@ -167,16 +168,20 @@ const VehicleCard = ({
             <div className="font-bold text-lg">
               ${typeof displayPrice === 'number' ? displayPrice.toFixed(2) : '0.00'}
             </div>
-            {vehicle.totalDays && (
-              <div className="text-sm font-medium text-primary mt-1">
-                Total: ${totalRentalValue.toFixed(2)}
-                {getRentalDuration() && (
+            <div className="text-sm font-medium text-primary mt-1">
+              {getRentalDuration() ? (
+                <span className="block">
+                  {isHourlyRate() ? 'For' : 'Total:'} ${totalRentalValue.toFixed(2)}
                   <span className="ml-1 text-xs text-gray-600 block">
                     for {getRentalDuration()}
                   </span>
-                )}
-              </div>
-            )}
+                </span>
+              ) : (
+                <span className="text-xs text-gray-600 block">
+                  {isHourlyRate() ? 'Hourly rate' : 'Daily rate'}
+                </span>
+              )}
+            </div>
           </div>
         </div>
       </CardHeader>
@@ -198,15 +203,15 @@ const VehicleCard = ({
         {isAvailable ? (
           <BookingForm
             vehicle={vehicle}
-            pickupLocationId={pickupLocation}
-            pickupLocationName={pickupLocationName}
-            dropoffLocationId={dropoffLocation}
-            dropoffLocationName={dropoffLocationName}
-            pickupDate={pickupDate}
-            dropoffDate={dropoffDate}
-            pickupTime={pickupTime}
-            dropoffTime={dropoffTime}
-            ageId={age}
+            pickupLocationId={searchParams.get("pickupLocation") || ""}
+            pickupLocationName={searchParams.get("pickupLocationName") || ""}
+            dropoffLocationId={searchParams.get("dropoffLocation") || searchParams.get("pickupLocation") || ""}
+            dropoffLocationName={searchParams.get("dropoffLocationName") || searchParams.get("pickupLocationName") || ""}
+            pickupDate={searchParams.get("pickupDate") || ""}
+            dropoffDate={searchParams.get("dropoffDate") || ""}
+            pickupTime={searchParams.get("pickupTime") || ""}
+            dropoffTime={searchParams.get("dropoffTime") || ""}
+            ageId={searchParams.get("age") || ""}
             vehicleImageUrl={imageUrl}
             totalRateAfterDiscount={displayPrice}
             totalDiscountAmount={totalDiscountAmount}
