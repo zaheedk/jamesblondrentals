@@ -12,6 +12,7 @@ interface RentalDetailsProps {
   dropoffTime: string;
   rentalDuration: number;
   rateType?: "hourly" | "daily";
+  numberOfHours?: number;
 }
 
 const RentalDetails = ({
@@ -24,6 +25,7 @@ const RentalDetails = ({
   dropoffTime,
   rentalDuration,
   rateType = "daily",
+  numberOfHours,
 }: RentalDetailsProps) => {
   const displayPickupLocation = pickupLocationName && 
     pickupLocationName !== "undefined" && 
@@ -37,6 +39,12 @@ const RentalDetails = ({
 
   // Calculate hours for hourly rate display
   const getDurationDisplay = () => {
+    // First check if we have explicit hourly data
+    if (numberOfHours && numberOfHours > 0) {
+      return `${numberOfHours} ${numberOfHours === 1 ? 'hour' : 'hours'}`;
+    }
+    
+    // Fallback to the previous logic
     if (rateType === "hourly") {
       const hours = Math.round(rentalDuration * 24); // Convert days to hours
       return `${hours} ${hours === 1 ? 'hour' : 'hours'}`;

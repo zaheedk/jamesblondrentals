@@ -70,7 +70,8 @@ const VehicleCard = ({
     vehiclePrice: vehicle.price,
     totalDays: vehicle.totalDays,
     finalDisplayPrice: displayPrice,
-    totalRentalValue
+    totalRentalValue,
+    numberofhours: vehicle.numberofhours
   });
   
   const isAvailable = (() => {
@@ -85,11 +86,16 @@ const VehicleCard = ({
     return false;
   })();
   
-  // Determine if vehicle is charged hourly or daily based on type
+  // Determine if vehicle is charged hourly or daily based on type or API data
   const isHourlyRate = () => {
+    // If numberofhours is available and greater than 0, use hourly rate
+    if (vehicle.numberofhours && vehicle.numberofhours > 0) {
+      return true;
+    }
+    
     const name = `${vehicle.make} ${vehicle.model}`.toLowerCase();
     
-    // Check if vehicle is a truck or van that should use hourly rate
+    // Fallback to type-based detection
     return (
       name.includes('truck') || 
       name.includes('box') || 
@@ -101,10 +107,16 @@ const VehicleCard = ({
   
   // Get the rental duration display (hours or days)
   const getRentalDuration = () => {
+    // First check if we have explicit hourly data from API
+    if (vehicle.numberofhours && vehicle.numberofhours > 0) {
+      const hours = vehicle.numberofhours;
+      return `${hours} ${hours === 1 ? 'hour' : 'hours'}`;
+    }
+    
     if (!vehicle.totalDays) return null;
     
     if (isHourlyRate()) {
-      // For hourly vehicles, convert days to hours (assuming 24 hours per day)
+      // For hourly vehicles without explicit hourly data, convert days to hours
       const hours = Math.round(vehicle.totalDays * 24);
       return `${hours} ${hours === 1 ? 'hour' : 'hours'}`;
     } else {

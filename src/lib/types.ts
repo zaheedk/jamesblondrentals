@@ -21,6 +21,7 @@ export interface Vehicle {
   dailyRate?: number;
   totalDays?: number;
   discountAmount?: number;
+  numberofhours?: number; // Added numberofhours from the API
 }
 
 export type VehicleType = "economy" | "compact" | "midsize" | "suv" | "luxury" | "van" | "convertible";
