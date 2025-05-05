@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -175,7 +174,7 @@ const VehicleCard = ({
                 </span>
               ) : (
                 <span className="text-xs text-gray-600 block">
-                  {isHourlyRate() ? 'Hourly rate' : 'Daily rate'}
+                  {isHourlyRate() ? `Total: ${getNumberOfHours() || 0} Hours` : 'Daily rate'}
                 </span>
               )}
             </div>
