@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -143,6 +144,37 @@ const VehicleCard = ({
     }
   };
 
+  // Determine what rate information to display
+  const getRateDisplay = () => {
+    const hours = getNumberOfHours();
+    
+    // If we have rental duration data and it's valid, show the full "Total: $X for Y hours/days"
+    if (getRentalDuration()) {
+      return (
+        <span className="block">
+          Total: ${totalRentalValue.toFixed(2)} for {getRentalDuration()}
+        </span>
+      );
+    }
+    
+    // For hourly vehicles with hours data, show "Total: X Hours"
+    if (isHourlyRate() && hours && hours > 0) {
+      return <span className="block">Total: ${(displayPrice * hours).toFixed(2)} for {hours} Hours</span>;
+    }
+    
+    // For hourly vehicles without specific hours, but we know they're hourly
+    if (isHourlyRate()) {
+      const calculatedHours = getNumberOfHours() || 0;
+      if (calculatedHours > 0) {
+        return <span className="block">Total: ${(displayPrice * calculatedHours).toFixed(2)} for {calculatedHours} Hours</span>;
+      }
+      return <span className="block">Hourly rate</span>;
+    }
+    
+    // For daily vehicles
+    return <span className="block">Daily rate</span>;
+  };
+
   return (
     <Card className="overflow-hidden shadow-md h-full flex flex-col">
       <AspectRatio ratio={4/3} className="overflow-hidden bg-white">
@@ -168,15 +200,7 @@ const VehicleCard = ({
               ${typeof displayPrice === 'number' ? displayPrice.toFixed(2) : '0.00'}
             </div>
             <div className="text-sm font-medium text-primary mt-1">
-              {getRentalDuration() ? (
-                <span className="block">
-                  Total: ${totalRentalValue.toFixed(2)} for {getRentalDuration()}
-                </span>
-              ) : (
-                <span className="text-xs text-gray-600 block">
-                  {isHourlyRate() ? `Total: ${getNumberOfHours() || 0} Hours` : 'Daily rate'}
-                </span>
-              )}
+              {getRateDisplay()}
             </div>
           </div>
         </div>
