@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -99,11 +98,6 @@ const VehicleCard = ({
     );
   };
   
-  // Get the appropriate rate label
-  const getRateLabel = () => {
-    return isHourlyRate() ? 'per hour' : 'per day';
-  };
-  
   // Get the rental duration display (hours or days)
   const getRentalDuration = () => {
     if (!vehicle.totalDays) return null;
@@ -142,7 +136,6 @@ const VehicleCard = ({
             <div className="font-bold text-lg">
               ${typeof displayPrice === 'number' ? displayPrice.toFixed(2) : '0.00'}
             </div>
-            <div className="text-xs text-gray-500">{getRateLabel()}</div>
             {vehicle.totalDays && (
               <div className="text-sm font-medium text-primary mt-1">
                 Total: ${totalRentalValue.toFixed(2)}
