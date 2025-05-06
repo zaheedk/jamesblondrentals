@@ -147,31 +147,41 @@ const VehicleCard = ({
   // Determine what rate information to display
   const getRateDisplay = () => {
     const hours = getNumberOfHours();
+    const vehicleName = `${vehicle.make} ${vehicle.model}`.toLowerCase();
     
-    // If we have rental duration data and it's valid, show the full "Total: $X for Y hours/days"
-    if (getRentalDuration()) {
+    // If we have explicit hours data, always prioritize showing that
+    if (hours && hours > 0) {
       return (
         <span className="block">
-          Total: ${totalRentalValue.toFixed(2)} for {getRentalDuration()}
+          Total: ${(displayPrice * hours).toFixed(2)} for {hours} {hours === 1 ? 'Hour' : 'Hours'}
         </span>
       );
     }
     
-    // For hourly vehicles with hours data, show "Total: X Hours"
-    if (isHourlyRate() && hours && hours > 0) {
-      return <span className="block">Total: ${(displayPrice * hours).toFixed(2)} for {hours} Hours</span>;
+    // If we have rental duration data and totalDays is valid, show the full "Total: $X for Y hours/days"
+    if (getRentalDuration() && vehicle.totalDays) {
+      if (isHourlyRate()) {
+        const calculatedHours = Math.round(vehicle.totalDays * 24);
+        return (
+          <span className="block">
+            Total: ${totalRentalValue.toFixed(2)} for {calculatedHours} {calculatedHours === 1 ? 'Hour' : 'Hours'}
+          </span>
+        );
+      } else {
+        return (
+          <span className="block">
+            Total: ${totalRentalValue.toFixed(2)} for {vehicle.totalDays} {vehicle.totalDays === 1 ? 'day' : 'days'}
+          </span>
+        );
+      }
     }
     
-    // For hourly vehicles without specific hours, but we know they're hourly
+    // For known hourly vehicles without specific duration info
     if (isHourlyRate()) {
-      const calculatedHours = getNumberOfHours() || 0;
-      if (calculatedHours > 0) {
-        return <span className="block">Total: ${(displayPrice * calculatedHours).toFixed(2)} for {calculatedHours} Hours</span>;
-      }
       return <span className="block">Hourly rate</span>;
     }
     
-    // For daily vehicles
+    // For daily vehicles without specific duration info
     return <span className="block">Daily rate</span>;
   };
 
