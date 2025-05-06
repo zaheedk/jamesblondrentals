@@ -58,6 +58,29 @@ const Index = () => {
         </div>
       </section>
       
+      {/* Popular Locations */}
+      <section className="bg-white py-8">
+        <div className="container mx-auto px-4">
+          <h2 className="text-2xl font-bold text-center mb-8">Popular Rental Locations</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            <div className="bg-primary/5 p-6 rounded-lg text-center">
+              <h3 className="text-xl font-semibold mb-2">Auckland Airport</h3>
+              <p className="mb-4">Convenient rentals minutes from Auckland International Airport</p>
+              <Button variant="outline" asChild>
+                <Link to="/car-rental-auckland-airport-new-zealand">View Details</Link>
+              </Button>
+            </div>
+            <div className="bg-primary/5 p-6 rounded-lg text-center">
+              <h3 className="text-xl font-semibold mb-2">Wellington City</h3>
+              <p className="mb-4">Explore the capital city with our Wellington branch</p>
+              <Button variant="outline" asChild>
+                <Link to="/car-rental-wellington-new-zealand">View Details</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+      
       {/* Why Choose Section */}
       <section className="bg-gray-50 py-16">
         <div className="container mx-auto px-4">

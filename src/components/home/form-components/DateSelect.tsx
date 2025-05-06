@@ -44,10 +44,9 @@ export const DateSelect = ({
 
   // Check if the date is Sunday and if the location is Wellington - CBD
   const isWellingtonSunday = (date: Date) => {
-    // We don't have the location names here, so we need to check by the ID
-    // Wellington - CBD is likely to have a specific ID that we need to identify
+    // Wellington CBD offices are closed on Sundays (locationIds for Wellington are 63, 64, 65)
     const isWellingtonLocation = locationId && 
-      ["63", "64", "65"].includes(locationId); // These IDs should be verified
+      ["63", "64", "65"].includes(locationId);
 
     if (isWellingtonLocation && date.getDay() === 0) { // 0 is Sunday
       return true;

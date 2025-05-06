@@ -59,6 +59,11 @@
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
   </url>
+  <url>
+    <loc>https://jamesblondrentals.com/car-rental-auckland-airport-new-zealand</loc>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+  </url>
   
   <!-- Airport Pages -->
   <url>
