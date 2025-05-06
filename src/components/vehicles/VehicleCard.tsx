@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -5,7 +6,6 @@ import { Vehicle } from "@/lib/types";
 import { useSearchParams } from "react-router-dom";
 import BookingForm from "./BookingForm";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { formatCurrency } from "@/lib/utils";
 
 interface VehicleCardProps {
   vehicle: Vehicle;
@@ -128,60 +128,61 @@ const VehicleCard = ({
   const getRentalDuration = () => {
     // First check if we have explicit hourly data from API
     const hours = getNumberOfHours();
-    
-    // If hours data is available (greater than 0), display hours
     if (hours && hours > 0) {
       return `${hours} ${hours === 1 ? 'hour' : 'hours'}`;
     }
     
-    // If totalDays is available, display days
-    if (vehicle.totalDays) {
+    if (!vehicle.totalDays) return null;
+    
+    if (isHourlyRate()) {
+      // For hourly vehicles without explicit hourly data, convert days to hours
+      const hours = Math.round(vehicle.totalDays * 24);
+      return `${hours} ${hours === 1 ? 'hour' : 'hours'}`;
+    } else {
+      // For daily vehicles, display days
       return `${vehicle.totalDays} ${vehicle.totalDays === 1 ? 'day' : 'days'}`;
     }
-    
-    return null;
   };
 
   // Determine what rate information to display
   const getRateDisplay = () => {
     const hours = getNumberOfHours();
+    const vehicleName = `${vehicle.make} ${vehicle.model}`.toLowerCase();
     
-    // If hours > 0, show hourly rate with total price
+    // If we have explicit hours data, always prioritize showing that
     if (hours && hours > 0) {
       return (
         <span className="block">
-          ${displayPrice.toFixed(2)} per hour for {hours} {hours === 1 ? 'hour' : 'hours'}
+          Total: ${(displayPrice * hours).toFixed(2)} for {hours} {hours === 1 ? 'Hour' : 'Hours'}
         </span>
       );
     }
     
-    // If we have daily rate, show daily rate with total days
-    if (vehicle.dailyRate && vehicle.totalDays) {
-      return (
-        <span className="block">
-          ${vehicle.dailyRate.toFixed(2)} per day for {vehicle.totalDays} {vehicle.totalDays === 1 ? 'day' : 'days'}
-        </span>
-      );
+    // If we have rental duration data and totalDays is valid, show the full "Total: $X for Y hours/days"
+    if (getRentalDuration() && vehicle.totalDays) {
+      if (isHourlyRate()) {
+        const calculatedHours = Math.round(vehicle.totalDays * 24);
+        return (
+          <span className="block">
+            Total: ${totalRentalValue.toFixed(2)} for {calculatedHours} {calculatedHours === 1 ? 'Hour' : 'Hours'}
+          </span>
+        );
+      } else {
+        return (
+          <span className="block">
+            Total: ${totalRentalValue.toFixed(2)} for {vehicle.totalDays} {vehicle.totalDays === 1 ? 'day' : 'days'}
+          </span>
+        );
+      }
     }
     
-    // Fallback for hourly vehicles without specific duration
+    // For known hourly vehicles without specific duration info
     if (isHourlyRate()) {
       return <span className="block">Hourly rate</span>;
     }
     
-    // Fallback for daily vehicles without specific duration
+    // For daily vehicles without specific duration info
     return <span className="block">Daily rate</span>;
-  };
-  
-  // For total price display in the price section
-  const getTotalPriceDisplay = () => {
-    // If we have the total rate after discount, use it
-    if (typeof totalRateAfterDiscount === 'number') {
-      return totalRateAfterDiscount.toFixed(2);
-    }
-    
-    // Otherwise use the calculated total
-    return typeof displayPrice === 'number' ? displayPrice.toFixed(2) : '0.00';
   };
 
   return (
@@ -206,7 +207,7 @@ const VehicleCard = ({
           </div>
           <div className="text-right">
             <div className="font-bold text-lg">
-              ${getTotalPriceDisplay()}
+              ${typeof displayPrice === 'number' ? displayPrice.toFixed(2) : '0.00'}
             </div>
             <div className="text-sm font-medium text-primary mt-1">
               {getRateDisplay()}
