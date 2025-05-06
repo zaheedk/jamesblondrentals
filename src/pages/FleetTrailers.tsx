@@ -43,7 +43,8 @@ const trailers = [
     },
     maxLoad: "500kg",
     warning: "not suited to 24-volt systems",
-    image: "/lovable-uploads/ea4af725-7713-464d-83cb-34d5cd4c0e7f.png"
+    image: "/lovable-uploads/ea4af725-7713-464d-83cb-34d5cd4c0e7f.png",
+    link: "/fleet/trailers/luggage-trailer"  // Add link for the luggage trailer
   },
   {
     id: "car-transporter",
