@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Phone, Mail, ArrowRight, Car } from 'lucide-react';
@@ -214,7 +213,9 @@ const CarRentalAucklandAirport = () => {
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Button size="lg" asChild>
-              <Link to="/vehicles?pickupLocation=7&dropoffLocation=7">View Our Vehicle Range</Link>
+              <a href="https://www.jamesblond.co.nz/fleet/cars" target="_blank" rel="noopener noreferrer">
+                View Our Vehicle Range
+              </a>
             </Button>
             <Button size="lg" variant="outline" asChild>
               <a href="tel:0800525663">Call Us: 0800 525 663</a>

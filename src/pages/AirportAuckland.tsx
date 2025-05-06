@@ -1,7 +1,7 @@
-
 import React from 'react';
 import { MapIcon, Navigation } from 'lucide-react';
 import FuelStationsMap from '../components/FuelStationsMap';
+import { Button } from '@/components/ui/button';
 
 const AirportAuckland = () => (
   <div className="container mx-auto px-4 py-8 space-y-6">
@@ -121,6 +121,18 @@ const AirportAuckland = () => (
             View on map
           </a>
         </div>
+      </div>
+    </section>
+    
+    {/* View Vehicles CTA */}
+    <section className="py-6 border-t">
+      <div className="text-center">
+        <h3 className="text-xl font-semibold mb-4">Ready to Book Your Auckland Airport Rental?</h3>
+        <Button className="mt-2" asChild>
+          <a href="https://www.jamesblond.co.nz/fleet/cars" target="_blank" rel="noopener noreferrer">
+            View Our Vehicle Range
+          </a>
+        </Button>
       </div>
     </section>
   </div>
