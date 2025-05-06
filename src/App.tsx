@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -17,7 +16,7 @@ import PaymentOptions from "./pages/PaymentOptions";
 import Payment from "./pages/Payment";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import About from "./pages/About";
-import Contact from "./pages/Contact"; // Add the new Contact page
+import Contact from "./pages/Contact"; 
 import ContactAuckland from "./pages/ContactAuckland";
 import ContactWellington from "./pages/ContactWellington";
 import ContactChristchurch from "./pages/ContactChristchurch";
@@ -54,6 +53,7 @@ import TwelveSeaterMinibusDetail from "./pages/TwelveSeaterMinibusDetail";
 import TenSeaterMinibusDetail from "./pages/TenSeaterMinibusDetail"; 
 import MobilFuelDiscount from "./pages/MobilFuelDiscount"; // Import the new Mobil Fuel Discount page
 import CarRentalWellington from "./pages/CarRentalWellington"; // Import the new Wellington car rental page
+import CarRentalAucklandAirport from "./pages/CarRentalAucklandAirport"; // Import the new Auckland airport car rental page
 import CagedTrailerDetail from "./pages/CagedTrailerDetail"; // Import the new Caged Trailer detail page
 import LuggageTrailerDetail from "./pages/LuggageTrailerDetail"; // Import the new Luggage Trailer detail page
 import CarTransporterTrailerDetail from "./pages/CarTransporterTrailerDetail"; // Import the new Car Transporter Trailer detail page
@@ -107,6 +107,7 @@ const App = () => {
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/hot-deals/mobil-fuel-discount" element={<MobilFuelDiscount />} /> {/* Mobil fuel discount route */}
               <Route path="/car-rental-wellington-new-zealand" element={<CarRentalWellington />} /> {/* New Wellington car rental page */}
+              <Route path="/car-rental-auckland-airport-new-zealand" element={<CarRentalAucklandAirport />} /> {/* New Auckland airport car rental page */}
 
               <Route path="/fleet" element={<Fleet />}>
                 <Route path="cars" element={<FleetCars />} />

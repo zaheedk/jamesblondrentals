@@ -49,10 +49,18 @@ const Index = () => {
               of well-maintained rental cars, trucks, vans and more. Our user-friendly interface ensures a hassle-free booking 
               process, making your travel arrangements a breeze.
             </p>
-            <div className="bg-primary/5 p-6 rounded-lg mt-8 text-center">
-              <p className="text-xl font-semibold text-primary">
+            <div className="bg-primary/5 p-6 rounded-lg mt-8">
+              <p className="text-xl font-semibold text-primary text-center mb-4">
                 James Blond Guarantee! No hidden costs. No surprise taxes. Transparent Rental policy.
               </p>
+              <div className="flex flex-wrap justify-center gap-4">
+                <Button variant="outline" asChild size="sm">
+                  <Link to="/car-rental-wellington-new-zealand">Wellington Car Rentals</Link>
+                </Button>
+                <Button variant="outline" asChild size="sm">
+                  <Link to="/car-rental-auckland-airport-new-zealand">Auckland Airport Car Rentals</Link>
+                </Button>
+              </div>
             </div>
           </div>
         </div>
