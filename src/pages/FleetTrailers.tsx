@@ -44,7 +44,7 @@ const trailers = [
     maxLoad: "500kg",
     warning: "not suited to 24-volt systems",
     image: "/lovable-uploads/ea4af725-7713-464d-83cb-34d5cd4c0e7f.png",
-    link: "/fleet/trailers/luggage-trailer"
+    link: "/fleet/trailers/luggage-trailer"  // Add link for the luggage trailer
   },
   {
     id: "car-transporter",
@@ -59,8 +59,7 @@ const trailers = [
     },
     maxLoad: "1940kg",
     warning: "Towing vehicle must have WOF/REG",
-    image: "/lovable-uploads/3f2ac575-135b-409f-b546-6ef7cdb9c9d9.png",
-    link: "/fleet/trailers/car-transporter"  // Add link for the car transporter trailer
+    image: "/lovable-uploads/3f2ac575-135b-409f-b546-6ef7cdb9c9d9.png"
   }
 ];
 
