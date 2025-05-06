@@ -6,6 +6,10 @@
       "destination": "https://apis.rentalcarmanager.com/:path*"
     },
     {
+      "source": "/sitemap.xml",
+      "destination": "/sitemap.xml"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
@@ -16,6 +20,12 @@
       "headers": [
         { "key": "Content-Type", "value": "application/json" },
         { "key": "Accept", "value": "application/json" }
+      ]
+    },
+    {
+      "source": "/sitemap.xml",
+      "headers": [
+        { "key": "Content-Type", "value": "application/xml" }
       ]
     }
   ]
