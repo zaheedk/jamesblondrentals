@@ -104,7 +104,7 @@ const VehicleCard = ({
     return undefined;
   };
   
-  // Determine if vehicle is charged hourly or daily based on type or API data
+  // Determine if vehicle is charged hourly or daily
   const isHourlyRate = () => {
     // If numberofhours is available and greater than 0, use hourly rate
     const hours = getNumberOfHours();
@@ -128,16 +128,20 @@ const VehicleCard = ({
   const getRentalDuration = () => {
     // First check if we have explicit hourly data from API
     const hours = getNumberOfHours();
+    
+    // If hours value is available from API, use it
     if (hours && hours > 0) {
       return `${hours} ${hours === 1 ? 'hour' : 'hours'}`;
     }
     
+    // If no total days available, return null
     if (!vehicle.totalDays) return null;
     
+    // If we should use hourly rates without specific hours data
     if (isHourlyRate()) {
-      // For hourly vehicles without explicit hourly data, convert days to hours
-      const hours = Math.round(vehicle.totalDays * 24);
-      return `${hours} ${hours === 1 ? 'hour' : 'hours'}`;
+      // Convert days to hours for hourly vehicles
+      const calculatedHours = Math.round(vehicle.totalDays * 24);
+      return `${calculatedHours} ${calculatedHours === 1 ? 'hour' : 'hours'}`;
     } else {
       // For daily vehicles, display days
       return `${vehicle.totalDays} ${vehicle.totalDays === 1 ? 'day' : 'days'}`;
@@ -147,31 +151,50 @@ const VehicleCard = ({
   // Determine what rate information to display
   const getRateDisplay = () => {
     const hours = getNumberOfHours();
-    const vehicleName = `${vehicle.make} ${vehicle.model}`.toLowerCase();
     
-    // If we have explicit hours data, always prioritize showing that
+    // If we have hourly data from API
     if (hours && hours > 0) {
+      const hourlyRate = displayPrice / hours;
       return (
-        <span className="block">
-          Total: ${(displayPrice * hours).toFixed(2)} for {hours} {hours === 1 ? 'Hour' : 'Hours'}
-        </span>
+        <div className="space-y-1">
+          <span className="block text-sm text-gray-600">
+            ${hourlyRate.toFixed(2)} per hour for {hours} {hours === 1 ? 'hour' : 'hours'}
+          </span>
+          <span className="block font-medium">
+            Total: ${displayPrice.toFixed(2)}
+          </span>
+        </div>
       );
     }
     
-    // If we have rental duration data and totalDays is valid, show the full "Total: $X for Y hours/days"
+    // If we have rental duration data and totalDays
     if (getRentalDuration() && vehicle.totalDays) {
+      // For hourly vehicles without explicit hourly data
       if (isHourlyRate()) {
         const calculatedHours = Math.round(vehicle.totalDays * 24);
+        const hourlyRate = totalRentalValue / calculatedHours;
         return (
-          <span className="block">
-            Total: ${totalRentalValue.toFixed(2)} for {calculatedHours} {calculatedHours === 1 ? 'Hour' : 'Hours'}
-          </span>
+          <div className="space-y-1">
+            <span className="block text-sm text-gray-600">
+              ${hourlyRate.toFixed(2)} per hour for {calculatedHours} {calculatedHours === 1 ? 'hour' : 'hours'}
+            </span>
+            <span className="block font-medium">
+              Total: ${totalRentalValue.toFixed(2)}
+            </span>
+          </div>
         );
       } else {
+        // For daily vehicles
+        const dailyRate = totalRentalValue / vehicle.totalDays;
         return (
-          <span className="block">
-            Total: ${totalRentalValue.toFixed(2)} for {vehicle.totalDays} {vehicle.totalDays === 1 ? 'day' : 'days'}
-          </span>
+          <div className="space-y-1">
+            <span className="block text-sm text-gray-600">
+              ${dailyRate.toFixed(2)} per day for {vehicle.totalDays} {vehicle.totalDays === 1 ? 'day' : 'days'}
+            </span>
+            <span className="block font-medium">
+              Total: ${totalRentalValue.toFixed(2)}
+            </span>
+          </div>
         );
       }
     }
@@ -209,7 +232,7 @@ const VehicleCard = ({
             <div className="font-bold text-lg">
               ${typeof displayPrice === 'number' ? displayPrice.toFixed(2) : '0.00'}
             </div>
-            <div className="text-sm font-medium text-primary mt-1">
+            <div className="text-sm text-primary mt-1">
               {getRateDisplay()}
             </div>
           </div>
