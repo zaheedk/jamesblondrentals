@@ -1,11 +1,14 @@
+
 import React from 'react';
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const accessories = [
   {
     title: "Child Seat",
     description: "Ensure safe travel for smaller children with our child seats, suitable for most rental vehicles. Please note that we do not provide capsule seats or baby seats for children under 6-8 months.",
     image: "/lovable-uploads/9f1b5c5b-6407-4c14-be34-a8594a1fac59.png",
+    link: "/fleet/accessories/child-seat"
   },
   {
     title: "Booster Seat",
@@ -60,6 +63,13 @@ const FleetAccessories = () => {
             <p className="text-gray-600 mb-6 text-center">
               {item.description}
             </p>
+            {item.link && (
+              <div className="flex justify-center">
+                <Link to={item.link}>
+                  <Button variant="outline">View Details</Button>
+                </Link>
+              </div>
+            )}
           </div>
         ))}
       </div>
