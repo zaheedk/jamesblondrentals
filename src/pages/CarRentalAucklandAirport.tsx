@@ -1,7 +1,6 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Phone, Mail, ArrowRight, Fuel, Airplane } from 'lucide-react';
+import { MapPin, Phone, Mail, ArrowRight, Fuel, Airplay } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -88,7 +87,7 @@ const CarRentalAucklandAirport = () => {
             <CardContent className="pt-6">
               <div className="text-center mb-4">
                 <div className="bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2">
-                  <Airplane className="text-primary h-6 w-6" />
+                  <Airplay className="text-primary h-6 w-6" />
                 </div>
                 <h3 className="text-xl font-semibold">Airport Convenience</h3>
               </div>

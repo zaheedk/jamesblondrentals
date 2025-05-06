@@ -7,7 +7,6 @@ import { Label } from "@/components/ui/label";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { getNowInNZ } from "./DateTimeUtils";
 
 interface DateSelectProps {
   id: string;
