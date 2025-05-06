@@ -49,7 +49,7 @@ const CarTransporterTrailerDetail = () => {
             <p className="text-xl font-bold">1940kg</p>
           </Card>
           
-          <Alert variant="warning" className="mb-6">
+          <Alert variant="destructive" className="mb-6">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
               Towing vehicle must have WOF/REG
