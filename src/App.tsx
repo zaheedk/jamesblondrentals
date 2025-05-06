@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -58,6 +57,7 @@ import CagedTrailerDetail from "./pages/CagedTrailerDetail"; // Import the new C
 import LuggageTrailerDetail from "./pages/LuggageTrailerDetail"; // Import the new Luggage Trailer detail page
 import CarTransporterTrailerDetail from "./pages/CarTransporterTrailerDetail"; // Import the new Car Transporter Trailer detail page
 import ChildSeatDetail from "./pages/ChildSeatDetail"; // Import the new Child Seat detail page
+import BoosterSeatDetail from "./pages/BoosterSeatDetail"; // Import the new Booster Seat detail page
 
 import Airport from "./pages/Airport";
 import AirportShuttle from "./pages/AirportShuttle";
@@ -139,6 +139,7 @@ const App = () => {
                 <Route path="trailers/car-transporter" element={<CarTransporterTrailerDetail />} />
                 <Route path="accessories" element={<FleetAccessories />} />
                 <Route path="accessories/child-seat" element={<ChildSeatDetail />} />
+                <Route path="accessories/booster-seat" element={<BoosterSeatDetail />} />
               </Route>
               
               <Route path="/airport" element={<Airport />} />
