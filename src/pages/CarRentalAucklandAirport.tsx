@@ -143,7 +143,7 @@ const CarRentalAucklandAirport = () => {
                   <MapPin className="w-5 h-5 mt-1 text-primary" />
                   <div>
                     <p className="font-medium">Address:</p>
-                    <p>Unit 1 / 9 Richard Pearce Drive</p>
+                    <p>310 Landing Drive</p>
                     <p>Mangere</p>
                     <p>Auckland 2022</p>
                   </div>
@@ -175,16 +175,8 @@ const CarRentalAucklandAirport = () => {
               <h3 className="text-xl font-semibold mb-4">Opening Hours</h3>
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <span className="font-medium">Monday - Friday:</span>
-                  <span>7:30 AM - 5:30 PM</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="font-medium">Saturday:</span>
-                  <span>8:00 AM - 4:00 PM</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="font-medium">Sunday:</span>
-                  <span>9:00 AM - 4:00 PM</span>
+                  <span className="font-medium">Monday - Sunday:</span>
+                  <span>6:00 AM - 10:00 PM</span>
                 </div>
                 <div className="mt-4 text-sm text-gray-600">
                   <p>After hours pickup and drop off available on request</p>
@@ -202,7 +194,7 @@ const CarRentalAucklandAirport = () => {
             <h3 className="text-2xl font-semibold mb-6">Location</h3>
             <div className="aspect-video">
               <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3187.6396102095876!2d174.77388371562642!3d-36.99685879096521!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6d0d4fec941e66f7%3A0xb193950514fff676!2s9%20Richard%20Pearse%20Dr%2C%20Mangere%2C%20Auckland%202022%2C%20New%20Zealand!5e0!3m2!1sen!2sus!4v1656465456146!5m2!1sen!2sus"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3187.6396102095876!2d174.77388371562642!3d-36.99685879096521!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6d0d4fec941e66f7%3A0xb193950514fff676!2s310%20Landing%20Dr%2C%20Mangere%2C%20Auckland%202022%2C%20New%20Zealand!5e0!3m2!1sen!2sus!4v1656465456146!5m2!1sen!2sus"
                 className="w-full h-full border-0"
                 allowFullScreen
                 loading="lazy"
