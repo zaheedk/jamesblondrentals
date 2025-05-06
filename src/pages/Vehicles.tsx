@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useLocation } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -12,7 +11,7 @@ import { RCMAvailableCar, RCMMandatoryFee, RCMSeasonalRate } from "@/lib/api/rcm
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle, ChevronDown, ChevronUp, Eye, EyeOff } from "lucide-react";
+import { AlertCircle, ChevronDown, ChevronUp } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
 
@@ -44,7 +43,6 @@ const Vehicles = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [selectedVehicleTypes, setSelectedVehicleTypes] = useState<string[]>([]);
-  const [showApiResponse, setShowApiResponse] = useState(false);
   
   const pickupLocation = searchParams.get("pickupLocation") || "";
   const dropoffLocation = searchParams.get("dropoffLocation") || pickupLocation;
@@ -323,11 +321,6 @@ const Vehicles = () => {
     setFiltersOpen(!isMobile);
   }, [isMobile]);
 
-  // Toggle function for API response visibility
-  const toggleApiResponse = () => {
-    setShowApiResponse(!showApiResponse);
-  };
-
   return (
     <main className="flex-grow">
       <div className="bg-gray-50">
@@ -344,18 +337,6 @@ const Vehicles = () => {
                 </p>
               )}
             </div>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={toggleApiResponse}
-              className="flex items-center gap-1"
-            >
-              {showApiResponse ? (
-                <>Hide API Response <EyeOff className="h-4 w-4" /></>
-              ) : (
-                <>Show API Response <Eye className="h-4 w-4" /></>
-              )}
-            </Button>
           </div>
 
           {hasApiError && !hasAttemptedRefresh && (
@@ -377,15 +358,6 @@ const Vehicles = () => {
                 We're showing the previously loaded vehicles. To refresh, try a new search.
               </AlertDescription>
             </Alert>
-          )}
-
-          {showApiResponse && step2Data && (
-            <div className="mt-4 p-4 bg-gray-100 rounded-lg">
-              <h2 className="text-lg font-bold mb-2">API Response</h2>
-              <div className="bg-white p-4 rounded border overflow-auto max-h-96 text-xs font-mono">
-                <pre>{JSON.stringify(step2Data, null, 2)}</pre>
-              </div>
-            </div>
           )}
         </div>
       </div>
@@ -492,15 +464,6 @@ const Vehicles = () => {
                     totalDiscountAmount={vehicle.discountAmount}
                   />
                 ))}
-              </div>
-            )}
-
-            {showApiResponse && (
-              <div className="mt-8 p-4 bg-gray-100 rounded-lg">
-                <h2 className="text-lg font-bold mb-2">Processed Vehicle Data</h2>
-                <div className="bg-white p-4 rounded border overflow-auto max-h-96 text-xs font-mono">
-                  <pre>{JSON.stringify(vehicles, null, 2)}</pre>
-                </div>
               </div>
             )}
           </div>
