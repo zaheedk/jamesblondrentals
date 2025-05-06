@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -97,8 +98,8 @@ const App = () => {
               <Route path="/payment-success" element={<PaymentSuccess />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/privacy" element={<Privacy />} />
-              <Route path="/hot-deals/mobil-fuel-discount" element={<MobilFuelDiscount />} /> {/* Mobil fuel discount route */}
-              <Route path="/car-rental-wellington-new-zealand" element={<CarRentalWellington />} /> {/* New Wellington car rental page */}
+              <Route path="/hot-deals/mobil-fuel-discount" element={<MobilFuelDiscount />} />
+              <Route path="/car-rental-wellington-new-zealand" element={<CarRentalWellington />} />
 
               <Route path="/fleet" element={<Fleet />}>
                 <Route path="cars" element={<FleetCars />} />
@@ -131,8 +132,9 @@ const App = () => {
                 <Route path="minibuses/12-seat-minibus" element={<TwelveSeaterMinibusDetail />} />
                 <Route path="minibuses/10-seat-minibus" element={<TenSeaterMinibusDetail />} />
                 <Route path="trailers" element={<FleetTrailers />} />
-                <Route path="trailers/cage-trailer" element={<CagedTrailerDetail />} /> {/* New Caged Trailer route */}
-                <Route path="trailers/luggage-trailer" element={<LuggageTrailerDetail />} /> {/* New Luggage Trailer route */}
+                <Route path="trailers/cage-trailer" element={<CagedTrailerDetail />} />
+                <Route path="trailers/luggage-trailer" element={<LuggageTrailerDetail />} />
+                <Route path="trailers/car-transporter" element={<CarTransporterTrailerDetail />} /> {/* New Car Transporter Trailer route */}
                 <Route path="accessories" element={<FleetAccessories />} />
               </Route>
               
