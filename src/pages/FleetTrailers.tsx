@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,7 +22,8 @@ const trailers = [
     },
     maxLoad: "750kg",
     warning: "not suited to 24-volt systems",
-    image: "/lovable-uploads/ca4fe6a5-97a6-4d6c-a675-a0ad2e3e4856.png"
+    image: "/lovable-uploads/ca4fe6a5-97a6-4d6c-a675-a0ad2e3e4856.png",
+    link: "/fleet/trailers/cage-trailer"
   },
   {
     id: "luggage-trailer",
@@ -128,6 +130,14 @@ const FleetTrailers = () => (
               typeof trailer.note === 'string' && 
               <p className="text-gray-600 italic">{trailer.note}</p>
             }
+            
+            {trailer.link && (
+              <div className="mt-4">
+                <Link to={trailer.link}>
+                  <Button variant="outline" className="w-full">View Details</Button>
+                </Link>
+              </div>
+            )}
           </CardContent>
         </Card>
       ))}

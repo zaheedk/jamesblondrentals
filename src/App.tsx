@@ -54,6 +54,7 @@ import TwelveSeaterMinibusDetail from "./pages/TwelveSeaterMinibusDetail";
 import TenSeaterMinibusDetail from "./pages/TenSeaterMinibusDetail"; 
 import MobilFuelDiscount from "./pages/MobilFuelDiscount"; // Import the new Mobil Fuel Discount page
 import CarRentalWellington from "./pages/CarRentalWellington"; // Import the new Wellington car rental page
+import CagedTrailerDetail from "./pages/CagedTrailerDetail"; // Import the new Caged Trailer detail page
 
 import Airport from "./pages/Airport";
 import AirportShuttle from "./pages/AirportShuttle";
@@ -130,6 +131,7 @@ const App = () => {
                 <Route path="minibuses/12-seat-minibus" element={<TwelveSeaterMinibusDetail />} />
                 <Route path="minibuses/10-seat-minibus" element={<TenSeaterMinibusDetail />} />
                 <Route path="trailers" element={<FleetTrailers />} />
+                <Route path="trailers/cage-trailer" element={<CagedTrailerDetail />} /> {/* New Caged Trailer route */}
                 <Route path="accessories" element={<FleetAccessories />} />
               </Route>
               
