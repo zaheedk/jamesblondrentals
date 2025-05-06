@@ -38,6 +38,7 @@ const accessories = [
     title: "Large Hand Trolley",
     description: "Designed for larger, bulkier loads, this trolley makes lifting and transporting heavy items easier. Its reinforced frame provides extra stability for demanding tasks.",
     image: "/lovable-uploads/2462a28e-2cb6-44ef-82b9-b46b5559d465.png",
+    link: "/fleet/accessories/large-hand-trolley"
   }
 ];
 

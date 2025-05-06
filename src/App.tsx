@@ -62,6 +62,7 @@ import BoosterSeatDetail from "./pages/BoosterSeatDetail"; // Import the new Boo
 import PalletJackDetail from "./pages/PalletJackDetail"; // Import the new Pallet Jack detail page
 import StrapsRatchetDetail from "./pages/StrapsRatchetDetail"; // Import the new Straps & Ratchet detail page
 import HandTrolleyDetail from "./pages/HandTrolleyDetail"; // Import the new Hand Trolley detail page
+import LargeHandTrolleyDetail from "./pages/LargeHandTrolleyDetail"; // Import the new Large Hand Trolley detail page
 
 import Airport from "./pages/Airport";
 import AirportShuttle from "./pages/AirportShuttle";
@@ -147,6 +148,7 @@ const App = () => {
                 <Route path="accessories/pallet-jack" element={<PalletJackDetail />} />
                 <Route path="accessories/straps-ratchet" element={<StrapsRatchetDetail />} />
                 <Route path="accessories/hand-trolley" element={<HandTrolleyDetail />} />
+                <Route path="accessories/large-hand-trolley" element={<LargeHandTrolleyDetail />} />
               </Route>
               
               <Route path="/airport" element={<Airport />} />
