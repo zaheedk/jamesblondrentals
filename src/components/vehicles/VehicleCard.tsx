@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -199,13 +198,8 @@ const VehicleCard = ({
       }
     }
     
-    // For known hourly vehicles without specific duration info
-    if (isHourlyRate()) {
-      return <span className="block">Hourly rate</span>;
-    }
-    
-    // For daily vehicles without specific duration info
-    return <span className="block">Daily rate</span>;
+    // For vehicles without specific duration info, return empty span instead of "Hourly rate" or "Daily rate"
+    return <span className="block"></span>;
   };
 
   return (
