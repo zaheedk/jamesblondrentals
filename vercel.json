@@ -6,10 +6,6 @@
       "destination": "https://apis.rentalcarmanager.com/:path*"
     },
     {
-      "source": "/sitemap.xml",
-      "destination": "/sitemap.xml"
-    },
-    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
