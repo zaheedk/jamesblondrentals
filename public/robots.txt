@@ -14,4 +14,5 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://jamesblondrentals.com/sitemap.xml
+Sitemap: https://jamesblond.co.nz/sitemap.xml
+
