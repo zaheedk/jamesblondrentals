@@ -23,6 +23,9 @@ const Premium2WDSUVDetail = () => {
               src="/lovable-uploads/841454d4-8948-4c3b-ad99-d73b843deee8.png" 
               alt="Kia Sportage 2.0L" 
               className="w-full h-full object-cover"
+              width="800"
+              height="450"
+              fetchPriority="high"
             />
           </AspectRatio>
           

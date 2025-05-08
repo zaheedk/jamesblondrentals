@@ -23,6 +23,9 @@ const PremiumEconomyDetail = () => {
               src="/lovable-uploads/e7217b00-38b3-40d6-9ef7-fdc2760ee602.png" 
               alt="Suzuki Swift 1.3L" 
               className="w-full h-full object-cover"
+              width="800"
+              height="450"
+              fetchPriority="high"
             />
           </AspectRatio>
           

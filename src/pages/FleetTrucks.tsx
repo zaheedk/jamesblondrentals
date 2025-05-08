@@ -106,6 +106,9 @@ const FleetTrucks = () => (
                 src={truck.image} 
                 alt={`${truck.title}`} 
                 className="w-full h-full object-cover rounded-t-lg"
+                loading="lazy"
+                width="400"
+                height="225"
               />
             </AspectRatio>
           )}

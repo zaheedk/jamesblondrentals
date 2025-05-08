@@ -69,6 +69,9 @@ const FleetUtes = () => (
                 src={ute.image} 
                 alt={`${ute.title}`} 
                 className="w-full h-full object-cover rounded-t-lg"
+                loading="lazy"
+                width="400"
+                height="225"
               />
             </AspectRatio>
           )}

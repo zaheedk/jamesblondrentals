@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -210,6 +211,9 @@ const VehicleCard = ({
           alt={`${vehicle.make} ${vehicle.model}`}
           className="w-full h-full object-contain"
           onError={handleImageError}
+          loading="lazy"
+          width="400"
+          height="300"
         />
       </AspectRatio>
       <CardHeader className="pb-2">

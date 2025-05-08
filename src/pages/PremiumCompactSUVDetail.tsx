@@ -23,6 +23,9 @@ const PremiumCompactSUVDetail = () => {
               src="/lovable-uploads/bdb0efeb-afa5-4ce7-b1fc-aace84a0222f.png" 
               alt="Kia Seltos 2.0L" 
               className="w-full h-full object-cover"
+              width="800"
+              height="450"
+              fetchPriority="high"
             />
           </AspectRatio>
           

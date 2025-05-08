@@ -61,6 +61,9 @@ const FleetAccessories = () => {
                   src={item.image} 
                   alt={item.title} 
                   className="max-h-48 object-contain rounded-lg"
+                  loading="lazy"
+                  width="200"
+                  height="150"
                 />
               </div>
             )}

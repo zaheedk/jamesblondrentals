@@ -23,6 +23,9 @@ const PremiumAWDSUVDetail = () => {
               src="/lovable-uploads/b6590bc2-c772-4b70-892b-9a5c173c4d15.png" 
               alt="Toyota Highlander 3.5L V6" 
               className="w-full h-full object-cover"
+              width="800"
+              height="450"
+              fetchPriority="high"
             />
           </AspectRatio>
           

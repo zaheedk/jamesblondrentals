@@ -23,6 +23,9 @@ const PremiumEconomyWagonDetail = () => {
               src="/lovable-uploads/ca4fe6a5-97a6-4d6c-a675-a0ad2e3e4856.png" 
               alt="Toyota Corolla Wagon 1.5L" 
               className="w-full h-full object-cover"
+              width="800"
+              height="450"
+              fetchPriority="high"
             />
           </AspectRatio>
           

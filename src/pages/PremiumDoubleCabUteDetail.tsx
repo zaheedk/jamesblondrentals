@@ -92,6 +92,9 @@ const PremiumDoubleCabUteDetail = () => {
                 src="/lovable-uploads/6213906e-4949-494b-b006-8d6e516cdd9a.png" 
                 alt="Premium Double Cab UTE - Petrol" 
                 className="w-full h-full object-cover"
+                width="800"
+                height="450"
+                fetchPriority="high"
               />
             </AspectRatio>
           </Card>
