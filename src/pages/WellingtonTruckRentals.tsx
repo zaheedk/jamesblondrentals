@@ -1,0 +1,422 @@
+
+import React from 'react';
+import { Truck, Home, Box, Package, ArrowRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import SearchForm from '@/components/home/SearchForm';
+import { Link } from 'react-router-dom';
+
+const WellingtonTruckRentals = () => {
+  return (
+    <div className="container mx-auto px-4 py-8">
+      {/* Hero Section */}
+      <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-6 mb-8">
+        <div className="grid md:grid-cols-2 gap-6 items-center">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold mb-4">Affordable Furniture & Moving Truck Hire Wellington</h1>
+            <p className="text-lg text-gray-700 mb-6">
+              Making your move in Wellington easier and more affordable with our range of rental trucks tailored for the capital city.
+            </p>
+            <div className="flex items-center gap-2">
+              <Button asChild size="lg">
+                <a href="#booking">Book Now</a>
+              </Button>
+              <Button variant="outline" asChild size="lg">
+                <Link to="/fleet/trucks">View All Trucks</Link>
+              </Button>
+            </div>
+          </div>
+          <div className="relative">
+            <img 
+              src="/lovable-uploads/b1bd35e2-4d58-4900-86c5-dfe61a852d78.png" 
+              alt="Box Truck for Moving in Wellington" 
+              className="rounded-lg w-full shadow-lg"
+              width="600"
+              height="400"
+              loading="lazy"
+            />
+            <div className="absolute top-4 right-4 bg-primary text-white px-4 py-2 rounded-full text-sm font-bold">
+              Most Popular
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Why Choose Us */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold mb-6 text-center">Why Choose James Blond for Your Wellington Move?</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex flex-col items-center text-center">
+                <div className="bg-primary/10 p-3 rounded-full mb-4">
+                  <Truck className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="font-semibold mb-2">Wellington Specialists</h3>
+                <p className="text-gray-600">Based in central Wellington, we know the area's unique terrain and provide trucks suited for local moves.</p>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex flex-col items-center text-center">
+                <div className="bg-primary/10 p-3 rounded-full mb-4">
+                  <Home className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="font-semibold mb-2">Ideal for Hilly Terrain</h3>
+                <p className="text-gray-600">Our trucks are selected specifically to handle Wellington's steep streets and compact spaces.</p>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex flex-col items-center text-center">
+                <div className="bg-primary/10 p-3 rounded-full mb-4">
+                  <Box className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="font-semibold mb-2">Competitive Rates</h3>
+                <p className="text-gray-600">Flexible hourly rates to make your Wellington move budget-friendly, with no hidden costs.</p>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex flex-col items-center text-center">
+                <div className="bg-primary/10 p-3 rounded-full mb-4">
+                  <Package className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="font-semibold mb-2">Central Location</h3>
+                <p className="text-gray-600">Conveniently located in Te Aro, making pickup and drop-off quick and easy for your move.</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* Popular Truck Options */}
+      <section className="mb-12 bg-gray-50 p-6 rounded-lg">
+        <h2 className="text-2xl font-bold mb-6">Popular Truck Options for Wellington Moves</h2>
+        
+        <Tabs defaultValue="furniture">
+          <TabsList className="grid w-full grid-cols-3 mb-6">
+            <TabsTrigger value="furniture">Furniture Moving</TabsTrigger>
+            <TabsTrigger value="house">House Moving</TabsTrigger>
+            <TabsTrigger value="commercial">Commercial</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="furniture">
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <img 
+                  src="/lovable-uploads/b1bd35e2-4d58-4900-86c5-dfe61a852d78.png" 
+                  alt="Box Truck for Furniture Moving" 
+                  className="rounded-lg mb-4"
+                  width="500"
+                  height="300"
+                  loading="lazy"
+                />
+                <h3 className="font-bold text-xl mb-2">2 TONNE BOX (12M³)</h3>
+                <ul className="list-disc list-inside mb-4 text-gray-600 space-y-1">
+                  <li>Perfect for apartment moves in Wellington's compact spaces</li>
+                  <li>Automatic transmission for easier handling on steep streets</li>
+                  <li>Box: 3100(L) x 1750(W) x 2050(H)</li>
+                  <li>Fits typical Wellington apartment contents</li>
+                </ul>
+                <Button asChild variant="outline">
+                  <Link to="/fleet/trucks/2-tonne-box-12m3" className="flex items-center">
+                    View Details <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
+              
+              <div>
+                <img 
+                  src="/lovable-uploads/d4f3f3f9-68b5-425e-83e7-7e468c0da49f.png" 
+                  alt="Box Truck with Tail Lift" 
+                  className="rounded-lg mb-4"
+                  width="500"
+                  height="300"
+                  loading="lazy"
+                />
+                <h3 className="font-bold text-xl mb-2">2 TONNE BOX (12M³) +TAIL LIFT</h3>
+                <ul className="list-disc list-inside mb-4 text-gray-600 space-y-1">
+                  <li>Essential for Wellington's multi-story apartment buildings</li>
+                  <li>Tail lift makes loading on steep streets easier</li>
+                  <li>Max Tail Lift Load: 400kg</li>
+                  <li>Perfect for moving up and down Wellington's hills</li>
+                </ul>
+                <Button asChild variant="outline">
+                  <Link to="/fleet/trucks/2-tonne-box-12m3-tail" className="flex items-center">
+                    View Details <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="house">
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <img 
+                  src="/lovable-uploads/a00bb0d9-fccc-4d69-a9ab-28d894f74538.png" 
+                  alt="Large Box Truck" 
+                  className="rounded-lg mb-4"
+                  width="500"
+                  height="300"
+                  loading="lazy"
+                />
+                <h3 className="font-bold text-xl mb-2">2 TONNE BOX (16M³)</h3>
+                <ul className="list-disc list-inside mb-4 text-gray-600 space-y-1">
+                  <li>Ideal for 2-3 bedroom home moves in Wellington</li>
+                  <li>Manual transmission with good torque for hills</li>
+                  <li>Box: 3800(L) x 2000(W) x 2000(H)</li>
+                  <li>Spacious interior for complete house moves</li>
+                </ul>
+                <Button asChild variant="outline">
+                  <Link to="/fleet/trucks/2-tonne-box-16m3" className="flex items-center">
+                    View Details <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
+              
+              <div>
+                <img 
+                  src="/lovable-uploads/e4f29c45-82c9-460d-a508-4abd64ca9dd4.png" 
+                  alt="Large Box Truck with Tail Lift" 
+                  className="rounded-lg mb-4"
+                  width="500"
+                  height="300"
+                  loading="lazy"
+                />
+                <h3 className="font-bold text-xl mb-2">3 TONNE BOX (19M³) +TAIL LIFT</h3>
+                <ul className="list-disc list-inside mb-4 text-gray-600 space-y-1">
+                  <li>Our largest option for complete Wellington house moves</li>
+                  <li>Perfect for larger homes in suburbs like Karori or Khandallah</li>
+                  <li>Box: 4800(L) x 2100(W) x 2100(H)</li>
+                  <li>Tail lift for easy loading of heavy furniture</li>
+                </ul>
+                <Button asChild variant="outline">
+                  <Link to="/fleet/trucks/3-tonne-box-19m3" className="flex items-center">
+                    View Details <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="commercial">
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <img 
+                  src="/lovable-uploads/ca896f7e-9bda-4926-b23c-e80cbeb348cb.png" 
+                  alt="Tipper Truck" 
+                  className="rounded-lg mb-4"
+                  width="500"
+                  height="300"
+                  loading="lazy"
+                />
+                <h3 className="font-bold text-xl mb-2">2 TONNE TIPPER</h3>
+                <ul className="list-disc list-inside mb-4 text-gray-600 space-y-1">
+                  <li>Perfect for Wellington landscaping and renovation projects</li>
+                  <li>Ideal for construction waste removal in tight urban areas</li>
+                  <li>Tray: 3100(L) x 1600(W)</li>
+                  <li>Manual transmission with good hill-climbing ability</li>
+                </ul>
+                <Button asChild variant="outline">
+                  <Link to="/fleet/trucks/2-tonne-tipper" className="flex items-center">
+                    View Details <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
+              
+              <div>
+                <img 
+                  src="/lovable-uploads/4506c6fc-4eef-4997-a040-7482f1872bab.png" 
+                  alt="Large Box Truck with Tail Lift for Commercial Use" 
+                  className="rounded-lg mb-4"
+                  width="500"
+                  height="300"
+                  loading="lazy"
+                />
+                <h3 className="font-bold text-xl mb-2">3 TONNE BOX (18M³) +TAIL LIFT</h3>
+                <ul className="list-disc list-inside mb-4 text-gray-600 space-y-1">
+                  <li>Ideal for Wellington CBD business relocations</li>
+                  <li>Perfect for retail and office moves in compact city spaces</li>
+                  <li>Box: 4400(L) x 2100(W) x 2050(H)</li>
+                  <li>Hydraulic tail lift for loading on uneven terrain</li>
+                </ul>
+                <Button asChild variant="outline">
+                  <Link to="/fleet/trucks/3-tonne-box-18m3" className="flex items-center">
+                    View Details <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
+      </section>
+
+      {/* Tips Section */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold mb-6">Wellington Moving Tips</h2>
+        <div className="bg-primary/5 border border-primary/10 rounded-lg p-6">
+          <div className="grid md:grid-cols-2 gap-8">
+            <div>
+              <h3 className="font-bold text-xl mb-4">Planning Your Wellington Move</h3>
+              <ul className="space-y-3">
+                <li className="flex items-start">
+                  <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">1</span>
+                  <span>Book at least two weeks in advance for weekend moves in Wellington</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">2</span>
+                  <span>Plan your route to avoid the Mount Victoria tunnel during peak hours</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">3</span>
+                  <span>Check weather forecasts - Wellington winds can affect driving larger vehicles</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">4</span>
+                  <span>Reserve parking with the council for loading/unloading in CBD areas</span>
+                </li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="font-bold text-xl mb-4">Navigating Wellington's Challenges</h3>
+              <ul className="space-y-3">
+                <li className="flex items-start">
+                  <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">1</span>
+                  <span>Use lower gears when descending steep streets like Aro or Brooklyn hills</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">2</span>
+                  <span>Secure items well - Wellington's winding roads can shift cargo</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">3</span>
+                  <span>Consider a tail lift truck for multi-story apartment buildings</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">4</span>
+                  <span>Allow extra time for narrow streets in older suburbs like Newtown</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Wellington Specific Info */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold mb-6">Wellington Moving Services</h2>
+        <div className="grid md:grid-cols-3 gap-6">
+          <Card>
+            <CardContent className="pt-6">
+              <h3 className="font-bold text-xl mb-2">Apartment Moves</h3>
+              <p className="text-gray-600 mb-4">
+                From compact CBD apartments to multi-level homes in Kelburn or Brooklyn, our 
+                trucks are specially selected for Wellington's unique housing. Hourly rates 
+                give you flexibility for quick moves.
+              </p>
+              <p className="font-semibold">Best for: Inner-city apartment relocations</p>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="pt-6">
+              <h3 className="font-bold text-xl mb-2">Student Relocations</h3>
+              <p className="text-gray-600 mb-4">
+                Moving between flats in Te Aro, Aro Valley or Newtown? Our smaller trucks 
+                are perfect for typical student moves, with space for flatmates to combine their belongings.
+              </p>
+              <p className="font-semibold">Best for: Affordable end-of-term housing changes</p>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="pt-6">
+              <h3 className="font-bold text-xl mb-2">Business Relocations</h3>
+              <p className="text-gray-600 mb-4">
+                Moving your Wellington business? Our larger trucks with tail lifts make 
+                office relocations in the CBD simple and safe. Weekend availability lets 
+                you move without disrupting business.
+              </p>
+              <p className="font-semibold">Best for: Retail and office moves within the capital</p>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* Booking Frame Section */}
+      <section id="booking" className="mb-12 scroll-mt-16">
+        <div className="bg-primary/5 border border-primary/10 rounded-lg p-6">
+          <h2 className="text-2xl font-bold mb-6 text-center">Book Your Wellington Truck Rental</h2>
+          <p className="text-center mb-6">Check availability and reserve your moving truck today</p>
+          
+          <div className="max-w-4xl mx-auto">
+            <SearchForm />
+          </div>
+        </div>
+      </section>
+
+      {/* FAQs */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold mb-6">Frequently Asked Questions</h2>
+        
+        <div className="space-y-4">
+          <div className="border rounded-lg p-4">
+            <h3 className="font-bold mb-2">Do I need to worry about Wellington's hills when driving a rental truck?</h3>
+            <p className="text-gray-600">
+              Our trucks are selected with Wellington's terrain in mind. We recommend automatic transmission 
+              options for those less confident with hill starts, and always suggest using lower gears when 
+              descending steep hills.
+            </p>
+          </div>
+          
+          <div className="border rounded-lg p-4">
+            <h3 className="font-bold mb-2">Where is your Wellington branch located?</h3>
+            <p className="text-gray-600">
+              Our Wellington branch is conveniently located at 24 Abel Smith Street in Te Aro, 
+              just minutes from the CBD and with easy access to all Wellington suburbs.
+            </p>
+          </div>
+          
+          <div className="border rounded-lg p-4">
+            <h3 className="font-bold mb-2">Can I get a truck with a tail lift for Wellington's steep driveways?</h3>
+            <p className="text-gray-600">
+              Yes, we offer several trucks with tail lifts which are perfect for Wellington's steep properties. 
+              These make loading and unloading much easier, especially for heavy items on sloping driveways or streets.
+            </p>
+          </div>
+          
+          <div className="border rounded-lg p-4">
+            <h3 className="font-bold mb-2">Do you offer moving supplies for Wellington's often wet weather?</h3>
+            <p className="text-gray-600">
+              Yes, we offer waterproof covers, furniture blankets, and plastic wrap options to protect your 
+              belongings from Wellington's unpredictable weather during your move.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="mb-12 text-center">
+        <div className="bg-primary p-8 rounded-lg text-white">
+          <h2 className="text-2xl font-bold mb-4">Ready to Move in Wellington?</h2>
+          <p className="mb-6 text-lg">Book your rental truck today and tackle those Wellington hills with confidence!</p>
+          <Button variant="secondary" size="lg" asChild>
+            <a href="#booking">Book Your Truck Now</a>
+          </Button>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+export default WellingtonTruckRentals;
