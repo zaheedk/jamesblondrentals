@@ -114,16 +114,14 @@ const Index = () => {
         </div>
       </section>
       
-      {/* CTA Section */}
+      {/* CTA Section - Removed the "Browse All Vehicles" button as requested */}
       <section className="bg-primary py-16">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold text-white mb-4">Ready to Book Your Perfect Ride?</h2>
           <p className="text-white/90 mb-8 max-w-2xl mx-auto">
             Choose from our extensive fleet of vehicles and enjoy a smooth rental experience from start to finish.
           </p>
-          <Button asChild className="bg-white text-primary hover:bg-gray-100">
-            <Link to={`/vehicles?${searchParams}`}>Browse All Vehicles</Link>
-          </Button>
+          {/* Button removed as requested */}
         </div>
       </section>
     </div>
