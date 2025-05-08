@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -66,6 +65,9 @@ const TenSeaterMinibusDetail = () => {
               src="/lovable-uploads/f40953dd-07c7-405f-a446-bbb6de3b2aac.png"
               alt="10-Seat Toyota Hiace ZL Minibus" 
               className="w-full h-full object-cover"
+              loading="lazy"
+              width="800" 
+              height="450"
             />
           </AspectRatio>
 
@@ -111,8 +113,8 @@ const TenSeaterMinibusDetail = () => {
             ))}
           </div>
 
-          <Button className="w-full" size="lg">
-            Book Now
+          <Button className="w-full" size="lg" asChild>
+            <Link to="/">Book Now</Link>
           </Button>
         </div>
       </div>
@@ -137,7 +139,9 @@ const TenSeaterMinibusDetail = () => {
           Our 10-Seat Minibus is perfect for small group travel of all kinds. Reserve yours today and enjoy a comfortable, 
           hassle-free journey with your team, friends, or family.
         </p>
-        <Button size="lg">Check Availability</Button>
+        <Button size="lg" asChild>
+          <Link to="/">Check Availability</Link>
+        </Button>
       </div>
     </div>
   );
