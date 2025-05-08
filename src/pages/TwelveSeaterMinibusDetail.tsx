@@ -66,6 +66,9 @@ const TwelveSeaterMinibusDetail = () => {
               src="/lovable-uploads/bdd5521d-5fab-4187-8d79-fcf80b3f46db.png"
               alt="12-Seat Toyota Hiace ZX Minibus" 
               className="w-full h-full object-cover"
+              loading="lazy"
+              width="800"
+              height="450"
             />
           </AspectRatio>
 
@@ -110,8 +113,8 @@ const TwelveSeaterMinibusDetail = () => {
             ))}
           </div>
 
-          <Button className="w-full" size="lg">
-            Book Now
+          <Button className="w-full" size="lg" asChild>
+            <Link to="/">Book Now</Link>
           </Button>
         </div>
       </div>
@@ -136,7 +139,9 @@ const TwelveSeaterMinibusDetail = () => {
           Our 12-Seat Minibus is perfect for group travel of all kinds. Reserve yours today and enjoy a comfortable, 
           spacious journey with your team, friends, or family.
         </p>
-        <Button size="lg">Check Availability</Button>
+        <Button size="lg" asChild>
+          <Link to="/">Check Availability</Link>
+        </Button>
       </div>
     </div>
   );
