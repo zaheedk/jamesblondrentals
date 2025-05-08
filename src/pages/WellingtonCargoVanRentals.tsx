@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Package, ShieldCheck, Truck, Map, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -29,7 +28,7 @@ const WellingtonCargoVanRentals = () => {
           </div>
           <div className="relative">
             <img 
-              src="/lovable-uploads/aded4525-6592-42ec-9193-53b898de2c13.png" 
+              src="/lovable-uploads/40c4c11d-0a27-40d6-9c5c-3fdbb1c138a0.png" 
               alt="Cargo Van for Hire in Wellington" 
               className="rounded-lg w-full shadow-lg"
               width="600"
@@ -112,7 +111,7 @@ const WellingtonCargoVanRentals = () => {
             <div className="grid md:grid-cols-2 gap-6">
               <div>
                 <img 
-                  src="/lovable-uploads/aded4525-6592-42ec-9193-53b898de2c13.png" 
+                  src="/lovable-uploads/40c4c11d-0a27-40d6-9c5c-3fdbb1c138a0.png" 
                   alt="Standard Cargo Van for Wellington Hire" 
                   className="rounded-lg mb-4"
                   width="500"
@@ -135,7 +134,7 @@ const WellingtonCargoVanRentals = () => {
               
               <div>
                 <img 
-                  src="/lovable-uploads/6242ae39-7570-4898-b18a-1fa9753856af.png" 
+                  src="/lovable-uploads/7924107a-afb6-4c13-aa1d-8dba18465760.png" 
                   alt="Standard Van with Rear Seats" 
                   className="rounded-lg mb-4"
                   width="500"
@@ -162,7 +161,7 @@ const WellingtonCargoVanRentals = () => {
             <div className="grid md:grid-cols-2 gap-6">
               <div>
                 <img 
-                  src="/lovable-uploads/bdb0efeb-afa5-4ce7-b1fc-aace84a0222f.png" 
+                  src="/lovable-uploads/3cb301ec-ead2-492a-a9a0-3361c1876b76.png" 
                   alt="Premium Van for Wellington Business Hire" 
                   className="rounded-lg mb-4"
                   width="500"
@@ -185,7 +184,7 @@ const WellingtonCargoVanRentals = () => {
               
               <div>
                 <img 
-                  src="/lovable-uploads/ea4af725-7713-464d-83cb-34d5cd4c0e7f.png" 
+                  src="/lovable-uploads/6dde201c-13f3-4671-9e88-6cc1a388d647.png" 
                   alt="Jumbo Van for Maximum Cargo Space" 
                   className="rounded-lg mb-4"
                   width="500"
@@ -212,7 +211,7 @@ const WellingtonCargoVanRentals = () => {
             <div className="grid md:grid-cols-2 gap-6">
               <div>
                 <img 
-                  src="/lovable-uploads/ea4af725-7713-464d-83cb-34d5cd4c0e7f.png" 
+                  src="/lovable-uploads/6dde201c-13f3-4671-9e88-6cc1a388d647.png" 
                   alt="Refrigerated Van for Wellington Food Deliveries" 
                   className="rounded-lg mb-4"
                   width="500"
@@ -235,7 +234,7 @@ const WellingtonCargoVanRentals = () => {
               
               <div>
                 <img 
-                  src="/lovable-uploads/6242ae39-7570-4898-b18a-1fa9753856af.png" 
+                  src="/lovable-uploads/7924107a-afb6-4c13-aa1d-8dba18465760.png" 
                   alt="Long-term Van Hire Wellington" 
                   className="rounded-lg mb-4"
                   width="500"
