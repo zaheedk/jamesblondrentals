@@ -67,6 +67,8 @@ import LargeHandTrolleyDetail from "./pages/LargeHandTrolleyDetail"; // Import t
 import WestAucklandTruckRentals from "./pages/WestAucklandTruckRentals"; // Import the new West Auckland Truck Rentals page
 import WellingtonTruckRentals from "./pages/WellingtonTruckRentals"; // Import the new Wellington Truck Rentals page
 import WellingtonCargoVanRentals from "./pages/WellingtonCargoVanRentals"; // Import the new Wellington Cargo Van Rentals page
+import WestAucklandCargoVanRentals from "./pages/WestAucklandCargoVanRentals"; // Import the new West Auckland Cargo Van Rentals page
+import AucklandAirportCargoVanRentals from "./pages/AucklandAirportCargoVanRentals"; // Import the new Auckland Airport Cargo Van Rentals page
 
 import Airport from "./pages/Airport";
 import AirportShuttle from "./pages/AirportShuttle";
@@ -115,6 +117,8 @@ const App = () => {
               <Route path="/west-auckland-truck-rentals-hire" element={<WestAucklandTruckRentals />} /> {/* West Auckland Truck Rentals page */}
               <Route path="/wellington-truck-rentals-hire" element={<WellingtonTruckRentals />} /> {/* Wellington Truck Rentals page */}
               <Route path="/wellington-cargo-van-rentals-hire" element={<WellingtonCargoVanRentals />} /> {/* Wellington Cargo Van Rentals page */}
+              <Route path="/west-auckland-cargo-van-rentals-hire" element={<WestAucklandCargoVanRentals />} /> {/* West Auckland Cargo Van Rentals page */}
+              <Route path="/auckland-airport-cargo-van-rentals-hire" element={<AucklandAirportCargoVanRentals />} /> {/* Auckland Airport Cargo Van Rentals page */}
 
               <Route path="/fleet" element={<Fleet />}>
                 <Route path="cars" element={<FleetCars />} />
