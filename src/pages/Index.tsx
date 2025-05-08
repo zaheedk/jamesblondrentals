@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Hero from "@/components/home/Hero";
@@ -78,14 +77,17 @@ const Index = () => {
               </Button>
             </div>
             <div className="bg-primary/5 p-6 rounded-lg text-center">
-              <h3 className="text-xl font-semibold mb-2">Truck Rentals</h3>
-              <p className="mb-4">Specialized truck hire for moving and deliveries</p>
+              <h3 className="text-xl font-semibold mb-2">Specialized Rentals</h3>
+              <p className="mb-4">Purpose-built vehicles for every need</p>
               <div className="flex flex-col space-y-2">
                 <Button variant="outline" asChild size="sm">
                   <Link to="/west-auckland-truck-rentals-hire">West Auckland Trucks</Link>
                 </Button>
                 <Button variant="outline" asChild size="sm">
                   <Link to="/wellington-truck-rentals-hire">Wellington Trucks</Link>
+                </Button>
+                <Button variant="outline" asChild size="sm">
+                  <Link to="/wellington-cargo-van-rentals-hire">Wellington Cargo Vans</Link>
                 </Button>
               </div>
             </div>
@@ -126,14 +128,13 @@ const Index = () => {
         </div>
       </section>
       
-      {/* CTA Section - Removed the "Browse All Vehicles" button as requested */}
+      {/* CTA Section */}
       <section className="bg-primary py-16">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold text-white mb-4">Ready to Book Your Perfect Ride?</h2>
           <p className="text-white/90 mb-8 max-w-2xl mx-auto">
             Choose from our extensive fleet of vehicles and enjoy a smooth rental experience from start to finish.
           </p>
-          {/* Button removed as requested */}
         </div>
       </section>
     </div>

@@ -42,6 +42,16 @@
     <priority>0.9</priority>
     <changefreq>weekly</changefreq>
   </url>
+  <url>
+    <loc>https://jamesblond.co.nz/wellington-truck-rentals-hire</loc>
+    <priority>0.9</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/wellington-cargo-van-rentals-hire</loc>
+    <priority>0.9</priority>
+    <changefreq>weekly</changefreq>
+  </url>
   
   <!-- Location Pages -->
   <url>
