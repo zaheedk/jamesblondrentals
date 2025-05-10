@@ -103,7 +103,7 @@ const Footer = () => {
               <p>Email: info@jamesblond.co.nz</p>
             </address>
             
-            {/* New specialized rentals section */}
+            {/* Specialized rentals section */}
             <h3 className="text-lg font-bold mb-2 mt-6">Specialized Rentals</h3>
             <ul className="space-y-1">
               <li>
@@ -123,6 +123,9 @@ const Footer = () => {
               </li>
               <li>
                 <Link to="/auckland-airport-cargo-van-rentals-hire" className="text-gray-300 hover:text-white transition-colors text-sm">Auckland Airport Cargo Van Rentals</Link>
+              </li>
+              <li>
+                <Link to="/auckland-airport-minibus-rentals-hire" className="text-gray-300 hover:text-white transition-colors text-sm">Auckland Airport Minibus Rentals</Link>
               </li>
             </ul>
           </div>
