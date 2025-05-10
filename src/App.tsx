@@ -52,6 +52,7 @@ import ThreeTonneBoxTailLiftDetail from "./pages/ThreeTonneBoxTailLiftDetail";
 import ThreeTonneBox19m3Detail from "./pages/ThreeTonneBox19m3Detail"; 
 import TwelveSeaterMinibusDetail from "./pages/TwelveSeaterMinibusDetail"; 
 import TenSeaterMinibusDetail from "./pages/TenSeaterMinibusDetail"; 
+import Premium12SeatMinibusDetail from "./pages/Premium12SeatMinibusDetail"; // Import the new Premium 12-Seat Minibus page
 import MobilFuelDiscount from "./pages/MobilFuelDiscount"; // Import the new Mobil Fuel Discount page
 import CarRentalWellington from "./pages/CarRentalWellington"; // Import the new Wellington car rental page
 import CarRentalAucklandAirport from "./pages/CarRentalAucklandAirport"; // Import the new Auckland Airport car rental page
@@ -152,6 +153,7 @@ const App = () => {
                 <Route path="minibuses" element={<FleetMinibuses />} />
                 <Route path="minibuses/12-seat-minibus" element={<TwelveSeaterMinibusDetail />} />
                 <Route path="minibuses/10-seat-minibus" element={<TenSeaterMinibusDetail />} />
+                <Route path="minibuses/premium-12-seat-minibus" element={<Premium12SeatMinibusDetail />} /> {/* New Premium 12-Seat Minibus route */}
                 <Route path="trailers" element={<FleetTrailers />} />
                 <Route path="trailers/cage-trailer" element={<CagedTrailerDetail />} />
                 <Route path="trailers/luggage-trailer" element={<LuggageTrailerDetail />} />

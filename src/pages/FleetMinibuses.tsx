@@ -1,11 +1,28 @@
 
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Bluetooth, AirVent, Anchor } from "lucide-react";
 
 const minibuses = [
+  {
+    id: "premium-12-seat-minibus",
+    title: "PREMIUM 12-SEAT MINIBUS",
+    subtitle: "LDV Deliver 9",
+    specs: [
+      "2024 or newer",
+      "Automatic Transmission",
+      "Air conditioning throughout",
+      "Bluetooth",
+      "Luxury Interior",
+      "Tow Bar",
+      "Diesel",
+      "Full-Height Seats",
+      "Unlimited kilometres"
+    ],
+    image: "/lovable-uploads/bdd5521d-5fab-4187-8d79-fcf80b3f46db.png"
+  },
   {
     id: "12-seat-minibus",
     title: "12-SEAT MINIBUS",
@@ -81,11 +98,11 @@ const FleetMinibuses = () => (
             </AspectRatio>
           )}
           <CardHeader>
-            {minibus.title.toLowerCase().includes("luxury") && (
+            {minibus.title.toLowerCase().includes("luxury") || minibus.title.toLowerCase().includes("premium") ? (
               <span className="bg-primary/10 text-primary text-sm px-2 py-1 rounded-full">
-                Luxury
+                {minibus.title.toLowerCase().includes("premium") ? "Premium" : "Luxury"}
               </span>
-            )}
+            ) : null}
             <CardTitle className="text-lg font-bold text-primary">{minibus.title}</CardTitle>
             <CardDescription className="text-xl font-semibold">{minibus.subtitle}</CardDescription>
           </CardHeader>
@@ -103,7 +120,7 @@ const FleetMinibuses = () => (
             </ul>
           </CardContent>
           <CardFooter>
-            {minibus.id === "12-seat-minibus" || minibus.id === "10-seat-minibus" ? (
+            {minibus.id === "12-seat-minibus" || minibus.id === "10-seat-minibus" || minibus.id === "premium-12-seat-minibus" ? (
               <Link to={`/fleet/minibuses/${minibus.id}`} className="w-full">
                 <Button variant="outline" className="w-full">View Details</Button>
               </Link>

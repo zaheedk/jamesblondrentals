@@ -300,6 +300,11 @@
     <priority>0.7</priority>
     <changefreq>monthly</changefreq>
   </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/minibuses/premium-12-seat-minibus</loc>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
   
   <!-- Trailers Detail Pages -->
   <url>
