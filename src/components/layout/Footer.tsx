@@ -107,6 +107,9 @@ const Footer = () => {
             <h3 className="text-lg font-bold mb-2 mt-6">Specialized Rentals</h3>
             <ul className="space-y-1">
               <li>
+                <Link to="/auckland-truck-rentals-hire" className="text-gray-300 hover:text-white transition-colors text-sm">Auckland Truck Rentals</Link>
+              </li>
+              <li>
                 <Link to="/west-auckland-truck-rentals-hire" className="text-gray-300 hover:text-white transition-colors text-sm">West Auckland Truck Rentals</Link>
               </li>
               <li>
