@@ -66,7 +66,7 @@ const Premium12SeatMinibusDetail = () => {
 
           <AspectRatio ratio={16/9} className="bg-gray-100 rounded-lg overflow-hidden mb-6">
             <img 
-              src="/lovable-uploads/6a274083-edb0-4ac2-8e40-4ac3703a8660.png"
+              src="https://lh3.googleusercontent.com/p/AF1QipP4NNI7qFZnIYiTD7vszdysstoTlvTZJ6V-ApI=s680-w680-h510-rw"
               alt="Premium 12-Seat LDV Deliver 9 Minibus" 
               className="w-full h-full object-cover"
               loading="lazy"

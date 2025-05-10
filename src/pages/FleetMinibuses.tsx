@@ -20,7 +20,7 @@ const minibuses = [
       "Full-Height Seats",
       "Unlimited kilometres"
     ],
-    image: "/lovable-uploads/6a274083-edb0-4ac2-8e40-4ac3703a8660.png"
+    image: "https://lh3.googleusercontent.com/p/AF1QipP4NNI7qFZnIYiTD7vszdysstoTlvTZJ6V-ApI=s680-w680-h510-rw"
   },
   {
     id: "12-seat-minibus",
