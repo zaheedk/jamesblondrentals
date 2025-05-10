@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -67,7 +66,7 @@ const Premium12SeatMinibusDetail = () => {
 
           <AspectRatio ratio={16/9} className="bg-gray-100 rounded-lg overflow-hidden mb-6">
             <img 
-              src="/lovable-uploads/bdd5521d-5fab-4187-8d79-fcf80b3f46db.png"
+              src="/lovable-uploads/6a274083-edb0-4ac2-8e40-4ac3703a8660.png"
               alt="Premium 12-Seat LDV Deliver 9 Minibus" 
               className="w-full h-full object-cover"
               loading="lazy"

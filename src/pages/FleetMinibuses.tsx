@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -21,7 +20,7 @@ const minibuses = [
       "Full-Height Seats",
       "Unlimited kilometres"
     ],
-    image: "/lovable-uploads/bdd5521d-5fab-4187-8d79-fcf80b3f46db.png"
+    image: "/lovable-uploads/6a274083-edb0-4ac2-8e40-4ac3703a8660.png"
   },
   {
     id: "12-seat-minibus",
