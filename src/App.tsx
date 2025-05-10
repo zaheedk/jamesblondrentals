@@ -56,6 +56,7 @@ import Premium12SeatMinibusDetail from "./pages/Premium12SeatMinibusDetail"; // 
 import MobilFuelDiscount from "./pages/MobilFuelDiscount"; // Import the new Mobil Fuel Discount page
 import CarRentalWellington from "./pages/CarRentalWellington"; // Import the new Wellington car rental page
 import CarRentalAucklandAirport from "./pages/CarRentalAucklandAirport"; // Import the new Auckland Airport car rental page
+import AucklandAirportMinibusRentals from "./pages/AucklandAirportMinibusRentals"; // Import the new Auckland Airport Minibus Rentals page
 import CagedTrailerDetail from "./pages/CagedTrailerDetail"; // Import the new Caged Trailer detail page
 import LuggageTrailerDetail from "./pages/LuggageTrailerDetail"; // Import the new Luggage Trailer detail page
 import CarTransporterTrailerDetail from "./pages/CarTransporterTrailerDetail"; // Import the new Car Transporter Trailer detail page
@@ -116,6 +117,7 @@ const App = () => {
               <Route path="/hot-deals/mobil-fuel-discount" element={<MobilFuelDiscount />} /> {/* Mobil fuel discount route */}
               <Route path="/car-rental-wellington-new-zealand" element={<CarRentalWellington />} /> {/* Wellington car rental page */}
               <Route path="/car-rental-auckland-airport-new-zealand" element={<CarRentalAucklandAirport />} /> {/* Auckland Airport car rental page */}
+              <Route path="/auckland-airport-minibus-rentals-hire" element={<AucklandAirportMinibusRentals />} /> {/* New Auckland Airport minibus rentals page */}
               <Route path="/west-auckland-truck-rentals-hire" element={<WestAucklandTruckRentals />} /> {/* West Auckland Truck Rentals page */}
               <Route path="/auckland-truck-rentals-hire" element={<AucklandTruckRentals />} /> {/* Auckland Truck Rentals page */}
               <Route path="/wellington-truck-rentals-hire" element={<WellingtonTruckRentals />} /> {/* Wellington Truck Rentals page */}
@@ -153,7 +155,7 @@ const App = () => {
                 <Route path="minibuses" element={<FleetMinibuses />} />
                 <Route path="minibuses/12-seat-minibus" element={<TwelveSeaterMinibusDetail />} />
                 <Route path="minibuses/10-seat-minibus" element={<TenSeaterMinibusDetail />} />
-                <Route path="minibuses/premium-12-seat-minibus" element={<Premium12SeatMinibusDetail />} /> {/* New Premium 12-Seat Minibus route */}
+                <Route path="minibuses/premium-12-seat-minibus" element={<Premium12SeatMinibusDetail />} /> {/* Premium 12-Seat Minibus route */}
                 <Route path="trailers" element={<FleetTrailers />} />
                 <Route path="trailers/cage-trailer" element={<CagedTrailerDetail />} />
                 <Route path="trailers/luggage-trailer" element={<LuggageTrailerDetail />} />
