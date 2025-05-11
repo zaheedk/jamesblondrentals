@@ -343,7 +343,7 @@ const PriceGuide = () => {
           <h2 className="text-xl font-bold mb-4">Pricing Notes</h2>
           <ul className="list-disc pl-5 space-y-2">
             <li>All prices are in New Zealand Dollars and include GST.</li>
-            <li>Weekend rates apply from Friday afternoon to Monday morning.</li>
+            <li>Weekend rates apply from Friday morning to Sunday morning.</li>
             <li>A security deposit is required for all rentals.</li>
             <li>Kilometer charges apply as listed, where applicable.</li>
             <li>Unlimited kilometer options are available for some vehicles as shown.</li>
