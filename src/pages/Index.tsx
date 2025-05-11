@@ -205,6 +205,23 @@ const Index = () => {
               </div>
             </div>
           </div>
+          
+          {/* New Auckland Region Cargo Vans Section */}
+          <h3 className="text-xl font-semibold text-center mt-8 mb-6">Auckland Region Cargo Van Rentals</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
+            <Button variant="outline" asChild size="sm">
+              <Link to="/central-auckland-cargo-van-rentals-hire">Central Auckland Cargo Vans</Link>
+            </Button>
+            <Button variant="outline" asChild size="sm">
+              <Link to="/west-auckland-cargo-van-rentals-hire">West Auckland Cargo Vans</Link>
+            </Button>
+            <Button variant="outline" asChild size="sm">
+              <Link to="/south-auckland-cargo-van-rentals-hire">South Auckland Cargo Vans</Link>
+            </Button>
+            <Button variant="outline" asChild size="sm">
+              <Link to="/auckland-airport-cargo-van-rentals-hire">Airport Cargo Vans</Link>
+            </Button>
+          </div>
         </div>
       </section>
       
