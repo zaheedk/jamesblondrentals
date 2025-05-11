@@ -2,10 +2,11 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
+// Define the window interface extension for Google Analytics
 declare global {
   interface Window {
     dataLayer: any[];
-    gtag: (...args: any[]) => void;
+    gtag: (...args: any[]) => void;  // Using same signature in both files
   }
 }
 

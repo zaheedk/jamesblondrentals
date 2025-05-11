@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -57,7 +56,7 @@ interface BookingDetails {
 declare global {
   interface Window {
     dataLayer: any[];
-    gtag?: (...args: any[]) => void;
+    gtag: (...args: any[]) => void;
   }
 }
 
