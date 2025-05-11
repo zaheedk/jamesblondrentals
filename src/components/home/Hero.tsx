@@ -1,9 +1,11 @@
 
 import { useState, useEffect } from "react";
 import SearchForm from "./SearchForm";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Hero = () => {
   const [imageLoaded, setImageLoaded] = useState(false);
+  const isMobile = useIsMobile();
   
   useEffect(() => {
     // Preload the hero image
@@ -25,7 +27,8 @@ const Hero = () => {
       <div className="absolute inset-0 bg-black opacity-50"></div>
       
       <div className="container mx-auto px-4 py-12 sm:py-20 md:py-28 relative z-10">
-        <div className="max-w-3xl mx-auto text-center mb-6">
+        {/* Hero content - hidden on mobile */}
+        <div className={`max-w-3xl mx-auto text-center mb-6 ${isMobile ? 'hidden' : 'block'}`}>
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-white">
             Premium Car, Van and Truck Rentals for Your Journey
           </h1>
