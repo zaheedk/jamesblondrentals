@@ -72,6 +72,7 @@ import WellingtonTruckRentals from "./pages/WellingtonTruckRentals"; // Import t
 import WellingtonCargoVanRentals from "./pages/WellingtonCargoVanRentals"; // Import the new Wellington Cargo Van Rentals page
 import WestAucklandCargoVanRentals from "./pages/WestAucklandCargoVanRentals"; // Import the new West Auckland Cargo Van Rentals page
 import AucklandAirportCargoVanRentals from "./pages/AucklandAirportCargoVanRentals"; // Import the new Auckland Airport Cargo Van Rentals page
+import PriceGuide from "./pages/PriceGuide"; // Import the new Price Guide page
 
 import Airport from "./pages/Airport";
 import AirportShuttle from "./pages/AirportShuttle";
@@ -114,6 +115,7 @@ const App = () => {
               <Route path="/payment-success" element={<PaymentSuccess />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/privacy" element={<Privacy />} />
+              <Route path="/price-guide" element={<PriceGuide />} /> {/* New price guide route */}
               <Route path="/hot-deals/mobil-fuel-discount" element={<MobilFuelDiscount />} /> {/* Mobil fuel discount route */}
               <Route path="/car-rental-wellington-new-zealand" element={<CarRentalWellington />} /> {/* Wellington car rental page */}
               <Route path="/car-rental-auckland-airport-new-zealand" element={<CarRentalAucklandAirport />} /> {/* Auckland Airport car rental page */}
