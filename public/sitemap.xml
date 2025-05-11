@@ -364,4 +364,41 @@
     <priority>0.6</priority>
     <changefreq>monthly</changefreq>
   </url>
+  
+  <!-- Booking Process Pages -->
+  <url>
+    <loc>https://jamesblond.co.nz/booking</loc>
+    <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/insurance-selection</loc>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/extras-selection</loc>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/customer-details</loc>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/payment-options</loc>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/payment</loc>
+    <priority>0.6</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/payment-success</loc>
+    <priority>0.6</priority>
+    <changefreq>monthly</changefreq>
+  </url>
 </urlset>
