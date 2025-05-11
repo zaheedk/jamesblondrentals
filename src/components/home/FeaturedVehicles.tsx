@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+
+import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useRcmApi } from "@/hooks/use-rcm-api";
@@ -13,6 +14,7 @@ import {
 } from "@/components/ui/carousel";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { format } from "date-fns";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface VehicleCategory {
   id: number;
@@ -48,8 +50,9 @@ const FeaturedVehicles = () => {
   const [searchParams, setSearchParams] = useState(""); 
   const { rcmApi, useLocations } = useRcmApi();
   const { data: locations = [] } = useLocations();
+  const isMobile = useIsMobile();
   
-  const getDefaultLocation = async (): Promise<string> => {
+  const getDefaultLocation = useCallback(async (): Promise<string> => {
     try {
       const position = await new Promise<GeolocationPosition>((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(resolve, reject);
@@ -98,9 +101,9 @@ const FeaturedVehicles = () => {
       );
       return String(aucklandAirport?.id || locations[0]?.id || "7");
     }
-  };
+  }, [locations]);
 
-  const getDefaultSearchParams = async () => {
+  const getDefaultSearchParams = useCallback(async () => {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     const pickupDate = format(tomorrow, 'dd/MM/yyyy');
@@ -123,24 +126,23 @@ const FeaturedVehicles = () => {
     });
     
     return searchParams.toString();
-  };
+  }, [getDefaultLocation]);
   
   useEffect(() => {
     const fetchVehicles = async () => {
       try {
         setIsLoading(true);
-        console.log('Fetching premium vehicles...');
         
         const response = await rcmApi.request<CategoryListResponse>('POST', 'categorylist', {
           method: 'categorylist'
         });
         
         if (response.status === "OK") {
-          const premiumVehicles = response.results.filter((vehicle) => 
-            vehicle.vehiclecategoryname.toLowerCase().includes('premium')
-          );
+          // Get only first 4 premium vehicles to improve performance
+          const premiumVehicles = response.results
+            .filter(vehicle => vehicle.vehiclecategoryname.toLowerCase().includes('premium'))
+            .slice(0, 4);
           
-          console.log('Filtered premium vehicles:', premiumVehicles);
           setVehicles(premiumVehicles);
         }
       } catch (error) {
@@ -158,19 +160,21 @@ const FeaturedVehicles = () => {
   }, [rcmApi]);
   
   useEffect(() => {
-    getDefaultSearchParams().then(params => {
-      setSearchParams(params);
-    });
-  }, [locations]);
+    if (locations.length > 0) {
+      getDefaultSearchParams().then(params => {
+        setSearchParams(params);
+      });
+    }
+  }, [locations, getDefaultSearchParams]);
   
   return (
-    <div className="container mx-auto px-4 py-16">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
+    <div className="container mx-auto px-4 py-12 md:py-16">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 md:mb-8">
         <div>
-          <h2 className="text-3xl font-bold mb-2">Premium Vehicles</h2>
+          <h2 className="text-2xl md:text-3xl font-bold mb-2">Premium Vehicles</h2>
           <p className="text-gray-600">Explore our exclusive premium collection</p>
         </div>
-        <div className="flex gap-4 items-center">
+        <div className="flex gap-4 items-center mt-4 sm:mt-0">
           <Link to={`/vehicles?${searchParams}`}>
             <Button variant="outline">
               View All Vehicles
@@ -182,11 +186,11 @@ const FeaturedVehicles = () => {
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="rounded-lg shadow animate-pulse bg-gray-200 h-80"></div>
+            <div key={i} className="rounded-lg shadow animate-pulse bg-gray-200 h-64"></div>
           ))}
         </div>
       ) : vehicles.length === 0 ? (
-        <div className="text-center py-12">
+        <div className="text-center py-10">
           <p className="text-gray-600">No premium vehicles available at this time.</p>
         </div>
       ) : (
@@ -196,18 +200,24 @@ const FeaturedVehicles = () => {
               <CarouselItem key={vehicle.id} className="md:basis-1/2 lg:basis-1/3">
                 <Card className="mx-2">
                   <AspectRatio ratio={4/3} className="overflow-hidden bg-white">
+                    {/* Use loading="lazy" for non-critical images */}
                     <img 
                       src={vehicle.imageurl} 
                       alt={vehicle.vehiclecategoryname}
                       className="w-full h-full object-contain"
+                      loading="lazy"
+                      width="300"
+                      height="225"
                       onError={(e) => {
                         (e.target as HTMLImageElement).src = '/placeholder.svg';
                       }}
                     />
                   </AspectRatio>
                   <CardContent className="p-4">
-                    <h3 className="text-xl font-bold text-center">{vehicle.vehiclecategoryname}</h3>
-                    <p className="text-gray-600 text-center mt-2">{vehicle.description}</p>
+                    <h3 className="text-lg md:text-xl font-bold text-center">{vehicle.vehiclecategoryname}</h3>
+                    {!isMobile && (
+                      <p className="text-gray-600 text-center mt-2">{vehicle.description}</p>
+                    )}
                   </CardContent>
                 </Card>
               </CarouselItem>
