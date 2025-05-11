@@ -1,3 +1,4 @@
+
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- Main Pages -->
@@ -68,6 +69,16 @@
   </url>
   <url>
     <loc>https://jamesblond.co.nz/auckland-airport-cargo-van-rentals-hire</loc>
+    <priority>0.9</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/south-auckland-cargo-van-rentals-hire</loc>
+    <priority>0.9</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/central-auckland-cargo-van-rentals-hire</loc>
     <priority>0.9</priority>
     <changefreq>weekly</changefreq>
   </url>
