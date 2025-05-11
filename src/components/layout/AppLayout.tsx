@@ -3,6 +3,7 @@ import { ReactNode, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import GoogleAnalytics from "../analytics/GoogleAnalytics";
 
 type AppLayoutProps = {
   children: ReactNode;
@@ -27,6 +28,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
 
   return (
     <div className="flex flex-col min-h-screen">
+      <GoogleAnalytics />
       <Navbar />
       <main id="main-content" className="flex-grow outline-none" tabIndex={-1}>
         {children}
