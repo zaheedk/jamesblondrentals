@@ -6,7 +6,7 @@ const faqData = [
     question: "What do I need to hire a vehicle?",
     answer: (
       <>
-        You need a full driver’s licence (overseas and international licences accepted if in English, or with an approved translation) and a valid credit or debit card. The minimum age to hire is 21 for most vehicles, 25 for larger vehicles.
+        You need a full driver's licence (overseas and international licences accepted if in English, or with an approved translation) and a valid credit or debit card. The minimum age to hire is 21 for most vehicles, 25 for larger vehicles.
       </>
     ),
   },
@@ -14,9 +14,9 @@ const faqData = [
     question: "What are your hours?",
     answer: (
       <>
-        Monday–Friday: 7:00 am – 6:00 pm<br />
-        Saturday: 8:00 am – 5:00 pm<br />
-        Sunday & Public Holidays: 8:30 am – 5:00 pm<br />
+        Monday–Friday: 7:00 am – 6:00 pm<br />
+        Saturday: 8:00 am – 5:00 pm<br />
+        Sunday & Public Holidays: 8:30 am – 5:00 pm<br />
         <span className="text-xs block mt-1">(Last return is 15 minutes before closing.)</span>
       </>
     ),
@@ -42,7 +42,7 @@ const faqData = [
     question: "Is there a mileage (kilometre) limit?",
     answer: (
       <>
-        Nearly all hires include free 150km/day. Additional kilometres are charged at a set rate depending on the vehicle. <br />
+        Nearly all hires include free 150km/day. Additional kilometres are charged at a set rate depending on the vehicle. <br />
         Unused kilometres are not credited.
       </>
     ),
@@ -149,7 +149,7 @@ const faqData = [
     answer: (
       <>
         Book online via our website or call our team at&nbsp;
-        <a className="text-blue-500 underline" href="tel:098361396">(09) 836 1396</a>.
+        <a className="text-blue-500 underline" href="tel:0800525663">0800 525 663</a>.
       </>
     ),
   },
@@ -157,7 +157,7 @@ const faqData = [
     question: "Who can I contact for more help?",
     answer: (
       <>
-        Phone: <a className="text-blue-500 underline" href="tel:098361396">(09) 836 1396</a><br />
+        Phone: <a className="text-blue-500 underline" href="tel:0800525663">0800 525 663</a><br />
         Email: <a className="text-blue-500 underline" href="mailto:info@jamesblond.co.nz">info@jamesblond.co.nz</a>
       </>
     ),
