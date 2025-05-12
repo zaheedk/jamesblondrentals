@@ -73,15 +73,27 @@ const vans = [
 ];
 
 const FleetVans = () => {
-  // Set page title when component mounts
+  // Set page title and meta description when component mounts
   useEffect(() => {
-    // Save the original title to restore it when component unmounts
+    // Save the original title and meta description to restore them when component unmounts
     const originalTitle = document.title;
+    const originalMetaDescription = document.querySelector('meta[name="description"]')?.getAttribute('content') || '';
+    
+    // Update title and meta description
     document.title = "Hire Cargo Vans - Auckland & Wellington";
     
-    // Restore the original title when the component unmounts
+    // Update meta description
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', 'Hire a cargo van from James Blond Rentals in Auckland or Wellington. Affordable rates, flexible terms, and a wide range of vans for moving or delivery needs.');
+    }
+    
+    // Restore the original title and meta description when the component unmounts
     return () => {
       document.title = originalTitle;
+      if (metaDescription) {
+        metaDescription.setAttribute('content', originalMetaDescription);
+      }
     };
   }, []);
 
