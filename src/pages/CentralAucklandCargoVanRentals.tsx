@@ -102,10 +102,9 @@ const CentralAucklandCargoVanRentals = () => {
         <h2 className="text-2xl font-bold mb-6">Popular Cargo Van Options in Central Auckland</h2>
         
         <Tabs defaultValue="standard">
-          <TabsList className="grid w-full grid-cols-3 mb-6">
+          <TabsList className="grid w-full grid-cols-2 mb-6">
             <TabsTrigger value="standard">Standard Vans</TabsTrigger>
             <TabsTrigger value="premium">Premium Vans</TabsTrigger>
-            <TabsTrigger value="specialty">Specialty Vans</TabsTrigger>
           </TabsList>
           
           <TabsContent value="standard">
@@ -202,56 +201,6 @@ const CentralAucklandCargoVanRentals = () => {
                 <Button asChild variant="outline">
                   <Link to="/fleet/vans/jumbo-van" className="flex items-center">
                     View Details <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-              </div>
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="specialty">
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <img 
-                  src="/lovable-uploads/6dde201c-13f3-4671-9e88-6cc1a388d647.png" 
-                  alt="Refrigerated Van for Central Auckland Food Deliveries" 
-                  className="rounded-lg mb-4"
-                  width="500"
-                  height="300"
-                  loading="lazy"
-                />
-                <h3 className="font-bold text-xl mb-2">REFRIGERATED VAN</h3>
-                <ul className="list-disc list-inside mb-4 text-gray-600 space-y-1">
-                  <li>Temperature-controlled cargo space</li>
-                  <li>Perfect for city restaurants, caterers, and food suppliers</li>
-                  <li>Essential for fresh produce and perishable deliveries</li>
-                  <li>Advanced cooling system maintains consistent temperature</li>
-                </ul>
-                <Button asChild variant="outline">
-                  <Link to="/fleet/vans/jumbo-van" className="flex items-center">
-                    Contact for Availability <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-              </div>
-              
-              <div>
-                <img 
-                  src="/lovable-uploads/7924107a-afb6-4c13-aa1d-8dba18465760.png" 
-                  alt="Long-term Van Hire Central Auckland" 
-                  className="rounded-lg mb-4"
-                  width="500"
-                  height="300"
-                  loading="lazy"
-                />
-                <h3 className="font-bold text-xl mb-2">LONG-TERM HIRE VANS</h3>
-                <ul className="list-disc list-inside mb-4 text-gray-600 space-y-1">
-                  <li>Special rates for CBD businesses needing extended hire</li>
-                  <li>Flexible contracts from 1-12 months</li>
-                  <li>Maintenance included in long-term packages</li>
-                  <li>Perfect for expanding businesses and startup logistics</li>
-                </ul>
-                <Button asChild variant="outline">
-                  <Link to="/contact/auckland" className="flex items-center">
-                    Request Quote <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
               </div>
