@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { useEffect } from "react";
 
 const vans = [
   {
@@ -71,68 +72,82 @@ const vans = [
   }
 ];
 
-const FleetVans = () => (
-  <div className="container mx-auto px-4 py-10">
-    <div className="text-center mb-12">
-      <h1 className="text-3xl font-bold mb-4">Our Extensive Fleet – Choose the Right Vehicle</h1>
-      <p className="text-lg text-gray-700">
-        From compact vans to powerful utes, we have the perfect vehicle for your needs.
-      </p>
-    </div>
+const FleetVans = () => {
+  // Set page title when component mounts
+  useEffect(() => {
+    // Save the original title to restore it when component unmounts
+    const originalTitle = document.title;
+    document.title = "Hire Cargo Vans - Auckland & Wellington";
     
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {vans.map((van) => (
-        <Card key={van.id} className="flex flex-col h-full">
-          {van.image && (
-            <AspectRatio ratio={16/9} className="w-full">
-              <img 
-                src={van.image} 
-                alt={`${van.title}`} 
-                className="w-full h-full object-cover rounded-t-lg"
-              />
-            </AspectRatio>
-          )}
-          <CardHeader>
-            <CardTitle className="text-lg font-bold text-primary">{van.title}</CardTitle>
-            <CardDescription className="text-xl font-semibold">{van.subtitle}</CardDescription>
-          </CardHeader>
-          <CardContent className="flex-grow">
-            <p className="text-gray-600 mb-4">{van.description}</p>
-            <ul className="space-y-2">
-              {van.specs.map((spec, index) => (
-                <li key={index} className="flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0" />
-                  <span className="text-gray-600">{spec}</span>
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-          <CardFooter>
-            {van.id === "premium-van" && (
-              <Link to="/fleet/vans/premium-van">
-                <Button variant="outline" className="w-full">View Details</Button>
-              </Link>
+    // Restore the original title when the component unmounts
+    return () => {
+      document.title = originalTitle;
+    };
+  }, []);
+
+  return (
+    <div className="container mx-auto px-4 py-10">
+      <div className="text-center mb-12">
+        <h1 className="text-3xl font-bold mb-4">Our Extensive Fleet – Choose the Right Vehicle</h1>
+        <p className="text-lg text-gray-700">
+          From compact vans to powerful utes, we have the perfect vehicle for your needs.
+        </p>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {vans.map((van) => (
+          <Card key={van.id} className="flex flex-col h-full">
+            {van.image && (
+              <AspectRatio ratio={16/9} className="w-full">
+                <img 
+                  src={van.image} 
+                  alt={`${van.title}`} 
+                  className="w-full h-full object-cover rounded-t-lg"
+                />
+              </AspectRatio>
             )}
-            {van.id === "standard-van" && (
-              <Link to="/fleet/vans/standard-van">
-                <Button variant="outline" className="w-full">View Details</Button>
-              </Link>
-            )}
-            {van.id === "standard-rear-seat-van" && (
-              <Link to="/fleet/vans/standard-rear-seat-van">
-                <Button variant="outline" className="w-full">View Details</Button>
-              </Link>
-            )}
-            {van.id === "jumbo-van" && (
-              <Link to="/fleet/vans/jumbo-van">
-                <Button variant="outline" className="w-full">View Details</Button>
-              </Link>
-            )}
-          </CardFooter>
-        </Card>
-      ))}
+            <CardHeader>
+              <CardTitle className="text-lg font-bold text-primary">{van.title}</CardTitle>
+              <CardDescription className="text-xl font-semibold">{van.subtitle}</CardDescription>
+            </CardHeader>
+            <CardContent className="flex-grow">
+              <p className="text-gray-600 mb-4">{van.description}</p>
+              <ul className="space-y-2">
+                {van.specs.map((spec, index) => (
+                  <li key={index} className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0" />
+                    <span className="text-gray-600">{spec}</span>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+            <CardFooter>
+              {van.id === "premium-van" && (
+                <Link to="/fleet/vans/premium-van">
+                  <Button variant="outline" className="w-full">View Details</Button>
+                </Link>
+              )}
+              {van.id === "standard-van" && (
+                <Link to="/fleet/vans/standard-van">
+                  <Button variant="outline" className="w-full">View Details</Button>
+                </Link>
+              )}
+              {van.id === "standard-rear-seat-van" && (
+                <Link to="/fleet/vans/standard-rear-seat-van">
+                  <Button variant="outline" className="w-full">View Details</Button>
+                </Link>
+              )}
+              {van.id === "jumbo-van" && (
+                <Link to="/fleet/vans/jumbo-van">
+                  <Button variant="outline" className="w-full">View Details</Button>
+                </Link>
+              )}
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default FleetVans;
