@@ -30,5 +30,11 @@
         { "key": "Content-Type", "value": "text/plain" }
       ]
     }
-  ]
+  ],
+  "git": {
+    "deploymentEnabled": {
+      "main": false,
+      "development": true
+    }
+  }
 }
