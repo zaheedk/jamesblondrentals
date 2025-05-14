@@ -120,6 +120,9 @@ const Navbar = () => {
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
+            <Link to="/price-guide" className="text-gray-600 hover:text-primary transition-colors font-bold">
+              Price Guide
+            </Link>
             <Link to="/faq" className="text-gray-600 hover:text-primary transition-colors font-bold">
               FAQ
             </Link>
@@ -208,6 +211,9 @@ const Navbar = () => {
                   Christchurch
                 </Link>
               </div>
+              <Link to="/price-guide" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>
+                Price Guide
+              </Link>
               <Link to="/faq" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>
                 FAQ
               </Link>
