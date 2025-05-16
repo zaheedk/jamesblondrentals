@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -10,9 +9,18 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const isMobile = useIsMobile();
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -171,64 +179,87 @@ const Navbar = () => {
 
         {isMobileMenuOpen && (
           <div className="md:hidden mt-4 pb-4 animate-slide-in">
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="fleet" className="border-b-0">
+                <AccordionTrigger className="py-2 text-gray-600 hover:text-primary transition-colors">
+                  Fleet
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="pl-4 space-y-2">
+                    <Link to="/fleet/cars" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
+                      Cars
+                    </Link>
+                    <Link to="/fleet/vans" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
+                      Vans
+                    </Link>
+                    <Link to="/fleet/trucks" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
+                      Trucks
+                    </Link>
+                    <Link to="/fleet/utes" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
+                      UTEs
+                    </Link>
+                    <Link to="/fleet/minibuses" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
+                      Minibuses
+                    </Link>
+                    <Link to="/fleet/trailers" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
+                      Trailers
+                    </Link>
+                    <Link to="/fleet/accessories" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
+                      Accessories
+                    </Link>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+              
+              <AccordionItem value="airport" className="border-b-0">
+                <AccordionTrigger className="py-2 text-gray-600 hover:text-primary transition-colors">
+                  Airport
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="pl-4 space-y-2">
+                    <Link to="/airport/auckland" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
+                      Auckland
+                    </Link>
+                    <Link to="/airport/wellington" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
+                      Wellington
+                    </Link>
+                    <Link to="/airport/christchurch" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
+                      Christchurch
+                    </Link>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+              
+              <AccordionItem value="contact" className="border-b-0">
+                <AccordionTrigger className="py-2 text-gray-600 hover:text-primary transition-colors">
+                  Contact
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="pl-4 space-y-2">
+                    <Link to="/contact/auckland" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
+                      Auckland
+                    </Link>
+                    <Link to="/contact/wellington" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
+                      Wellington
+                    </Link>
+                    <Link to="/contact/christchurch" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
+                      Christchurch
+                    </Link>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+            
             <div className="flex flex-col space-y-3">
               <Link to="/" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>
                 Home
               </Link>
-              <div className="py-2 pl-4 space-y-2">
-                <p className="font-medium text-gray-600">Fleet:</p>
-                <Link to="/fleet/cars" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
-                  Cars
-                </Link>
-                <Link to="/fleet/vans" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
-                  Vans
-                </Link>
-                <Link to="/fleet/trucks" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
-                  Trucks
-                </Link>
-                <Link to="/fleet/utes" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
-                  UTEs
-                </Link>
-                <Link to="/fleet/minibuses" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
-                  Minibuses
-                </Link>
-                <Link to="/fleet/trailers" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
-                  Trailers
-                </Link>
-                <Link to="/fleet/accessories" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
-                  Accessories
-                </Link>
-              </div>
-              <div className="py-2 pl-4 space-y-2">
-                <p className="font-medium text-gray-600">Airport:</p>
-                <Link to="/airport/auckland" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
-                  Auckland
-                </Link>
-                <Link to="/airport/wellington" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
-                  Wellington
-                </Link>
-                <Link to="/airport/christchurch" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
-                  Christchurch
-                </Link>
-              </div>
               <Link to="/price-guide" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>
                 Price Guide
               </Link>
               <Link to="/faq" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>
                 FAQ
               </Link>
-              <div className="py-2 pl-4 space-y-2">
-                <p className="font-medium text-gray-600">Contact:</p>
-                <Link to="/contact/auckland" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
-                  Auckland
-                </Link>
-                <Link to="/contact/wellington" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
-                  Wellington
-                </Link>
-                <Link to="/contact/christchurch" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
-                  Christchurch
-                </Link>
-              </div>
               <Link to="/about" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>
                 About
               </Link>
