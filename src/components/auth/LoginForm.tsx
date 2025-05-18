@@ -3,11 +3,11 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useLocation, useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase-client';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   Card,
   CardContent,
@@ -15,7 +15,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 import {
   Form,
   FormControl,
@@ -23,31 +23,28 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
+} from '@/components/ui/form';
+import { Mail, Lock, EyeOff, Eye } from 'lucide-react';
 
 const formSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
-  password: z.string().min(1, 'Password is required'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
 type FormValues = z.infer<typeof formSchema>;
-type LocationState = {
-  message?: string;
-  from?: string;
-};
 
 export default function LoginForm() {
-  const { signIn } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const from = location.state?.from || '/member-dashboard';
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [loginError, setLoginError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(
+    location.state?.message || null
+  );
   
-  const locationState = location.state as LocationState;
-  const redirectPath = locationState?.from || '/member-dashboard';
-
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -57,50 +54,57 @@ export default function LoginForm() {
   });
 
   const onSubmit = async (data: FormValues) => {
+    if (!isSupabaseConfigured()) {
+      setError('Supabase is not properly configured. Please check your environment variables.');
+      return;
+    }
+    
     try {
       setIsSubmitting(true);
-      setLoginError(null);
+      setError(null);
       
-      const { data: user, error } = await signIn(data.email, data.password);
+      const { error } = await supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password,
+      });
       
       if (error) {
-        setLoginError(error.message);
+        setError(error.message);
         return;
       }
       
-      if (user) {
-        navigate(redirectPath);
-      }
+      // Redirect to the protected route or dashboard
+      navigate(from, { replace: true });
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="mx-auto w-full max-w-md">
       <CardHeader>
-        <CardTitle className="text-2xl">Welcome back</CardTitle>
+        <CardTitle className="text-2xl">Login</CardTitle>
         <CardDescription>
-          Log in to access your booking history and account details
+          Enter your email and password to access your account
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {locationState?.message && (
-          <Alert variant="default" className="bg-muted">
-            <AlertDescription>
-              {locationState.message}
+        {error && (
+          <Alert variant="destructive">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+        
+        {message && (
+          <Alert className="bg-green-50 border-green-200">
+            <AlertDescription className="text-green-800">
+              {message}
             </AlertDescription>
           </Alert>
         )}
         
-        {loginError && (
-          <Alert variant="destructive">
-            <AlertDescription>{loginError}</AlertDescription>
-          </Alert>
-        )}
-        
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="email"
@@ -154,10 +158,10 @@ export default function LoginForm() {
                 </FormItem>
               )}
             />
-            <div className="flex justify-end">
+            <div className="text-right text-sm">
               <Link
                 to="/forgot-password"
-                className="text-sm text-primary hover:underline"
+                className="text-primary hover:underline"
               >
                 Forgot password?
               </Link>
@@ -167,7 +171,7 @@ export default function LoginForm() {
               className="w-full" 
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Logging in..." : "Log in"}
+              {isSubmitting ? "Signing in..." : "Sign in"}
             </Button>
           </form>
         </Form>
@@ -176,7 +180,7 @@ export default function LoginForm() {
         <p className="text-sm text-center">
           Don't have an account?{" "}
           <Link to="/register" className="text-primary hover:underline">
-            Register
+            Sign up
           </Link>
         </p>
       </CardFooter>
