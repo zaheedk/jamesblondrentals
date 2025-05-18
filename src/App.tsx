@@ -1,10 +1,12 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { createElement, useState } from "react";
+import { AuthProvider } from "@/contexts/AuthContext";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
+
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Vehicles from "./pages/Vehicles";
@@ -21,6 +23,13 @@ import Contact from "./pages/Contact";
 import ContactAuckland from "./pages/ContactAuckland";
 import ContactWellington from "./pages/ContactWellington";
 import ContactChristchurch from "./pages/ContactChristchurch";
+
+// Auth Pages
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+import MemberDashboard from "./pages/MemberDashboard";
 
 import Fleet from "./pages/Fleet";
 import FleetCars from "./pages/FleetCars";
@@ -97,100 +106,115 @@ const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <AppLayout>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/vehicles" element={<Vehicles />} />
-              <Route path="/vehicle/:id" element={<VehicleDetail />} />
-              <Route path="/booking" element={<Booking />} />
-              <Route path="/insurance-selection" element={<InsuranceSelection />} />
-              <Route path="/extras-selection" element={<ExtrasSelection />} />
-              <Route path="/customer-details" element={<CustomerDetails />} />
-              <Route path="/payment-options" element={<PaymentOptions />} />
-              <Route path="/payment" element={<Payment />} />
-              <Route path="/payment-success" element={<PaymentSuccess />} />
-              <Route path="/terms" element={<Terms />} />
-              <Route path="/privacy" element={<Privacy />} />
-              <Route path="/price-guide" element={<PriceGuide />} /> {/* New price guide route */}
-              <Route path="/hot-deals/mobil-fuel-discount" element={<MobilFuelDiscount />} /> {/* Mobil fuel discount route */}
-              <Route path="/car-rental-wellington-new-zealand" element={<CarRentalWellington />} /> {/* Wellington car rental page */}
-              <Route path="/car-rental-auckland-airport-new-zealand" element={<CarRentalAucklandAirport />} /> {/* Auckland Airport car rental page */}
-              <Route path="/auckland-airport-minibus-rentals-hire" element={<AucklandAirportMinibusRentals />} /> {/* New Auckland Airport minibus rentals page */}
-              <Route path="/west-auckland-truck-rentals-hire" element={<WestAucklandTruckRentals />} /> {/* West Auckland Truck Rentals page */}
-              <Route path="/auckland-truck-rentals-hire" element={<AucklandTruckRentals />} /> {/* Auckland Truck Rentals page */}
-              <Route path="/wellington-truck-rentals-hire" element={<WellingtonTruckRentals />} /> {/* Wellington Truck Rentals page */}
-              <Route path="/wellington-cargo-van-rentals-hire" element={<WellingtonCargoVanRentals />} /> {/* Wellington Cargo Van Rentals page */}
-              <Route path="/west-auckland-cargo-van-rentals-hire" element={<WestAucklandCargoVanRentals />} /> {/* West Auckland Cargo Van Rentals page */}
-              <Route path="/south-auckland-cargo-van-rentals-hire" element={<SouthAucklandCargoVanRentals />} /> {/* South Auckland Cargo Van Rentals page */}
-              <Route path="/central-auckland-cargo-van-rentals-hire" element={<CentralAucklandCargoVanRentals />} /> {/* Central Auckland Cargo Van Rentals page */}
-              <Route path="/auckland-airport-cargo-van-rentals-hire" element={<AucklandAirportCargoVanRentals />} /> {/* Auckland Airport Cargo Van Rentals page */}
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <AppLayout>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/vehicles" element={<Vehicles />} />
+                <Route path="/vehicle/:id" element={<VehicleDetail />} />
+                <Route path="/booking" element={<Booking />} />
+                <Route path="/insurance-selection" element={<InsuranceSelection />} />
+                <Route path="/extras-selection" element={<ExtrasSelection />} />
+                <Route path="/customer-details" element={<CustomerDetails />} />
+                <Route path="/payment-options" element={<PaymentOptions />} />
+                <Route path="/payment" element={<Payment />} />
+                <Route path="/payment-success" element={<PaymentSuccess />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/privacy" element={<Privacy />} />
+                
+                {/* Auth routes */}
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/member-dashboard" element={
+                  <ProtectedRoute>
+                    <MemberDashboard />
+                  </ProtectedRoute>
+                } />
+                
+                {/* Keep existing routes */}
+                <Route path="/price-guide" element={<PriceGuide />} />
+                <Route path="/hot-deals/mobil-fuel-discount" element={<MobilFuelDiscount />} />
+                <Route path="/car-rental-wellington-new-zealand" element={<CarRentalWellington />} />
+                <Route path="/car-rental-auckland-airport-new-zealand" element={<CarRentalAucklandAirport />} />
+                <Route path="/auckland-airport-minibus-rentals-hire" element={<AucklandAirportMinibusRentals />} />
+                <Route path="/west-auckland-truck-rentals-hire" element={<WestAucklandTruckRentals />} />
+                <Route path="/auckland-truck-rentals-hire" element={<AucklandTruckRentals />} />
+                <Route path="/wellington-truck-rentals-hire" element={<WellingtonTruckRentals />} />
+                <Route path="/wellington-cargo-van-rentals-hire" element={<WellingtonCargoVanRentals />} />
+                <Route path="/west-auckland-cargo-van-rentals-hire" element={<WestAucklandCargoVanRentals />} />
+                <Route path="/south-auckland-cargo-van-rentals-hire" element={<SouthAucklandCargoVanRentals />} />
+                <Route path="/central-auckland-cargo-van-rentals-hire" element={<CentralAucklandCargoVanRentals />} />
+                <Route path="/auckland-airport-cargo-van-rentals-hire" element={<AucklandAirportCargoVanRentals />} />
 
-              <Route path="/fleet" element={<Fleet />}>
-                <Route path="cars" element={<FleetCars />} />
-                <Route path="cars/premium-seven-seat-suv" element={<PremiumSevenSeatSUVDetail />} />
-                <Route path="cars/premium-2wd-suv" element={<Premium2WDSUVDetail />} />
-                <Route path="cars/premium-compact-suv" element={<PremiumCompactSUVDetail />} />
-                <Route path="cars/premium-awd-suv" element={<PremiumAWDSUVDetail />} />
-                <Route path="cars/premium-economy" element={<PremiumEconomyDetail />} />
-                <Route path="cars/premium-midsize" element={<PremiumMidsizeDetail />} />
-                <Route path="cars/premium-economy-wagon" element={<PremiumEconomyWagonDetail />} />
-                <Route path="vans" element={<FleetVans />} />
-                <Route path="vans/:vanId" element={<VanDetail />} />
-                <Route path="vans/premium-van" element={<PremiumVanDetail />} /> 
-                <Route path="vans/standard-van" element={<StandardVanDetail />} />
-                <Route path="vans/standard-rear-seat-van" element={<StandardRearSeatVanDetail />} />
-                <Route path="vans/jumbo-van" element={<JumboVanDetail />} />
-                <Route path="utes" element={<FleetUtes />} />
-                <Route path="utes/single-cab-ute-petrol" element={<SingleCabUteDetail />} />
-                <Route path="utes/single-cab-ute-diesel" element={<SingleCabUteDieselDetail />} />
-                <Route path="utes/premium-double-cab-ute" element={<PremiumDoubleCabUteDetail />} />
-                <Route path="trucks" element={<FleetTrucks />} />
-                <Route path="trucks/2-tonne-box-9m3" element={<TwoTonneBoxTruckDetail />} />
-                <Route path="trucks/2-tonne-box-12m3" element={<TwoTonneBox12m3Detail />} />
-                <Route path="trucks/2-tonne-box-12m3-tail" element={<TwoTonneBoxTailLiftDetail />} /> 
-                <Route path="trucks/2-tonne-tipper" element={<TwoTonneTipperDetail />} />
-                <Route path="trucks/2-tonne-box-16m3" element={<TwoTonneBox16m3Detail />} />
-                <Route path="trucks/3-tonne-box-18m3" element={<ThreeTonneBoxTailLiftDetail />} />
-                <Route path="trucks/3-tonne-box-19m3" element={<ThreeTonneBox19m3Detail />} /> 
-                <Route path="minibuses" element={<FleetMinibuses />} />
-                <Route path="minibuses/12-seat-minibus" element={<TwelveSeaterMinibusDetail />} />
-                <Route path="minibuses/10-seat-minibus" element={<TenSeaterMinibusDetail />} />
-                <Route path="minibuses/premium-12-seat-minibus" element={<Premium12SeatMinibusDetail />} /> {/* Premium 12-Seat Minibus route */}
-                <Route path="trailers" element={<FleetTrailers />} />
-                <Route path="trailers/cage-trailer" element={<CagedTrailerDetail />} />
-                <Route path="trailers/luggage-trailer" element={<LuggageTrailerDetail />} />
-                <Route path="trailers/car-transporter" element={<CarTransporterTrailerDetail />} />
-                <Route path="accessories" element={<FleetAccessories />} />
-                <Route path="accessories/child-seat" element={<ChildSeatDetail />} />
-                <Route path="accessories/booster-seat" element={<BoosterSeatDetail />} />
-                <Route path="accessories/pallet-jack" element={<PalletJackDetail />} />
-                <Route path="accessories/straps-ratchet" element={<StrapsRatchetDetail />} />
-                <Route path="accessories/hand-trolley" element={<HandTrolleyDetail />} />
-                <Route path="accessories/large-hand-trolley" element={<LargeHandTrolleyDetail />} />
-              </Route>
-              
-              <Route path="/airport" element={<Airport />} />
-              <Route path="/airport/shuttle" element={<AirportShuttle />} />
-              <Route path="/airport/directions" element={<AirportDirections />} />
-              <Route path="/airport/auckland" element={<AirportAuckland />} />
-              <Route path="/airport/christchurch" element={<AirportChristchurch />} />
-              <Route path="/airport/wellington" element={<AirportWellington />} />
-              
-              <Route path="/contact/auckland" element={<ContactAuckland />} />
-              <Route path="/contact/wellington" element={<ContactWellington />} />
-              <Route path="/contact/christchurch" element={<ContactChristchurch />} />
-              <Route path="/faq" element={<FAQ />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </AppLayout>
-        </BrowserRouter>
-      </TooltipProvider>
+                <Route path="/fleet" element={<Fleet />}>
+                  <Route path="cars" element={<FleetCars />} />
+                  <Route path="cars/premium-seven-seat-suv" element={<PremiumSevenSeatSUVDetail />} />
+                  <Route path="cars/premium-2wd-suv" element={<Premium2WDSUVDetail />} />
+                  <Route path="cars/premium-compact-suv" element={<PremiumCompactSUVDetail />} />
+                  <Route path="cars/premium-awd-suv" element={<PremiumAWDSUVDetail />} />
+                  <Route path="cars/premium-economy" element={<PremiumEconomyDetail />} />
+                  <Route path="cars/premium-midsize" element={<PremiumMidsizeDetail />} />
+                  <Route path="cars/premium-economy-wagon" element={<PremiumEconomyWagonDetail />} />
+                  <Route path="vans" element={<FleetVans />} />
+                  <Route path="vans/:vanId" element={<VanDetail />} />
+                  <Route path="vans/premium-van" element={<PremiumVanDetail />} /> 
+                  <Route path="vans/standard-van" element={<StandardVanDetail />} />
+                  <Route path="vans/standard-rear-seat-van" element={<StandardRearSeatVanDetail />} />
+                  <Route path="vans/jumbo-van" element={<JumboVanDetail />} />
+                  <Route path="utes" element={<FleetUtes />} />
+                  <Route path="utes/single-cab-ute-petrol" element={<SingleCabUteDetail />} />
+                  <Route path="utes/single-cab-ute-diesel" element={<SingleCabUteDieselDetail />} />
+                  <Route path="utes/premium-double-cab-ute" element={<PremiumDoubleCabUteDetail />} />
+                  <Route path="trucks" element={<FleetTrucks />} />
+                  <Route path="trucks/2-tonne-box-9m3" element={<TwoTonneBoxTruckDetail />} />
+                  <Route path="trucks/2-tonne-box-12m3" element={<TwoTonneBox12m3Detail />} />
+                  <Route path="trucks/2-tonne-box-12m3-tail" element={<TwoTonneBoxTailLiftDetail />} /> 
+                  <Route path="trucks/2-tonne-tipper" element={<TwoTonneTipperDetail />} />
+                  <Route path="trucks/2-tonne-box-16m3" element={<TwoTonneBox16m3Detail />} />
+                  <Route path="trucks/3-tonne-box-18m3" element={<ThreeTonneBoxTailLiftDetail />} />
+                  <Route path="trucks/3-tonne-box-19m3" element={<ThreeTonneBox19m3Detail />} /> 
+                  <Route path="minibuses" element={<FleetMinibuses />} />
+                  <Route path="minibuses/12-seat-minibus" element={<TwelveSeaterMinibusDetail />} />
+                  <Route path="minibuses/10-seat-minibus" element={<TenSeaterMinibusDetail />} />
+                  <Route path="minibuses/premium-12-seat-minibus" element={<Premium12SeatMinibusDetail />} /> {/* Premium 12-Seat Minibus route */}
+                  <Route path="trailers" element={<FleetTrailers />} />
+                  <Route path="trailers/cage-trailer" element={<CagedTrailerDetail />} />
+                  <Route path="trailers/luggage-trailer" element={<LuggageTrailerDetail />} />
+                  <Route path="trailers/car-transporter" element={<CarTransporterTrailerDetail />} />
+                  <Route path="accessories" element={<FleetAccessories />} />
+                  <Route path="accessories/child-seat" element={<ChildSeatDetail />} />
+                  <Route path="accessories/booster-seat" element={<BoosterSeatDetail />} />
+                  <Route path="accessories/pallet-jack" element={<PalletJackDetail />} />
+                  <Route path="accessories/straps-ratchet" element={<StrapsRatchetDetail />} />
+                  <Route path="accessories/hand-trolley" element={<HandTrolleyDetail />} />
+                  <Route path="accessories/large-hand-trolley" element={<LargeHandTrolleyDetail />} />
+                </Route>
+                
+                <Route path="/airport" element={<Airport />} />
+                <Route path="/airport/shuttle" element={<AirportShuttle />} />
+                <Route path="/airport/directions" element={<AirportDirections />} />
+                <Route path="/airport/auckland" element={<AirportAuckland />} />
+                <Route path="/airport/christchurch" element={<AirportChristchurch />} />
+                <Route path="/airport/wellington" element={<AirportWellington />} />
+                
+                <Route path="/contact/auckland" element={<ContactAuckland />} />
+                <Route path="/contact/wellington" element={<ContactWellington />} />
+                <Route path="/contact/christchurch" element={<ContactChristchurch />} />
+                <Route path="/faq" element={<FAQ />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </AppLayout>
+          </BrowserRouter>
+        </TooltipProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 };

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, User } from "lucide-react";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -17,13 +17,22 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
+    setIsMobileMenuOpen(false);
   };
 
   return (
@@ -168,6 +177,52 @@ const Navbar = () => {
             <Link to="/about" className="text-gray-600 hover:text-primary transition-colors font-bold">
               About
             </Link>
+            
+            {/* Add account navigation */}
+            {user ? (
+              <NavigationMenu>
+                <NavigationMenuList>
+                  <NavigationMenuItem>
+                    <NavigationMenuTrigger className="text-primary hover:text-primary/80 transition-colors bg-transparent font-bold">
+                      <User className="h-4 w-4 mr-1" />
+                      Account
+                    </NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                      <div className="w-48 p-2">
+                        <div className="px-4 py-2 text-xs text-gray-500 border-b mb-1">
+                          {user.email}
+                        </div>
+                        <Link 
+                          to="/member-dashboard" 
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
+                        >
+                          Dashboard
+                        </Link>
+                        <button 
+                          onClick={handleSignOut}
+                          className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 rounded-md"
+                        >
+                          Sign Out
+                        </button>
+                      </div>
+                    </NavigationMenuContent>
+                  </NavigationMenuItem>
+                </NavigationMenuList>
+              </NavigationMenu>
+            ) : (
+              <div className="flex space-x-2">
+                <Link to="/login">
+                  <Button variant="outline" size="sm">
+                    Log In
+                  </Button>
+                </Link>
+                <Link to="/register">
+                  <Button size="sm">
+                    Sign Up
+                  </Button>
+                </Link>
+              </div>
+            )}
           </div>
 
           <div className="md:hidden">
@@ -248,6 +303,34 @@ const Navbar = () => {
                   </div>
                 </AccordionContent>
               </AccordionItem>
+
+              {user && (
+                <AccordionItem value="account" className="border-b-0">
+                  <AccordionTrigger className="py-2 text-primary hover:text-primary transition-colors">
+                    My Account
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="pl-4 space-y-2">
+                      <div className="text-xs text-gray-500 py-1">
+                        {user.email}
+                      </div>
+                      <Link 
+                        to="/member-dashboard" 
+                        className="block text-gray-600 hover:text-primary transition-colors py-1"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Dashboard
+                      </Link>
+                      <button 
+                        onClick={handleSignOut}
+                        className="block w-full text-left text-red-600 hover:text-red-700 transition-colors py-1"
+                      >
+                        Sign Out
+                      </button>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              )}
             </Accordion>
             
             <div className="flex flex-col space-y-3">
@@ -263,6 +346,18 @@ const Navbar = () => {
               <Link to="/about" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>
                 About
               </Link>
+
+              {/* Mobile auth buttons */}
+              {!user && (
+                <div className="flex flex-col space-y-2 pt-2 border-t">
+                  <Link to="/login" className="w-full" onClick={() => setIsMobileMenuOpen(false)}>
+                    <Button variant="outline" className="w-full">Log In</Button>
+                  </Link>
+                  <Link to="/register" className="w-full" onClick={() => setIsMobileMenuOpen(false)}>
+                    <Button className="w-full">Sign Up</Button>
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         )}
