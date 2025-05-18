@@ -11,6 +11,12 @@ interface BookingHistoryProps {
   userEmail: string;
 }
 
+interface BookingResponse {
+  status: string;
+  results?: any[] | any;
+  error?: string;
+}
+
 export default function BookingHistory({ userEmail }: BookingHistoryProps) {
   const { rcmApi } = useRcmApi();
   const [bookings, setBookings] = useState<any[]>([]);
@@ -30,7 +36,7 @@ export default function BookingHistory({ userEmail }: BookingHistoryProps) {
         const response = await rcmApi.request('POST', 'getbookingsbyemail', {
           method: 'getbookingsbyemail',
           email: userEmail
-        });
+        }) as BookingResponse;
         
         console.log('Booking history response:', response);
         
