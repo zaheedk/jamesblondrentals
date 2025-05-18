@@ -10,15 +10,35 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.error('Missing Supabase environment variables. Please check your project settings and .env file.');
 }
 
-// Create a dummy client when credentials are not available
+// Check if URL is valid before creating client
+const isValidUrl = (urlString: string): boolean => {
+  try {
+    return Boolean(urlString && new URL(urlString));
+  } catch (e) {
+    return false;
+  }
+};
+
+// Create a dummy client when credentials are not available or valid
 let supabaseClient;
 
-if (supabaseUrl && supabaseAnonKey) {
+if (supabaseUrl && supabaseAnonKey && isValidUrl(supabaseUrl)) {
   // Only initialize the client if we have valid credentials
-  supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+  try {
+    supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+    console.info('Supabase client initialized successfully');
+  } catch (error) {
+    console.error('Failed to initialize Supabase client:', error);
+    supabaseClient = createMockClient();
+  }
 } else {
-  // Create a mock client to prevent runtime errors
-  supabaseClient = {
+  console.warn('Invalid Supabase configuration, using mock client');
+  supabaseClient = createMockClient();
+}
+
+// Create a mock client to prevent runtime errors
+function createMockClient() {
+  return {
     auth: {
       getSession: () => Promise.resolve({ data: { session: null } }),
       signInWithPassword: () => Promise.resolve({ error: new Error('Supabase not configured') }),
@@ -35,5 +55,5 @@ export const supabase = supabaseClient;
 
 // Export a helper function to check if Supabase is properly configured
 export const isSupabaseConfigured = () => {
-  return Boolean(supabaseUrl && supabaseAnonKey);
+  return Boolean(supabaseUrl && supabaseAnonKey && isValidUrl(supabaseUrl));
 };

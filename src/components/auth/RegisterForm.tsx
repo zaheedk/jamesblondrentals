@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -23,7 +24,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, Wifi, WifiOff } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 const formSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -38,11 +40,29 @@ type FormValues = z.infer<typeof formSchema>;
 
 export default function RegisterForm() {
   const { signUp, isSupabaseReady } = useAuth();
+  const { toast } = useToast();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [networkStatus, setNetworkStatus] = useState<'online' | 'offline' | 'unknown'>('unknown');
+
+  // Check network status on load and update on changes
+  useState(() => {
+    const updateNetworkStatus = () => {
+      setNetworkStatus(navigator.onLine ? 'online' : 'offline');
+    };
+    
+    updateNetworkStatus();
+    window.addEventListener('online', updateNetworkStatus);
+    window.addEventListener('offline', updateNetworkStatus);
+    
+    return () => {
+      window.removeEventListener('online', updateNetworkStatus);
+      window.removeEventListener('offline', updateNetworkStatus);
+    };
+  });
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -58,6 +78,16 @@ export default function RegisterForm() {
       setIsSubmitting(true);
       setErrorMessage(null);
 
+      if (networkStatus === 'offline') {
+        setErrorMessage('You are currently offline. Please check your internet connection and try again.');
+        toast({
+          title: "Network Error",
+          description: "You appear to be offline. Please check your connection.",
+          variant: "destructive"
+        });
+        return;
+      }
+
       if (!isSupabaseReady) {
         setErrorMessage('Authentication service is not properly configured. Please try again later.');
         return;
@@ -67,6 +97,15 @@ export default function RegisterForm() {
       
       if (error) {
         setErrorMessage(message || error.message);
+        
+        // Show toast for network errors to make them more visible
+        if (error.message.includes('fetch') || error.message.includes('network')) {
+          toast({
+            title: "Connection Error",
+            description: "Unable to reach our servers. Please check your connection.",
+            variant: "destructive"
+          });
+        }
         return;
       }
       
@@ -101,6 +140,15 @@ export default function RegisterForm() {
           <Alert className="mb-4">
             <AlertDescription className="text-amber-800">
               Authentication service is currently unavailable. Your registration may not work at this time.
+            </AlertDescription>
+          </Alert>
+        )}
+        
+        {networkStatus === 'offline' && (
+          <Alert variant="destructive" className="mb-4">
+            <WifiOff className="h-4 w-4 mr-2" />
+            <AlertDescription>
+              You appear to be offline. Please check your internet connection.
             </AlertDescription>
           </Alert>
         )}
@@ -196,7 +244,7 @@ export default function RegisterForm() {
             <Button 
               type="submit" 
               className="w-full" 
-              disabled={isSubmitting || !isSupabaseReady}
+              disabled={isSubmitting || !isSupabaseReady || networkStatus === 'offline'}
             >
               {isSubmitting ? "Registering..." : "Register"}
             </Button>
