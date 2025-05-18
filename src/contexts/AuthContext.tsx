@@ -7,7 +7,7 @@ type AuthContextType = {
   user: User | null;
   loading: boolean;
   signOut: () => Promise<void>;
-  signUp: (email: string, password: string) => Promise<{ error: Error | null }>;
+  signUp: (email: string, password: string) => Promise<{ error: Error | null; message?: string }>;
   isSupabaseReady: boolean;
 };
 
@@ -64,7 +64,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signUp = async (email: string, password: string) => {
     if (!isSupabaseReady) {
       console.error('Supabase is not configured');
-      return { error: new Error('Supabase is not configured') };
+      return { 
+        error: new Error('Supabase is not configured. Please check your environment variables.'),
+        message: 'Authentication service is not available. Please try again later or contact support.'
+      };
     }
 
     try {
@@ -73,10 +76,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         password,
       });
       
-      return { error: error };
+      if (error) {
+        console.error('Supabase signup error:', error);
+        return { 
+          error,
+          message: error.message || 'Registration failed. Please try again.'
+        };
+      }
+
+      return { 
+        error: null,
+        message: 'Registration successful! Please check your email to verify your account.'
+      };
     } catch (error) {
       console.error('Error during sign up:', error);
-      return { error: error instanceof Error ? error : new Error('Unknown error during sign up') };
+      // Handle network errors separately
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        return { 
+          error: error instanceof Error ? error : new Error('Network error'),
+          message: 'Unable to connect to authentication service. Please check your internet connection and try again.'
+        };
+      }
+      return { 
+        error: error instanceof Error ? error : new Error('Unknown error during sign up'),
+        message: 'Registration failed due to a technical issue. Please try again later.'
+      };
     }
   };
 

@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -55,7 +54,7 @@ export default function LoginForm() {
 
   const onSubmit = async (data: FormValues) => {
     if (!isSupabaseConfigured()) {
-      setError('Supabase is not properly configured. Please check your environment variables.');
+      setError('Authentication service is not properly configured. Please try again later.');
       return;
     }
     
@@ -69,12 +68,27 @@ export default function LoginForm() {
       });
       
       if (error) {
-        setError(error.message);
+        if (error.message.includes('Invalid login')) {
+          setError('Invalid email or password. Please check your credentials and try again.');
+        } else {
+          setError(error.message);
+        }
         return;
       }
       
       // Redirect to the protected route or dashboard
       navigate(from, { replace: true });
+    } catch (err) {
+      console.error('Login error:', err);
+      
+      // Handle network errors specifically
+      if (err instanceof TypeError && err.message.includes('fetch')) {
+        setError('Unable to connect to authentication service. Please check your internet connection and try again.');
+      } else {
+        setError('An unexpected error occurred during login. Please try again.');
+      }
+      
+      console.info('API call failed.');
     } finally {
       setIsSubmitting(false);
     }
@@ -99,6 +113,14 @@ export default function LoginForm() {
           <Alert className="bg-green-50 border-green-200">
             <AlertDescription className="text-green-800">
               {message}
+            </AlertDescription>
+          </Alert>
+        )}
+        
+        {!isSupabaseConfigured() && (
+          <Alert>
+            <AlertDescription className="text-amber-800">
+              Authentication service is currently unavailable. Login may not work at this time.
             </AlertDescription>
           </Alert>
         )}
@@ -169,7 +191,7 @@ export default function LoginForm() {
             <Button 
               type="submit" 
               className="w-full" 
-              disabled={isSubmitting}
+              disabled={isSubmitting || !isSupabaseConfigured()}
             >
               {isSubmitting ? "Signing in..." : "Sign in"}
             </Button>

@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -7,6 +6,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   Card,
   CardContent,
@@ -37,11 +37,12 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export default function RegisterForm() {
-  const { signUp } = useAuth();
+  const { signUp, isSupabaseReady } = useAuth();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -55,14 +56,27 @@ export default function RegisterForm() {
   const onSubmit = async (data: FormValues) => {
     try {
       setIsSubmitting(true);
-      const { error } = await signUp(data.email, data.password);
-      if (!error) {
-        navigate('/login', { 
-          state: { 
-            message: 'Registration successful! Please check your email to verify your account before logging in.' 
-          } 
-        });
+      setErrorMessage(null);
+
+      if (!isSupabaseReady) {
+        setErrorMessage('Authentication service is not properly configured. Please try again later.');
+        return;
       }
+
+      const { error, message } = await signUp(data.email, data.password);
+      
+      if (error) {
+        setErrorMessage(message || error.message);
+        return;
+      }
+      
+      // Success case
+      navigate('/login', { 
+        state: { message } 
+      });
+    } catch (err) {
+      console.error('Registration error:', err);
+      setErrorMessage('An unexpected error occurred. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -77,6 +91,20 @@ export default function RegisterForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
+        {errorMessage && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertDescription>{errorMessage}</AlertDescription>
+          </Alert>
+        )}
+
+        {!isSupabaseReady && (
+          <Alert className="mb-4">
+            <AlertDescription className="text-amber-800">
+              Authentication service is currently unavailable. Your registration may not work at this time.
+            </AlertDescription>
+          </Alert>
+        )}
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
@@ -168,7 +196,7 @@ export default function RegisterForm() {
             <Button 
               type="submit" 
               className="w-full" 
-              disabled={isSubmitting}
+              disabled={isSubmitting || !isSupabaseReady}
             >
               {isSubmitting ? "Registering..." : "Register"}
             </Button>
