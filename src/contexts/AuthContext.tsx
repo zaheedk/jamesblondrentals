@@ -7,6 +7,7 @@ type AuthContextType = {
   user: User | null;
   loading: boolean;
   signOut: () => Promise<void>;
+  signUp: (email: string, password: string) => Promise<{ error: Error | null }>;
   isSupabaseReady: boolean;
 };
 
@@ -60,8 +61,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const signUp = async (email: string, password: string) => {
+    if (!isSupabaseReady) {
+      console.error('Supabase is not configured');
+      return { error: new Error('Supabase is not configured') };
+    }
+
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+      
+      return { error: error };
+    } catch (error) {
+      console.error('Error during sign up:', error);
+      return { error: error instanceof Error ? error : new Error('Unknown error during sign up') };
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, signOut, isSupabaseReady }}>
+    <AuthContext.Provider value={{ user, loading, signOut, signUp, isSupabaseReady }}>
       {children}
     </AuthContext.Provider>
   );
