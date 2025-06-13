@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -50,7 +51,7 @@ const Premium12SeatMinibusDetail = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-6">
-        <Link to="/fleet/minibuses" className="inline-flex items-center text-primary hover:underline">
+        <Link to="/fleet/minibus" className="inline-flex items-center text-primary hover:underline">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Minibuses
         </Link>

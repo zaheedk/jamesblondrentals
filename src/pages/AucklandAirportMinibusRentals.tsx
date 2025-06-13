@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Bus, MapPin, Phone, Mail, ArrowRight } from 'lucide-react';
@@ -118,7 +117,7 @@ const AucklandAirportMinibusRentals = () => {
                   <li>Perfect for executive airport transfers and VIP groups</li>
                 </ul>
                 <Button asChild>
-                  <Link to="/fleet/minibuses/premium-12-seat-minibus" className="w-full">
+                  <Link to="/fleet/minibus/premium-12-seat-minibus" className="w-full">
                     View Details
                   </Link>
                 </Button>
@@ -145,7 +144,7 @@ const AucklandAirportMinibusRentals = () => {
                   <li>Ideal for family airport transfers and tour groups</li>
                 </ul>
                 <Button asChild>
-                  <Link to="/fleet/minibuses/12-seat-minibus" className="w-full">
+                  <Link to="/fleet/minibus/12-seat-minibus" className="w-full">
                     View Details
                   </Link>
                 </Button>
@@ -176,7 +175,7 @@ const AucklandAirportMinibusRentals = () => {
                   <li>Perfect balance of space and maneuverability</li>
                 </ul>
                 <Button asChild>
-                  <Link to="/fleet/minibuses/10-seat-minibus" className="w-full">
+                  <Link to="/fleet/minibus/10-seat-minibus" className="w-full">
                     View Details
                   </Link>
                 </Button>
