@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useLocation } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -145,6 +146,40 @@ const Vehicles = () => {
         const feeAmount = mandatoryFee ? Number(mandatoryFee.totalfeeamount) : 0;
         const totalPrice = car.totalrateafterdiscount + feeAmount;
         
+        // Determine rate period and related data from seasonal rates
+        const firstRate = carRates[0];
+        let rateperiod: "hour" | "day" | undefined;
+        let numberofhours: number | undefined;
+        let ratesubtotal: number;
+        
+        if (firstRate) {
+          // If numberofhours exists in seasonal rate, it's hourly
+          if (firstRate.numberofhours && firstRate.numberofhours > 0) {
+            rateperiod = "hour";
+            numberofhours = firstRate.numberofhours;
+            ratesubtotal = firstRate.rateafterdiscount || car.totalrateafterdiscount;
+          } else if (firstRate.numberofdays && firstRate.numberofdays > 0) {
+            rateperiod = "day";
+            ratesubtotal = firstRate.rateafterdiscount || car.totalrateafterdiscount;
+          } else {
+            // Fallback to daily if no clear period
+            rateperiod = "day";
+            ratesubtotal = car.totalrateafterdiscount;
+          }
+        } else {
+          // No seasonal rate data, default to daily
+          rateperiod = "day";
+          ratesubtotal = car.totalrateafterdiscount;
+        }
+        
+        console.log(`Vehicle ${car.vehiclecategory} rate data:`, {
+          rateperiod,
+          numberofhours,
+          ratesubtotal,
+          firstRate,
+          totalDays: firstRate?.numberofdays
+        });
+        
         return {
           id: Number(car.vehiclecategoryid),
           make: car.vehiclecategory.split(' ')[0] || "Unknown",
@@ -169,9 +204,12 @@ const Vehicles = () => {
           description: [car.vehicledescription1, car.vehicledescription2, car.vehicledescription3]
             .filter(Boolean)
             .join(' '),
-          dailyRate: carRates.length > 0 ? carRates[0].dailyrateafterdiscount : 0,
-          totalDays: carRates.length > 0 ? carRates[0].numberofdays : 1,
-          discountAmount: car.totaldiscountamount
+          dailyRate: firstRate?.dailyrateafterdiscount || 0,
+          totalDays: firstRate?.numberofdays || 1,
+          discountAmount: car.totaldiscountamount,
+          numberofhours: numberofhours,
+          rateperiod: rateperiod,
+          ratesubtotal: ratesubtotal
         };
       });
       
