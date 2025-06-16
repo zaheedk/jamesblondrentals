@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Hero from "@/components/home/Hero";
@@ -78,10 +77,10 @@ const Index = () => {
                 </p>
                 <div className="mt-4">
                   <Button variant="outline" asChild size="sm" className="mr-2 mb-2">
-                    <Link to="/fleet/minibuses/10-seat-minibus">10-Seater Minivan</Link>
+                    <Link to="/fleet/minibus/10-seat-minibus">10-Seater Minivan</Link>
                   </Button>
                   <Button variant="outline" asChild size="sm" className="mb-2">
-                    <Link to="/fleet/minibuses/12-seat-minibus">12-Seater Minivan</Link>
+                    <Link to="/fleet/minibus/12-seat-minibus">12-Seater Minivan</Link>
                   </Button>
                 </div>
               </div>

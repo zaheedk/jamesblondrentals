@@ -84,7 +84,7 @@ const Navbar = () => {
                         UTEs
                       </Link>
                       <Link 
-                        to="/fleet/minibuses" 
+                        to="/fleet/minibus" 
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
                       >
                         Minibuses
@@ -253,7 +253,7 @@ const Navbar = () => {
                     <Link to="/fleet/utes" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
                       UTEs
                     </Link>
-                    <Link to="/fleet/minibuses" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
+                    <Link to="/fleet/minibus" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
                       Minibuses
                     </Link>
                     <Link to="/fleet/trailers" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>

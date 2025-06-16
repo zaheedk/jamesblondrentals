@@ -1,4 +1,3 @@
-
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { Truck, Car, CarFront, Bus, Caravan, Forklift } from "lucide-react";
 

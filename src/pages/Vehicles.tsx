@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useLocation } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -157,10 +156,10 @@ const Vehicles = () => {
           if (firstRate.numberofhours && firstRate.numberofhours > 0) {
             rateperiod = "hour";
             numberofhours = firstRate.numberofhours;
-            ratesubtotal = firstRate.rateafterdiscount || car.totalrateafterdiscount;
+            ratesubtotal = firstRate.dailyrateafterdiscount || car.totalrateafterdiscount;
           } else if (firstRate.numberofdays && firstRate.numberofdays > 0) {
             rateperiod = "day";
-            ratesubtotal = firstRate.rateafterdiscount || car.totalrateafterdiscount;
+            ratesubtotal = firstRate.dailyrateafterdiscount || car.totalrateafterdiscount;
           } else {
             // Fallback to daily if no clear period
             rateperiod = "day";
