@@ -151,7 +151,7 @@ const VehicleCard = ({
   const getRateDisplay = () => {
     const hours = getNumberOfHours();
     
-    // If we have hourly data from API and it's actually an hourly rate
+    // Only show hourly breakdown if we have explicit hourly data from API AND it's truly an hourly rate
     if (hours && hours > 0 && isHourlyRate()) {
       const hourlyRate = displayPrice / hours;
       return (
@@ -166,24 +166,10 @@ const VehicleCard = ({
       );
     }
     
-    // If we have rental duration data and totalDays
-    if (getRentalDuration() && vehicle.totalDays) {
-      // For hourly vehicles without explicit hourly data
-      if (isHourlyRate()) {
-        const calculatedHours = Math.round(vehicle.totalDays * 24);
-        const hourlyRate = totalRentalValue / calculatedHours;
-        return (
-          <div className="space-y-1">
-            <span className="block text-sm text-gray-600">
-              ${hourlyRate.toFixed(2)} per hour for {calculatedHours} {calculatedHours === 1 ? 'hour' : 'hours'}
-            </span>
-            <span className="block font-medium">
-              Total: ${totalRentalValue.toFixed(2)}
-            </span>
-          </div>
-        );
-      } else {
-        // For daily vehicles - show daily rate
+    // For all other cases, just show the total without breaking it down
+    if (vehicle.totalDays && vehicle.totalDays > 0) {
+      // Show daily breakdown for daily vehicles only
+      if (!isHourlyRate()) {
         const dailyRate = totalRentalValue / vehicle.totalDays;
         return (
           <div className="space-y-1">
@@ -194,6 +180,13 @@ const VehicleCard = ({
               Total: ${totalRentalValue.toFixed(2)}
             </span>
           </div>
+        );
+      } else {
+        // For hourly vehicles without explicit hour data, show just total
+        return (
+          <span className="block font-medium">
+            Total: ${totalRentalValue.toFixed(2)}
+          </span>
         );
       }
     }
