@@ -70,7 +70,9 @@ const VehicleCard = ({
     totalDays: vehicle.totalDays,
     finalDisplayPrice: displayPrice,
     totalRentalValue,
-    numberofhours: vehicle.numberofhours
+    numberofhours: vehicle.numberofhours,
+    rateperiod: vehicle.rateperiod,
+    ratesubtotal: vehicle.ratesubtotal
   });
   
   const isAvailable = (() => {
@@ -103,98 +105,62 @@ const VehicleCard = ({
     return undefined;
   };
   
-  // Determine if vehicle is charged hourly or daily
-  const isHourlyRate = () => {
-    // If numberofhours is available and greater than 0, use hourly rate
-    const hours = getNumberOfHours();
-    if (hours && hours > 0) {
-      return true;
-    }
-    
-    const name = `${vehicle.make} ${vehicle.model}`.toLowerCase();
-    
-    // Fallback to type-based detection
-    return (
-      name.includes('truck') || 
-      name.includes('box') || 
-      name.includes('tipper') || 
-      (name.includes('van') && !name.includes('premium')) ||
-      name.includes('jumbo')
-    );
-  };
-  
-  // Get the rental duration display (hours or days)
+  // Get the rental duration display based on rateperiod
   const getRentalDuration = () => {
-    // First check if we have explicit hourly data from API
-    const hours = getNumberOfHours();
-    
-    // If hours value is available from API, use it
-    if (hours && hours > 0) {
-      return `${hours} ${hours === 1 ? 'hour' : 'hours'}`;
+    if (vehicle.rateperiod === "hour") {
+      const hours = getNumberOfHours();
+      if (hours && hours > 0) {
+        return `${hours} ${hours === 1 ? 'hour' : 'hours'}`;
+      }
     }
     
-    // If no total days available, return null
-    if (!vehicle.totalDays) return null;
-    
-    // If we should use hourly rates without specific hours data
-    if (isHourlyRate()) {
-      // Convert days to hours for hourly vehicles
-      const calculatedHours = Math.round(vehicle.totalDays * 24);
-      return `${calculatedHours} ${calculatedHours === 1 ? 'hour' : 'hours'}`;
-    } else {
-      // For daily vehicles, display days
+    if (vehicle.rateperiod === "day" && vehicle.totalDays) {
       return `${vehicle.totalDays} ${vehicle.totalDays === 1 ? 'day' : 'days'}`;
     }
+    
+    return null;
   };
 
-  // Determine what rate information to display
+  // Determine what rate information to display based on rateperiod from API
   const getRateDisplay = () => {
-    const hours = getNumberOfHours();
+    const rateSubtotal = vehicle.ratesubtotal || displayPrice;
     
-    // Only show hourly breakdown if we have explicit hourly data from API AND it's truly an hourly rate
-    if (hours && hours > 0 && isHourlyRate()) {
-      const hourlyRate = displayPrice / hours;
+    // Use rateperiod from API response to determine display
+    if (vehicle.rateperiod === "hour") {
+      const hours = getNumberOfHours();
+      if (hours && hours > 0) {
+        const hourlyRate = rateSubtotal / hours;
+        return (
+          <div className="space-y-1">
+            <span className="block text-sm text-gray-600">
+              ${hourlyRate.toFixed(2)} per hour for {hours} {hours === 1 ? 'hour' : 'hours'}
+            </span>
+            <span className="block font-medium">
+              Total: ${rateSubtotal.toFixed(2)}
+            </span>
+          </div>
+        );
+      }
+    }
+    
+    if (vehicle.rateperiod === "day" && vehicle.totalDays && vehicle.totalDays > 0) {
+      const dailyRate = rateSubtotal / vehicle.totalDays;
       return (
         <div className="space-y-1">
           <span className="block text-sm text-gray-600">
-            ${hourlyRate.toFixed(2)} per hour for {hours} {hours === 1 ? 'hour' : 'hours'}
+            ${dailyRate.toFixed(2)} per day for {vehicle.totalDays} {vehicle.totalDays === 1 ? 'day' : 'days'}
           </span>
           <span className="block font-medium">
-            Total: ${displayPrice.toFixed(2)}
+            Total: ${rateSubtotal.toFixed(2)}
           </span>
         </div>
       );
     }
     
-    // For all other cases, just show the total without breaking it down
-    if (vehicle.totalDays && vehicle.totalDays > 0) {
-      // Show daily breakdown for daily vehicles only
-      if (!isHourlyRate()) {
-        const dailyRate = totalRentalValue / vehicle.totalDays;
-        return (
-          <div className="space-y-1">
-            <span className="block text-sm text-gray-600">
-              ${dailyRate.toFixed(2)} per day for {vehicle.totalDays} {vehicle.totalDays === 1 ? 'day' : 'days'}
-            </span>
-            <span className="block font-medium">
-              Total: ${totalRentalValue.toFixed(2)}
-            </span>
-          </div>
-        );
-      } else {
-        // For hourly vehicles without explicit hour data, show just total
-        return (
-          <span className="block font-medium">
-            Total: ${totalRentalValue.toFixed(2)}
-          </span>
-        );
-      }
-    }
-    
-    // For vehicles without specific duration info, show just the total
+    // Fallback for vehicles without specific rate period info
     return (
       <span className="block font-medium">
-        Total: ${displayPrice.toFixed(2)}
+        Total: ${rateSubtotal.toFixed(2)}
       </span>
     );
   };

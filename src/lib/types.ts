@@ -1,4 +1,5 @@
 
+
 export interface Vehicle {
   id: number;
   make: string;
@@ -22,6 +23,8 @@ export interface Vehicle {
   totalDays?: number;
   discountAmount?: number;
   numberofhours?: number | { _type: string; value: string }; // Updated to handle both number and object format
+  rateperiod?: "hour" | "day"; // New property to determine if rate is hourly or daily
+  ratesubtotal?: number; // New property for the rate subtotal from API
 }
 
 export type VehicleType = "economy" | "compact" | "midsize" | "suv" | "luxury" | "van" | "convertible";
@@ -35,3 +38,4 @@ export interface BookingDetails {
   extras?: string[];
   insuranceOption?: string;
 }
+
