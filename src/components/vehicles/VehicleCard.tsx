@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -57,6 +58,12 @@ const VehicleCard = ({
   const handleImageError = () => {
     console.log(`Image failed to load for vehicle: ${vehicle.make} ${vehicle.model}`);
     setImageError(true);
+  };
+
+  // Strip HTML tags from description
+  const stripHtmlTags = (html: string) => {
+    if (!html) return '';
+    return html.replace(/<[^>]*>/g, '');
   };
 
   const displayPrice = vehicle.dailyRate || 
@@ -200,8 +207,8 @@ const VehicleCard = ({
       </CardHeader>
       <CardContent className="py-2 flex-grow">
         <p className="text-sm text-gray-600 mb-3">
-          {vehicle.description?.substring(0, 120)}
-          {vehicle.description && vehicle.description.length > 120 ? '...' : ''}
+          {stripHtmlTags(vehicle.description)?.substring(0, 120)}
+          {vehicle.description && stripHtmlTags(vehicle.description).length > 120 ? '...' : ''}
         </p>
         <div className="grid grid-cols-2 gap-2 text-xs">
           {vehicle.features && (Array.isArray(vehicle.features) ? vehicle.features : [vehicle.features]).slice(0, 4).map((feature, index) => (
