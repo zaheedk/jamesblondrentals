@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -152,8 +151,8 @@ const VehicleCard = ({
   const getRateDisplay = () => {
     const hours = getNumberOfHours();
     
-    // If we have hourly data from API
-    if (hours && hours > 0) {
+    // If we have hourly data from API and it's actually an hourly rate
+    if (hours && hours > 0 && isHourlyRate()) {
       const hourlyRate = displayPrice / hours;
       return (
         <div className="space-y-1">
@@ -184,7 +183,7 @@ const VehicleCard = ({
           </div>
         );
       } else {
-        // For daily vehicles
+        // For daily vehicles - show daily rate
         const dailyRate = totalRentalValue / vehicle.totalDays;
         return (
           <div className="space-y-1">
@@ -199,8 +198,12 @@ const VehicleCard = ({
       }
     }
     
-    // For vehicles without specific duration info, return empty span instead of "Hourly rate" or "Daily rate"
-    return <span className="block"></span>;
+    // For vehicles without specific duration info, show just the total
+    return (
+      <span className="block font-medium">
+        Total: ${displayPrice.toFixed(2)}
+      </span>
+    );
   };
 
   return (
