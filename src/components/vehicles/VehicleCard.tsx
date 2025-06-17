@@ -91,6 +91,23 @@ const VehicleCard = ({
     return false;
   })();
 
+  // Get number of hours value
+  const getNumberOfHours = () => {
+    if (!vehicle.numberofhours) return null;
+    
+    if (typeof vehicle.numberofhours === 'number') {
+      return vehicle.numberofhours;
+    }
+    
+    if (typeof vehicle.numberofhours === 'object' && vehicle.numberofhours.value) {
+      return parseFloat(vehicle.numberofhours.value);
+    }
+    
+    return null;
+  };
+
+  const numberOfHours = getNumberOfHours();
+
   return (
     <Card className="overflow-hidden shadow-md h-full flex flex-col">
       <AspectRatio ratio={4/3} className="overflow-hidden bg-white">
@@ -118,6 +135,11 @@ const VehicleCard = ({
             <div className="font-bold text-lg">
               ${displayRate.toFixed(2)}
               {vehicle.rateperiod === "day" && <span className="text-sm font-normal text-gray-600 ml-1">per day</span>}
+              {vehicle.rateperiod === "hour" && numberOfHours && (
+                <span className="text-sm font-normal text-gray-600 ml-1">
+                  per hour ({numberOfHours} hours)
+                </span>
+              )}
             </div>
             <div className="text-sm text-primary mt-1">
               <span className="block font-medium">
