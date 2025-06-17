@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -70,6 +71,12 @@ const Navbar = () => {
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
                       >
                         Vans
+                      </Link>
+                      <Link 
+                        to="/fleet/cargo-vans" 
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
+                      >
+                        Cargo Vans
                       </Link>
                       <Link 
                         to="/fleet/trucks" 
@@ -246,6 +253,9 @@ const Navbar = () => {
                     </Link>
                     <Link to="/fleet/vans" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
                       Vans
+                    </Link>
+                    <Link to="/fleet/cargo-vans" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
+                      Cargo Vans
                     </Link>
                     <Link to="/fleet/trucks" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
                       Trucks
