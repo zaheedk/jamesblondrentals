@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -137,7 +136,7 @@ const VehicleCard = ({
               {vehicle.rateperiod === "day" && <span className="text-sm font-normal text-gray-600 ml-1">per day</span>}
               {vehicle.rateperiod === "hour" && numberOfHours && (
                 <span className="text-sm font-normal text-gray-600 ml-1">
-                  per hour ({numberOfHours} hours)
+                  for ({numberOfHours} hours)
                 </span>
               )}
             </div>
