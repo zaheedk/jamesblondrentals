@@ -117,6 +117,7 @@ const VehicleCard = ({
           <div className="text-right">
             <div className="font-bold text-lg">
               ${displayRate.toFixed(2)}
+              {vehicle.rateperiod === "day" && <span className="text-sm font-normal text-gray-600 ml-1">per day</span>}
             </div>
             <div className="text-sm text-primary mt-1">
               <span className="block font-medium">
