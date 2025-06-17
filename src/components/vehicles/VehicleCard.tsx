@@ -66,20 +66,17 @@ const VehicleCard = ({
     return html.replace(/<[^>]*>/g, '');
   };
 
-  const displayPrice = vehicle.dailyRate || 
-    (typeof vehicle.price === 'string' ? parseFloat(vehicle.price) : vehicle.price);
+  // Use dailyRate (which comes from dailyrateafterdiscount) for the rate display
+  const displayRate = vehicle.dailyRate || 0;
   
-  const totalRentalValue = displayPrice * (vehicle.totalDays || 1);
+  // Use ratesubtotal for the total
+  const totalAmount = vehicle.ratesubtotal || 0;
   
   console.log(`Vehicle ${vehicle.make} ${vehicle.model} price calculation:`, {
     dailyRate: vehicle.dailyRate,
-    vehiclePrice: vehicle.price,
-    totalDays: vehicle.totalDays,
-    finalDisplayPrice: displayPrice,
-    totalRentalValue,
-    numberofhours: vehicle.numberofhours,
-    rateperiod: vehicle.rateperiod,
-    ratesubtotal: vehicle.ratesubtotal
+    ratesubtotal: vehicle.ratesubtotal,
+    displayRate,
+    totalAmount
   });
   
   const isAvailable = (() => {
@@ -93,84 +90,6 @@ const VehicleCard = ({
     }
     return false;
   })();
-  
-  // Extract hours from the numberofhours property correctly
-  const getNumberOfHours = (): number | undefined => {
-    if (typeof vehicle.numberofhours === 'number') {
-      return vehicle.numberofhours;
-    }
-    
-    if (vehicle.numberofhours && 
-        typeof vehicle.numberofhours === 'object' && 
-        'value' in vehicle.numberofhours) {
-      const value = vehicle.numberofhours.value;
-      if (value && value !== 'undefined' && !isNaN(Number(value))) {
-        return Number(value);
-      }
-    }
-    
-    return undefined;
-  };
-  
-  // Get the rental duration display based on rateperiod
-  const getRentalDuration = () => {
-    if (vehicle.rateperiod === "hour") {
-      const hours = getNumberOfHours();
-      if (hours && hours > 0) {
-        return `${hours} ${hours === 1 ? 'hour' : 'hours'}`;
-      }
-    }
-    
-    if (vehicle.rateperiod === "day" && vehicle.totalDays) {
-      return `${vehicle.totalDays} ${vehicle.totalDays === 1 ? 'day' : 'days'}`;
-    }
-    
-    return null;
-  };
-
-  // Determine what rate information to display based on rateperiod from API
-  const getRateDisplay = () => {
-    const rateSubtotal = vehicle.ratesubtotal || displayPrice;
-    
-    // Use rateperiod from API response to determine display
-    if (vehicle.rateperiod === "hour") {
-      const hours = getNumberOfHours();
-      if (hours && hours > 0) {
-        const hourlyRate = rateSubtotal / hours;
-        return (
-          <div className="space-y-1">
-            <span className="block text-sm text-gray-600">
-              ${hourlyRate.toFixed(2)} per hour for {hours} {hours === 1 ? 'hour' : 'hours'}
-            </span>
-            <span className="block font-medium">
-              Total: ${rateSubtotal.toFixed(2)}
-            </span>
-          </div>
-        );
-      }
-    }
-    
-    if (vehicle.rateperiod === "day" && vehicle.totalDays && vehicle.totalDays > 0) {
-      const dailyRate = rateSubtotal / vehicle.totalDays;
-      return (
-        <div className="space-y-1">
-          <span className="block text-sm text-gray-600">
-            ${dailyRate.toFixed(2)} per day for {vehicle.totalDays} {vehicle.totalDays === 1 ? 'day' : 'days'}
-          </span>
-          <span className="block font-medium">
-            Total: ${rateSubtotal.toFixed(2)}
-          </span>
-        </div>
-      );
-    }
-    
-    // Fallback for vehicles without specific rate period info
-    return (
-      <span className="block font-medium">
-        Total: ${rateSubtotal.toFixed(2)}
-      </span>
-    );
-  };
 
   return (
     <Card className="overflow-hidden shadow-md h-full flex flex-col">
@@ -197,10 +116,12 @@ const VehicleCard = ({
           </div>
           <div className="text-right">
             <div className="font-bold text-lg">
-              ${typeof displayPrice === 'number' ? displayPrice.toFixed(2) : '0.00'}
+              ${displayRate.toFixed(2)}
             </div>
             <div className="text-sm text-primary mt-1">
-              {getRateDisplay()}
+              <span className="block font-medium">
+                Total: ${totalAmount.toFixed(2)}
+              </span>
             </div>
           </div>
         </div>
@@ -233,7 +154,7 @@ const VehicleCard = ({
             dropoffTime={searchParams.get("dropoffTime") || ""}
             ageId={searchParams.get("age") || ""}
             vehicleImageUrl={imageUrl}
-            totalRateAfterDiscount={displayPrice}
+            totalRateAfterDiscount={displayRate}
             totalDiscountAmount={totalDiscountAmount}
           />
         ) : (
