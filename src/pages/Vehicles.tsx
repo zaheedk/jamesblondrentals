@@ -14,6 +14,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle, ChevronDown, ChevronUp } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
+import DebugApiResponse from "@/components/diagnostics/DebugApiResponse";
 
 interface RcmVehicleWithPricing {
   vehicle: RCMAvailableCar;
@@ -374,6 +375,23 @@ const Vehicles = () => {
                 </p>
               )}
             </div>
+            
+            <div className="flex gap-2">
+              <Button
+                variant={activeTab === "results" ? "default" : "outline"}
+                onClick={() => setActiveTab("results")}
+                size="sm"
+              >
+                Results
+              </Button>
+              <Button
+                variant={activeTab === "debug" ? "default" : "outline"}
+                onClick={() => setActiveTab("debug")}
+                size="sm"
+              >
+                Debug API
+              </Button>
+            </div>
           </div>
 
           {hasApiError && !hasAttemptedRefresh && (
@@ -400,111 +418,132 @@ const Vehicles = () => {
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col lg:flex-row gap-8">
-          <aside className="lg:w-1/4 space-y-6">
-            <Collapsible open={filtersOpen} onOpenChange={setFiltersOpen}>
-              <div className="flex items-center justify-between">
-                <h2 className="font-bold text-lg mb-4">Filters</h2>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setFiltersOpen(!filtersOpen)}
-                  className="lg:hidden flex items-center gap-1"
-                >
-                  {filtersOpen ? (
-                    <>Hide Filters <ChevronUp className="h-4 w-4" /></>
-                  ) : (
-                    <>Show Filters <ChevronDown className="h-4 w-4" /></>
-                  )}
-                </Button>
-              </div>
-              <CollapsibleContent className={isMobile ? "" : "!block"}>
-                <Card className="p-4">
-                  <div className="space-y-6">
-                    <div className="space-y-4">
-                      <Label className="text-base font-bold">Vehicle Types</Label>
-                      <div className="grid grid-cols-2 gap-4">
-                        {uniqueVehicleCategoryTypes.map((categoryType) => (
-                          <div key={categoryType.id} className="flex items-center space-x-2">
-                            <Checkbox
-                              id={`type-${categoryType.id}`}
-                              checked={selectedVehicleTypes.includes(categoryType.id)}
-                              onCheckedChange={(checked) => {
-                                setSelectedVehicleTypes(prev => {
-                                  if (checked) {
-                                    return [...prev, categoryType.id];
-                                  }
-                                  return prev.filter(id => id !== categoryType.id);
-                                });
-                              }}
-                            />
-                            <Label
-                              htmlFor={`type-${categoryType.id}`}
-                              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                            >
-                              {categoryType.name}
-                            </Label>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div>
-                      <Label className="text-base font-bold">Price Range (total)</Label>
-                      <div className="mt-4">
-                        <div className="flex justify-between mb-2">
-                          <span className="text-sm">${priceRange[0]}</span>
-                          <span className="text-sm">${priceRange[1]}</span>
-                        </div>
-                        <Slider
-                          value={priceRange}
-                          min={0}
-                          max={maxPriceAvailable}
-                          step={10}
-                          minStepsBetweenThumbs={1}
-                          className="mt-2"
-                          onValueChange={(values: [number, number]) => {
-                            const newValues: [number, number] = [
-                              values[0],
-                              Math.min(values[1], maxPriceAvailable)
-                            ];
-                            console.log("New price range:", newValues);
-                            setPriceRange(newValues);
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-              </CollapsibleContent>
-            </Collapsible>
-          </aside>
-          <div className="lg:w-3/4">
-            {isLoading || isLoadingAges || isLoadingStep2 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="rounded-lg shadow animate-pulse bg-gray-200 h-80"></div>
-                ))}
-              </div>
-            ) : filteredVehicles.length === 0 ? (
-              <div className="text-center py-12">
-                <h3 className="text-xl font-semibold mb-2">No vehicles match your criteria</h3>
-                <p className="text-gray-600">Try adjusting your filters to find more options</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-                {filteredVehicles.map((vehicle) => (
-                  <VehicleCard 
-                    key={vehicle.id} 
-                    vehicle={vehicle} 
-                    totalRateAfterDiscount={typeof vehicle.price === 'number' ? vehicle.price : parseFloat(vehicle.price)}
-                    totalDiscountAmount={vehicle.discountAmount}
-                  />
-                ))}
-              </div>
-            )}
+        {activeTab === "debug" && (
+          <div className="space-y-6 mb-8">
+            <DebugApiResponse 
+              title="RCM Step2 Response Data"
+              data={step2Data}
+            />
+            
+            <DebugApiResponse 
+              title="Search Parameters"
+              data={step2Params}
+            />
+            
+            <DebugApiResponse 
+              title="Mapped Vehicles Data"
+              data={vehicles}
+            />
           </div>
-        </div>
+        )}
+
+        {activeTab === "results" && (
+          <div className="flex flex-col lg:flex-row gap-8">
+            <aside className="lg:w-1/4 space-y-6">
+              <Collapsible open={filtersOpen} onOpenChange={setFiltersOpen}>
+                <div className="flex items-center justify-between">
+                  <h2 className="font-bold text-lg mb-4">Filters</h2>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setFiltersOpen(!filtersOpen)}
+                    className="lg:hidden flex items-center gap-1"
+                  >
+                    {filtersOpen ? (
+                      <>Hide Filters <ChevronUp className="h-4 w-4" /></>
+                    ) : (
+                      <>Show Filters <ChevronDown className="h-4 w-4" /></>
+                    )}
+                  </Button>
+                </div>
+                <CollapsibleContent className={isMobile ? "" : "!block"}>
+                  <Card className="p-4">
+                    <div className="space-y-6">
+                      <div className="space-y-4">
+                        <Label className="text-base font-bold">Vehicle Types</Label>
+                        <div className="grid grid-cols-2 gap-4">
+                          {uniqueVehicleCategoryTypes.map((categoryType) => (
+                            <div key={categoryType.id} className="flex items-center space-x-2">
+                              <Checkbox
+                                id={`type-${categoryType.id}`}
+                                checked={selectedVehicleTypes.includes(categoryType.id)}
+                                onCheckedChange={(checked) => {
+                                  setSelectedVehicleTypes(prev => {
+                                    if (checked) {
+                                      return [...prev, categoryType.id];
+                                    }
+                                    return prev.filter(id => id !== categoryType.id);
+                                  });
+                                }}
+                              />
+                              <Label
+                                htmlFor={`type-${categoryType.id}`}
+                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                              >
+                                {categoryType.name}
+                              </Label>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div>
+                        <Label className="text-base font-bold">Price Range (total)</Label>
+                        <div className="mt-4">
+                          <div className="flex justify-between mb-2">
+                            <span className="text-sm">${priceRange[0]}</span>
+                            <span className="text-sm">${priceRange[1]}</span>
+                          </div>
+                          <Slider
+                            value={priceRange}
+                            min={0}
+                            max={maxPriceAvailable}
+                            step={10}
+                            minStepsBetweenThumbs={1}
+                            className="mt-2"
+                            onValueChange={(values: [number, number]) => {
+                              const newValues: [number, number] = [
+                                values[0],
+                                Math.min(values[1], maxPriceAvailable)
+                              ];
+                              console.log("New price range:", newValues);
+                              setPriceRange(newValues);
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                </CollapsibleContent>
+              </Collapsible>
+            </aside>
+            <div className="lg:w-3/4">
+              {isLoading || isLoadingAges || isLoadingStep2 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="rounded-lg shadow animate-pulse bg-gray-200 h-80"></div>
+                  ))}
+                </div>
+              ) : filteredVehicles.length === 0 ? (
+                <div className="text-center py-12">
+                  <h3 className="text-xl font-semibold mb-2">No vehicles match your criteria</h3>
+                  <p className="text-gray-600">Try adjusting your filters to find more options</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+                  {filteredVehicles.map((vehicle) => (
+                    <VehicleCard 
+                      key={vehicle.id} 
+                      vehicle={vehicle} 
+                      totalRateAfterDiscount={typeof vehicle.price === 'number' ? vehicle.price : parseFloat(vehicle.price)}
+                      totalDiscountAmount={vehicle.discountAmount}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </main>
   );
