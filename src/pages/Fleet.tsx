@@ -1,9 +1,10 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
-import { Truck, Car, CarFront, Bus, Caravan, Forklift } from "lucide-react";
+import { Truck, Car, CarFront, Bus, Caravan, Forklift, Package } from "lucide-react";
 
 const fleetLinks = [
   { name: "Cars", path: "/fleet/cars", icon: Car },
   { name: "Vans", path: "/fleet/vans", icon: Truck },
+  { name: "Cargo Vans", path: "/fleet/cargo-vans", icon: Package },
   { name: "UTEs", path: "/fleet/utes", icon: CarFront },
   { name: "Trucks", path: "/fleet/trucks", icon: Truck },
   { name: "Minibuses", path: "/fleet/minibus", icon: Bus },

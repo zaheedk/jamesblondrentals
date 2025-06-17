@@ -101,6 +101,8 @@ import VanDetail from "./pages/VanDetail";
 
 import SingleCabUteDieselDetail from "./pages/SingleCabUteDieselDetail";
 
+import FleetCargoVans from "@/pages/FleetCargoVans";
+
 const App = () => {
   const [queryClient] = useState(() => new QueryClient());
 
@@ -197,6 +199,8 @@ const App = () => {
                   <Route path="accessories/hand-trolley" element={<HandTrolleyDetail />} />
                   <Route path="accessories/large-hand-trolley" element={<LargeHandTrolleyDetail />} />
                 </Route>
+                
+                <Route path="/fleet/cargo-vans" element={<FleetCargoVans />} />
                 
                 <Route path="/airport" element={<Airport />} />
                 <Route path="/airport/shuttle" element={<AirportShuttle />} />
