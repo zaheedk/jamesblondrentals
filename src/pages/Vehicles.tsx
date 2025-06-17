@@ -157,17 +157,26 @@ const Vehicles = () => {
           if (firstRate.numberofhours && firstRate.numberofhours > 0) {
             rateperiod = "hour";
             numberofhours = firstRate.numberofhours;
-            ratesubtotal = firstRate.dailyrateafterdiscount || car.totalrateafterdiscount;
           } else if (firstRate.numberofdays && firstRate.numberofdays > 0) {
             rateperiod = "day";
-            ratesubtotal = firstRate.dailyrateafterdiscount || car.totalrateafterdiscount;
           } else {
             // Fallback to daily if no clear period
             rateperiod = "day";
-            ratesubtotal = car.totalrateafterdiscount;
+          }
+          
+          // Use the actual ratesubtotal if available, otherwise calculate it
+          if (firstRate.ratesubtotal !== undefined) {
+            ratesubtotal = firstRate.ratesubtotal;
+          } else {
+            // Calculate ratesubtotal based on daily rate and number of days/hours
+            if (rateperiod === "hour" && numberofhours) {
+              ratesubtotal = firstRate.dailyrateafterdiscount * numberofhours;
+            } else {
+              ratesubtotal = firstRate.dailyrateafterdiscount * (firstRate.numberofdays || 1);
+            }
           }
         } else {
-          // No seasonal rate data, default to daily
+          // No seasonal rate data, fallback to car data
           rateperiod = "day";
           ratesubtotal = car.totalrateafterdiscount;
         }
