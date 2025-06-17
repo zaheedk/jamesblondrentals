@@ -1,4 +1,3 @@
-
 // RCM API type definitions
 
 export interface RCMVehicle {
@@ -99,6 +98,7 @@ export interface RCMSeasonalRate {
   numberofdays: number;
   numberofhours: number;
   rateperiod: string;
+  ratesubtotal?: number;
 }
 
 export interface RCMLocationFee {
