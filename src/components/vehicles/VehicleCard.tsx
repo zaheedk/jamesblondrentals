@@ -59,16 +59,12 @@ const VehicleCard = ({
     setImageError(true);
   };
 
-  // Strip HTML tags from description
   const stripHtmlTags = (html: string) => {
     if (!html) return '';
     return html.replace(/<[^>]*>/g, '');
   };
 
-  // Use dailyRate (which comes from dailyrateafterdiscount) for the rate display
   const displayRate = vehicle.dailyRate || 0;
-  
-  // Use ratesubtotal for the total
   const totalAmount = vehicle.ratesubtotal || 0;
   
   console.log(`Vehicle ${vehicle.make} ${vehicle.model} price calculation:`, {
@@ -90,7 +86,6 @@ const VehicleCard = ({
     return false;
   })();
 
-  // Get number of hours value
   const getNumberOfHours = () => {
     if (!vehicle.numberofhours) return null;
     
