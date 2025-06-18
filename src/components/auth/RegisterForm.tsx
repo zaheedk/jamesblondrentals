@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -49,7 +49,7 @@ export default function RegisterForm() {
   const [networkStatus, setNetworkStatus] = useState<'online' | 'offline' | 'unknown'>('unknown');
 
   // Check network status on load and update on changes
-  useState(() => {
+  useEffect(() => {
     const updateNetworkStatus = () => {
       setNetworkStatus(navigator.onLine ? 'online' : 'offline');
     };
@@ -62,7 +62,7 @@ export default function RegisterForm() {
       window.removeEventListener('online', updateNetworkStatus);
       window.removeEventListener('offline', updateNetworkStatus);
     };
-  });
+  }, []);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
