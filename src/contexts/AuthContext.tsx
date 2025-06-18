@@ -1,6 +1,7 @@
+
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase-client';
-import type { User } from '@supabase/supabase-js';
+import type { User, AuthError } from '@supabase/supabase-js';
 import { useToast } from "@/hooks/use-toast";
 
 type AuthContextType = {
@@ -13,6 +14,20 @@ type AuthContextType = {
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+// Helper function to get error messages
+const getErrorMessage = (error: AuthError): string => {
+  if (error.message.includes('User already registered')) {
+    return 'An account with this email already exists. Please try logging in instead.';
+  }
+  if (error.message.includes('Invalid email')) {
+    return 'Please enter a valid email address.';
+  }
+  if (error.message.includes('Password should be at least')) {
+    return 'Password must be at least 6 characters long.';
+  }
+  return error.message || 'An error occurred during registration.';
+};
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -122,7 +137,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       if (!isSupabaseReady) {
         return { 
-          error: { message: 'Authentication service not available' } as AuthError,
+          error: new Error('Authentication service not available'),
           message: 'Authentication service is not properly configured. Please try again later.'
         };
       }
@@ -160,7 +175,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (err) {
       console.error('Signup error:', err);
       return { 
-        error: { message: 'An unexpected error occurred' } as AuthError,
+        error: new Error('An unexpected error occurred'),
         message: 'An unexpected error occurred during registration. Please try again.'
       };
     }
