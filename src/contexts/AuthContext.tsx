@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase-client';
 import type { User, AuthError } from '@supabase/supabase-js';
@@ -10,6 +9,7 @@ type AuthContextType = {
   signOut: () => Promise<void>;
   signUp: (email: string, password: string) => Promise<{ error: Error | null; message?: string }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null; message?: string }>;
+  signInWithProvider: (provider: 'google' | 'facebook' | 'azure') => Promise<{ error: Error | null }>;
   isSupabaseReady: boolean;
 };
 
@@ -75,6 +75,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(null);
     } catch (error) {
       console.error('Error signing out:', error);
+    }
+  };
+
+  const signInWithProvider = async (provider: 'google' | 'facebook' | 'azure') => {
+    if (!isSupabaseReady) {
+      return { error: new Error('Supabase is not configured') };
+    }
+
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: provider,
+        options: {
+          redirectTo: `${window.location.origin}/`
+        }
+      });
+      
+      return { error };
+    } catch (error) {
+      console.error('Error during social sign in:', error);
+      return { 
+        error: error instanceof Error ? error : new Error('Unknown error during social sign in')
+      };
     }
   };
 
@@ -226,7 +248,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signOut, signUp, signIn, isSupabaseReady }}>
+    <AuthContext.Provider value={{ user, loading, signOut, signUp, signIn, signInWithProvider, isSupabaseReady }}>
       {children}
     </AuthContext.Provider>
   );
