@@ -29,6 +29,22 @@ const getErrorMessage = (error: AuthError): string => {
   return error.message || 'An error occurred during registration.';
 };
 
+// Helper function to get the correct redirect URL
+const getRedirectUrl = (): string => {
+  // Check if we're in a Lovable preview environment
+  if (window.location.hostname.includes('lovable.app')) {
+    return window.location.origin;
+  }
+  
+  // Check if we're in development
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return window.location.origin;
+  }
+  
+  // For production deployments, use the current origin
+  return window.location.origin;
+};
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -84,10 +100,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     try {
+      const redirectUrl = getRedirectUrl();
+      console.log(`Using redirect URL for ${provider} login:`, redirectUrl);
+
       const { error } = await supabase.auth.signInWithOAuth({
         provider: provider,
         options: {
-          redirectTo: `${window.location.origin}/`
+          redirectTo: redirectUrl
         }
       });
       
@@ -186,11 +205,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       console.log('Calling Supabase signUp...');
+      const redirectUrl = getRedirectUrl();
+      console.log('Using redirect URL for signup:', redirectUrl);
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: window.location.origin + '/login'
+          emailRedirectTo: `${redirectUrl}/login`
         }
       });
 
