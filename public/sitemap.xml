@@ -1,3 +1,4 @@
+
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- Main Pages -->
@@ -41,6 +42,37 @@
     <priority>0.9</priority>
     <changefreq>daily</changefreq>
   </url>
+
+  <!-- Auth Pages -->
+  <url>
+    <loc>https://jamesblond.co.nz/login</loc>
+    <priority>0.6</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/register</loc>
+    <priority>0.6</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/forgot-password</loc>
+    <priority>0.4</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/reset-password</loc>
+    <priority>0.4</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+
+  <!-- Member Pages -->
+  <url>
+    <loc>https://jamesblond.co.nz/member-dashboard</loc>
+    <priority>0.7</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+
+  <!-- Location-specific Rental Pages -->
   <url>
     <loc>https://jamesblond.co.nz/auckland-truck-rentals-hire</loc>
     <priority>0.9</priority>
@@ -170,6 +202,11 @@
     <changefreq>monthly</changefreq>
   </url>
   <url>
+    <loc>https://jamesblond.co.nz/fleet/cargo-vans</loc>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
     <loc>https://jamesblond.co.nz/fleet/utes</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
@@ -180,7 +217,7 @@
     <changefreq>monthly</changefreq>
   </url>
   <url>
-    <loc>https://jamesblond.co.nz/fleet/minibuses</loc>
+    <loc>https://jamesblond.co.nz/fleet/minibus</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
   </url>
@@ -191,6 +228,11 @@
   </url>
   <url>
     <loc>https://jamesblond.co.nz/fleet/accessories</loc>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/furniture-truck</loc>
     <priority>0.7</priority>
     <changefreq>monthly</changefreq>
   </url>
@@ -409,5 +451,17 @@
     <loc>https://jamesblond.co.nz/payment-success</loc>
     <priority>0.6</priority>
     <changefreq>monthly</changefreq>
+  </url>
+
+  <!-- Vehicle Detail Pages -->
+  <url>
+    <loc>https://jamesblond.co.nz/vehicle-detail</loc>
+    <priority>0.7</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/van-detail</loc>
+    <priority>0.7</priority>
+    <changefreq>weekly</changefreq>
   </url>
 </urlset>
