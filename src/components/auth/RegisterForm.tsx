@@ -24,7 +24,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Eye, EyeOff, Mail, Lock, Wifi, WifiOff } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, Wifi, WifiOff, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const formSchema = z.object({
@@ -104,11 +104,11 @@ export default function RegisterForm() {
         console.error('SignUp returned error:', error);
         setErrorMessage(message || error.message);
         
-        // Show toast for network errors to make them more visible
-        if (error.message.includes('fetch') || error.message.includes('network')) {
+        // Show toast for connection errors to make them more visible
+        if (error.message.includes('fetch') || error.message.includes('connect') || message?.includes('connection')) {
           toast({
             title: "Connection Error",
-            description: "Unable to reach our servers. Please check your connection.",
+            description: "Unable to reach our authentication servers. Please check your connection and try again.",
             variant: "destructive"
           });
         }
@@ -128,6 +128,8 @@ export default function RegisterForm() {
     }
   };
 
+  const isConnectionError = errorMessage?.includes('connection') || errorMessage?.includes('connect') || errorMessage?.includes('fetch');
+
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
@@ -139,7 +141,21 @@ export default function RegisterForm() {
       <CardContent>
         {errorMessage && (
           <Alert variant="destructive" className="mb-4">
-            <AlertDescription>{errorMessage}</AlertDescription>
+            {isConnectionError && <AlertCircle className="h-4 w-4" />}
+            <AlertDescription>
+              {isConnectionError ? (
+                <div>
+                  <strong>Connection Problem:</strong><br />
+                  {errorMessage}
+                  <br />
+                  <small className="text-xs mt-1 block">
+                    Please check your internet connection and try again. If the problem persists, the service may be temporarily unavailable.
+                  </small>
+                </div>
+              ) : (
+                errorMessage
+              )}
+            </AlertDescription>
           </Alert>
         )}
 

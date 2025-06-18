@@ -145,6 +145,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         };
       }
 
+      // Test connectivity before attempting signup
+      console.log('Testing Supabase connectivity...');
+      try {
+        const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/rest/v1/`, {
+          method: 'HEAD',
+          headers: {
+            'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY
+          }
+        });
+        console.log('Connectivity test response status:', response.status);
+      } catch (connectivityError) {
+        console.error('Connectivity test failed:', connectivityError);
+        return {
+          error: new Error('Connection failed'),
+          message: 'Unable to connect to authentication service. Please check your internet connection and try again.'
+        };
+      }
+
       console.log('Calling Supabase signUp...');
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -156,6 +174,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (error) {
         console.error('Supabase signup error:', error);
+        
+        // Handle specific network-related errors
+        if (error.message.includes('Failed to fetch') || error.message.includes('fetch')) {
+          return {
+            error,
+            message: 'Unable to connect to authentication service. Please check your internet connection and try again.'
+          };
+        }
+        
         return { 
           error,
           message: getErrorMessage(error)
@@ -182,6 +209,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       };
     } catch (err) {
       console.error('Unexpected signup error:', err);
+      
+      // Handle network errors at the catch level too
+      if (err instanceof TypeError && err.message.includes('fetch')) {
+        return {
+          error: err,
+          message: 'Unable to connect to authentication service. Please check your internet connection and try again.'
+        };
+      }
+      
       return { 
         error: new Error('An unexpected error occurred'),
         message: 'An unexpected error occurred during registration. Please try again.'
