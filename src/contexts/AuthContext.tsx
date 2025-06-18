@@ -134,14 +134,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signUp = async (email: string, password: string) => {
+    console.log('Starting signup process for:', email);
+    
     try {
       if (!isSupabaseReady) {
+        console.error('Supabase not ready');
         return { 
           error: new Error('Authentication service not available'),
           message: 'Authentication service is not properly configured. Please try again later.'
         };
       }
 
+      console.log('Calling Supabase signUp...');
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -151,29 +155,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
 
       if (error) {
+        console.error('Supabase signup error:', error);
         return { 
           error,
           message: getErrorMessage(error)
         };
       }
 
-      // Send welcome email after successful signup
+      console.log('Signup successful, attempting to send welcome email...');
+      
+      // Send welcome email after successful signup - but don't fail signup if email fails
       try {
         const { useEmail } = await import('@/hooks/use-email');
         const { sendSignupWelcomeEmail } = useEmail();
         await sendSignupWelcomeEmail(email);
         console.log('Welcome email sent successfully');
       } catch (emailError) {
-        console.error('Failed to send welcome email:', emailError);
-        // Don't fail the signup process if email fails
+        console.error('Failed to send welcome email (but signup was successful):', emailError);
+        // Continue with successful signup even if email fails
       }
 
+      console.log('Signup process completed successfully');
       return { 
         error: null,
-        message: 'Registration successful! Please check your email to verify your account, and welcome to James Blond Car Rentals!'
+        message: 'Registration successful! Please check your email to verify your account.'
       };
     } catch (err) {
-      console.error('Signup error:', err);
+      console.error('Unexpected signup error:', err);
       return { 
         error: new Error('An unexpected error occurred'),
         message: 'An unexpected error occurred during registration. Please try again.'

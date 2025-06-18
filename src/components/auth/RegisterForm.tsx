@@ -46,7 +46,7 @@ export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [networkStatus, setNetworkStatus] = useState<'online' | 'offline' | 'unknown'>('unknown');
+  const [networkStatus, setNetworkStatus] = useState<'online' | 'offline' | 'unknown'>('online');
 
   // Check network status on load and update on changes
   useEffect(() => {
@@ -74,12 +74,15 @@ export default function RegisterForm() {
   });
 
   const onSubmit = async (data: FormValues) => {
+    console.log('Form submitted with data:', { email: data.email, passwordLength: data.password.length });
+    
     try {
       setIsSubmitting(true);
       setErrorMessage(null);
 
       if (networkStatus === 'offline') {
-        setErrorMessage('You are currently offline. Please check your internet connection and try again.');
+        const message = 'You are currently offline. Please check your internet connection and try again.';
+        setErrorMessage(message);
         toast({
           title: "Network Error",
           description: "You appear to be offline. Please check your connection.",
@@ -89,13 +92,16 @@ export default function RegisterForm() {
       }
 
       if (!isSupabaseReady) {
-        setErrorMessage('Authentication service is not properly configured. Please try again later.');
+        const message = 'Authentication service is not properly configured. Please try again later.';
+        setErrorMessage(message);
         return;
       }
 
+      console.log('Calling signUp function...');
       const { error, message } = await signUp(data.email, data.password);
       
       if (error) {
+        console.error('SignUp returned error:', error);
         setErrorMessage(message || error.message);
         
         // Show toast for network errors to make them more visible
@@ -110,11 +116,12 @@ export default function RegisterForm() {
       }
       
       // Success case
+      console.log('Signup successful, navigating to login...');
       navigate('/login', { 
         state: { message } 
       });
     } catch (err) {
-      console.error('Registration error:', err);
+      console.error('Registration error in form:', err);
       setErrorMessage('An unexpected error occurred. Please try again.');
     } finally {
       setIsSubmitting(false);
