@@ -1,3 +1,4 @@
+
 import { useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { rcmApi } from '@/lib/api/rcm-api';
@@ -335,7 +336,49 @@ export function useRcmApi() {
       },
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['availableVehicles'] });
+        queryClient.invalidateQueries({ queryKey: ['userBookings'] });
       },
+    });
+  };
+
+  const useFindBookings = (userEmail: string | null) => {
+    return useQuery({
+      queryKey: ['userBookings', userEmail],
+      queryFn: async () => {
+        if (!userEmail) return [];
+        
+        try {
+          console.log('Finding bookings for email:', userEmail);
+          
+          const response = await rcmApi.request('POST', 'findbooking', {
+            method: 'findbooking',
+            email: userEmail
+          });
+          
+          const typedResponse = response as { status: string, results?: any, error?: string };
+          
+          if (typedResponse.status === "OK") {
+            console.log('Bookings found:', typedResponse);
+            // Handle both array and single object responses
+            const results = typedResponse.results;
+            return Array.isArray(results) ? results : (results ? [results] : []);
+          } else {
+            console.log('No bookings found or error:', typedResponse.error);
+            return [];
+          }
+        } catch (error) {
+          console.error('Failed to find bookings:', error);
+          toast.error('API Connection Error', {
+            description: 'Failed to fetch booking history.'
+          });
+          throw error;
+        }
+      },
+      enabled: !!userEmail,
+      retry: API_RETRY_CONFIG.retries,
+      retryDelay: API_RETRY_CONFIG.retryDelay,
+      staleTime: 1000 * 60 * 2, // Cache for 2 minutes
+      refetchOnWindowFocus: false,
     });
   };
 
@@ -388,6 +431,7 @@ export function useRcmApi() {
     useLocationDetails,
     useStep2Vehicles,
     useStep3Details,
+    useFindBookings,
     useBookingDetails
   };
 }
