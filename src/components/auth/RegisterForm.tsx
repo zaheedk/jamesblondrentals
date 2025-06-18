@@ -75,22 +75,59 @@ export default function RegisterForm() {
 
   const handleSocialLogin = async (provider: 'google' | 'facebook') => {
     try {
+      console.log(`Starting ${provider} login...`);
       setIsSubmitting(true);
       setErrorMessage(null);
 
+      if (!isSupabaseReady) {
+        const message = 'Authentication service is not properly configured.';
+        console.error(message);
+        setErrorMessage(message);
+        toast({
+          title: "Configuration Error",
+          description: message,
+          variant: "destructive"
+        });
+        return;
+      }
+
+      console.log(`Calling signInWithProvider for ${provider}...`);
       const { error } = await signInWithProvider(provider);
       
       if (error) {
-        setErrorMessage(`Failed to sign in with ${provider}. Please try again.`);
+        console.error(`${provider} login error:`, error);
+        
+        let errorMsg = `Failed to sign in with ${provider}.`;
+        
+        // Provide specific error messages for common issues
+        if (error.message.includes('OAuth')) {
+          errorMsg = `${provider} authentication is not properly configured. Please check the OAuth settings.`;
+        } else if (error.message.includes('redirect')) {
+          errorMsg = `Redirect URL mismatch. Please check the ${provider} OAuth configuration.`;
+        } else if (error.message.includes('client_id')) {
+          errorMsg = `${provider} Client ID is missing or invalid.`;
+        } else if (error.message.includes('unauthorized')) {
+          errorMsg = `Unauthorized ${provider} request. Please check the OAuth configuration.`;
+        }
+        
+        setErrorMessage(errorMsg);
         toast({
           title: "Social Login Error",
-          description: `Unable to sign in with ${provider}. Please try again.`,
+          description: errorMsg,
           variant: "destructive"
         });
+      } else {
+        console.log(`${provider} login successful, should redirect...`);
       }
     } catch (err) {
-      console.error('Social login error:', err);
-      setErrorMessage(`An error occurred during ${provider} login.`);
+      console.error(`Social login error for ${provider}:`, err);
+      const message = `An unexpected error occurred during ${provider} login.`;
+      setErrorMessage(message);
+      toast({
+        title: "Login Error",
+        description: message,
+        variant: "destructive"
+      });
     } finally {
       setIsSubmitting(false);
     }
