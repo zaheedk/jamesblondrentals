@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase-client';
 import type { User } from '@supabase/supabase-js';
@@ -120,52 +119,49 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signUp = async (email: string, password: string) => {
-    if (!isSupabaseReady) {
-      console.error('Supabase is not configured');
-      return { 
-        error: new Error('Supabase is not configured. Please check your environment variables.'),
-        message: 'Authentication service is not available. Please try again later or contact support.'
-      };
-    }
-
     try {
-      const { error } = await supabase.auth.signUp({
+      if (!isSupabaseReady) {
+        return { 
+          error: { message: 'Authentication service not available' } as AuthError,
+          message: 'Authentication service is not properly configured. Please try again later.'
+        };
+      }
+
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          emailRedirectTo: window.location.origin + '/login'
+        }
       });
-      
+
       if (error) {
-        console.error('Supabase signup error:', error);
         return { 
           error,
-          message: error.message || 'Registration failed. Please try again.'
+          message: getErrorMessage(error)
         };
+      }
+
+      // Send welcome email after successful signup
+      try {
+        const { useEmail } = await import('@/hooks/use-email');
+        const { sendSignupWelcomeEmail } = useEmail();
+        await sendSignupWelcomeEmail(email);
+        console.log('Welcome email sent successfully');
+      } catch (emailError) {
+        console.error('Failed to send welcome email:', emailError);
+        // Don't fail the signup process if email fails
       }
 
       return { 
         error: null,
-        message: 'Registration successful! Please check your email to verify your account.'
+        message: 'Registration successful! Please check your email to verify your account, and welcome to James Blond Car Rentals!'
       };
-    } catch (error) {
-      console.error('Error during sign up:', error);
-      
-      // Handle network errors separately
-      if (error instanceof TypeError && error.message.includes('fetch')) {
-        toast({
-          title: "Connection Error",
-          description: "Unable to reach authentication service. Please check your internet connection.",
-          variant: "destructive"
-        });
-        
-        return { 
-          error: error instanceof Error ? error : new Error('Network error'),
-          message: 'Unable to connect to authentication service. Please check your internet connection and try again.'
-        };
-      }
-      
+    } catch (err) {
+      console.error('Signup error:', err);
       return { 
-        error: error instanceof Error ? error : new Error('Unknown error during sign up'),
-        message: 'Registration failed due to a technical issue. Please try again later.'
+        error: { message: 'An unexpected error occurred' } as AuthError,
+        message: 'An unexpected error occurred during registration. Please try again.'
       };
     }
   };
