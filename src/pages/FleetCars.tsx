@@ -108,7 +108,11 @@ const FleetCars = () => (
               <img 
                 src={car.image} 
                 alt={`${car.title}`} 
-                className="w-full h-full object-cover rounded-t-lg"
+                className={`w-full h-full rounded-t-lg ${
+                  car.id === 'premium-economy-wagon' 
+                    ? 'object-contain bg-gray-50' 
+                    : 'object-cover'
+                }`}
                 loading="lazy"
                 width="400"
                 height="300"
