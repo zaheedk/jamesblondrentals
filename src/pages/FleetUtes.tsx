@@ -28,7 +28,7 @@ const utes = [
     subtitle: "Toyota Hilux 2.7L petrol",
     description: "Reliable single cab ute with generous deck space for various loads.",
     specs: [
-      "Automatic Transmission",
+      "Manual Transmission",
       "Deck: 2400(L) x 1800(W)",
       "Max Load: 1000kg",
       "Unlimited kilometres"
@@ -41,7 +41,7 @@ const utes = [
     subtitle: "Toyota Hilux 3.0L diesel turbo",
     description: "Powerful diesel ute perfect for heavy-duty work and towing.",
     specs: [
-      "Automatic Transmission",
+      "Manual Transmission",
       "Deck: 2400(L) x 1800(W)",
       "Max Load: 1000kg",
       "25c per km mileage charge",
