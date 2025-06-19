@@ -37,7 +37,7 @@ const cars = [
       "5 Seats",
       "Unlimited kilometres"
     ],
-    image: "/lovable-uploads/ca4fe6a5-97a6-4d6c-a675-a0ad2e3e4856.png"
+    image: "/lovable-uploads/9b8d1865-27f0-467a-a59e-aff51e626e79.png"
   },
   {
     id: "premium-compact-suv",
