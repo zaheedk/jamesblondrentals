@@ -64,14 +64,14 @@ const FleetUtes = () => (
       {utes.map((ute) => (
         <Card key={ute.id} className="flex flex-col h-full">
           {ute.image && (
-            <AspectRatio ratio={16/9} className="w-full">
+            <AspectRatio ratio={4/3} className="w-full">
               <img 
                 src={ute.image} 
                 alt={`${ute.title}`} 
                 className="w-full h-full object-cover rounded-t-lg"
                 loading="lazy"
                 width="400"
-                height="225"
+                height="300"
               />
             </AspectRatio>
           )}

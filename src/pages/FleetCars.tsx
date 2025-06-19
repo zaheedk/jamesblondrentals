@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -103,14 +104,14 @@ const FleetCars = () => (
       {cars.map((car) => (
         <Card key={car.id} className="flex flex-col h-full">
           {car.image && (
-            <AspectRatio ratio={16/9} className="w-full">
+            <AspectRatio ratio={4/3} className="w-full">
               <img 
                 src={car.image} 
                 alt={`${car.title}`} 
                 className="w-full h-full object-cover rounded-t-lg"
                 loading="lazy"
                 width="400"
-                height="225"
+                height="300"
               />
             </AspectRatio>
           )}
