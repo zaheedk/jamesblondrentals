@@ -26,6 +26,7 @@ import { cn } from "@/lib/utils";
 import { getBookingData, updateBookingData } from "@/lib/booking-session";
 import { toast } from "sonner";
 import { useRcmApi } from "@/hooks/use-rcm-api";
+import { useWhatsApp } from "@/hooks/use-whatsapp";
 
 const formSchema = z.object({
   firstName: z.string().min(2, {
@@ -59,6 +60,7 @@ const CustomerDetails = () => {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const bookingData = getBookingData();
   const { rcmApi } = useRcmApi();
+  const { sendBookingConfirmation } = useWhatsApp();
   
   React.useEffect(() => {
     if (!bookingData) {
@@ -169,6 +171,20 @@ const CustomerDetails = () => {
               ? `Reservation #: ${response.reservationRef}` 
               : "Proceeding to payment")
         });
+        
+        // Send WhatsApp notification
+        if (formData.phone) {
+          await sendBookingConfirmation({
+            customerName: `${formData.firstName} ${formData.lastName}`,
+            customerPhone: formData.phone,
+            vehicleName: bookingData.vehicleName || 'Vehicle',
+            pickupDate: bookingData.pickupDate,
+            dropoffDate: bookingData.dropoffDate,
+            pickupLocation: bookingData.pickupLocationName || 'Pickup Location',
+            bookingReference: response.reservationRef || response.results?.reservationref || 'TBC',
+            totalAmount: bookingData.totalcost || bookingData.basePrice || 0
+          });
+        }
         
         return response;
       } else {
