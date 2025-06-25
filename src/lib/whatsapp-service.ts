@@ -33,8 +33,8 @@ interface BookingDetails {
 
 class WhatsAppService {
   private baseUrl = 'https://graph.facebook.com/v18.0';
-  private phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID || '';
-  private accessToken = process.env.WHATSAPP_ACCESS_TOKEN || '';
+  private phoneNumberId = import.meta.env.VITE_WHATSAPP_PHONE_NUMBER_ID || '';
+  private accessToken = import.meta.env.VITE_WHATSAPP_ACCESS_TOKEN || '';
 
   async sendBookingConfirmation(bookingDetails: BookingDetails): Promise<boolean> {
     try {
