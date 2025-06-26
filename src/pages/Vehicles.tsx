@@ -14,6 +14,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle, ChevronDown, ChevronUp } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
+import DebugApiResponse from "@/components/diagnostics/DebugApiResponse";
 
 interface RcmVehicleWithPricing {
   vehicle: RCMAvailableCar;
@@ -407,6 +408,13 @@ const Vehicles = () => {
               </AlertDescription>
             </Alert>
           )}
+
+          {/* Debug API Response Section */}
+          <DebugApiResponse 
+            title="Step2 API Response" 
+            data={step2Data} 
+            className="mt-4"
+          />
         </div>
       </div>
 
