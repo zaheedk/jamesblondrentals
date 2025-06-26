@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useLocation } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -409,12 +410,17 @@ const Vehicles = () => {
             </Alert>
           )}
 
-          {/* Debug API Response Section */}
-          <DebugApiResponse 
-            title="Step2 API Response" 
-            data={step2Data} 
-            className="mt-4"
-          />
+          {/* Debug API Request and Response Section */}
+          <div className="mt-4 space-y-4">
+            <DebugApiResponse 
+              title="Step2 API Request Parameters" 
+              data={step2Params} 
+            />
+            <DebugApiResponse 
+              title="Step2 API Response" 
+              data={step2Data} 
+            />
+          </div>
         </div>
       </div>
 
