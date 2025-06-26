@@ -72,7 +72,8 @@ const Vehicles = () => {
     dropoffdate: dropoffDate,
     dropofftime: dropoffTime,
     ageid: getValidAgeId(),
-    vehiclecategorytypeid: carCategory
+    vehiclecategorytypeid: carCategory,
+    ...(promoCode && promoCode.trim() && { promocode: promoCode.trim() })
   } : null;
 
   const { data: step2Data, isLoading: isLoadingStep2, error: step2Error, refetch: refetchStep2 } = useStep2Vehicles(step2Params);
