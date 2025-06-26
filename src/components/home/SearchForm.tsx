@@ -350,7 +350,8 @@ const SearchForm = () => {
     
     const ageParam = age || getDefaultAgeId();
     
-    const searchParams = new URLSearchParams({
+    // Build search params object with proper promo code handling
+    const searchParamsObj: Record<string, string> = {
       pickupLocation,
       dropoffLocation: dropoffLocation || pickupLocation,
       pickupDate: formattedPickupDate,
@@ -358,9 +359,16 @@ const SearchForm = () => {
       pickupTime,
       dropoffTime,
       age: ageParam,
-      carCategory,
-      ...(promoCode && { promoCode })
-    });
+      carCategory
+    };
+
+    // Only add promo code if it's not empty
+    if (promoCode && promoCode.trim()) {
+      searchParamsObj.promoCode = promoCode.trim();
+      console.log("Including promo code in search:", promoCode.trim());
+    }
+    
+    const searchParams = new URLSearchParams(searchParamsObj);
     
     console.log("Navigating to vehicles with params:", searchParams.toString());
     navigate(`/vehicles?${searchParams.toString()}`);
