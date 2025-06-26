@@ -10,7 +10,7 @@ const Hero = () => {
   useEffect(() => {
     // Preload the hero image
     const img = new Image();
-    img.src = 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1200&q=75'; // Mountain landscape with sun rays
+    img.src = '/lovable-uploads/4ad5a491-5e67-476e-b755-398a1f12b6c7.png'; // Car with snow mountains
     img.onload = () => setImageLoaded(true);
   }, []);
 
@@ -19,7 +19,7 @@ const Hero = () => {
       <div 
         className={`absolute inset-0 bg-cover bg-center transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
         style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1200&q=75')`, // Mountain landscape with sun rays
+          backgroundImage: `url('/lovable-uploads/4ad5a491-5e67-476e-b755-398a1f12b6c7.png')`, // Car with snow mountains
           backgroundColor: '#1a365d', // Placeholder color while image loads
         }}
         aria-hidden="true"
