@@ -1,3 +1,4 @@
+
 interface WhatsAppMessage {
   messaging_product: 'whatsapp';
   to: string;
@@ -165,19 +166,41 @@ See you soon! 🌟`
   }
 
   formatPhoneNumber(phone: string): string {
+    if (!phone) {
+      console.warn('Empty phone number provided to formatPhoneNumber');
+      return '';
+    }
+
+    console.log('Formatting phone number:', phone);
+    
     // Remove all non-digits
     let cleaned = phone.replace(/\D/g, '');
+    console.log('Cleaned phone number:', cleaned);
     
-    // If it starts with 0, replace with country code (64 for NZ)
+    // Handle empty string after cleaning
+    if (!cleaned) {
+      console.warn('No digits found in phone number');
+      return '';
+    }
+    
+    // If it starts with 0, replace with NZ country code (64)
     if (cleaned.startsWith('0')) {
       cleaned = '64' + cleaned.substring(1);
+      console.log('Applied NZ country code for 0 prefix:', cleaned);
     }
     
-    // If it doesn't start with country code, add NZ country code
+    // If it doesn't start with 64 (NZ country code), add it
     if (!cleaned.startsWith('64')) {
       cleaned = '64' + cleaned;
+      console.log('Added NZ country code:', cleaned);
     }
     
+    // Ensure the number has a reasonable length (NZ mobile numbers are typically 11 digits with country code)
+    if (cleaned.length < 10 || cleaned.length > 15) {
+      console.warn('Phone number length seems invalid:', cleaned.length, 'digits');
+    }
+    
+    console.log('Final formatted phone number:', cleaned);
     return cleaned;
   }
 }
