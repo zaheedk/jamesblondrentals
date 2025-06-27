@@ -2,7 +2,7 @@
 import React from 'react';
 import Navbar from './Navbar';
 import Footer from './Footer';
-// import WhatsAppWidget from '@/components/support/WhatsAppWidget';
+import WhatsAppWidget from '@/components/support/WhatsAppWidget';
 
 const AppLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -12,7 +12,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
         {children}
       </main>
       <Footer />
-      {/* <WhatsAppWidget /> */}
+      <WhatsAppWidget />
     </div>
   );
 };
