@@ -36,13 +36,57 @@ class WhatsAppService {
   private phoneNumberId = import.meta.env.VITE_WHATSAPP_PHONE_NUMBER_ID || '';
   private accessToken = import.meta.env.VITE_WHATSAPP_ACCESS_TOKEN || '';
 
-  async sendBookingConfirmation(bookingDetails: BookingDetails): Promise<boolean> {
+  private async sendMessage(message: WhatsAppMessage): Promise<boolean> {
     try {
-      const message: WhatsAppMessage = {
-        to: bookingDetails.customerPhone,
-        type: 'text',
-        text: {
-          body: `🚗 *James Blond Car Rentals - Booking Confirmed*
+      console.log('Sending WhatsApp message:', {
+        phoneNumberId: this.phoneNumberId,
+        to: message.to,
+        messageType: message.type
+      });
+
+      if (!this.phoneNumberId || !this.accessToken) {
+        console.error('WhatsApp configuration missing:', {
+          hasPhoneNumberId: !!this.phoneNumberId,
+          hasAccessToken: !!this.accessToken
+        });
+        return false;
+      }
+
+      const url = `${this.baseUrl}/${this.phoneNumberId}/messages`;
+      console.log('WhatsApp API URL:', url);
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${this.accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(message),
+      });
+
+      const responseText = await response.text();
+      console.log('WhatsApp API response status:', response.status);
+      console.log('WhatsApp API response:', responseText);
+
+      if (!response.ok) {
+        console.error('WhatsApp API error:', responseText);
+        return false;
+      }
+
+      console.log('WhatsApp message sent successfully');
+      return true;
+    } catch (error) {
+      console.error('Error sending WhatsApp message:', error);
+      return false;
+    }
+  }
+
+  async sendBookingConfirmation(bookingDetails: BookingDetails): Promise<boolean> {
+    const message: WhatsAppMessage = {
+      to: bookingDetails.customerPhone,
+      type: 'text',
+      text: {
+        body: `🚗 *James Blond Car Rentals - Booking Confirmed*
 
 Hi ${bookingDetails.customerName}!
 
@@ -60,38 +104,18 @@ We'll send you pickup details closer to your rental date.
 Need help? Reply to this message or call 0800 525 663.
 
 Thank you for choosing James Blond Car Rentals! 🌟`
-        }
-      };
-
-      const response = await fetch(`${this.baseUrl}/${this.phoneNumberId}/messages`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${this.accessToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(message),
-      });
-
-      if (!response.ok) {
-        console.error('WhatsApp API error:', await response.text());
-        return false;
       }
+    };
 
-      console.log('WhatsApp booking confirmation sent successfully');
-      return true;
-    } catch (error) {
-      console.error('Error sending WhatsApp message:', error);
-      return false;
-    }
+    return this.sendMessage(message);
   }
 
   async sendPaymentConfirmation(customerPhone: string, customerName: string, amount: number, bookingRef: string): Promise<boolean> {
-    try {
-      const message: WhatsAppMessage = {
-        to: customerPhone,
-        type: 'text',
-        text: {
-          body: `💳 *Payment Confirmed - James Blond Car Rentals*
+    const message: WhatsAppMessage = {
+      to: customerPhone,
+      type: 'text',
+      text: {
+        body: `💳 *Payment Confirmed - James Blond Car Rentals*
 
 Hi ${customerName}!
 
@@ -104,32 +128,18 @@ Your payment has been successfully processed:
 Your rental is all set! We'll be in touch with pickup details soon.
 
 James Blond Car Rentals Team 🚗`
-        }
-      };
+      }
+    };
 
-      const response = await fetch(`${this.baseUrl}/${this.phoneNumberId}/messages`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${this.accessToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(message),
-      });
-
-      return response.ok;
-    } catch (error) {
-      console.error('Error sending payment confirmation:', error);
-      return false;
-    }
+    return this.sendMessage(message);
   }
 
   async sendPickupReminder(customerPhone: string, customerName: string, vehicleName: string, pickupDate: string, pickupLocation: string): Promise<boolean> {
-    try {
-      const message: WhatsAppMessage = {
-        to: customerPhone,
-        type: 'text',
-        text: {
-          body: `⏰ *Pickup Reminder - James Blond Car Rentals*
+    const message: WhatsAppMessage = {
+      to: customerPhone,
+      type: 'text',
+      text: {
+        body: `⏰ *Pickup Reminder - James Blond Car Rentals*
 
 Hi ${customerName}!
 
@@ -145,23 +155,10 @@ What to bring:
 • Booking confirmation
 
 See you soon! 🌟`
-        }
-      };
+      }
+    };
 
-      const response = await fetch(`${this.baseUrl}/${this.phoneNumberId}/messages`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${this.accessToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(message),
-      });
-
-      return response.ok;
-    } catch (error) {
-      console.error('Error sending pickup reminder:', error);
-      return false;
-    }
+    return this.sendMessage(message);
   }
 
   formatPhoneNumber(phone: string): string {
