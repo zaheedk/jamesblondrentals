@@ -1,4 +1,3 @@
-
 import React from "react";
 
 const faqData = [
@@ -14,9 +13,7 @@ const faqData = [
     question: "What are your hours?",
     answer: (
       <>
-        Monday–Friday: 7:00 am – 6:00 pm<br />
-        Saturday: 8:00 am – 5:00 pm<br />
-        Sunday & Public Holidays: 8:30 am – 5:00 pm<br />
+        Monday–Sunday: 8:00 am – 5:00 pm<br />
         <span className="text-xs block mt-1">(Last return is 15 minutes before closing.)</span>
       </>
     ),
