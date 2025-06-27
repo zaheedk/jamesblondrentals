@@ -122,7 +122,7 @@ const faqData = [
     question: "Do you provide one way hires?",
     answer: (
       <>
-        No, all vehicles must be collected and returned to our Auckland locations.
+        Yes, we do provide one way hires. Please select pickup and drop-off location on the booking page to see applicable one way fees.
       </>
     ),
   },
