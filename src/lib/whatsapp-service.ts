@@ -1,4 +1,3 @@
-
 interface WhatsAppMessage {
   messaging_product: 'whatsapp';
   to: string;
@@ -53,6 +52,12 @@ class WhatsAppService {
         return false;
       }
 
+      // Check if phone number is valid before sending
+      if (!message.to || message.to.trim() === '') {
+        console.error('Invalid or empty phone number provided:', message.to);
+        return false;
+      }
+
       const url = `${this.baseUrl}/${this.phoneNumberId}/messages`;
       console.log('WhatsApp API URL:', url);
 
@@ -83,9 +88,17 @@ class WhatsAppService {
   }
 
   async sendBookingConfirmation(bookingDetails: BookingDetails): Promise<boolean> {
+    // Format and validate phone number before creating message
+    const formattedPhone = this.formatPhoneNumber(bookingDetails.customerPhone);
+    
+    if (!formattedPhone) {
+      console.error('Cannot send WhatsApp: Invalid phone number', bookingDetails.customerPhone);
+      return false;
+    }
+
     const message: WhatsAppMessage = {
       messaging_product: 'whatsapp',
-      to: bookingDetails.customerPhone,
+      to: formattedPhone,
       type: 'text',
       text: {
         body: `🚗 *James Blond Car Rentals - Booking Confirmed*
@@ -113,9 +126,16 @@ Thank you for choosing James Blond Car Rentals! 🌟`
   }
 
   async sendPaymentConfirmation(customerPhone: string, customerName: string, amount: number, bookingRef: string): Promise<boolean> {
+    const formattedPhone = this.formatPhoneNumber(customerPhone);
+    
+    if (!formattedPhone) {
+      console.error('Cannot send WhatsApp payment confirmation: Invalid phone number', customerPhone);
+      return false;
+    }
+
     const message: WhatsAppMessage = {
       messaging_product: 'whatsapp',
-      to: customerPhone,
+      to: formattedPhone,
       type: 'text',
       text: {
         body: `💳 *Payment Confirmed - James Blond Car Rentals*
@@ -138,6 +158,13 @@ James Blond Car Rentals Team 🚗`
   }
 
   async sendPickupReminder(customerPhone: string, customerName: string, vehicleName: string, pickupDate: string, pickupLocation: string): Promise<boolean> {
+    const formattedPhone = this.formatPhoneNumber(customerPhone);
+    
+    if (!formattedPhone) {
+      console.error('Cannot send WhatsApp pickup reminder: Invalid phone number', customerPhone);
+      return false;
+    }
+
     const message: WhatsAppMessage = {
       messaging_product: 'whatsapp',
       to: customerPhone,

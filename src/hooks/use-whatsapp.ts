@@ -5,11 +5,17 @@ import { toast } from 'sonner';
 export const useWhatsApp = () => {
   const sendBookingConfirmation = async (bookingDetails: BookingDetails) => {
     try {
-      const formattedPhone = whatsAppService.formatPhoneNumber(bookingDetails.customerPhone);
-      const success = await whatsAppService.sendBookingConfirmation({
-        ...bookingDetails,
-        customerPhone: formattedPhone
-      });
+      // Check if phone number exists before attempting to send
+      if (!bookingDetails.customerPhone || bookingDetails.customerPhone.trim() === '') {
+        toast.error('Cannot send WhatsApp notification', {
+          description: 'Customer phone number is required'
+        });
+        return false;
+      }
+
+      console.log('Attempting to send WhatsApp with phone:', bookingDetails.customerPhone);
+      
+      const success = await whatsAppService.sendBookingConfirmation(bookingDetails);
 
       if (success) {
         toast.success('WhatsApp confirmation sent!', {
@@ -17,7 +23,7 @@ export const useWhatsApp = () => {
         });
       } else {
         toast.error('Failed to send WhatsApp notification', {
-          description: 'Booking confirmed but WhatsApp message failed'
+          description: 'Please check the customer phone number and try again'
         });
       }
 
@@ -31,8 +37,12 @@ export const useWhatsApp = () => {
 
   const sendPaymentConfirmation = async (customerPhone: string, customerName: string, amount: number, bookingRef: string) => {
     try {
-      const formattedPhone = whatsAppService.formatPhoneNumber(customerPhone);
-      const success = await whatsAppService.sendPaymentConfirmation(formattedPhone, customerName, amount, bookingRef);
+      if (!customerPhone || customerPhone.trim() === '') {
+        console.error('Cannot send payment confirmation: No phone number provided');
+        return false;
+      }
+
+      const success = await whatsAppService.sendPaymentConfirmation(customerPhone, customerName, amount, bookingRef);
 
       if (success) {
         toast.success('Payment confirmation sent via WhatsApp');
@@ -47,8 +57,12 @@ export const useWhatsApp = () => {
 
   const sendPickupReminder = async (customerPhone: string, customerName: string, vehicleName: string, pickupDate: string, pickupLocation: string) => {
     try {
-      const formattedPhone = whatsAppService.formatPhoneNumber(customerPhone);
-      const success = await whatsAppService.sendPickupReminder(formattedPhone, customerName, vehicleName, pickupDate, pickupLocation);
+      if (!customerPhone || customerPhone.trim() === '') {
+        console.error('Cannot send pickup reminder: No phone number provided');
+        return false;
+      }
+
+      const success = await whatsAppService.sendPickupReminder(customerPhone, customerName, vehicleName, pickupDate, pickupLocation);
 
       if (success) {
         toast.success('Pickup reminder sent via WhatsApp');
