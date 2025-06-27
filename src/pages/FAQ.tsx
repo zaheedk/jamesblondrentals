@@ -49,7 +49,7 @@ const faqData = [
     question: "Can I return after hours?",
     answer: (
       <>
-        Yes, after-hours return is available. Keys should be placed in the secure dropbox. The hirer remains responsible for the vehicle until it is checked in during business hours.
+        No, we do not offer after hours pickup and drop-off. All vehicles must be collected and returned during our business hours.
       </>
     ),
   },
