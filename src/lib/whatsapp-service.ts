@@ -1,5 +1,5 @@
-
 interface WhatsAppMessage {
+  messaging_product: 'whatsapp';
   to: string;
   type: 'template' | 'text';
   template?: {
@@ -83,6 +83,7 @@ class WhatsAppService {
 
   async sendBookingConfirmation(bookingDetails: BookingDetails): Promise<boolean> {
     const message: WhatsAppMessage = {
+      messaging_product: 'whatsapp',
       to: bookingDetails.customerPhone,
       type: 'text',
       text: {
@@ -112,6 +113,7 @@ Thank you for choosing James Blond Car Rentals! 🌟`
 
   async sendPaymentConfirmation(customerPhone: string, customerName: string, amount: number, bookingRef: string): Promise<boolean> {
     const message: WhatsAppMessage = {
+      messaging_product: 'whatsapp',
       to: customerPhone,
       type: 'text',
       text: {
@@ -136,6 +138,7 @@ James Blond Car Rentals Team 🚗`
 
   async sendPickupReminder(customerPhone: string, customerName: string, vehicleName: string, pickupDate: string, pickupLocation: string): Promise<boolean> {
     const message: WhatsAppMessage = {
+      messaging_product: 'whatsapp',
       to: customerPhone,
       type: 'text',
       text: {
