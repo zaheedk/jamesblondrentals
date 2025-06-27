@@ -1,4 +1,3 @@
-
 import React from "react";
 
 const faqData = [
@@ -41,8 +40,8 @@ const faqData = [
     question: "Is there a mileage (kilometre) limit?",
     answer: (
       <>
-        Nearly all hires include free 150km/day. Additional kilometres are charged at a set rate depending on the vehicle. <br />
-        Unused kilometres are not credited.
+        Cars and standard vans come with unlimited mileage. <br />
+        Commercial vehicles (trucks, trailers, etc.) have a mileage charge per kilometre.
       </>
     ),
   },
