@@ -80,7 +80,7 @@ const JumboVanDetail = () => {
           <CardContent className="p-6 flex flex-col items-center text-center">
             <Box className="h-12 w-12 text-primary mb-4" />
             <h3 className="text-xl font-semibold mb-2">Cargo Space</h3>
-            <p className="text-lg">3300(L) x 1600(W) x 1900(H)</p>
+            <p className="text-lg">3300(L) x 1600(W) x 1700(H)</p>
           </CardContent>
         </Card>
         
@@ -104,7 +104,7 @@ const JumboVanDetail = () => {
           <AccordionItem value="item-1">
             <AccordionTrigger>What are the key features of the Jumbo Diesel Van?</AccordionTrigger>
             <AccordionContent>
-              Our Jumbo Diesel Vans feature spacious cargo areas (3300L x 1600W x 1900H), twin side doors for easy access, 
+              Our Jumbo Diesel Vans feature spacious cargo areas (3300L x 1600W x 1700H), twin side doors for easy access, 
               air conditioning for comfort, and can carry loads up to 1350kg. They're perfect for moving large items or 
               commercial transportation needs.
             </AccordionContent>
