@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -96,7 +95,7 @@ const FleetCargoVans = () => {
                 commercial relocations, and transporting large volumes of goods.
               </p>
               <ul className="text-sm text-gray-600 mb-4 space-y-1">
-                <li>• Load space: 3400(L) x 1700(W) x 1900(H)</li>
+                <li>• Load space: 3400(L) x 1700(W) x 1700(H)</li>
                 <li>• Maximum cargo capacity</li>
                 <li>• Ideal for house moves</li>
                 <li>• Professional grade reliability</li>
