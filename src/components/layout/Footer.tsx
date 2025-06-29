@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Facebook, Instagram, Twitter } from "lucide-react";
 import { useLocation } from "react-router-dom";
@@ -60,6 +59,9 @@ const Footer = () => {
               </li>
               <li>
                 <Link to="/fleet" className="text-gray-300 hover:text-white transition-colors">Fleet</Link>
+              </li>
+              <li>
+                <Link to="/blog" className="text-gray-300 hover:text-white transition-colors">Blog</Link>
               </li>
               <li>
                 <Link to="/price-guide" className="text-gray-300 hover:text-white transition-colors">Price Guide</Link>
