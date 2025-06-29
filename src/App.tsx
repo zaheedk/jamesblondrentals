@@ -31,6 +31,10 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import MemberDashboard from "./pages/MemberDashboard";
 
+// Blog Pages
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
+
 import Fleet from "./pages/Fleet";
 import FleetCars from "./pages/FleetCars";
 import FleetVans from "./pages/FleetVans";
@@ -130,6 +134,10 @@ const App = () => {
                 <Route path="/terms" element={<Terms />} />
                 <Route path="/privacy" element={<Privacy />} />
                 
+                {/* Blog routes */}
+                <Route path="/blog" element={<Blog />} />
+                <Route path="/blog/:id" element={<BlogPost />} />
+                
                 {/* Auth routes */}
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
@@ -202,6 +210,7 @@ const App = () => {
                 
                 <Route path="/fleet/cargo-vans" element={<FleetCargoVans />} />
                 
+                {/* ... keep existing code (airport routes) */}
                 <Route path="/airport" element={<Airport />} />
                 <Route path="/airport/shuttle" element={<AirportShuttle />} />
                 <Route path="/airport/directions" element={<AirportDirections />} />
