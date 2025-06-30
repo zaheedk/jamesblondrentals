@@ -1,3 +1,4 @@
+
 import React from "react";
 
 const faqData = [
@@ -130,7 +131,7 @@ const faqData = [
     question: "Can I take the vehicle on a ferry?",
     answer: (
       <>
-        Yes, but the vehicle must be returned to Auckland. Hirer is responsible for all ferry costs and for returning on time.
+        Taking vehicles on ferry requires prior approval. Only approved vehicles will be allowed on ferries. The vehicle must be returned to Auckland. Hirer is responsible for all ferry costs and for returning on time.
       </>
     ),
   },
