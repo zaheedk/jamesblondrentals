@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -57,8 +56,8 @@ const BlogPost = () => {
           </div>
           
           <img 
-            src="/lovable-uploads/40c4c11d-0a27-40d6-9c5c-3fdbb1c138a0.png" 
-            alt="James Blond Rentals Fleet" 
+            src="/lovable-uploads/63a977ed-85a7-4257-80e5-1ccfea78c5f7.png" 
+            alt="Happy customers giving thumbs up in rental vehicle" 
             className="w-full h-64 object-cover rounded-lg mb-8"
           />
         </div>
