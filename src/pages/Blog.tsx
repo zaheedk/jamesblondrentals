@@ -7,6 +7,16 @@ import { Calendar, User, ArrowRight } from 'lucide-react';
 
 const blogPosts = [
   {
+    id: 'ultimate-guide-cargo-vans-choose-best-vehicle-move',
+    title: 'The Ultimate Guide to Cargo Vans: How to Choose the Best Vehicle for Your Move',
+    excerpt: 'Renting a cargo van for moving can be a game-changer. Here are some essential tips to simplify your rental experience and ensure a smooth journey.',
+    date: '2025-01-01',
+    author: 'James Blond Team',
+    category: 'Tips & Guides',
+    readTime: '8 min read',
+    image: '/lovable-uploads/4506c6fc-4eef-4997-a040-7482f1872bab.png'
+  },
+  {
     id: 'james-blond-best-west-auckland',
     title: 'FAQ: Why I Believe James Blond Rentals Is the Best in West Auckland 🚛',
     excerpt: 'Discover why James Blond Rentals stands out as the top choice for vehicle rentals in West Auckland, from their extensive fleet to exceptional customer service.',
@@ -14,7 +24,7 @@ const blogPosts = [
     author: 'James Blond Team',
     category: 'Reviews',
     readTime: '5 min read',
-    image: '/lovable-uploads/63a977ed-85a7-4257-80e5-1ccfea78c5f7.png'
+    image: '/lovable-uploads/4506c6fc-4eef-4997-a040-7482f1872bab.png'
   }
 ];
 
