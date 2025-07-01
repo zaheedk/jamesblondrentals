@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,7 +13,7 @@ const blogPosts = [
     author: 'James Blond Team',
     category: 'Tips & Guides',
     readTime: '18 min read',
-    image: '/placeholder.svg'
+    image: '/lovable-uploads/29911b24-b718-42a0-b756-26a3c845c5a0.png'
   },
   {
     id: 'top-10-tips-stress-free-move-moving-truck-experience',

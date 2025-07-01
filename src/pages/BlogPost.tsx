@@ -12,7 +12,7 @@ const blogPosts = {
     author: 'James Blond Team',
     category: 'Tips & Guides',
     readTime: '18 min read',
-    image: '/placeholder.svg',
+    image: '/lovable-uploads/29911b24-b718-42a0-b756-26a3c845c5a0.png',
     content: `
       <h2>Find the Right Box Truck to Meet Your Moving Requirements</h2>
       <p>Moving can be daunting, especially when selecting the right vehicle to transport your belongings. With many options available at James Blond, many wonder whether a box truck is better than other moving vehicles. This guide provides detailed information about box trucks, their benefits, and factors to consider in choosing the right size and features for a smooth, efficient move. It is designed to help both individuals and professional movers make informed decisions that reduce stress and keep moves efficient and safe.</p>
