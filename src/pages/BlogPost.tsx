@@ -12,7 +12,7 @@ const blogPosts = {
     author: 'James Blond Team',
     category: 'Tips & Guides',
     readTime: '15 min read',
-    image: '/placeholder.svg',
+    image: '/lovable-uploads/b689674c-7334-422d-a518-d5f288eace21.png',
     content: `
       <h2>Navigate Your Moving Truck Experience With These Practical Tips</h2>
       <p>Moving can be overwhelming if you are not properly prepared. According to James Blond, proper planning is essential to ensure a smooth move. This article provides expert advice on choosing, packing, and driving your moving truck—some tips even recommend leveraging strategies—to help you enjoy a smooth transition from one home to another. The practical tips and industry insights shared here will help you select the right truck, pack efficiently, plan your moving day, drive safely, save money, and handle unexpected challenges.</p>

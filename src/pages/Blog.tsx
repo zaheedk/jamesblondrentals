@@ -13,7 +13,7 @@ const blogPosts = [
     author: 'James Blond Team',
     category: 'Tips & Guides',
     readTime: '15 min read',
-    image: '/placeholder.svg'
+    image: '/lovable-uploads/b689674c-7334-422d-a518-d5f288eace21.png'
   },
   {
     id: 'why-mini-bus-ideal-family-adventure',
