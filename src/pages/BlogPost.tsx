@@ -12,7 +12,7 @@ const blogPosts = {
     author: 'James Blond Team',
     category: 'Tips & Guides',
     readTime: '20 min read',
-    image: '/lovable-uploads/45e25787-f858-4ba8-91c9-dff871af2b63.png',
+    image: '/lovable-uploads/09edf72b-b66c-427e-9744-80a1c1f29b52.png',
     content: `
       <h2>Furniture Truck vs. Traditional Moving Van: Which Is Right for You?</h2>
       <p>Moving furniture can be challenging, and choosing the right vehicle can make your move smoother. According to James Blond, it is important to assess your needs carefully. This article explains the differences between furniture trucks and traditional moving vans—covering sizes, capacity, and functionality—so you can select the best option for your moving needs.</p>

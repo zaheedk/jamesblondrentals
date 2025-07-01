@@ -13,7 +13,7 @@ const blogPosts = [
     author: 'James Blond Team',
     category: 'Tips & Guides',
     readTime: '20 min read',
-    image: '/lovable-uploads/45e25787-f858-4ba8-91c9-dff871af2b63.png'
+    image: '/lovable-uploads/09edf72b-b66c-427e-9744-80a1c1f29b52.png'
   },
   {
     id: 'essential-guide-box-trucks-choose-right-vehicle-move',
