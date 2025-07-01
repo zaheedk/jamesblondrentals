@@ -7,6 +7,15 @@ import { Calendar, User, ArrowRight } from 'lucide-react';
 
 const blogPosts = [
   {
+    id: 'why-mini-bus-ideal-family-adventure',
+    title: 'Why a Mini Bus Is Ideal for Your Next Family Adventure',
+    excerpt: 'Renting a mini bus for family trips has transformed our holidays! I enjoy stress-free travel, spacious comfort, and unforgettable memories on the road together.',
+    date: '2025-01-03',
+    author: 'James Blond Team',
+    category: 'Tips & Guides',
+    readTime: '12 min read'
+  },
+  {
     id: 'benefits-people-movers-home-moves-smart-choice',
     title: 'The Benefits of Using People Movers for Home Moves: Why They\'re the Smart Choice',
     excerpt: 'Examine the advantages of employing people movers for residential moves, focusing on convenience, efficiency, and cost-effectiveness.',
