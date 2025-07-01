@@ -6,6 +6,16 @@ import { Calendar, User, ArrowRight } from 'lucide-react';
 
 const blogPosts = [
   {
+    id: 'top-10-tips-stress-free-move-moving-truck-experience',
+    title: 'Top 10 Tips for a Stress-Free Move: Maximising Your Moving Truck Experience',
+    excerpt: 'Expert tips that cover everything from packing techniques to efficiently loading a moving truck, ensuring a smooth moving day.',
+    date: '2025-01-04',
+    author: 'James Blond Team',
+    category: 'Tips & Guides',
+    readTime: '15 min read',
+    image: '/placeholder.svg'
+  },
+  {
     id: 'why-mini-bus-ideal-family-adventure',
     title: 'Why a Mini Bus Is Ideal for Your Next Family Adventure',
     excerpt: 'Renting a mini bus for family trips has transformed our holidays! I enjoy stress-free travel, spacious comfort, and unforgettable memories on the road together.',
