@@ -7,6 +7,15 @@ import { Calendar, User, ArrowRight } from 'lucide-react';
 
 const blogPosts = [
   {
+    id: 'benefits-people-movers-home-moves-smart-choice',
+    title: 'The Benefits of Using People Movers for Home Moves: Why They\'re the Smart Choice',
+    excerpt: 'Examine the advantages of employing people movers for residential moves, focusing on convenience, efficiency, and cost-effectiveness.',
+    date: '2025-01-02',
+    author: 'James Blond Team',
+    category: 'Tips & Guides', 
+    readTime: '10 min read'
+  },
+  {
     id: 'ultimate-guide-cargo-vans-choose-best-vehicle-move',
     title: 'The Ultimate Guide to Cargo Vans: How to Choose the Best Vehicle for Your Move',
     excerpt: 'Renting a cargo van for moving can be a game-changer. Here are some essential tips to simplify your rental experience and ensure a smooth journey.',

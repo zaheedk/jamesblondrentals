@@ -4,6 +4,399 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowLeft, Calendar, User, Clock } from 'lucide-react';
 
+const BenefitsPeopleMoversHomeMove = () => (
+  <div className="container mx-auto px-4 py-8">
+    {/* Back Button */}
+    <Button variant="outline" asChild className="mb-8">
+      <Link to="/blog" className="flex items-center gap-2">
+        <ArrowLeft className="h-4 w-4" />
+        Back to Blog
+      </Link>
+    </Button>
+
+    {/* Article Header */}
+    <div className="max-w-4xl mx-auto">
+      <div className="mb-8">
+        <span className="bg-primary/10 text-primary px-3 py-1 rounded text-sm font-medium">
+          Tips & Guides
+        </span>
+        
+        <h1 className="text-4xl font-bold mt-4 mb-6">
+          The Benefits of Using People Movers for Home Moves: Why They're the Smart Choice
+        </h1>
+        
+        <div className="flex items-center gap-6 text-gray-600 mb-8">
+          <div className="flex items-center gap-2">
+            <User className="h-4 w-4" />
+            <span>James Blond Team</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Calendar className="h-4 w-4" />
+            <span>January 2, 2025</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Clock className="h-4 w-4" />
+            <span>10 min read</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Article Content */}
+      <div className="prose prose-lg max-w-none">
+        <div className="space-y-8">
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold mb-4">Optimize Your Home Move With People Movers Today</h2>
+              <p className="text-gray-700 leading-relaxed">
+                Moving can be overwhelming, especially for families juggling multiple responsibilities during a home transition. Having experienced both DIY moves and professional services, I can confirm, drawing on insights from James Blond, that hiring people movers saves time, reduces stress, and is cost-effective. This article outlines the benefits of hiring people movers, explains cost factors, and provides moving tips—all while showcasing a customised, transparent, and secure moving experience enhanced by James Blond.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold mb-4">What Are the Key Benefits of Hiring People Movers for Your Home Move?</h2>
+              <p className="text-gray-700 leading-relaxed">
+                People movers simplify your move by saving time and reducing stress through professional expertise and efficient handling of your belongings. Their organised process eliminates guesswork and delays common in DIY moves, allowing you to focus on settling into your new home.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold mb-4">How Do People Movers Save You Time During a Home Move?</h2>
+              <p className="text-gray-700 leading-relaxed">
+                People movers use systematic packing, loading, and transport techniques that shorten the moving process. With dedicated teams managing heavy items and delicate goods, tasks like disassembling furniture and protecting fragile items are completed swiftly and professionally.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold mb-4">In What Ways Do People Movers Reduce Moving Stress?</h2>
+              <p className="text-gray-700 leading-relaxed">
+                By handling the heavy lifting and logistics, people movers eliminate much of the physical and mental strain of moving. Their expertise in traffic, permits, and safety regulations ensures that items are carefully managed, letting you concentrate on personal priorities while they manage the move.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold mb-4">How Do People Movers Ensure the Safety and Protection of Your Belongings?</h2>
+              <p className="text-gray-700 leading-relaxed">
+                Using specialised equipment such as dollies, protective blankets, and custom crates, professional movers secure everything from large furniture to delicate heirlooms. With insurance policies in place, any rare damages are quickly resolved, giving you peace of mind throughout the move.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold mb-4">What Factors Affect the Cost of Using People Movers for Home Moves?</h2>
+              <p className="text-gray-700 leading-relaxed">
+                Moving costs depend on the distance, volume and weight of your items, and additional services provided. Although DIY moves might seem cheaper initially, hidden expenses like truck rentals, packing supplies, fuel, and potential injuries often make professional movers a more economical choice overall.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold mb-4">Which Elements Influence Moving Costs When Hiring People Movers?</h2>
+              <p className="text-gray-700 leading-relaxed">
+                Costs vary based on your home's size, the number and nature of items to be moved, and the manpower required. Additional factors include the time of year, travel distance, and services like packing, unpacking, or storage, all of which influence the overall quote.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold mb-4">How Does the Cost of People Movers Compare to DIY Moving Options?</h2>
+              <p className="text-gray-700 leading-relaxed">
+                While DIY moves incur costs for rentals, supplies, and potential injuries, people movers charge a predictable fee that bundles labour, transport, and insurance. This predictability and overall efficiency often lead to lower hidden costs and reduced risk of damage.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold mb-4">How Can You Get an Accurate Moving Quote From People Movers?</h2>
+              <p className="text-gray-700 leading-relaxed">
+                Requesting an in-home or virtual survey allows movers to assess the volume, special handling needs, and logistical challenges of your move. Comparing quotes from reputable companies helps ensure transparency and avoids unexpected fees on moving day.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold mb-4">What Are the Best Moving Tips for Families Using People Movers?</h2>
+              <p className="text-gray-700 leading-relaxed">
+                Even when using professional movers, preparation is key for a smooth move. Planning in advance, especially with children and busy schedules, can transform a chaotic move into an organised transition.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold mb-4">What Are Effective Packing Strategies for Families During a Move?</h2>
+              <p className="text-gray-700 leading-relaxed">
+                Create an inventory of your items, use high-quality packing materials, and label each box with its contents and destination. Packing an essentials box with clothing, toiletries, and important documents ensures that your family has what they need immediately upon arrival.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold mb-4">How Can Families Manage Moving With Children Smoothly?</h2>
+              <p className="text-gray-700 leading-relaxed">
+                Engage children by designating a special moving box filled with their favorite items. Keeping to regular meal and sleep routines on moving day helps reduce anxiety, and having a trusted adult supervise the kids ensures a safe and calm move.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold mb-4">Why Is Decluttering Important Before Using People Movers?</h2>
+              <p className="text-gray-700 leading-relaxed">
+                Sorting through your possessions ahead of time and donating or selling items you no longer need reduces moving costs and time. Decluttering streamlines packing and ensures that only essential items are handled carefully during the move.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold mb-4">How Do You Choose the Right People Mover for Your Home Move?</h2>
+              <p className="text-gray-700 leading-relaxed">
+                Selecting the ideal moving company is crucial for a stress-free move. Look for movers offering reliability, professionalism, and services tailored to your needs while maintaining transparent pricing and clear communication.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold mb-4">What Should You Look for When Selecting a Professional Moving Company?</h2>
+              <p className="text-gray-700 leading-relaxed">
+                Ensure the mover has certifications, proper insurance, and a strong track record of customer testimonials. Transparent pricing, clear service breakdowns, and reliable customer support are also essential for making a confident decision.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold mb-4">How Important Are Reviews and Reputation When Choosing People Movers?</h2>
+              <p className="text-gray-700 leading-relaxed">
+                Customer reviews provide insight into a mover's professionalism and reliability. Positive testimonials and word-of-mouth recommendations are strong indicators of a company's capability and trustworthiness.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold mb-4">What Specialized Services Can People Movers Offer for Families?</h2>
+              <p className="text-gray-700 leading-relaxed">
+                Many companies offer family-specific services like packing assistance, temporary storage, unpacking, and even child-friendly or senior moving options. Customised moving kits for delicate or valuable items further ease the stress of relocating.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold mb-4">How Do People Movers Provide Customized and Transparent Moving Solutions?</h2>
+              <p className="text-gray-700 leading-relaxed">
+                People movers tailor their services to meet your unique moving needs through detailed assessments and clear, upfront pricing. Their customised plans ensure that all aspects of your move are addressed without hidden fees.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold mb-4">How Do People Movers Tailor Moving Plans to Fit Your Needs and Budget?</h2>
+              <p className="text-gray-700 leading-relaxed">
+                Movers assess your belongings, special handling needs, and timeline to create a personalised plan that fits your budget. This careful planning avoids surprises and ties in with your specific requirements.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold mb-4">What Pricing Transparency Can You Expect From Professional Movers?</h2>
+              <p className="text-gray-700 leading-relaxed">
+                Reputable movers provide itemised estimates covering all aspects of the move—from labour and transport to packing materials. Written contracts with clear cost breakdowns enable better financial planning and prevent unexpected charges.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold mb-4">How Does Moving Insurance Protect Your Belongings During the Move?</h2>
+              <p className="text-gray-700 leading-relaxed">
+                Most movers offer options for full-value protection, ensuring compensation in case of damage or loss. This insurance reinforces the trust in their secure and professional handling of your valuables.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold mb-4">What Are the Latest Trends and Innovations in People Moving Services?</h2>
+              <p className="text-gray-700 leading-relaxed">
+                The moving industry is evolving with technology and sustainability. Modern advancements enhance the moving experience by making it more efficient, interactive, and eco-friendly.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold mb-4">How Is Technology Enhancing the People Moving Experience?</h2>
+              <p className="text-gray-700 leading-relaxed">
+                Mobile apps and online booking systems now allow for real-time tracking of your move, automated scheduling, and virtual surveys. These tools facilitate an integrated moving experience from start to finish.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold mb-4">Why Is Sustainability Becoming Important in Moving Services?</h2>
+              <p className="text-gray-700 leading-relaxed">
+                Eco-friendly practices, such as using reusable packing materials and fuel-efficient vehicles, reduce waste and lower carbon emissions. This approach appeals to environmentally conscious families and businesses alike.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold mb-4">How Are Full-Service Moves Becoming the Preferred Choice for Homeowners?</h2>
+              <p className="text-gray-700 leading-relaxed">
+                By offering comprehensive solutions—from packing to unpacking—full-service moves eliminate many common move-day stresses. This all-in-one approach saves time, minimizes disruption, and ensures a secure move.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold mb-4">What Are Common Questions About Using People Movers for Home Moves?</h2>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                Many homeowners have questions about the moving process. Here are some frequently asked questions to help you plan your move.
+              </p>
+              
+              <div className="space-y-4">
+                <div>
+                  <h4 className="font-semibold mb-2">How Much Does It Typically Cost to Hire People Movers?</h4>
+                  <p className="text-gray-700">Costs depend on the size of your home, distance, and additional services needed, with detailed, itemised quotes provided by movers.</p>
+                </div>
+                
+                <div>
+                  <h4 className="font-semibold mb-2">What Are the Main Advantages of Hiring Professional Movers?</h4>
+                  <p className="text-gray-700">Professional movers save time, reduce stress, and ensure safe transport of belongings with expert handling and insurance coverage.</p>
+                </div>
+                
+                <div>
+                  <h4 className="font-semibold mb-2">How Can You Prepare Your Home for a People Mover Service?</h4>
+                  <p className="text-gray-700">Preparation includes decluttering, labelling boxes by room, and securing delicate items to ensure an efficient move.</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold mb-4">Detailed Comparison Table of Services</h2>
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse border border-gray-300">
+                  <thead>
+                    <tr className="bg-gray-50">
+                      <th className="border border-gray-300 px-4 py-2 text-left font-semibold">Factor</th>
+                      <th className="border border-gray-300 px-4 py-2 text-left font-semibold">People Movers</th>
+                      <th className="border border-gray-300 px-4 py-2 text-left font-semibold">DIY Moving Options</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="border border-gray-300 px-4 py-2 font-medium">Time Efficiency</td>
+                      <td className="border border-gray-300 px-4 py-2">Highly efficient; reduces moving time significantly</td>
+                      <td className="border border-gray-300 px-4 py-2">Time-consuming with risk of delays</td>
+                    </tr>
+                    <tr className="bg-gray-50">
+                      <td className="border border-gray-300 px-4 py-2 font-medium">Stress Reduction</td>
+                      <td className="border border-gray-300 px-4 py-2">Minimises personal stress with professional handling</td>
+                      <td className="border border-gray-300 px-4 py-2">High physical and mental stress</td>
+                    </tr>
+                    <tr>
+                      <td className="border border-gray-300 px-4 py-2 font-medium">Safety & Protection</td>
+                      <td className="border border-gray-300 px-4 py-2">Uses specialised equipment and offers insurance</td>
+                      <td className="border border-gray-300 px-4 py-2">Higher risk of damage and injury</td>
+                    </tr>
+                    <tr className="bg-gray-50">
+                      <td className="border border-gray-300 px-4 py-2 font-medium">Cost Transparency</td>
+                      <td className="border border-gray-300 px-4 py-2">Clear, itemised pricing</td>
+                      <td className="border border-gray-300 px-4 py-2">Potential hidden costs and extra expenses</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p className="text-gray-700 leading-relaxed mt-4">
+                Before engaging a service, consider these points to decide which option best suits your needs.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold mb-4">Frequently Asked Questions</h2>
+              <div className="space-y-4">
+                <div>
+                  <h4 className="font-semibold mb-2">Q: What is the typical timeline for a professional home move?</h4>
+                  <p className="text-gray-700">A: Professional movers usually complete standard moves within one to two days, depending on size and distance.</p>
+                </div>
+                
+                <div>
+                  <h4 className="font-semibold mb-2">Q: Are moving supplies provided by people movers?</h4>
+                  <p className="text-gray-700">A: Yes, most reputable companies provide high-quality packing materials and use specialised equipment.</p>
+                </div>
+                
+                <div>
+                  <h4 className="font-semibold mb-2">Q: Can professional movers help with furniture assembly?</h4>
+                  <p className="text-gray-700">A: Many companies offer additional services like disassembly, reassembly, and unpacking to ensure a hassle-free move.</p>
+                </div>
+                
+                <div>
+                  <h4 className="font-semibold mb-2">Q: Is moving insurance mandatory when hiring people movers?</h4>
+                  <p className="text-gray-700">A: While not legally required, moving insurance is highly recommended to cover any potential damage.</p>
+                </div>
+                
+                <div>
+                  <h4 className="font-semibold mb-2">Q: How far in advance should I book a people mover?</h4>
+                  <p className="text-gray-700">A: It is advisable to book your move at least a few weeks in advance, especially during peak seasons, to ensure availability and secure an accurate quotation.</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-primary/5">
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold mb-4">Final Thoughts</h2>
+              <p className="text-gray-700 leading-relaxed">
+                Hiring people movers is a smart solution for those seeking a stress-free and secure home move. Their professional approach, clear pricing, and specialised equipment make the process efficient and reliable. By preparing in advance and choosing a reputable mover, you can enjoy a smooth transition to your new home.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      {/* CTA Section */}
+      <div className="mt-12 text-center bg-primary p-8 rounded-lg text-white">
+        <h2 className="text-2xl font-bold mb-4">Ready to Plan Your Stress-Free Move?</h2>
+        <p className="text-lg mb-6">Browse our range of moving vehicles and services to find the perfect solution for your home move</p>
+        <div className="flex flex-wrap gap-4 justify-center">
+          <Button variant="secondary" size="lg" asChild>
+            <Link to="/fleet/vans">View Our Fleet</Link>
+          </Button>
+          <Button variant="outline" size="lg" asChild className="bg-white text-primary hover:bg-gray-100">
+            <Link to="/contact">Get Quote</Link>
+          </Button>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
 const UltimateGuideCargoVans = () => (
   <div className="container mx-auto px-4 py-8">
     {/* Back Button */}
@@ -698,6 +1091,11 @@ const JamesBlondBestWestAuckland = () => (
 
 const BlogPost = () => {
   const { id } = useParams();
+
+  // Handle the new people movers blog post
+  if (id === 'benefits-people-movers-home-moves-smart-choice') {
+    return <BenefitsPeopleMoversHomeMove />;
+  }
 
   // Handle the cargo van guide blog post
   if (id === 'ultimate-guide-cargo-vans-choose-best-vehicle-move') {
