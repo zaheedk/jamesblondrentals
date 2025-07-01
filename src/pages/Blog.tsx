@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -5,6 +6,16 @@ import { Button } from '@/components/ui/button';
 import { Calendar, User, ArrowRight } from 'lucide-react';
 
 const blogPosts = [
+  {
+    id: 'essential-guide-box-trucks-choose-right-vehicle-move',
+    title: 'The Essential Guide to Box Trucks: How to Choose the Right Vehicle for Your Move',
+    excerpt: 'An in-depth look at the different box truck sizes and specifications, helping readers select the ideal truck for their moving needs.',
+    date: '2025-01-05',
+    author: 'James Blond Team',
+    category: 'Tips & Guides',
+    readTime: '18 min read',
+    image: '/placeholder.svg'
+  },
   {
     id: 'top-10-tips-stress-free-move-moving-truck-experience',
     title: 'Top 10 Tips for a Stress-Free Move: Maximising Your Moving Truck Experience',
