@@ -41,8 +41,8 @@ const UltimateGuideCargoVans = () => (
         </div>
         
         <img 
-          src="/lovable-uploads/4506c6fc-4eef-4997-a040-7482f1872bab.png" 
-          alt="Cargo van for moving" 
+          src="/lovable-uploads/d39a3bf7-069f-46c2-b68e-29bd7a3cb8b0.png" 
+          alt="Person loading boxes into a cargo van for moving" 
           className="w-full h-64 object-cover rounded-lg mb-8"
         />
       </div>
