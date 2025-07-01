@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,7 +12,8 @@ const blogPosts = [
     date: '2025-01-03',
     author: 'James Blond Team',
     category: 'Tips & Guides',
-    readTime: '12 min read'
+    readTime: '12 min read',
+    image: '/lovable-uploads/d12ed3a8-d0fc-45fb-bb6d-4947a54ae8ea.png'
   },
   {
     id: 'benefits-people-movers-home-moves-smart-choice',
