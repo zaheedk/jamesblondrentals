@@ -39,6 +39,12 @@ const BenefitsPeopleMoversHomeMove = () => (
             <span>10 min read</span>
           </div>
         </div>
+        
+        <img 
+          src="/lovable-uploads/45e25787-f858-4ba8-91c9-dff871af2b63.png" 
+          alt="Professional movers helping a couple load furniture into a moving truck" 
+          className="w-full h-64 object-cover rounded-lg mb-8"
+        />
       </div>
 
       {/* Article Content */}

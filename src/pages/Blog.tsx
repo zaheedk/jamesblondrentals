@@ -13,7 +13,8 @@ const blogPosts = [
     date: '2025-01-02',
     author: 'James Blond Team',
     category: 'Tips & Guides', 
-    readTime: '10 min read'
+    readTime: '10 min read',
+    image: '/lovable-uploads/45e25787-f858-4ba8-91c9-dff871af2b63.png'
   },
   {
     id: 'ultimate-guide-cargo-vans-choose-best-vehicle-move',
