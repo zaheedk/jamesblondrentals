@@ -14,7 +14,7 @@ const blogPosts = [
     author: 'James Blond Team',
     category: 'Tips & Guides',
     readTime: '8 min read',
-    image: '/lovable-uploads/4506c6fc-4eef-4997-a040-7482f1872bab.png'
+    image: '/lovable-uploads/d39a3bf7-069f-46c2-b68e-29bd7a3cb8b0.png'
   },
   {
     id: 'james-blond-best-west-auckland',
