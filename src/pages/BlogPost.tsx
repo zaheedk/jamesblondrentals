@@ -541,7 +541,7 @@ const JamesBlondBestWestAuckland = () => (
         </div>
         
         <img 
-          src="/lovable-uploads/4506c6fc-4eef-4997-a040-7482f1872bab.png" 
+          src="/lovable-uploads/e650d007-a5e7-41eb-b673-5ea4ebdf5896.png" 
           alt="Happy customers giving thumbs up in rental vehicle" 
           className="w-full h-64 object-cover rounded-lg mb-8"
         />

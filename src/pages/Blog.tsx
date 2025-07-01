@@ -24,7 +24,7 @@ const blogPosts = [
     author: 'James Blond Team',
     category: 'Reviews',
     readTime: '5 min read',
-    image: '/lovable-uploads/4506c6fc-4eef-4997-a040-7482f1872bab.png'
+    image: '/lovable-uploads/e650d007-a5e7-41eb-b673-5ea4ebdf5896.png'
   }
 ];
 
