@@ -6,6 +6,16 @@ import { Calendar, User, ArrowRight } from 'lucide-react';
 
 const blogPosts = [
   {
+    id: 'furniture-truck-vs-traditional-moving-van-detailed-comparison',
+    title: 'Furniture Truck vs. Traditional Moving Van: A Detailed Comparison',
+    excerpt: 'For my recent moves, I favour furniture trucks over moving vans. They offer space, efficiency, and are easier to handle. Experience a smoother move today!',
+    date: '2025-01-06',
+    author: 'James Blond Team',
+    category: 'Tips & Guides',
+    readTime: '20 min read',
+    image: '/lovable-uploads/45e25787-f858-4ba8-91c9-dff871af2b63.png'
+  },
+  {
     id: 'essential-guide-box-trucks-choose-right-vehicle-move',
     title: 'The Essential Guide to Box Trucks: How to Choose the Right Vehicle for Your Move',
     excerpt: 'An in-depth look at the different box truck sizes and specifications, helping readers select the ideal truck for their moving needs.',
