@@ -11,6 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useForm } from 'react-hook-form';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import RichTextEditor from '@/components/admin/RichTextEditor';
 
 interface BlogFormData {
   title: string;
@@ -205,13 +206,12 @@ const AdminBlogEditor = () => {
                     name="content"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Content (HTML)</FormLabel>
+                        <FormLabel>Content</FormLabel>
                         <FormControl>
-                          <Textarea
-                            {...field}
-                            placeholder="Write your article content in HTML format"
-                            rows={20}
-                            className="font-mono text-sm"
+                          <RichTextEditor
+                            value={field.value}
+                            onChange={field.onChange}
+                            placeholder="Write your article content..."
                           />
                         </FormControl>
                         <FormMessage />
