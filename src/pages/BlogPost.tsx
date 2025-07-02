@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { Calendar, User, ArrowLeft, Clock } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 const blogPosts = {
   'furniture-truck-vs-traditional-moving-van-detailed-comparison': {
@@ -1095,10 +1097,44 @@ const blogPosts = {
 };
 
 const BlogPost = () => {
-  const { id } = useParams();
-  const post = blogPosts[id as keyof typeof blogPosts];
+  const { slug } = useParams();
+  const [article, setArticle] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  if (!post) {
+  useEffect(() => {
+    if (slug) {
+      fetchArticle(slug);
+    }
+  }, [slug]);
+
+  const fetchArticle = async (articleSlug: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('blog_articles')
+        .select('*')
+        .eq('slug', articleSlug)
+        .eq('published', true)
+        .single();
+
+      if (error) throw error;
+      setArticle(data);
+    } catch (error) {
+      console.error('Error fetching article:', error);
+      setArticle(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-16">
+        <div className="text-center">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!article) {
     return (
       <div className="container mx-auto px-4 py-16 text-center">
         <h1 className="text-2xl font-bold mb-4">Blog Post Not Found</h1>
@@ -1127,39 +1163,37 @@ const BlogPost = () => {
       <div className="max-w-4xl mx-auto">
         <Card className="mb-8">
           <CardHeader className="p-0">
-            {post.image && (
+            {article.image_url && (
               <img 
-                src={post.image} 
-                alt={post.title}
+                src={article.image_url} 
+                alt={article.title}
                 className="w-full h-64 md:h-96 object-cover rounded-t-lg"
               />
             )}
           </CardHeader>
           <CardContent className="p-8">
             <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
-              <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-medium">
-                {post.category}
-              </span>
+              <Badge variant="outline">{article.category}</Badge>
               <div className="flex items-center gap-1">
                 <Calendar className="h-4 w-4" />
-                {new Date(post.date).toLocaleDateString()}
+                {new Date(article.created_at).toLocaleDateString()}
               </div>
               <div className="flex items-center gap-1">
                 <User className="h-4 w-4" />
-                {post.author}
+                {article.author}
               </div>
               <div className="flex items-center gap-1">
                 <Clock className="h-4 w-4" />
-                {post.readTime}
+                {article.read_time}
               </div>
             </div>
             
             <h1 className="text-3xl md:text-4xl font-bold mb-4">
-              {post.title}
+              {article.title}
             </h1>
             
             <p className="text-lg text-gray-600 mb-8">
-              {post.excerpt}
+              {article.excerpt}
             </p>
           </CardContent>
         </Card>
@@ -1169,7 +1203,7 @@ const BlogPost = () => {
           <CardContent className="p-8">
             <div 
               className="prose prose-lg max-w-none"
-              dangerouslySetInnerHTML={{ __html: post.content }}
+              dangerouslySetInnerHTML={{ __html: article.content }}
             />
           </CardContent>
         </Card>

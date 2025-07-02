@@ -1,83 +1,55 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Calendar, User, ArrowRight } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
-const blogPosts = [
-  {
-    id: 'furniture-truck-vs-traditional-moving-van-detailed-comparison',
-    title: 'Furniture Truck vs. Traditional Moving Van: A Detailed Comparison',
-    excerpt: 'For my recent moves, I favour furniture trucks over moving vans. They offer space, efficiency, and are easier to handle. Experience a smoother move today!',
-    date: '2025-01-06',
-    author: 'James Blond Team',
-    category: 'Tips & Guides',
-    readTime: '20 min read',
-    image: '/lovable-uploads/09edf72b-b66c-427e-9744-80a1c1f29b52.png'
-  },
-  {
-    id: 'essential-guide-box-trucks-choose-right-vehicle-move',
-    title: 'The Essential Guide to Box Trucks: How to Choose the Right Vehicle for Your Move',
-    excerpt: 'An in-depth look at the different box truck sizes and specifications, helping readers select the ideal truck for their moving needs.',
-    date: '2025-01-05',
-    author: 'James Blond Team',
-    category: 'Tips & Guides',
-    readTime: '18 min read',
-    image: '/lovable-uploads/29911b24-b718-42a0-b756-26a3c845c5a0.png'
-  },
-  {
-    id: 'top-10-tips-stress-free-move-moving-truck-experience',
-    title: 'Top 10 Tips for a Stress-Free Move: Maximising Your Moving Truck Experience',
-    excerpt: 'Expert tips that cover everything from packing techniques to efficiently loading a moving truck, ensuring a smooth moving day.',
-    date: '2025-01-04',
-    author: 'James Blond Team',
-    category: 'Tips & Guides',
-    readTime: '15 min read',
-    image: '/lovable-uploads/b689674c-7334-422d-a518-d5f288eace21.png'
-  },
-  {
-    id: 'why-mini-bus-ideal-family-adventure',
-    title: 'Why a Mini Bus Is Ideal for Your Next Family Adventure',
-    excerpt: 'Renting a mini bus for family trips has transformed our holidays! I enjoy stress-free travel, spacious comfort, and unforgettable memories on the road together.',
-    date: '2025-01-03',
-    author: 'James Blond Team',
-    category: 'Tips & Guides',
-    readTime: '12 min read',
-    image: '/lovable-uploads/d12ed3a8-d0fc-45fb-bb6d-4947a54ae8ea.png'
-  },
-  {
-    id: 'benefits-people-movers-home-moves-smart-choice',
-    title: 'The Benefits of Using People Movers for Home Moves: Why They\'re the Smart Choice',
-    excerpt: 'Examine the advantages of employing people movers for residential moves, focusing on convenience, efficiency, and cost-effectiveness.',
-    date: '2025-01-02',
-    author: 'James Blond Team',
-    category: 'Tips & Guides', 
-    readTime: '10 min read',
-    image: '/lovable-uploads/45e25787-f858-4ba8-91c9-dff871af2b63.png'
-  },
-  {
-    id: 'ultimate-guide-cargo-vans-choose-best-vehicle-move',
-    title: 'The Ultimate Guide to Cargo Vans: How to Choose the Best Vehicle for Your Move',
-    excerpt: 'Renting a cargo van for moving can be a game-changer. Here are some essential tips to simplify your rental experience and ensure a smooth journey.',
-    date: '2025-01-01',
-    author: 'James Blond Team',
-    category: 'Tips & Guides',
-    readTime: '8 min read',
-    image: '/lovable-uploads/d39a3bf7-069f-46c2-b68e-29bd7a3cb8b0.png'
-  },
-  {
-    id: 'james-blond-best-west-auckland',
-    title: 'FAQ: Why I Believe James Blond Rentals Is the Best in West Auckland 🚛',
-    excerpt: 'Discover why James Blond Rentals stands out as the top choice for vehicle rentals in West Auckland, from their extensive fleet to exceptional customer service.',
-    date: '2024-12-29',
-    author: 'James Blond Team',
-    category: 'Reviews',
-    readTime: '5 min read',
-    image: '/lovable-uploads/e650d007-a5e7-41eb-b673-5ea4ebdf5896.png'
-  }
-];
+interface BlogArticle {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  author: string;
+  category: string;
+  read_time: string;
+  image_url?: string;
+  created_at: string;
+}
 
 const Blog = () => {
+  const [articles, setArticles] = useState<BlogArticle[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchArticles();
+  }, []);
+
+  const fetchArticles = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('blog_articles')
+        .select('*')
+        .eq('published', true)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setArticles(data || []);
+    } catch (error) {
+      console.error('Error fetching articles:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-16">
+        <div className="text-center">Loading...</div>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto px-4 py-16">
       {/* Hero Section */}
@@ -90,44 +62,46 @@ const Blog = () => {
 
       {/* Blog Posts Grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-        {blogPosts.map((post) => (
-          <Card key={post.id} className="hover:shadow-lg transition-shadow">
+        {articles.map((article) => (
+          <Card key={article.id} className="hover:shadow-lg transition-shadow">
             <CardHeader className="p-0">
-              <img 
-                src={post.image} 
-                alt={post.title}
-                className="w-full h-48 object-cover rounded-t-lg"
-              />
+              {article.image_url && (
+                <img 
+                  src={article.image_url} 
+                  alt={article.title}
+                  className="w-full h-48 object-cover rounded-t-lg"
+                />
+              )}
             </CardHeader>
             <CardContent className="p-6">
               <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
                 <span className="bg-primary/10 text-primary px-2 py-1 rounded text-xs font-medium">
-                  {post.category}
+                  {article.category}
                 </span>
                 <div className="flex items-center gap-1">
                   <Calendar className="h-4 w-4" />
-                  {new Date(post.date).toLocaleDateString()}
+                  {new Date(article.created_at).toLocaleDateString()}
                 </div>
               </div>
               
               <CardTitle className="mb-3 line-clamp-2">
-                {post.title}
+                {article.title}
               </CardTitle>
               
               <CardDescription className="mb-4 line-clamp-3">
-                {post.excerpt}
+                {article.excerpt}
               </CardDescription>
               
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-sm text-gray-500">
                   <User className="h-4 w-4" />
-                  <span>{post.author}</span>
+                  <span>{article.author}</span>
                   <span>•</span>
-                  <span>{post.readTime}</span>
+                  <span>{article.read_time}</span>
                 </div>
                 
                 <Button variant="outline" size="sm" asChild>
-                  <Link to={`/blog/${post.id}`} className="flex items-center gap-1">
+                  <Link to={`/blog/${article.slug}`} className="flex items-center gap-1">
                     Read More
                     <ArrowRight className="h-3 w-3" />
                   </Link>

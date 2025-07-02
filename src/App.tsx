@@ -34,6 +34,8 @@ import MemberDashboard from "./pages/MemberDashboard";
 // Blog Pages
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
+import AdminBlog from "./pages/AdminBlog";
+import AdminBlogEditor from "./pages/AdminBlogEditor";
 
 import Fleet from "./pages/Fleet";
 import FleetCars from "./pages/FleetCars";
@@ -136,7 +138,24 @@ const App = () => {
                 
                 {/* Blog routes */}
                 <Route path="/blog" element={<Blog />} />
-                <Route path="/blog/:id" element={<BlogPost />} />
+                <Route path="/blog/:slug" element={<BlogPost />} />
+                
+                {/* Admin Blog routes */}
+                <Route path="/admin/blog" element={
+                  <ProtectedRoute>
+                    <AdminBlog />
+                  </ProtectedRoute>
+                } />
+                <Route path="/admin/blog/new" element={
+                  <ProtectedRoute>
+                    <AdminBlogEditor />
+                  </ProtectedRoute>
+                } />
+                <Route path="/admin/blog/edit/:id" element={
+                  <ProtectedRoute>
+                    <AdminBlogEditor />
+                  </ProtectedRoute>
+                } />
                 
                 {/* Auth routes */}
                 <Route path="/login" element={<Login />} />
