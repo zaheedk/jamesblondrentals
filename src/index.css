@@ -120,7 +120,7 @@
   }
 
   .card-feature {
-    @apply card-elegant p-6 md:p-8 hover:border-primary/20 group;
+    @apply card-elegant p-6 md:p-8 hover:border-primary/20;
   }
 
   .gradient-text {
