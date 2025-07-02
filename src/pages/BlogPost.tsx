@@ -797,7 +797,7 @@ const blogPosts = {
     author: 'James Blond Team',
     category: 'Moving Guides',
     readTime: '15 min read',
-    image: '/lovable-uploads/b1bd35e2-4d58-4900-86c5-dfe61a852d78.png',
+    image: '/lovable-uploads/b1f80cf0-d79d-436a-873f-873d8104aa75.png',
     content: `
       <h2>The Ultimate Guide to Cargo Vans: How to Choose the Best Vehicle for Your Move</h2>
       <p>Choosing the right cargo van for your move can significantly impact both the efficiency and cost of your relocation. With numerous options available, from compact cargo vans to large commercial vehicles, making the right choice requires understanding your specific needs and the capabilities of different van types.</p>
