@@ -79,28 +79,18 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
         [{ 'align': [] }],
         ['link', 'image'],
         ['blockquote', 'code-block'],
-        ['table'],
         ['clean']
       ],
       handlers: {
-        image: imageHandler,
-        table: function() {
-          const quill = (window as any).quillEditor;
-          if (quill) {
-            const range = quill.getSelection();
-            quill.insertEmbed(range.index, 'table', { rows: 3, columns: 3 });
-          }
-        }
+        image: imageHandler
       }
-    },
-    table: true
+    }
   };
 
   const formats = [
     'header', 'bold', 'italic', 'underline', 'strike',
     'color', 'background', 'list', 'bullet', 'indent',
-    'align', 'link', 'image', 'blockquote', 'code-block',
-    'table'
+    'align', 'link', 'image', 'blockquote', 'code-block'
   ];
 
   return (
