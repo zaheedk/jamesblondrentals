@@ -118,12 +118,14 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       
       <ScrollArea className="h-[500px] w-full border rounded-md">
         {showHtmlSource ? (
-          <Textarea
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            placeholder={placeholder}
-            className="min-h-[460px] font-mono text-sm border-0 resize-none"
-          />
+          <div className="p-4">
+            <Textarea
+              value={value || ''}
+              onChange={(e) => onChange(e.target.value)}
+              placeholder={placeholder}
+              className="min-h-[450px] font-mono text-sm border-0 resize-none focus:outline-none"
+            />
+          </div>
         ) : (
           <ReactQuill
             ref={(el) => {
