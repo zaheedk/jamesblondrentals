@@ -3,6 +3,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface RichTextEditorProps {
   value: string;
@@ -90,20 +91,22 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
 
   return (
     <div className="rich-text-editor">
-      <ReactQuill
-        ref={(el) => {
-          if (el) {
-            (window as any).quillEditor = el.getEditor();
-          }
-        }}
-        theme="snow"
-        value={value}
-        onChange={onChange}
-        modules={modules}
-        formats={formats}
-        placeholder={placeholder}
-        style={{ minHeight: '400px' }}
-      />
+      <ScrollArea className="h-[500px] w-full border rounded-md">
+        <ReactQuill
+          ref={(el) => {
+            if (el) {
+              (window as any).quillEditor = el.getEditor();
+            }
+          }}
+          theme="snow"
+          value={value}
+          onChange={onChange}
+          modules={modules}
+          formats={formats}
+          placeholder={placeholder}
+          style={{ minHeight: '400px' }}
+        />
+      </ScrollArea>
     </div>
   );
 };
