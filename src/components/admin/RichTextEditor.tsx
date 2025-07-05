@@ -1,9 +1,12 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Code, Edit } from 'lucide-react';
 
 interface RichTextEditorProps {
   value: string;
@@ -17,6 +20,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   placeholder = "Write your article content..."
 }) => {
   const { toast } = useToast();
+  const [showHtmlSource, setShowHtmlSource] = useState(false);
 
   const imageHandler = useCallback(async () => {
     const input = document.createElement('input');
@@ -75,37 +79,77 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
         [{ 'align': [] }],
         ['link', 'image'],
         ['blockquote', 'code-block'],
+        ['table'],
         ['clean']
       ],
       handlers: {
-        image: imageHandler
+        image: imageHandler,
+        table: function() {
+          const quill = (window as any).quillEditor;
+          if (quill) {
+            const range = quill.getSelection();
+            quill.insertEmbed(range.index, 'table', { rows: 3, columns: 3 });
+          }
+        }
       }
-    }
+    },
+    table: true
   };
 
   const formats = [
     'header', 'bold', 'italic', 'underline', 'strike',
     'color', 'background', 'list', 'bullet', 'indent',
-    'align', 'link', 'image', 'blockquote', 'code-block'
+    'align', 'link', 'image', 'blockquote', 'code-block',
+    'table'
   ];
 
   return (
     <div className="rich-text-editor">
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex gap-2">
+          <Button
+            variant={!showHtmlSource ? "default" : "outline"}
+            size="sm"
+            onClick={() => setShowHtmlSource(false)}
+          >
+            <Edit className="h-4 w-4 mr-1" />
+            Visual
+          </Button>
+          <Button
+            variant={showHtmlSource ? "default" : "outline"}
+            size="sm" 
+            onClick={() => setShowHtmlSource(true)}
+          >
+            <Code className="h-4 w-4 mr-1" />
+            HTML
+          </Button>
+        </div>
+      </div>
+      
       <ScrollArea className="h-[500px] w-full border rounded-md">
-        <ReactQuill
-          ref={(el) => {
-            if (el) {
-              (window as any).quillEditor = el.getEditor();
-            }
-          }}
-          theme="snow"
-          value={value}
-          onChange={onChange}
-          modules={modules}
-          formats={formats}
-          placeholder={placeholder}
-          style={{ minHeight: '400px' }}
-        />
+        {showHtmlSource ? (
+          <Textarea
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder={placeholder}
+            className="min-h-[460px] font-mono text-sm border-0 resize-none"
+          />
+        ) : (
+          <ReactQuill
+            ref={(el) => {
+              if (el) {
+                (window as any).quillEditor = el.getEditor();
+              }
+            }}
+            theme="snow"
+            value={value}
+            onChange={onChange}
+            modules={modules}
+            formats={formats}
+            placeholder={placeholder}
+            style={{ minHeight: '400px' }}
+          />
+        )}
       </ScrollArea>
     </div>
   );
