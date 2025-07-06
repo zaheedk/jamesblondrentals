@@ -140,9 +140,13 @@ const VehicleCard = ({
           <div>
             <h3 className="font-bold text-xl">{vehicle.make} {vehicle.model}</h3>
             <div className="text-sm text-gray-500">
-              {vehicle.type && <Badge variant="outline" className="mr-2">{vehicle.type}</Badge>}
               {vehicle.seats && <span className="mr-2">{vehicle.seats} seats</span>}
-              {vehicle.transmission && <span>{vehicle.transmission}</span>}
+              {vehicle.transmission && <span className="mr-2">{vehicle.transmission}</span>}
+              {hasDailyDiscount && (
+                <span className="line-through text-gray-500 text-xs">
+                  ${avgRate.toFixed(2)}/day
+                </span>
+              )}
             </div>
           </div>
           <div className="text-right">
