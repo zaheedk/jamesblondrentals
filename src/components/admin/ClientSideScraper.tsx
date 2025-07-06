@@ -61,6 +61,7 @@ const ClientSideScraper: React.FC = () => {
     setScrapingStatuses(initialStatuses);
 
     let completedCount = 0;
+    const rentalPeriods = [1, 3, 5, 10, 15, 30]; // Days for rental periods
 
     for (let i = 0; i < RENTAL_WEBSITES.length; i++) {
       const website = RENTAL_WEBSITES[i];
@@ -73,7 +74,7 @@ const ClientSideScraper: React.FC = () => {
       ));
 
       try {
-        const rates = await scrapeWebsiteClientSide(website);
+        const rates = await scrapeWebsiteClientSide(website, rentalPeriods);
         
         // Save rates to database
         if (rates.length > 0) {
@@ -127,62 +128,92 @@ const ClientSideScraper: React.FC = () => {
     });
   };
 
-  const scrapeWebsiteClientSide = async (website: { name: string; url: string; bookingUrl: string }) => {
+  const scrapeWebsiteClientSide = async (website: { name: string; url: string; bookingUrl: string }, rentalPeriods: number[]) => {
     const rates: Array<{
       vehicle_category: string;
       daily_rate: number | null;
       rental_period_days: number;
     }> = [];
 
-    // Create a hidden iframe to load the booking page
-    const iframe = document.createElement('iframe');
-    iframe.style.display = 'none';
-    iframe.src = `https://api.allorigins.win/get?url=${encodeURIComponent(website.bookingUrl)}`;
-    document.body.appendChild(iframe);
+    // Calculate dates - pickup tomorrow, dropoff based on rental periods
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const pickupDate = tomorrow.toISOString().split('T')[0]; // YYYY-MM-DD format
 
-    return new Promise<typeof rates>((resolve) => {
-      const timeout = setTimeout(() => {
-        document.body.removeChild(iframe);
-        resolve(rates);
-      }, 15000); // 15 second timeout
+    for (const periodDays of rentalPeriods) {
+      const dropoffDate = new Date(tomorrow);
+      dropoffDate.setDate(dropoffDate.getDate() + periodDays);
+      const dropoffDateStr = dropoffDate.toISOString().split('T')[0];
 
-      iframe.onload = async () => {
-        try {
-          // Wait a bit for dynamic content to load
-          await new Promise(resolve => setTimeout(resolve, 3000));
+      // Build booking URL with dates for HireAce
+      let searchUrl = website.bookingUrl;
+      if (website.name === 'hireace.co.nz') {
+        // Add date parameters to HireAce booking URL
+        const urlParams = new URLSearchParams({
+          pickup_date: pickupDate,
+          return_date: dropoffDateStr,
+          pickup_location: 'Henderson', // Default location
+          return_location: 'Henderson'
+        });
+        searchUrl = `${website.bookingUrl}?${urlParams.toString()}`;
+      }
 
-          // Try to access iframe content
-          let content = '';
-          try {
-            if (iframe.contentDocument) {
-              content = iframe.contentDocument.body.innerHTML;
-            } else if (iframe.contentWindow) {
-              content = iframe.contentWindow.document.body.innerHTML;
-            }
-          } catch (e) {
-            // CORS blocked - use proxy approach
-            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(website.bookingUrl)}`;
-            const response = await fetch(proxyUrl);
-            const data = await response.json();
-            content = data.contents;
+      // Create a hidden iframe to load the booking page with dates
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.src = `https://api.allorigins.win/get?url=${encodeURIComponent(searchUrl)}`;
+      document.body.appendChild(iframe);
+
+      await new Promise<void>((resolve) => {
+        const timeout = setTimeout(() => {
+          if (document.body.contains(iframe)) {
+            document.body.removeChild(iframe);
           }
+          resolve();
+        }, 10000); // 10 second timeout per period
 
-          // Parse rates from content based on website
-          const parsedRates = parseRatesFromContent(content, website.name);
-          rates.push(...parsedRates);
+        iframe.onload = async () => {
+          try {
+            // Wait for dynamic content to load
+            await new Promise(resolve => setTimeout(resolve, 2000));
 
-        } catch (error) {
-          console.error(`Error processing ${website.name}:`, error);
-        } finally {
-          clearTimeout(timeout);
-          document.body.removeChild(iframe);
-          resolve(rates);
-        }
-      };
-    });
+            // Try to access iframe content
+            let content = '';
+            try {
+              if (iframe.contentDocument) {
+                content = iframe.contentDocument.body.innerHTML;
+              } else if (iframe.contentWindow) {
+                content = iframe.contentWindow.document.body.innerHTML;
+              }
+            } catch (e) {
+              // CORS blocked - use proxy approach
+              const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(searchUrl)}`;
+              const response = await fetch(proxyUrl);
+              const data = await response.json();
+              content = data.contents;
+            }
+
+            // Parse rates from content based on website and period
+            const parsedRates = parseRatesFromContent(content, website.name, periodDays);
+            rates.push(...parsedRates);
+
+          } catch (error) {
+            console.error(`Error processing ${website.name} for ${periodDays} days:`, error);
+          } finally {
+            clearTimeout(timeout);
+            if (document.body.contains(iframe)) {
+              document.body.removeChild(iframe);
+            }
+            resolve();
+          }
+        };
+      });
+    }
+
+    return rates;
   };
 
-  const parseRatesFromContent = (content: string, websiteName: string) => {
+  const parseRatesFromContent = (content: string, websiteName: string, rentalPeriodDays: number) => {
     const rates: Array<{
       vehicle_category: string;
       daily_rate: number | null;
@@ -207,9 +238,9 @@ const ClientSideScraper: React.FC = () => {
               const price = parseFloat(priceMatch[1]);
               if (price > 50 && price < 500) { // Reasonable rate range
                 rates.push({
-                  vehicle_category: 'UTE (Henderson)',
+                  vehicle_category: `UTE (Henderson) - ${rentalPeriodDays} days`,
                   daily_rate: price,
-                  rental_period_days: 1
+                  rental_period_days: rentalPeriodDays
                 });
               }
             }
@@ -231,9 +262,9 @@ const ClientSideScraper: React.FC = () => {
             const price = parseFloat(match[1]);
             if (price > 30 && price < 300) {
               rates.push({
-                vehicle_category: 'Vehicle Rate Found',
+                vehicle_category: `Vehicle Rate Found - ${rentalPeriodDays} days`,
                 daily_rate: price,
-                rental_period_days: 1
+                rental_period_days: rentalPeriodDays
               });
             }
           });
@@ -249,9 +280,9 @@ const ClientSideScraper: React.FC = () => {
         const price = parseFloat(match[1]);
         if (price > 20 && price < 400) {
           rates.push({
-            vehicle_category: 'Standard Vehicle',
+            vehicle_category: `Standard Vehicle - ${rentalPeriodDays} days`,
             daily_rate: price,
-            rental_period_days: 1
+            rental_period_days: rentalPeriodDays
           });
         }
       });
