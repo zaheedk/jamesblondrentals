@@ -142,11 +142,6 @@ const VehicleCard = ({
             <div className="text-sm text-gray-500">
               {vehicle.seats && <span className="mr-2">{vehicle.seats} seats</span>}
               {vehicle.transmission && <span className="mr-2">{vehicle.transmission}</span>}
-              {hasDailyDiscount && (
-                <span className="line-through text-gray-500 text-xs">
-                  ${avgRate.toFixed(2)}/day
-                </span>
-              )}
             </div>
           </div>
           <div className="text-right">
@@ -159,6 +154,11 @@ const VehicleCard = ({
                 </span>
               )}
             </div>
+            {hasDailyDiscount && (
+              <div className="text-xs text-gray-500 line-through">
+                ${avgRate.toFixed(2)}/day
+              </div>
+            )}
             <div className="text-sm text-primary mt-1">
               <span className="block font-medium">
                 {hasDiscount ? (
