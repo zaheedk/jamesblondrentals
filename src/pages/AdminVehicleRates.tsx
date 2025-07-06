@@ -16,7 +16,8 @@ const AdminVehicleRates: React.FC = () => {
   const stats = React.useMemo(() => {
     const websites = [...new Set(rates.map(r => r.website_name))];
     const categories = [...new Set(rates.map(r => r.vehicle_category))];
-    const avgRate = rates.length > 0 ? rates.reduce((sum, r) => sum + r.daily_rate, 0) / rates.length : 0;
+    const validRates = rates.filter(r => r.daily_rate !== null);
+    const avgRate = validRates.length > 0 ? validRates.reduce((sum, r) => sum + r.daily_rate, 0) / validRates.length : 0;
     const latestScrape = rates.length > 0 ? new Date(Math.max(...rates.map(r => new Date(r.scraped_at).getTime()))) : null;
 
     return {
@@ -51,10 +52,17 @@ const AdminVehicleRates: React.FC = () => {
 
     // Calculate stats for each category
     Object.keys(grouped).forEach(category => {
-      const categoryRates = grouped[category].rates.map(r => r.daily_rate);
-      grouped[category].avgRate = categoryRates.reduce((sum, rate) => sum + rate, 0) / categoryRates.length;
-      grouped[category].minRate = Math.min(...categoryRates);
-      grouped[category].maxRate = Math.max(...categoryRates);
+      const validRates = grouped[category].rates.filter(r => r.daily_rate !== null);
+      if (validRates.length > 0) {
+        const categoryRates = validRates.map(r => r.daily_rate);
+        grouped[category].avgRate = categoryRates.reduce((sum, rate) => sum + rate, 0) / categoryRates.length;
+        grouped[category].minRate = Math.min(...categoryRates);
+        grouped[category].maxRate = Math.max(...categoryRates);
+      } else {
+        grouped[category].avgRate = 0;
+        grouped[category].minRate = 0;
+        grouped[category].maxRate = 0;
+      }
     });
 
     return grouped;
@@ -169,14 +177,14 @@ const AdminVehicleRates: React.FC = () => {
                       <TableRow key={category}>
                         <TableCell className="font-medium">{category}</TableCell>
                         <TableCell>{data.rates.length}</TableCell>
-                        <TableCell>${data.avgRate.toFixed(2)}</TableCell>
-                        <TableCell>${data.minRate.toFixed(2)}</TableCell>
-                        <TableCell>${data.maxRate.toFixed(2)}</TableCell>
+                        <TableCell>${data.avgRate > 0 ? data.avgRate.toFixed(2) : 'N/A'}</TableCell>
+                        <TableCell>${data.minRate > 0 ? data.minRate.toFixed(2) : 'N/A'}</TableCell>
+                        <TableCell>${data.maxRate > 0 ? data.maxRate.toFixed(2) : 'N/A'}</TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">
                             <div className="h-2 bg-gradient-to-r from-green-500 to-red-500 rounded flex-1 min-w-[60px]"></div>
                             <span className="text-xs text-muted-foreground">
-                              ${(data.maxRate - data.minRate).toFixed(2)}
+                              {data.maxRate > 0 ? `$${(data.maxRate - data.minRate).toFixed(2)}` : 'N/A'}
                             </span>
                           </div>
                         </TableCell>
@@ -203,7 +211,8 @@ const AdminVehicleRates: React.FC = () => {
             <CardContent>
               <div className="grid gap-4">
                 {Object.entries(ratesByWebsite).map(([website, websiteRates]) => {
-                  const avgRate = websiteRates.reduce((sum, r) => sum + r.daily_rate, 0) / websiteRates.length;
+                  const validRates = websiteRates.filter(r => r.daily_rate !== null);
+                  const avgRate = validRates.length > 0 ? validRates.reduce((sum, r) => sum + r.daily_rate, 0) / validRates.length : 0;
                   const categories = [...new Set(websiteRates.map(r => r.vehicle_category))];
                   
                   return (
@@ -214,7 +223,7 @@ const AdminVehicleRates: React.FC = () => {
                           <Badge variant="outline">{websiteRates.length} rates</Badge>
                         </div>
                         <CardDescription>
-                          Average rate: ${avgRate.toFixed(2)} | {categories.length} categories
+                          Average rate: {avgRate > 0 ? `$${avgRate.toFixed(2)}` : 'Rates Unavailable'} | {categories.length} categories
                         </CardDescription>
                       </CardHeader>
                       <CardContent>
@@ -274,7 +283,7 @@ const AdminVehicleRates: React.FC = () => {
                           </TableCell>
                           <TableCell className="max-w-[200px] truncate">{rate.vehicle_category}</TableCell>
                           <TableCell className="font-mono">
-                            ${rate.daily_rate.toFixed(2)}
+                            {rate.daily_rate ? `$${rate.daily_rate.toFixed(2)}` : 'Rate Unavailable'}
                           </TableCell>
                           <TableCell>{rate.rental_period_days}</TableCell>
                           <TableCell className="text-sm text-muted-foreground">

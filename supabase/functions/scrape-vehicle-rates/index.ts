@@ -135,118 +135,65 @@ async function scrapeWebsite(website: string): Promise<ScrapedRate[]> {
 function parseHireAce(html: string, website: string): ScrapedRate[] {
   const rates: ScrapedRate[] = [];
   
+  console.log('Warning: HireAce rates cannot be accurately scraped from static HTML');
+  console.log('HireAce uses dynamic pricing through web.rentalcarmanager.com booking system');
+  
   try {
-    // Parse vehicle data from catalogue items
-    const vehicleItemPattern = /<div class="catalogue__item" data-vehid="(\d+)"[\s\S]*?<h2 class="catalogue__item-title">(.*?)<\/h2>[\s\S]*?<h4 class="catalogue__item-subtitle">(.*?)<\/h4>[\s\S]*?Additional charge per kms travelled: \$(\d+\.\d{2})/g;
+    // Parse vehicle categories from HTML but note that actual rates are not available
+    const vehicleItemPattern = /<div class="catalogue__item" data-vehid="(\d+)"[\s\S]*?<h2 class="catalogue__item-title">(.*?)<\/h2>[\s\S]*?<h4 class="catalogue__item-subtitle">(.*?)<\/h4>/g;
     
     let match;
-    const vehicleData: Array<{id: string, title: string, subtitle: string, kmCharge: number}> = [];
+    const vehicleCategories = new Set<string>();
     
     while ((match = vehicleItemPattern.exec(html)) !== null) {
-      vehicleData.push({
-        id: match[1],
-        title: match[2].trim(),
-        subtitle: match[3].trim(),
-        kmCharge: parseFloat(match[4])
-      });
+      vehicleCategories.add(match[2].trim());
     }
     
-    console.log(`Found ${vehicleData.length} vehicles on HireAce`);
-    
-    // Map vehicle categories and estimate daily rates based on km charges and vehicle types
-    const vehicleCategoryMapping = {
-      'box truck': { baseRate: 85, multiplier: 1.2 },
-      'cargo van': { baseRate: 65, multiplier: 1.0 },
-      'minibus': { baseRate: 95, multiplier: 1.3 },
-      'ute': { baseRate: 55, multiplier: 0.9 },
-      'truck': { baseRate: 120, multiplier: 1.5 },
-      'trailer': { baseRate: 35, multiplier: 0.6 },
-      'coach': { baseRate: 150, multiplier: 2.0 },
-      'flat deck': { baseRate: 90, multiplier: 1.1 }
-    };
-    
-    vehicleData.forEach(vehicle => {
-      const lowerTitle = vehicle.title.toLowerCase();
-      let categoryInfo = { baseRate: 75, multiplier: 1.0 }; // default
-      
-      // Find matching category
-      for (const [category, info] of Object.entries(vehicleCategoryMapping)) {
-        if (lowerTitle.includes(category)) {
-          categoryInfo = info;
-          break;
+    // Also check for category options in the booking form
+    const categoryPattern = /<option value="([^"]+)"[^>]*>([^<]+)<\/option>/g;
+    let categoryMatch;
+    while ((categoryMatch = categoryPattern.exec(html)) !== null) {
+      if (categoryMatch[1] && categoryMatch[1] !== '' && !categoryMatch[1].includes('select2')) {
+        const categoryName = categoryMatch[2].trim();
+        if (categoryName !== 'Category' && categoryName !== '') {
+          vehicleCategories.add(categoryName.charAt(0).toUpperCase() + categoryName.slice(1));
         }
       }
-      
-      // Calculate estimated daily rate based on km charge and category
-      const kmMultiplier = vehicle.kmCharge >= 0.5 ? 1.3 : vehicle.kmCharge >= 0.4 ? 1.1 : 1.0;
-      const estimatedDailyRate = categoryInfo.baseRate * categoryInfo.multiplier * kmMultiplier;
-      
-      // Create rates for different rental periods with volume discounts
+    }
+    
+    console.log(`Found ${vehicleCategories.size} vehicle categories on HireAce (rates unavailable)`);
+    
+    // Since actual rates are not available, mark all rates as null to indicate unavailable data
+    Array.from(vehicleCategories).forEach(category => {
       RENTAL_PERIODS.forEach(period => {
-        let periodMultiplier = 1.0;
-        if (period >= 30) periodMultiplier = 0.7;
-        else if (period >= 15) periodMultiplier = 0.75;
-        else if (period >= 10) periodMultiplier = 0.8;
-        else if (period >= 5) periodMultiplier = 0.85;
-        else if (period >= 3) periodMultiplier = 0.9;
-        
         rates.push({
           website_name: website,
-          vehicle_category: vehicle.title,
-          daily_rate: Math.round(estimatedDailyRate * periodMultiplier * 100) / 100,
+          vehicle_category: category + ' (Rate Unavailable - Dynamic Pricing)',
+          daily_rate: null, // Mark as null to indicate rate not available from static HTML
           rental_period_days: period
         });
       });
     });
     
-    // If no vehicles found, add some default categories based on the dropdown options
-    if (vehicleData.length === 0) {
-      const defaultCategories = [
-        { name: 'Box Truck', rate: 95 },
-        { name: 'Cargo Van', rate: 65 },
-        { name: 'Minibus', rate: 85 },
-        { name: 'Trailer', rate: 35 },
-        { name: 'Ute', rate: 55 },
-        { name: 'Coach', rate: 150 }
-      ];
-      
-      defaultCategories.forEach(category => {
-        RENTAL_PERIODS.forEach(period => {
-          let periodMultiplier = 1.0;
-          if (period >= 30) periodMultiplier = 0.7;
-          else if (period >= 15) periodMultiplier = 0.75;
-          else if (period >= 10) periodMultiplier = 0.8;
-          else if (period >= 5) periodMultiplier = 0.85;
-          else if (period >= 3) periodMultiplier = 0.9;
-          
-          rates.push({
-            website_name: website,
-            vehicle_category: category.name,
-            daily_rate: Math.round(category.rate * periodMultiplier * 100) / 100,
-            rental_period_days: period
-          });
-        });
+    // If no categories found, add a note about the limitation
+    if (vehicleCategories.size === 0) {
+      rates.push({
+        website_name: website,
+        vehicle_category: 'Rates Not Available - Dynamic Pricing System',
+        daily_rate: null,
+        rental_period_days: 1
       });
     }
     
   } catch (error) {
     console.error('Error parsing HireAce HTML:', error);
-    // Fallback to default data if parsing fails
-    const fallbackCategories = [
-      { name: 'Box Truck', rate: 95 },
-      { name: 'Cargo Van', rate: 65 },
-      { name: 'Minibus', rate: 85 }
-    ];
     
-    fallbackCategories.forEach(category => {
-      RENTAL_PERIODS.forEach(period => {
-        rates.push({
-          website_name: website,
-          vehicle_category: category.name,
-          daily_rate: category.rate,
-          rental_period_days: period
-        });
-      });
+    // Add error note
+    rates.push({
+      website_name: website,
+      vehicle_category: 'Scraping Error - Rates Unavailable',
+      daily_rate: null,
+      rental_period_days: 1
     });
   }
   

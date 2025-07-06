@@ -219,7 +219,7 @@ const VehicleRateScraper: React.FC = () => {
                       </TableCell>
                       <TableCell>{rate.vehicle_category}</TableCell>
                       <TableCell>
-                        ${rate.daily_rate ? rate.daily_rate.toFixed(2) : 'N/A'}
+                        {rate.daily_rate ? `$${rate.daily_rate.toFixed(2)}` : 'Rate Unavailable'}
                       </TableCell>
                       <TableCell>{rate.rental_period_days}</TableCell>
                       <TableCell>
