@@ -504,14 +504,14 @@ const Vehicles = () => {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-                {filteredVehicles.map((vehicle) => (
-                  <VehicleCard 
-                    key={vehicle.id} 
-                    vehicle={vehicle} 
-                    totalRateAfterDiscount={typeof vehicle.price === 'number' ? vehicle.price : parseFloat(vehicle.price)}
-                    totalDiscountAmount={vehicle.discountAmount}
-                  />
-                ))}
+                 {filteredVehicles.map((vehicle) => (
+                   <VehicleCard 
+                     key={vehicle.id} 
+                     vehicle={vehicle} 
+                     totalRateAfterDiscount={vehicle.ratesubtotal || (typeof vehicle.price === 'number' ? vehicle.price : parseFloat(vehicle.price))}
+                     totalDiscountAmount={vehicle.discountAmount}
+                   />
+                 ))}
               </div>
             )}
           </div>

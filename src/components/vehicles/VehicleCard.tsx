@@ -67,6 +67,10 @@ const VehicleCard = ({
   const displayRate = vehicle.dailyRate || 0;
   const totalAmount = vehicle.ratesubtotal || 0;
   
+  // Calculate total rate before discount for comparison
+  const totalRateBeforeDiscount = totalRateAfterDiscount ? totalRateAfterDiscount + (totalDiscountAmount || 0) : null;
+  const hasDiscount = totalRateBeforeDiscount && totalRateAfterDiscount && totalRateBeforeDiscount !== totalRateAfterDiscount;
+  
   console.log(`Vehicle ${vehicle.make} ${vehicle.model} price calculation:`, {
     dailyRate: vehicle.dailyRate,
     ratesubtotal: vehicle.ratesubtotal,
@@ -137,7 +141,18 @@ const VehicleCard = ({
             </div>
             <div className="text-sm text-primary mt-1">
               <span className="block font-medium">
-                Total: ${totalAmount.toFixed(2)}
+                {hasDiscount ? (
+                  <span className="flex items-center gap-2">
+                    <span className="line-through text-gray-500">
+                      Total: ${totalRateBeforeDiscount?.toFixed(2)}
+                    </span>
+                    <span className="text-primary font-bold">
+                      ${totalRateAfterDiscount?.toFixed(2)}
+                    </span>
+                  </span>
+                ) : (
+                  <span>Total: ${totalAmount.toFixed(2)}</span>
+                )}
               </span>
             </div>
           </div>
