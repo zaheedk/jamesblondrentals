@@ -34,7 +34,20 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   const [showLinkDialog, setShowLinkDialog] = useState(false);
   const [linkUrl, setLinkUrl] = useState('');
   const [linkText, setLinkText] = useState('');
+  const [htmlValue, setHtmlValue] = useState('');
   const quillRef = useRef<ReactQuill>(null);
+
+  // Format HTML when switching to HTML mode
+  useEffect(() => {
+    if (showHtmlSource) {
+      setHtmlValue(formatHtml(value || ''));
+    }
+  }, [showHtmlSource]);
+
+  const handleHtmlChange = (newValue: string) => {
+    setHtmlValue(newValue);
+    onChange(newValue);
+  };
 
   const insertLink = () => {
     if (quillRef.current) {
@@ -331,8 +344,8 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
         {showHtmlSource ? (
           <div className="p-4">
             <Textarea
-              value={value || ''}
-              onChange={(e) => onChange(e.target.value)}
+              value={htmlValue || formatHtml(value || '')}
+              onChange={(e) => handleHtmlChange(e.target.value)}
               placeholder={placeholder}
               className="min-h-[450px] font-mono text-sm border-0 resize-none focus:outline-none html-editor"
             />
