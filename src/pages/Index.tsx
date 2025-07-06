@@ -31,13 +31,18 @@ const Index = () => {
     carCategory: "0" // All categories
   }).toString();
 
-  // Show campaign modal on page load
+  // Show campaign modal on page load - only once per session
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowCampaignModal(true);
-    }, 1500); // Show after 1.5 seconds
+    const hasSeenModal = sessionStorage.getItem('winter-campaign-modal-seen');
+    
+    if (!hasSeenModal) {
+      const timer = setTimeout(() => {
+        setShowCampaignModal(true);
+        sessionStorage.setItem('winter-campaign-modal-seen', 'true');
+      }, 1500); // Show after 1.5 seconds
 
-    return () => clearTimeout(timer);
+      return () => clearTimeout(timer);
+    }
   }, []);
 
   return (
