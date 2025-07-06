@@ -169,13 +169,8 @@ const VehicleCard = ({
             <div className="text-sm text-primary mt-1">
               <span className="block font-medium">
                 {hasDiscount ? (
-                  <span className="flex items-center gap-2">
-                    <span className="line-through text-gray-500">
-                      Total: ${totalRateBeforeDiscount?.toFixed(2)}
-                    </span>
-                    <span className="text-primary font-bold">
-                      ${totalRateAfterDiscount?.toFixed(2)}
-                    </span>
+                  <span className="text-primary font-bold">
+                    Total: ${totalRateAfterDiscount?.toFixed(2)}
                   </span>
                 ) : (
                   <span>Total: ${totalAmount.toFixed(2)}</span>
