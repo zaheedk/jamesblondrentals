@@ -71,6 +71,11 @@ const VehicleCard = ({
   const totalRateBeforeDiscount = totalRateAfterDiscount ? totalRateAfterDiscount + (totalDiscountAmount || 0) : null;
   const hasDiscount = totalRateBeforeDiscount && totalRateAfterDiscount && totalRateBeforeDiscount !== totalRateAfterDiscount;
   
+  // Check if there's a daily rate discount
+  const avgRate = (vehicle as any).avgrate || 0;
+  const discountedDailyRate = (vehicle as any).discounteddailyrate || 0;
+  const hasDailyDiscount = avgRate > 0 && discountedDailyRate > 0 && avgRate !== discountedDailyRate;
+  
   console.log(`Vehicle ${vehicle.make} ${vehicle.model} price calculation:`, {
     dailyRate: vehicle.dailyRate,
     ratesubtotal: vehicle.ratesubtotal,
@@ -131,7 +136,18 @@ const VehicleCard = ({
           </div>
           <div className="text-right">
             <div className="font-bold text-lg">
-              ${displayRate.toFixed(2)}
+              {hasDailyDiscount ? (
+                <span className="flex flex-col items-end">
+                  <span className="line-through text-gray-500 text-sm">
+                    ${avgRate.toFixed(2)}
+                  </span>
+                  <span className="text-primary">
+                    ${discountedDailyRate.toFixed(2)}
+                  </span>
+                </span>
+              ) : (
+                <span>${displayRate.toFixed(2)}</span>
+              )}
               {vehicle.rateperiod === "day" && <span className="text-sm font-normal text-gray-600 ml-1">per day</span>}
               {vehicle.rateperiod === "hour" && numberOfHours && (
                 <span className="text-sm font-normal text-gray-600 ml-1">
