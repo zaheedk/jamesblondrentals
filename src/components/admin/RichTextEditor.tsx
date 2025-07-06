@@ -1,5 +1,5 @@
 
-import React, { useCallback, useState, useRef } from 'react';
+import React, { useCallback, useState, useRef, useEffect } from 'react';
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { supabase } from '@/integrations/supabase/client';
@@ -207,27 +207,35 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
             border-collapse: collapse !important;
             width: 100% !important;
             margin: 10px 0 !important;
+            border: 2px solid #374151 !important;
           }
           
           .quill .ql-editor table td,
           .quill .ql-editor table th {
-            border: 1px solid #d1d5db !important;
+            border: 1px solid #6b7280 !important;
             padding: 8px 12px !important;
             min-width: 100px !important;
             background: white !important;
+            vertical-align: top !important;
           }
           
           .quill .ql-editor table th {
-            background: #f9fafb !important;
-            font-weight: 600 !important;
-          }
-          
-          .quill .ql-editor table tr:nth-child(even) {
-            background: #f9fafb !important;
-          }
-          
-          .quill .ql-editor table tr:hover {
             background: #f3f4f6 !important;
+            font-weight: 600 !important;
+            text-align: left !important;
+          }
+          
+          .quill .ql-editor table tr:nth-child(even) td {
+            background: #f9fafb !important;
+          }
+          
+          .quill .ql-editor table tr:hover td {
+            background: #f3f4f6 !important;
+          }
+          
+          /* HTML Editor table markup readability */
+          .html-editor {
+            line-height: 1.6 !important;
           }
         `
       }} />
@@ -323,10 +331,10 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
         {showHtmlSource ? (
           <div className="p-4">
             <Textarea
-              value={formatHtml(value || '')}
+              value={value || ''}
               onChange={(e) => onChange(e.target.value)}
               placeholder={placeholder}
-              className="min-h-[450px] font-mono text-sm border-0 resize-none focus:outline-none"
+              className="min-h-[450px] font-mono text-sm border-0 resize-none focus:outline-none html-editor"
             />
           </div>
         ) : (
