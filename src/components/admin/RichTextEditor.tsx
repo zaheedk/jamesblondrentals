@@ -93,6 +93,36 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     'align', 'link', 'image', 'blockquote', 'code-block'
   ];
 
+  const formatHtml = (html: string) => {
+    if (!html) return '';
+    
+    // Simple HTML formatter
+    let formatted = html
+      .replace(/></g, '>\n<')
+      .replace(/^\s+|\s+$/g, '');
+    
+    const lines = formatted.split('\n');
+    let indent = 0;
+    const indentSize = 2;
+    
+    return lines.map(line => {
+      const trimmed = line.trim();
+      if (!trimmed) return '';
+      
+      if (trimmed.startsWith('</')) {
+        indent = Math.max(0, indent - indentSize);
+      }
+      
+      const indentedLine = ' '.repeat(indent) + trimmed;
+      
+      if (trimmed.startsWith('<') && !trimmed.startsWith('</') && !trimmed.endsWith('/>') && !trimmed.includes('</')) {
+        indent += indentSize;
+      }
+      
+      return indentedLine;
+    }).join('\n');
+  };
+
   return (
     <div className="rich-text-editor">
       <div className="flex items-center justify-between mb-2">
@@ -122,7 +152,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
         {showHtmlSource ? (
           <div className="p-4">
             <Textarea
-              value={value || ''}
+              value={formatHtml(value || '')}
               onChange={(e) => onChange(e.target.value)}
               placeholder={placeholder}
               className="min-h-[450px] font-mono text-sm border-0 resize-none focus:outline-none"
