@@ -1,12 +1,20 @@
-import React, { useCallback, useState } from 'react';
-import ReactQuill from 'react-quill';
+import React, { useCallback, useState, useRef } from 'react';
+import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Code, Edit } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Code, Edit, Link, Upload, Table, Image, Video, Type, Palette } from 'lucide-react';
+import MediaLibrary from './MediaLibrary';
+
+// Import Quill modules
+// Note: Image resize might need to be imported differently based on the package
+// import ImageResize from 'quill-image-resize-module-react';
 
 interface RichTextEditorProps {
   value: string;
@@ -21,6 +29,55 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
 }) => {
   const { toast } = useToast();
   const [showHtmlSource, setShowHtmlSource] = useState(false);
+  const [showMediaLibrary, setShowMediaLibrary] = useState(false);
+  const [showLinkDialog, setShowLinkDialog] = useState(false);
+  const [linkUrl, setLinkUrl] = useState('');
+  const [linkText, setLinkText] = useState('');
+  const quillRef = useRef<ReactQuill>(null);
+
+  const insertLink = () => {
+    if (quillRef.current) {
+      const quill = quillRef.current.getEditor();
+      const range = quill.getSelection();
+      if (range) {
+        if (linkText) {
+          quill.insertText(range.index, linkText);
+          quill.formatText(range.index, linkText.length, 'link', linkUrl);
+        } else {
+          quill.format('link', linkUrl);
+        }
+      }
+    }
+    setShowLinkDialog(false);
+    setLinkUrl('');
+    setLinkText('');
+  };
+
+  const insertTable = () => {
+    if (quillRef.current) {
+      const quill = quillRef.current.getEditor();
+      const range = quill.getSelection();
+      if (range) {
+        const tableHtml = `
+          <table>
+            <tr><td>Cell 1</td><td>Cell 2</td></tr>
+            <tr><td>Cell 3</td><td>Cell 4</td></tr>
+          </table>
+        `;
+        quill.clipboard.dangerouslyPasteHTML(range.index, tableHtml);
+      }
+    }
+  };
+
+  const handleMediaSelect = (url: string) => {
+    if (quillRef.current) {
+      const quill = quillRef.current.getEditor();
+      const range = quill.getSelection();
+      if (range) {
+        quill.insertEmbed(range.index, 'image', url);
+      }
+    }
+  };
 
   const imageHandler = useCallback(async () => {
     const input = document.createElement('input');
@@ -71,26 +128,40 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   const modules = {
     toolbar: {
       container: [
+        [{ 'font': [] }],
+        [{ 'size': ['small', false, 'large', 'huge'] }],
         [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
         ['bold', 'italic', 'underline', 'strike'],
         [{ 'color': [] }, { 'background': [] }],
-        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        [{ 'script': 'sub'}, { 'script': 'super' }],
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }, { 'list': 'check' }],
         [{ 'indent': '-1'}, { 'indent': '+1' }],
+        [{ 'direction': 'rtl' }],
         [{ 'align': [] }],
-        ['link', 'image'],
+        ['link', 'image', 'video', 'formula'],
         ['blockquote', 'code-block'],
         ['clean']
       ],
       handlers: {
         image: imageHandler
       }
+    },
+    history: {
+      delay: 2000,
+      maxStack: 500,
+      userOnly: true
+    },
+    imageResize: {
+      parchment: true,
+      modules: ['Resize', 'DisplaySize']
     }
   };
 
   const formats = [
-    'header', 'bold', 'italic', 'underline', 'strike',
-    'color', 'background', 'list', 'bullet', 'indent',
-    'align', 'link', 'image', 'blockquote', 'code-block'
+    'font', 'size', 'header', 'bold', 'italic', 'underline', 'strike',
+    'color', 'background', 'script', 'list', 'bullet', 'check', 'indent',
+    'direction', 'align', 'link', 'image', 'video', 'formula', 
+    'blockquote', 'code-block'
   ];
 
   const formatHtml = (html: string) => {
@@ -157,7 +228,72 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
             HTML
           </Button>
         </div>
+        
+        <div className="flex gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            type="button"
+            onClick={() => setShowMediaLibrary(true)}
+          >
+            <Image className="h-4 w-4 mr-1" />
+            Media
+          </Button>
+          
+          <Dialog open={showLinkDialog} onOpenChange={setShowLinkDialog}>
+            <DialogTrigger asChild>
+              <Button size="sm" variant="outline" type="button">
+                <Link className="h-4 w-4 mr-1" />
+                Link
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Insert Link</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="linkUrl">URL</Label>
+                  <Input
+                    id="linkUrl"
+                    value={linkUrl}
+                    onChange={(e) => setLinkUrl(e.target.value)}
+                    placeholder="https://example.com"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="linkText">Link Text (optional)</Label>
+                  <Input
+                    id="linkText"
+                    value={linkText}
+                    onChange={(e) => setLinkText(e.target.value)}
+                    placeholder="Click here"
+                  />
+                </div>
+                <Button onClick={insertLink} disabled={!linkUrl}>
+                  Insert Link
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+          
+          <Button
+            size="sm"
+            variant="outline"
+            type="button"
+            onClick={insertTable}
+          >
+            <Table className="h-4 w-4 mr-1" />
+            Table
+          </Button>
+        </div>
       </div>
+      
+      <MediaLibrary
+        isOpen={showMediaLibrary}
+        onClose={() => setShowMediaLibrary(false)}
+        onSelect={handleMediaSelect}
+      />
       
       <ScrollArea className="h-[500px] w-full border rounded-md">
         {showHtmlSource ? (
@@ -171,11 +307,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           </div>
         ) : (
           <ReactQuill
-            ref={(el) => {
-              if (el) {
-                (window as any).quillEditor = el.getEditor();
-              }
-            }}
+            ref={quillRef}
             theme="snow"
             value={value}
             onChange={onChange}
