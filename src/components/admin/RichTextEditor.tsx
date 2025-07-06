@@ -100,6 +100,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           <Button
             variant={!showHtmlSource ? "default" : "outline"}
             size="sm"
+            type="button"
             onClick={() => setShowHtmlSource(false)}
           >
             <Edit className="h-4 w-4 mr-1" />
@@ -107,7 +108,8 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           </Button>
           <Button
             variant={showHtmlSource ? "default" : "outline"}
-            size="sm" 
+            size="sm"
+            type="button" 
             onClick={() => setShowHtmlSource(true)}
           >
             <Code className="h-4 w-4 mr-1" />
