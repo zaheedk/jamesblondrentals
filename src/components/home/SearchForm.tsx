@@ -36,7 +36,7 @@ const SearchForm = () => {
   const [sameLocation, setSameLocation] = useState(true);
   const [age, setAge] = useState("");
   const [carCategory, setCarCategory] = useState("0");
-  const [promoCode, setPromoCode] = useState("");
+  const [campaignCode, setCampaignCode] = useState("");
   const [isInitialized, setIsInitialized] = useState(false);
   const [isProcessingDates, setIsProcessingDates] = useState(false);
 
@@ -362,10 +362,10 @@ const SearchForm = () => {
       carCategory
     };
 
-    // Only add promo code if it's not empty
-    if (promoCode && promoCode.trim()) {
-      searchParamsObj.promoCode = promoCode.trim();
-      console.log("Including promo code in search:", promoCode.trim());
+    // Only add campaign code if it's not empty
+    if (campaignCode && campaignCode.trim()) {
+      searchParamsObj.campaignCode = campaignCode.trim();
+      console.log("Including campaign code in search:", campaignCode.trim());
     }
     
     const searchParams = new URLSearchParams(searchParamsObj);
@@ -503,13 +503,13 @@ const SearchForm = () => {
               />
               
               <div className="space-y-2 md:col-span-2">
-                <Label htmlFor="promo-code">Promo Code (Optional)</Label>
+                <Label htmlFor="campaign-code">Campaign Code (Optional)</Label>
                 <Input 
-                  id="promo-code" 
+                  id="campaign-code" 
                   type="text" 
-                  value={promoCode} 
-                  onChange={(e) => setPromoCode(e.target.value)}
-                  placeholder="Enter promo code" 
+                  value={campaignCode} 
+                  onChange={(e) => setCampaignCode(e.target.value)}
+                  placeholder="Enter campaign code" 
                 />
               </div>
             </div>

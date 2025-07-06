@@ -147,7 +147,7 @@ const InsuranceSelection = () => {
     if (data.dropoffTime) searchParams.set("dropoffTime", data.dropoffTime.toString());
     if (data.ageId) searchParams.set("age", data.ageId.toString());
     // Removed the vehicleCategoryTypeId parameter to avoid filtering
-    if (data.promoCode) searchParams.set("promoCode", data.promoCode);
+    if (data.campaignCode) searchParams.set("campaignCode", data.campaignCode);
     
     navigate(`/vehicles?${searchParams.toString()}`, {
       state: { 

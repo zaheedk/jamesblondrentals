@@ -66,7 +66,7 @@ export interface BookingSessionData {
   payment?: number;
   balancedue?: number;
   transmission?: number; // Added for API compatibility
-  promoCode?: string;    // Add the promoCode property to fix the TypeScript error
+  campaignCode?: string;    // Add the campaignCode property to fix the TypeScript error
   rentalDays?: number;   // Add the rentalDays property to fix the TypeScript error
   rateType?: "hourly" | "daily"; // Add the rate type property
 }

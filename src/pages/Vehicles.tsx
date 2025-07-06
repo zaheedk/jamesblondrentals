@@ -53,7 +53,7 @@ const Vehicles = () => {
   const dropoffTime = searchParams.get("dropoffTime") || "";
   const age = searchParams.get("age") || "";
   const carCategory = searchParams.get("carCategory") || "0";
-  const promoCode = searchParams.get("promoCode") || "";
+  const campaignCode = searchParams.get("campaignCode") || "";
 
   const getValidAgeId = () => {
     if (age && driverAges?.some(driverAge => String(driverAge.id) === age)) {
@@ -73,7 +73,7 @@ const Vehicles = () => {
     dropofftime: dropoffTime,
     ageid: getValidAgeId(),
     vehiclecategorytypeid: carCategory,
-    ...(promoCode && promoCode.trim() && { promocode: promoCode.trim() })
+    ...(campaignCode && campaignCode.trim() && { campaigncode: campaignCode.trim() })
   } : null;
 
   const { data: step2Data, isLoading: isLoadingStep2, error: step2Error, refetch: refetchStep2 } = useStep2Vehicles(step2Params);
