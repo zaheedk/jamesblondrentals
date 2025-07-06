@@ -172,7 +172,8 @@ const PaymentOptions = () => {
       console.log("Fetching booking details for reservation:", reservationRef);
       const response = await rcmApi.request<RCMBookingResponse>('POST', 'bookinginfo', {
         method: 'bookinginfo',
-        reservationref: reservationRef
+        reservationref: reservationRef,
+        ...(bookingDetails?.campaignCode && { campaigncode: bookingDetails.campaignCode })
       });
       
       console.log("Booking info API response:", response);

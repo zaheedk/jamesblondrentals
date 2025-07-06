@@ -52,7 +52,8 @@ const Payment = () => {
           method: "createdpspayment",
           reservationref: reservationRef,
           amount: paymentAmount,
-          returnurl: returnUrl
+          returnurl: returnUrl,
+          ...(bookingData?.campaignCode && { campaigncode: bookingData.campaignCode })
         };
 
         console.log('Payment request payload:', requestPayload);
@@ -101,7 +102,8 @@ const Payment = () => {
       const requestPayload = {
         method: "getdpspayment",
         reservationref: reservationRef,
-        result: windcaveResult
+        result: windcaveResult,
+        ...(bookingData?.campaignCode && { campaigncode: bookingData.campaignCode })
       };
       
       console.log('Payment status check payload:', requestPayload);
@@ -180,7 +182,8 @@ const Payment = () => {
         transactid: paymentInfo.RebillingToken || '',
         dpstxnref: paymentInfo.TransactionId,
         paysource: 'Payment from website',
-        transtype: "Payment"
+        transtype: "Payment",
+        ...(bookingData?.campaignCode && { campaigncode: bookingData.campaignCode })
       };
       
       console.log('Payment confirmation payload:', requestPayload);

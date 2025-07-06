@@ -417,6 +417,7 @@ export interface RCMPaymentRequest {
   reservationref: string;
   amount: number;
   returnurl: string;
+  campaigncode?: string;
 }
 
 export interface RCMPaymentResponse {
