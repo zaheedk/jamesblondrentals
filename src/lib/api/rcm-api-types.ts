@@ -124,6 +124,7 @@ export interface RCMAvailableCar {
   totalrateafterdiscount: number;
   totaldiscountamount: number;
   avgrate: number;
+  discounteddailyrate?: number;
   numberofdays: string;
   numberofadults: number;
   numberofchildren: number;

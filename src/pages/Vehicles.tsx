@@ -219,7 +219,9 @@ const Vehicles = () => {
           discountAmount: car.totaldiscountamount,
           numberofhours: numberofhours,
           rateperiod: rateperiod,
-          ratesubtotal: ratesubtotal
+          ratesubtotal: ratesubtotal,
+          avgrate: car.avgrate || 0,
+          discounteddailyrate: car.discounteddailyrate || 0
         };
       });
       
