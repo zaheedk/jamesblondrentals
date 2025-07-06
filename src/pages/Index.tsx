@@ -40,7 +40,7 @@ const Index = () => {
                 <h3 className="text-xl font-bold text-white">Winter Premium Special!</h3>
               </div>
               <p className="text-white/90 text-lg mb-4">
-                <span className="font-bold text-yellow-300">Save 20%</span> on all Premium Vehicle rentals with code <span className="font-mono bg-white/20 px-2 py-1 rounded text-white font-bold">WINTER25</span>
+                <span className="font-bold text-yellow-300">Save 25%</span> on all Premium Vehicle rentals with code <span className="font-mono bg-white/20 px-2 py-1 rounded text-white font-bold">WINTER25</span>
               </p>
               <div className="flex flex-col sm:flex-row gap-2 justify-center items-center text-sm text-white/80">
                 <span>📅 Valid until 31st August</span>
