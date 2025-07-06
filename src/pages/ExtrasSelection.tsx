@@ -49,6 +49,7 @@ const ExtrasSelectionPage = () => {
       dropoffdate: data.dropoffDate,
       dropofftime: data.dropoffTime,
       ageid: data.ageId,
+      ...(data.campaignCode && { campaigncode: data.campaignCode })
     })
     .then((response) => {
       setRawApiResponse(response);
