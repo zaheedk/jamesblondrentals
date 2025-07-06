@@ -177,9 +177,33 @@ const PaymentSuccess = () => {
         ? parseInt(bookingDetails.driverageId) || 4 
         : bookingDetails.driverageId || 4;
         
-      const insuranceid = typeof bookingDetails.insuranceId === 'string' 
-        ? parseInt(bookingDetails.insuranceId) || 0 
-        : bookingDetails.insuranceId || 0;
+      // Get insurance ID from API response if available
+      let insuranceid = 0;
+      if (customerInfo && sessionData?.reservationRef) {
+        try {
+          const response = await rcmApi.request<RCMBookingResponse>('POST', 'bookinginfo', {
+            method: 'bookinginfo',
+            reservationref: sessionData.reservationRef
+          });
+          
+          if (response.status === "OK" && response.results?.extrafees) {
+            const insuranceFee = response.results.extrafees.find((fee: any) => fee.isinsurancefee === true);
+            if (insuranceFee) {
+              insuranceid = (insuranceFee as any).extrafeeid || 0;
+              console.log("Found insurance ID from API:", insuranceid);
+            }
+          }
+        } catch (error) {
+          console.error("Failed to fetch insurance ID from API:", error);
+        }
+      }
+      
+      // Fallback to booking details if API call failed
+      if (insuranceid === 0) {
+        insuranceid = typeof bookingDetails.insuranceId === 'string' 
+          ? parseInt(bookingDetails.insuranceId) || 0 
+          : bookingDetails.insuranceId || 0;
+      }
         
       const extrakmsid = typeof bookingDetails.extraKmsId === 'string' 
         ? parseInt(bookingDetails.extraKmsId) || 0 
