@@ -1,3 +1,4 @@
+
 import React, { useCallback, useState, useRef } from 'react';
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -200,6 +201,33 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
             z-index: 10 !important;
             background: white !important;
             border-bottom: 1px solid #e5e7eb !important;
+          }
+          
+          .quill .ql-editor table {
+            border-collapse: collapse !important;
+            width: 100% !important;
+            margin: 10px 0 !important;
+          }
+          
+          .quill .ql-editor table td,
+          .quill .ql-editor table th {
+            border: 1px solid #d1d5db !important;
+            padding: 8px 12px !important;
+            min-width: 100px !important;
+            background: white !important;
+          }
+          
+          .quill .ql-editor table th {
+            background: #f9fafb !important;
+            font-weight: 600 !important;
+          }
+          
+          .quill .ql-editor table tr:nth-child(even) {
+            background: #f9fafb !important;
+          }
+          
+          .quill .ql-editor table tr:hover {
+            background: #f3f4f6 !important;
           }
         `
       }} />
