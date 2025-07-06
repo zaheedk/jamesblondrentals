@@ -148,66 +148,36 @@ const ClientSideScraper: React.FC = () => {
       // Build booking URL with dates for HireAce
       let searchUrl = website.bookingUrl;
       if (website.name === 'hireace.co.nz') {
-        // Add date parameters to HireAce booking URL
+        // HireAce uses specific date format and parameters
         const urlParams = new URLSearchParams({
-          pickup_date: pickupDate,
-          return_date: dropoffDateStr,
-          pickup_location: 'Henderson', // Default location
-          return_location: 'Henderson'
+          'pickup-date': pickupDate,
+          'return-date': dropoffDateStr,
+          'pickup-location': 'Henderson', 
+          'return-location': 'Henderson'
         });
         searchUrl = `${website.bookingUrl}?${urlParams.toString()}`;
       }
 
-      // Create a hidden iframe to load the booking page with dates
-      const iframe = document.createElement('iframe');
-      iframe.style.display = 'none';
-      iframe.src = `https://api.allorigins.win/get?url=${encodeURIComponent(searchUrl)}`;
-      document.body.appendChild(iframe);
+      try {
+        // Use direct fetch with proxy instead of iframe
+        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(searchUrl)}`;
+        console.log(`Fetching ${website.name} for ${periodDays} days from:`, searchUrl);
+        
+        const response = await fetch(proxyUrl);
+        const data = await response.json();
+        
+        if (data.contents) {
+          // Parse rates from content based on website and period
+          const parsedRates = parseRatesFromContent(data.contents, website.name, periodDays);
+          rates.push(...parsedRates);
+          console.log(`Found ${parsedRates.length} rates for ${website.name} (${periodDays} days)`);
+        } else {
+          console.warn(`No content returned for ${website.name} (${periodDays} days)`);
+        }
 
-      await new Promise<void>((resolve) => {
-        const timeout = setTimeout(() => {
-          if (document.body.contains(iframe)) {
-            document.body.removeChild(iframe);
-          }
-          resolve();
-        }, 10000); // 10 second timeout per period
-
-        iframe.onload = async () => {
-          try {
-            // Wait for dynamic content to load
-            await new Promise(resolve => setTimeout(resolve, 2000));
-
-            // Try to access iframe content
-            let content = '';
-            try {
-              if (iframe.contentDocument) {
-                content = iframe.contentDocument.body.innerHTML;
-              } else if (iframe.contentWindow) {
-                content = iframe.contentWindow.document.body.innerHTML;
-              }
-            } catch (e) {
-              // CORS blocked - use proxy approach
-              const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(searchUrl)}`;
-              const response = await fetch(proxyUrl);
-              const data = await response.json();
-              content = data.contents;
-            }
-
-            // Parse rates from content based on website and period
-            const parsedRates = parseRatesFromContent(content, website.name, periodDays);
-            rates.push(...parsedRates);
-
-          } catch (error) {
-            console.error(`Error processing ${website.name} for ${periodDays} days:`, error);
-          } finally {
-            clearTimeout(timeout);
-            if (document.body.contains(iframe)) {
-              document.body.removeChild(iframe);
-            }
-            resolve();
-          }
-        };
-      });
+      } catch (error) {
+        console.error(`Error processing ${website.name} for ${periodDays} days:`, error);
+      }
     }
 
     return rates;
