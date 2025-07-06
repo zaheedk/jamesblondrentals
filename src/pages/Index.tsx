@@ -425,9 +425,8 @@ const Index = () => {
               variant="secondary" 
               size="lg" 
               className="w-full"
-              asChild
             >
-              <Link to="/vehicles">Browse Premium Vehicles</Link>
+              Close
             </Button>
           </div>
         </DialogContent>
