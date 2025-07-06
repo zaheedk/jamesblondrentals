@@ -10,7 +10,6 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Car, Save } from "lucide-react";
 import PaymentSummary from "@/components/payment/PaymentSummary";
 import RentalDetails from "@/components/payment/RentalDetails";
-import DebugInfo from "@/components/payment/DebugInfo";
 import { rcmApi } from "@/lib/api/rcm-api";
 import { RCMBookingResponse } from "@/lib/api/rcm-api-types";
 import { format, addDays } from "date-fns";
@@ -29,9 +28,6 @@ const PaymentOptions = () => {
   const [rentalDays, setRentalDays] = useState(1);
   const [totalCost, setTotalCost] = useState(0);
   const [bookingInfoTotalCost, setBookingInfoTotalCost] = useState<number | undefined>(undefined);
-  const [rcmApiResponse, setRcmApiResponse] = useState<any>(null);
-  const [lastApiCall, setLastApiCall] = useState<string>('');
-  const [lastRequestDetails, setLastRequestDetails] = useState<any>(null);
   const { useLocationDetails } = useRcmApi();
   const { data: locationDetails } = useLocationDetails();
 
@@ -173,15 +169,12 @@ const PaymentOptions = () => {
   const fetchBookingDetails = async (reservationRef: string) => {
     try {
       console.log("Fetching booking details for reservation:", reservationRef);
-      setLastApiCall('bookinginfo');
       const response = await rcmApi.request<RCMBookingResponse>('POST', 'bookinginfo', {
         method: 'bookinginfo',
         reservationref: reservationRef
       });
       
       console.log("Booking info API response:", response);
-      setRcmApiResponse(response);
-      setLastRequestDetails(rcmApi.getLastRequestDetails());
       
       if (response.status === "OK") {
         if (response.results?.bookinginfo?.[0]?.totalcost) {
@@ -481,12 +474,6 @@ const PaymentOptions = () => {
             </Button>
           </form>
         </div>
-        
-        <DebugInfo 
-          apiResponse={rcmApiResponse}
-          bookingData={bookingDetails}
-          requestDetails={lastRequestDetails}
-        />
       </div>
     </div>
   );
