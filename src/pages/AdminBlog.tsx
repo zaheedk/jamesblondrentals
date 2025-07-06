@@ -119,12 +119,20 @@ const AdminBlog = () => {
           <h1 className="text-3xl font-bold mb-2">Blog Administration</h1>
           <p className="text-muted-foreground">Manage your blog articles</p>
         </div>
-        <Button asChild>
-          <Link to="/admin/blog/new">
-            <Plus className="h-4 w-4 mr-2" />
-            New Article
-          </Link>
-        </Button>
+        <div className="flex gap-2">
+          <Button asChild variant="outline">
+            <Link to="/admin/vehicle-rates">
+              <Eye className="h-4 w-4 mr-2" />
+              Vehicle Rates
+            </Link>
+          </Button>
+          <Button asChild>
+            <Link to="/admin/blog/new">
+              <Plus className="h-4 w-4 mr-2" />
+              New Article
+            </Link>
+          </Button>
+        </div>
       </div>
 
       <Card>
