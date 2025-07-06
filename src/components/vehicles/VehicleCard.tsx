@@ -151,18 +151,7 @@ const VehicleCard = ({
           </div>
           <div className="text-right">
             <div className="font-bold text-lg">
-              {hasDailyDiscount ? (
-                <span className="flex items-center gap-2">
-                  <span className="line-through text-gray-500 text-sm">
-                    ${avgRate.toFixed(2)}
-                  </span>
-                  <span className="text-primary">
-                    ${discountedDailyRate.toFixed(2)}
-                  </span>
-                </span>
-              ) : (
-                <span>${displayRate.toFixed(2)}</span>
-              )}
+              <span>${displayRate.toFixed(2)}</span>
               {vehicle.rateperiod === "day" && <span className="text-sm font-normal text-gray-600 ml-1">per day</span>}
               {vehicle.rateperiod === "hour" && numberOfHours && (
                 <span className="text-sm font-normal text-gray-600 ml-1">
