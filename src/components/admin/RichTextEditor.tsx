@@ -125,6 +125,17 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
 
   return (
     <div className="rich-text-editor">
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          .quill .ql-toolbar {
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 10 !important;
+            background: white !important;
+            border-bottom: 1px solid #e5e7eb !important;
+          }
+        `
+      }} />
       <div className="flex items-center justify-between mb-2">
         <div className="flex gap-2">
           <Button
