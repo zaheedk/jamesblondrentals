@@ -1,1 +1,4 @@
 project_id = "jlwvqbrtdzwrcwelyylv"
+
+[functions.scrape-vehicle-rates]
+verify_jwt = false

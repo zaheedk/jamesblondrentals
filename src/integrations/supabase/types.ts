@@ -84,6 +84,39 @@ export type Database = {
         }
         Relationships: []
       }
+      vehicle_rental_rates: {
+        Row: {
+          created_at: string
+          daily_rate: number | null
+          id: string
+          rental_period_days: number
+          scraped_at: string
+          updated_at: string
+          vehicle_category: string
+          website_name: string
+        }
+        Insert: {
+          created_at?: string
+          daily_rate?: number | null
+          id?: string
+          rental_period_days: number
+          scraped_at?: string
+          updated_at?: string
+          vehicle_category: string
+          website_name: string
+        }
+        Update: {
+          created_at?: string
+          daily_rate?: number | null
+          id?: string
+          rental_period_days?: number
+          scraped_at?: string
+          updated_at?: string
+          vehicle_category?: string
+          website_name?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
