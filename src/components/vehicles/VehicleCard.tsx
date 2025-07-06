@@ -76,6 +76,17 @@ const VehicleCard = ({
   const discountedDailyRate = (vehicle as any).discounteddailyrate || 0;
   const hasDailyDiscount = hasDiscount && avgRate > 0 && discountedDailyRate > 0;
   
+  console.log(`Vehicle ${vehicle.make} ${vehicle.model} discount debug:`, {
+    hasDiscount,
+    totalRateAfterDiscount,
+    totalRateBeforeDiscount,
+    totalDiscountAmount,
+    avgRate,
+    discountedDailyRate,
+    hasDailyDiscount,
+    vehicleType: vehicle.type
+  });
+  
   console.log(`Vehicle ${vehicle.make} ${vehicle.model} price calculation:`, {
     dailyRate: vehicle.dailyRate,
     ratesubtotal: vehicle.ratesubtotal,
@@ -137,8 +148,8 @@ const VehicleCard = ({
           <div className="text-right">
             <div className="font-bold text-lg">
               {hasDailyDiscount ? (
-                <span className="flex flex-col items-end">
-                  <span className="line-through text-gray-500 text-sm">
+                <span className="flex items-center gap-2">
+                  <span className="line-through text-gray-500">
                     ${avgRate.toFixed(2)}
                   </span>
                   <span className="text-primary">
