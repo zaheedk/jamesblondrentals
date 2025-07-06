@@ -7,14 +7,13 @@ import { getBookingData, updateBookingData } from "@/lib/booking-session";
 import { Label } from "@/components/ui/label";
 import { formatCurrency } from "@/lib/utils";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Car, Save, MessageCircle } from "lucide-react";
+import { Car, Save } from "lucide-react";
 import PaymentSummary from "@/components/payment/PaymentSummary";
 import RentalDetails from "@/components/payment/RentalDetails";
 import { rcmApi } from "@/lib/api/rcm-api";
 import { RCMBookingResponse } from "@/lib/api/rcm-api-types";
 import { format, addDays } from "date-fns";
 import { useRcmApi } from "@/hooks/use-rcm-api";
-import { useWhatsApp } from "@/hooks/use-whatsapp";
 
 const DEPOSIT_AMOUNT = 50;
 
@@ -29,11 +28,8 @@ const PaymentOptions = () => {
   const [rentalDays, setRentalDays] = useState(1);
   const [totalCost, setTotalCost] = useState(0);
   const [bookingInfoTotalCost, setBookingInfoTotalCost] = useState<number | undefined>(undefined);
-  const [isSendingWhatsApp, setIsSendingWhatsApp] = useState(false);
-
   const { useLocationDetails } = useRcmApi();
   const { data: locationDetails } = useLocationDetails();
-  const { sendBookingConfirmation } = useWhatsApp();
 
   useEffect(() => {
     const bookingData = getBookingData();
@@ -210,43 +206,6 @@ const PaymentOptions = () => {
   const handleImageError = () => {
     console.log("Error loading vehicle image");
     setImageError(true);
-  };
-
-  const handleSendWhatsApp = async () => {
-    setIsSendingWhatsApp(true);
-    
-    try {
-      if (!bookingDetails) {
-        toast.error("No booking details available");
-        return;
-      }
-
-      const whatsAppData = {
-        customerName: bookingDetails.customerFirstName || "Customer",
-        customerPhone: bookingDetails.customerPhone || "",
-        vehicleName: bookingDetails.vehicleName || "Vehicle",
-        pickupDate: bookingDetails.pickupDate || "",
-        dropoffDate: bookingDetails.dropoffDate || "",
-        pickupLocation: bookingDetails.pickupLocationName || "Location",
-        bookingReference: bookingDetails.reservationRef || "N/A",
-        totalAmount: totalCost
-      };
-
-      console.log("Sending WhatsApp with data:", whatsAppData);
-
-      const success = await sendBookingConfirmation(whatsAppData);
-      
-      if (success) {
-        toast.success("WhatsApp message sent successfully!");
-      } else {
-        toast.error("Failed to send WhatsApp message");
-      }
-    } catch (error) {
-      console.error("Error sending WhatsApp:", error);
-      toast.error("Error sending WhatsApp message");
-    } finally {
-      setIsSendingWhatsApp(false);
-    }
   };
 
   const handleSaveQuotation = async () => {
@@ -511,23 +470,6 @@ const PaymentOptions = () => {
             >
               <Save className="mr-2" />
               Save Quotation
-            </Button>
-
-            <Button 
-              type="button"
-              variant="outline"
-              onClick={handleSendWhatsApp}
-              disabled={isSendingWhatsApp}
-              className="w-full"
-            >
-              <MessageCircle className="mr-2" />
-              {isSendingWhatsApp ? (
-                <>
-                  <span className="animate-spin mr-2">◌</span> Sending WhatsApp...
-                </>
-              ) : (
-                "Send WhatsApp Confirmation"
-              )}
             </Button>
           </form>
         </div>
