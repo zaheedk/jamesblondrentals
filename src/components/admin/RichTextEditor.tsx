@@ -150,10 +150,6 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       delay: 2000,
       maxStack: 500,
       userOnly: true
-    },
-    imageResize: {
-      parchment: true,
-      modules: ['Resize', 'DisplaySize']
     }
   };
 
