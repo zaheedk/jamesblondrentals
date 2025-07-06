@@ -149,7 +149,7 @@ const VehicleCard = ({
             <div className="font-bold text-lg">
               {hasDailyDiscount ? (
                 <span className="flex items-center gap-2">
-                  <span className="line-through text-gray-500">
+                  <span className="line-through text-gray-500 text-sm">
                     ${avgRate.toFixed(2)}
                   </span>
                   <span className="text-primary">
