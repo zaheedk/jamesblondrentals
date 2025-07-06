@@ -37,54 +37,8 @@ class WhatsAppService {
   private accessToken = import.meta.env.VITE_WHATSAPP_ACCESS_TOKEN || '';
 
   private async sendMessage(message: WhatsAppMessage): Promise<boolean> {
-    try {
-      console.log('Sending WhatsApp message:', {
-        phoneNumberId: this.phoneNumberId,
-        to: message.to,
-        messageType: message.type
-      });
-
-      if (!this.phoneNumberId || !this.accessToken) {
-        console.error('WhatsApp configuration missing:', {
-          hasPhoneNumberId: !!this.phoneNumberId,
-          hasAccessToken: !!this.accessToken
-        });
-        return false;
-      }
-
-      // Check if phone number is valid before sending
-      if (!message.to || message.to.trim() === '') {
-        console.error('Invalid or empty phone number provided:', message.to);
-        return false;
-      }
-
-      const url = `${this.baseUrl}/${this.phoneNumberId}/messages`;
-      console.log('WhatsApp API URL:', url);
-
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${this.accessToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(message),
-      });
-
-      const responseText = await response.text();
-      console.log('WhatsApp API response status:', response.status);
-      console.log('WhatsApp API response:', responseText);
-
-      if (!response.ok) {
-        console.error('WhatsApp API error:', responseText);
-        return false;
-      }
-
-      console.log('WhatsApp message sent successfully');
-      return true;
-    } catch (error) {
-      console.error('Error sending WhatsApp message:', error);
-      return false;
-    }
+    console.log('WhatsApp functionality is disabled');
+    return false;
   }
 
   async sendBookingConfirmation(bookingDetails: BookingDetails): Promise<boolean> {

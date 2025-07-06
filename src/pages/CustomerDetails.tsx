@@ -172,7 +172,8 @@ const CustomerDetails = () => {
               : "Proceeding to payment")
         });
         
-        // Send WhatsApp notification
+        // WhatsApp functionality disabled
+        /*
         if (formData.phone) {
           await sendBookingConfirmation({
             customerName: `${formData.firstName} ${formData.lastName}`,
@@ -185,6 +186,7 @@ const CustomerDetails = () => {
             totalAmount: bookingData.totalcost || bookingData.basePrice || 0
           });
         }
+        */
         
         return response;
       } else {
