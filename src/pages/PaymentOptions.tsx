@@ -31,6 +31,7 @@ const PaymentOptions = () => {
   const [bookingInfoTotalCost, setBookingInfoTotalCost] = useState<number | undefined>(undefined);
   const [rcmApiResponse, setRcmApiResponse] = useState<any>(null);
   const [lastApiCall, setLastApiCall] = useState<string>('');
+  const [lastRequestDetails, setLastRequestDetails] = useState<any>(null);
   const { useLocationDetails } = useRcmApi();
   const { data: locationDetails } = useLocationDetails();
 
@@ -180,6 +181,7 @@ const PaymentOptions = () => {
       
       console.log("Booking info API response:", response);
       setRcmApiResponse(response);
+      setLastRequestDetails(rcmApi.getLastRequestDetails());
       
       if (response.status === "OK") {
         if (response.results?.bookinginfo?.[0]?.totalcost) {
@@ -482,6 +484,7 @@ const PaymentOptions = () => {
         <DebugInfo 
           apiResponse={rcmApiResponse}
           bookingData={bookingDetails}
+          requestDetails={lastRequestDetails}
         />
       </div>
     </div>

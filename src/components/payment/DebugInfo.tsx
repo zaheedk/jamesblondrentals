@@ -4,6 +4,7 @@ import React from 'react';
 interface DebugInfoProps {
   apiResponse: any;
   bookingData?: any;
+  requestDetails?: any;
   windcaveResponseDetails?: {
     amount?: number;
     transactionDate?: string;
@@ -18,14 +19,23 @@ interface DebugInfoProps {
   };
 }
 
-const DebugInfo = ({ apiResponse, bookingData, windcaveResponseDetails = {} }: DebugInfoProps) => {
-  const hasData = apiResponse || bookingData || windcaveResponseDetails.status;
+const DebugInfo = ({ apiResponse, bookingData, requestDetails, windcaveResponseDetails = {} }: DebugInfoProps) => {
+  const hasData = apiResponse || bookingData || requestDetails || windcaveResponseDetails.status;
   
   if (!hasData) return null;
 
   return (
     <div className="mt-8 border-t pt-4">
       <h2 className="text-xl font-bold mb-2">Debug Information</h2>
+      
+      {requestDetails && (
+        <div className="bg-gray-100 rounded-lg p-4 mb-4 overflow-auto max-h-60">
+          <h3 className="text-lg font-semibold mb-2">API Request Details</h3>
+          <pre className="text-xs whitespace-pre-wrap">
+            {JSON.stringify(requestDetails, null, 2)}
+          </pre>
+        </div>
+      )}
       
       {bookingData && (
         <div className="bg-gray-100 rounded-lg p-4 mb-4 overflow-auto max-h-60">
