@@ -1,5 +1,6 @@
 import React from 'react';
 import VehicleRateScraper from '@/components/admin/VehicleRateScraper';
+import ClientSideScraper from '@/components/admin/ClientSideScraper';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useVehicleRates } from '@/hooks/use-vehicle-rates';
@@ -145,7 +146,8 @@ const AdminVehicleRates: React.FC = () => {
         </TabsList>
 
         <TabsContent value="scraper">
-          <VehicleRateScraper />
+      <VehicleRateScraper />
+      <ClientSideScraper />
         </TabsContent>
 
         <TabsContent value="analysis">
