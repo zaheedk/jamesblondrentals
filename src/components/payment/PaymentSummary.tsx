@@ -124,7 +124,7 @@ const PaymentSummary = ({
         
         <div className="border-t border-gray-300 mt-2 pt-2">
           <div className="flex justify-between font-semibold">
-            <span>Total Rental Cost</span>
+            <span>Total Cost including Refundable Bond</span>
             <span>{formatCurrency(displayTotalCost)}</span>
           </div>
           
