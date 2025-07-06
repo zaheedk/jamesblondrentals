@@ -306,6 +306,7 @@ const PaymentOptions = () => {
         transmission: sessionData?.transmission || 0,
         insuranceid: insuranceid,
         extrakmsid: extrakmsid,
+        campaigncode: bookingDetails.campaignCode || sessionData?.campaignCode || "",
         customer: {
           firstname: customerInfo?.firstname || bookingDetails.customerFirstName || sessionData?.customerFirstName || "Guest",
           lastname: customerInfo?.lastname || bookingDetails.customerLastName || sessionData?.customerLastName || "Customer",
