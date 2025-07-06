@@ -30,6 +30,28 @@ const Index = () => {
     <div>
       <Hero />
       
+      {/* Winter Campaign Banner */}
+      <section className="bg-gradient-to-r from-primary to-primary/90 py-4">
+        <div className="container mx-auto container-padding">
+          <div className="text-center">
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
+              <div className="flex items-center justify-center gap-3 mb-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>
+                <h3 className="text-xl font-bold text-white">Winter Premium Special!</h3>
+              </div>
+              <p className="text-white/90 text-lg mb-4">
+                <span className="font-bold text-yellow-300">Save 20%</span> on all Premium Vehicle rentals with code <span className="font-mono bg-white/20 px-2 py-1 rounded text-white font-bold">WINTER25</span>
+              </p>
+              <div className="flex flex-col sm:flex-row gap-2 justify-center items-center text-sm text-white/80">
+                <span>📅 Valid until 31st August</span>
+                <span className="hidden sm:inline">•</span>
+                <span>⏰ Minimum 3 days rental required</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
       <FeaturedVehicles />
       
       {/* About James Blond Section */}
