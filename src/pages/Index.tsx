@@ -3,8 +3,13 @@ import { Button } from "@/components/ui/button";
 import Hero from "@/components/home/Hero";
 import FeaturedVehicles from "@/components/home/FeaturedVehicles";
 import { format } from "date-fns";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useState, useEffect } from "react";
+import { X } from "lucide-react";
 
 const Index = () => {
+  const [showCampaignModal, setShowCampaignModal] = useState(false);
+
   // Get today's date at noon as the default pickup date
   const today = new Date();
   today.setHours(12, 0, 0, 0);
@@ -25,6 +30,15 @@ const Index = () => {
     age: "4", // Default age group
     carCategory: "0" // All categories
   }).toString();
+
+  // Show campaign modal on page load
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowCampaignModal(true);
+    }, 1500); // Show after 1.5 seconds
+
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div>
@@ -372,6 +386,52 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Campaign Modal */}
+      <Dialog open={showCampaignModal} onOpenChange={setShowCampaignModal}>
+        <DialogContent className="sm:max-w-md bg-gradient-to-r from-primary to-primary/90 border-primary/30">
+          <div className="absolute right-4 top-4">
+            <button
+              onClick={() => setShowCampaignModal(false)}
+              className="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+            >
+              <X className="h-4 w-4 text-white" />
+              <span className="sr-only">Close</span>
+            </button>
+          </div>
+          <div className="text-center">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>
+              <DialogTitle className="text-2xl font-bold text-white">Winter Premium Special!</DialogTitle>
+            </div>
+            <p className="text-white/90 text-lg mb-6">
+              <span className="font-bold text-yellow-300">Save 25%</span> on all Premium Cars and People Movers with code
+            </p>
+            <div className="bg-white/20 rounded-lg p-4 mb-6">
+              <span className="font-mono text-2xl font-bold text-white">WINTER25</span>
+            </div>
+            <div className="space-y-2 text-sm text-white/90 mb-6">
+              <div className="flex items-center justify-center gap-2">
+                <span>📅</span>
+                <span>Valid until 31st August</span>
+              </div>
+              <div className="flex items-center justify-center gap-2">
+                <span>⏰</span>
+                <span>Minimum 3 days rental required</span>
+              </div>
+            </div>
+            <Button 
+              onClick={() => setShowCampaignModal(false)}
+              variant="secondary" 
+              size="lg" 
+              className="w-full"
+              asChild
+            >
+              <Link to="/vehicles">Browse Premium Vehicles</Link>
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
