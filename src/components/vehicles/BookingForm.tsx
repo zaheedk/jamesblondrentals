@@ -20,6 +20,7 @@ interface BookingFormProps {
   vehicleImageUrl?: string;
   totalRateAfterDiscount?: number;
   totalDiscountAmount?: number;
+  campaignCode?: string;
 }
 
 // NZ timezone constant
@@ -38,7 +39,8 @@ export default function BookingForm({
   ageId,
   vehicleImageUrl,
   totalRateAfterDiscount,
-  totalDiscountAmount
+  totalDiscountAmount,
+  campaignCode
 }: BookingFormProps) {
   const navigate = useNavigate();
   
@@ -197,7 +199,8 @@ export default function BookingForm({
       totalRateAfterDiscount,
       totalDiscountAmount,
       vehicleImage: vehicleImageUrl || getFirstVehicleImage(vehicle),
-      rateType: isHourlyRate() ? 'hourly' : 'daily' // Add rate type to booking data
+      rateType: isHourlyRate() ? 'hourly' : 'daily', // Add rate type to booking data
+      campaignCode: campaignCode || ""
     });
     
     navigate('/booking');
@@ -222,6 +225,7 @@ export default function BookingForm({
       <input type="hidden" name="totalRateAfterDiscount" value={totalRateAfterDiscount?.toString() || ''} />
       <input type="hidden" name="totalDiscountAmount" value={totalDiscountAmount?.toString() || ''} />
       <input type="hidden" name="rateType" value={isHourlyRate() ? 'hourly' : 'daily'} />
+      <input type="hidden" name="campaignCode" value={campaignCode || ''} />
       
       <Button type="submit" className="w-full">
         Book Now

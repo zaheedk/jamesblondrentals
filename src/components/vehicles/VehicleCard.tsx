@@ -203,6 +203,7 @@ const VehicleCard = ({
             vehicleImageUrl={imageUrl}
             totalRateAfterDiscount={displayRate}
             totalDiscountAmount={totalDiscountAmount}
+            campaignCode={searchParams.get("campaignCode") || ""}
           />
         ) : (
           <div className="w-full p-2 bg-gray-100 text-gray-500 text-center rounded">
