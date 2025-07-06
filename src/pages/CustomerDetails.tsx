@@ -120,6 +120,7 @@ const CustomerDetails = () => {
         extrakmsid: bookingData.extraKmsId || "0",
         // Include optional fees (extras) with correct qty parameter
         optionalfees: optionalFees,
+        campaigncode: bookingData.campaignCode || "",
         customer: {
           firstname: formData.firstName,
           lastname: formData.lastName,
