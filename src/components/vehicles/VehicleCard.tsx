@@ -71,10 +71,10 @@ const VehicleCard = ({
   const totalRateBeforeDiscount = totalRateAfterDiscount ? totalRateAfterDiscount + (totalDiscountAmount || 0) : null;
   const hasDiscount = totalRateBeforeDiscount && totalRateAfterDiscount && totalRateBeforeDiscount !== totalRateAfterDiscount;
   
-  // Check if there's a daily rate discount
+  // Check if there's a daily rate discount based on total rate differences
   const avgRate = (vehicle as any).avgrate || 0;
   const discountedDailyRate = (vehicle as any).discounteddailyrate || 0;
-  const hasDailyDiscount = avgRate > 0 && discountedDailyRate > 0 && avgRate !== discountedDailyRate;
+  const hasDailyDiscount = hasDiscount && avgRate > 0 && discountedDailyRate > 0;
   
   console.log(`Vehicle ${vehicle.make} ${vehicle.model} price calculation:`, {
     dailyRate: vehicle.dailyRate,
