@@ -5,7 +5,8 @@ import FeaturedVehicles from "@/components/home/FeaturedVehicles";
 import { format } from "date-fns";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useState, useEffect } from "react";
-import { X } from "lucide-react";
+import { X, Truck } from "lucide-react";
+import truckPromoBanner from "@/assets/truck-promo-banner.jpg";
 
 const Index = () => {
   const [showCampaignModal, setShowCampaignModal] = useState(false);
@@ -72,6 +73,72 @@ const Index = () => {
       </section>
       
       <FeaturedVehicles />
+      
+      {/* Truck & Jumbo Van Monday-Thursday Discount Banner */}
+      <section className="relative min-h-[400px] overflow-hidden">
+        <div 
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: `url(${truckPromoBanner})`,
+          }}
+          aria-hidden="true"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/60"></div>
+        
+        <div className="container mx-auto container-padding py-16 relative z-10">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <Truck className="h-10 w-10 text-yellow-400" />
+              <h2 className="text-4xl md:text-5xl font-bold text-white">
+                Weekday Truck Special!
+              </h2>
+              <Truck className="h-10 w-10 text-yellow-400" />
+            </div>
+            
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 mb-8">
+              <div className="text-center mb-6">
+                <div className="text-6xl md:text-7xl font-bold text-yellow-400 mb-2">25%</div>
+                <div className="text-2xl md:text-3xl font-bold text-white mb-4">OFF</div>
+                <p className="text-xl md:text-2xl text-white/95 font-semibold">
+                  All Trucks & Jumbo Vans
+                </p>
+              </div>
+              
+              <div className="flex items-center justify-center gap-2 mb-6">
+                <div className="bg-yellow-400/20 px-4 py-2 rounded-lg border border-yellow-400/30">
+                  <span className="text-yellow-400 font-bold text-lg">Monday to Thursday Rentals</span>
+                </div>
+              </div>
+              
+              <p className="text-white/90 text-lg mb-6">
+                Perfect for business moves, deliveries, and large cargo transportation during weekdays.
+                Same week pickup and dropoff required.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <Button asChild size="lg" className="bg-yellow-400 hover:bg-yellow-500 text-black font-bold min-w-48">
+                  <Link to="/fleet/trucks">View Trucks</Link>
+                </Button>
+                <Button asChild size="lg" variant="outline" className="bg-white/10 border-white/30 text-white hover:bg-white hover:text-black min-w-48">
+                  <Link to="/fleet/vans/jumbo-van">View Jumbo Vans</Link>
+                </Button>
+              </div>
+            </div>
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center text-sm text-white/80">
+              <div className="flex items-center gap-2">
+                <span>📅</span>
+                <span>Valid for Monday-Thursday same week rentals</span>
+              </div>
+              <span className="hidden sm:inline">•</span>
+              <div className="flex items-center gap-2">
+                <span>🚛</span>
+                <span>Automatic discount applied during booking</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
       
       {/* About James Blond Section */}
       <section className="section-padding bg-gradient-to-b from-background to-muted/30">
