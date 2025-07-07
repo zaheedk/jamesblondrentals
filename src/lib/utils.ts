@@ -21,10 +21,10 @@ export function formatCurrency(amount: number, locale = 'en-US', currency = 'NZD
 }
 
 /**
- * Check if pickup and dropoff dates are between Monday and Thursday
+ * Check if rental period includes any days between Monday and Thursday
  * @param pickupDate - Date string in various formats
  * @param dropoffDate - Date string in various formats
- * @returns boolean - true if both dates are Monday-Thursday
+ * @returns boolean - true if any day in the rental period is Monday-Thursday
  */
 export function isWeekdayRental(pickupDate: string, dropoffDate: string): boolean {
   try {
@@ -49,12 +49,21 @@ export function isWeekdayRental(pickupDate: string, dropoffDate: string): boolea
       return false;
     }
     
-    // Check if both dates are Monday (1) through Thursday (4)
-    // getDay() returns 0=Sunday, 1=Monday, ..., 6=Saturday
-    const pickupDay = pickup.getDay();
-    const dropoffDay = dropoff.getDay();
+    // Check each day in the rental period
+    const currentDate = new Date(pickup);
+    const endDate = new Date(dropoff);
     
-    return (pickupDay >= 1 && pickupDay <= 4) && (dropoffDay >= 1 && dropoffDay <= 4);
+    while (currentDate <= endDate) {
+      const dayOfWeek = currentDate.getDay();
+      // If any day is Monday (1) through Thursday (4), return true
+      if (dayOfWeek >= 1 && dayOfWeek <= 4) {
+        return true;
+      }
+      // Move to next day
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    
+    return false;
   } catch (error) {
     console.error('Error checking weekday rental:', error);
     return false;
