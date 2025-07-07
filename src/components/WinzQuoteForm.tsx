@@ -80,7 +80,7 @@ const WinzQuoteForm = () => {
         <div style="background-color: #e8f5e8; padding: 20px; border-radius: 8px; margin: 20px 0;">
           <h3 style="margin-top: 0; color: #333;">Quote Includes</h3>
           <ul>
-            <li>Platinum Insurance for vehicles</li>
+            <li>Best Insurance for vehicles</li>
             <li>Comprehensive Insurance for trailers</li>
             <li>$1000 bond for vehicle or trailer hire</li>
           </ul>

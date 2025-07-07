@@ -64,7 +64,7 @@ const WinzQuotes = () => {
             <ul className="space-y-3">
               <li className="flex items-start gap-3">
                 <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-                <span>Our Platinum Insurance for vehicles</span>
+                <span>Our Best Insurance for vehicles</span>
               </li>
               <li className="flex items-start gap-3">
                 <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
