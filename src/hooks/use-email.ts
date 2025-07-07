@@ -5,7 +5,7 @@ export interface EmailData {
   to: string
   subject: string
   html: string
-  type: 'signup' | 'password-reset' | 'booking-confirmation' | 'general'
+  type: 'signup' | 'password-reset' | 'booking-confirmation' | 'general' | 'winz-quote'
 }
 
 export const useEmail = () => {

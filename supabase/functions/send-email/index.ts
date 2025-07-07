@@ -15,11 +15,18 @@ interface EmailRequest {
   to: string
   subject: string
   html: string
-  type: 'signup' | 'password-reset' | 'booking-confirmation' | 'general' | 'contact-form'
+  type: 'signup' | 'password-reset' | 'booking-confirmation' | 'general' | 'contact-form' | 'winz-quote'
   from_name?: string
   from_email?: string
   phone?: string
   message?: string
+  winz_client_number?: string
+  vehicle_type?: string
+  pickup_date?: string
+  return_date?: string
+  pickup_location?: string
+  return_location?: string
+  additional_requirements?: string
 }
 
 serve(async (req) => {

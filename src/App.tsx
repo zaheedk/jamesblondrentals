@@ -109,6 +109,7 @@ import VanDetail from "./pages/VanDetail";
 import SingleCabUteDieselDetail from "./pages/SingleCabUteDieselDetail";
 
 import FleetCargoVans from "@/pages/FleetCargoVans";
+import WinzQuotes from "./pages/WinzQuotes";
 
 const App = () => {
   const [queryClient] = useState(() => new QueryClient());
@@ -246,6 +247,7 @@ const App = () => {
                 <Route path="/contact/auckland" element={<ContactAuckland />} />
                 <Route path="/contact/wellington" element={<ContactWellington />} />
                 <Route path="/contact/christchurch" element={<ContactChristchurch />} />
+                <Route path="/winz-quotes" element={<WinzQuotes />} />
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
