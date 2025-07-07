@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle, AlertCircle, CreditCard, FileText } from 'lucide-react';
+import { CheckCircle, AlertCircle, CreditCard, FileText, Users, Clock } from 'lucide-react';
 import WinzQuoteForm from '@/components/WinzQuoteForm';
 
 const WinzQuotes = () => {
+  useEffect(() => {
+    document.title = 'WINZ Quote for Vans & Trucks, Auckland & Wellington - James Blond Rentals';
+  }, []);
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-4xl mx-auto">
@@ -11,73 +14,68 @@ const WinzQuotes = () => {
         
         <div className="mb-12 text-center">
           <p className="text-lg mb-4">
-            <strong>James Blond can provide you with a moving assistance quote on trucks, vans, trailers and any other vehicle you might require.</strong>
+            <strong>James Blond Rentals specializes in providing comprehensive moving assistance quotes for WINZ applications, covering our full range of trucks, vans, trailers and accessories.</strong>
           </p>
           <p className="text-lg">
-            <strong>Our experienced team will provide you with a quote with all costs included so you can apply with WINZ.</strong>
+            <strong>Our dedicated team ensures your quote includes all necessary costs and documentation for a smooth WINZ application process.</strong>
           </p>
         </div>
 
-        {/* How it works section */}
         <Card className="mb-8">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <FileText className="w-6 h-6 text-primary" />
-              How does it work?
+              <Users className="w-6 h-6 text-primary" />
+              Simple 4-Step Process
             </CardTitle>
           </CardHeader>
           <CardContent>
             <ul className="space-y-3">
               <li className="flex items-start gap-3">
                 <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-                <span>Please start by filling the form below</span>
+                <span>Complete our online form with your moving details and WINZ 9-digit client number</span>
               </li>
               <li className="flex items-start gap-3">
                 <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-                <span>Your WINZ 9-digit client number must be entered</span>
+                <span>Our team prepares a detailed quote within 24 hours</span>
               </li>
               <li className="flex items-start gap-3">
                 <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-                <span>James Blond will send you the quote via email</span>
+                <span>Present the quote to your WINZ case officer for approval</span>
               </li>
               <li className="flex items-start gap-3">
                 <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-                <span>Submit the quote with your case officer for approval</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-                <span>Once you receive the approval, send us the details and you are good to go</span>
+                <span>Contact us with approval details to arrange your rental</span>
               </li>
             </ul>
           </CardContent>
         </Card>
 
-        {/* What will be included section */}
         <Card className="mb-8">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <AlertCircle className="w-6 h-6 text-primary" />
-              What will be included with the quote?
+              <CreditCard className="w-6 h-6 text-primary" />
+              Comprehensive Quote Inclusions
             </CardTitle>
           </CardHeader>
           <CardContent>
             <ul className="space-y-3">
               <li className="flex items-start gap-3">
                 <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-                <span>Our Best Insurance for vehicles</span>
+                <span>Premium Best Insurance coverage for all vehicles</span>
               </li>
               <li className="flex items-start gap-3">
                 <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-                <span>Our comprehensive Insurance for trailers</span>
+                <span>Full comprehensive insurance for trailers and accessories</span>
               </li>
               <li className="flex items-start gap-3">
                 <CreditCard className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                 <div>
-                  <span className="font-semibold">$1000 bond for vehicle or trailer hire which includes but not limited to:</span>
+                  <span className="font-semibold">$1000 security bond covering:</span>
                   <ul className="mt-2 ml-4 space-y-1 text-sm text-muted-foreground">
-                    <li>• Possible extension of hire</li>
-                    <li>• Refuelling costs</li>
-                    <li>• Mileage</li>
+                    <li>• Rental period extensions if needed</li>
+                    <li>• Fuel replacement costs</li>
+                    <li>• Additional mileage charges</li>
+                    <li>• Any incidental expenses</li>
                   </ul>
                 </div>
               </li>
@@ -85,41 +83,39 @@ const WinzQuotes = () => {
           </CardContent>
         </Card>
 
-        {/* At the time of vehicle collection section */}
         <Card className="mb-8">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <AlertCircle className="w-6 h-6 text-primary" />
-              At the time of vehicle collection
+              <Clock className="w-6 h-6 text-primary" />
+              Important Collection Requirements
             </CardTitle>
           </CardHeader>
           <CardContent>
             <ul className="space-y-3">
               <li className="flex items-start gap-3">
                 <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
-                <span>A full valid driver's licence matching the name on the Moving Assistant Quote must be provided at the time of vehicle pickup.</span>
+                <span>Valid full driver's licence (must match the name on your WINZ Moving Assistance Quote)</span>
               </li>
               <li className="flex items-start gap-3">
                 <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
-                <span>We cannot hire the vehicle unless we have the WINZ 9-digit client number.</span>
+                <span>Your WINZ 9-digit client number is mandatory for vehicle release</span>
               </li>
               <li className="flex items-start gap-3">
                 <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
-                <span>The name provided on the Moving Assistant Quote will need to be the primary driver who signs the rental agreement prior to hiring the vehicle.</span>
+                <span>Primary driver named on the quote must sign all rental documentation</span>
               </li>
               <li className="flex items-start gap-3">
                 <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
-                <span>Proof from MSD is required if paying by Green Payment Card.</span>
+                <span>MSD documentation required when using Green Payment Card</span>
               </li>
             </ul>
           </CardContent>
         </Card>
 
-        {/* Important notice */}
         <div className="bg-muted/50 p-6 rounded-lg mb-8">
           <p className="text-sm text-muted-foreground italic">
-            Any outstanding monies will be refunded to Work and Income 4 weeks after the vehicle is returned. 
-            Refunds cannot be processed at the Branch; they can only be processed via the Head Office.
+            <strong>Refund Policy:</strong> Any unused funds will be returned to Work and Income within 4 weeks of vehicle return. 
+            All refunds are processed through our Head Office to ensure proper documentation and compliance.
           </p>
         </div>
 
