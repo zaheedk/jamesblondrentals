@@ -283,7 +283,7 @@ const WinzQuoteForm = () => {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="auckland-penrose">Auckland - Penrose</SelectItem>
+                        <SelectItem value="auckland-kelston">Auckland - Kelston</SelectItem>
                         <SelectItem value="wellington-abel-smith">Wellington - Abel Smith Street</SelectItem>
                         <SelectItem value="christchurch-harewood">Christchurch - Harewood</SelectItem>
                       </SelectContent>
@@ -306,7 +306,7 @@ const WinzQuoteForm = () => {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="auckland-penrose">Auckland - Penrose</SelectItem>
+                        <SelectItem value="auckland-kelston">Auckland - Kelston</SelectItem>
                         <SelectItem value="wellington-abel-smith">Wellington - Abel Smith Street</SelectItem>
                         <SelectItem value="christchurch-harewood">Christchurch - Harewood</SelectItem>
                       </SelectContent>
