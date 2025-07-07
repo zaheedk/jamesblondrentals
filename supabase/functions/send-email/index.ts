@@ -1,5 +1,8 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { Resend } from "npm:resend@2.0.0"
+
+const resend = new Resend(Deno.env.get("RESEND_API_KEY"))
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -24,27 +27,18 @@ serve(async (req) => {
   }
 
   try {
-    const { to, subject, html }: EmailRequest = await req.json()
+    const { to, subject, html, from_name }: EmailRequest = await req.json()
 
-    console.log(`Attempting to send email to ${to} with subject: ${subject}`)
+    console.log(`Sending email to ${to} with subject: ${subject}`)
 
-    // Use native fetch to send via Office 365 SMTP through a email service
-    // Since Deno doesn't have built-in SMTP, we'll use a simple approach
-    const emailPayload = {
-      from: "info@jamesblond.co.nz",
-      to: to,
+    const emailResponse = await resend.emails.send({
+      from: "James Blond Car Rentals <info@jamesblond.co.nz>",
+      to: [to],
       subject: subject,
-      html: html
-    }
+      html: html,
+    })
 
-    // For now, we'll log the email content and return success
-    // In production, you would integrate with an email service like SendGrid, Resend, etc.
-    console.log('Email payload:', emailPayload)
-    console.log('Email HTML content:', html)
-
-    // Since we can't directly send SMTP emails from Deno without additional setup,
-    // we'll simulate success for now
-    console.log(`Email would be sent successfully to ${to}`)
+    console.log('Email sent successfully:', emailResponse)
 
     return new Response(
       JSON.stringify({ success: true, message: 'Email sent successfully' }),
