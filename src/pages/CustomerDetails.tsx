@@ -22,7 +22,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { CalendarIcon, User, Mail, Phone, Plane } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, getCampaignCode } from "@/lib/utils";
 import { getBookingData, updateBookingData } from "@/lib/booking-session";
 import { toast } from "sonner";
 import { useRcmApi } from "@/hooks/use-rcm-api";
@@ -120,7 +120,11 @@ const CustomerDetails = () => {
         extrakmsid: bookingData.extraKmsId || "0",
         // Include optional fees (extras) with correct qty parameter
         optionalfees: optionalFees,
-        campaigncode: bookingData.campaignCode || "",
+        campaigncode: getCampaignCode(
+          bookingData.campaignCode || "", 
+          bookingData.pickupDate, 
+          bookingData.dropoffDate
+        ),
         customer: {
           firstname: formData.firstName,
           lastname: formData.lastName,

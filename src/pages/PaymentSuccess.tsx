@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Car } from "lucide-react";
 import { getBookingData, clearBookingData } from "@/lib/booking-session";
 import { toast } from "sonner";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, getCampaignCode } from "@/lib/utils";
 import { rcmApi } from "@/lib/api/rcm-api";
 import { RCMBookingResponse } from "@/lib/api/rcm-api-types";
 import { differenceInDays, parseISO, isValid, format, addDays } from "date-fns";
@@ -224,7 +224,11 @@ const PaymentSuccess = () => {
         transmission: sessionData?.transmission || 0,
         insuranceid: insuranceid,
         extrakmsid: extrakmsid,
-        campaigncode: sessionData?.campaignCode || "",
+        campaigncode: getCampaignCode(
+          sessionData?.campaignCode || "", 
+          pickupDate, 
+          dropoffDate
+        ),
         customer: {
           firstname: customerInfo?.firstname || bookingDetails.customerFirstName || sessionData?.customerFirstName || "Guest",
           lastname: customerInfo?.lastname || bookingDetails.customerLastName || sessionData?.customerLastName || "Customer",
