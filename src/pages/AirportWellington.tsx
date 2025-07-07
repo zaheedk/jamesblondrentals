@@ -26,7 +26,7 @@ const AirportWellington = () => (
             <p className="text-gray-600">19 Shelly Bay Road, Miramar</p>
             <p className="text-gray-600 mb-2">Wellington 6022, New Zealand</p>
             <p className="text-gray-600">Phone: <a href="tel:0800525663" className="text-primary hover:underline">0800 525 663</a></p>
-            <p className="text-gray-600">Email: <a href="mailto:info@jamesblond.co.nz" className="text-primary hover:underline">info@jamesblond.co.nz</a></p>
+            <p className="text-gray-600">Email: <a href="mailto:wellington@jamesblond.co.nz" className="text-primary hover:underline">wellington@jamesblond.co.nz</a></p>
           </div>
         </div>
         <div>

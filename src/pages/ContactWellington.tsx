@@ -36,8 +36,8 @@ const ContactWellington = () => {
                 <Mail className="w-5 h-5 text-primary" />
                 <div>
                   <p className="font-medium">Email:</p>
-                  <a href="mailto:info@jamesblond.co.nz" className="hover:text-primary">
-                    info@jamesblond.co.nz
+                  <a href="mailto:wellington@jamesblond.co.nz" className="hover:text-primary">
+                    wellington@jamesblond.co.nz
                   </a>
                 </div>
               </div>
