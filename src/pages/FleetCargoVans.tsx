@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Truck, Package, Shield, MapPin, Clock, Users, Wrench } from 'lucide-react';
 
 const FleetCargoVans = () => {
+  useEffect(() => {
+    document.title = 'Hire a Cargo or Moving van in Auckland & Wellington - James Blond Rentals';
+  }, []);
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Hero Section */}
