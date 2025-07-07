@@ -1,14 +1,18 @@
 
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRcmApi } from '@/hooks/use-rcm-api';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Settings, BookOpen, TrendingUp } from 'lucide-react';
 import BookingHistory from '@/components/member/BookingHistory';
 
 export default function MemberDashboard() {
   const { user, signOut } = useAuth();
   const [activeTab, setActiveTab] = useState('bookings');
+  const isAdmin = user?.email === 'zaheedk@gmail.com';
 
   if (!user) {
     return null; // Will be handled by ProtectedRoute
@@ -25,6 +29,36 @@ export default function MemberDashboard() {
           Log Out
         </Button>
       </div>
+
+      {/* Admin Links */}
+      {isAdmin && (
+        <div className="mb-8">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Settings className="w-5 h-5" />
+                Admin Controls
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-2 gap-4">
+                <Link to="/admin/blog">
+                  <Button variant="outline" className="w-full justify-start" size="lg">
+                    <BookOpen className="w-4 h-4 mr-2" />
+                    Blog Management
+                  </Button>
+                </Link>
+                <Link to="/admin/vehicle-rates">
+                  <Button variant="outline" className="w-full justify-start" size="lg">
+                    <TrendingUp className="w-4 h-4 mr-2" />
+                    Price Scraping
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       <Tabs 
         defaultValue="bookings" 
