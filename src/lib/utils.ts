@@ -21,10 +21,10 @@ export function formatCurrency(amount: number, locale = 'en-US', currency = 'NZD
 }
 
 /**
- * Check if rental period includes any days between Monday and Thursday
+ * Check if pickup and dropoff dates are in the same week and both between Monday-Thursday
  * @param pickupDate - Date string in various formats
  * @param dropoffDate - Date string in various formats
- * @returns boolean - true if any day in the rental period is Monday-Thursday
+ * @returns boolean - true if both dates are in same week and both are Monday-Thursday
  */
 export function isWeekdayRental(pickupDate: string, dropoffDate: string): boolean {
   try {
@@ -49,21 +49,29 @@ export function isWeekdayRental(pickupDate: string, dropoffDate: string): boolea
       return false;
     }
     
-    // Check each day in the rental period
-    const currentDate = new Date(pickup);
-    const endDate = new Date(dropoff);
+    // Check if both dates are Monday (1) through Thursday (4)
+    const pickupDay = pickup.getDay();
+    const dropoffDay = dropoff.getDay();
     
-    while (currentDate <= endDate) {
-      const dayOfWeek = currentDate.getDay();
-      // If any day is Monday (1) through Thursday (4), return true
-      if (dayOfWeek >= 1 && dayOfWeek <= 4) {
-        return true;
-      }
-      // Move to next day
-      currentDate.setDate(currentDate.getDate() + 1);
+    if (!(pickupDay >= 1 && pickupDay <= 4) || !(dropoffDay >= 1 && dropoffDay <= 4)) {
+      return false;
     }
     
-    return false;
+    // Check if both dates are in the same week
+    // Get the start of the week (Monday) for both dates
+    const getStartOfWeek = (date: Date): Date => {
+      const result = new Date(date);
+      const day = result.getDay();
+      const diff = result.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is Sunday
+      result.setDate(diff);
+      result.setHours(0, 0, 0, 0);
+      return result;
+    };
+    
+    const pickupWeekStart = getStartOfWeek(pickup);
+    const dropoffWeekStart = getStartOfWeek(dropoff);
+    
+    return pickupWeekStart.getTime() === dropoffWeekStart.getTime();
   } catch (error) {
     console.error('Error checking weekday rental:', error);
     return false;
