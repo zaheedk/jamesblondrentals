@@ -14,6 +14,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle, ChevronDown, ChevronUp } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
+import { getCampaignCode } from "@/lib/utils";
 
 interface RcmVehicleWithPricing {
   vehicle: RCMAvailableCar;
@@ -73,7 +74,7 @@ const Vehicles = () => {
     dropofftime: dropoffTime,
     ageid: getValidAgeId(),
     vehiclecategorytypeid: carCategory,
-    ...(campaignCode && campaignCode.trim() && { campaigncode: campaignCode.trim() })
+    campaigncode: getCampaignCode(campaignCode || "", pickupDate, dropoffDate)
   } : null;
 
   const { data: step2Data, isLoading: isLoadingStep2, error: step2Error, refetch: refetchStep2 } = useStep2Vehicles(step2Params);
