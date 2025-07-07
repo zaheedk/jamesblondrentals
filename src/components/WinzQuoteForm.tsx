@@ -20,8 +20,8 @@ const winzQuoteFormSchema = z.object({
   vehicleType: z.string().min(1, { message: "Please select a vehicle type." }),
   pickupDate: z.string().min(1, { message: "Please select a pickup date." }),
   returnDate: z.string().min(1, { message: "Please select a return date." }),
-  pickupLocation: z.string().min(1, { message: "Please select a pickup location." }),
-  returnLocation: z.string().min(1, { message: "Please select a return location." }),
+  pickupLocation: z.string().min(1, { message: "Please enter a pickup address." }),
+  returnLocation: z.string().min(1, { message: "Please enter a return address." }),
   additionalRequirements: z.string().optional(),
 });
 
@@ -66,8 +66,8 @@ const WinzQuoteForm = () => {
           <p><strong>Vehicle Type:</strong> ${values.vehicleType}</p>
           <p><strong>Pickup Date:</strong> ${values.pickupDate}</p>
           <p><strong>Return Date:</strong> ${values.returnDate}</p>
-          <p><strong>Pickup Location:</strong> ${values.pickupLocation}</p>
-          <p><strong>Return Location:</strong> ${values.returnLocation}</p>
+          <p><strong>From Address:</strong> ${values.pickupLocation}</p>
+          <p><strong>To Address:</strong> ${values.returnLocation}</p>
         </div>
         
         ${values.additionalRequirements ? `
@@ -275,19 +275,10 @@ const WinzQuoteForm = () => {
                 name="pickupLocation"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Pickup Location *</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select pickup location" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="auckland-kelston">Auckland - Kelston</SelectItem>
-                        <SelectItem value="wellington-abel-smith">Wellington - Abel Smith Street</SelectItem>
-                        <SelectItem value="christchurch-harewood">Christchurch - Harewood</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <FormLabel>From Address *</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter pickup address" {...field} />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -298,19 +289,10 @@ const WinzQuoteForm = () => {
                 name="returnLocation"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Return Location *</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select return location" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="auckland-kelston">Auckland - Kelston</SelectItem>
-                        <SelectItem value="wellington-abel-smith">Wellington - Abel Smith Street</SelectItem>
-                        <SelectItem value="christchurch-harewood">Christchurch - Harewood</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <FormLabel>To Address *</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter return address" {...field} />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
