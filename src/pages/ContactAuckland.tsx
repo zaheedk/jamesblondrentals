@@ -1,13 +1,14 @@
 import React from 'react';
 import { MapPin, Phone, Mail, Facebook } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
+import ContactForm from '@/components/ContactForm';
 
 const ContactAuckland = () => {
   return (
     <div className="container mx-auto px-4 py-12">
       <h1 className="text-4xl font-bold mb-8 text-center">Auckland - Glen Eden Branch</h1>
       
-      <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+      <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-12">
         {/* Contact Information */}
         <Card>
           <CardContent className="p-6">
@@ -74,6 +75,11 @@ const ContactAuckland = () => {
             </div>
           </CardContent>
         </Card>
+      </div>
+
+      {/* Contact Form */}
+      <div className="max-w-2xl mx-auto mb-12">
+        <ContactForm />
       </div>
 
       {/* Map */}

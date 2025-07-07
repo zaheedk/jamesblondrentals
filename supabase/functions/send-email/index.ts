@@ -1,6 +1,6 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts"
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -11,7 +11,11 @@ interface EmailRequest {
   to: string
   subject: string
   html: string
-  type: 'signup' | 'password-reset' | 'booking-confirmation' | 'general'
+  type: 'signup' | 'password-reset' | 'booking-confirmation' | 'general' | 'contact-form'
+  from_name?: string
+  from_email?: string
+  phone?: string
+  message?: string
 }
 
 serve(async (req) => {
@@ -21,46 +25,31 @@ serve(async (req) => {
   }
 
   try {
-    // Get environment variables (stored securely in Supabase)
-    const OFFICE365_EMAIL = Deno.env.get('OFFICE365_EMAIL')
-    const OFFICE365_PASSWORD = Deno.env.get('OFFICE365_PASSWORD')
-    
-    if (!OFFICE365_EMAIL || !OFFICE365_PASSWORD) {
-      throw new Error('Office 365 credentials not configured')
-    }
+    const { to, subject, html, type, from_name, from_email, phone, message }: EmailRequest = await req.json()
 
-    const { to, subject, html, type }: EmailRequest = await req.json()
-
-    // Create SMTP configuration for Office 365
-    const smtpConfig = {
-      hostname: 'smtp.office365.com',
-      port: 587,
-      username: OFFICE365_EMAIL,
-      password: OFFICE365_PASSWORD,
-    }
-
-    // Send email using Deno's built-in SMTP functionality
-    const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    // Configure SMTP client for Office 365
+    const client = new SMTPClient({
+      connection: {
+        hostname: "smtp.office365.com",
+        port: 587,
+        tls: true,
+        auth: {
+          username: "info@jamesblond.co.nz",
+          password: "S@lm@2003!",
+        },
       },
-      body: JSON.stringify({
-        service_id: 'outlook',
-        template_id: 'template_' + type,
-        user_id: 'your_emailjs_user_id',
-        template_params: {
-          to_email: to,
-          subject: subject,
-          message_html: html,
-          from_email: OFFICE365_EMAIL,
-        }
-      })
     })
 
-    if (!response.ok) {
-      throw new Error('Failed to send email')
-    }
+    // Send email
+    await client.send({
+      from: "info@jamesblond.co.nz",
+      to: to,
+      subject: subject,
+      content: html,
+      html: html,
+    })
+
+    await client.close()
 
     console.log(`Email sent successfully to ${to} with subject: ${subject}`)
 
