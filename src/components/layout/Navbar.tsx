@@ -181,8 +181,8 @@ const Navbar = () => {
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
-            <Link to="/about" className="text-gray-600 hover:text-primary transition-colors font-bold">
-              About
+            <Link to="/winz-quotes" className="text-gray-600 hover:text-primary transition-colors font-bold">
+              WINZ Quotes
             </Link>
             
             {/* Add account navigation */}
@@ -217,18 +217,11 @@ const Navbar = () => {
                 </NavigationMenuList>
               </NavigationMenu>
             ) : (
-              <div className="flex space-x-2">
-                <Link to="/login">
-                  <Button variant="outline" size="sm">
-                    Log In
-                  </Button>
-                </Link>
-                <Link to="/register">
-                  <Button size="sm">
-                    Sign Up
-                  </Button>
-                </Link>
-              </div>
+              <Link to="/login">
+                <Button variant="outline" size="sm">
+                  Log In
+                </Button>
+              </Link>
             )}
           </div>
 
@@ -353,8 +346,8 @@ const Navbar = () => {
               <Link to="/faq" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>
                 FAQ
               </Link>
-              <Link to="/about" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>
-                About
+              <Link to="/winz-quotes" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>
+                WINZ Quotes
               </Link>
 
               {/* Mobile auth buttons */}
@@ -362,9 +355,6 @@ const Navbar = () => {
                 <div className="flex flex-col space-y-2 pt-2 border-t">
                   <Link to="/login" className="w-full" onClick={() => setIsMobileMenuOpen(false)}>
                     <Button variant="outline" className="w-full">Log In</Button>
-                  </Link>
-                  <Link to="/register" className="w-full" onClick={() => setIsMobileMenuOpen(false)}>
-                    <Button className="w-full">Sign Up</Button>
                   </Link>
                 </div>
               )}
