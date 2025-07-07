@@ -277,7 +277,7 @@ const WinzQuoteForm = () => {
                   <FormItem>
                     <FormLabel>From Address *</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter pickup address" {...field} />
+                      <Input {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -291,7 +291,7 @@ const WinzQuoteForm = () => {
                   <FormItem>
                     <FormLabel>To Address *</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter return address" {...field} />
+                      <Input {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
