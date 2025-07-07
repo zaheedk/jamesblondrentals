@@ -7,7 +7,7 @@ const WinzQuotes = () => {
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8 text-center">WINZ Quotes</h1>
+        <h1 className="text-4xl font-bold mb-8 text-center">WINZ Quote for Vans & Trucks, Auckland & Wellington</h1>
         
         <div className="mb-12 text-center">
           <p className="text-lg mb-4">
