@@ -2,6 +2,7 @@
 import React from 'react';
 import { MapPin, Phone, Mail, Facebook } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
+import ContactForm from '@/components/ContactForm';
 
 const ContactWellington = () => {
   return (
@@ -79,6 +80,11 @@ const ContactWellington = () => {
             </div>
           </CardContent>
         </Card>
+      </div>
+
+      {/* Contact Form */}
+      <div className="max-w-2xl mx-auto mb-12">
+        <ContactForm />
       </div>
 
       {/* Map */}
