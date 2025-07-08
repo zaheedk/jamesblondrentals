@@ -11,6 +11,7 @@ import KmCharges from '@/components/booking/KmCharges';
 import { differenceInDays, parseISO } from 'date-fns';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ChevronDown } from 'lucide-react';
+import ExitIntentPopup from '@/components/ExitIntentPopup';
 
 const InsuranceSelection = () => {
   const navigate = useNavigate();
@@ -168,6 +169,7 @@ const InsuranceSelection = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <ExitIntentPopup />
       <h1 className="text-3xl font-bold mb-6">Select Insurance Options</h1>
       
       <div className="grid grid-cols-1 gap-8">
