@@ -126,20 +126,33 @@ export function useRcmApi() {
           if (response.status === "OK" && response.results?.driverages) {
             const driverAges = Array.from(response.results.driverages);
             
+            // Reset all defaults first
+            driverAges.forEach(age => {
+              age.isdefault = false;
+            });
+            
+            // Find 26+ age option - check multiple possible formats
             const twentySixPlusAge = driverAges.find(
-              age => age.driverage === '26+' || age.driverage === '26'
+              age => age.driverage === '26+' || 
+                     age.driverage === '26' || 
+                     age.driverage?.toString().includes('26') ||
+                     parseInt(age.driverage) >= 26
             );
             
             if (twentySixPlusAge) {
-              driverAges.forEach(age => {
-                age.isdefault = false;
-              });
-              
               twentySixPlusAge.isdefault = true;
-              
               console.log('26+ age found and set as default:', twentySixPlusAge);
             } else {
-              console.warn('Could not find 26+ age option');
+              // Fallback: set the highest age as default
+              const highestAge = driverAges.reduce((max, age) => {
+                const ageNum = parseInt(age.driverage);
+                const maxNum = parseInt(max.driverage);
+                return (ageNum > maxNum) ? age : max;
+              });
+              if (highestAge) {
+                highestAge.isdefault = true;
+                console.log('Fallback: Set highest age as default:', highestAge);
+              }
             }
             
             console.log('Driver ages data:', driverAges);
