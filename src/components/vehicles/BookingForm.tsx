@@ -228,7 +228,7 @@ export default function BookingForm({
       <input type="hidden" name="campaignCode" value={campaignCode || ''} />
       
       <Button type="submit" className="w-full">
-        Book Now
+        Select
       </Button>
     </form>
   );
