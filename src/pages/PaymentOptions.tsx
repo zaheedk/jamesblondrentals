@@ -259,12 +259,21 @@ const PaymentOptions = () => {
       }
 
       const vehicleCategoryId = typeof bookingDetails.vehicleCategoryId === 'string' 
-        ? parseInt(bookingDetails.vehicleCategoryId) || 6 
-        : bookingDetails.vehicleCategoryId || 6;
+        ? parseInt(bookingDetails.vehicleCategoryId) 
+        : bookingDetails.vehicleCategoryId;
         
       const vehicleCategoryTypeId = typeof bookingDetails.vehicleCategoryTypeId === 'string' 
-        ? parseInt(bookingDetails.vehicleCategoryTypeId) || 6 
-        : bookingDetails.vehicleCategoryTypeId || 6;
+        ? parseInt(bookingDetails.vehicleCategoryTypeId) 
+        : bookingDetails.vehicleCategoryTypeId;
+
+      // Validate required vehicle IDs
+      if (!vehicleCategoryId || !vehicleCategoryTypeId) {
+        console.error("Missing vehicle category information:", { vehicleCategoryId, vehicleCategoryTypeId });
+        toast.error("Missing vehicle information", {
+          description: "Please select a vehicle again to save the quote."
+        });
+        return;
+      }
         
       const pickupLocationId = typeof bookingDetails.pickupLocationId === 'string' 
         ? parseInt(bookingDetails.pickupLocationId) || 1 
