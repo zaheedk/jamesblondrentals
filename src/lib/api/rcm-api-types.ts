@@ -218,6 +218,7 @@ export interface RCMBookingResponseResults {
   totalamount?: number;
   // Adding the missing properties used in PaymentSuccess.tsx
   bookinginfo?: Array<{
+    vehiclecategoryid?: string | number;
     vehiclecategory?: string;
     pickupdate?: string;
     pickuptime?: string;

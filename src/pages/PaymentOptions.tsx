@@ -178,26 +178,52 @@ const PaymentOptions = () => {
       
       console.log("Booking info API response:", response);
       
-      if (response.status === "OK") {
-        if (response.results?.bookinginfo?.[0]?.totalcost) {
-          const totalCostValue = Number(response.results.bookinginfo[0].totalcost);
+      if (response.status === "OK" && response.results?.bookinginfo?.[0]) {
+        const bookingInfo = response.results.bookinginfo[0];
+        
+        // Update booking details with the vehicle category information from API
+        const updatedBookingData = {
+          vehicleCategoryId: bookingInfo.vehiclecategoryid,
+          vehicleName: bookingInfo.vehiclecategory,
+          vehicleImage: bookingInfo.vehicleimage,
+          numberofdays: typeof bookingInfo.numberofdays === 'string' 
+            ? parseInt(bookingInfo.numberofdays) 
+            : bookingInfo.numberofdays,
+          dailyrate: typeof bookingInfo.dailyrate === 'string' 
+            ? parseFloat(bookingInfo.dailyrate) 
+            : bookingInfo.dailyrate,
+          totalcost: typeof bookingInfo.totalcost === 'string' 
+            ? parseFloat(bookingInfo.totalcost) 
+            : bookingInfo.totalcost
+        };
+        
+        // Update session storage with the correct vehicle category information
+        updateBookingData(updatedBookingData);
+        
+        // Update local state
+        setBookingDetails(prev => ({ ...prev, ...updatedBookingData }));
+        
+        if (bookingInfo.totalcost) {
+          const totalCostValue = Number(bookingInfo.totalcost);
           
           if (!isNaN(totalCostValue)) {
             setBookingInfoTotalCost(totalCostValue);
             setTotalCost(totalCostValue);
             console.log("Set total cost from booking info:", totalCostValue);
           } else {
-            console.warn("Invalid totalcost value:", response.results.bookinginfo[0].totalcost);
+            console.warn("Invalid totalcost value:", bookingInfo.totalcost);
           }
         }
         
-        if (response.results?.bookinginfo?.[0]?.numberofdays) {
-          const daysValue = Number(response.results.bookinginfo[0].numberofdays);
+        if (bookingInfo.numberofdays) {
+          const daysValue = Number(bookingInfo.numberofdays);
           if (!isNaN(daysValue) && daysValue > 0) {
             setRentalDays(daysValue);
             console.log("Set rental days from booking info:", daysValue);
           }
         }
+        
+        console.log("Updated booking details with vehicle category info:", updatedBookingData);
       }
       
     } catch (error) {
