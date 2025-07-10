@@ -115,7 +115,6 @@ const PriceGuide = () => {
                       <TableRow>
                         <TableHead className="min-w-[180px]">Truck (LxWxH)</TableHead>
                         <TableHead>$/km</TableHead>
-                        <TableHead>Weekend</TableHead>
                         <TableHead>2 Hour</TableHead>
                         <TableHead>4 Hour</TableHead>
                         <TableHead>8 Hour</TableHead>
@@ -130,7 +129,6 @@ const PriceGuide = () => {
                       <TableRow>
                         <TableCell className="font-medium">2T Box 9m3 - (12m3)<br/>3 x 1.6 x 1.8m</TableCell>
                         <TableCell>$0.42</TableCell>
-                        <TableCell>$140.00</TableCell>
                         <TableCell>$50.00</TableCell>
                         <TableCell>$70.00</TableCell>
                         <TableCell>$105.00</TableCell>
@@ -143,7 +141,6 @@ const PriceGuide = () => {
                       <TableRow>
                         <TableCell className="font-medium">2T T/Lift (12m3)<br/>3.1 x 1.8 x 2m</TableCell>
                         <TableCell>$0.44</TableCell>
-                        <TableCell>$150.00</TableCell>
                         <TableCell>$60.00</TableCell>
                         <TableCell>$80.00</TableCell>
                         <TableCell>$115.00</TableCell>
@@ -156,7 +153,6 @@ const PriceGuide = () => {
                       <TableRow>
                         <TableCell className="font-medium">2T (16m3)<br/>4 x 2 x 2m</TableCell>
                         <TableCell>$0.47</TableCell>
-                        <TableCell>$175.00</TableCell>
                         <TableCell>$50.00</TableCell>
                         <TableCell>$80.00</TableCell>
                         <TableCell>$115.00</TableCell>
@@ -169,7 +165,6 @@ const PriceGuide = () => {
                       <TableRow>
                         <TableCell className="font-medium">3T (18m3) T/Lift<br/>4.5 x 2 x 2m</TableCell>
                         <TableCell>$0.61</TableCell>
-                        <TableCell>$175.00</TableCell>
                         <TableCell>$75.00</TableCell>
                         <TableCell>$100.00</TableCell>
                         <TableCell>$140.00</TableCell>
@@ -182,7 +177,6 @@ const PriceGuide = () => {
                       <TableRow>
                         <TableCell className="font-medium">3T Tail Lift Class2 (19m3)<br/>4.5 x 2 x 2m</TableCell>
                         <TableCell>$0.62</TableCell>
-                        <TableCell>$175.00</TableCell>
                         <TableCell>$75.00</TableCell>
                         <TableCell>$100.00</TableCell>
                         <TableCell>$140.00</TableCell>
@@ -195,7 +189,6 @@ const PriceGuide = () => {
                       <TableRow>
                         <TableCell className="font-medium">2 Ton Tipper</TableCell>
                         <TableCell>$0.39</TableCell>
-                        <TableCell>-</TableCell>
                         <TableCell>$40.00</TableCell>
                         <TableCell>$70.00</TableCell>
                         <TableCell>$100.00</TableCell>
@@ -228,7 +221,6 @@ const PriceGuide = () => {
                       <TableRow>
                         <TableHead className="min-w-[180px]">Van or Ute</TableHead>
                         <TableHead>$/km</TableHead>
-                        <TableHead>Weekend</TableHead>
                         <TableHead>2 Hour</TableHead>
                         <TableHead>4 Hour</TableHead>
                         <TableHead>8 Hour</TableHead>
@@ -243,7 +235,6 @@ const PriceGuide = () => {
                       <TableRow>
                         <TableCell className="font-medium">Ute Dble Cab 4WD (Diesel)</TableCell>
                         <TableCell>$0.30</TableCell>
-                        <TableCell>-</TableCell>
                         <TableCell>$50.00</TableCell>
                         <TableCell>$80.00</TableCell>
                         <TableCell>$120.00</TableCell>
@@ -256,7 +247,6 @@ const PriceGuide = () => {
                       <TableRow>
                         <TableCell className="font-medium">Ute Sdgl Cab Diesel<br/>(100km/day)</TableCell>
                         <TableCell>$0.25</TableCell>
-                        <TableCell>-</TableCell>
                         <TableCell>$40.00</TableCell>
                         <TableCell>$70.00</TableCell>
                         <TableCell>$100.00</TableCell>
@@ -268,7 +258,6 @@ const PriceGuide = () => {
                       </TableRow>
                       <TableRow>
                         <TableCell className="font-medium">Ute Single Cab (Petrol)</TableCell>
-                        <TableCell>-</TableCell>
                         <TableCell>-</TableCell>
                         <TableCell>$40.00</TableCell>
                         <TableCell>$70.00</TableCell>
@@ -282,7 +271,6 @@ const PriceGuide = () => {
                       <TableRow>
                         <TableCell className="font-medium">Jumbo Van (9m3)<br/>3 x 1.6 x 1.9m</TableCell>
                         <TableCell>$0.39</TableCell>
-                        <TableCell>$140.00</TableCell>
                         <TableCell>$40.00</TableCell>
                         <TableCell>$70.00</TableCell>
                         <TableCell>$100.00</TableCell>
@@ -298,7 +286,6 @@ const PriceGuide = () => {
                         <TableCell>-</TableCell>
                         <TableCell>-</TableCell>
                         <TableCell>-</TableCell>
-                        <TableCell>-</TableCell>
                         <TableCell>$130.00</TableCell>
                         <TableCell>$120.00</TableCell>
                         <TableCell>$110.00</TableCell>
@@ -308,7 +295,6 @@ const PriceGuide = () => {
                       <TableRow>
                         <TableCell className="font-medium">Standard Van (6m3)<br/>2.8 x 1.5 x 1.35m</TableCell>
                         <TableCell>-</TableCell>
-                        <TableCell>$125.00</TableCell>
                         <TableCell>$35.00</TableCell>
                         <TableCell>$65.00</TableCell>
                         <TableCell>$90.00</TableCell>
@@ -321,7 +307,6 @@ const PriceGuide = () => {
                       <TableRow>
                         <TableCell className="font-medium">Premium Van (6m3)<br/>2.8 x 1.5 x 1.35m</TableCell>
                         <TableCell>-</TableCell>
-                        <TableCell>$140.00</TableCell>
                         <TableCell>$40.00</TableCell>
                         <TableCell>$70.00</TableCell>
                         <TableCell>$100.00</TableCell>
