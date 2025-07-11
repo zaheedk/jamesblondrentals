@@ -56,6 +56,7 @@ const InsuranceOptions = ({
     // Check if this is Peace of Mind for special styling
     const isPeaceOfMind = title.toLowerCase().includes('peace of mind');
     const isRecommended = index === 2 || isPeaceOfMind; // Keep existing logic but also check for Peace of Mind
+    const isPopular = index === 1; // Middle option is popular
 
     return {
       ...insurance,
@@ -64,6 +65,7 @@ const InsuranceOptions = ({
       bracketText,
       isPeaceOfMind,
       isRecommended,
+      isPopular,
       dailyRate
     };
   };
@@ -96,6 +98,14 @@ const InsuranceOptions = ({
                 <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                   <div className="bg-primary text-white px-3 py-1 rounded text-xs font-medium">
                     RECOMMENDED
+                  </div>
+                </div>
+              )}
+              
+              {displayData.isPopular && (
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                  <div className="bg-primary text-white px-3 py-1 rounded text-xs font-medium">
+                    POPULAR
                   </div>
                 </div>
               )}
