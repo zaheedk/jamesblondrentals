@@ -41,24 +41,33 @@ const InsuranceOptions = ({
   const getInsuranceDisplayData = (insurance: RCMInsuranceOption, index: number) => {
     const dailyRate = parseFloat(insurance.totalinsuranceamount.toString()) || 0;
     
-    // Use the actual insurance name and description from RCM API
+    // Use feedescription1 if available, otherwise fall back to name
+    const webDescription = insurance.feedescription1 || "";
     const title = insurance.name || "Insurance Option";
-    const description = insurance.description || "";
     
-    // Extract text in brackets and split by pipe symbol
-    const bracketMatch = description.match(/\(([^)]+)\)/);
-    const bracketText = bracketMatch ? bracketMatch[1].split('|').map(text => text.trim()).filter(text => text.length > 0) : [];
+    // Parse HTML content from feedescription1
+    let excessAmount = "";
+    let bracketText: string[] = [];
     
-    // Extract excess amount from description or bracket text
-    const excessMatch = description.match(/\$(\d+(?:,\d+)?)\s*excess/i);
-    const excessAmount = excessMatch ? `$${excessMatch[1]} excess` : "";
-    
-    // Debug logging
-    console.log('Full insurance object:', insurance);
-    console.log('Description:', description);
-    console.log('Name:', insurance.name);
-    console.log('Bracket match:', bracketMatch);
-    console.log('Bracket text:', bracketText);
+    if (webDescription) {
+      // Extract excess amount from HTML content
+      const excessMatch = webDescription.match(/\$\s*(\d+(?:,\d+)?)\s*Excess/i);
+      excessAmount = excessMatch ? `$${excessMatch[1]} excess` : "";
+      
+      // Extract list items from HTML
+      const listItemsMatch = webDescription.match(/<li>([^<]+)<\/li>/g);
+      if (listItemsMatch) {
+        bracketText = listItemsMatch.map(item => item.replace(/<\/?li>/g, ''));
+      }
+    } else {
+      // Fallback to parsing name field
+      const nameExcessMatch = title.match(/\$(\d+(?:,\d+)?)\s*excess/i);
+      excessAmount = nameExcessMatch ? `$${nameExcessMatch[1]} excess` : "";
+      
+      // Extract text in brackets from name
+      const bracketMatch = title.match(/\(([^)]+)\)/);
+      bracketText = bracketMatch ? bracketMatch[1].split('|').map(text => text.trim()).filter(text => text.length > 0) : [];
+    }
     
     // Check if this is Peace of Mind for special styling
     const isPeaceOfMind = title.toLowerCase().includes('peace of mind');

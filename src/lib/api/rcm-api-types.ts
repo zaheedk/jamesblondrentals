@@ -296,6 +296,21 @@ export interface RCMInsuranceOption {
   description: string;
   totalinsuranceamount: number;
   isdefault: boolean;
+  vehiclecategorytypeid?: number;
+  vehiclecategoryid?: number;
+  numberofdays?: number;
+  fees?: number;
+  type?: string;
+  maximumprice?: number;
+  payagency?: boolean;
+  stampduty?: boolean;
+  gst?: boolean;
+  ispercentageontotalcost?: boolean;
+  excessamount?: number;
+  feedescription?: string;
+  feedescription1?: string;
+  feedescription2?: string;
+  feedescription3?: string;
 }
 
 export interface RCMKmCharge {
