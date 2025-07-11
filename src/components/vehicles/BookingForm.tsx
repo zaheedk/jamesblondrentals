@@ -207,32 +207,36 @@ export default function BookingForm({
   };
 
   return (
-    <form onSubmit={handleBookNow}>
-      <input type="hidden" name="vehicleId" value={vehicle.id} />
-      <input type="hidden" name="vehicleName" value={`${vehicle.make} ${vehicle.model}`} />
-      <input type="hidden" name="vehicleCategoryTypeId" value={vehicle.type?.toString() || '0'} />
-      <input type="hidden" name="pickupLocationId" value={pickupLocationId} />
-      <input type="hidden" name="pickupLocationName" value={pickupLocationName} />
-      <input type="hidden" name="dropoffLocationId" value={dropoffLocationId} />
-      <input type="hidden" name="dropoffLocationName" value={dropoffLocationName} />
-      <input type="hidden" name="pickupDate" value={pickupDate} />
-      <input type="hidden" name="pickupTime" value={pickupTime} />
-      <input type="hidden" name="dropoffDate" value={dropoffDate} />
-      <input type="hidden" name="dropoffTime" value={dropoffTime} />
-      <input type="hidden" name="ageId" value={ageId} />
-      <input type="hidden" name="basePrice" value={totalRateAfterDiscount?.toString() || vehicle.price?.toString() || '0'} />
-      <input type="hidden" name="vehicleImage" value={vehicleImageUrl || getFirstVehicleImage(vehicle)} />
-      <input type="hidden" name="totalRateAfterDiscount" value={totalRateAfterDiscount?.toString() || ''} />
-      <input type="hidden" name="totalDiscountAmount" value={totalDiscountAmount?.toString() || ''} />
-      <input type="hidden" name="rateType" value={isHourlyRate() ? 'hourly' : 'daily'} />
-      <input type="hidden" name="campaignCode" value={campaignCode || ''} />
-      
-      <Button 
-        type="submit" 
-        className="w-full p-2 bg-slate-600 text-white hover:bg-slate-700 text-center rounded"
-      >
-        SELECT
-      </Button>
-    </form>
+    <div className="w-full flex justify-center">
+      <form onSubmit={handleBookNow} className="w-full">
+        <input type="hidden" name="vehicleId" value={vehicle.id} />
+        <input type="hidden" name="vehicleName" value={`${vehicle.make} ${vehicle.model}`} />
+        <input type="hidden" name="vehicleCategoryTypeId" value={vehicle.type?.toString() || '0'} />
+        <input type="hidden" name="pickupLocationId" value={pickupLocationId} />
+        <input type="hidden" name="pickupLocationName" value={pickupLocationName} />
+        <input type="hidden" name="dropoffLocationId" value={dropoffLocationId} />
+        <input type="hidden" name="dropoffLocationName" value={dropoffLocationName} />
+        <input type="hidden" name="pickupDate" value={pickupDate} />
+        <input type="hidden" name="pickupTime" value={pickupTime} />
+        <input type="hidden" name="dropoffDate" value={dropoffDate} />
+        <input type="hidden" name="dropoffTime" value={dropoffTime} />
+        <input type="hidden" name="ageId" value={ageId} />
+        <input type="hidden" name="basePrice" value={totalRateAfterDiscount?.toString() || vehicle.price?.toString() || '0'} />
+        <input type="hidden" name="vehicleImage" value={vehicleImageUrl || getFirstVehicleImage(vehicle)} />
+        <input type="hidden" name="totalRateAfterDiscount" value={totalRateAfterDiscount?.toString() || ''} />
+        <input type="hidden" name="totalDiscountAmount" value={totalDiscountAmount?.toString() || ''} />
+        <input type="hidden" name="rateType" value={isHourlyRate() ? 'hourly' : 'daily'} />
+        <input type="hidden" name="campaignCode" value={campaignCode || ''} />
+        
+        <div className="flex justify-center">
+          <Button 
+            type="submit" 
+            className="w-full p-2 bg-slate-600 text-white hover:bg-slate-700 text-center rounded"
+          >
+            SELECT
+          </Button>
+        </div>
+      </form>
+    </div>
   );
 }
