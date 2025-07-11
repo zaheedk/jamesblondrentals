@@ -16,6 +16,40 @@ interface ExtrasSelectionProps {
   optionalFees?: RCMOptionalFee[];
 }
 
+// Function to get image URL for extra items based on name or ID
+const getExtraItemImage = (name: string, id: string | number): string | null => {
+  // Common extra item image mappings
+  const imageMap: { [key: string]: string } = {
+    // Child safety items
+    'child seat': 'https://images.unsplash.com/photo-1582562124811-c09040d0a901?w=80&h=80&fit=crop&crop=center',
+    'baby seat': 'https://images.unsplash.com/photo-1582562124811-c09040d0a901?w=80&h=80&fit=crop&crop=center',
+    'booster seat': 'https://images.unsplash.com/photo-1582562124811-c09040d0a901?w=80&h=80&fit=crop&crop=center',
+    
+    // GPS and electronics
+    'gps': 'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=80&h=80&fit=crop&crop=center',
+    'navigation': 'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=80&h=80&fit=crop&crop=center',
+    'sat nav': 'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=80&h=80&fit=crop&crop=center',
+    
+    // Additional drivers
+    'additional driver': 'https://images.unsplash.com/photo-1721322800607-8c38375eef04?w=80&h=80&fit=crop&crop=center',
+    'extra driver': 'https://images.unsplash.com/photo-1721322800607-8c38375eef04?w=80&h=80&fit=crop&crop=center',
+    
+    // Default fallback
+    'default': 'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=80&h=80&fit=crop&crop=center'
+  };
+
+  // Check if the name contains any of the keywords
+  const lowerName = name.toLowerCase();
+  for (const [keyword, imageUrl] of Object.entries(imageMap)) {
+    if (lowerName.includes(keyword)) {
+      return imageUrl;
+    }
+  }
+
+  // Return default image if no match found
+  return imageMap.default;
+};
+
 const ExtrasSelection = ({
   extras,
   selectedExtras,
@@ -77,16 +111,20 @@ const ExtrasSelection = ({
               <div className="space-y-4">
                 <div className="flex items-center justify-center mb-4">
                   <div className="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center">
-                    <img 
-                      src={`https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=80&h=80&fit=crop&crop=center`}
-                      alt={fee.name}
-                      className="w-full h-full object-cover rounded-lg"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.style.display = 'none';
-                        target.nextElementSibling?.classList.remove('hidden');
-                      }}
-                    />
+                    {getExtraItemImage(fee.name, fee.id) ? (
+                      <img 
+                        src={getExtraItemImage(fee.name, fee.id)}
+                        alt={fee.name}
+                        className="w-full h-full object-cover rounded-lg"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          target.nextElementSibling?.classList.remove('hidden');
+                        }}
+                      />
+                    ) : (
+                      <div className="text-gray-500 text-xs text-center">No Image</div>
+                    )}
                     <div className="hidden text-gray-500 text-xs text-center">No Image</div>
                   </div>
                 </div>
@@ -166,16 +204,20 @@ const ExtrasSelection = ({
               <div className="space-y-4">
                 <div className="flex items-center justify-center mb-4">
                   <div className="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center">
-                    <img 
-                      src={`https://images.unsplash.com/photo-1721322800607-8c38375eef04?w=80&h=80&fit=crop&crop=center`}
-                      alt={extra.name}
-                      className="w-full h-full object-cover rounded-lg"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.style.display = 'none';
-                        target.nextElementSibling?.classList.remove('hidden');
-                      }}
-                    />
+                    {getExtraItemImage(extra.name, extra.id) ? (
+                      <img 
+                        src={getExtraItemImage(extra.name, extra.id)}
+                        alt={extra.name}
+                        className="w-full h-full object-cover rounded-lg"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          target.nextElementSibling?.classList.remove('hidden');
+                        }}
+                      />
+                    ) : (
+                      <div className="text-gray-500 text-xs text-center">No Image</div>
+                    )}
                     <div className="hidden text-gray-500 text-xs text-center">No Image</div>
                   </div>
                 </div>
