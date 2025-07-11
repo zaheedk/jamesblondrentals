@@ -1,10 +1,12 @@
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface VehiclePricing {
@@ -21,12 +23,18 @@ const PriceGuide = () => {
   const [selectedVehicle, setSelectedVehicle] = useState<VehiclePricing | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
 
   const handleRowClick = (vehicleData: VehiclePricing) => {
     if (isMobile) {
       setSelectedVehicle(vehicleData);
       setIsDialogOpen(true);
     }
+  };
+
+  const handleBookNow = () => {
+    setIsDialogOpen(false);
+    navigate('/');
   };
 
   return (
@@ -626,6 +634,13 @@ const PriceGuide = () => {
               <div className="text-center text-xs text-gray-500 mt-4">
                 All prices include GST
               </div>
+              
+              <Button 
+                onClick={handleBookNow}
+                className="w-full mt-4"
+              >
+                Book Now
+              </Button>
             </div>
           )}
         </DialogContent>
