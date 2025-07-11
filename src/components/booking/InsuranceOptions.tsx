@@ -125,12 +125,6 @@ const InsuranceOptions = ({
                   </p>
                 </div>
 
-                <div className="border-b border-gray-300 pb-4">
-                  <p className={`text-sm font-medium ${displayData.isRecommended ? 'text-white' : 'text-black'}`}>
-                    {displayData.excess}, {displayData.bond}
-                  </p>
-                </div>
-
                 <div className="space-y-2">
                   {displayData.features.map((feature, featureIndex) => (
                     <div key={featureIndex} className="flex items-center gap-2">
