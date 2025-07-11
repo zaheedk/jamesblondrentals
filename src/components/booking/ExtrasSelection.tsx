@@ -18,24 +18,30 @@ interface ExtrasSelectionProps {
 
 // Function to get image URL for extra items based on name or ID
 const getExtraItemImage = (name: string, id: string | number): string | null => {
-  // Common extra item image mappings
+  // Fleet accessories image mappings based on the actual fleet page
   const imageMap: { [key: string]: string } = {
     // Child safety items
-    'child seat': 'https://images.unsplash.com/photo-1582562124811-c09040d0a901?w=80&h=80&fit=crop&crop=center',
-    'baby seat': 'https://images.unsplash.com/photo-1582562124811-c09040d0a901?w=80&h=80&fit=crop&crop=center',
-    'booster seat': 'https://images.unsplash.com/photo-1582562124811-c09040d0a901?w=80&h=80&fit=crop&crop=center',
+    'child seat': '/lovable-uploads/9f1b5c5b-6407-4c14-be34-a8594a1fac59.png',
+    'baby seat': '/lovable-uploads/9f1b5c5b-6407-4c14-be34-a8594a1fac59.png',
+    'booster seat': '/lovable-uploads/aded4525-6592-42ec-9193-53b898de2c13.png',
     
-    // GPS and electronics
-    'gps': 'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=80&h=80&fit=crop&crop=center',
-    'navigation': 'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=80&h=80&fit=crop&crop=center',
-    'sat nav': 'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=80&h=80&fit=crop&crop=center',
+    // Moving equipment
+    'pallet jack': '/lovable-uploads/7399d499-7037-41fe-b5c3-3d013ad2163e.png',
+    'straps': '/lovable-uploads/6242ae39-7570-4898-b18a-1fa9753856af.png',
+    'ratchet': '/lovable-uploads/6242ae39-7570-4898-b18a-1fa9753856af.png',
+    'strap': '/lovable-uploads/6242ae39-7570-4898-b18a-1fa9753856af.png',
+    'hand trolley': '/lovable-uploads/2462a28e-2cb6-44ef-82b9-b46b5559d465.png',
+    'trolley': '/lovable-uploads/2462a28e-2cb6-44ef-82b9-b46b5559d465.png',
+    'large hand trolley': '/lovable-uploads/2462a28e-2cb6-44ef-82b9-b46b5559d465.png',
     
-    // Additional drivers
-    'additional driver': 'https://images.unsplash.com/photo-1721322800607-8c38375eef04?w=80&h=80&fit=crop&crop=center',
-    'extra driver': 'https://images.unsplash.com/photo-1721322800607-8c38375eef04?w=80&h=80&fit=crop&crop=center',
+    // GPS and electronics (using a child seat as fallback since no GPS image available)
+    'gps': '/lovable-uploads/9f1b5c5b-6407-4c14-be34-a8594a1fac59.png',
+    'navigation': '/lovable-uploads/9f1b5c5b-6407-4c14-be34-a8594a1fac59.png',
+    'sat nav': '/lovable-uploads/9f1b5c5b-6407-4c14-be34-a8594a1fac59.png',
     
-    // Default fallback
-    'default': 'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=80&h=80&fit=crop&crop=center'
+    // Additional drivers (using child seat as fallback)
+    'additional driver': '/lovable-uploads/9f1b5c5b-6407-4c14-be34-a8594a1fac59.png',
+    'extra driver': '/lovable-uploads/9f1b5c5b-6407-4c14-be34-a8594a1fac59.png',
   };
 
   // Check if the name contains any of the keywords
@@ -46,8 +52,8 @@ const getExtraItemImage = (name: string, id: string | number): string | null => 
     }
   }
 
-  // Return default image if no match found
-  return imageMap.default;
+  // Return first image as default fallback
+  return '/lovable-uploads/9f1b5c5b-6407-4c14-be34-a8594a1fac59.png';
 };
 
 const ExtrasSelection = ({
