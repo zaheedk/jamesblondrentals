@@ -241,36 +241,27 @@ const CustomerDetails = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/10">
+    <div className="container mx-auto px-4 py-8">
       <ExitIntentPopup />
-      <div className="container mx-auto px-4 py-12">
-        <div className="max-w-4xl mx-auto">
-          {/* Header Section */}
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-4">
-              Customer Details
-            </h1>
-            <p className="text-muted-foreground text-lg">
-              Please provide your information to complete the booking
-            </p>
-          </div>
-          
-          <div className="bg-card/50 backdrop-blur-sm rounded-2xl shadow-lg border border-border/50 p-8">
+      <div className="max-w-3xl mx-auto">
+        <h1 className="text-3xl font-bold mb-6">Customer Details</h1>
+        
+        <div className="bg-white rounded-lg shadow-md p-6">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
                   name="firstName"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>First Name*</FormLabel>
-                       <FormControl>
-                         <div className="relative group">
-                           <User className="absolute left-3 top-3 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
-                           <Input className="pl-10 h-12 border-border/50 focus:border-primary bg-background/50 backdrop-blur-sm" placeholder="John" {...field} />
-                         </div>
-                       </FormControl>
+                      <FormControl>
+                        <div className="relative">
+                          <User className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                          <Input className="pl-10" placeholder="John" {...field} />
+                        </div>
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -282,12 +273,12 @@ const CustomerDetails = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Last Name*</FormLabel>
-                       <FormControl>
-                         <div className="relative group">
-                           <User className="absolute left-3 top-3 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
-                           <Input className="pl-10 h-12 border-border/50 focus:border-primary bg-background/50 backdrop-blur-sm" placeholder="Doe" {...field} />
-                         </div>
-                       </FormControl>
+                      <FormControl>
+                        <div className="relative">
+                          <User className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                          <Input className="pl-10" placeholder="Doe" {...field} />
+                        </div>
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -299,12 +290,12 @@ const CustomerDetails = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Email*</FormLabel>
-                       <FormControl>
-                         <div className="relative group">
-                           <Mail className="absolute left-3 top-3 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
-                           <Input className="pl-10 h-12 border-border/50 focus:border-primary bg-background/50 backdrop-blur-sm" placeholder="john.doe@example.com" {...field} />
-                         </div>
-                       </FormControl>
+                      <FormControl>
+                        <div className="relative">
+                          <Mail className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                          <Input className="pl-10" placeholder="john.doe@example.com" {...field} />
+                        </div>
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -316,12 +307,12 @@ const CustomerDetails = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Phone Number*</FormLabel>
-                       <FormControl>
-                         <div className="relative group">
-                           <Phone className="absolute left-3 top-3 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
-                           <Input className="pl-10 h-12 border-border/50 focus:border-primary bg-background/50 backdrop-blur-sm" placeholder="+1 234 567 8900" {...field} />
-                         </div>
-                       </FormControl>
+                      <FormControl>
+                        <div className="relative">
+                          <Phone className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                          <Input className="pl-10" placeholder="+1 234 567 8900" {...field} />
+                        </div>
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -336,20 +327,20 @@ const CustomerDetails = () => {
                       <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
-                             <Button
-                               variant={"outline"}
-                               className={cn(
-                                 "w-full pl-10 text-left font-normal h-12 border-border/50 hover:border-primary bg-background/50 backdrop-blur-sm",
-                                 !field.value && "text-muted-foreground"
-                               )}
-                             >
-                               {field.value ? (
-                                 format(field.value, "PPP")
-                               ) : (
-                                 <span>Pick a date</span>
-                               )}
-                               <CalendarIcon className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
-                             </Button>
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-full pl-10 text-left font-normal",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value ? (
+                                format(field.value, "PPP")
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
+                              <CalendarIcon className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                            </Button>
                           </FormControl>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0" align="start">
@@ -379,12 +370,12 @@ const CustomerDetails = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Flight Number (optional)</FormLabel>
-                       <FormControl>
-                         <div className="relative group">
-                           <Plane className="absolute left-3 top-3 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
-                           <Input className="pl-10 h-12 border-border/50 focus:border-primary bg-background/50 backdrop-blur-sm" placeholder="AA1234" {...field} />
-                         </div>
-                       </FormControl>
+                      <FormControl>
+                        <div className="relative">
+                          <Plane className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                          <Input className="pl-10" placeholder="AA1234" {...field} />
+                        </div>
+                      </FormControl>
                       <FormDescription>
                         For airport pickup coordination
                       </FormDescription>
@@ -394,34 +385,25 @@ const CustomerDetails = () => {
                 />
               </div>
               
-              <div className="flex flex-col sm:flex-row gap-4 justify-between pt-8 border-t border-border/20">
+              <div className="flex justify-between pt-4 border-t border-gray-200">
                 <Button 
                   type="button" 
                   variant="outline"
                   onClick={() => navigate(-1)}
                   disabled={isSubmitting}
-                  className="flex-1 sm:flex-none min-w-[120px] h-12"
                 >
                   Back
                 </Button>
                 <Button 
                   type="submit" 
                   disabled={isSubmitting}
-                  className="flex-1 sm:flex-none min-w-[160px] h-12 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                  className="min-w-[120px]"
                 >
-                  {isSubmitting ? (
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                      Processing...
-                    </div>
-                  ) : (
-                    "Complete Booking"
-                  )}
+                  {isSubmitting ? "Processing..." : "Complete Booking"}
                 </Button>
               </div>
             </form>
           </Form>
-          </div>
         </div>
       </div>
     </div>
