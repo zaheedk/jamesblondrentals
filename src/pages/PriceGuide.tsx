@@ -570,7 +570,7 @@ const PriceGuide = () => {
 
       {/* Mobile Pricing Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="mx-4 max-w-sm rounded-lg">
+        <DialogContent className="mx-auto max-w-xs w-[80%] rounded-lg">
           <DialogHeader>
             <DialogTitle className="text-lg font-bold text-center">
               {selectedVehicle?.name}
