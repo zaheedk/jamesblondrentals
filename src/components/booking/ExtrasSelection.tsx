@@ -75,10 +75,7 @@ const ExtrasSelection = ({
   
   if (hasNoAddons) {
     return (
-      <div className="space-y-6">
-        <div className="flex items-center gap-2">
-          <h2 className="text-2xl font-bold text-black">ADDITIONAL EXTRAS</h2>
-        </div>
+    <div className="space-y-6">
         <Alert variant="default">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
@@ -91,11 +88,8 @@ const ExtrasSelection = ({
     );
   }
 
-  return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-2">
-        <h2 className="text-2xl font-bold text-black">ADDITIONAL EXTRAS</h2>
-      </div>
+    return (
+      <div className="space-y-6">
       
       {/* Display optional fees if available */}
       {filteredOptionalFees && filteredOptionalFees.length > 0 && (
