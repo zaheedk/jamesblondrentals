@@ -1,11 +1,34 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useIsMobile } from "@/hooks/use-mobile";
+
+interface VehiclePricing {
+  name: string;
+  dimensions?: string;
+  kmRate?: string;
+  hour2: string;
+  hour4: string;
+  hour8: string;
+  day1: string;
+}
 
 const PriceGuide = () => {
+  const [selectedVehicle, setSelectedVehicle] = useState<VehiclePricing | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const isMobile = useIsMobile();
+
+  const handleRowClick = (vehicleData: VehiclePricing) => {
+    if (isMobile) {
+      setSelectedVehicle(vehicleData);
+      setIsDialogOpen(true);
+    }
+  };
+
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="max-w-5xl mx-auto">
@@ -24,6 +47,14 @@ const PriceGuide = () => {
             Save 25% on all truck and jumbo van rentals when both pickup and dropoff are between Monday and Thursday!
           </p>
         </div>
+
+        {isMobile && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-6">
+            <p className="text-blue-700 text-sm">
+              💡 Tap any row in the table to view detailed pricing information
+            </p>
+          </div>
+        )}
 
         <Tabs defaultValue="trailers" className="w-full">
           <TabsList className="grid w-full grid-cols-3">
@@ -58,7 +89,17 @@ const PriceGuide = () => {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      <TableRow>
+                      <TableRow 
+                        className={isMobile ? "cursor-pointer hover:bg-gray-50 active:bg-gray-100" : ""}
+                        onClick={() => handleRowClick({
+                          name: "Caged Standard",
+                          dimensions: "2.4 x 1.23 x 1.25m",
+                          hour2: "$35.00",
+                          hour4: "$35.00", 
+                          hour8: "$45.00",
+                          day1: "$65.00"
+                        })}
+                      >
                         <TableCell className="font-medium">Caged Standard</TableCell>
                         <TableCell>2.4 x 1.23 x 1.25m</TableCell>
                         <TableCell>$35.00</TableCell>
@@ -69,7 +110,17 @@ const PriceGuide = () => {
                         <TableCell>$40.00</TableCell>
                         <TableCell>$35.00</TableCell>
                       </TableRow>
-                      <TableRow>
+                      <TableRow 
+                        className={isMobile ? "cursor-pointer hover:bg-gray-50 active:bg-gray-100" : ""}
+                        onClick={() => handleRowClick({
+                          name: "Standard Trailer",
+                          dimensions: "2.4 x 1.23 x 0.3m",
+                          hour2: "$35.00",
+                          hour4: "$35.00", 
+                          hour8: "$45.00",
+                          day1: "$65.00"
+                        })}
+                      >
                         <TableCell className="font-medium">Standard Trailer</TableCell>
                         <TableCell>2.4 x 1.23 x 0.3m</TableCell>
                         <TableCell>$35.00</TableCell>
@@ -80,7 +131,17 @@ const PriceGuide = () => {
                         <TableCell>$40.00</TableCell>
                         <TableCell>$35.00</TableCell>
                       </TableRow>
-                      <TableRow>
+                      <TableRow 
+                        className={isMobile ? "cursor-pointer hover:bg-gray-50 active:bg-gray-100" : ""}
+                        onClick={() => handleRowClick({
+                          name: "Car Transporter Trailer",
+                          dimensions: "5.0 x 1.9m (1940kg Max)",
+                          hour2: "-",
+                          hour4: "-", 
+                          hour8: "-",
+                          day1: "$120.00"
+                        })}
+                      >
                         <TableCell className="font-medium">Car Transporter Trailer</TableCell>
                         <TableCell>5.0 x 1.9m (1940kg Max)</TableCell>
                         <TableCell>-</TableCell>
@@ -91,7 +152,17 @@ const PriceGuide = () => {
                         <TableCell>$90.00</TableCell>
                         <TableCell>$90.00</TableCell>
                       </TableRow>
-                      <TableRow>
+                      <TableRow 
+                        className={isMobile ? "cursor-pointer hover:bg-gray-50 active:bg-gray-100" : ""}
+                        onClick={() => handleRowClick({
+                          name: "Luggage Trailer",
+                          dimensions: "-",
+                          hour2: "$45.00",
+                          hour4: "-", 
+                          hour8: "-",
+                          day1: "$45.00"
+                        })}
+                      >
                         <TableCell className="font-medium">Luggage Trailer</TableCell>
                         <TableCell>-</TableCell>
                         <TableCell>$45.00</TableCell>
@@ -136,7 +207,18 @@ const PriceGuide = () => {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      <TableRow>
+                      <TableRow 
+                        className={isMobile ? "cursor-pointer hover:bg-gray-50 active:bg-gray-100" : ""}
+                        onClick={() => handleRowClick({
+                          name: "2T Box 9m3 - (12m3)",
+                          dimensions: "3 x 1.6 x 1.8m",
+                          kmRate: "$0.42",
+                          hour2: "$50.00",
+                          hour4: "$70.00", 
+                          hour8: "$105.00",
+                          day1: "$125.00"
+                        })}
+                      >
                         <TableCell className="font-medium">2T Box 9m3 - (12m3)<br/>3 x 1.6 x 1.8m</TableCell>
                         <TableCell>$0.42</TableCell>
                         <TableCell>$50.00</TableCell>
@@ -148,7 +230,18 @@ const PriceGuide = () => {
                         <TableCell>$825.00</TableCell>
                         <TableCell>$250.00</TableCell>
                       </TableRow>
-                      <TableRow>
+                      <TableRow 
+                        className={isMobile ? "cursor-pointer hover:bg-gray-50 active:bg-gray-100" : ""}
+                        onClick={() => handleRowClick({
+                          name: "2T T/Lift (12m3)",
+                          dimensions: "3.1 x 1.8 x 2m",
+                          kmRate: "$0.44",
+                          hour2: "$60.00",
+                          hour4: "$80.00", 
+                          hour8: "$115.00",
+                          day1: "$140.00"
+                        })}
+                      >
                         <TableCell className="font-medium">2T T/Lift (12m3)<br/>3.1 x 1.8 x 2m</TableCell>
                         <TableCell>$0.44</TableCell>
                         <TableCell>$60.00</TableCell>
@@ -160,7 +253,18 @@ const PriceGuide = () => {
                         <TableCell>$975.00</TableCell>
                         <TableCell>$300.00</TableCell>
                       </TableRow>
-                      <TableRow>
+                      <TableRow 
+                        className={isMobile ? "cursor-pointer hover:bg-gray-50 active:bg-gray-100" : ""}
+                        onClick={() => handleRowClick({
+                          name: "2T (16m3)",
+                          dimensions: "4 x 2 x 2m",
+                          kmRate: "$0.47",
+                          hour2: "$50.00",
+                          hour4: "$80.00", 
+                          hour8: "$115.00",
+                          day1: "$130.00"
+                        })}
+                      >
                         <TableCell className="font-medium">2T (16m3)<br/>4 x 2 x 2m</TableCell>
                         <TableCell>$0.47</TableCell>
                         <TableCell>$50.00</TableCell>
@@ -172,7 +276,18 @@ const PriceGuide = () => {
                         <TableCell>$900.00</TableCell>
                         <TableCell>$250.00</TableCell>
                       </TableRow>
-                      <TableRow>
+                      <TableRow 
+                        className={isMobile ? "cursor-pointer hover:bg-gray-50 active:bg-gray-100" : ""}
+                        onClick={() => handleRowClick({
+                          name: "3T (18m3) T/Lift",
+                          dimensions: "4.5 x 2 x 2m",
+                          kmRate: "$0.61",
+                          hour2: "$75.00",
+                          hour4: "$100.00", 
+                          hour8: "$140.00",
+                          day1: "$160.00"
+                        })}
+                      >
                         <TableCell className="font-medium">3T (18m3) T/Lift<br/>4.5 x 2 x 2m</TableCell>
                         <TableCell>$0.61</TableCell>
                         <TableCell>$75.00</TableCell>
@@ -184,7 +299,18 @@ const PriceGuide = () => {
                         <TableCell>$1,200.00</TableCell>
                         <TableCell>$350.00</TableCell>
                       </TableRow>
-                      <TableRow>
+                      <TableRow 
+                        className={isMobile ? "cursor-pointer hover:bg-gray-50 active:bg-gray-100" : ""}
+                        onClick={() => handleRowClick({
+                          name: "3T Tail Lift Class2 (19m3)",
+                          dimensions: "4.5 x 2 x 2m",
+                          kmRate: "$0.62",
+                          hour2: "$75.00",
+                          hour4: "$100.00", 
+                          hour8: "$140.00",
+                          day1: "$160.00"
+                        })}
+                      >
                         <TableCell className="font-medium">3T Tail Lift Class2 (19m3)<br/>4.5 x 2 x 2m</TableCell>
                         <TableCell>$0.62</TableCell>
                         <TableCell>$75.00</TableCell>
@@ -196,7 +322,18 @@ const PriceGuide = () => {
                         <TableCell>$1,200.00</TableCell>
                         <TableCell>$350.00</TableCell>
                       </TableRow>
-                      <TableRow>
+                      <TableRow 
+                        className={isMobile ? "cursor-pointer hover:bg-gray-50 active:bg-gray-100" : ""}
+                        onClick={() => handleRowClick({
+                          name: "2 Ton Tipper",
+                          dimensions: "-",
+                          kmRate: "$0.39",
+                          hour2: "$40.00",
+                          hour4: "$70.00", 
+                          hour8: "$100.00",
+                          day1: "$115.00"
+                        })}
+                      >
                         <TableCell className="font-medium">2 Ton Tipper</TableCell>
                         <TableCell>$0.39</TableCell>
                         <TableCell>$40.00</TableCell>
@@ -242,7 +379,18 @@ const PriceGuide = () => {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      <TableRow>
+                      <TableRow 
+                        className={isMobile ? "cursor-pointer hover:bg-gray-50 active:bg-gray-100" : ""}
+                        onClick={() => handleRowClick({
+                          name: "Ute Dble Cab 4WD (Diesel)",
+                          dimensions: "-",
+                          kmRate: "$0.30",
+                          hour2: "$50.00",
+                          hour4: "$80.00", 
+                          hour8: "$120.00",
+                          day1: "$150.00"
+                        })}
+                      >
                         <TableCell className="font-medium">Ute Dble Cab 4WD (Diesel)</TableCell>
                         <TableCell>$0.30</TableCell>
                         <TableCell>$50.00</TableCell>
@@ -254,7 +402,18 @@ const PriceGuide = () => {
                         <TableCell>$630.00</TableCell>
                         <TableCell>$210.00</TableCell>
                       </TableRow>
-                      <TableRow>
+                      <TableRow 
+                        className={isMobile ? "cursor-pointer hover:bg-gray-50 active:bg-gray-100" : ""}
+                        onClick={() => handleRowClick({
+                          name: "Ute Sdgl Cab Diesel",
+                          dimensions: "(100km/day)",
+                          kmRate: "$0.25",
+                          hour2: "$40.00",
+                          hour4: "$70.00", 
+                          hour8: "$100.00",
+                          day1: "$130.00"
+                        })}
+                      >
                         <TableCell className="font-medium">Ute Sdgl Cab Diesel<br/>(100km/day)</TableCell>
                         <TableCell>$0.25</TableCell>
                         <TableCell>$40.00</TableCell>
@@ -266,7 +425,18 @@ const PriceGuide = () => {
                         <TableCell>$600.00</TableCell>
                         <TableCell>$200.00</TableCell>
                       </TableRow>
-                      <TableRow>
+                      <TableRow 
+                        className={isMobile ? "cursor-pointer hover:bg-gray-50 active:bg-gray-100" : ""}
+                        onClick={() => handleRowClick({
+                          name: "Ute Single Cab (Petrol)",
+                          dimensions: "-",
+                          kmRate: "-",
+                          hour2: "$40.00",
+                          hour4: "$70.00", 
+                          hour8: "$100.00",
+                          day1: "$115.00"
+                        })}
+                      >
                         <TableCell className="font-medium">Ute Single Cab (Petrol)</TableCell>
                         <TableCell>-</TableCell>
                         <TableCell>$40.00</TableCell>
@@ -278,7 +448,18 @@ const PriceGuide = () => {
                         <TableCell>-</TableCell>
                         <TableCell>-</TableCell>
                       </TableRow>
-                      <TableRow>
+                      <TableRow 
+                        className={isMobile ? "cursor-pointer hover:bg-gray-50 active:bg-gray-100" : ""}
+                        onClick={() => handleRowClick({
+                          name: "Jumbo Van (9m3)",
+                          dimensions: "3 x 1.6 x 1.9m",
+                          kmRate: "$0.39",
+                          hour2: "$40.00",
+                          hour4: "$70.00", 
+                          hour8: "$100.00",
+                          day1: "$130.00"
+                        })}
+                      >
                         <TableCell className="font-medium">Jumbo Van (9m3)<br/>3 x 1.6 x 1.9m</TableCell>
                         <TableCell>$0.39</TableCell>
                         <TableCell>$40.00</TableCell>
@@ -290,7 +471,18 @@ const PriceGuide = () => {
                         <TableCell>$600.00</TableCell>
                         <TableCell>$200.00</TableCell>
                       </TableRow>
-                      <TableRow>
+                      <TableRow 
+                        className={isMobile ? "cursor-pointer hover:bg-gray-50 active:bg-gray-100" : ""}
+                        onClick={() => handleRowClick({
+                          name: "Rear Seat Van (6m3)",
+                          dimensions: "-",
+                          kmRate: "-",
+                          hour2: "-",
+                          hour4: "-", 
+                          hour8: "-",
+                          day1: "$130.00"
+                        })}
+                      >
                         <TableCell className="font-medium">Rear Seat Van (6m3)</TableCell>
                         <TableCell>-</TableCell>
                         <TableCell>-</TableCell>
@@ -302,7 +494,18 @@ const PriceGuide = () => {
                         <TableCell>-</TableCell>
                         <TableCell>-</TableCell>
                       </TableRow>
-                      <TableRow>
+                      <TableRow 
+                        className={isMobile ? "cursor-pointer hover:bg-gray-50 active:bg-gray-100" : ""}
+                        onClick={() => handleRowClick({
+                          name: "Standard Van (6m3)",
+                          dimensions: "2.8 x 1.5 x 1.35m",
+                          kmRate: "-",
+                          hour2: "$35.00",
+                          hour4: "$65.00", 
+                          hour8: "$90.00",
+                          day1: "$115.00"
+                        })}
+                      >
                         <TableCell className="font-medium">Standard Van (6m3)<br/>2.8 x 1.5 x 1.35m</TableCell>
                         <TableCell>-</TableCell>
                         <TableCell>$35.00</TableCell>
@@ -314,7 +517,18 @@ const PriceGuide = () => {
                         <TableCell>-</TableCell>
                         <TableCell>-</TableCell>
                       </TableRow>
-                      <TableRow>
+                      <TableRow 
+                        className={isMobile ? "cursor-pointer hover:bg-gray-50 active:bg-gray-100" : ""}
+                        onClick={() => handleRowClick({
+                          name: "Premium Van (6m3)",
+                          dimensions: "2.8 x 1.5 x 1.35m",
+                          kmRate: "-",
+                          hour2: "$40.00",
+                          hour4: "$70.00", 
+                          hour8: "$100.00",
+                          day1: "$130.00"
+                        })}
+                      >
                         <TableCell className="font-medium">Premium Van (6m3)<br/>2.8 x 1.5 x 1.35m</TableCell>
                         <TableCell>-</TableCell>
                         <TableCell>$40.00</TableCell>
@@ -353,6 +567,69 @@ const PriceGuide = () => {
           </div>
         </div>
       </div>
+
+      {/* Mobile Pricing Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="mx-4 max-w-sm rounded-lg">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-bold text-center">
+              {selectedVehicle?.name}
+            </DialogTitle>
+          </DialogHeader>
+          
+          {selectedVehicle && (
+            <div className="space-y-4">
+              {selectedVehicle.dimensions && selectedVehicle.dimensions !== "-" && (
+                <div className="bg-gray-50 p-3 rounded-lg">
+                  <p className="text-sm text-gray-600 font-medium">Dimensions</p>
+                  <p className="text-base">{selectedVehicle.dimensions}</p>
+                </div>
+              )}
+              
+              {selectedVehicle.kmRate && selectedVehicle.kmRate !== "-" && (
+                <div className="bg-blue-50 p-3 rounded-lg">
+                  <p className="text-sm text-blue-600 font-medium">Per Kilometer Rate</p>
+                  <p className="text-lg font-bold text-blue-800">{selectedVehicle.kmRate}</p>
+                </div>
+              )}
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-green-50 p-3 rounded-lg text-center">
+                  <p className="text-xs text-green-600 font-medium">2 Hour</p>
+                  <p className="text-lg font-bold text-green-800">
+                    {selectedVehicle.hour2}
+                  </p>
+                </div>
+                
+                <div className="bg-green-50 p-3 rounded-lg text-center">
+                  <p className="text-xs text-green-600 font-medium">4 Hour</p>
+                  <p className="text-lg font-bold text-green-800">
+                    {selectedVehicle.hour4}
+                  </p>
+                </div>
+                
+                <div className="bg-green-50 p-3 rounded-lg text-center">
+                  <p className="text-xs text-green-600 font-medium">8 Hour</p>
+                  <p className="text-lg font-bold text-green-800">
+                    {selectedVehicle.hour8}
+                  </p>
+                </div>
+                
+                <div className="bg-primary/10 p-3 rounded-lg text-center">
+                  <p className="text-xs text-primary font-medium">1 Day</p>
+                  <p className="text-lg font-bold text-primary">
+                    {selectedVehicle.day1}
+                  </p>
+                </div>
+              </div>
+
+              <div className="text-center text-xs text-gray-500 mt-4">
+                All prices include GST
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
