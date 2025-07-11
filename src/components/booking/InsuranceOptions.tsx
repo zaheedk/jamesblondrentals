@@ -45,15 +45,13 @@ const InsuranceOptions = ({
     const title = insurance.name || "Insurance Option";
     const description = insurance.description || "";
     
-    // Parse bullet points from description (text in brackets)
-    const bulletPoints: string[] = [];
-    const bracketRegex = /\(([^)]+)\)/g;
-    let match;
-    while ((match = bracketRegex.exec(description)) !== null) {
-      // Split by commas or semicolons and clean up
-      const points = match[1].split(/[,;]/).map(point => point.trim()).filter(point => point.length > 0);
-      bulletPoints.push(...points);
-    }
+    // Extract excess amount from description
+    const excessMatch = description.match(/\$(\d+(?:,\d+)?)\s*excess/i);
+    const excessAmount = excessMatch ? `$${excessMatch[1]} excess` : "";
+    
+    // Extract text in brackets
+    const bracketMatch = description.match(/\(([^)]+)\)/);
+    const bracketText = bracketMatch ? bracketMatch[1] : "";
     
     // Check if this is Peace of Mind for special styling
     const isPeaceOfMind = title.toLowerCase().includes('peace of mind');
@@ -62,7 +60,8 @@ const InsuranceOptions = ({
     return {
       ...insurance,
       title,
-      bulletPoints,
+      excessAmount,
+      bracketText,
       isPeaceOfMind,
       isRecommended,
       dailyRate
@@ -102,23 +101,20 @@ const InsuranceOptions = ({
               )}
               
               <div className="space-y-4">
-                 <div>
+                 <div className="space-y-3">
                    <h3 className="text-xl font-bold text-black">
                      {displayData.title}
                    </h3>
-                 </div>
-
-                 <div className="space-y-2">
-                   {displayData.bulletPoints.map((point, pointIndex) => (
-                     <div key={pointIndex} className="flex items-start gap-2">
-                       <span className="text-sm mt-0.5 text-black">
-                         •
-                       </span>
-                       <span className="text-sm text-black">
-                         {point}
-                       </span>
+                   {displayData.excessAmount && (
+                     <div className="text-lg font-semibold text-black">
+                       {displayData.excessAmount}
                      </div>
-                   ))}
+                   )}
+                   {displayData.bracketText && (
+                     <div className="text-sm text-black">
+                       {displayData.bracketText}
+                     </div>
+                   )}
                  </div>
 
                  <div className="pt-4 border-t border-gray-300">
