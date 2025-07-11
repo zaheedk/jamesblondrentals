@@ -88,14 +88,9 @@ const InsuranceOptions = ({
           return (
             <Card 
               key={insurance.id}
-              className={`relative p-6 cursor-pointer transition-all duration-200 ${
-                displayData.isPeaceOfMind
-                  ? 'text-white'
-                  : displayData.isRecommended 
-                    ? 'bg-black text-white' 
-                    : 'bg-gray-50 hover:bg-gray-100'
-              } ${isSelected ? 'ring-2 ring-primary' : ''}`}
-              style={displayData.isPeaceOfMind ? { backgroundColor: 'hsl(var(--royal-blue))' } : undefined}
+              className={`relative p-6 cursor-pointer transition-all duration-200 bg-gray-50 hover:bg-gray-100 text-black ${
+                isSelected ? 'border-2 border-primary' : 'border border-gray-200'
+              }`}
               onClick={() => onSelectInsurance(insurance.id)}
             >
               {displayData.isRecommended && (
@@ -107,43 +102,41 @@ const InsuranceOptions = ({
               )}
               
               <div className="space-y-4">
-                <div>
-                  <h3 className={`text-xl font-bold ${(displayData.isRecommended || displayData.isPeaceOfMind) ? 'text-white' : 'text-black'}`}>
-                    {displayData.title}
-                  </h3>
-                </div>
+                 <div>
+                   <h3 className="text-xl font-bold text-black">
+                     {displayData.title}
+                   </h3>
+                 </div>
 
-                <div className="space-y-2">
-                  {displayData.bulletPoints.map((point, pointIndex) => (
-                    <div key={pointIndex} className="flex items-start gap-2">
-                      <span className={`text-sm mt-0.5 ${(displayData.isRecommended || displayData.isPeaceOfMind) ? 'text-white' : 'text-black'}`}>
-                        •
-                      </span>
-                      <span className={`text-sm ${(displayData.isRecommended || displayData.isPeaceOfMind) ? 'text-white' : 'text-black'}`}>
-                        {point}
-                      </span>
-                    </div>
-                  ))}
-                </div>
+                 <div className="space-y-2">
+                   {displayData.bulletPoints.map((point, pointIndex) => (
+                     <div key={pointIndex} className="flex items-start gap-2">
+                       <span className="text-sm mt-0.5 text-black">
+                         •
+                       </span>
+                       <span className="text-sm text-black">
+                         {point}
+                       </span>
+                     </div>
+                   ))}
+                 </div>
 
-                <div className="pt-4 border-t border-gray-300">
-                  <div className="flex justify-between items-center mb-4">
-                    <span className={`text-lg font-bold ${(displayData.isRecommended || displayData.isPeaceOfMind) ? 'text-white' : 'text-black'}`}>
-                      ${displayData.dailyRate.toFixed(2)} PER DAY
-                    </span>
-                    <span className={`text-xl font-bold ${(displayData.isRecommended || displayData.isPeaceOfMind) ? 'text-white' : 'text-black'}`}>
-                      ${(displayData.dailyRate * 7).toFixed(2)}
-                    </span>
-                  </div>
-                  
-                  <Button 
-                    className={`w-full ${
-                      isSelected 
-                        ? 'bg-primary text-white'
-                        : (displayData.isRecommended || displayData.isPeaceOfMind)
-                          ? 'bg-white text-black hover:bg-gray-100'
-                          : 'bg-gray-600 text-white hover:bg-gray-700'
-                    }`}
+                 <div className="pt-4 border-t border-gray-300">
+                   <div className="flex justify-between items-center mb-4">
+                     <span className="text-lg font-bold text-black">
+                       ${displayData.dailyRate.toFixed(2)} PER DAY
+                     </span>
+                     <span className="text-xl font-bold text-black">
+                       ${(displayData.dailyRate * 7).toFixed(2)}
+                     </span>
+                   </div>
+                   
+                   <Button 
+                     className={`w-full ${
+                       isSelected 
+                         ? 'bg-primary text-white'
+                         : 'bg-gray-600 text-white hover:bg-gray-700'
+                     }`}
                     onClick={(e) => {
                       e.stopPropagation();
                       onSelectInsurance(insurance.id);
