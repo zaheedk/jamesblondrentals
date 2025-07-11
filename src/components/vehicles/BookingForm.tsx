@@ -227,7 +227,7 @@ export default function BookingForm({
       <input type="hidden" name="rateType" value={isHourlyRate() ? 'hourly' : 'daily'} />
       <input type="hidden" name="campaignCode" value={campaignCode || ''} />
       
-      <Button type="submit" className="w-full">
+      <Button type="submit" className="w-full py-6 text-lg font-semibold">
         Select
       </Button>
     </form>
