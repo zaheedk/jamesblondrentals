@@ -45,13 +45,13 @@ const InsuranceOptions = ({
     const title = insurance.name || "Insurance Option";
     const description = insurance.description || "";
     
-    // Extract excess amount from description
-    const excessMatch = description.match(/\$(\d+(?:,\d+)?)\s*excess/i);
-    const excessAmount = excessMatch ? `$${excessMatch[1]} excess` : "";
-    
     // Extract text in brackets and split by pipe symbol
     const bracketMatch = description.match(/\(([^)]+)\)/);
     const bracketText = bracketMatch ? bracketMatch[1].split('|').map(text => text.trim()).filter(text => text.length > 0) : [];
+    
+    // Extract excess amount from description or bracket text
+    const excessMatch = description.match(/\$(\d+(?:,\d+)?)\s*excess/i);
+    const excessAmount = excessMatch ? `$${excessMatch[1]} excess` : "";
     
     // Debug logging
     console.log('Description:', description);
