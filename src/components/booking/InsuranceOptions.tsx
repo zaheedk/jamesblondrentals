@@ -55,7 +55,7 @@ const InsuranceOptions = ({
       // Add X icon before any text that contains "Exclude"
       formattedSecondLineHtml = secondLineHtml.replace(
         /(\b\w*[Ee]xclud\w*)/g, 
-        '<span class="flex items-center gap-1"><svg class="w-4 h-4 text-red-500 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>$1</span>'
+        '<span class="inline-flex items-center gap-1 whitespace-nowrap"><svg class="w-4 h-4 text-red-500 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>$1</span>'
       );
     }
     
