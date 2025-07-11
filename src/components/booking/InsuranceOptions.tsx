@@ -45,17 +45,21 @@ const InsuranceOptions = ({
     const webDescription = insurance.feedescription1 || "";
     const title = insurance.name || "Insurance Option";
     
-    // Parse HTML content from feedescription1
+    // Use feedescription for first line and feedescription1 for second line
+    const firstLineText = (insurance.feedescription && insurance.feedescription.trim()) ? insurance.feedescription.trim() : "";
+    const secondLineHtml = (insurance.feedescription1 && insurance.feedescription1.trim()) ? insurance.feedescription1.trim() : "";
+    
+    // Parse excess amount and bracket text for fallback
     let excessAmount = "";
     let bracketText: string[] = [];
     
-    if (webDescription) {
+    if (secondLineHtml) {
       // Extract excess amount from HTML content
-      const excessMatch = webDescription.match(/\$\s*(\d+(?:,\d+)?)\s*Excess/i);
+      const excessMatch = secondLineHtml.match(/\$\s*(\d+(?:,\d+)?)\s*Excess/i);
       excessAmount = excessMatch ? `$${excessMatch[1]} excess` : "";
       
       // Extract list items from HTML
-      const listItemsMatch = webDescription.match(/<li>([^<]+)<\/li>/g);
+      const listItemsMatch = secondLineHtml.match(/<li>([^<]+)<\/li>/g);
       if (listItemsMatch) {
         bracketText = listItemsMatch.map(item => item.replace(/<\/?li>/g, ''));
       }
@@ -77,6 +81,8 @@ const InsuranceOptions = ({
     return {
       ...insurance,
       title,
+      firstLineText,
+      secondLineHtml,
       excessAmount,
       bracketText,
       isPeaceOfMind,
@@ -135,12 +141,20 @@ const InsuranceOptions = ({
                    <h3 className="text-lg font-bold text-black">
                      {displayData.title}
                    </h3>
-                   {displayData.excessAmount && (
+                   {displayData.firstLineText && (
+                     <div className="text-sm text-black">
+                       {displayData.firstLineText}
+                     </div>
+                   )}
+                   {displayData.secondLineHtml && (
+                     <div className="text-sm text-black" dangerouslySetInnerHTML={{ __html: displayData.secondLineHtml }} />
+                   )}
+                   {!displayData.firstLineText && !displayData.secondLineHtml && displayData.excessAmount && (
                      <div className="text-sm font-medium text-black">
                        {displayData.excessAmount}
                      </div>
                    )}
-                    {displayData.bracketText.length > 0 && (
+                   {!displayData.firstLineText && !displayData.secondLineHtml && displayData.bracketText.length > 0 && (
                       <div className="text-sm text-black">
                         {displayData.bracketText.map((line, lineIndex) => (
                           <div key={lineIndex}>{line}</div>
