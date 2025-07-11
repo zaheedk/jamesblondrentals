@@ -101,7 +101,7 @@ const InsuranceOptions = ({
             >
               {displayData.isRecommended && (
                 <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <div className="bg-primary text-white px-3 py-1 rounded text-xs font-medium">
+                  <div className="bg-green-800 text-white px-3 py-1 rounded text-xs font-medium">
                     RECOMMENDED
                   </div>
                 </div>
