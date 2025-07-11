@@ -144,7 +144,7 @@ const InsuranceOptions = ({
                      </h3>
                    )}
                    {displayData.firstLineText && (
-                     <div className="text-sm text-black">
+                     <div className="text-base font-bold text-black">
                        {displayData.firstLineText}
                      </div>
                    )}
