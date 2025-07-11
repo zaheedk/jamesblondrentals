@@ -513,19 +513,6 @@ const PaymentOptions = () => {
             </Button>
           </form>
         </div>
-        
-        {/* Debug Information */}
-        {lastRequestPayload && (
-          <div className="mt-8 border-t pt-4">
-            <h2 className="text-xl font-bold mb-2">Last API Request</h2>
-            <div className="bg-gray-100 rounded-lg p-4 overflow-auto max-h-60">
-              <h3 className="text-lg font-semibold mb-2">Save Quotation Request Payload</h3>
-              <pre className="text-xs whitespace-pre-wrap">
-                {JSON.stringify(lastRequestPayload, null, 2)}
-              </pre>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
