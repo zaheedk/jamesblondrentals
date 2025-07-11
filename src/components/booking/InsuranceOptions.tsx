@@ -138,9 +138,11 @@ const InsuranceOptions = ({
               
               <div className="space-y-4">
                  <div className="space-y-2">
-                   <h3 className="text-lg font-bold text-black">
-                     {displayData.title}
-                   </h3>
+                   {(!displayData.firstLineText || !displayData.secondLineHtml) && (
+                     <h3 className="text-lg font-bold text-black">
+                       {displayData.title}
+                     </h3>
+                   )}
                    {displayData.firstLineText && (
                      <div className="text-sm text-black">
                        {displayData.firstLineText}
