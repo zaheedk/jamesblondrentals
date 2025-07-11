@@ -48,26 +48,22 @@ const InsuranceOptions = ({
       { name: "Lost Key Replacement", included: index > 1 }
     ];
 
-    // Set titles and subtitles based on index/price level
-    let title = insurance.name || "Insurance Option";
-    let subtitle = "";
+    // Use the actual insurance name and description from RCM API
+    const title = insurance.name || "Insurance Option";
+    const subtitle = insurance.description || "";
+    
+    // Set excess and bond based on index/price level for display
     let excess = "";
     let bond = "";
     let isRecommended = false;
 
-    if (index === 0) {
-      title = title.includes("BASIC") || dailyRate === 0 ? "RISKY BUSINESS" : title;
-      subtitle = "LIMITED COVER";
+    if (index === 0 || dailyRate === 0) {
       excess = "$2000 EXCESS";
       bond = "$2000 BOND";
     } else if (index === 1) {
-      title = title.includes("STANDARD") || title.includes("BASIC") ? "BASELINE" : title;
-      subtitle = "BASIC COVER";
       excess = "$500 EXCESS";
       bond = "$500 BOND";
     } else {
-      title = title.includes("PREMIUM") || title.includes("COMPREHENSIVE") ? "GO SMARTER" : title;
-      subtitle = "SIMPLY BETTER COVER";
       excess = "$0 EXCESS";
       bond = "$0 BOND";
       isRecommended = true;
