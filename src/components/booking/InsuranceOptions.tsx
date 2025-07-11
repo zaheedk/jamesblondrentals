@@ -53,6 +53,11 @@ const InsuranceOptions = ({
     const bracketMatch = description.match(/\(([^)]+)\)/);
     const bracketText = bracketMatch ? bracketMatch[1].split('|').map(text => text.trim()).filter(text => text.length > 0) : [];
     
+    // Debug logging
+    console.log('Description:', description);
+    console.log('Bracket match:', bracketMatch);
+    console.log('Bracket text:', bracketText);
+    
     // Check if this is Peace of Mind for special styling
     const isPeaceOfMind = title.toLowerCase().includes('peace of mind');
     const isRecommended = index === 2 || isPeaceOfMind; // Keep existing logic but also check for Peace of Mind
