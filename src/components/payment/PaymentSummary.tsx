@@ -44,7 +44,7 @@ const PaymentSummary = ({
 }: PaymentSummaryProps) => {
   const effectiveRentalDays = Math.max(1, rentalDays || 1);
   
-  const extrasTotal = selectedExtras.reduce((sum, extra) => sum + extra.price, 0);
+  const extrasTotal = selectedExtras.reduce((sum, extra) => sum + (extra.price * extra.quantity), 0);
   
   const mandatoryFeesTotal = mandatoryFees.reduce((sum, fee) => {
     return sum + (fee.amount || 0);
@@ -110,7 +110,7 @@ const PaymentSummary = ({
             {selectedExtras.length > 0 && selectedExtras.map((extra, index) => (
               <div key={index} className="flex justify-between text-sm">
                 <span>{extra.name} {extra.quantity > 1 ? `(x${extra.quantity})` : ''}</span>
-                <span>{formatCurrency(extra.price)}</span>
+                <span>{formatCurrency(extra.price * extra.quantity)}</span>
               </div>
             ))}
             {totalOptionalFees > 0 && (
