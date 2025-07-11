@@ -49,9 +49,9 @@ const InsuranceOptions = ({
     const excessMatch = description.match(/\$(\d+(?:,\d+)?)\s*excess/i);
     const excessAmount = excessMatch ? `$${excessMatch[1]} excess` : "";
     
-    // Extract text in brackets
+    // Extract text in brackets and split by pipe symbol
     const bracketMatch = description.match(/\(([^)]+)\)/);
-    const bracketText = bracketMatch ? bracketMatch[1] : "";
+    const bracketText = bracketMatch ? bracketMatch[1].split('|').map(text => text.trim()) : [];
     
     // Check if this is Peace of Mind for special styling
     const isPeaceOfMind = title.toLowerCase().includes('peace of mind');
@@ -110,11 +110,13 @@ const InsuranceOptions = ({
                        {displayData.excessAmount}
                      </div>
                    )}
-                   {displayData.bracketText && (
-                     <div className="text-sm text-black">
-                       {displayData.bracketText}
-                     </div>
-                   )}
+                    {displayData.bracketText.length > 0 && (
+                      <div className="text-sm text-black">
+                        {displayData.bracketText.map((line, lineIndex) => (
+                          <div key={lineIndex}>{line}</div>
+                        ))}
+                      </div>
+                    )}
                  </div>
 
                  <div className="pt-4 border-t border-gray-300">
