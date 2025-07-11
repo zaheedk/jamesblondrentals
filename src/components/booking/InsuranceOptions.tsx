@@ -41,41 +41,29 @@ const InsuranceOptions = ({
   const getInsuranceDisplayData = (insurance: RCMInsuranceOption, index: number) => {
     const dailyRate = parseFloat(insurance.totalinsuranceamount.toString()) || 0;
     
-    // Define standard features based on insurance level
-    const baseFeatures = [
-      { name: "Windscreen & Tyre", included: index > 0 },
-      { name: "Premium 24/7 Roadside Assistance", included: index > 0 },
-      { name: "Lost Key Replacement", included: index > 1 }
-    ];
-
     // Use the actual insurance name and description from RCM API
     const title = insurance.name || "Insurance Option";
-    const subtitle = insurance.description || "";
+    const description = insurance.description || "";
     
-    // Set excess and bond based on index/price level for display
-    let excess = "";
-    let bond = "";
-    let isRecommended = false;
-
-    if (index === 0 || dailyRate === 0) {
-      excess = "$2000 EXCESS";
-      bond = "$2000 BOND";
-    } else if (index === 1) {
-      excess = "$500 EXCESS";
-      bond = "$500 BOND";
-    } else {
-      excess = "$0 EXCESS";
-      bond = "$0 BOND";
-      isRecommended = true;
+    // Parse bullet points from description (text in brackets)
+    const bulletPoints: string[] = [];
+    const bracketRegex = /\(([^)]+)\)/g;
+    let match;
+    while ((match = bracketRegex.exec(description)) !== null) {
+      // Split by commas or semicolons and clean up
+      const points = match[1].split(/[,;]/).map(point => point.trim()).filter(point => point.length > 0);
+      bulletPoints.push(...points);
     }
+    
+    // Check if this is Peace of Mind for special styling
+    const isPeaceOfMind = title.toLowerCase().includes('peace of mind');
+    const isRecommended = index === 2 || isPeaceOfMind; // Keep existing logic but also check for Peace of Mind
 
     return {
       ...insurance,
       title,
-      subtitle,
-      excess,
-      bond,
-      features: baseFeatures,
+      bulletPoints,
+      isPeaceOfMind,
       isRecommended,
       dailyRate
     };
@@ -101,10 +89,13 @@ const InsuranceOptions = ({
             <Card 
               key={insurance.id}
               className={`relative p-6 cursor-pointer transition-all duration-200 ${
-                displayData.isRecommended 
-                  ? 'bg-black text-white' 
-                  : 'bg-gray-50 hover:bg-gray-100'
+                displayData.isPeaceOfMind
+                  ? 'text-white'
+                  : displayData.isRecommended 
+                    ? 'bg-black text-white' 
+                    : 'bg-gray-50 hover:bg-gray-100'
               } ${isSelected ? 'ring-2 ring-primary' : ''}`}
+              style={displayData.isPeaceOfMind ? { backgroundColor: 'hsl(var(--royal-blue))' } : undefined}
               onClick={() => onSelectInsurance(insurance.id)}
             >
               {displayData.isRecommended && (
@@ -117,28 +108,19 @@ const InsuranceOptions = ({
               
               <div className="space-y-4">
                 <div>
-                  <h3 className={`text-xl font-bold ${displayData.isRecommended ? 'text-white' : 'text-black'}`}>
+                  <h3 className={`text-xl font-bold ${(displayData.isRecommended || displayData.isPeaceOfMind) ? 'text-white' : 'text-black'}`}>
                     {displayData.title}
                   </h3>
-                  <p className={`text-sm ${displayData.isRecommended ? 'text-gray-300' : 'text-gray-600'}`}>
-                    {displayData.subtitle}
-                  </p>
                 </div>
 
                 <div className="space-y-2">
-                  {displayData.features.map((feature, featureIndex) => (
-                    <div key={featureIndex} className="flex items-center gap-2">
-                      {feature.included ? (
-                        <Check className={`h-4 w-4 ${displayData.isRecommended ? 'text-primary' : 'text-green-600'}`} />
-                      ) : (
-                        <X className={`h-4 w-4 ${displayData.isRecommended ? 'text-gray-400' : 'text-gray-400'}`} />
-                      )}
-                      <span className={`text-sm ${
-                        feature.included 
-                          ? (displayData.isRecommended ? 'text-white' : 'text-black')
-                          : (displayData.isRecommended ? 'text-gray-400' : 'text-gray-400')
-                      }`}>
-                        {feature.name}
+                  {displayData.bulletPoints.map((point, pointIndex) => (
+                    <div key={pointIndex} className="flex items-start gap-2">
+                      <span className={`text-sm mt-0.5 ${(displayData.isRecommended || displayData.isPeaceOfMind) ? 'text-white' : 'text-black'}`}>
+                        •
+                      </span>
+                      <span className={`text-sm ${(displayData.isRecommended || displayData.isPeaceOfMind) ? 'text-white' : 'text-black'}`}>
+                        {point}
                       </span>
                     </div>
                   ))}
@@ -146,10 +128,10 @@ const InsuranceOptions = ({
 
                 <div className="pt-4 border-t border-gray-300">
                   <div className="flex justify-between items-center mb-4">
-                    <span className={`text-lg font-bold ${displayData.isRecommended ? 'text-white' : 'text-black'}`}>
+                    <span className={`text-lg font-bold ${(displayData.isRecommended || displayData.isPeaceOfMind) ? 'text-white' : 'text-black'}`}>
                       ${displayData.dailyRate.toFixed(2)} PER DAY
                     </span>
-                    <span className={`text-xl font-bold ${displayData.isRecommended ? 'text-white' : 'text-black'}`}>
+                    <span className={`text-xl font-bold ${(displayData.isRecommended || displayData.isPeaceOfMind) ? 'text-white' : 'text-black'}`}>
                       ${(displayData.dailyRate * 7).toFixed(2)}
                     </span>
                   </div>
@@ -158,7 +140,7 @@ const InsuranceOptions = ({
                     className={`w-full ${
                       isSelected 
                         ? 'bg-primary text-white'
-                        : displayData.isRecommended
+                        : (displayData.isRecommended || displayData.isPeaceOfMind)
                           ? 'bg-white text-black hover:bg-gray-100'
                           : 'bg-gray-600 text-white hover:bg-gray-700'
                     }`}
