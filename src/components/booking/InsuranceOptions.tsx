@@ -153,11 +153,11 @@ const InsuranceOptions = ({
                        {displayData.title}
                      </h3>
                    )}
-                   {displayData.firstLineText && (
-                     <div className="text-base font-bold text-black">
-                       {displayData.firstLineText}
-                     </div>
-                   )}
+                    {displayData.firstLineText && (
+                      <div className="text-lg font-bold text-black">
+                        {displayData.firstLineText}
+                      </div>
+                    )}
                    {displayData.formattedSecondLineHtml && (
                      <div className="text-sm text-black" dangerouslySetInnerHTML={{ __html: displayData.formattedSecondLineHtml }} />
                    )}
