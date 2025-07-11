@@ -143,7 +143,10 @@ const ExtrasSelection = ({
                 <div className="pt-4 border-t border-gray-300">
                   <div className="flex justify-between items-center mb-4">
                     <span className="text-lg font-bold text-black">
-                      {currencySymbol}{fee.fees.toFixed(2)}
+                      {selectedExtras.has(fee.id) 
+                        ? `${currencySymbol}${((selectedExtras.get(fee.id) || 1) * fee.fees).toFixed(2)} total`
+                        : `${currencySymbol}${fee.fees.toFixed(2)}`
+                      }
                     </span>
                     {fee.qtyapply && selectedExtras.has(fee.id) && (
                       <div className="flex items-center gap-2">
@@ -236,7 +239,10 @@ const ExtrasSelection = ({
                 <div className="pt-4 border-t border-gray-300">
                   <div className="flex justify-between items-center mb-4">
                     <span className="text-lg font-bold text-black">
-                      {currencySymbol}{extra.unitprice.toFixed(2)} each
+                      {selectedExtras.has(extra.id) 
+                        ? `${currencySymbol}${((selectedExtras.get(extra.id) || 1) * extra.unitprice).toFixed(2)} total`
+                        : `${currencySymbol}${extra.unitprice.toFixed(2)} each`
+                      }
                     </span>
                     {extra.maxquantity > 1 && selectedExtras.has(extra.id) && (
                       <div className="flex items-center gap-2">
