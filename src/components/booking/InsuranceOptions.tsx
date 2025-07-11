@@ -81,10 +81,6 @@ const InsuranceOptions = ({
         <h1 className="text-3xl font-bold text-black">INSURANCE COVER</h1>
       </div>
       
-      <div className="flex items-center gap-2 text-sm">
-        <span className="text-primary font-medium">Key Insurance Info</span>
-        <Info className="h-4 w-4 text-primary" />
-      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {sortedInsuranceOptions.map((insurance, index) => {
