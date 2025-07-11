@@ -54,7 +54,9 @@ const InsuranceOptions = ({
     const excessAmount = excessMatch ? `$${excessMatch[1]} excess` : "";
     
     // Debug logging
+    console.log('Full insurance object:', insurance);
     console.log('Description:', description);
+    console.log('Name:', insurance.name);
     console.log('Bracket match:', bracketMatch);
     console.log('Bracket text:', bracketText);
     
