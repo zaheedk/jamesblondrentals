@@ -229,7 +229,7 @@ export default function BookingForm({
       
       <Button 
         type="submit" 
-        className="w-full py-6 px-6 text-xl font-semibold bg-slate-600 text-white hover:bg-slate-700 rounded-lg h-16"
+        className="w-full p-2 bg-slate-600 text-white hover:bg-slate-700 text-center rounded"
       >
         SELECT
       </Button>
