@@ -50,7 +50,7 @@ const Navbar = () => {
 
           <div className="hidden md:flex items-center space-x-6">
             <Link to="/" className="text-gray-600 hover:text-primary transition-colors font-bold">
-              Home
+              Book
             </Link>
             <NavigationMenu>
               <NavigationMenuList>
@@ -338,7 +338,7 @@ const Navbar = () => {
             
             <div className="flex flex-col space-y-3">
               <Link to="/" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>
-                Home
+                Book
               </Link>
               <Link to="/price-guide" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>
                 Price Guide
