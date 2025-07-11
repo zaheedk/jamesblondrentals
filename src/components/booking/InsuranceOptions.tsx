@@ -101,12 +101,12 @@ const InsuranceOptions = ({
               )}
               
               <div className="space-y-4">
-                 <div className="space-y-3">
-                   <h3 className="text-xl font-bold text-black">
+                 <div className="space-y-2">
+                   <h3 className="text-lg font-bold text-black">
                      {displayData.title}
                    </h3>
                    {displayData.excessAmount && (
-                     <div className="text-lg font-semibold text-black">
+                     <div className="text-sm font-medium text-black">
                        {displayData.excessAmount}
                      </div>
                    )}
