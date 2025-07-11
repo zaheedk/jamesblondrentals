@@ -135,14 +135,11 @@ const InsuranceOptions = ({
                  </div>
 
                  <div className="pt-4 border-t border-gray-300">
-                   <div className="flex justify-between items-center mb-4">
-                     <span className="text-lg font-bold text-black">
-                       ${displayData.dailyRate.toFixed(2)} PER DAY
-                     </span>
-                     <span className="text-xl font-bold text-black">
-                       ${(displayData.dailyRate * 7).toFixed(2)}
-                     </span>
-                   </div>
+                    <div className="flex justify-center items-center mb-4">
+                      <span className="text-lg font-bold text-black">
+                        ${displayData.dailyRate.toFixed(2)} PER DAY
+                      </span>
+                    </div>
                    
                    <Button 
                      className={`w-full ${
