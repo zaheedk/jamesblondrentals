@@ -51,7 +51,7 @@ const InsuranceOptions = ({
     
     // Extract text in brackets and split by pipe symbol
     const bracketMatch = description.match(/\(([^)]+)\)/);
-    const bracketText = bracketMatch ? bracketMatch[1].split('|').map(text => text.trim()) : [];
+    const bracketText = bracketMatch ? bracketMatch[1].split('|').map(text => text.trim()).filter(text => text.length > 0) : [];
     
     // Check if this is Peace of Mind for special styling
     const isPeaceOfMind = title.toLowerCase().includes('peace of mind');
