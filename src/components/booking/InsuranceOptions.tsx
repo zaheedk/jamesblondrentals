@@ -116,8 +116,8 @@ const InsuranceOptions = ({
               )}
 
               {displayData.title.toLowerCase().includes('easy rider') && (
-                <div className="absolute -top-3 right-4">
-                  <div className="bg-green-600 text-white px-3 py-1 rounded text-xs font-medium">
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                  <div className="bg-primary text-white px-3 py-1 rounded text-xs font-medium">
                     The Brave Drive
                   </div>
                 </div>
