@@ -18,6 +18,7 @@ interface DateSelectProps {
   disableDate?: (date: Date) => boolean;
   locationId?: string;
   allowSameDay?: boolean;
+  locationDetails?: any[];
 }
 
 export const DateSelect = ({
@@ -27,23 +28,24 @@ export const DateSelect = ({
   onDateChange,
   disableDate,
   locationId,
-  allowSameDay = true // Default to allowing same day selections
+  allowSameDay = true, // Default to allowing same day selections
+  locationDetails = []
 }: DateSelectProps) => {
   const [open, setOpen] = useState(false);
 
   // Check if a location is Wellington CBD
-  const isWellingtonCBD = (locId: string | undefined) => {
-    // Use a simple check for Wellington CBD location ID or name pattern
-    // This should match the logic used in other components
-    return locId && (
-      locId === "63" || locId === "64" || locId === "65" || // Known Wellington CBD IDs
-      locId.toLowerCase().includes('wellington')
+  const isWellingtonCBD = (locId: string | undefined, locationDetails: any[]) => {
+    if (!locId || !locationDetails.length) return false;
+    return locationDetails.some(loc => 
+      String(loc.id) === locId && 
+      loc.location?.toLowerCase().includes('wellington') && 
+      loc.location?.toLowerCase().includes('cbd')
     );
   };
 
   // Auto-set to next Monday if Wellington CBD is selected and current date is Sunday
   React.useEffect(() => {
-    if (!locationId || !isWellingtonCBD(locationId)) return;
+    if (!locationId || !isWellingtonCBD(locationId, locationDetails)) return;
     
     const today = getNowInNZ();
     const isSunday = today.getDay() === 0;
@@ -57,7 +59,7 @@ export const DateSelect = ({
       console.log('Wellington CBD selected on Sunday, auto-setting to Monday:', nextMonday);
       onDateChange(nextMonday);
     }
-  }, [locationId, date, onDateChange]);
+  }, [locationId, date, onDateChange, locationDetails]);
 
   const handleDateSelect = (newDate: Date | undefined) => {
     if (newDate) {
@@ -73,7 +75,7 @@ export const DateSelect = ({
 
   // Check if the date is Sunday and if the location is Wellington - CBD
   const isWellingtonSunday = (date: Date) => {
-    if (isWellingtonCBD(locationId) && date.getDay() === 0) { // 0 is Sunday
+    if (isWellingtonCBD(locationId, locationDetails) && date.getDay() === 0) { // 0 is Sunday
       return true;
     }
     return false;

@@ -454,6 +454,7 @@ const SearchForm = () => {
                 onDateChange={handlePickupDateChange}
                 disableDate={(date) => disablePastDates(date, pickupLocation, locationDetails)}
                 locationId={pickupLocation}
+                locationDetails={locationDetails}
               />
 
               <TimeSelect
@@ -486,6 +487,7 @@ const SearchForm = () => {
                   return dateWithoutTime < pickupWithoutTime;
                 }}
                 locationId={sameLocation ? pickupLocation : dropoffLocation}
+                locationDetails={locationDetails}
                 allowSameDay={true}
               />
               
