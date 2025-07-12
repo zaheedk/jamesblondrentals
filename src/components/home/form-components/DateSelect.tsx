@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
@@ -30,6 +31,34 @@ export const DateSelect = ({
 }: DateSelectProps) => {
   const [open, setOpen] = useState(false);
 
+  // Check if a location is Wellington CBD
+  const isWellingtonCBD = (locId: string | undefined) => {
+    // Use a simple check for Wellington CBD location ID or name pattern
+    // This should match the logic used in other components
+    return locId && (
+      locId === "63" || locId === "64" || locId === "65" || // Known Wellington CBD IDs
+      locId.toLowerCase().includes('wellington')
+    );
+  };
+
+  // Auto-set to next Monday if Wellington CBD is selected and current date is Sunday
+  React.useEffect(() => {
+    if (!locationId || !isWellingtonCBD(locationId)) return;
+    
+    const today = getNowInNZ();
+    const isSunday = today.getDay() === 0;
+    
+    if (isSunday && (!date || date.toDateString() === today.toDateString())) {
+      // Calculate next Monday
+      const nextMonday = new Date(today);
+      nextMonday.setDate(today.getDate() + 1); // Move to Monday
+      nextMonday.setHours(12, 0, 0, 0);
+      
+      console.log('Wellington CBD selected on Sunday, auto-setting to Monday:', nextMonday);
+      onDateChange(nextMonday);
+    }
+  }, [locationId, date, onDateChange]);
+
   const handleDateSelect = (newDate: Date | undefined) => {
     if (newDate) {
       // Ensure consistent time part when selecting a date
@@ -44,11 +73,7 @@ export const DateSelect = ({
 
   // Check if the date is Sunday and if the location is Wellington - CBD
   const isWellingtonSunday = (date: Date) => {
-    // Wellington CBD offices are closed on Sundays (locationIds for Wellington are 63, 64, 65)
-    const isWellingtonLocation = locationId && 
-      ["63", "64", "65"].includes(locationId);
-
-    if (isWellingtonLocation && date.getDay() === 0) { // 0 is Sunday
+    if (isWellingtonCBD(locationId) && date.getDay() === 0) { // 0 is Sunday
       return true;
     }
     return false;

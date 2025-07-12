@@ -287,6 +287,16 @@ const SearchForm = () => {
     }
   };
 
+  // Helper function to check if a location is Wellington CBD
+  const isWellingtonCBD = (locationId: string) => {
+    if (!locationId || !locationDetails.length) return false;
+    return locationDetails.some(loc => 
+      String(loc.id) === locationId && 
+      loc.location?.toLowerCase().includes('wellington') && 
+      loc.location?.toLowerCase().includes('cbd')
+    );
+  };
+
   const getDefaultAgeId = () => {
     if (!driverAges?.length) return "";
     const defaultAge = driverAges.find(a => a.isdefault) || driverAges[0];
@@ -384,24 +394,37 @@ const SearchForm = () => {
         <form onSubmit={handleSearch}>
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <LocationSelect 
-                id="pickup-location"
-                label="Pickup Location"
-                locations={locations}
-                value={pickupLocation}
-                onValueChange={(value) => {
-                  setPickupLocation(value);
-                  if (sameLocation) {
-                    setDropoffLocation(value);
-                  }
-                }}
-                isLoading={isLoadingLocations}
-                hasError={isLocationError}
-              />
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="pickup-location">Pickup Location</Label>
+                  {isWellingtonCBD(pickupLocation) && (
+                    <span className="text-xs text-blue-600">Closed on Sundays</span>
+                  )}
+                </div>
+                <LocationSelect 
+                  id="pickup-location"
+                  label=""
+                  locations={locations}
+                  value={pickupLocation}
+                  onValueChange={(value) => {
+                    setPickupLocation(value);
+                    if (sameLocation) {
+                      setDropoffLocation(value);
+                    }
+                  }}
+                  isLoading={isLoadingLocations}
+                  hasError={isLocationError}
+                />
+              </div>
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="dropoff-location">Dropoff Location</Label>
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="dropoff-location">Dropoff Location</Label>
+                    {isWellingtonCBD(sameLocation ? pickupLocation : dropoffLocation) && (
+                      <span className="text-xs text-blue-600">Closed on Sundays</span>
+                    )}
+                  </div>
                   <label className="flex items-center">
                     <input
                       type="checkbox"
