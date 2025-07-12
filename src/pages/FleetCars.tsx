@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -91,8 +91,24 @@ const cars = [
   }
 ];
 
-const FleetCars = () => (
-  <div className="container mx-auto px-4 py-10">
+const FleetCars = () => {
+  useEffect(() => {
+    document.title = "Cheap and Premium car hire New Zealand";
+    
+    // Set meta description
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', 'Rent cheap and premium cars in New Zealand. Choose from compact cars, SUVs, premium vehicles, wagons, and 7-seater options. Book your perfect rental today!');
+    } else {
+      const meta = document.createElement('meta');
+      meta.name = 'description';
+      meta.content = 'Rent cheap and premium cars in New Zealand. Choose from compact cars, SUVs, premium vehicles, wagons, and 7-seater options. Book your perfect rental today!';
+      document.head.appendChild(meta);
+    }
+  }, []);
+
+  return (
+    <div className="container mx-auto px-4 py-10">
     <div className="text-center mb-12">
       <h1 className="text-3xl font-bold mb-4">Our Car Fleet</h1>
       <p className="text-lg text-gray-700">
@@ -142,6 +158,7 @@ const FleetCars = () => (
       ))}
     </div>
   </div>
-);
+  );
+};
 
 export default FleetCars;
