@@ -352,6 +352,9 @@ const CustomerDetails = () => {
                               date > new Date() || date < new Date("1920-01-01")
                             }
                             initialFocus
+                            captionLayout="dropdown"
+                            fromYear={1920}
+                            toYear={new Date().getFullYear()}
                             className={cn("p-3 pointer-events-auto")}
                           />
                         </PopoverContent>
