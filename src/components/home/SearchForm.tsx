@@ -397,9 +397,6 @@ const SearchForm = () => {
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <Label htmlFor="pickup-location">Pickup Location</Label>
-                  {isWellingtonCBD(pickupLocation) && (
-                    <span className="text-xs text-blue-600">Closed on Sundays</span>
-                  )}
                 </div>
                 <LocationSelect 
                   id="pickup-location"
@@ -421,9 +418,6 @@ const SearchForm = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Label htmlFor="dropoff-location">Dropoff Location</Label>
-                    {isWellingtonCBD(sameLocation ? pickupLocation : dropoffLocation) && (
-                      <span className="text-xs text-blue-600">Closed on Sundays</span>
-                    )}
                   </div>
                   <label className="flex items-center">
                     <input
