@@ -74,7 +74,7 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
             <div className="flex flex-col sm:flex-row sm:items-center justify-between w-full gap-3">
               <div className="flex items-center gap-3 sm:gap-4">
                 {/* Vehicle Image */}
-                <div className="w-12 h-9 sm:w-16 sm:h-12 rounded overflow-hidden bg-muted flex-shrink-0">
+                <div className="w-24 h-18 sm:w-32 sm:h-24 rounded overflow-hidden bg-muted flex-shrink-0">
                   <img
                     src={getImageUrl()}
                     alt={bookingData.vehicleName || 'Vehicle'}
