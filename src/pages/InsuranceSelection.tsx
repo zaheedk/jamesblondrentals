@@ -172,7 +172,6 @@ const InsuranceSelection = () => {
     <div className="container mx-auto px-4 py-8">
       <ExitIntentPopup />
       <BookingRentalAccordion />
-      <h1 className="text-3xl font-bold text-black mb-6">SELECT INSURANCE & KM CHARGES</h1>
       
       <div className="space-y-8">
         {insuranceOptions.length > 0 && (
