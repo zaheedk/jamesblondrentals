@@ -104,6 +104,7 @@ import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 
 import AppLayout from "./components/layout/AppLayout";
+import { ScrollToTop } from "./components/layout/ScrollToTop";
 import VanDetail from "./pages/VanDetail";
 
 import SingleCabUteDieselDetail from "./pages/SingleCabUteDieselDetail";
@@ -121,6 +122,7 @@ const App = () => {
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            <ScrollToTop />
             <AppLayout>
               <Routes>
                 <Route path="/" element={<Index />} />
