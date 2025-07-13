@@ -73,9 +73,6 @@ const vans = [
 ];
 
 const FleetVans = () => {
-  useEffect(() => {
-    document.title = "Van Hire Auckland & Wellington - James Blond Rentals";
-  }, []);
 
   return (
     <div className="container mx-auto px-4 py-10">

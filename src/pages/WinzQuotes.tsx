@@ -1,12 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle, AlertCircle, CreditCard, FileText, Users, Clock } from 'lucide-react';
 import WinzQuoteForm from '@/components/WinzQuoteForm';
 
 const WinzQuotes = () => {
-  useEffect(() => {
-    document.title = "WINZ Quotes for Van & Truck Hire - Auckland & Wellington - James Blond Rentals";
-  }, []);
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-4xl mx-auto">

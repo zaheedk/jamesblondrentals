@@ -1,12 +1,9 @@
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Globe, Users, Award, Star } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 
 const About = () => {
-  useEffect(() => {
-    document.title = "About James Blond Car & Truck Rental - Auckland & Wellington";
-  }, []);
 
   return (
   <div className="container mx-auto px-4 py-12 space-y-16">

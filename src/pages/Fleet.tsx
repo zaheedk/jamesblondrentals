@@ -44,11 +44,6 @@ const Fleet = () => {
   const location = useLocation();
   const isRootFleetRoute = location.pathname === '/fleet';
 
-  useEffect(() => {
-    if (isRootFleetRoute) {
-      document.title = "Vehicle Fleet - Cars, Vans, Trucks & More - James Blond Rentals";
-    }
-  }, [isRootFleetRoute]);
 
   return (
     <div className="container mx-auto px-4 py-8">
