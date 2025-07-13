@@ -93,7 +93,7 @@ const cars = [
 
 const FleetCars = () => {
   useEffect(() => {
-    document.title = "Cheap and Premium Car Hire New Zealand - James Blond Rentals";
+    document.title = "Cheap Premium Car Hire New Zealand";
   }, []);
 
   return (
