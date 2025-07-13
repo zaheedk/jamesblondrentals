@@ -33,34 +33,6 @@ export const DateSelect = ({
 }: DateSelectProps) => {
   const [open, setOpen] = useState(false);
 
-  // Check if a location is Wellington CBD
-  const isWellingtonCBD = (locId: string | undefined, locationDetails: any[]) => {
-    if (!locId || !locationDetails.length) return false;
-    return locationDetails.some(loc => 
-      String(loc.id) === locId && 
-      loc.location?.toLowerCase().includes('wellington') && 
-      loc.location?.toLowerCase().includes('cbd')
-    );
-  };
-
-  // Auto-set to next Monday if Wellington CBD is selected and current date is Sunday
-  React.useEffect(() => {
-    if (!locationId || !isWellingtonCBD(locationId, locationDetails)) return;
-    
-    const today = getNowInNZ();
-    const isSunday = today.getDay() === 0;
-    
-    if (isSunday && (!date || date.toDateString() === today.toDateString())) {
-      // Calculate next Monday
-      const nextMonday = new Date(today);
-      nextMonday.setDate(today.getDate() + 1); // Move to Monday
-      nextMonday.setHours(12, 0, 0, 0);
-      
-      console.log('Wellington CBD selected on Sunday, auto-setting to Monday:', nextMonday);
-      onDateChange(nextMonday);
-    }
-  }, [locationId, date, onDateChange, locationDetails]);
-
   const handleDateSelect = (newDate: Date | undefined) => {
     if (newDate) {
       // Ensure consistent time part when selecting a date
@@ -73,22 +45,9 @@ export const DateSelect = ({
     setOpen(false);
   };
 
-  // Check if the date is Sunday and if the location is Wellington - CBD
-  const isWellingtonSunday = (date: Date) => {
-    if (isWellingtonCBD(locationId, locationDetails) && date.getDay() === 0) { // 0 is Sunday
-      return true;
-    }
-    return false;
-  };
-
   const combinedDisabledDate = (date: Date) => {
     // First check the passed in disable function
     if (disableDate && disableDate(date)) {
-      return true;
-    }
-    
-    // Then check location-specific rules
-    if (isWellingtonSunday(date)) {
       return true;
     }
     
