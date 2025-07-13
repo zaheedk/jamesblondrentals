@@ -29,12 +29,14 @@ const RentalDetails = ({
 }: RentalDetailsProps) => {
   const displayPickupLocation = pickupLocationName && 
     pickupLocationName !== "undefined" && 
-    pickupLocationName !== "null" ? 
+    pickupLocationName !== "null" &&
+    pickupLocationName.trim() !== "" ? 
     pickupLocationName : "Not specified";
   
   const displayDropoffLocation = dropoffLocationName && 
     dropoffLocationName !== "undefined" && 
-    dropoffLocationName !== "null" ? 
+    dropoffLocationName !== "null" &&
+    dropoffLocationName.trim() !== "" ? 
     dropoffLocationName : "Not specified";
 
   // Calculate hours for hourly rate display

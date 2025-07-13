@@ -8,6 +8,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { getBookingData } from '@/lib/booking-session';
+import { useRcmApi } from '@/hooks/use-rcm-api';
 import RentalDetails from '@/components/payment/RentalDetails';
 
 interface BookingRentalAccordionProps {
@@ -16,6 +17,8 @@ interface BookingRentalAccordionProps {
 
 const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps) => {
   const bookingData = getBookingData();
+  const { useLocations } = useRcmApi();
+  const { data: locations = [] } = useLocations();
 
   if (!bookingData) {
     return null;
@@ -66,6 +69,19 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
 
   const duration = calculateDuration();
 
+  // Get location names from API if not present in booking data
+  const getLocationName = (locationId: string | number, fallbackName?: string) => {
+    if (fallbackName && fallbackName.trim() !== "") {
+      return fallbackName;
+    }
+    
+    const location = locations.find(loc => loc.id.toString() === locationId.toString());
+    return location?.name || "Location not specified";
+  };
+
+  const pickupLocationName = getLocationName(bookingData.pickupLocationId || "", bookingData.pickupLocationName);
+  const dropoffLocationName = getLocationName(bookingData.dropoffLocationId || "", bookingData.dropoffLocationName);
+
   return (
     <div className={`w-full mb-6 ${className}`}>
       <Accordion type="single" collapsible className="w-full">
@@ -113,8 +129,8 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
             <div className="border-t pt-4">
               <RentalDetails
                 vehicleName={bookingData.vehicleName || 'Selected Vehicle'}
-                pickupLocationName={bookingData.pickupLocationName}
-                dropoffLocationName={bookingData.dropoffLocationName}
+                pickupLocationName={pickupLocationName}
+                dropoffLocationName={dropoffLocationName}
                 formattedPickupDate={formatDateForDisplay(bookingData.pickupDate)}
                 formattedDropoffDate={formatDateForDisplay(bookingData.dropoffDate)}
                 pickupTime={bookingData.pickupTime || ''}
