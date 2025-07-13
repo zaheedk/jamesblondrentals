@@ -167,6 +167,12 @@ export const getLocationTimeOptions = (
   } else {
     startTime = hoursForLocation.startdropoff || hoursForLocation.openingtime || "09:00";
     endTime = hoursForLocation.enddropoff || hoursForLocation.closingtime || "17:00";
+    
+    // Temporary workaround: Wellington CBD Monday hours are incorrectly set to 12:00 in API
+    if (locationId === '11' && dayOfWeek === 1 && endTime === "12:00") {
+      console.log('Applying Wellington CBD Monday workaround - using 17:00 instead of 12:00');
+      endTime = "17:00";
+    }
   }
 
   console.log(`Office hours for ${type} at location ${locationId} on day ${dayOfWeek}: ${startTime} - ${endTime}`);
