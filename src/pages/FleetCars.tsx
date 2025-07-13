@@ -96,9 +96,9 @@ const FleetCars = () => {
   return (
     <div className="container mx-auto px-4 py-10">
     <div className="text-center mb-12">
-      <h1 className="text-3xl font-bold mb-4">Our Car Fleet</h1>
+      <h1 className="text-3xl font-bold mb-4">Bargain Premium Car Rentals in New Zealand</h1>
       <p className="text-lg text-gray-700">
-        From compact economy cars to spacious SUVs, find the perfect vehicle for your journey.
+        Hire a compact, wagon, or SUV at affordable rates.
       </p>
     </div>
     
