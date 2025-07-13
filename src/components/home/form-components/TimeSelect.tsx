@@ -26,6 +26,7 @@ export const TimeSelect = ({
 }: TimeSelectProps) => {
   // Add more debug logging to track the issue
   console.log(`TimeSelect: ${id} - options count: ${timeOptions.length}, disabled: ${disabled}, selected: ${time}`);
+  console.log(`TimeSelect: ${id} - full options array:`, timeOptions);
   
   // Determine the message to show based on the component state
   let selectMessage = "Select time";
