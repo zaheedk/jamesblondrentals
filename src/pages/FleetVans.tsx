@@ -77,7 +77,7 @@ const FleetVans = () => {
   return (
     <div className="container mx-auto px-4 py-10">
       <div className="text-center mb-12">
-        <h1 className="text-3xl font-bold mb-4">Our Extensive Fleet – Choose the Right Vehicle</h1>
+        <h1 className="text-3xl font-bold mb-4">Reliable and Affordable cargo vans for every move</h1>
         <p className="text-lg text-gray-700">
           From compact vans to powerful utes, we have the perfect vehicle for your needs.
         </p>
