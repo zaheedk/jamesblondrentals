@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -92,6 +92,9 @@ const cars = [
 ];
 
 const FleetCars = () => {
+  useEffect(() => {
+    document.title = "Cheap Premium Cars & SUVs in New Zealand";
+  }, []);
 
   return (
     <div className="container mx-auto px-4 py-10">
