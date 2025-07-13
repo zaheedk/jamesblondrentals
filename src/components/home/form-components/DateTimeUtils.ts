@@ -125,6 +125,14 @@ export const getLocationTimeOptions = (
   }
 
   console.log(`Location ${locationId} requires ${location.noticerequired_numberofdays} days notice`);
+  
+  // Special debugging for Wellington CBD (location 11)
+  if (locationId === '11') {
+    console.log(`Wellington CBD Debug - Location details:`, location);
+    console.log(`Wellington CBD Debug - All office hours for location:`, 
+      officeHours.filter(hour => String(hour.locationid) === locationId)
+    );
+  }
 
   // First try to find hours for the specific day
   let hoursForLocation = officeHours.find(
