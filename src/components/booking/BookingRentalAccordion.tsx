@@ -86,9 +86,9 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
     <div className={`w-full mb-6 ${className}`}>
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="rental-details" className="border rounded-lg shadow-sm bg-card">
-          <AccordionTrigger className="hover:no-underline p-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between w-full gap-3">
-              <div className="flex items-center gap-3 sm:gap-4">
+          <AccordionTrigger className="hover:no-underline p-2 sm:p-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between w-full gap-1 sm:gap-3">
+              <div className="flex items-center gap-2 sm:gap-4">
                 {/* Vehicle Image */}
                 <div className="w-16 h-12 sm:w-32 sm:h-20 rounded overflow-hidden bg-white flex-shrink-0">
                   <img
