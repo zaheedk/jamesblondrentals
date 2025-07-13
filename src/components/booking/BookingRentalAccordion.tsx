@@ -71,10 +71,10 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="rental-details" className="border rounded-lg shadow-sm bg-card">
           <AccordionTrigger className="hover:no-underline p-4">
-            <div className="flex items-center justify-between w-full">
-              <div className="flex items-center gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between w-full gap-3">
+              <div className="flex items-center gap-3 sm:gap-4">
                 {/* Vehicle Image */}
-                <div className="w-16 h-12 rounded overflow-hidden bg-muted flex-shrink-0">
+                <div className="w-12 h-9 sm:w-16 sm:h-12 rounded overflow-hidden bg-muted flex-shrink-0">
                   <img
                     src={getImageUrl()}
                     alt={bookingData.vehicleName || 'Vehicle'}
@@ -86,18 +86,18 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
                 </div>
                 
                 {/* Vehicle Details */}
-                <div className="text-left">
-                  <h3 className="font-semibold text-lg">{bookingData.vehicleName || 'Selected Vehicle'}</h3>
-                  <div className="text-sm text-muted-foreground">
+                <div className="text-left min-w-0 flex-1">
+                  <h3 className="font-semibold text-base sm:text-lg truncate">{bookingData.vehicleName || 'Selected Vehicle'}</h3>
+                  <div className="text-xs sm:text-sm text-muted-foreground">
                     {formatDateForDisplay(bookingData.pickupDate)} - {formatDateForDisplay(bookingData.dropoffDate)}
                   </div>
                 </div>
               </div>
               
               {/* Price */}
-              <div className="text-right mr-4">
-                <div className="text-2xl font-bold text-primary">
-                  NZ${totalPrice.toFixed(2)} <span className="text-sm font-normal">TOTAL</span>
+              <div className="text-right sm:mr-4 flex-shrink-0">
+                <div className="text-xl sm:text-2xl font-bold text-primary">
+                  NZ${totalPrice.toFixed(2)} <span className="text-xs sm:text-sm font-normal">TOTAL</span>
                 </div>
                 <div className="text-xs text-muted-foreground">
                   Includes taxes, fees & surcharges
