@@ -6,7 +6,7 @@ import { Truck, Package, Shield, MapPin, Clock, Users, Wrench } from 'lucide-rea
 
 const FleetCargoVans = () => {
   useEffect(() => {
-    document.title = 'Hire a Cargo or Moving van in Auckland & Wellington - James Blond Rentals';
+    document.title = "Cargo Van Hire Auckland & Wellington - James Blond Rentals";
   }, []);
   return (
     <div className="container mx-auto px-4 py-8">

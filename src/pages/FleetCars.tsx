@@ -93,19 +93,7 @@ const cars = [
 
 const FleetCars = () => {
   useEffect(() => {
-    // Update title and meta description
-    document.title = "Cheap and Premium car hire New Zealand";
-    
-    // Set meta description
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 'Rent cheap and premium cars in New Zealand. Choose from compact cars, SUVs, premium vehicles, wagons, and 7-seater options. Book your perfect rental today!');
-    } else {
-      const meta = document.createElement('meta');
-      meta.name = 'description';
-      meta.content = 'Rent cheap and premium cars in New Zealand. Choose from compact cars, SUVs, premium vehicles, wagons, and 7-seater options. Book your perfect rental today!';
-      document.head.appendChild(meta);
-    }
+    document.title = "Cheap and Premium Car Hire New Zealand - James Blond Rentals";
   }, []);
 
   return (

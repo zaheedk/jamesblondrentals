@@ -11,6 +11,10 @@ import truckPromoBanner from "@/assets/truck-promo-banner.jpg";
 const Index = () => {
   const [showCampaignModal, setShowCampaignModal] = useState(false);
 
+  useEffect(() => {
+    document.title = "Affordable Car, Van and Truck Rentals - Auckland & Wellington - James Blond Rentals";
+  }, []);
+
   // Get today's date at noon as the default pickup date
   const today = new Date();
   today.setHours(12, 0, 0, 0);

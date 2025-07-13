@@ -5,7 +5,7 @@ import WinzQuoteForm from '@/components/WinzQuoteForm';
 
 const WinzQuotes = () => {
   useEffect(() => {
-    document.title = 'WINZ Quote for Vans & Trucks, Auckland & Wellington - James Blond Rentals';
+    document.title = "WINZ Quotes for Van & Truck Hire - Auckland & Wellington - James Blond Rentals";
   }, []);
   return (
     <div className="container mx-auto px-4 py-12">
