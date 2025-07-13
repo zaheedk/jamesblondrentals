@@ -89,8 +89,8 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
           <AccordionTrigger className="hover:no-underline p-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between w-full gap-3">
               <div className="flex items-center gap-3 sm:gap-4">
-                {/* Vehicle Image - hidden on mobile when collapsed */}
-                <div className="hidden sm:block w-24 h-16 sm:w-32 sm:h-20 rounded overflow-hidden bg-white flex-shrink-0">
+                {/* Vehicle Image */}
+                <div className="w-16 h-12 sm:w-32 sm:h-20 rounded overflow-hidden bg-white flex-shrink-0">
                   <img
                     src={getImageUrl()}
                     alt={bookingData.vehicleName || 'Vehicle'}
