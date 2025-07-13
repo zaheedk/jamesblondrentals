@@ -91,7 +91,7 @@ const FleetVans = () => {
                 <img 
                   src={van.image} 
                   alt={`${van.title}`} 
-                  className="w-full h-full object-cover rounded-t-lg"
+                  className="w-full h-full object-contain rounded-t-lg"
                 />
               </AspectRatio>
             )}
