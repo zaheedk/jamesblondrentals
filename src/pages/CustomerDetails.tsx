@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { format } from "date-fns";
+import { format, isValid, parse } from "date-fns";
+import InputMask from "react-input-mask";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -15,13 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { CalendarIcon, User, Mail, Phone, Plane } from "lucide-react";
+import { Calendar, User, Mail, Phone, Plane } from "lucide-react";
 import { cn, getCampaignCode } from "@/lib/utils";
 import { getBookingData, updateBookingData } from "@/lib/booking-session";
 import { toast } from "sonner";
@@ -42,7 +37,14 @@ const formSchema = z.object({
   phone: z.string().min(5, {
     message: "Please enter a valid phone number.",
   }),
-  dateOfBirth: z.date().optional(),
+  dateOfBirth: z.string().optional().refine((val) => {
+    if (!val || val.trim() === "" || val === "dd/mm/yyyy") return true;
+    const parsed = parse(val, "dd/MM/yyyy", new Date());
+    if (!isValid(parsed)) return false;
+    const today = new Date();
+    const minDate = new Date(1920, 0, 1);
+    return parsed <= today && parsed >= minDate;
+  }, "Please enter a valid date of birth (DD/MM/YYYY) between 1920 and today"),
   flightNumber: z.string().optional(),
 });
 
@@ -53,6 +55,7 @@ const defaultValues: Partial<CustomerFormValues> = {
   lastName: "",
   email: "",
   phone: "",
+  dateOfBirth: "",
   flightNumber: "",
 };
 
@@ -78,17 +81,8 @@ const CustomerDetails = () => {
   });
 
   const formatDateForApi = (dateStr: string): string => {
-    try {
-      if (dateStr.includes('/')) {
-        return dateStr; // Already in the correct format
-      }
-      
-      const date = new Date(dateStr);
-      return format(date, 'dd/MM/yyyy');
-    } catch (error) {
-      console.error('Date formatting error:', error);
-      return dateStr; // Return as-is if formatting fails
-    }
+    if (!dateStr || dateStr.trim() === "" || dateStr === "dd/mm/yyyy") return "";
+    return dateStr; // Already in DD/MM/YYYY format from the mask
   };
 
   const createBooking = async (formData: CustomerFormValues) => {
@@ -131,7 +125,7 @@ const CustomerDetails = () => {
           lastname: formData.lastName,
           email: formData.email,
           mobile: formData.phone,
-          dateofbirth: formData.dateOfBirth ? format(formData.dateOfBirth, 'dd/MM/yyyy') : undefined
+          dateofbirth: formatDateForApi(formData.dateOfBirth || "")
         },
         flightin: formData.flightNumber,
         emailoption: 1, // 1=default behavior
@@ -322,43 +316,27 @@ const CustomerDetails = () => {
                   control={form.control}
                   name="dateOfBirth"
                   render={({ field }) => (
-                    <FormItem className="flex flex-col">
+                    <FormItem>
                       <FormLabel>Date of Birth (optional)</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant={"outline"}
-                              className={cn(
-                                "w-full pl-10 text-left font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value ? (
-                                format(field.value, "PPP")
-                              ) : (
-                                <span>Pick a date</span>
-                              )}
-                              <CalendarIcon className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            disabled={(date) =>
-                              date > new Date() || date < new Date("1920-01-01")
-                            }
-                            initialFocus
-                            captionLayout="dropdown"
-                            fromYear={1920}
-                            toYear={new Date().getFullYear()}
-                            className={cn("p-3 pointer-events-auto")}
-                          />
-                        </PopoverContent>
-                      </Popover>
+                      <FormControl>
+                        <div className="relative">
+                          <Calendar className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                          <InputMask
+                            mask="99/99/9999"
+                            placeholder="dd/mm/yyyy"
+                            maskChar=""
+                            value={field.value || ""}
+                            onChange={(e) => field.onChange(e.target.value)}
+                          >
+                            {(inputProps: any) => (
+                              <Input 
+                                {...inputProps}
+                                className="pl-10" 
+                              />
+                            )}
+                          </InputMask>
+                        </div>
+                      </FormControl>
                       <FormDescription>
                         Used for age verification (optional)
                       </FormDescription>
