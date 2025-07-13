@@ -83,8 +83,8 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
   const dropoffLocationName = getLocationName(bookingData.dropoffLocationId || "", bookingData.dropoffLocationName);
 
   return (
-    <div className={`w-full mb-6 ${className}`}>
-      <Accordion type="single" collapsible className="w-full">
+    <div className={`w-full sm:w-96 sm:ml-auto mb-6 ${className}`}>
+      <Accordion type="single" collapsible defaultValue="rental-details" className="w-full">
         <AccordionItem value="rental-details" className="border rounded-lg shadow-sm bg-card">
           <AccordionTrigger className="hover:no-underline p-2 sm:p-4">
             <div className="flex items-center justify-between w-full gap-2 sm:gap-3">
