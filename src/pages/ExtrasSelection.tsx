@@ -190,7 +190,7 @@ const ExtrasSelectionPage = () => {
     <div className="container mx-auto px-4 py-8">
       <ExitIntentPopup />
       <BookingRentalAccordion />
-      <h1 className="text-3xl font-bold text-black mb-6">SELECT ADDITIONAL EXTRAS</h1>
+      <h1 className="text-3xl font-bold text-black mb-6">Add Extras</h1>
       <div className="grid grid-cols-1 gap-8">
         <div className="space-y-8">
           <ExtrasSelectionComponent 
