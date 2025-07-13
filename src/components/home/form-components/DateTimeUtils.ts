@@ -166,7 +166,7 @@ export const getLocationTimeOptions = (
     endTime = hoursForLocation.endpickup || "17:00";
   } else {
     startTime = hoursForLocation.startdropoff || hoursForLocation.openingtime || "09:00";
-    endTime = hoursForLocation.endpickup || hoursForLocation.closingtime || "17:00";
+    endTime = hoursForLocation.enddropoff || hoursForLocation.closingtime || "17:00";
   }
 
   console.log(`Office hours for ${type} at location ${locationId} on day ${dayOfWeek}: ${startTime} - ${endTime}`);

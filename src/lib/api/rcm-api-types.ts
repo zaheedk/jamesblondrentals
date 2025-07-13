@@ -54,6 +54,7 @@ export interface RCMOfficeTime {
   startpickup?: string;
   endpickup?: string;
   startdropoff?: string;
+  enddropoff?: string;
   startdate?: string;
   enddate?: string;
 }
