@@ -102,7 +102,7 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
                 </div>
                 
                 {/* Vehicle Details */}
-                <div className="text-left sm:text-right min-w-0 flex-1">
+                <div className="text-right min-w-0 flex-1">
                   {/* Vehicle name - hidden on mobile when collapsed */}
                   <h3 className="hidden sm:block font-semibold text-base sm:text-lg truncate">{bookingData.vehicleName || 'Selected Vehicle'}</h3>
                   <div className="text-xs sm:text-sm text-muted-foreground">
