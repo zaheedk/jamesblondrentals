@@ -77,20 +77,15 @@ const InsuranceSelection = () => {
       ...(data.campaignCode && { campaigncode: data.campaignCode })
     })
     .then((response) => {
-      console.log("Full API Response:", response);
       setRawApiResponse(response);
       
       if (response.status === "OK" && response.results) {
         const { insuranceoptions, kmcharges } = response.results;
         
-        console.log("Insurance options received:", insuranceoptions);
-        console.log("Number of insurance options:", insuranceoptions?.length || 0);
-        
         setInsuranceOptions(insuranceoptions || []);
         setKmCharges(kmcharges || []);
         
         const defaultInsurance = insuranceoptions?.find(i => i.isdefault) || null;
-        console.log("Default insurance selected:", defaultInsurance);
         setSelectedInsurance(defaultInsurance);
         
         const defaultKmCharge = kmcharges?.find(k => k.isdefault) || null;
@@ -173,37 +168,19 @@ const InsuranceSelection = () => {
     );
   }
 
-  console.log("=== INSURANCE DEBUG ===");
-  console.log("Insurance options state:", insuranceOptions);
-  console.log("Number of options:", insuranceOptions.length);
-  console.log("Raw API response:", rawApiResponse);
-
   return (
     <div className="container mx-auto px-4 py-8">
       <ExitIntentPopup />
+      <BookingRentalAccordion />
       
-      <div className="flex flex-col lg:flex-row gap-6">
-        <div className="flex-1 space-y-8">
-        {insuranceOptions.length > 0 ? (
+      <div className="space-y-8">
+        {insuranceOptions.length > 0 && (
           <InsuranceOptions 
             insuranceOptions={insuranceOptions}
             selectedInsuranceId={selectedInsurance?.id || null}
             onSelectInsurance={handleInsuranceChange}
             currencySymbol="$"
           />
-        ) : (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-red-800 mb-2">No Insurance Options Available</h3>
-            <p className="text-red-600 mb-4">Debug info:</p>
-            <pre className="text-xs text-red-600 bg-white p-2 rounded border">
-              {JSON.stringify({ 
-                insuranceOptionsLength: insuranceOptions.length, 
-                isLoading,
-                hasBookingData: !!bookingData,
-                rawApiResponse: rawApiResponse ? 'Present' : 'Missing'
-              }, null, 2)}
-            </pre>
-          </div>
         )}
         
         <div className="bg-gray-50 rounded-lg p-6">
@@ -244,9 +221,6 @@ const InsuranceSelection = () => {
             Continue to Extras
           </Button>
         </div>
-        </div>
-        
-        <BookingRentalAccordion className="lg:w-96 lg:flex-shrink-0" />
       </div>
     </div>
   );
