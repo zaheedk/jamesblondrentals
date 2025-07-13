@@ -85,7 +85,7 @@ const FleetCargoVans = () => {
           <Card className="hover:shadow-lg transition-shadow">
             <CardContent className="p-6">
               <img 
-                src="/lovable-uploads/6dde201c-13f3-4671-9e88-6cc1a388d647.png" 
+                src="/lovable-uploads/2af57e90-ce77-4175-9a7f-c4473147c071.png" 
                 alt="Jumbo Cargo Van for Large Moving Jobs" 
                 className="w-full h-48 object-cover rounded-lg mb-4"
               />
