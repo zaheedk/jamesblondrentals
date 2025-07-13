@@ -6,6 +6,7 @@ import { RCMExtra, RCMOptionalFee } from '@/lib/api/rcm-api-types';
 import { useRcmApi } from '@/hooks/use-rcm-api';
 import { BookingSessionData, getBookingData, updateBookingData } from '@/lib/booking-session';
 import ExtrasSelectionComponent from '@/components/booking/ExtrasSelection';
+import BookingRentalAccordion from '@/components/booking/BookingRentalAccordion';
 import ExitIntentPopup from '@/components/ExitIntentPopup';
 
 const ExtrasSelectionPage = () => {
@@ -188,6 +189,7 @@ const ExtrasSelectionPage = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <ExitIntentPopup />
+      <BookingRentalAccordion />
       <h1 className="text-3xl font-bold text-black mb-6">SELECT ADDITIONAL EXTRAS</h1>
       <div className="grid grid-cols-1 gap-8">
         <div className="space-y-8">

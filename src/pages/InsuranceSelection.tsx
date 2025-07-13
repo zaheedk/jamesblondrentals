@@ -8,6 +8,7 @@ import { useRcmApi } from '@/hooks/use-rcm-api';
 import { BookingSessionData, getBookingData, updateBookingData } from '@/lib/booking-session';
 import InsuranceOptions from '@/components/booking/InsuranceOptions';
 import KmCharges from '@/components/booking/KmCharges';
+import BookingRentalAccordion from '@/components/booking/BookingRentalAccordion';
 import { differenceInDays, parseISO } from 'date-fns';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ChevronDown } from 'lucide-react';
@@ -170,6 +171,8 @@ const InsuranceSelection = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <ExitIntentPopup />
+      <BookingRentalAccordion />
+      <h1 className="text-3xl font-bold text-black mb-6">SELECT INSURANCE & KM CHARGES</h1>
       
       <div className="space-y-8">
         {insuranceOptions.length > 0 && (

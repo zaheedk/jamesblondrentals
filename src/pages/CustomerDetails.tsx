@@ -22,6 +22,7 @@ import { getBookingData, updateBookingData } from "@/lib/booking-session";
 import { toast } from "sonner";
 import { useRcmApi } from "@/hooks/use-rcm-api";
 import { useWhatsApp } from "@/hooks/use-whatsapp";
+import BookingRentalAccordion from '@/components/booking/BookingRentalAccordion';
 import ExitIntentPopup from "@/components/ExitIntentPopup";
 
 const formSchema = z.object({
@@ -237,6 +238,7 @@ const CustomerDetails = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <ExitIntentPopup />
+      <BookingRentalAccordion />
       <div className="max-w-3xl mx-auto">
         <h1 className="text-3xl font-bold mb-6">Customer Details</h1>
         
