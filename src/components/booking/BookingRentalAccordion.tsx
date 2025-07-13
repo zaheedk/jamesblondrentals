@@ -86,7 +86,7 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
                 </div>
                 
                 {/* Vehicle Details */}
-                <div className="text-left min-w-0 flex-1">
+                <div className="text-right min-w-0 flex-1">
                   <h3 className="font-semibold text-base sm:text-lg truncate">{bookingData.vehicleName || 'Selected Vehicle'}</h3>
                   <div className="text-xs sm:text-sm text-muted-foreground">
                     {formatDateForDisplay(bookingData.pickupDate)} - {formatDateForDisplay(bookingData.dropoffDate)}
