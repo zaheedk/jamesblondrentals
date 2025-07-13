@@ -89,8 +89,8 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
           <AccordionTrigger className="hover:no-underline p-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between w-full gap-3">
               <div className="flex items-center gap-3 sm:gap-4">
-                {/* Vehicle Image */}
-                <div className="w-24 h-16 sm:w-32 sm:h-20 rounded overflow-hidden bg-white flex-shrink-0">
+                {/* Vehicle Image - hidden on mobile when collapsed */}
+                <div className="hidden sm:block w-24 h-16 sm:w-32 sm:h-20 rounded overflow-hidden bg-white flex-shrink-0">
                   <img
                     src={getImageUrl()}
                     alt={bookingData.vehicleName || 'Vehicle'}
@@ -102,8 +102,9 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
                 </div>
                 
                 {/* Vehicle Details */}
-                <div className="text-right min-w-0 flex-1">
-                  <h3 className="font-semibold text-base sm:text-lg truncate">{bookingData.vehicleName || 'Selected Vehicle'}</h3>
+                <div className="text-left sm:text-right min-w-0 flex-1">
+                  {/* Vehicle name - hidden on mobile when collapsed */}
+                  <h3 className="hidden sm:block font-semibold text-base sm:text-lg truncate">{bookingData.vehicleName || 'Selected Vehicle'}</h3>
                   <div className="text-xs sm:text-sm text-muted-foreground">
                     {formatDateForDisplay(bookingData.pickupDate)} - {formatDateForDisplay(bookingData.dropoffDate)}
                   </div>
@@ -115,10 +116,11 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
                 <div className="text-xl sm:text-2xl font-bold text-primary">
                   NZ${totalPrice.toFixed(2)} <span className="text-xs sm:text-sm font-normal">TOTAL</span>
                 </div>
-                <div className="text-xs text-muted-foreground">
+                {/* Additional price details - hidden on mobile when collapsed */}
+                <div className="hidden sm:block text-xs text-muted-foreground">
                   Includes taxes, fees & surcharges
                 </div>
-                <div className="text-xs text-green-600 font-medium">
+                <div className="hidden sm:block text-xs text-green-600 font-medium">
                   Unlimited free kilometers
                 </div>
               </div>
