@@ -77,15 +77,20 @@ const InsuranceSelection = () => {
       ...(data.campaignCode && { campaigncode: data.campaignCode })
     })
     .then((response) => {
+      console.log("Full API Response:", response);
       setRawApiResponse(response);
       
       if (response.status === "OK" && response.results) {
         const { insuranceoptions, kmcharges } = response.results;
         
+        console.log("Insurance options received:", insuranceoptions);
+        console.log("Number of insurance options:", insuranceoptions?.length || 0);
+        
         setInsuranceOptions(insuranceoptions || []);
         setKmCharges(kmcharges || []);
         
         const defaultInsurance = insuranceoptions?.find(i => i.isdefault) || null;
+        console.log("Default insurance selected:", defaultInsurance);
         setSelectedInsurance(defaultInsurance);
         
         const defaultKmCharge = kmcharges?.find(k => k.isdefault) || null;
