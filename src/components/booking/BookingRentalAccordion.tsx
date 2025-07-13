@@ -87,32 +87,26 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="rental-details" className="border rounded-lg shadow-sm bg-card">
           <AccordionTrigger className="hover:no-underline p-2 sm:p-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between w-full gap-1 sm:gap-3">
-              <div className="flex items-center gap-2 sm:gap-4">
-                {/* Vehicle Image */}
-                <div className="w-16 h-12 sm:w-32 sm:h-20 rounded overflow-hidden bg-white flex-shrink-0">
-                  <img
-                    src={getImageUrl()}
-                    alt={bookingData.vehicleName || 'Vehicle'}
-                    className="w-full h-full object-contain"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = '/placeholder.svg';
-                    }}
-                  />
-                </div>
-                
-                {/* Vehicle Details */}
-                <div className="text-right min-w-0 flex-1">
-                  {/* Vehicle name - hidden on mobile when collapsed */}
-                  <h3 className="hidden sm:block font-semibold text-base sm:text-lg truncate">{bookingData.vehicleName || 'Selected Vehicle'}</h3>
-                  <div className="text-xs sm:text-sm text-muted-foreground">
-                    {formatDateForDisplay(bookingData.pickupDate)} - {formatDateForDisplay(bookingData.dropoffDate)}
-                  </div>
-                </div>
+            <div className="flex items-center justify-between w-full gap-2 sm:gap-3">
+              {/* Vehicle Image */}
+              <div className="w-24 h-16 sm:w-32 sm:h-20 rounded overflow-hidden bg-white flex-shrink-0">
+                <img
+                  src={getImageUrl()}
+                  alt={bookingData.vehicleName || 'Vehicle'}
+                  className="w-full h-full object-contain"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = '/placeholder.svg';
+                  }}
+                />
               </div>
               
-              {/* Price */}
-              <div className="text-right sm:mr-4 flex-shrink-0">
+              {/* Vehicle Details and Price - Combined on mobile */}
+              <div className="text-right min-w-0 flex-1">
+                {/* Vehicle name - hidden on mobile when collapsed */}
+                <h3 className="hidden sm:block font-semibold text-base sm:text-lg truncate mb-1">{bookingData.vehicleName || 'Selected Vehicle'}</h3>
+                <div className="text-xs sm:text-sm text-muted-foreground mb-1">
+                  {formatDateForDisplay(bookingData.pickupDate)} - {formatDateForDisplay(bookingData.dropoffDate)}
+                </div>
                 <div className="text-xl sm:text-2xl font-bold text-primary">
                   NZ${totalPrice.toFixed(2)} <span className="text-xs sm:text-sm font-normal">TOTAL</span>
                 </div>
