@@ -171,9 +171,9 @@ const InsuranceSelection = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <ExitIntentPopup />
-      <BookingRentalAccordion />
       
-      <div className="space-y-8">
+      <div className="flex flex-col lg:flex-row gap-6">
+        <div className="flex-1 space-y-8">
         {insuranceOptions.length > 0 && (
           <InsuranceOptions 
             insuranceOptions={insuranceOptions}
@@ -221,6 +221,9 @@ const InsuranceSelection = () => {
             Continue to Extras
           </Button>
         </div>
+        </div>
+        
+        <BookingRentalAccordion className="lg:w-96 lg:flex-shrink-0" />
       </div>
     </div>
   );
