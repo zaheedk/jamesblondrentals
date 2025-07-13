@@ -86,6 +86,10 @@ const getOperatingHours = (
   type: 'pickup' | 'dropoff',
   locationDetails: RCMLocationDetail[]
 ): { startTime: string, endTime: string } | null => {
+  // Local override for Wellington CBD Monday hours
+  if (locationId === '11' && date.getDay() === 1) { // Day 1 = Monday
+    return { startTime: '08:00', endTime: '17:00' };
+  }
   if (!locationId || locationDetails.length === 0) {
     return { startTime: '09:00', endTime: '17:00' }; // Default values
   }
