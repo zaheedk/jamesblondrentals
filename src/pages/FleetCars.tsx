@@ -93,10 +93,6 @@ const cars = [
 
 const FleetCars = () => {
   useEffect(() => {
-    // Save the original title and meta description to restore them when component unmounts
-    const originalTitle = document.title;
-    const originalMetaDescription = document.querySelector('meta[name="description"]')?.getAttribute('content') || '';
-    
     // Update title and meta description
     document.title = "Cheap and Premium car hire New Zealand";
     
@@ -110,14 +106,6 @@ const FleetCars = () => {
       meta.content = 'Rent cheap and premium cars in New Zealand. Choose from compact cars, SUVs, premium vehicles, wagons, and 7-seater options. Book your perfect rental today!';
       document.head.appendChild(meta);
     }
-    
-    // Restore the original title and meta description when the component unmounts
-    return () => {
-      document.title = originalTitle;
-      if (metaDescription) {
-        metaDescription.setAttribute('content', originalMetaDescription);
-      }
-    };
   }, []);
 
   return (
