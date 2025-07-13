@@ -189,6 +189,8 @@ const generateTimeOptions = (
     const startDate = parse(startTime, "HH:mm", date);
     const endDate = parse(endTime, "HH:mm", date);
     
+    console.log(`Parsed start date: ${startDate.toISOString()}, end date: ${endDate.toISOString()}`);
+    
     let currentTime = startDate;
     
     while (isBefore(currentTime, endDate)) {
@@ -196,6 +198,9 @@ const generateTimeOptions = (
       
       if (!isToday || isAfter(currentTime, currentTimeInNZ)) {
         options.push(timeString);
+        console.log(`Added time option: ${timeString}`);
+      } else {
+        console.log(`Skipped time option (too early): ${timeString}`);
       }
       
       currentTime = addMinutes(currentTime, 30);
@@ -205,8 +210,13 @@ const generateTimeOptions = (
     if (!options.includes(endTimeString)) {
       if (!isToday || isAfter(endDate, currentTimeInNZ)) {
         options.push(endTimeString);
+        console.log(`Added final time option: ${endTimeString}`);
+      } else {
+        console.log(`Skipped final time option (too early): ${endTimeString}`);
       }
     }
+    
+    console.log(`Final options array: [${options.join(', ')}]`);
   } catch (error) {
     console.error('Error generating time options:', error);
   }
