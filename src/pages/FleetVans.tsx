@@ -68,7 +68,7 @@ const vans = [
       "Max Load: 1350kg",
       "39c per km mileage charge"
     ],
-    image: "/lovable-uploads/6dde201c-13f3-4671-9e88-6cc1a388d647.png"
+    image: "/lovable-uploads/2af57e90-ce77-4175-9a7f-c4473147c071.png"
   }
 ];
 
