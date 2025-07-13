@@ -78,18 +78,14 @@ const RentalDetails = ({
                 <p className="font-medium">Pickup Location</p>
                 <p className="text-gray-700 font-bold mb-2">{displayPickupLocation}</p>
               </div>
-              <div className="flex flex-col sm:flex-row gap-2">
-                <div className="bg-white border rounded p-2 flex-1 min-w-0">
-                  <div className="flex items-center">
-                    <Calendar className="h-4 w-4 text-gray-500 mr-1 flex-shrink-0" />
-                    <p className="text-sm text-gray-600 truncate">{formattedPickupDate}</p>
-                  </div>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center">
+                  <Calendar className="h-4 w-4 text-gray-500 mr-1" />
+                  <p className="text-sm text-gray-600">{formattedPickupDate}</p>
                 </div>
-                <div className="bg-white border rounded p-2 flex-1 min-w-0">
-                  <div className="flex items-center">
-                    <Clock className="h-4 w-4 text-gray-500 mr-1 flex-shrink-0" />
-                    <p className="text-sm text-gray-600 truncate">{pickupTime}</p>
-                  </div>
+                <div className="flex items-center">
+                  <Clock className="h-4 w-4 text-gray-500 mr-1" />
+                  <p className="text-sm text-gray-600">{pickupTime}</p>
                 </div>
               </div>
             </div>
@@ -102,18 +98,14 @@ const RentalDetails = ({
                 <p className="font-medium">Drop-off Location</p>
                 <p className="text-gray-700 font-bold mb-2">{displayDropoffLocation}</p>
               </div>
-              <div className="flex flex-col sm:flex-row gap-2">
-                <div className="bg-white border rounded p-2 flex-1 min-w-0">
-                  <div className="flex items-center">
-                    <Calendar className="h-4 w-4 text-gray-500 mr-1 flex-shrink-0" />
-                    <p className="text-sm text-gray-600 truncate">{formattedDropoffDate}</p>
-                  </div>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center">
+                  <Calendar className="h-4 w-4 text-gray-500 mr-1" />
+                  <p className="text-sm text-gray-600">{formattedDropoffDate}</p>
                 </div>
-                <div className="bg-white border rounded p-2 flex-1 min-w-0">
-                  <div className="flex items-center">
-                    <Clock className="h-4 w-4 text-gray-500 mr-1 flex-shrink-0" />
-                    <p className="text-sm text-gray-600 truncate">{dropoffTime}</p>
-                  </div>
+                <div className="flex items-center">
+                  <Clock className="h-4 w-4 text-gray-500 mr-1" />
+                  <p className="text-sm text-gray-600">{dropoffTime}</p>
                 </div>
               </div>
             </div>
