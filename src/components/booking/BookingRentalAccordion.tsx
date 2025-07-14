@@ -24,15 +24,19 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
     return null;
   }
 
-  // Calculate total price
-  const basePrice = bookingData.totalRateAfterDiscount || bookingData.basePrice || 0;
+  // Calculate total price with proper discount handling
+  const basePrice = bookingData.basePrice || 0;
+  const discount = bookingData.totalDiscountAmount || 0;
+  const discountedPrice = basePrice - discount;
+  const finalBasePrice = bookingData.totalRateAfterDiscount || discountedPrice;
+  
   const extrasTotal = bookingData.selectedExtras?.reduce((total, extra) => {
     return total + (extra.price * extra.quantity);
   }, 0) || 0;
   const mandatoryFeesTotal = bookingData.mandatoryFees?.reduce((total, fee) => {
     return total + fee.amount;
   }, 0) || 0;
-  const totalPrice = basePrice + extrasTotal + mandatoryFeesTotal;
+  const totalPrice = finalBasePrice + extrasTotal + mandatoryFeesTotal;
 
   // Get vehicle image with fallback
   const getImageUrl = () => {
