@@ -49,13 +49,19 @@ const InsuranceOptions = ({
     const firstLineText = (insurance.feedescription && insurance.feedescription.trim()) ? insurance.feedescription.trim() : "";
     const secondLineHtml = (insurance.feedescription1 && insurance.feedescription1.trim()) ? insurance.feedescription1.trim() : "";
     
-    // Parse and format the second line HTML to add X icons before "Exclude"
+    // Parse and format the second line HTML to add X icons before "Exclude" and tick icons before "Include"
     let formattedSecondLineHtml = secondLineHtml;
     if (secondLineHtml) {
       // Add X icon before any text that contains "Exclude"
       formattedSecondLineHtml = secondLineHtml.replace(
         /(\b\w*[Ee]xclud\w*)/g, 
         '<span class="inline-flex items-center gap-1 whitespace-nowrap"><svg class="w-4 h-4 text-red-500 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>$1</span>'
+      );
+      
+      // Add tick icon before any text that contains "Include"
+      formattedSecondLineHtml = formattedSecondLineHtml.replace(
+        /(\b\w*[Ii]nclud\w*)/g, 
+        '<span class="inline-flex items-center gap-1 whitespace-nowrap"><svg class="w-4 h-4 text-green-500 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>$1</span>'
       );
     }
     
