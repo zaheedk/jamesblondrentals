@@ -114,9 +114,6 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
                 <div className="hidden sm:block text-xs text-muted-foreground">
                   Includes taxes, fees & surcharges
                 </div>
-                <div className="hidden sm:block text-xs text-green-600 font-medium">
-                  Unlimited free kilometers
-                </div>
               </div>
             </div>
           </AccordionTrigger>
