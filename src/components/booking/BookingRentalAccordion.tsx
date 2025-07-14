@@ -25,10 +25,9 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
   }
 
   // Calculate total price with proper discount handling
-  const basePrice = bookingData.basePrice || 0;
+  const basePrice = bookingData.basePrice || 0; // Use the actual base price ($120)
   const discount = bookingData.totalDiscountAmount || 0;
-  const discountedPrice = basePrice - discount;
-  const finalBasePrice = bookingData.totalRateAfterDiscount || discountedPrice;
+  const finalBasePrice = basePrice - discount; // Apply discount to base price
   
   const extrasTotal = bookingData.selectedExtras?.reduce((total, extra) => {
     return total + (extra.price * extra.quantity);
