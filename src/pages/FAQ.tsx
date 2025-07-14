@@ -107,7 +107,7 @@ const faqData = [
     question: "Do you deliver or collect vehicles?",
     answer: (
       <>
-        Yes, we offer local delivery and collection of passenger for an additional fee and depending on the availability. We cannot guarantee the availability of the service. Please enquire when booking.
+        Yes, we offer local delivery and collection of passenger vehicles for an additional fee, subject to availability. We cannot guarantee the availability of this service. Please enquire when booking.
       </>
     ),
   },
