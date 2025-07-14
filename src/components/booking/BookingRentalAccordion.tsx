@@ -33,10 +33,16 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
   const extrasTotal = bookingData.selectedExtras?.reduce((total, extra) => {
     return total + (extra.price * extra.quantity);
   }, 0) || 0;
+  
+  const insurancePrice = bookingData.insurancePrice || 0;
+  
+  // Don't include security bond in total - it's just a hold
   const mandatoryFeesTotal = bookingData.mandatoryFees?.reduce((total, fee) => {
-    return total + fee.amount;
+    return fee.name.toLowerCase().includes('security') || fee.name.toLowerCase().includes('bond') 
+      ? total : total + fee.amount;
   }, 0) || 0;
-  const totalPrice = finalBasePrice + extrasTotal + mandatoryFeesTotal;
+  
+  const totalPrice = finalBasePrice + extrasTotal + insurancePrice + mandatoryFeesTotal;
 
   // Get vehicle image with fallback
   const getImageUrl = () => {
