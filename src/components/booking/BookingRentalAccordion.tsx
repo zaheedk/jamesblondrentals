@@ -24,8 +24,18 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
     return null;
   }
 
-  // Use the API's calculated price after discount instead of calculating it
-  const finalBasePrice = bookingData.totalRateAfterDiscount || bookingData.basePrice || 0;
+  // Use the base price directly from API without discount calculation
+  // Debug: log all available price fields to understand what's being used
+  console.log('Available price fields:', {
+    basePrice: bookingData.basePrice,
+    totalRateAfterDiscount: bookingData.totalRateAfterDiscount,
+    totalcost: bookingData.totalcost,
+    dailyrate: bookingData.dailyrate,
+    payment: bookingData.payment
+  });
+  
+  // Use totalcost from API if available, otherwise fall back to basePrice
+  const finalBasePrice = bookingData.totalcost || bookingData.basePrice || 0;
   
   const extrasTotal = bookingData.selectedExtras?.reduce((total, extra) => {
     return total + (extra.price * extra.quantity);
