@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
@@ -72,7 +73,12 @@ const minibuses = [
   }
 ];
 
-const FleetMinibuses = () => (
+const FleetMinibuses = () => {
+  useEffect(() => {
+    document.title = "Hire 10 or 12 seater Minibus New Zealand";
+  }, []);
+
+  return (
   <div className="container mx-auto px-4 py-10">
     <div className="text-center mb-12">
       <h1 className="text-3xl font-bold mb-4">Spacious Minibuses – Travel Together with Ease</h1>
@@ -131,6 +137,7 @@ const FleetMinibuses = () => (
       ))}
     </div>
   </div>
-);
+  );
+};
 
 export default FleetMinibuses;
