@@ -188,7 +188,7 @@ const Premium12SeatMinibusDetail = () => {
             <p className="text-sm text-muted-foreground mb-2">
               Call our minibus rental experts for personalized service
             </p>
-            <p className="font-semibold text-primary">0800 456 789</p>
+            <p className="font-semibold text-primary">0800 525 663</p>
           </div>
         </div>
       </div>
