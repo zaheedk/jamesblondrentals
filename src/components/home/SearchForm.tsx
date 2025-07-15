@@ -538,7 +538,7 @@ const SearchForm = () => {
               className="w-full"
               disabled={isLoading || !pickupLocation || !pickupDate || !dropoffDate || !pickupTime || !dropoffTime}
             >
-              {isLoading ? "Searching..." : "Search Available Cars"}
+              {isLoading ? "Searching..." : "Search Available Vehicles"}
             </Button>
           </div>
         </form>
