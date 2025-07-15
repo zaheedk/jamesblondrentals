@@ -86,11 +86,11 @@ const Premium12SeatMinibusDetail = () => {
           <span>/</span>
           <Link to="/fleet" className="hover:text-primary">Fleet</Link>
           <span>/</span>
-          <Link to="/fleet/minibus" className="hover:text-primary">Minibuses</Link>
+          <Link to="/fleet/minibuses" className="hover:text-primary">Minibuses</Link>
           <span>/</span>
           <span className="text-foreground">Premium 12-Seat Minibus</span>
         </nav>
-        <Link to="/fleet/minibus" className="inline-flex items-center text-primary hover:underline">
+        <Link to="/fleet/minibuses" className="inline-flex items-center text-primary hover:underline">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Minibus Fleet
         </Link>
@@ -326,14 +326,14 @@ const Premium12SeatMinibusDetail = () => {
       <div className="bg-card border rounded-lg p-6">
         <h3 className="text-xl font-semibold mb-4">Explore Our Full Minibus Fleet</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Link to="/fleet/minibus/12-seat-minibus" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-muted/50 transition-colors">
+          <Link to="/fleet/minibuses/12-seat-minibus" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-muted/50 transition-colors">
             <Car className="h-5 w-5 text-primary" />
             <div>
               <p className="font-medium">Standard 12-Seat Minibus</p>
               <p className="text-sm text-muted-foreground">Toyota Hiace - Reliable & affordable</p>
             </div>
           </Link>
-          <Link to="/fleet/minibus/10-seat-minibus" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-muted/50 transition-colors">
+          <Link to="/fleet/minibuses/10-seat-minibus" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-muted/50 transition-colors">
             <Users className="h-5 w-5 text-primary" />
             <div>
               <p className="font-medium">10-Seat Minibus</p>
