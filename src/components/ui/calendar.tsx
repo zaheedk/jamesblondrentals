@@ -29,7 +29,7 @@ function Calendar({
         dropdown_year: "relative inline-flex items-center rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground shadow-sm transition-all hover:bg-accent hover:text-accent-foreground hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1",
         nav: "space-x-1 flex items-center",
         nav_button: cn(
-          "h-8 w-8 bg-background hover:bg-accent border border-border rounded-md p-0 opacity-70 hover:opacity-100 transition-all hover:border-primary"
+          "h-10 w-10 bg-background hover:bg-accent border border-border rounded-md p-0 opacity-70 hover:opacity-100 transition-all hover:border-primary flex items-center justify-center cursor-pointer"
         ),
         nav_button_previous: "absolute left-2",
         nav_button_next: "absolute right-2",
