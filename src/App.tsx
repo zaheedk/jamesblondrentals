@@ -219,10 +219,10 @@ const App = () => {
                   <Route path="trucks/2-tonne-box-16m3" element={<TwoTonneBox16m3Detail />} />
                   <Route path="trucks/3-tonne-box-18m3" element={<ThreeTonneBoxTailLiftDetail />} />
                   <Route path="trucks/3-tonne-box-19m3" element={<ThreeTonneBox19m3Detail />} /> 
-                  <Route path="minibuses" element={<FleetMinibuses />} />
-                  <Route path="minibuses/12-seat-minibus" element={<TwelveSeaterMinibusDetail />} />
-                  <Route path="minibuses/10-seat-minibus" element={<TenSeaterMinibusDetail />} />
-                  <Route path="minibuses/premium-12-seat-minibus" element={<Premium12SeatMinibusDetail />} /> {/* Premium 12-Seat Minibus route */}
+                  <Route path="minibus" element={<FleetMinibuses />} />
+                  <Route path="minibus/12-seat-minibus" element={<TwelveSeaterMinibusDetail />} />
+                  <Route path="minibus/10-seat-minibus" element={<TenSeaterMinibusDetail />} />
+                  <Route path="minibus/premium-12-seat-minibus" element={<Premium12SeatMinibusDetail />} /> {/* Premium 12-Seat Minibus route */}
                   <Route path="trailers" element={<FleetTrailers />} />
                   <Route path="trailers/cage-trailer" element={<CagedTrailerDetail />} />
                   <Route path="trailers/luggage-trailer" element={<LuggageTrailerDetail />} />
