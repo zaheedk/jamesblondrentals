@@ -150,6 +150,13 @@ const MidweekTruckVanDiscount = () => {
                 </AccordionContent>
               </AccordionItem>
 
+              <AccordionItem value="item-2">
+                <AccordionTrigger>What type of license is required to drive trucks?</AccordionTrigger>
+                <AccordionContent>
+                  Our 3 Tonnes 18m3 and 2 Ton 9 & 12m3 trucks can be driven on a NZ full class 1 license. You must have held your license for at least 1 year and be comfortable driving larger vehicles in various conditions.
+                </AccordionContent>
+              </AccordionItem>
+
               <AccordionItem value="item-3">
                 <AccordionTrigger>How much can I load in the truck or van?</AccordionTrigger>
                 <AccordionContent>
