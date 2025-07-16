@@ -150,13 +150,6 @@ const MidweekTruckVanDiscount = () => {
                 </AccordionContent>
               </AccordionItem>
 
-              <AccordionItem value="item-2">
-                <AccordionTrigger>What's included in the rental price?</AccordionTrigger>
-                <AccordionContent>
-                  Our rental rates include comprehensive insurance, 24/7 roadside assistance, unlimited kilometers (conditions apply), and basic tools like tie-down straps. Fuel is not included and vehicles should be returned with the same fuel level.
-                </AccordionContent>
-              </AccordionItem>
-
               <AccordionItem value="item-3">
                 <AccordionTrigger>How much can I load in the truck or van?</AccordionTrigger>
                 <AccordionContent>
