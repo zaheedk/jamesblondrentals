@@ -167,7 +167,7 @@ const MidweekTruckVanDiscount = () => {
               <AccordionItem value="item-5">
                 <AccordionTrigger>Do you provide moving equipment?</AccordionTrigger>
                 <AccordionContent>
-                  We offer optional extras including furniture pads, hand trolleys, ratchet straps, and furniture dollies. These can be added during the booking process for an additional fee.
+                  We offer optional extras including hand trolleys and ratchet straps. These can be added during the booking process for an additional fee.
                 </AccordionContent>
               </AccordionItem>
 
