@@ -70,6 +70,8 @@ import TwelveSeaterMinibusDetail from "./pages/TwelveSeaterMinibusDetail";
 import TenSeaterMinibusDetail from "./pages/TenSeaterMinibusDetail"; 
 import Premium12SeatMinibusDetail from "./pages/Premium12SeatMinibusDetail"; // Import the new Premium 12-Seat Minibus page
 import MobilFuelDiscount from "./pages/MobilFuelDiscount"; // Import the new Mobil Fuel Discount page
+import MidweekTruckVanDiscount from "./pages/MidweekTruckVanDiscount";
+import HotDeals from "./pages/HotDeals";
 import CarRentalWellington from "./pages/CarRentalWellington"; // Import the new Wellington car rental page
 import CarRentalAucklandAirport from "./pages/CarRentalAucklandAirport"; // Import the new Auckland Airport car rental page
 import AucklandAirportMinibusRentals from "./pages/AucklandAirportMinibusRentals"; // Import the new Auckland Airport Minibus Rentals page
@@ -180,6 +182,8 @@ const App = () => {
                 {/* Keep existing routes */}
                 <Route path="/price-guide" element={<PriceGuide />} />
                 <Route path="/hot-deals/mobil-fuel-discount" element={<MobilFuelDiscount />} />
+                <Route path="/hot-deals/midweek-truck-van-discount" element={<MidweekTruckVanDiscount />} />
+                <Route path="/hot-deals" element={<HotDeals />} />
                 <Route path="/car-rental-wellington-new-zealand" element={<CarRentalWellington />} />
                 <Route path="/car-rental-auckland-airport-new-zealand" element={<CarRentalAucklandAirport />} />
                 <Route path="/auckland-airport-minibus-rentals-hire" element={<AucklandAirportMinibusRentals />} />
