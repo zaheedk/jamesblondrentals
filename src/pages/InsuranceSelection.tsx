@@ -13,6 +13,7 @@ import { differenceInDays, parseISO } from 'date-fns';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ChevronDown } from 'lucide-react';
 import ExitIntentPopup from '@/components/ExitIntentPopup';
+import DebugApiResponse from '@/components/diagnostics/DebugApiResponse';
 
 const InsuranceSelection = () => {
   const navigate = useNavigate();
@@ -231,6 +232,13 @@ const InsuranceSelection = () => {
             Continue to Extras
           </Button>
         </div>
+        
+        {/* Debug API Response */}
+        <DebugApiResponse 
+          title="Insurance API Response"
+          data={rawApiResponse}
+          className="mt-8"
+        />
       </div>
     </div>
   );
