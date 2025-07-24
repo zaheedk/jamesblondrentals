@@ -8,6 +8,7 @@ import { BookingSessionData, getBookingData, updateBookingData } from '@/lib/boo
 import ExtrasSelectionComponent from '@/components/booking/ExtrasSelection';
 import BookingRentalAccordion from '@/components/booking/BookingRentalAccordion';
 import ExitIntentPopup from '@/components/ExitIntentPopup';
+import DebugApiResponse from '@/components/diagnostics/DebugApiResponse';
 
 const ExtrasSelectionPage = () => {
   const navigate = useNavigate();
@@ -244,16 +245,12 @@ const ExtrasSelectionPage = () => {
             optionalFees={optionalFees}
           />
           
-          {/* Debug info to see what's being passed to the component */}
-          <div className="mt-4 p-4 bg-gray-100 rounded">
-            <h3 className="font-bold mb-2">Debug Info:</h3>
-            <p><strong>Selected Extras Map Size:</strong> {selectedExtrasMap.size}</p>
-            <p><strong>Selected Extras Map Content:</strong> {JSON.stringify(Array.from(selectedExtrasMap.entries()))}</p>
-            <p><strong>Optional Fees Count:</strong> {optionalFees.length}</p>
-            {optionalFees.map(fee => (
-              <p key={fee.id}><strong>Fee {fee.id}:</strong> {fee.name} - Selected: {selectedExtrasMap.has(fee.id) ? 'YES' : 'NO'}</p>
-            ))}
-          </div>
+          {/* Debug API Response */}
+          <DebugApiResponse 
+            title="Extras API Response"
+            data={rawApiResponse}
+            className="mt-8"
+          />
           
           <div className="flex flex-col gap-4 pt-4">
             <Button onClick={handleProceedToDetails}>

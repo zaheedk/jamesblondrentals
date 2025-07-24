@@ -63,13 +63,6 @@ const ExtrasSelection = ({
   currencySymbol,
   optionalFees = []
 }: ExtrasSelectionProps) => {
-  // Debug logging to see what we're receiving
-  console.log('ExtrasSelection component received:', {
-    selectedExtras,
-    selectedExtrasSize: selectedExtras.size,
-    selectedExtrasEntries: Array.from(selectedExtras.entries()),
-    optionalFeesCount: optionalFees.length
-  });
   const handleCheckboxChange = (extraId: string | number, checked: boolean) => {
     onExtraChange(extraId, checked ? 1 : 0);
   };
