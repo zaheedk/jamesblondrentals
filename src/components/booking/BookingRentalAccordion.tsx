@@ -40,28 +40,17 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
 
   const duration = calculateDuration();
   
-  // Use the correct price calculation
-  // If totalcost exists from API, it should be the complete rental price for the duration
-  // Otherwise calculate from daily rate * duration
-  const dailyRate = bookingData.totalRateAfterDiscount || bookingData.basePrice || 0;
-  const finalBasePrice = bookingData.totalcost && bookingData.totalcost > 0 
-    ? bookingData.totalcost 
-    : (dailyRate * duration);
+  // Calculate total price using the correct formula:
+  // totalRateAfterDiscount + insurancePrice + (selectedextras quantity * price)
+  const basePrice = bookingData.totalRateAfterDiscount || 0;
   
   const extrasTotal = bookingData.selectedExtras?.reduce((total, extra) => {
     return total + (extra.price * extra.quantity);
   }, 0) || 0;
   
-  // Insurance price is already the total for the entire duration, not per day
   const insurancePrice = bookingData.insurancePrice || 0;
   
-  // Don't include security bond in total - it's just a hold
-  const mandatoryFeesTotal = bookingData.mandatoryFees?.reduce((total, fee) => {
-    return fee.name.toLowerCase().includes('security') || fee.name.toLowerCase().includes('bond') 
-      ? total : total + fee.amount;
-  }, 0) || 0;
-  
-  const totalPrice = finalBasePrice + extrasTotal + insurancePrice + mandatoryFeesTotal;
+  const totalPrice = basePrice + insurancePrice + extrasTotal;
 
   // Get vehicle image with fallback
   const getImageUrl = () => {
