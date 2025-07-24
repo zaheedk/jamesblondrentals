@@ -209,6 +209,14 @@ const PaymentSuccess = () => {
         ? parseInt(bookingDetails.extraKmsId) || 0 
         : bookingDetails.extraKmsId || 0;
 
+      // Prepare optional fees array from selected extras
+      const optionalFees = sessionData?.selectedExtras?.map(extra => ({
+        id: extra.id,
+        qty: extra.quantity
+      })) || [];
+      
+      console.log('Optional fees prepared for save quotation:', optionalFees);
+
       const requestPayload = {
         vehiclecategoryid: vehicleCategoryId,
         vehiclecategorytypeid: vehicleCategoryTypeId, // Using corrected value here
@@ -224,6 +232,8 @@ const PaymentSuccess = () => {
         transmission: sessionData?.transmission || 0,
         insuranceid: insuranceid,
         extrakmsid: extrakmsid,
+        // Include optional fees (extras) with correct qty parameter
+        optionalfees: optionalFees,
         campaigncode: getCampaignCode(
           sessionData?.campaignCode || "", 
           pickupDate, 
