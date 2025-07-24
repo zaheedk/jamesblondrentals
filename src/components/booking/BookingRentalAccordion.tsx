@@ -24,23 +24,6 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
     return null;
   }
 
-  // Use the base price directly from API without discount calculation
-  // Debug: log all available price fields to understand what's being used
-  console.log('Available price fields:', {
-    basePrice: bookingData.basePrice,
-    totalRateAfterDiscount: bookingData.totalRateAfterDiscount,
-    totalcost: bookingData.totalcost,
-    dailyrate: bookingData.dailyrate,
-    payment: bookingData.payment
-  });
-  
-  // Use totalcost from API if available, otherwise fall back to basePrice
-  const finalBasePrice = bookingData.totalcost || bookingData.basePrice || 0;
-  
-  const extrasTotal = bookingData.selectedExtras?.reduce((total, extra) => {
-    return total + (extra.price * extra.quantity);
-  }, 0) || 0;
-  
   // Calculate rental duration first
   const calculateDuration = () => {
     if (!bookingData.pickupDate || !bookingData.dropoffDate) return 1;
@@ -56,6 +39,16 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
   };
 
   const duration = calculateDuration();
+  
+  // Use totalcost from API if available, otherwise calculate from daily rate
+  // basePrice and totalRateAfterDiscount appear to be daily rates, so multiply by duration
+  const dailyRate = bookingData.totalRateAfterDiscount || bookingData.basePrice || 0;
+  const finalBasePrice = bookingData.totalcost || (dailyRate * duration);
+  
+  const extrasTotal = bookingData.selectedExtras?.reduce((total, extra) => {
+    return total + (extra.price * extra.quantity);
+  }, 0) || 0;
+  
   const insurancePrice = (bookingData.insurancePrice || 0) * duration;
   
   // Don't include security bond in total - it's just a hold
