@@ -99,11 +99,30 @@ const InsuranceSelection = () => {
           }
         }
         
-        const defaultInsurance = insuranceoptions?.find(i => i.isdefault) || null;
-        setSelectedInsurance(defaultInsurance);
+        // Set default insurance and km charge, but check for previously saved selections first
+        let insuranceToSelect = null;
+        let kmChargeToSelect = null;
         
-        const defaultKmCharge = kmcharges?.find(k => k.isdefault) || null;
-        setSelectedKmCharge(defaultKmCharge);
+        // Check for previously saved selections in booking data
+        if (data.insuranceId) {
+          insuranceToSelect = insuranceoptions?.find(i => i.id.toString() === data.insuranceId) || null;
+        }
+        
+        if (data.extraKmsId) {
+          kmChargeToSelect = kmcharges?.find(k => k.id.toString() === data.extraKmsId) || null;
+        }
+        
+        // Fall back to defaults if no saved selections
+        if (!insuranceToSelect) {
+          insuranceToSelect = insuranceoptions?.find(i => i.isdefault) || null;
+        }
+        
+        if (!kmChargeToSelect) {
+          kmChargeToSelect = kmcharges?.find(k => k.isdefault) || null;
+        }
+        
+        setSelectedInsurance(insuranceToSelect);
+        setSelectedKmCharge(kmChargeToSelect);
       } else {
         console.error("API returned error or missing results:", response.error || "Unknown error");
         toast.error("Could not load insurance options", {
