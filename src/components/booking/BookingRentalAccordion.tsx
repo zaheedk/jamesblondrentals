@@ -41,7 +41,22 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
     return total + (extra.price * extra.quantity);
   }, 0) || 0;
   
-  const insurancePrice = bookingData.insurancePrice || 0;
+  // Calculate rental duration first
+  const calculateDuration = () => {
+    if (!bookingData.pickupDate || !bookingData.dropoffDate) return 1;
+    try {
+      const pickup = parse(bookingData.pickupDate, 'dd/MM/yyyy', new Date());
+      const dropoff = parse(bookingData.dropoffDate, 'dd/MM/yyyy', new Date());
+      const diffInTime = dropoff.getTime() - pickup.getTime();
+      const diffInDays = Math.ceil(diffInTime / (1000 * 3600 * 24));
+      return Math.max(1, diffInDays);
+    } catch {
+      return 1;
+    }
+  };
+
+  const duration = calculateDuration();
+  const insurancePrice = (bookingData.insurancePrice || 0) * duration;
   
   // Don't include security bond in total - it's just a hold
   const mandatoryFeesTotal = bookingData.mandatoryFees?.reduce((total, fee) => {
@@ -70,21 +85,6 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
     }
   };
 
-  // Calculate rental duration
-  const calculateDuration = () => {
-    if (!bookingData.pickupDate || !bookingData.dropoffDate) return 1;
-    try {
-      const pickup = parse(bookingData.pickupDate, 'dd/MM/yyyy', new Date());
-      const dropoff = parse(bookingData.dropoffDate, 'dd/MM/yyyy', new Date());
-      const diffInTime = dropoff.getTime() - pickup.getTime();
-      const diffInDays = Math.ceil(diffInTime / (1000 * 3600 * 24));
-      return Math.max(1, diffInDays);
-    } catch {
-      return 1;
-    }
-  };
-
-  const duration = calculateDuration();
 
   // Get location names from API if not present in booking data
   const getLocationName = (locationId: string | number, fallbackName?: string) => {
