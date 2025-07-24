@@ -265,12 +265,6 @@ const InsuranceSelection = () => {
           </Button>
         </div>
         
-        {/* Debug API Response */}
-        <DebugApiResponse 
-          title="Insurance API Response"
-          data={rawApiResponse}
-          className="mt-8"
-        />
       </div>
     </div>
   );
