@@ -40,9 +40,9 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
 
   const duration = calculateDuration();
   
-  // Calculate total price using the correct formula:
-  // totalRateAfterDiscount + insurancePrice + (selectedextras quantity * price)
-  const basePrice = bookingData.totalRateAfterDiscount || 0;
+  // Use totalrateafterdiscount from availablecars in the API response
+  // This is stored in bookingData.totalRateAfterDiscount when set from insurance/extras pages
+  const basePrice = bookingData.totalRateAfterDiscount || bookingData.basePrice || 0;
   
   const extrasTotal = bookingData.selectedExtras?.reduce((total, extra) => {
     return total + (extra.price * extra.quantity);
