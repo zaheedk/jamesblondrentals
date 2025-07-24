@@ -70,10 +70,23 @@ const ExtrasSelectionPage = () => {
           const existingExtrasMap = new Map<string | number, number>();
           const existingSelectedExtras: typeof selectedExtras = [];
           
+          console.log('Restoring saved extras:', data.selectedExtras);
+          console.log('Available extras:', safeExtras);
+          console.log('Available optional fees:', safeOptionalFees);
+          
           data.selectedExtras.forEach(savedExtra => {
-            // Verify the extra still exists in the API data
-            const existsInExtras = safeExtras.some(e => e.id.toString() === savedExtra.id.toString());
-            const existsInOptionalFees = safeOptionalFees.some(f => f.id.toString() === savedExtra.id.toString());
+            // Check both string and number comparison for IDs
+            const existsInExtras = safeExtras.some(e => 
+              e.id.toString() === savedExtra.id.toString() || e.id === savedExtra.id
+            );
+            const existsInOptionalFees = safeOptionalFees.some(f => 
+              f.id.toString() === savedExtra.id.toString() || f.id === savedExtra.id
+            );
+            
+            console.log(`Checking extra ${savedExtra.name} (ID: ${savedExtra.id}):`, {
+              existsInExtras,
+              existsInOptionalFees
+            });
             
             if (existsInExtras || existsInOptionalFees) {
               existingExtrasMap.set(savedExtra.id, savedExtra.quantity);
@@ -84,9 +97,13 @@ const ExtrasSelectionPage = () => {
                 unitPrice: savedExtra.price,
                 totalPrice: savedExtra.price * savedExtra.quantity
               });
+              console.log(`Restored extra: ${savedExtra.name} with quantity ${savedExtra.quantity}`);
+            } else {
+              console.log(`Extra ${savedExtra.name} (ID: ${savedExtra.id}) not found in API response`);
             }
           });
           
+          console.log('Final selected extras map:', existingExtrasMap);
           setSelectedExtrasMap(existingExtrasMap);
           setSelectedExtras(existingSelectedExtras);
         }
