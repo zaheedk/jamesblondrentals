@@ -189,6 +189,7 @@ const InsuranceSelection = () => {
             selectedInsuranceId={selectedInsurance?.id || null}
             onSelectInsurance={handleInsuranceChange}
             currencySymbol="$"
+            numberOfDays={calculateNumberOfDays()}
           />
         )}
         

@@ -10,13 +10,15 @@ interface InsuranceOptionsProps {
   selectedInsuranceId: string | number | null;
   onSelectInsurance: (insuranceId: string | number) => void;
   currencySymbol: string;
+  numberOfDays: number;
 }
 
 const InsuranceOptions = ({
   insuranceOptions,
   selectedInsuranceId,
   onSelectInsurance,
-  currencySymbol
+  currencySymbol,
+  numberOfDays
 }: InsuranceOptionsProps) => {
   // Check if we have valid insurance options
   if (!insuranceOptions || insuranceOptions.length === 0) {
@@ -39,7 +41,9 @@ const InsuranceOptions = ({
 
   // Map insurance options to display data with enhanced features
   const getInsuranceDisplayData = (insurance: RCMInsuranceOption, index: number) => {
-    const dailyRate = parseFloat(insurance.totalinsuranceamount.toString()) || 0;
+    // Calculate daily rate from total amount divided by number of days
+    const totalAmount = parseFloat(insurance.totalinsuranceamount.toString()) || 0;
+    const dailyRate = numberOfDays > 0 ? totalAmount / numberOfDays : totalAmount;
     
     // Use feedescription1 if available, otherwise fall back to name
     const webDescription = insurance.feedescription1 || "";
