@@ -148,7 +148,7 @@ const ExtrasSelection = ({
                         : `${currencySymbol}${fee.fees.toFixed(2)}`
                       }
                     </span>
-                    {fee.qtyapply && selectedExtras.has(fee.id) && (
+                    {selectedExtras.has(fee.id) && (
                       <div className="flex items-center gap-2">
                         <Label htmlFor={`quantity-fee-${fee.id}`} className="text-sm font-bold text-black">Qty:</Label>
                         <Input
