@@ -64,6 +64,32 @@ const ExtrasSelectionPage = () => {
         
         const safeOptionalFees = Array.isArray(optionalfees) ? optionalfees : [];
         setOptionalFees(safeOptionalFees);
+        
+        // Restore previously selected extras from booking data after API data is loaded
+        if (data.selectedExtras?.length > 0) {
+          const existingExtrasMap = new Map<string | number, number>();
+          const existingSelectedExtras: typeof selectedExtras = [];
+          
+          data.selectedExtras.forEach(savedExtra => {
+            // Verify the extra still exists in the API data
+            const existsInExtras = safeExtras.some(e => e.id.toString() === savedExtra.id.toString());
+            const existsInOptionalFees = safeOptionalFees.some(f => f.id.toString() === savedExtra.id.toString());
+            
+            if (existsInExtras || existsInOptionalFees) {
+              existingExtrasMap.set(savedExtra.id, savedExtra.quantity);
+              existingSelectedExtras.push({
+                id: savedExtra.id,
+                name: savedExtra.name,
+                quantity: savedExtra.quantity,
+                unitPrice: savedExtra.price,
+                totalPrice: savedExtra.price * savedExtra.quantity
+              });
+            }
+          });
+          
+          setSelectedExtrasMap(existingExtrasMap);
+          setSelectedExtras(existingSelectedExtras);
+        }
       } else {
         console.error("API returned error or missing results:", response.error || "Unknown error");
         toast.error("Could not load extra options", {
@@ -79,26 +105,6 @@ const ExtrasSelectionPage = () => {
     })
     .finally(() => {
       setIsLoading(false);
-      
-      // Load previously selected extras from booking data
-      if (data.selectedExtras?.length > 0) {
-        const existingExtrasMap = new Map<string | number, number>();
-        const existingSelectedExtras: typeof selectedExtras = [];
-        
-        data.selectedExtras.forEach(extra => {
-          existingExtrasMap.set(extra.id, extra.quantity);
-          existingSelectedExtras.push({
-            id: extra.id,
-            name: extra.name,
-            quantity: extra.quantity,
-            unitPrice: extra.price,
-            totalPrice: extra.price * extra.quantity
-          });
-        });
-        
-        setSelectedExtrasMap(existingExtrasMap);
-        setSelectedExtras(existingSelectedExtras);
-      }
     });
   }, [navigate, rcmApi]);
 
