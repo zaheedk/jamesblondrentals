@@ -40,15 +40,19 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
 
   const duration = calculateDuration();
   
-  // Use totalcost from API if available, otherwise calculate from daily rate
-  // basePrice and totalRateAfterDiscount appear to be daily rates, so multiply by duration
+  // Use the correct price calculation
+  // If totalcost exists from API, it should be the complete rental price for the duration
+  // Otherwise calculate from daily rate * duration
   const dailyRate = bookingData.totalRateAfterDiscount || bookingData.basePrice || 0;
-  const finalBasePrice = bookingData.totalcost || (dailyRate * duration);
+  const finalBasePrice = bookingData.totalcost && bookingData.totalcost > 0 
+    ? bookingData.totalcost 
+    : (dailyRate * duration);
   
   const extrasTotal = bookingData.selectedExtras?.reduce((total, extra) => {
     return total + (extra.price * extra.quantity);
   }, 0) || 0;
   
+  // Insurance price should be per day rate * duration
   const insurancePrice = (bookingData.insurancePrice || 0) * duration;
   
   // Don't include security bond in total - it's just a hold
