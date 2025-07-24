@@ -389,13 +389,6 @@ const CustomerDetails = () => {
             </form>
           </Form>
         </div>
-        
-        {/* Debug API Response */}
-        <DebugApiResponse 
-          title="Current Booking Data"
-          data={bookingData}
-          className="mt-8"
-        />
       </div>
     </div>
   );
