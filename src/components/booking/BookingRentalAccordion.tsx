@@ -52,8 +52,8 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
     return total + (extra.price * extra.quantity);
   }, 0) || 0;
   
-  // Insurance price should be per day rate * duration
-  const insurancePrice = (bookingData.insurancePrice || 0) * duration;
+  // Insurance price is already the total for the entire duration, not per day
+  const insurancePrice = bookingData.insurancePrice || 0;
   
   // Don't include security bond in total - it's just a hold
   const mandatoryFeesTotal = bookingData.mandatoryFees?.reduce((total, fee) => {
