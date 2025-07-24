@@ -111,6 +111,15 @@ const InsuranceSelection = () => {
   const handleInsuranceChange = (insuranceId: string | number) => {
     const selected = insuranceOptions.find(i => i.id.toString() === insuranceId.toString()) || null;
     setSelectedInsurance(selected);
+    
+    // Update booking data immediately so accordion shows correct total
+    if (selected) {
+      const numberOfDays = calculateNumberOfDays();
+      const perDayRate = selected.totalinsuranceamount / numberOfDays;
+      updateBookingData({
+        insurancePrice: perDayRate
+      });
+    }
   };
 
   const handleKmChargeChange = (kmChargeId: string | number) => {
