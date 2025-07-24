@@ -79,6 +79,26 @@ const ExtrasSelectionPage = () => {
     })
     .finally(() => {
       setIsLoading(false);
+      
+      // Load previously selected extras from booking data
+      if (data.selectedExtras?.length > 0) {
+        const existingExtrasMap = new Map<string | number, number>();
+        const existingSelectedExtras: typeof selectedExtras = [];
+        
+        data.selectedExtras.forEach(extra => {
+          existingExtrasMap.set(extra.id, extra.quantity);
+          existingSelectedExtras.push({
+            id: extra.id,
+            name: extra.name,
+            quantity: extra.quantity,
+            unitPrice: extra.price,
+            totalPrice: extra.price * extra.quantity
+          });
+        });
+        
+        setSelectedExtrasMap(existingExtrasMap);
+        setSelectedExtras(existingSelectedExtras);
+      }
     });
   }, [navigate, rcmApi]);
 
