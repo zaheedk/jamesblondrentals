@@ -90,9 +90,13 @@ const ExtrasSelectionPage = () => {
             });
             
             if (existsInExtras || existsInOptionalFees) {
-              existingExtrasMap.set(savedExtra.id, savedExtra.quantity);
+              // Ensure consistent type - use the same type as API (number if possible, otherwise string)
+              const consistentId = typeof savedExtra.id === 'string' ? 
+                (isNaN(Number(savedExtra.id)) ? savedExtra.id : Number(savedExtra.id)) : 
+                savedExtra.id;
+              existingExtrasMap.set(consistentId, savedExtra.quantity);
               existingSelectedExtras.push({
-                id: savedExtra.id,
+                id: consistentId,
                 name: savedExtra.name,
                 quantity: savedExtra.quantity,
                 unitPrice: savedExtra.price,
