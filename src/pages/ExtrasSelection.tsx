@@ -249,13 +249,6 @@ const ExtrasSelectionPage = () => {
             optionalFees={optionalFees}
           />
           
-          {/* Debug API Response */}
-          <DebugApiResponse 
-            title="Extras API Response"
-            data={rawApiResponse}
-            className="mt-8"
-          />
-          
           <div className="flex flex-col gap-4 pt-4">
             <Button onClick={handleProceedToDetails}>
               Continue to Customer Details
