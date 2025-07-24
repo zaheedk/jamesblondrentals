@@ -81,10 +81,23 @@ const InsuranceSelection = () => {
       setRawApiResponse(response);
       
       if (response.status === "OK" && response.results) {
-        const { insuranceoptions, kmcharges } = response.results;
+        const { insuranceoptions, kmcharges, availablecars } = response.results;
         
         setInsuranceOptions(insuranceoptions || []);
         setKmCharges(kmcharges || []);
+        
+        // Update booking data with totalrateafterdiscount from availablecars
+        if (availablecars && availablecars.length > 0) {
+          const selectedCar = availablecars.find(car => 
+            car.vehiclecategoryid.toString() === data.vehicleId.toString()
+          );
+          
+          if (selectedCar && selectedCar.totalrateafterdiscount) {
+            updateBookingData({
+              totalRateAfterDiscount: selectedCar.totalrateafterdiscount
+            });
+          }
+        }
         
         const defaultInsurance = insuranceoptions?.find(i => i.isdefault) || null;
         setSelectedInsurance(defaultInsurance);
