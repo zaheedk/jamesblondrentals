@@ -24,6 +24,7 @@ import { useRcmApi } from "@/hooks/use-rcm-api";
 import { useWhatsApp } from "@/hooks/use-whatsapp";
 import BookingRentalAccordion from '@/components/booking/BookingRentalAccordion';
 import ExitIntentPopup from "@/components/ExitIntentPopup";
+import DebugApiResponse from '@/components/diagnostics/DebugApiResponse';
 
 const formSchema = z.object({
   firstName: z.string().min(2, {
@@ -388,6 +389,13 @@ const CustomerDetails = () => {
             </form>
           </Form>
         </div>
+        
+        {/* Debug API Response */}
+        <DebugApiResponse 
+          title="Current Booking Data"
+          data={bookingData}
+          className="mt-8"
+        />
       </div>
     </div>
   );
