@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { RCMInsuranceOption } from "@/lib/api/rcm-api-types";
 import { Check, X, Info } from "lucide-react";
-import { sanitizeHtml } from "@/lib/security";
 
 interface InsuranceOptionsProps {
   insuranceOptions: RCMInsuranceOption[];
@@ -170,7 +169,7 @@ const InsuranceOptions = ({
                       </div>
                     )}
                    {displayData.formattedSecondLineHtml && (
-                     <div className="text-sm text-black" dangerouslySetInnerHTML={{ __html: sanitizeHtml(displayData.formattedSecondLineHtml || '') }} />
+                     <div className="text-sm text-black" dangerouslySetInnerHTML={{ __html: displayData.formattedSecondLineHtml }} />
                    )}
                    {!displayData.firstLineText && !displayData.formattedSecondLineHtml && displayData.excessAmount && (
                      <div className="text-sm font-medium text-black">
