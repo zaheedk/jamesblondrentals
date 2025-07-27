@@ -9,6 +9,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { toast } from 'sonner';
 import { supabase } from '@/lib/supabase-client';
+import { validation, sanitizeText } from '@/lib/security';
+import { useSecurity } from '@/components/security/SecurityProvider';
 
 const contactFormSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -22,6 +24,7 @@ type ContactFormValues = z.infer<typeof contactFormSchema>;
 
 const ContactForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { checkFormRateLimit, csrfToken } = useSecurity();
   const [captchaQuestion, setCaptchaQuestion] = useState(() => {
     const num1 = Math.floor(Math.random() * 10) + 1;
     const num2 = Math.floor(Math.random() * 10) + 1;
@@ -47,22 +50,54 @@ const ContactForm = () => {
   };
 
   const onSubmit = async (values: ContactFormValues) => {
+    // Security validations
     if (values.captcha !== captchaQuestion.answer) {
       toast.error("Incorrect captcha answer. Please try again.");
       refreshCaptcha();
       return;
     }
 
+    // Rate limiting check
+    const clientId = `contact_${values.email.toLowerCase()}`;
+    if (!checkFormRateLimit(clientId)) {
+      toast.error("Too many submissions. Please wait before trying again.");
+      return;
+    }
+
+    // Enhanced validation
+    if (!validation.email(values.email)) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
+
+    if (!validation.maxLength(values.message, 5000)) {
+      toast.error("Message is too long. Please keep it under 5000 characters.");
+      return;
+    }
+
+    if (!validation.noScriptTags(values.message)) {
+      toast.error("Invalid content detected in message.");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
+      // Sanitize all input data
+      const sanitizedData = {
+        name: sanitizeText(values.name),
+        email: sanitizeText(values.email),
+        phone: sanitizeText(values.phone),
+        message: sanitizeText(values.message)
+      };
+
       const emailHtml = `
         <h2>New Contact Form Submission</h2>
-        <p><strong>Name:</strong> ${values.name}</p>
-        <p><strong>Email:</strong> ${values.email}</p>
-        <p><strong>Phone:</strong> ${values.phone}</p>
+        <p><strong>Name:</strong> ${sanitizedData.name}</p>
+        <p><strong>Email:</strong> ${sanitizedData.email}</p>
+        <p><strong>Phone:</strong> ${sanitizedData.phone}</p>
         <p><strong>Message:</strong></p>
-        <p>${values.message.replace(/\n/g, '<br>')}</p>
+        <p>${sanitizedData.message.replace(/\n/g, '<br>')}</p>
         <hr>
         <p><em>This message was sent via the Auckland contact form on jamesblond.co.nz</em></p>
       `;
@@ -70,13 +105,14 @@ const ContactForm = () => {
       const { error } = await supabase.functions.invoke('send-email', {
         body: {
           to: 'info@jamesblond.co.nz',
-          subject: `Contact Form: ${values.name} - ${values.email}`,
+          subject: `Contact Form: ${sanitizedData.name} - ${sanitizedData.email}`,
           html: emailHtml,
           type: 'contact-form',
-          from_name: values.name,
-          from_email: values.email,
-          phone: values.phone,
-          message: values.message
+          from_name: sanitizedData.name,
+          from_email: sanitizedData.email,
+          phone: sanitizedData.phone,
+          message: sanitizedData.message,
+          csrf_token: csrfToken
         }
       });
 

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, User, ArrowLeft, Clock } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { sanitizeHtml } from '@/lib/security';
 
 const blogPosts = {
   'furniture-truck-vs-traditional-moving-van-detailed-comparison': {
@@ -1203,7 +1204,7 @@ const BlogPost = () => {
           <CardContent className="p-8">
             <div 
               className="prose prose-lg max-w-none"
-              dangerouslySetInnerHTML={{ __html: article.content }}
+              dangerouslySetInnerHTML={{ __html: sanitizeHtml(article.content) }}
             />
           </CardContent>
         </Card>

@@ -19,8 +19,10 @@ import type {
 
 // API Configuration
 const DEFAULT_CONFIG: RCMApiConfig = {
-  apiKey: import.meta.env.VITE_RCM_API_KEY || "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
-  apiSecret: import.meta.env.VITE_RCM_API_SECRET || "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
+  // API credentials should be configured via environment variables only
+  // Never hardcode credentials in the client-side code
+  apiKey: import.meta.env.VITE_RCM_API_KEY || "",
+  apiSecret: import.meta.env.VITE_RCM_API_SECRET || "",
   apiUrl: "/api/rcm/booking/v3.2"
 };
 
