@@ -353,6 +353,100 @@ const WellingtonTruckRentals = () => {
         </div>
       </section>
 
+      {/* Hutt Valley Services */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold mb-6">Truck Hire Services for Lower Hutt & Upper Hutt</h2>
+        <div className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-lg p-6 mb-6">
+          <p className="text-lg text-gray-700 mb-4">
+            Extending our Wellington truck rental services to the entire Hutt Valley region. We proudly serve 
+            Lower Hutt and Upper Hutt with the same quality trucks and competitive rates.
+          </p>
+        </div>
+        
+        <div className="grid md:grid-cols-2 gap-8">
+          <div>
+            <h3 className="font-bold text-xl mb-4 text-primary">Lower Hutt Truck Rentals</h3>
+            <div className="space-y-4">
+              <div className="bg-white rounded-lg p-4 border border-gray-200">
+                <h4 className="font-semibold mb-2">Serving All Lower Hutt Suburbs</h4>
+                <ul className="text-gray-600 space-y-1">
+                  <li>• Petone - Perfect for character home moves and renovations</li>
+                  <li>• Eastbourne - Scenic coastal moves with our smaller trucks</li>
+                  <li>• Naenae - Family-friendly truck options for growing households</li>
+                  <li>• Taita - Industrial area relocations and business moves</li>
+                  <li>• Wainuiomata - Valley moves with trucks suited for winding roads</li>
+                </ul>
+              </div>
+              
+              <div className="bg-primary/5 rounded-lg p-4">
+                <h4 className="font-semibold mb-2">Lower Hutt Moving Advantages</h4>
+                <ul className="text-gray-700 space-y-1">
+                  <li>• Easier parking and loading compared to Wellington CBD</li>
+                  <li>• Less traffic congestion for faster moving times</li>
+                  <li>• Larger driveways accommodate our bigger trucks</li>
+                  <li>• Quick access via SH2 for efficient pickup/delivery</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <div>
+            <h3 className="font-bold text-xl mb-4 text-primary">Upper Hutt Truck Rentals</h3>
+            <div className="space-y-4">
+              <div className="bg-white rounded-lg p-4 border border-gray-200">
+                <h4 className="font-semibold mb-2">Covering All Upper Hutt Areas</h4>
+                <ul className="text-gray-600 space-y-1">
+                  <li>• Totara Park - Family home moves with larger truck options</li>
+                  <li>• Heretaunga - Central location with easy truck access</li>
+                  <li>• Elderslea - Rural property moves and lifestyle block relocations</li>
+                  <li>• Pinehaven - Hillside homes requiring careful navigation</li>
+                  <li>• Silverstream - Valley floor moves with convenient loading</li>
+                </ul>
+              </div>
+              
+              <div className="bg-primary/5 rounded-lg p-4">
+                <h4 className="font-semibold mb-2">Upper Hutt Specialty Services</h4>
+                <ul className="text-gray-700 space-y-1">
+                  <li>• Rural property and lifestyle block relocations</li>
+                  <li>• Construction material transport for renovations</li>
+                  <li>• Garden and landscaping project support</li>
+                  <li>• Multi-trip moves for larger rural properties</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div className="mt-8 bg-white rounded-lg p-6 border border-primary/20">
+          <h3 className="font-bold text-xl mb-4 text-center">Hutt Valley Travel Times & Logistics</h3>
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="text-center">
+              <div className="bg-primary/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+                <Truck className="h-8 w-8 text-primary" />
+              </div>
+              <h4 className="font-semibold mb-2">Lower Hutt</h4>
+              <p className="text-gray-600 text-sm">20-30 minutes from our Wellington depot via SH2. Easy highway access for efficient service.</p>
+            </div>
+            
+            <div className="text-center">
+              <div className="bg-primary/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+                <Truck className="h-8 w-8 text-primary" />
+              </div>
+              <h4 className="font-semibold mb-2">Upper Hutt</h4>
+              <p className="text-gray-600 text-sm">35-45 minutes from Wellington depot. Scenic valley route with plenty of truck-friendly roads.</p>
+            </div>
+            
+            <div className="text-center">
+              <div className="bg-primary/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+                <Package className="h-8 w-8 text-primary" />
+              </div>
+              <h4 className="font-semibold mb-2">Delivery Available</h4>
+              <p className="text-gray-600 text-sm">We can deliver trucks directly to your Hutt Valley location for added convenience.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Booking Frame Section */}
       <section id="booking" className="mb-12 scroll-mt-16">
         <div className="bg-primary/5 border border-primary/10 rounded-lg p-6">
