@@ -33,22 +33,31 @@ const PaymentOptions = () => {
   const { useLocationDetails } = useRcmApi();
   const { data: locationDetails } = useLocationDetails();
 
-  // Fire GA4 tag for G-4E4P8VX8DK once booking is successfully created (reservationRef present)
+  // Fire GA4 and Google Ads conversion once booking is successfully created (reservationRef present)
   const hasFiredGAReservation = React.useRef(false);
   useEffect(() => {
     const reservationRef = (bookingDetails as any)?.reservationRef || getBookingData()?.reservationRef;
     if (!hasFiredGAReservation.current && reservationRef) {
       try {
+        const gaId = 'G-4E4P8VX8DK';
+        const existing = document.querySelector(`script[src*="googletagmanager.com/gtag/js?id=${gaId}"]`);
+        if (!existing) {
+          const s = document.createElement('script');
+          s.async = true;
+          s.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
+          document.head.appendChild(s);
+        }
+
         (window as any).dataLayer = (window as any).dataLayer || [];
         (window as any).gtag = (window as any).gtag || function(){ (window as any).dataLayer.push(arguments); };
         (window as any).gtag('js', new Date());
-        (window as any).gtag('config', 'G-4E4P8VX8DK', { page_path: '/payment-options', event_label: 'booking_created' });
+        (window as any).gtag('config', gaId);
+
         (window as any).gtag('event', 'conversion', {
-          send_to: 'AW-11070147455/Us8gCObpsbIaEP-W1J4p',
-          value: 1.0,
-          currency: 'NZD',
+          send_to: 'AW-11070147455/6vhkCISpqYkYEP-W1J4p',
           transaction_id: ''
         });
+
         hasFiredGAReservation.current = true;
       } catch (err) {
         console.error('GA tag fire failed (G-4E4P8VX8DK):', err);
