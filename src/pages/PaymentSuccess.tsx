@@ -695,59 +695,39 @@ const PaymentSuccess = () => {
   }, [navigate, location, paymentStatus]);
 
   useEffect(() => {
-    const loadGoogleAnalytics = () => {
-      const script = document.createElement('script');
-      script.async = true;
-      script.src = `https://www.googletagmanager.com/gtag/js?id=G-MHKY18WZYH`;
-      
-      script.onload = () => {
-        window.dataLayer = window.dataLayer || [];
-        window.gtag = function(...args: any[]){ window.dataLayer.push(arguments); };
-        
-        window.gtag('js', new Date());
-        window.gtag('config', 'G-MHKY18WZYH');
-        
-        if (paymentStatus === 'success' && bookingDetails) {
-          try {
-            window.gtag('event', 'purchase', {
-              currency: 'NZD',
-              transaction_id: transactionId || 'unknown',
-              value: bookingDetails.paymentAmount || 0,
-              items: [
-                {
-                  item_id: bookingDetails.reservationRef || 'unknown',
-                  item_name: bookingDetails.vehicleName || 'Vehicle',
-                  price: bookingDetails.paymentAmount || 0,
-                  quantity: 1
-                }
-              ]
-            });
-            console.log('Google Analytics purchase event tracked successfully');
-          } catch (error) {
-            console.error('Error tracking purchase event:', error);
-          }
-        }
-      };
-      
-      script.onerror = () => {
-        console.error('Failed to load Google Analytics script');
-      };
-      
-      document.head.appendChild(script);
-      
-      return () => {
-        try {
-          if (document.head.contains(script)) {
-            document.head.removeChild(script);
-          }
-        } catch (error) {
-          console.error('Error cleaning up GA script:', error);
-        }
-      };
+    const gaId = 'G-4E4P8VX8DK';
+    const ensureGAScript = () => {
+      const existing = document.querySelector(`script[src*="googletagmanager.com/gtag/js?id=${gaId}"]`);
+      if (!existing) {
+        const s = document.createElement('script');
+        s.async = true;
+        s.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
+        document.head.appendChild(s);
+      }
     };
-    
-    loadGoogleAnalytics();
-  }, [paymentStatus, bookingDetails, transactionId]);
+
+    if (paymentStatus === 'success') {
+      try {
+        ensureGAScript();
+
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function(){ window.dataLayer.push(arguments); };
+
+        window.gtag('js', new Date());
+        window.gtag('config', gaId);
+
+        window.gtag('event', 'conversion', {
+          send_to: 'AW-11070147455/Us8gCObpsbIaEP-W1J4p',
+          value: 1.0,
+          currency: 'NZD',
+          transaction_id: ''
+        });
+        console.log('Google Ads conversion event fired on payment success');
+      } catch (err) {
+        console.error('Failed to fire GA/Ads tags on payment success:', err);
+      }
+    }
+  }, [paymentStatus]);
 
   const calculateRentalDuration = (pickupDate: string, dropoffDate: string) => {
     try {
