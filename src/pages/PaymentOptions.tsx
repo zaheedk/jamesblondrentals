@@ -43,6 +43,12 @@ const PaymentOptions = () => {
         (window as any).gtag = (window as any).gtag || function(){ (window as any).dataLayer.push(arguments); };
         (window as any).gtag('js', new Date());
         (window as any).gtag('config', 'G-4E4P8VX8DK', { page_path: '/payment-options', event_label: 'booking_created' });
+        (window as any).gtag('event', 'conversion', {
+          send_to: 'AW-11070147455/Us8gCObpsbIaEP-W1J4p',
+          value: 1.0,
+          currency: 'NZD',
+          transaction_id: ''
+        });
         hasFiredGAReservation.current = true;
       } catch (err) {
         console.error('GA tag fire failed (G-4E4P8VX8DK):', err);
