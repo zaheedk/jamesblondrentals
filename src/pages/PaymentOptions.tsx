@@ -33,6 +33,23 @@ const PaymentOptions = () => {
   const { useLocationDetails } = useRcmApi();
   const { data: locationDetails } = useLocationDetails();
 
+  // Fire GA4 tag for G-4E4P8VX8DK once booking is successfully created (reservationRef present)
+  const hasFiredGAReservation = React.useRef(false);
+  useEffect(() => {
+    const reservationRef = (bookingDetails as any)?.reservationRef || getBookingData()?.reservationRef;
+    if (!hasFiredGAReservation.current && reservationRef) {
+      try {
+        (window as any).dataLayer = (window as any).dataLayer || [];
+        (window as any).gtag = (window as any).gtag || function(){ (window as any).dataLayer.push(arguments); };
+        (window as any).gtag('js', new Date());
+        (window as any).gtag('config', 'G-4E4P8VX8DK', { page_path: '/payment-options', event_label: 'booking_created' });
+        hasFiredGAReservation.current = true;
+      } catch (err) {
+        console.error('GA tag fire failed (G-4E4P8VX8DK):', err);
+      }
+    }
+  }, [bookingDetails]);
+
   useEffect(() => {
     const bookingData = getBookingData();
     
