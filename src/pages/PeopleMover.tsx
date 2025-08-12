@@ -114,7 +114,7 @@ export default function PeopleMover() {
               </CardHeader>
               <CardContent className="space-y-3">
                 <img
-                  src="/lovable-uploads/959f182c-4210-4140-a46a-86ced485f4bd.png"
+                  src="/lovable-uploads/aea09399-eccd-4a25-801d-c8cb2cd4cd9b.png"
                   alt="Kia Carnival 8-seater people mover with ample luggage space"
                   loading="lazy"
                   className="w-full h-44 object-cover rounded-md border"
