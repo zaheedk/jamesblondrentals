@@ -114,10 +114,12 @@ export default function PeopleMover() {
               </CardHeader>
               <CardContent className="space-y-3">
                 <img
-                  src="/placeholder.svg"
+                  src="/lovable-uploads/959f182c-4210-4140-a46a-86ced485f4bd.png"
                   alt="Kia Carnival 8-seater people mover with ample luggage space"
                   loading="lazy"
                   className="w-full h-44 object-cover rounded-md border"
+                  width={800}
+                  height={300}
                 />
                 <ul className="list-disc pl-5 text-sm text-muted-foreground space-y-1">
                   <li>Premium 8 seats with generous luggage capacity</li>
@@ -139,10 +141,12 @@ export default function PeopleMover() {
               </CardHeader>
               <CardContent className="space-y-3">
                 <img
-                  src="/placeholder.svg"
+                  src="/lovable-uploads/f40953dd-07c7-405f-a446-bbb6de3b2aac.png"
                   alt="Toyota HiAce 10-seater people mover ideal for tour operators"
                   loading="lazy"
                   className="w-full h-44 object-cover rounded-md border"
+                  width={800}
+                  height={300}
                 />
                 <ul className="list-disc pl-5 text-sm text-muted-foreground space-y-1">
                   <li>Comfortable 10-seat layout with ample luggage space</li>
@@ -165,10 +169,12 @@ export default function PeopleMover() {
               </CardHeader>
               <CardContent className="space-y-3">
                 <img
-                  src="/placeholder.svg"
+                  src="/lovable-uploads/bdd5521d-5fab-4187-8d79-fcf80b3f46db.png"
                   alt="LDV Deliver 9 12-seater people mover with large luggage area"
                   loading="lazy"
                   className="w-full h-44 object-cover rounded-md border"
+                  width={800}
+                  height={300}
                 />
                 <ul className="list-disc pl-5 text-sm text-muted-foreground space-y-1">
                   <li>Spacious 12-seat configuration with excellent luggage room</li>
