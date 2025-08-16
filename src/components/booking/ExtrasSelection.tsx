@@ -182,13 +182,13 @@ const ExtrasSelection = ({
               </div>
               
               <div 
-                className={`w-full text-center py-2 font-bold transition-colors ${
+                className={`w-full text-center py-2 transition-colors ${
                   selectedExtras.has(fee.id.toString()) 
                     ? 'bg-red-500 hover:bg-red-600 text-white'
                     : 'bg-yellow-400 hover:bg-yellow-500 text-black'
                 }`}
               >
-                {selectedExtras.has(fee.id.toString()) ? 'REMOVE' : 'ADD'}
+                {selectedExtras.has(fee.id.toString()) ? 'Remove' : 'Add'}
               </div>
             </Card>
           ))}
@@ -278,13 +278,13 @@ const ExtrasSelection = ({
               </div>
               
               <div 
-                className={`w-full text-center py-2 font-bold transition-colors ${
+                className={`w-full text-center py-2 transition-colors ${
                   selectedExtras.has(extra.id.toString()) 
                     ? 'bg-red-500 hover:bg-red-600 text-white'
                     : 'bg-yellow-400 hover:bg-yellow-500 text-black'
                 }`}
               >
-                {selectedExtras.has(extra.id.toString()) ? 'REMOVE' : 'ADD'}
+                {selectedExtras.has(extra.id.toString()) ? 'Remove' : 'Add'}
               </div>
             </Card>
           ))}
