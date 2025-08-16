@@ -40,13 +40,43 @@ const BookingSteps = ({ currentStep, className }: BookingStepsProps) => {
   return (
     <div className={cn("w-full bg-background border-b", className)}>
       <div className="container mx-auto px-2 sm:px-4 py-3 sm:py-4">
-        <div className="flex items-center justify-between gap-1 sm:gap-2">
+        {/* Mobile view - single step display */}
+        <div className="block sm:hidden">
+          <div className="text-center">
+            <div className="flex items-center justify-center mb-2">
+              <div
+                className={cn(
+                  "flex items-center justify-center w-6 h-6 rounded-full text-xs font-medium mr-2",
+                  "bg-primary text-primary-foreground"
+                )}
+              >
+                {activeStep}
+              </div>
+              <p className="text-sm font-medium text-primary">
+                {steps[activeStep - 1]?.title}
+              </p>
+            </div>
+            {/* Progress bar */}
+            <div className="w-full bg-muted h-1 rounded-full">
+              <div 
+                className="bg-primary h-1 rounded-full transition-all duration-300"
+                style={{ width: `${(activeStep / steps.length) * 100}%` }}
+              />
+            </div>
+            <div className="text-xs text-muted-foreground mt-1">
+              Step {activeStep} of {steps.length}
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop view - full steps display */}
+        <div className="hidden sm:flex items-center justify-between gap-2">
           {steps.map((step, index) => (
             <div key={step.number} className="flex items-center min-w-0 flex-1">
               <Link to={step.path || '#'} className="flex items-center cursor-pointer hover:opacity-80 transition-opacity min-w-0">
                 <div
                   className={cn(
-                    "flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 rounded-full text-xs sm:text-sm font-medium transition-colors flex-shrink-0",
+                    "flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium transition-colors flex-shrink-0",
                     activeStep === step.number
                       ? "bg-primary text-primary-foreground"
                       : activeStep > step.number
@@ -56,10 +86,10 @@ const BookingSteps = ({ currentStep, className }: BookingStepsProps) => {
                 >
                   {activeStep > step.number ? "✓" : step.number}
                 </div>
-                <div className="ml-1 sm:ml-3 min-w-0">
+                <div className="ml-3 min-w-0">
                   <p
                     className={cn(
-                      "text-xs sm:text-sm font-medium transition-colors truncate",
+                      "text-sm font-medium transition-colors truncate",
                       activeStep === step.number
                         ? "text-primary"
                         : activeStep > step.number
@@ -67,22 +97,16 @@ const BookingSteps = ({ currentStep, className }: BookingStepsProps) => {
                         : "text-muted-foreground"
                     )}
                   >
-                    <span className="hidden sm:inline">{step.title}</span>
-                    <span className="sm:hidden">
-                      {step.title === 'EDIT ITINERARY' ? 'EDIT' : 
-                       step.title === 'CHOOSE A CAR' ? 'CHOOSE' :
-                       step.title === 'INSURANCE & EXTRAS' ? 'INSUR' :
-                       'BOOK'}
-                    </span>
+                    {step.title}
                   </p>
                 </div>
               </Link>
               
               {index < steps.length - 1 && (
-                <div className="flex-1 mx-1 sm:mx-4 min-w-[10px]">
+                <div className="flex-1 mx-4 min-w-[10px]">
                   <div
                     className={cn(
-                      "h-0.5 sm:h-1 rounded-full transition-colors",
+                      "h-1 rounded-full transition-colors",
                       activeStep > step.number
                         ? "bg-green-500"
                         : "bg-muted"
