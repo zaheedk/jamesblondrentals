@@ -186,7 +186,7 @@ const ExtrasSelection = ({
                         : 'bg-gray-600 hover:bg-gray-700'
                     }`}
                   >
-                    {selectedExtras.has(fee.id) ? 'SELECTED' : 'SELECT'}
+                    {selectedExtras.has(fee.id) ? 'ADD' : 'SELECT'}
                   </div>
                 </div>
               </div>
@@ -246,7 +246,7 @@ const ExtrasSelection = ({
                         : `${currencySymbol}${extra.unitprice.toFixed(2)} each`
                       }
                     </span>
-                    {extra.maxquantity > 1 && selectedExtras.has(extra.id) && (
+                    {selectedExtras.has(extra.id) && (
                       <div className="flex items-center gap-2">
                         <Label htmlFor={`quantity-${extra.id}`} className="text-sm font-bold text-card-foreground">Qty:</Label>
                         <Input
@@ -282,7 +282,7 @@ const ExtrasSelection = ({
                         : 'bg-gray-600 hover:bg-gray-700'
                     }`}
                   >
-                    {selectedExtras.has(extra.id) ? 'SELECTED' : 'SELECT'}
+                    {selectedExtras.has(extra.id) ? 'ADD' : 'SELECT'}
                   </div>
                 </div>
               </div>
