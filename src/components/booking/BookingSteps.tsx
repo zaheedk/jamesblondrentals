@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
 interface Step {
@@ -43,7 +43,7 @@ const BookingSteps = ({ currentStep, className }: BookingStepsProps) => {
         <div className="flex items-center justify-between">
           {steps.map((step, index) => (
             <React.Fragment key={step.number}>
-              <div className="flex items-center">
+              <Link to={step.path || '#'} className="flex items-center cursor-pointer hover:opacity-80 transition-opacity">
                 <div
                   className={cn(
                     "flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium transition-colors",
@@ -70,7 +70,7 @@ const BookingSteps = ({ currentStep, className }: BookingStepsProps) => {
                     {step.title}
                   </p>
                 </div>
-              </div>
+              </Link>
               
               {index < steps.length - 1 && (
                 <div className="flex-1 mx-4">

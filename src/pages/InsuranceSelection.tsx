@@ -14,6 +14,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { ChevronDown } from 'lucide-react';
 import ExitIntentPopup from '@/components/ExitIntentPopup';
 import DebugApiResponse from '@/components/diagnostics/DebugApiResponse';
+import BookingSteps from '@/components/booking/BookingSteps';
 
 const InsuranceSelection = () => {
   const navigate = useNavigate();
@@ -211,9 +212,11 @@ const InsuranceSelection = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <ExitIntentPopup />
-      <BookingRentalAccordion />
+    <div className="min-h-screen bg-background">
+      <BookingSteps currentStep={3} />
+      <div className="container mx-auto px-4 py-8">
+        <ExitIntentPopup />
+        <BookingRentalAccordion />
       
       <div className="space-y-8">
         {insuranceOptions.length > 0 && (
@@ -266,6 +269,7 @@ const InsuranceSelection = () => {
         </div>
         
       </div>
+    </div>
     </div>
   );
 };
