@@ -64,10 +64,12 @@ const ExtrasSelection = ({
   optionalFees = []
 }: ExtrasSelectionProps) => {
   const handleCheckboxChange = (extraId: string | number, checked: boolean) => {
+    console.log('Checkbox changed:', { extraId, checked });
     onExtraChange(extraId, checked ? 1 : 0);
   };
 
   const handleQuantityChange = (extraId: string | number, quantity: number) => {
+    console.log('Quantity changed:', { extraId, quantity });
     onExtraChange(extraId, quantity);
   };
 

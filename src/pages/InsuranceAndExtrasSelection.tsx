@@ -178,6 +178,7 @@ const InsuranceAndExtrasSelection = () => {
   };
 
   const handleExtrasChange = (extraId: string | number, quantity: number) => {
+    console.log('handleExtrasChange called:', { extraId, quantity });
     const updatedExtrasMap = { ...selectedExtrasMap };
     
     if (quantity === 0) {
@@ -186,6 +187,7 @@ const InsuranceAndExtrasSelection = () => {
       updatedExtrasMap[extraId.toString()] = quantity;
     }
     
+    console.log('Updated extras map:', updatedExtrasMap);
     setSelectedExtrasMap(updatedExtrasMap);
     
     // Update selectedExtras array
@@ -217,6 +219,7 @@ const InsuranceAndExtrasSelection = () => {
       }
     });
     
+    console.log('Updated selected extras:', updatedExtras);
     setSelectedExtras(updatedExtras);
   };
 
