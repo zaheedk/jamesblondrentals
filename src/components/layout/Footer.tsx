@@ -9,6 +9,7 @@ const Footer = () => {
   const bookingRoutes = [
     '/booking', 
     '/insurance-selection', 
+    '/insurance-and-extras',
     '/extras-selection', 
     '/customer-details', 
     '/payment-options', 
