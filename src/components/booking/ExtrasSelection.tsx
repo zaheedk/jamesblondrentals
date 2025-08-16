@@ -106,9 +106,9 @@ const ExtrasSelection = ({
             <Card 
               key={fee.id} 
               className={`relative p-6 cursor-pointer transition-all duration-200 bg-card hover:bg-accent/50 text-card-foreground ${
-                selectedExtras.has(fee.id) ? 'border-2 border-primary' : 'border border-border'
+                selectedExtras.has(fee.id.toString()) ? 'border-2 border-primary' : 'border border-border'
               }`}
-              onClick={() => handleCheckboxChange(fee.id, !selectedExtras.has(fee.id))}
+              onClick={() => handleCheckboxChange(fee.id, !selectedExtras.has(fee.id.toString()))}
             >
               <div className="space-y-4">
                 <div className="flex items-center justify-center mb-4">
@@ -145,12 +145,12 @@ const ExtrasSelection = ({
                 <div className="pt-4 border-t border-gray-300">
                   <div className="flex justify-between items-center mb-4">
                     <span className="text-lg font-bold text-card-foreground">
-                      {selectedExtras.has(fee.id) 
-                        ? `${currencySymbol}${((selectedExtras.get(fee.id) || 1) * fee.fees).toFixed(2)} total`
+                      {selectedExtras.has(fee.id.toString()) 
+                        ? `${currencySymbol}${((selectedExtras.get(fee.id.toString()) || 1) * fee.fees).toFixed(2)} total`
                         : `${currencySymbol}${fee.fees.toFixed(2)}`
                       }
                     </span>
-                    {selectedExtras.has(fee.id) && (
+                    {selectedExtras.has(fee.id.toString()) && (
                       <div className="flex items-center gap-2">
                         <Label htmlFor={`quantity-fee-${fee.id}`} className="text-sm font-bold text-card-foreground">Qty:</Label>
                         <Input
@@ -158,7 +158,7 @@ const ExtrasSelection = ({
                           type="number"
                           min="1"
                           max="10"
-                          value={selectedExtras.get(fee.id) || 1}
+                          value={selectedExtras.get(fee.id.toString()) || 1}
                           onChange={(e) => {
                             e.stopPropagation();
                             handleQuantityChange(fee.id, parseInt(e.target.value, 10));
@@ -172,7 +172,7 @@ const ExtrasSelection = ({
                   
                   <Checkbox 
                     id={`fee-${fee.id}`}
-                    checked={selectedExtras.has(fee.id)} 
+                    checked={selectedExtras.has(fee.id.toString())} 
                     onCheckedChange={(checked) => {
                       handleCheckboxChange(fee.id, checked as boolean);
                     }}
@@ -181,12 +181,12 @@ const ExtrasSelection = ({
                   
                   <div 
                     className={`w-full text-center py-2 px-4 rounded font-bold text-white ${
-                      selectedExtras.has(fee.id) 
+                      selectedExtras.has(fee.id.toString()) 
                         ? 'bg-red-600 hover:bg-red-700'
                         : 'bg-gray-600 hover:bg-gray-700'
                     }`}
                   >
-                    {selectedExtras.has(fee.id) ? 'REMOVE' : 'ADD'}
+                    {selectedExtras.has(fee.id.toString()) ? 'REMOVE' : 'ADD'}
                   </div>
                 </div>
               </div>
@@ -202,9 +202,9 @@ const ExtrasSelection = ({
             <Card 
               key={extra.id}
               className={`relative p-6 cursor-pointer transition-all duration-200 bg-card hover:bg-accent/50 text-card-foreground ${
-                selectedExtras.has(extra.id) ? 'border-2 border-primary' : 'border border-border'
+                selectedExtras.has(extra.id.toString()) ? 'border-2 border-primary' : 'border border-border'
               }`}
-              onClick={() => handleCheckboxChange(extra.id, !selectedExtras.has(extra.id))}
+              onClick={() => handleCheckboxChange(extra.id, !selectedExtras.has(extra.id.toString()))}
             >
               <div className="space-y-4">
                 <div className="flex items-center justify-center mb-4">
@@ -241,12 +241,12 @@ const ExtrasSelection = ({
                 <div className="pt-4 border-t border-gray-300">
                   <div className="flex justify-between items-center mb-4">
                     <span className="text-lg font-bold text-card-foreground">
-                      {selectedExtras.has(extra.id) 
-                        ? `${currencySymbol}${((selectedExtras.get(extra.id) || 1) * extra.unitprice).toFixed(2)} total`
+                      {selectedExtras.has(extra.id.toString()) 
+                        ? `${currencySymbol}${((selectedExtras.get(extra.id.toString()) || 1) * extra.unitprice).toFixed(2)} total`
                         : `${currencySymbol}${extra.unitprice.toFixed(2)} each`
                       }
                     </span>
-                    {selectedExtras.has(extra.id) && (
+                    {selectedExtras.has(extra.id.toString()) && (
                       <div className="flex items-center gap-2">
                         <Label htmlFor={`quantity-${extra.id}`} className="text-sm font-bold text-card-foreground">Qty:</Label>
                         <Input
@@ -254,7 +254,7 @@ const ExtrasSelection = ({
                           type="number"
                           min="1"
                           max={extra.maxquantity}
-                          value={selectedExtras.get(extra.id) || 1}
+                          value={selectedExtras.get(extra.id.toString()) || 1}
                           onChange={(e) => {
                             e.stopPropagation();
                             handleQuantityChange(extra.id, parseInt(e.target.value, 10));
@@ -268,7 +268,7 @@ const ExtrasSelection = ({
                   
                   <Checkbox 
                     id={`extra-${extra.id}`}
-                    checked={selectedExtras.has(extra.id)} 
+                    checked={selectedExtras.has(extra.id.toString())} 
                     onCheckedChange={(checked) => {
                       handleCheckboxChange(extra.id, checked as boolean);
                     }}
@@ -277,12 +277,12 @@ const ExtrasSelection = ({
                   
                   <div 
                     className={`w-full text-center py-2 px-4 rounded font-bold text-white ${
-                      selectedExtras.has(extra.id) 
+                      selectedExtras.has(extra.id.toString()) 
                         ? 'bg-red-600 hover:bg-red-700'
                         : 'bg-gray-600 hover:bg-gray-700'
                     }`}
                   >
-                    {selectedExtras.has(extra.id) ? 'REMOVE' : 'ADD'}
+                    {selectedExtras.has(extra.id.toString()) ? 'REMOVE' : 'ADD'}
                   </div>
                 </div>
               </div>
