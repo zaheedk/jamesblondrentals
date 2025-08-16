@@ -190,7 +190,7 @@ const InsuranceOptions = ({
               </div>
               
               <div 
-                className={`w-full text-center py-1 font-bold transition-colors ${
+                className={`w-full text-center py-1 transition-colors ${
                   isSelected 
                     ? 'bg-green-500 hover:bg-green-600 text-white'
                     : 'bg-yellow-400 hover:bg-yellow-500 text-black'
@@ -200,7 +200,7 @@ const InsuranceOptions = ({
                   onSelectInsurance(insurance.id);
                 }}
               >
-                {isSelected ? 'SELECTED' : 'SELECT'}
+                {isSelected ? 'Selected' : 'Select'}
               </div>
             </Card>
           );
