@@ -142,8 +142,8 @@ const ExtrasSelection = ({
                   )}
                 </div>
 
-                <div className="pt-4 border-t border-gray-300">
-                  <div className="flex justify-between items-center mb-4">
+                <div className="pt-2 border-t border-gray-300">
+                  <div className="flex justify-between items-center mb-2">
                     <span className="text-lg font-bold text-card-foreground">
                       {selectedExtras.has(fee.id.toString()) 
                         ? `${currencySymbol}${((selectedExtras.get(fee.id.toString()) || 1) * fee.fees).toFixed(2)} total`
@@ -238,8 +238,8 @@ const ExtrasSelection = ({
                   )}
                 </div>
 
-                <div className="pt-4 border-t border-gray-300">
-                  <div className="flex justify-between items-center mb-4">
+                <div className="pt-2 border-t border-gray-300">
+                  <div className="flex justify-between items-center mb-2">
                     <span className="text-lg font-bold text-card-foreground">
                       {selectedExtras.has(extra.id.toString()) 
                         ? `${currencySymbol}${((selectedExtras.get(extra.id.toString()) || 1) * extra.unitprice).toFixed(2)} total`
