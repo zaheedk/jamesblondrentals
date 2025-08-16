@@ -182,7 +182,7 @@ const ExtrasSelection = ({
               </div>
               
               <div 
-                className={`w-full text-center py-2 transition-colors ${
+                className={`w-full text-center py-1 transition-colors ${
                   selectedExtras.has(fee.id.toString()) 
                     ? 'bg-red-500 hover:bg-red-600 text-white'
                     : 'bg-yellow-400 hover:bg-yellow-500 text-black'
@@ -278,7 +278,7 @@ const ExtrasSelection = ({
               </div>
               
               <div 
-                className={`w-full text-center py-2 transition-colors ${
+                className={`w-full text-center py-1 transition-colors ${
                   selectedExtras.has(extra.id.toString()) 
                     ? 'bg-red-500 hover:bg-red-600 text-white'
                     : 'bg-yellow-400 hover:bg-yellow-500 text-black'
