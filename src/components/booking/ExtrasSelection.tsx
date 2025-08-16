@@ -180,10 +180,10 @@ const ExtrasSelection = ({
                   />
                   
                   <div 
-                    className={`w-full text-center py-2 px-4 rounded font-bold text-white ${
+                    className={`w-full text-center py-3 px-4 rounded font-bold transition-colors ${
                       selectedExtras.has(fee.id.toString()) 
-                        ? 'bg-red-600 hover:bg-red-700'
-                        : 'bg-gray-600 hover:bg-gray-700'
+                        ? 'bg-red-500 hover:bg-red-600 text-white'
+                        : 'bg-yellow-400 hover:bg-yellow-500 text-black'
                     }`}
                   >
                     {selectedExtras.has(fee.id.toString()) ? 'REMOVE' : 'ADD'}
@@ -276,10 +276,10 @@ const ExtrasSelection = ({
                   />
                   
                   <div 
-                    className={`w-full text-center py-2 px-4 rounded font-bold text-white ${
+                    className={`w-full text-center py-3 px-4 rounded font-bold transition-colors ${
                       selectedExtras.has(extra.id.toString()) 
-                        ? 'bg-red-600 hover:bg-red-700'
-                        : 'bg-gray-600 hover:bg-gray-700'
+                        ? 'bg-red-500 hover:bg-red-600 text-white'
+                        : 'bg-yellow-400 hover:bg-yellow-500 text-black'
                     }`}
                   >
                     {selectedExtras.has(extra.id.toString()) ? 'REMOVE' : 'ADD'}
