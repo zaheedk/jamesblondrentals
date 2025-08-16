@@ -156,7 +156,7 @@ const InsuranceOptions = ({
                 </div>
               )}
               
-              <div className="p-6 pb-4">
+              <div className="p-6 pb-2">
                  <div className="space-y-2 mb-4">
                    {(!displayData.firstLineText || !displayData.formattedSecondLineHtml) && (
                      <h3 className="text-lg font-bold text-black">
@@ -185,8 +185,8 @@ const InsuranceOptions = ({
                     )}
                  </div>
 
-                <div className="pt-4 border-t border-gray-300">
-                   <div className="flex justify-center items-center mb-4">
+                <div className="pt-2 border-t border-gray-300">
+                   <div className="flex justify-center items-center mb-2">
                      <span className="text-lg font-bold text-black">
                        ${displayData.dailyRate.toFixed(2)} PER DAY
                      </span>
