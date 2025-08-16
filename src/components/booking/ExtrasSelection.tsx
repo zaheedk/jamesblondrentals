@@ -182,11 +182,11 @@ const ExtrasSelection = ({
                   <div 
                     className={`w-full text-center py-2 px-4 rounded font-bold text-white ${
                       selectedExtras.has(fee.id) 
-                        ? 'bg-primary'
+                        ? 'bg-red-600 hover:bg-red-700'
                         : 'bg-gray-600 hover:bg-gray-700'
                     }`}
                   >
-                    ADD
+                    {selectedExtras.has(fee.id) ? 'REMOVE' : 'ADD'}
                   </div>
                 </div>
               </div>
@@ -278,11 +278,11 @@ const ExtrasSelection = ({
                   <div 
                     className={`w-full text-center py-2 px-4 rounded font-bold text-white ${
                       selectedExtras.has(extra.id) 
-                        ? 'bg-primary'
+                        ? 'bg-red-600 hover:bg-red-700'
                         : 'bg-gray-600 hover:bg-gray-700'
                     }`}
                   >
-                    ADD
+                    {selectedExtras.has(extra.id) ? 'REMOVE' : 'ADD'}
                   </div>
                 </div>
               </div>
