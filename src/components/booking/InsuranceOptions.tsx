@@ -119,7 +119,7 @@ const InsuranceOptions = ({
       </div>
       
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
         {sortedInsuranceOptions.map((insurance, index) => {
           const displayData = getInsuranceDisplayData(insurance, index);
           const isSelected = selectedInsuranceId?.toString() === insurance.id.toString();
@@ -133,24 +133,24 @@ const InsuranceOptions = ({
               onClick={() => onSelectInsurance(insurance.id)}
             >
               {displayData.isRecommended && (
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10">
-                  <div className="bg-green-800 text-white px-3 py-1 rounded text-xs font-medium">
+                <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 z-20">
+                  <div className="bg-green-800 text-white px-3 py-1 rounded text-xs font-bold shadow-lg">
                     RECOMMENDED
                   </div>
                 </div>
               )}
               
               {displayData.isPopular && (
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10">
-                  <div className="bg-primary text-white px-3 py-1 rounded text-xs font-medium">
+                <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 z-20">
+                  <div className="bg-primary text-white px-3 py-1 rounded text-xs font-bold shadow-lg">
                     POPULAR
                   </div>
                 </div>
               )}
 
               {displayData.title.toLowerCase().includes('easy rider') && (
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10">
-                  <div className="bg-orange-700 text-white px-3 py-1 rounded text-xs font-medium">
+                <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 z-20">
+                  <div className="bg-orange-700 text-white px-3 py-1 rounded text-xs font-bold shadow-lg">
                     RISK TAKER
                   </div>
                 </div>
