@@ -25,6 +25,7 @@ import { useWhatsApp } from "@/hooks/use-whatsapp";
 import BookingRentalAccordion from '@/components/booking/BookingRentalAccordion';
 import ExitIntentPopup from "@/components/ExitIntentPopup";
 import DebugApiResponse from '@/components/diagnostics/DebugApiResponse';
+import BookingSteps from '@/components/booking/BookingSteps';
 
 const formSchema = z.object({
   firstName: z.string().min(2, {
@@ -237,10 +238,12 @@ const CustomerDetails = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <ExitIntentPopup />
-      <BookingRentalAccordion />
-      <div className="max-w-3xl mx-auto">
+    <div>
+      <BookingSteps currentStep={4} />
+      <div className="container mx-auto px-4 py-8">
+        <ExitIntentPopup />
+        <BookingRentalAccordion />
+        <div className="max-w-3xl mx-auto">
         <h1 className="text-3xl font-bold mb-6">Customer Details</h1>
         
         <div className="bg-white rounded-lg shadow-md p-6">

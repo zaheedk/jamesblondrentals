@@ -16,6 +16,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
 import { getCampaignCode } from "@/lib/utils";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
+import BookingSteps from "@/components/booking/BookingSteps";
 
 interface RcmVehicleWithPricing {
   vehicle: RCMAvailableCar;
@@ -376,6 +377,7 @@ const Vehicles = () => {
   return (
     <main className="flex-grow">
       <ExitIntentPopup />
+      <BookingSteps currentStep={2} />
       <div className="bg-gray-50">
         <div className="container mx-auto px-4 py-8">
           <div className="flex flex-col sm:flex-row justify-between items-start gap-4">

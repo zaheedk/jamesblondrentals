@@ -9,6 +9,7 @@ import ExtrasSelectionComponent from '@/components/booking/ExtrasSelection';
 import BookingRentalAccordion from '@/components/booking/BookingRentalAccordion';
 import ExitIntentPopup from '@/components/ExitIntentPopup';
 import DebugApiResponse from '@/components/diagnostics/DebugApiResponse';
+import BookingSteps from '@/components/booking/BookingSteps';
 
 const ExtrasSelectionPage = () => {
   const navigate = useNavigate();
@@ -235,30 +236,33 @@ const ExtrasSelectionPage = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <ExitIntentPopup />
-      <BookingRentalAccordion />
-      <h1 className="text-3xl font-bold text-black mb-6">Add Extras</h1>
-      <div className="grid grid-cols-1 gap-8">
-        <div className="space-y-8">
-          <ExtrasSelectionComponent 
-            extras={extras}
-            selectedExtras={selectedExtrasMap}
-            onExtraChange={handleExtrasChange}
-            currencySymbol="$"
-            optionalFees={optionalFees}
-          />
-          
-          <div className="flex flex-col gap-4 pt-4">
-            <Button onClick={handleProceedToDetails}>
-              Continue to Customer Details
-            </Button>
-            <Button 
-              variant="outline" 
-              onClick={() => navigate('/insurance-selection')}
-            >
-              Back to Insurance
-            </Button>
+    <div>
+      <BookingSteps currentStep={3} />
+      <div className="container mx-auto px-4 py-8">
+        <ExitIntentPopup />
+        <BookingRentalAccordion />
+        <h1 className="text-3xl font-bold text-black mb-6">Add Extras</h1>
+        <div className="grid grid-cols-1 gap-8">
+          <div className="space-y-8">
+            <ExtrasSelectionComponent 
+              extras={extras}
+              selectedExtras={selectedExtrasMap}
+              onExtraChange={handleExtrasChange}
+              currencySymbol="$"
+              optionalFees={optionalFees}
+            />
+            
+            <div className="flex flex-col gap-4 pt-4">
+              <Button onClick={handleProceedToDetails}>
+                Continue to Customer Details
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => navigate('/insurance-selection')}
+              >
+                Back to Insurance
+              </Button>
+            </div>
           </div>
         </div>
       </div>

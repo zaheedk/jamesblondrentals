@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useState, useEffect } from "react";
 import { X, Truck } from "lucide-react";
 import truckPromoBanner from "@/assets/truck-promo-banner.jpg";
+import BookingSteps from "@/components/booking/BookingSteps";
 
 const Index = () => {
   const [showCampaignModal, setShowCampaignModal] = useState(false);
@@ -49,6 +50,7 @@ const Index = () => {
 
   return (
     <div>
+      <BookingSteps currentStep={1} />
       <Hero />
       
       {/* Winter Campaign Banner */}
