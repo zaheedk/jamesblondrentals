@@ -229,12 +229,12 @@ export default function BookingForm({
         <input type="hidden" name="campaignCode" value={campaignCode || ''} />
         
         <div className="flex justify-center">
-          <Button 
-            type="submit" 
-            className="w-full p-2 bg-slate-600 text-white hover:bg-slate-700 text-center rounded"
+          <div 
+            className="w-full text-center py-1 transition-colors bg-yellow-400 hover:bg-yellow-500 text-black cursor-pointer rounded"
+            onClick={handleBookNow}
           >
-            SELECT
-          </Button>
+            Select
+          </div>
         </div>
       </form>
     </div>
