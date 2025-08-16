@@ -5,6 +5,7 @@ import { Vehicle } from "@/lib/types";
 import { useSearchParams } from "react-router-dom";
 import BookingForm from "./BookingForm";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Users, Luggage, Gauge, Info } from "lucide-react";
 
 interface VehicleCardProps {
   vehicle: Vehicle;
@@ -135,57 +136,54 @@ const VehicleCard = ({
           height="300"
         />
       </AspectRatio>
-      <CardHeader className="pb-2">
-        <div className="flex justify-between items-start">
+      <CardHeader className="pb-3">
+        {vehicle.fuelType === "electric" && (
+          <Badge className="w-fit mb-2 bg-green-100 text-green-800 border-green-200">
+            Electric Vehicle
+          </Badge>
+        )}
+        <div className="space-y-3">
           <div>
-            <h3 className="font-bold text-xl">{vehicle.make} {vehicle.model}</h3>
-            <div className="text-sm text-gray-500">
-              {vehicle.seats && <span className="mr-2">{vehicle.seats} seats</span>}
-              {vehicle.transmission && <span className="mr-2">{vehicle.transmission}</span>}
+            <h3 className="font-bold text-lg capitalize">
+              {vehicle.type} {vehicle.type === "suv" ? "SUV" : ""}
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              ({vehicle.make[0]}) {vehicle.make} {vehicle.model} or similar
+              <Info className="inline w-3 h-3 ml-1" />
+            </p>
+          </div>
+          
+          <div className="flex items-center gap-4 text-sm">
+            <div className="flex items-center gap-1">
+              <Users className="w-4 h-4" />
+              <span>{vehicle.seats}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Luggage className="w-4 h-4" />
+              <span>2</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <span className="font-medium">A</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Gauge className="w-4 h-4" />
+              <span>{vehicle.fuelEfficiency || "6.7 l/100km"}</span>
             </div>
           </div>
+          
           <div className="text-right">
-            <div className="font-bold text-lg">
-              <span>${displayRate.toFixed(2)}</span>
-              {vehicle.rateperiod === "day" && <span className="text-sm font-normal text-gray-600 ml-1">per day</span>}
-              {vehicle.rateperiod === "hour" && numberOfHours && (
-                <span className="text-sm font-normal text-gray-600 ml-1">
-                  for ({numberOfHours} hours)
-                </span>
-              )}
+            <div className="text-2xl font-bold">
+              ${displayRate.toFixed(2)} <span className="text-sm font-normal text-muted-foreground">NZD</span>
             </div>
             {hasDailyDiscount && (
-              <div className="text-xs text-gray-500 line-through">
+              <div className="text-xs text-muted-foreground line-through">
                 ${avgRate.toFixed(2)}/day
               </div>
             )}
-            <div className="text-sm text-primary mt-1">
-              <span className="block font-medium">
-                {hasDiscount ? (
-                  <span className="text-primary font-bold">
-                    Total: ${totalRateAfterDiscount?.toFixed(2)}
-                  </span>
-                ) : (
-                  <span>Total: ${totalAmount.toFixed(2)}</span>
-                )}
-              </span>
-            </div>
           </div>
         </div>
       </CardHeader>
-      <CardContent className="py-2 flex-grow">
-        <p className="text-sm text-gray-600 mb-3">
-          {stripHtmlTags(vehicle.description)?.substring(0, 120)}
-          {vehicle.description && stripHtmlTags(vehicle.description).length > 120 ? '...' : ''}
-        </p>
-        <div className="grid grid-cols-2 gap-2 text-xs">
-          {vehicle.features && (Array.isArray(vehicle.features) ? vehicle.features : [vehicle.features]).slice(0, 4).map((feature, index) => (
-            <div key={index} className="flex items-center">
-              <span className="h-2 w-2 rounded-full bg-green-500 mr-1"></span>
-              <span className="text-gray-700">{feature}</span>
-            </div>
-          ))}
-        </div>
+      <CardContent className="py-0 flex-grow">
       </CardContent>
       <CardFooter className="pt-2">
         {isAvailable ? (
