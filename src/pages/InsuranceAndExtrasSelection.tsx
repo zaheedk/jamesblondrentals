@@ -210,8 +210,8 @@ const InsuranceAndExtrasSelection = () => {
         if (optionalFee) {
           updatedExtras.push({
             id: id,
-            name: optionalFee.feegroupname,
-            price: optionalFee.totalfeeamount || 0,
+            name: optionalFee.feegroupname || optionalFee.name || `Optional Fee ${id}`,
+            price: optionalFee.totalfeeamount || optionalFee.fees || 0,
             quantity: qty,
             isOptionalFee: true
           });
