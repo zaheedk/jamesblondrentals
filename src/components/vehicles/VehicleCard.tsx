@@ -162,10 +162,6 @@ const VehicleCard = ({
               <Cog className="w-4 h-4" />
               <span>A</span>
             </div>
-            <div className="flex items-center gap-1">
-              <Gauge className="w-4 h-4" />
-              <span>{vehicle.fuelEfficiency || "6.7 l/100km"}</span>
-            </div>
           </div>
           
           <div className="text-right">
