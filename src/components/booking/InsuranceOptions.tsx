@@ -127,7 +127,7 @@ const InsuranceOptions = ({
           return (
             <Card 
               key={insurance.id}
-              className={`relative p-6 cursor-pointer transition-all duration-200 bg-gray-50 hover:bg-gray-100 text-black ${
+              className={`relative p-0 cursor-pointer transition-all duration-200 bg-gray-50 hover:bg-gray-100 text-black overflow-hidden ${
                 isSelected ? 'border-2 border-primary' : 'border border-gray-200'
               }`}
               onClick={() => onSelectInsurance(insurance.id)}
@@ -156,8 +156,8 @@ const InsuranceOptions = ({
                 </div>
               )}
               
-              <div className="space-y-4">
-                 <div className="space-y-2">
+              <div className="p-6 pb-4">
+                 <div className="space-y-2 mb-4">
                    {(!displayData.firstLineText || !displayData.formattedSecondLineHtml) && (
                      <h3 className="text-lg font-bold text-black">
                        {displayData.title}
@@ -185,27 +185,27 @@ const InsuranceOptions = ({
                     )}
                  </div>
 
-                 <div className="pt-4 border-t border-gray-300">
-                    <div className="flex justify-center items-center mb-4">
-                      <span className="text-lg font-bold text-black">
-                        ${displayData.dailyRate.toFixed(2)} PER DAY
-                      </span>
-                    </div>
-                   
-                   <Button 
-                     className={`w-full ${
-                       isSelected 
-                         ? 'bg-primary text-white'
-                         : 'bg-gray-600 text-white hover:bg-gray-700'
-                     }`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onSelectInsurance(insurance.id);
-                    }}
-                  >
-                    {isSelected ? 'SELECTED' : 'SELECT'}
-                  </Button>
+                <div className="pt-4 border-t border-gray-300">
+                   <div className="flex justify-center items-center mb-4">
+                     <span className="text-lg font-bold text-black">
+                       ${displayData.dailyRate.toFixed(2)} PER DAY
+                     </span>
+                   </div>
                 </div>
+              </div>
+              
+              <div 
+                className={`w-full text-center py-1 font-bold transition-colors ${
+                  isSelected 
+                    ? 'bg-red-500 hover:bg-red-600 text-white'
+                    : 'bg-yellow-400 hover:bg-yellow-500 text-black'
+                }`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onSelectInsurance(insurance.id);
+                }}
+              >
+                {isSelected ? 'SELECTED' : 'SELECT'}
               </div>
             </Card>
           );
