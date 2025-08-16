@@ -127,7 +127,7 @@ const InsuranceOptions = ({
           return (
             <Card 
               key={insurance.id}
-              className={`relative p-0 cursor-pointer transition-all duration-200 bg-gray-50 hover:bg-gray-100 text-black overflow-hidden ${
+              className={`relative p-0 cursor-pointer transition-all duration-200 bg-gray-50 hover:bg-gray-100 text-black ${
                 isSelected ? 'border-2 border-primary' : 'border border-gray-200'
               }`}
               onClick={() => onSelectInsurance(insurance.id)}
