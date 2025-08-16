@@ -40,7 +40,7 @@ const BookingSteps = ({ currentStep, className }: BookingStepsProps) => {
   return (
     <div className={cn("w-full bg-background border-b", className)}>
       <div className="container mx-auto px-2 sm:px-4 py-3 sm:py-4">
-        {/* Mobile view - single step display */}
+        {/* Mobile view - 4 separate progress bars */}
         <div className="block sm:hidden">
           <div className="text-center">
             <div className="flex items-center justify-center mb-2">
@@ -56,12 +56,33 @@ const BookingSteps = ({ currentStep, className }: BookingStepsProps) => {
                 {steps[activeStep - 1]?.title}
               </p>
             </div>
-            {/* Progress bar */}
-            <div className="w-full bg-muted h-1 rounded-full">
-              <div 
-                className="bg-primary h-1 rounded-full transition-all duration-300"
-                style={{ width: `${(activeStep / steps.length) * 100}%` }}
-              />
+            {/* 4 separate progress bars */}
+            <div className="flex gap-1 mb-1">
+              {steps.map((step, index) => {
+                const isCompleted = activeStep > step.number;
+                const isCurrent = activeStep === step.number;
+                const isPrevious = step.number < activeStep;
+                
+                return (
+                  <div
+                    key={step.number}
+                    className={cn(
+                      "flex-1 h-1 rounded-full transition-all duration-300",
+                      isCurrent || isCompleted 
+                        ? "bg-primary" 
+                        : "bg-muted"
+                    )}
+                    onClick={() => {
+                      if (isPrevious && step.path) {
+                        window.location.href = step.path;
+                      }
+                    }}
+                    style={{
+                      cursor: isPrevious ? 'pointer' : 'default'
+                    }}
+                  />
+                );
+              })}
             </div>
             <div className="text-xs text-muted-foreground mt-1">
               Step {activeStep} of {steps.length}
@@ -69,53 +90,90 @@ const BookingSteps = ({ currentStep, className }: BookingStepsProps) => {
           </div>
         </div>
 
-        {/* Desktop view - full steps display */}
-        <div className="hidden sm:flex items-center justify-between gap-2">
-          {steps.map((step, index) => (
-            <div key={step.number} className="flex items-center min-w-0 flex-1">
-              <Link to={step.path || '#'} className="flex items-center cursor-pointer hover:opacity-80 transition-opacity min-w-0">
-                <div
-                  className={cn(
-                    "flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium transition-colors flex-shrink-0",
-                    activeStep === step.number
-                      ? "bg-primary text-primary-foreground"
-                      : activeStep > step.number
-                      ? "bg-green-500 text-white"
-                      : "bg-muted text-muted-foreground"
-                  )}
-                >
-                  {activeStep > step.number ? "✓" : step.number}
-                </div>
-                <div className="ml-3 min-w-0">
-                  <p
-                    className={cn(
-                      "text-sm font-medium transition-colors truncate",
-                      activeStep === step.number
-                        ? "text-primary"
-                        : activeStep > step.number
-                        ? "text-green-600"
-                        : "text-muted-foreground"
-                    )}
-                  >
-                    {step.title}
-                  </p>
-                </div>
-              </Link>
+        {/* Desktop view - full steps display with 4 separate progress bars */}
+        <div className="hidden sm:block">
+          {/* Step indicators */}
+          <div className="flex items-center justify-between gap-2 mb-4">
+            {steps.map((step, index) => {
+              const isCompleted = activeStep > step.number;
+              const isCurrent = activeStep === step.number;
+              const isPrevious = step.number < activeStep;
               
-              {index < steps.length - 1 && (
-                <div className="flex-1 mx-4 min-w-[10px]">
+              const StepContent = (
+                <div className="flex items-center cursor-pointer hover:opacity-80 transition-opacity min-w-0">
                   <div
                     className={cn(
-                      "h-1 rounded-full transition-colors",
-                      activeStep > step.number
-                        ? "bg-green-500"
-                        : "bg-muted"
+                      "flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium transition-colors flex-shrink-0",
+                      isCurrent
+                        ? "bg-primary text-primary-foreground"
+                        : isCompleted
+                        ? "bg-green-500 text-white"
+                        : "bg-muted text-muted-foreground"
                     )}
-                  />
+                  >
+                    {isCompleted ? "✓" : step.number}
+                  </div>
+                  <div className="ml-3 min-w-0">
+                    <p
+                      className={cn(
+                        "text-sm font-medium transition-colors truncate",
+                        isCurrent
+                          ? "text-primary"
+                          : isCompleted
+                          ? "text-green-600"
+                          : "text-muted-foreground"
+                      )}
+                    >
+                      {step.title}
+                    </p>
+                  </div>
                 </div>
-              )}
-            </div>
-          ))}
+              );
+
+              return (
+                <div key={step.number} className="flex-1">
+                  {isPrevious && step.path ? (
+                    <Link to={step.path}>
+                      {StepContent}
+                    </Link>
+                  ) : (
+                    <div style={{ cursor: isPrevious ? 'pointer' : 'default' }}>
+                      {StepContent}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+          
+          {/* 4 separate progress bars */}
+          <div className="flex gap-2">
+            {steps.map((step) => {
+              const isCompleted = activeStep > step.number;
+              const isCurrent = activeStep === step.number;
+              const isPrevious = step.number < activeStep;
+              
+              return (
+                <div
+                  key={step.number}
+                  className={cn(
+                    "flex-1 h-2 rounded-full transition-all duration-300 cursor-pointer",
+                    isCurrent || isCompleted 
+                      ? "bg-primary" 
+                      : "bg-muted"
+                  )}
+                  onClick={() => {
+                    if (isPrevious && step.path) {
+                      window.location.href = step.path;
+                    }
+                  }}
+                  style={{
+                    cursor: isPrevious ? 'pointer' : 'default'
+                  }}
+                />
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
