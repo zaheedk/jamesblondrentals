@@ -105,12 +105,12 @@ const ExtrasSelection = ({
           {filteredOptionalFees.map((fee) => (
             <Card 
               key={fee.id} 
-              className={`relative p-6 cursor-pointer transition-all duration-200 bg-card hover:bg-accent/50 text-card-foreground ${
+              className={`relative p-0 cursor-pointer transition-all duration-200 bg-card hover:bg-accent/50 text-card-foreground overflow-hidden ${
                 selectedExtras.has(fee.id.toString()) ? 'border-2 border-primary' : 'border border-border'
               }`}
               onClick={() => handleCheckboxChange(fee.id, !selectedExtras.has(fee.id.toString()))}
             >
-              <div className="space-y-4">
+              <div className="p-6 pb-4">
                 <div className="flex items-center justify-center mb-4">
                   <div className="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center">
                     {getExtraItemImage(fee.name, fee.id) ? (
@@ -131,7 +131,7 @@ const ExtrasSelection = ({
                   </div>
                 </div>
                 
-                <div className="space-y-2">
+                <div className="space-y-2 mb-4">
                   <h3 className="text-lg font-bold text-card-foreground">
                     {fee.name}
                   </h3>
@@ -178,17 +178,17 @@ const ExtrasSelection = ({
                     }}
                     className="sr-only"
                   />
-                  
-                  <div 
-                    className={`w-full text-center py-3 px-4 rounded font-bold transition-colors ${
-                      selectedExtras.has(fee.id.toString()) 
-                        ? 'bg-red-500 hover:bg-red-600 text-white'
-                        : 'bg-yellow-400 hover:bg-yellow-500 text-black'
-                    }`}
-                  >
-                    {selectedExtras.has(fee.id.toString()) ? 'REMOVE' : 'ADD'}
-                  </div>
                 </div>
+              </div>
+              
+              <div 
+                className={`w-full text-center py-2 font-bold transition-colors ${
+                  selectedExtras.has(fee.id.toString()) 
+                    ? 'bg-red-500 hover:bg-red-600 text-white'
+                    : 'bg-yellow-400 hover:bg-yellow-500 text-black'
+                }`}
+              >
+                {selectedExtras.has(fee.id.toString()) ? 'REMOVE' : 'ADD'}
               </div>
             </Card>
           ))}
@@ -201,12 +201,12 @@ const ExtrasSelection = ({
           {extras.map((extra) => (
             <Card 
               key={extra.id}
-              className={`relative p-6 cursor-pointer transition-all duration-200 bg-card hover:bg-accent/50 text-card-foreground ${
+              className={`relative p-0 cursor-pointer transition-all duration-200 bg-card hover:bg-accent/50 text-card-foreground overflow-hidden ${
                 selectedExtras.has(extra.id.toString()) ? 'border-2 border-primary' : 'border border-border'
               }`}
               onClick={() => handleCheckboxChange(extra.id, !selectedExtras.has(extra.id.toString()))}
             >
-              <div className="space-y-4">
+              <div className="p-6 pb-4">
                 <div className="flex items-center justify-center mb-4">
                   <div className="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center">
                     {getExtraItemImage(extra.name, extra.id) ? (
@@ -227,7 +227,7 @@ const ExtrasSelection = ({
                   </div>
                 </div>
                 
-                <div className="space-y-2">
+                <div className="space-y-2 mb-4">
                   <h3 className="text-lg font-bold text-card-foreground">
                     {extra.name}
                   </h3>
@@ -274,17 +274,17 @@ const ExtrasSelection = ({
                     }}
                     className="sr-only"
                   />
-                  
-                  <div 
-                    className={`w-full text-center py-3 px-4 rounded font-bold transition-colors ${
-                      selectedExtras.has(extra.id.toString()) 
-                        ? 'bg-red-500 hover:bg-red-600 text-white'
-                        : 'bg-yellow-400 hover:bg-yellow-500 text-black'
-                    }`}
-                  >
-                    {selectedExtras.has(extra.id.toString()) ? 'REMOVE' : 'ADD'}
-                  </div>
                 </div>
+              </div>
+              
+              <div 
+                className={`w-full text-center py-2 font-bold transition-colors ${
+                  selectedExtras.has(extra.id.toString()) 
+                    ? 'bg-red-500 hover:bg-red-600 text-white'
+                    : 'bg-yellow-400 hover:bg-yellow-500 text-black'
+                }`}
+              >
+                {selectedExtras.has(extra.id.toString()) ? 'REMOVE' : 'ADD'}
               </div>
             </Card>
           ))}
