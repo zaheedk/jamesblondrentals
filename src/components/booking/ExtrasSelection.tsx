@@ -105,8 +105,8 @@ const ExtrasSelection = ({
           {filteredOptionalFees.map((fee) => (
             <Card 
               key={fee.id} 
-              className={`relative p-6 cursor-pointer transition-all duration-200 bg-gray-50 hover:bg-gray-100 text-black ${
-                selectedExtras.has(fee.id) ? 'border-2 border-primary' : 'border border-gray-200'
+              className={`relative p-6 cursor-pointer transition-all duration-200 bg-card hover:bg-accent/50 text-card-foreground ${
+                selectedExtras.has(fee.id) ? 'border-2 border-primary' : 'border border-border'
               }`}
               onClick={() => handleCheckboxChange(fee.id, !selectedExtras.has(fee.id))}
             >
@@ -132,11 +132,11 @@ const ExtrasSelection = ({
                 </div>
                 
                 <div className="space-y-2">
-                  <h3 className="text-lg font-bold text-black">
+                  <h3 className="text-lg font-bold text-card-foreground">
                     {fee.name}
                   </h3>
                   {fee.feedescription && (
-                    <p className="text-sm text-black">
+                    <p className="text-sm text-muted-foreground">
                       {fee.feedescription}
                     </p>
                   )}
@@ -144,7 +144,7 @@ const ExtrasSelection = ({
 
                 <div className="pt-4 border-t border-gray-300">
                   <div className="flex justify-between items-center mb-4">
-                    <span className="text-lg font-bold text-black">
+                    <span className="text-lg font-bold text-card-foreground">
                       {selectedExtras.has(fee.id) 
                         ? `${currencySymbol}${((selectedExtras.get(fee.id) || 1) * fee.fees).toFixed(2)} total`
                         : `${currencySymbol}${fee.fees.toFixed(2)}`
@@ -152,7 +152,7 @@ const ExtrasSelection = ({
                     </span>
                     {selectedExtras.has(fee.id) && (
                       <div className="flex items-center gap-2">
-                        <Label htmlFor={`quantity-fee-${fee.id}`} className="text-sm font-bold text-black">Qty:</Label>
+                        <Label htmlFor={`quantity-fee-${fee.id}`} className="text-sm font-bold text-card-foreground">Qty:</Label>
                         <Input
                           id={`quantity-fee-${fee.id}`}
                           type="number"
@@ -201,8 +201,8 @@ const ExtrasSelection = ({
           {extras.map((extra) => (
             <Card 
               key={extra.id}
-              className={`relative p-6 cursor-pointer transition-all duration-200 bg-gray-50 hover:bg-gray-100 text-black ${
-                selectedExtras.has(extra.id) ? 'border-2 border-primary' : 'border border-gray-200'
+              className={`relative p-6 cursor-pointer transition-all duration-200 bg-card hover:bg-accent/50 text-card-foreground ${
+                selectedExtras.has(extra.id) ? 'border-2 border-primary' : 'border border-border'
               }`}
               onClick={() => handleCheckboxChange(extra.id, !selectedExtras.has(extra.id))}
             >
@@ -228,11 +228,11 @@ const ExtrasSelection = ({
                 </div>
                 
                 <div className="space-y-2">
-                  <h3 className="text-lg font-bold text-black">
+                  <h3 className="text-lg font-bold text-card-foreground">
                     {extra.name}
                   </h3>
                   {extra.description && (
-                    <p className="text-sm text-black">
+                    <p className="text-sm text-muted-foreground">
                       {extra.description}
                     </p>
                   )}
@@ -240,7 +240,7 @@ const ExtrasSelection = ({
 
                 <div className="pt-4 border-t border-gray-300">
                   <div className="flex justify-between items-center mb-4">
-                    <span className="text-lg font-bold text-black">
+                    <span className="text-lg font-bold text-card-foreground">
                       {selectedExtras.has(extra.id) 
                         ? `${currencySymbol}${((selectedExtras.get(extra.id) || 1) * extra.unitprice).toFixed(2)} total`
                         : `${currencySymbol}${extra.unitprice.toFixed(2)} each`
@@ -248,7 +248,7 @@ const ExtrasSelection = ({
                     </span>
                     {extra.maxquantity > 1 && selectedExtras.has(extra.id) && (
                       <div className="flex items-center gap-2">
-                        <Label htmlFor={`quantity-${extra.id}`} className="text-sm font-bold text-black">Qty:</Label>
+                        <Label htmlFor={`quantity-${extra.id}`} className="text-sm font-bold text-card-foreground">Qty:</Label>
                         <Input
                           id={`quantity-${extra.id}`}
                           type="number"
@@ -293,7 +293,7 @@ const ExtrasSelection = ({
       
       {/* Display a message if no extras are selected */}
       {!hasNoAddons && !selectedExtras.size && (
-        <div className="text-sm text-black">
+        <div className="text-sm text-muted-foreground">
           Select any additional extras you'd like to add to your rental.
         </div>
       )}
