@@ -127,6 +127,17 @@ const InsuranceAndExtrasSelection = () => {
         setSelectedInsurance(insuranceToSelect);
         setSelectedKmCharge(kmChargeToSelect);
         
+        // Update booking data with default insurance price if selected
+        if (insuranceToSelect && !data.insuranceId) {
+          const numberOfDays = calculateNumberOfDays();
+          const perDayRate = insuranceToSelect.totalinsuranceamount / numberOfDays;
+          updateBookingData({
+            insuranceId: insuranceToSelect.id?.toString(),
+            insuranceName: insuranceToSelect.name || insuranceToSelect.description,
+            insurancePrice: perDayRate
+          });
+        }
+        
         // Restore previously selected extras if they exist
         if (data.selectedExtras && data.selectedExtras.length > 0) {
           const extrasMap: { [key: string]: number } = {};
