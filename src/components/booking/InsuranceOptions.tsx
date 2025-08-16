@@ -133,7 +133,7 @@ const InsuranceOptions = ({
               onClick={() => onSelectInsurance(insurance.id)}
             >
               {displayData.isRecommended && (
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10">
                   <div className="bg-green-800 text-white px-3 py-1 rounded text-xs font-medium">
                     RECOMMENDED
                   </div>
@@ -141,7 +141,7 @@ const InsuranceOptions = ({
               )}
               
               {displayData.isPopular && (
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10">
                   <div className="bg-primary text-white px-3 py-1 rounded text-xs font-medium">
                     POPULAR
                   </div>
@@ -149,7 +149,7 @@ const InsuranceOptions = ({
               )}
 
               {displayData.title.toLowerCase().includes('easy rider') && (
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10">
                   <div className="bg-orange-700 text-white px-3 py-1 rounded text-xs font-medium">
                     RISK TAKER
                   </div>
@@ -197,7 +197,7 @@ const InsuranceOptions = ({
               <div 
                 className={`w-full text-center py-1 font-bold transition-colors ${
                   isSelected 
-                    ? 'bg-red-500 hover:bg-red-600 text-white'
+                    ? 'bg-green-500 hover:bg-green-600 text-white'
                     : 'bg-yellow-400 hover:bg-yellow-500 text-black'
                 }`}
                 onClick={(e) => {
