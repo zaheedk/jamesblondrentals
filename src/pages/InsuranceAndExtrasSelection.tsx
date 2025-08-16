@@ -345,7 +345,7 @@ const InsuranceAndExtrasSelection = () => {
               <ExtrasSelection
                 extras={extras}
                 optionalFees={optionalFees}
-                selectedExtras={new Map(Object.entries(selectedExtrasMap).map(([k, v]) => [k, v]))}
+                selectedExtras={new Map(Object.entries(selectedExtrasMap).map(([k, v]) => [k.toString(), v]))}
                 onExtraChange={handleExtrasChange}
                 currencySymbol="$"
               />
