@@ -17,8 +17,8 @@ const Booking = () => {
       return;
     }
     
-    // Redirect to insurance selection page
-    navigate('/insurance-selection');
+    // Redirect to insurance and extras selection page
+    navigate('/insurance-and-extras');
   }, [navigate]);
 
   return (

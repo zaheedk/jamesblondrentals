@@ -1,22 +1,21 @@
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { RCMInsuranceOption, RCMKmCharge } from '@/lib/api/rcm-api-types';
+import { RCMInsuranceOption, RCMKmCharge, RCMExtra, RCMOptionalFee } from '@/lib/api/rcm-api-types';
 import { useRcmApi } from '@/hooks/use-rcm-api';
 import { BookingSessionData, getBookingData, updateBookingData } from '@/lib/booking-session';
 import InsuranceOptions from '@/components/booking/InsuranceOptions';
 import KmCharges from '@/components/booking/KmCharges';
+import ExtrasSelection from '@/components/booking/ExtrasSelection';
 import BookingRentalAccordion from '@/components/booking/BookingRentalAccordion';
+import BookingSteps from '@/components/booking/BookingSteps';
 import { differenceInDays, parseISO } from 'date-fns';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ChevronDown } from 'lucide-react';
 import ExitIntentPopup from '@/components/ExitIntentPopup';
-import DebugApiResponse from '@/components/diagnostics/DebugApiResponse';
-import BookingSteps from '@/components/booking/BookingSteps';
 
-const InsuranceSelection = () => {
+const InsuranceAndExtrasSelection = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { rcmApi } = useRcmApi();
@@ -24,11 +23,14 @@ const InsuranceSelection = () => {
   const [bookingData, setBookingData] = useState<BookingSessionData | null>(null);
   const [insuranceOptions, setInsuranceOptions] = useState<RCMInsuranceOption[]>([]);
   const [kmCharges, setKmCharges] = useState<RCMKmCharge[]>([]);
+  const [extras, setExtras] = useState<RCMExtra[]>([]);
+  const [optionalFees, setOptionalFees] = useState<RCMOptionalFee[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   
   const [selectedInsurance, setSelectedInsurance] = useState<RCMInsuranceOption | null>(null);
   const [selectedKmCharge, setSelectedKmCharge] = useState<RCMKmCharge | null>(null);
-  const [rawApiResponse, setRawApiResponse] = useState<any>(null);
+  const [selectedExtrasMap, setSelectedExtrasMap] = useState<{ [key: string]: number }>({});
+  const [selectedExtras, setSelectedExtras] = useState<Array<{ id: string; name: string; price: number; quantity: number; isOptionalFee?: boolean }>>([]);
 
   const calculateNumberOfDays = () => {
     if (!bookingData) return 1;
@@ -79,13 +81,13 @@ const InsuranceSelection = () => {
       ...(data.campaignCode && { campaigncode: data.campaignCode })
     })
     .then((response) => {
-      setRawApiResponse(response);
-      
       if (response.status === "OK" && response.results) {
-        const { insuranceoptions, kmcharges, availablecars } = response.results;
+        const { insuranceoptions, kmcharges, availablecars, extras, optionalfees } = response.results;
         
         setInsuranceOptions(insuranceoptions || []);
         setKmCharges(kmcharges || []);
+        setExtras(extras || []);
+        setOptionalFees(optionalfees || []);
         
         // Update booking data with totalrateafterdiscount from availablecars
         if (availablecars && availablecars.length > 0) {
@@ -124,16 +126,30 @@ const InsuranceSelection = () => {
         
         setSelectedInsurance(insuranceToSelect);
         setSelectedKmCharge(kmChargeToSelect);
+        
+        // Restore previously selected extras if they exist
+        if (data.selectedExtras && data.selectedExtras.length > 0) {
+          const extrasMap: { [key: string]: number } = {};
+          const extrasArray: Array<{ id: string; name: string; price: number; quantity: number; isOptionalFee?: boolean }> = [];
+          
+          data.selectedExtras.forEach(selectedExtra => {
+            extrasMap[selectedExtra.id] = selectedExtra.quantity;
+            extrasArray.push(selectedExtra);
+          });
+          
+          setSelectedExtrasMap(extrasMap);
+          setSelectedExtras(extrasArray);
+        }
       } else {
         console.error("API returned error or missing results:", response.error || "Unknown error");
-        toast.error("Could not load insurance options", {
+        toast.error("Could not load options", {
           description: response.error || "The API returned an invalid response",
         });
       }
     })
     .catch((error) => {
-      console.error("Error fetching insurance options:", error);
-      toast.error("Failed to load insurance options", {
+      console.error("Error fetching options:", error);
+      toast.error("Failed to load options", {
         description: "Please try again later.",
       });
     })
@@ -161,7 +177,51 @@ const InsuranceSelection = () => {
     setSelectedKmCharge(selected);
   };
 
-  const handleContinueToExtras = () => {
+  const handleExtrasChange = (extraId: string | number, quantity: number) => {
+    const updatedExtrasMap = { ...selectedExtrasMap };
+    
+    if (quantity === 0) {
+      delete updatedExtrasMap[extraId.toString()];
+    } else {
+      updatedExtrasMap[extraId.toString()] = quantity;
+    }
+    
+    setSelectedExtrasMap(updatedExtrasMap);
+    
+    // Update selectedExtras array
+    const updatedExtras: Array<{ id: string; name: string; price: number; quantity: number; isOptionalFee?: boolean }> = [];
+    
+    Object.entries(updatedExtrasMap).forEach(([id, qty]) => {
+      // Check if it's an extra first
+      const extra = extras.find(e => e.id.toString() === id);
+      if (extra) {
+        updatedExtras.push({
+          id: id,
+          name: extra.name,
+          price: extra.unitprice,
+          quantity: qty,
+          isOptionalFee: false
+        });
+      } else {
+        // Check if it's an optional fee
+        const optionalFee = optionalFees.find(f => f.id.toString() === id);
+        if (optionalFee) {
+          updatedExtras.push({
+            id: id,
+            name: optionalFee.feegroupname,
+            price: optionalFee.totalfeeamount || 0,
+            quantity: qty,
+            isOptionalFee: true
+          });
+        }
+      }
+    });
+    
+    setSelectedExtras(updatedExtras);
+  };
+
+  const handleProceedToDetails = () => {
+    // Save insurance and km charge data
     if (selectedInsurance) {
       updateBookingData({
         insuranceId: selectedInsurance.id?.toString(),
@@ -172,8 +232,21 @@ const InsuranceSelection = () => {
         extraKmsPrice: selectedKmCharge?.dailyrate
       });
     }
-    
-    navigate('/extras-selection');
+
+    // Save extras data
+    updateBookingData({
+      selectedExtras: selectedExtras
+    });
+
+    // Find the selected car details for final booking
+    const currentBookingData = getBookingData();
+    if (!currentBookingData) {
+      toast.error("Booking data not found");
+      return;
+    }
+
+    // Navigate to customer details
+    navigate('/customer-details');
   };
 
   const handleBack = () => {
@@ -192,21 +265,23 @@ const InsuranceSelection = () => {
     if (data.pickupTime) searchParams.set("pickupTime", data.pickupTime.toString());
     if (data.dropoffTime) searchParams.set("dropoffTime", data.dropoffTime.toString());
     if (data.ageId) searchParams.set("age", data.ageId.toString());
-    // Removed the vehicleCategoryTypeId parameter to avoid filtering
     if (data.campaignCode) searchParams.set("campaignCode", data.campaignCode);
     
     navigate(`/vehicles?${searchParams.toString()}`, {
       state: { 
         fromInsurancePage: true,
-        resetCategoryFilter: true  // Add flag to indicate category filter should be reset
+        resetCategoryFilter: true
       }
     });
   };
 
   if (isLoading || !bookingData) {
     return (
-      <div className="container mx-auto px-4 py-8 text-center">
-        <div className="animate-pulse">Loading insurance options...</div>
+      <div className="min-h-screen bg-background">
+        <BookingSteps currentStep={3} />
+        <div className="container mx-auto px-4 py-8 text-center">
+          <div className="animate-pulse">Loading options...</div>
+        </div>
       </div>
     );
   }
@@ -217,61 +292,78 @@ const InsuranceSelection = () => {
       <div className="container mx-auto px-4 py-8">
         <ExitIntentPopup />
         <BookingRentalAccordion />
-      
-      <div className="space-y-8">
-        {insuranceOptions.length > 0 && (
-          <InsuranceOptions 
-            insuranceOptions={insuranceOptions}
-            selectedInsuranceId={selectedInsurance?.id || null}
-            onSelectInsurance={handleInsuranceChange}
-            currencySymbol="$"
-            numberOfDays={calculateNumberOfDays()}
-          />
-        )}
         
-        <div className="bg-gray-50 rounded-lg p-6">
-          <Collapsible>
-            <CollapsibleTrigger className="flex items-center gap-2 text-left w-full hover:text-primary">
-              <ChevronDown className="h-4 w-4" />
-              <span className="font-medium">Important Insurance Information</span>
-            </CollapsibleTrigger>
-            <CollapsibleContent className="pt-4 space-y-4 text-gray-700">
-              <div>
-                <h3 className="font-semibold mb-2">Excess</h3>
-                <p>This amount will be charged to your card in the event of any damage to the car. If the cost of the damage is lower than the excess, the difference will be refunded to you once the claim has been processed.</p>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-2">Bond</h3>
-                <p>When you pick up your car, this amount will be held on your credit card for 5-10 working days, depending on your bank and card type.</p>
-              </div>
-            </CollapsibleContent>
-          </Collapsible>
-        </div>
+        <div className="space-y-8">
+          {/* Insurance Section */}
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold">Insurance Options</h2>
+            {insuranceOptions.length > 0 && (
+              <InsuranceOptions 
+                insuranceOptions={insuranceOptions}
+                selectedInsuranceId={selectedInsurance?.id || null}
+                onSelectInsurance={handleInsuranceChange}
+                currencySymbol="$"
+                numberOfDays={calculateNumberOfDays()}
+              />
+            )}
+            
+            <div className="bg-gray-50 rounded-lg p-6">
+              <Collapsible>
+                <CollapsibleTrigger className="flex items-center gap-2 text-left w-full hover:text-primary">
+                  <ChevronDown className="h-4 w-4" />
+                  <span className="font-medium">Important Insurance Information</span>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="pt-4 space-y-4 text-gray-700">
+                  <div>
+                    <h3 className="font-semibold mb-2">Excess</h3>
+                    <p>This amount will be charged to your card in the event of any damage to the car. If the cost of the damage is lower than the excess, the difference will be refunded to you once the claim has been processed.</p>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-2">Bond</h3>
+                    <p>When you pick up your car, this amount will be held on your credit card for 5-10 working days, depending on your bank and card type.</p>
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+            </div>
 
-        {kmCharges.length > 0 && (
-          <KmCharges 
-            kmCharges={kmCharges}
-            numberOfDays={calculateNumberOfDays()}
-            currencySymbol="$"
-          />
-        )}
-        
-        <div className="flex justify-between pt-4">
-          <Button 
-            variant="outline" 
-            onClick={handleBack}
-          >
-            Back
-          </Button>
-          <Button onClick={handleContinueToExtras}>
-            Continue to Extras
-          </Button>
+            {kmCharges.length > 0 && (
+              <KmCharges 
+                kmCharges={kmCharges}
+                numberOfDays={calculateNumberOfDays()}
+                currencySymbol="$"
+              />
+            )}
+          </div>
+
+          {/* Extras Section */}
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold">Optional Extras</h2>
+            {(extras.length > 0 || optionalFees.length > 0) && (
+              <ExtrasSelection
+                extras={extras}
+                optionalFees={optionalFees}
+                selectedExtras={new Map(Object.entries(selectedExtrasMap).map(([k, v]) => [k, v]))}
+                onExtraChange={handleExtrasChange}
+                currencySymbol="$"
+              />
+            )}
+          </div>
+          
+          <div className="flex justify-between pt-4">
+            <Button 
+              variant="outline" 
+              onClick={handleBack}
+            >
+              Back
+            </Button>
+            <Button onClick={handleProceedToDetails}>
+              Continue to Details
+            </Button>
+          </div>
         </div>
-        
       </div>
-    </div>
     </div>
   );
 };
 
-export default InsuranceSelection;
+export default InsuranceAndExtrasSelection;

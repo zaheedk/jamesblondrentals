@@ -11,7 +11,7 @@ interface Step {
 const steps: Step[] = [
   { number: 1, title: 'EDIT ITINERARY', path: '/' },
   { number: 2, title: 'CHOOSE A CAR', path: '/vehicles' },
-  { number: 3, title: 'MAKE YOUR RENTAL EVEN BETTER', path: '/extras-selection' },
+  { number: 3, title: 'INSURANCE & EXTRAS', path: '/insurance-and-extras' },
   { number: 4, title: 'REVIEW & BOOK', path: '/payment' }
 ];
 
@@ -30,7 +30,7 @@ const BookingSteps = ({ currentStep, className }: BookingStepsProps) => {
     const path = location.pathname;
     if (path === '/' || path.includes('index')) return 1;
     if (path.includes('vehicles')) return 2;
-    if (path.includes('extras') || path.includes('insurance')) return 3;
+    if (path.includes('insurance') || path.includes('extras')) return 3;
     if (path.includes('payment') || path.includes('customer-details')) return 4;
     return 1;
   };
@@ -42,7 +42,7 @@ const BookingSteps = ({ currentStep, className }: BookingStepsProps) => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {steps.map((step, index) => (
-            <React.Fragment key={step.number}>
+            <div key={step.number} className="flex items-center">
               <Link to={step.path || '#'} className="flex items-center cursor-pointer hover:opacity-80 transition-opacity">
                 <div
                   className={cn(
@@ -84,7 +84,7 @@ const BookingSteps = ({ currentStep, className }: BookingStepsProps) => {
                   />
                 </div>
               )}
-            </React.Fragment>
+            </div>
           ))}
         </div>
       </div>

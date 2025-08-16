@@ -12,8 +12,7 @@ import NotFound from "./pages/NotFound";
 import Vehicles from "./pages/Vehicles";
 import VehicleDetail from "./pages/VehicleDetail";
 import Booking from "./pages/Booking";
-import InsuranceSelection from "./pages/InsuranceSelection";
-import ExtrasSelection from "./pages/ExtrasSelection";
+import InsuranceAndExtrasSelection from "./pages/InsuranceAndExtrasSelection";
 import CustomerDetails from "./pages/CustomerDetails";
 import PaymentOptions from "./pages/PaymentOptions";
 import Payment from "./pages/Payment";
@@ -133,8 +132,7 @@ const App = () => {
                 <Route path="/vehicles" element={<Vehicles />} />
                 <Route path="/vehicle/:id" element={<VehicleDetail />} />
                 <Route path="/booking" element={<Booking />} />
-                <Route path="/insurance-selection" element={<InsuranceSelection />} />
-                <Route path="/extras-selection" element={<ExtrasSelection />} />
+                <Route path="/insurance-and-extras" element={<InsuranceAndExtrasSelection />} />
                 <Route path="/customer-details" element={<CustomerDetails />} />
                 <Route path="/payment-options" element={<PaymentOptions />} />
                 <Route path="/payment" element={<Payment />} />
