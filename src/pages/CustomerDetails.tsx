@@ -394,6 +394,7 @@ const CustomerDetails = () => {
         </div>
       </div>
     </div>
+    </div>
   );
 };
 
