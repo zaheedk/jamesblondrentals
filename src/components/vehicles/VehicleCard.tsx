@@ -5,7 +5,7 @@ import { Vehicle } from "@/lib/types";
 import { useSearchParams } from "react-router-dom";
 import BookingForm from "./BookingForm";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Users, Luggage, Gauge, Info, Settings } from "lucide-react";
+import { Users, Luggage, Gauge, Info, Cog } from "lucide-react";
 
 interface VehicleCardProps {
   vehicle: Vehicle;
@@ -163,7 +163,7 @@ const VehicleCard = ({
               <span>2</span>
             </div>
             <div className="flex items-center gap-1">
-              <Settings className="w-4 h-4" />
+              <Cog className="w-4 h-4" />
               <span>A</span>
             </div>
             <div className="flex items-center gap-1">
