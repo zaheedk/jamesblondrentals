@@ -21,7 +21,7 @@ import { cn, getCampaignCode } from "@/lib/utils";
 import { getBookingData, updateBookingData } from "@/lib/booking-session";
 import { toast } from "sonner";
 import { useRcmApi } from "@/hooks/use-rcm-api";
-import { useWhatsApp } from "@/hooks/use-whatsapp";
+
 import BookingRentalAccordion from '@/components/booking/BookingRentalAccordion';
 import ExitIntentPopup from "@/components/ExitIntentPopup";
 import DebugApiResponse from '@/components/diagnostics/DebugApiResponse';
@@ -67,7 +67,7 @@ const CustomerDetails = () => {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const bookingData = getBookingData();
   const { rcmApi } = useRcmApi();
-  const { sendBookingConfirmation } = useWhatsApp();
+  
   
   React.useEffect(() => {
     if (!bookingData) {
