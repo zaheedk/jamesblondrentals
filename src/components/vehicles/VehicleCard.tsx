@@ -147,10 +147,6 @@ const VehicleCard = ({
             <h3 className="font-bold text-lg capitalize">
               {vehicle.type} {vehicle.type === "suv" ? "SUV" : ""}
             </h3>
-            <p className="text-sm text-muted-foreground">
-              ({vehicle.make[0]}) {vehicle.make} {vehicle.model} or similar
-              <Info className="inline w-3 h-3 ml-1" />
-            </p>
           </div>
           
           <div className="flex items-center gap-4 text-sm">
