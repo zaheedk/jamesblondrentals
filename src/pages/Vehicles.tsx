@@ -194,12 +194,15 @@ const Vehicles = () => {
           totalDays: firstRate?.numberofdays
         });
         
+        // Clean up category name by removing prefixes like (S), (P), etc.
+        const cleanCategoryName = car.vehiclecategory.replace(/^\([A-Z]\)\s*/, '');
+        
         return {
           id: Number(car.vehiclecategoryid),
-          make: car.vehiclecategory.split(' ')[0] || "Unknown",
-          model: car.vehiclecategory.split(' ').slice(1).join(' ') || "Vehicle",
+          make: cleanCategoryName.split(' ')[0] || "Unknown",
+          model: cleanCategoryName.split(' ').slice(1).join(' ') || "Vehicle",
           year: new Date().getFullYear(),
-          type: String(car.vehiclecategorytypeid) as VehicleType,
+          type: cleanCategoryName as VehicleType,
           price: totalPrice,
           priceUnit: "total",
           seats: car.numberofadults + car.numberofchildren,
