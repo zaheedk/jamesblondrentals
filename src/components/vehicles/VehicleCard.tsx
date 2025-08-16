@@ -149,30 +149,32 @@ const VehicleCard = ({
             </h3>
           </div>
           
-          <div className="flex items-center gap-4 text-sm">
-            <div className="flex items-center gap-1">
-              <Users className="w-4 h-4" />
-              <span>{vehicle.seats}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Luggage className="w-4 h-4" />
-              <span>2</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Cog className="w-4 h-4" />
-              <span>A</span>
-            </div>
-          </div>
-          
-          <div className="text-right">
-            <div className="text-2xl font-bold">
-              ${displayRate.toFixed(2)} <span className="text-sm font-normal text-muted-foreground">NZD</span>
-            </div>
-            {hasDailyDiscount && (
-              <div className="text-xs text-muted-foreground line-through">
-                ${avgRate.toFixed(2)}/day
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4 text-sm">
+              <div className="flex items-center gap-1">
+                <Users className="w-4 h-4" />
+                <span>{vehicle.seats}</span>
               </div>
-            )}
+              <div className="flex items-center gap-1">
+                <Luggage className="w-4 h-4" />
+                <span>2</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Cog className="w-4 h-4" />
+                <span>A</span>
+              </div>
+            </div>
+            
+            <div className="text-right">
+              <div className="text-2xl font-bold">
+                ${displayRate.toFixed(2)} <span className="text-sm font-normal text-muted-foreground">NZD</span>
+              </div>
+              {hasDailyDiscount && (
+                <div className="text-xs text-muted-foreground line-through">
+                  ${avgRate.toFixed(2)}/day
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </CardHeader>
