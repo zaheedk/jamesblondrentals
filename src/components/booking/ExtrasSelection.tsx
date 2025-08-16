@@ -186,7 +186,7 @@ const ExtrasSelection = ({
                         : 'bg-gray-600 hover:bg-gray-700'
                     }`}
                   >
-                    {selectedExtras.has(fee.id) ? 'ADD' : 'SELECT'}
+                    ADD
                   </div>
                 </div>
               </div>
@@ -282,7 +282,7 @@ const ExtrasSelection = ({
                         : 'bg-gray-600 hover:bg-gray-700'
                     }`}
                   >
-                    {selectedExtras.has(extra.id) ? 'ADD' : 'SELECT'}
+                    ADD
                   </div>
                 </div>
               </div>
