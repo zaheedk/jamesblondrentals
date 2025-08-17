@@ -18,6 +18,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/compon
 import { getCampaignCode } from "@/lib/utils";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
 import BookingSteps from "@/components/booking/BookingSteps";
+import DebugApiResponse from "@/components/diagnostics/DebugApiResponse";
 
 interface RcmVehicleWithPricing {
   vehicle: RCMAvailableCar;
@@ -417,6 +418,14 @@ const Vehicles = () => {
                 We're showing the previously loaded vehicles. To refresh, try a new search.
               </AlertDescription>
             </Alert>
+          )}
+
+          {/* Debug API Response */}
+          {step2Data && (
+            <DebugApiResponse 
+              data={step2Data} 
+              title="Raw API Response (Step 2 - Vehicle Data)" 
+            />
           )}
         </div>
       </div>
