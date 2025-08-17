@@ -122,7 +122,7 @@ const InsuranceOptions = ({
           return (
             <Card 
               key={insurance.id}
-              className={`relative p-0 cursor-pointer transition-all duration-200 bg-gray-50 hover:bg-gray-100 text-black ${
+              className={`relative p-0 cursor-pointer transition-all duration-200 bg-gray-50 hover:bg-gray-100 text-black flex flex-col h-full ${
                 isSelected ? 'border-2 border-primary' : 'border border-gray-200'
               }`}
               onClick={() => onSelectInsurance(insurance.id)}
@@ -151,8 +151,8 @@ const InsuranceOptions = ({
                 </div>
               )}
               
-              <div className="p-6 pb-2">
-                 <div className="space-y-2 mb-4">
+              <div className="p-6 pb-2 flex-1 flex flex-col">
+                 <div className="space-y-2 mb-4 flex-1">
                    {(!displayData.firstLineText || !displayData.formattedSecondLineHtml) && (
                      <h3 className="text-lg font-bold text-black">
                        {displayData.title}
@@ -180,7 +180,7 @@ const InsuranceOptions = ({
                     )}
                  </div>
 
-                <div className="pt-2 border-t border-gray-300">
+                <div className="pt-2 border-t border-gray-300 mt-auto">
                    <div className="flex justify-center items-center mb-2">
                      <span className="text-lg font-bold text-black">
                        ${displayData.dailyRate.toFixed(2)} PER DAY
