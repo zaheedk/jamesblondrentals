@@ -534,7 +534,7 @@ const SearchForm = () => {
 
             <Button
               type="submit"
-              className="w-full"
+              className="w-full bg-yellow-400 hover:bg-yellow-500 text-black"
               disabled={isLoading || !pickupLocation || !pickupDate || !dropoffDate || !pickupTime || !dropoffTime}
             >
               {isLoading ? "Searching..." : "Search Available Vehicles"}
