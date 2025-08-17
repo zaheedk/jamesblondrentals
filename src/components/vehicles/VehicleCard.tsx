@@ -165,7 +165,11 @@ const VehicleCard = ({
                 <span>2</span>
               </div>
               <div className="flex items-center gap-1">
-                <Cog className="w-4 h-4" />
+                <img 
+                  src="/lovable-uploads/0fd94953-7416-45c5-aede-329013f1b4f7.png" 
+                  alt="Transmission" 
+                  className="w-4 h-4 brightness-0"
+                />
                 <span>A</span>
               </div>
             </div>
