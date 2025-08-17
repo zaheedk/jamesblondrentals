@@ -118,6 +118,7 @@ export interface RCMAvailableCar {
   vehiclecategoryid: number | string;
   vehiclecategorytypeid: number | string;
   vehiclecategory: string;
+  categoryfriendlydescription?: string;
   vehicledescription1: string;
   vehicledescription2: string;
   vehicledescription3: string;

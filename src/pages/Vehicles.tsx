@@ -229,7 +229,8 @@ const Vehicles = () => {
           rateperiod: rateperiod,
           ratesubtotal: ratesubtotal,
           avgrate: car.avgrate || 0,
-          discounteddailyrate: car.discounteddailyrate || 0
+          discounteddailyrate: car.discounteddailyrate || 0,
+          categoryfriendlydescription: car.categoryfriendlydescription
         };
       });
       
