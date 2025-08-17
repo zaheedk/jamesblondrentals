@@ -95,11 +95,6 @@ const SearchForm = () => {
       apiSecret: import.meta.env.VITE_RCM_API_SECRET,
       apiUrl: "/api/rcm/booking/v3.2",
       useMockData: false
-    }).catch(error => {
-      console.error('Failed to initialize API:', error);
-      toast.error("Error connecting to booking system", {
-        description: "Please check your internet connection or try again later"
-      });
     });
   }, [initializeApi]);
 

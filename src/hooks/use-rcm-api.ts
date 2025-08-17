@@ -28,7 +28,9 @@ export function useRcmApi() {
       ...config,
       apiSecret: config.apiSecret ? '******' : undefined
     });
-    return queryClient.invalidateQueries({ queryKey: ['locations'] });
+    queryClient.invalidateQueries({ queryKey: ['locations'] });
+    queryClient.invalidateQueries({ queryKey: ['vehicleCategories'] });
+    return Promise.resolve();
   }, [queryClient]);
   
   const useLocations = () => {
@@ -191,8 +193,8 @@ export function useRcmApi() {
           throw error;
         }
       },
-      staleTime: 5 * 60 * 1000,
-      refetchOnWindowFocus: false,
+      staleTime: 30 * 1000, // Reduced to 30 seconds
+      refetchOnWindowFocus: true, // Enable refetch on focus
       retry: API_RETRY_CONFIG.retries,
       retryDelay: API_RETRY_CONFIG.retryDelay,
     });
