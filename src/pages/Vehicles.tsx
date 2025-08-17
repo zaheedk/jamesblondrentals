@@ -203,6 +203,7 @@ const Vehicles = () => {
           model: cleanCategoryName.split(' ').slice(1).join(' ') || "Vehicle",
           year: new Date().getFullYear(),
           type: cleanCategoryName as VehicleType,
+          vehicleCategoryTypeId: Number(car.vehiclecategorytypeid), // Add the numeric category type ID
           price: totalPrice,
           priceUnit: "total",
           seats: car.numberofadults + car.numberofchildren,

@@ -185,7 +185,7 @@ export default function BookingForm({
     saveBookingData({
       vehicleId: vehicle.id.toString(),
       vehicleName: `${vehicle.make} ${vehicle.model}`,
-      vehicleCategoryTypeId: vehicle.type?.toString() || '0',
+      vehicleCategoryTypeId: vehicle.vehicleCategoryTypeId?.toString() || '1',
       pickupLocationId,
       pickupLocationName,
       dropoffLocationId,

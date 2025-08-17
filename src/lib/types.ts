@@ -6,6 +6,7 @@ export interface Vehicle {
   model: string;
   year: number;
   type: VehicleType;
+  vehicleCategoryTypeId?: number; // Add the numeric category type ID
   price: number | string;
   priceUnit: "day" | "hour" | "week" | "total";
   seats: number;
