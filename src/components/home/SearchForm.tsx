@@ -114,12 +114,12 @@ const SearchForm = () => {
       try {
         // Set default location
         if (!pickupLocation && locations.length > 0) {
-          // Look for Kelston first
-          const kelstonLocation = locations.find(loc => 
-            loc.name.toLowerCase().includes('kelston')
+          // Look for West Auckland first
+          const westAucklandLocation = locations.find(loc => 
+            loc.name.toLowerCase().includes('west auckland')
           );
           
-          const defaultLocation = kelstonLocation || 
+          const defaultLocation = westAucklandLocation || 
                                   locations.find(loc => String(loc.id) === DEFAULT_LOCATION_ID) || 
                                   locations[0];
           
