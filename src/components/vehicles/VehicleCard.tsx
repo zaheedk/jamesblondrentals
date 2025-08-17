@@ -148,9 +148,7 @@ const VehicleCard = ({
               {vehicle.type} {vehicle.type === "suv" ? "SUV" : ""}
             </h3>
             <p className="text-sm text-muted-foreground mt-1">
-              {(vehicle as any).categoryfriendlydescription || 
-               (vehicle as any).friendlydescription || 
-               `${vehicle.make} ${vehicle.model} or similar`}
+              {(vehicle as any).categoryfriendlydescription}
             </p>
           </div>
           
