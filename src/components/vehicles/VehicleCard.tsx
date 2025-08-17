@@ -147,9 +147,9 @@ const VehicleCard = ({
             <h3 className="font-bold text-lg capitalize">
               {vehicle.type} {vehicle.type === "suv" ? "SUV" : ""}
             </h3>
-            {vehicle.description && (
+            {(vehicle as any).categoryfriendlydescription && (
               <p className="text-sm text-muted-foreground mt-1">
-                {stripHtmlTags(vehicle.description)}
+                {stripHtmlTags((vehicle as any).categoryfriendlydescription)}
               </p>
             )}
           </div>
