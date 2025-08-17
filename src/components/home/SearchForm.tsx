@@ -114,10 +114,14 @@ const SearchForm = () => {
       try {
         // Set default location
         if (!pickupLocation && locations.length > 0) {
+          console.log("Available locations:", locations.map(loc => ({id: loc.id, name: loc.name})));
+          
           // Look for West Auckland first
           const westAucklandLocation = locations.find(loc => 
             loc.name.toLowerCase().includes('west auckland')
           );
+          
+          console.log("Found West Auckland location:", westAucklandLocation);
           
           const defaultLocation = westAucklandLocation || 
                                   locations.find(loc => String(loc.id) === DEFAULT_LOCATION_ID) || 

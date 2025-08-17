@@ -88,19 +88,19 @@ export const LocationSelect = ({
         // If not Wellington or Wellington location not found, fallback to previous logic
         console.log("Using default location fallback logic");
         
-        // Prioritize Kelston location
-        const kelstonLocation = locations.find(loc => 
-          loc.name.toLowerCase().includes('kelston')
+        // Prioritize West Auckland location
+        const westAucklandLocation = locations.find(loc => 
+          loc.name.toLowerCase().includes('west auckland')
         );
         
-        if (kelstonLocation) {
-          console.log(`Setting default location to Kelston:`, kelstonLocation.id);
-          onValueChange(String(kelstonLocation.id));
+        if (westAucklandLocation) {
+          console.log(`Setting default location to West Auckland:`, westAucklandLocation.id);
+          onValueChange(String(westAucklandLocation.id));
           return;
         } 
         
-        // Use Auckland Airport as fallback only if Kelston isn't found
-        console.log("Kelston location not found, looking for alternatives");
+        // Use Auckland Airport as fallback only if West Auckland isn't found
+        console.log("West Auckland location not found, looking for alternatives");
         const aucklandAirportLocation = locations.find(loc => 
           loc.name.toLowerCase().includes('auckland') && 
           loc.name.toLowerCase().includes('airport')
