@@ -11,6 +11,7 @@ import { differenceInDays, parseISO, isValid, format, addDays } from "date-fns";
 import PaymentStatusHeader from "@/components/payment/PaymentStatusHeader";
 import RentalDetails from "@/components/payment/RentalDetails";
 import PaymentSummary from "@/components/payment/PaymentSummary";
+import BookingExperienceSurvey from "@/components/feedback/BookingExperienceSurvey";
 
 interface BookingDetails {
   vehicleName: string;
@@ -70,6 +71,7 @@ const PaymentSuccess = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [rentalDuration, setRentalDuration] = useState<number>(0);
   const [imageError, setImageError] = useState<boolean>(false);
+  const [showSurvey, setShowSurvey] = useState<boolean>(false);
 
   const handleImageError = () => {
     console.log("Error loading vehicle image");
@@ -306,6 +308,8 @@ const PaymentSuccess = () => {
           toast.success("Payment Successful", {
             description: "Your booking has been confirmed."
           });
+          // Show survey after successful payment
+          setTimeout(() => setShowSurvey(true), 2000);
         }
 
         const sessionData = getBookingData();
@@ -950,6 +954,11 @@ const PaymentSuccess = () => {
           </>
         )}
       </div>
+      
+      <BookingExperienceSurvey 
+        isOpen={showSurvey}
+        onClose={() => setShowSurvey(false)}
+      />
     </div>
   );
 };
