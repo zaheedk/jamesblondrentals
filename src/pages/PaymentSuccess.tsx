@@ -958,6 +958,7 @@ const PaymentSuccess = () => {
       <BookingExperienceSurvey 
         isOpen={showSurvey}
         onClose={() => setShowSurvey(false)}
+        bookingReference={bookingDetails?.reservationRef}
       />
     </div>
   );

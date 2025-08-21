@@ -2,16 +2,19 @@ import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 interface BookingExperienceSurveyProps {
   isOpen: boolean;
   onClose: () => void;
+  bookingReference?: string;
 }
 
-const BookingExperienceSurvey = ({ isOpen, onClose }: BookingExperienceSurveyProps) => {
+const BookingExperienceSurvey = ({ isOpen, onClose, bookingReference }: BookingExperienceSurveyProps) => {
   const [rating, setRating] = useState<number | null>(null);
   const [currentStep, setCurrentStep] = useState(1);
-  const [feedback, setFeedback] = useState('');
+  const [suggestions, setSuggestions] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
   if (!isOpen) return null;
@@ -22,17 +25,41 @@ const BookingExperienceSurvey = ({ isOpen, onClose }: BookingExperienceSurveyPro
     }
   };
 
-  const handleFinalSubmit = () => {
-    // Here you could send the feedback to your analytics or database
-    console.log('Survey submitted:', { rating, feedback });
+  const handleFinalSubmit = async () => {
+    if (!rating) return;
     
-    toast({
-      title: "Thank you!",
-      description: "Your feedback helps us improve our service.",
-      duration: 3000,
-    });
-    
-    onClose();
+    setIsSubmitting(true);
+    try {
+      const { error } = await supabase.functions.invoke('submit-feedback', {
+        body: {
+          rating,
+          suggestions,
+          bookingReference,
+        },
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      toast({
+        title: "Thank you!",
+        description: "Your feedback helps us improve our service.",
+        duration: 3000,
+      });
+      
+      onClose();
+    } catch (error) {
+      console.error('Error submitting feedback:', error);
+      toast({
+        title: "Error",
+        description: "Failed to submit feedback. Please try again.",
+        variant: "destructive",
+        duration: 3000,
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -93,16 +120,16 @@ const BookingExperienceSurvey = ({ isOpen, onClose }: BookingExperienceSurveyPro
         {currentStep === 2 && (
           <div className="text-center">
             <h2 className="text-xl font-semibold mb-4">
-              2/2 - Any additional feedback?
+              2/2 - How could we improve your experience with our booking process?
             </h2>
             <p className="text-gray-300 mb-6">
-              Help us understand what we can improve.
+              This will help us improve your experience.
             </p>
 
             <textarea
-              value={feedback}
-              onChange={(e) => setFeedback(e.target.value)}
-              placeholder="Optional: Share your thoughts about the booking process..."
+              value={suggestions}
+              onChange={(e) => setSuggestions(e.target.value)}
+              placeholder="Type your suggestions here..."
               className="w-full h-24 p-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 resize-none"
             />
 
@@ -121,9 +148,10 @@ const BookingExperienceSurvey = ({ isOpen, onClose }: BookingExperienceSurveyPro
               </Button>
               <Button
                 onClick={handleFinalSubmit}
+                disabled={isSubmitting}
                 className="flex-1 bg-blue-600 hover:bg-blue-700"
               >
-                Submit
+                {isSubmitting ? "Submitting..." : "Submit"}
               </Button>
             </div>
           </div>
