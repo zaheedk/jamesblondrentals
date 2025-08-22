@@ -3,6 +3,7 @@ import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { getBookingData } from '@/lib/booking-session';
 
 interface BookingExperienceSurveyProps {
   isOpen: boolean;
@@ -30,11 +31,18 @@ const BookingExperienceSurvey = ({ isOpen, onClose, bookingReference }: BookingE
     
     setIsSubmitting(true);
     try {
+      // Get customer details from booking session
+      const bookingData = getBookingData();
+      const customerName = bookingData ? `${bookingData.customerFirstName || ''} ${bookingData.customerLastName || ''}`.trim() : '';
+      const customerEmail = bookingData?.customerEmail || '';
+
       const { error } = await supabase.functions.invoke('submit-feedback', {
         body: {
           rating,
           suggestions,
           bookingReference,
+          customerName,
+          customerEmail,
         },
       });
 

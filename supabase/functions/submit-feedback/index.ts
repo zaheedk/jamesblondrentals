@@ -11,6 +11,8 @@ interface FeedbackRequest {
   rating: number;
   suggestions?: string;
   bookingReference?: string;
+  customerName?: string;
+  customerEmail?: string;
 }
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
@@ -39,7 +41,7 @@ serve(async (req) => {
     }
 
     // Parse request body
-    const { rating, suggestions, bookingReference }: FeedbackRequest = await req.json();
+    const { rating, suggestions, bookingReference, customerName, customerEmail }: FeedbackRequest = await req.json();
 
     // Validate rating
     if (!rating || rating < 1 || rating > 5) {
@@ -66,6 +68,8 @@ serve(async (req) => {
         suggestions,
         user_id: userId,
         booking_reference: bookingReference,
+        customer_name: customerName,
+        customer_email: customerEmail,
       })
       .select()
       .single();
@@ -86,6 +90,8 @@ serve(async (req) => {
       const emailContent = `
         <h2>New Booking Experience Feedback Received</h2>
         <p><strong>Rating:</strong> ${rating}/5</p>
+        <p><strong>Customer Name:</strong> ${customerName || 'N/A'}</p>
+        <p><strong>Customer Email:</strong> ${customerEmail || 'N/A'}</p>
         <p><strong>Booking Reference:</strong> ${bookingReference || 'N/A'}</p>
         <p><strong>User ID:</strong> ${userId || 'Guest'}</p>
         <p><strong>Suggestions:</strong></p>

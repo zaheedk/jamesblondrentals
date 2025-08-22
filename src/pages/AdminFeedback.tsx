@@ -14,6 +14,8 @@ interface FeedbackEntry {
   booking_reference: string | null;
   created_at: string;
   user_id: string | null;
+  customer_name: string | null;
+  customer_email: string | null;
 }
 
 const AdminFeedback = () => {
@@ -152,6 +154,18 @@ const AdminFeedback = () => {
                         <Calendar className="h-3 w-3" />
                         {format(new Date(item.created_at), 'MMM d, yyyy at h:mm a')}
                       </div>
+                      {item.customer_name && (
+                        <div className="flex items-center gap-1">
+                          <User className="h-3 w-3" />
+                          {item.customer_name}
+                        </div>
+                      )}
+                      {item.customer_email && (
+                        <div className="flex items-center gap-1">
+                          <span>📧</span>
+                          {item.customer_email}
+                        </div>
+                      )}
                       {item.booking_reference && (
                         <div className="flex items-center gap-1">
                           <FileText className="h-3 w-3" />
