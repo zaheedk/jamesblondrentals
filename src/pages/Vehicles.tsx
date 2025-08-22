@@ -304,7 +304,7 @@ const Vehicles = () => {
     
     if (selectedVehicleTypes.length > 0) {
       results = results.filter(vehicle => 
-        selectedVehicleTypes.includes(String(vehicle.type))
+        selectedVehicleTypes.includes(String(vehicle.vehicleCategoryTypeId))
       );
     }
     
