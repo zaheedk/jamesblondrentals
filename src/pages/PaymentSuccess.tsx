@@ -506,7 +506,10 @@ const PaymentSuccess = () => {
                 customerPhone: customerInfo.phone || customerInfo.mobile || sessionData?.customerPhone || ''
               };
               
-              setBookingDetails(convertedDetails);
+              setBookingDetails(prevState => ({
+                ...convertedDetails,
+                vehicleImage: convertedDetails.vehicleImage || prevState?.vehicleImage || ''
+              }));
               
               if (convertedDetails.pickupDate && convertedDetails.dropoffDate) {
                 const days = calculateRentalDuration(convertedDetails.pickupDate, convertedDetails.dropoffDate);

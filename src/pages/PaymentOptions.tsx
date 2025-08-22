@@ -232,8 +232,12 @@ const PaymentOptions = () => {
         // Update session storage with the correct vehicle category information
         updateBookingData(updatedBookingData);
         
-        // Update local state
-        setBookingDetails(prev => ({ ...prev, ...updatedBookingData }));
+        // Update local state, preserving existing vehicle image if new one is not provided
+        setBookingDetails(prev => ({ 
+          ...prev, 
+          ...updatedBookingData,
+          vehicleImage: updatedBookingData.vehicleImage || prev?.vehicleImage
+        }));
         
         if (bookingInfo.totalcost) {
           const totalCostValue = Number(bookingInfo.totalcost);
