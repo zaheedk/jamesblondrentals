@@ -164,8 +164,18 @@ const CustomerDetails = () => {
           reservationNo: response.results?.reservationno?.toString() || ""
         });
         
+        // Also save customer details to session storage for feedback system
+        const customerData = updateBookingData({
+          customerFirstName: formData.firstName,
+          customerLastName: formData.lastName,
+          customerEmail: formData.email,
+          customerPhone: formData.phone,
+          customerDob: formatDateForApi(formData.dateOfBirth || "")
+        });
+        
         // Log all the booking reference data
         console.log('Updated booking data with references:', updatedData);
+        console.log('Updated booking data with customer info:', customerData);
         
         toast.success("Booking created successfully", {
           description: response.confirmationNumber 
