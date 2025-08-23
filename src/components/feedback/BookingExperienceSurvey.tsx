@@ -33,8 +33,12 @@ const BookingExperienceSurvey = ({ isOpen, onClose, bookingReference }: BookingE
     try {
       // Get customer details from booking session
       const bookingData = getBookingData();
+      console.log('Booking data for feedback:', bookingData);
+      
       const customerName = bookingData ? `${bookingData.customerFirstName || ''} ${bookingData.customerLastName || ''}`.trim() : '';
       const customerEmail = bookingData?.customerEmail || '';
+      
+      console.log('Customer details for feedback:', { customerName, customerEmail });
 
       const { error } = await supabase.functions.invoke('submit-feedback', {
         body: {
