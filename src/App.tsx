@@ -113,6 +113,7 @@ import SingleCabUteDieselDetail from "./pages/SingleCabUteDieselDetail";
 
 import FleetCargoVans from "@/pages/FleetCargoVans";
 import WinzQuotes from "./pages/WinzQuotes";
+import CourierOperatorDeals from "./pages/CourierOperatorDeals";
 
 const App = () => {
   const [queryClient] = useState(() => new QueryClient());
@@ -188,6 +189,7 @@ const App = () => {
                 <Route path="/people-mover" element={<PeopleMover />} />
                 <Route path="/hot-deals/mobil-fuel-discount" element={<MobilFuelDiscount />} />
                 <Route path="/hot-deals/midweek-truck-van-discount" element={<MidweekTruckVanDiscount />} />
+                <Route path="/hot-deals/courier-operator-deals" element={<CourierOperatorDeals />} />
                 <Route path="/hot-deals" element={<HotDeals />} />
                 <Route path="/car-rental-wellington-new-zealand" element={<CarRentalWellington />} />
                 <Route path="/car-rental-auckland-airport-new-zealand" element={<CarRentalAucklandAirport />} />

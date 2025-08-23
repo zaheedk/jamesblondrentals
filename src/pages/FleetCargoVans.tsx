@@ -280,6 +280,21 @@ const FleetCargoVans = () => {
         </div>
       </section>
 
+      {/* Special Offer Banner */}
+      <section className="mb-8">
+        <div className="bg-primary/10 border border-primary/20 rounded-lg p-6">
+          <div className="text-center">
+            <h3 className="text-xl font-semibold mb-2 text-primary">Special Offer for Courier Operators</h3>
+            <p className="text-gray-600 mb-4">
+              Professional rates starting from $89/day for 5+ day rentals with insurance included
+            </p>
+            <Button asChild variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
+              <Link to="/hot-deals/courier-operator-deals">View Courier Rates</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="text-center bg-primary p-8 rounded-lg text-white">
         <h2 className="text-3xl font-bold mb-4">Ready to Book Your Cargo Van?</h2>

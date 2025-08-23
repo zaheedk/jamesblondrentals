@@ -103,6 +103,44 @@ const HotDeals = () => {
                 </CardContent>
               </Card>
 
+              {/* Courier Operator Deals */}
+              <Card className="relative overflow-hidden">
+                <div className="absolute top-4 right-4 bg-destructive text-destructive-foreground px-3 py-1 rounded-full text-sm font-semibold">
+                  FROM $89
+                </div>
+                <CardHeader>
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="bg-primary/10 p-3 rounded-full">
+                      <Truck className="h-8 w-8 text-primary" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-2xl">Courier Operator Special</CardTitle>
+                      <CardDescription className="text-lg">Professional rates for 5+ day rentals</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <Calendar className="h-4 w-4" />
+                      <span>5+ day minimum rental</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <Truck className="h-4 w-4" />
+                      <span>Vans from $89, Trucks from $119 per day</span>
+                    </div>
+                    <p className="text-muted-foreground">
+                      Special pricing for professional courier operators including Easy Rider 2000 excess insurance. Perfect for delivery services and logistics companies.
+                    </p>
+                    <Button asChild className="w-full">
+                      <Link to="/hot-deals/courier-operator-deals">
+                        View Courier Rates <ArrowRight className="ml-2 h-4 w-4" />
+                      </Link>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
             </div>
           </div>
         </div>
