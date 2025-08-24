@@ -44,7 +44,7 @@ const CourierOperatorDeals = () => {
               
               {/* Standard Cargo Van */}
               <Card className="relative overflow-hidden">
-                <div className="absolute top-4 right-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-semibold">
+                <div className="absolute top-3 right-3 bg-primary text-primary-foreground px-2 py-1 rounded-full text-xs font-semibold z-10">
                   SPECIAL
                 </div>
                 <CardHeader>
@@ -88,7 +88,7 @@ const CourierOperatorDeals = () => {
 
               {/* Jumbo Van */}
               <Card className="relative overflow-hidden border-primary shadow-lg">
-                <div className="absolute top-4 right-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-semibold">
+                <div className="absolute top-3 right-3 bg-primary text-primary-foreground px-2 py-1 rounded-full text-xs font-semibold z-10">
                   POPULAR
                 </div>
                 <CardHeader>
@@ -132,7 +132,7 @@ const CourierOperatorDeals = () => {
 
               {/* 2 Ton Truck */}
               <Card className="relative overflow-hidden">
-                <div className="absolute top-4 right-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-semibold">
+                <div className="absolute top-3 right-3 bg-primary text-primary-foreground px-2 py-1 rounded-full text-xs font-semibold z-10">
                   HEAVY DUTY
                 </div>
                 <CardHeader>
