@@ -179,9 +179,39 @@
   
   <!-- Special Pages -->
   <url>
+    <loc>https://jamesblond.co.nz/hot-deals</loc>
+    <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
     <loc>https://jamesblond.co.nz/hot-deals/mobil-fuel-discount</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/hot-deals/midweek-truck-van-discount</loc>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/hot-deals/courier-operator-deals</loc>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/people-mover</loc>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/winz-quotes</loc>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/blog</loc>
+    <priority>0.7</priority>
+    <changefreq>weekly</changefreq>
   </url>
   
   <!-- Fleet Pages -->
@@ -422,12 +452,7 @@
     <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://jamesblond.co.nz/insurance-selection</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/extras-selection</loc>
+    <loc>https://jamesblond.co.nz/insurance-and-extras</loc>
     <priority>0.7</priority>
     <changefreq>monthly</changefreq>
   </url>
