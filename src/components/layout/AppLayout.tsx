@@ -2,6 +2,7 @@
 import React from 'react';
 import Navbar from './Navbar';
 import Footer from './Footer';
+import ChatWidget from '@/components/chat/ChatWidget';
 
 const AppLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -11,6 +12,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
         {children}
       </main>
       <Footer />
+      <ChatWidget />
     </div>
   );
 };
