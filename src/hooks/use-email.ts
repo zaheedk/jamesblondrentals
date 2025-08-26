@@ -9,9 +9,11 @@ export interface EmailData {
 }
 
 export const useEmail = () => {
-  const sendEmail = async (emailData: EmailData) => {
+  const sendEmail = async (emailData: EmailData, useSmtp: boolean = false) => {
     try {
-      const { data, error } = await supabase.functions.invoke('send-email', {
+      const functionName = useSmtp ? 'send-email-smtp' : 'send-email'
+      
+      const { data, error } = await supabase.functions.invoke(functionName, {
         body: emailData
       })
 
@@ -25,6 +27,10 @@ export const useEmail = () => {
       console.error('Failed to send email:', error)
       throw error
     }
+  }
+
+  const sendEmailViaSmtp = async (emailData: EmailData) => {
+    return sendEmail(emailData, true)
   }
 
   const sendSignupWelcomeEmail = async (email: string, userName?: string) => {
@@ -99,6 +105,7 @@ export const useEmail = () => {
 
   return {
     sendEmail,
+    sendEmailViaSmtp,
     sendSignupWelcomeEmail,
     sendPasswordResetEmail,
     sendBookingConfirmationEmail
