@@ -23,7 +23,19 @@ import { useAuth } from "@/contexts/AuthContext";
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
-  const { user, signOut } = useAuth();
+  
+  // Add error boundary for auth context
+  let user = null;
+  let signOut = () => Promise.resolve();
+  
+  try {
+    const auth = useAuth();
+    user = auth.user;
+    signOut = auth.signOut;
+  } catch (error) {
+    console.warn('AuthContext not available in Navbar:', error);
+  }
+  
   const navigate = useNavigate();
 
   const toggleMobileMenu = () => {
