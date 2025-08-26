@@ -55,7 +55,8 @@ const ChatWidget = () => {
         content: msg.content
       }));
 
-      console.log('Sending chat request:', { message: messageToSend, conversation });
+      console.log('🚀 About to send chat request:', { message: messageToSend, conversation });
+      console.log('🔧 Supabase client ready:', !!supabase);
 
       const { data, error } = await supabase.functions.invoke('chat', {
         body: {
@@ -64,7 +65,7 @@ const ChatWidget = () => {
         }
       });
 
-      console.log('Chat response received:', { data, error });
+      console.log('📨 Chat response received:', { data, error });
 
       if (error) {
         console.error('Supabase function error:', error);
