@@ -44,6 +44,7 @@ const ChatWidget = () => {
     };
 
     setMessages(prev => [...prev, userMessage]);
+    const messageToSend = inputMessage;
     setInputMessage('');
     setIsLoading(true);
 
@@ -54,15 +55,25 @@ const ChatWidget = () => {
         content: msg.content
       }));
 
+      console.log('Sending chat request:', { message: messageToSend, conversation });
+
       const { data, error } = await supabase.functions.invoke('chat', {
         body: {
-          message: inputMessage,
+          message: messageToSend,
           conversation
         }
       });
 
+      console.log('Chat response received:', { data, error });
+
       if (error) {
+        console.error('Supabase function error:', error);
         throw error;
+      }
+
+      if (!data || !data.reply) {
+        console.error('Invalid response data:', data);
+        throw new Error('Invalid response from chat service');
       }
 
       const assistantMessage: Message = {
@@ -79,6 +90,14 @@ const ChatWidget = () => {
         description: "Sorry, I'm having trouble responding. Please try again.",
         variant: "destructive",
       });
+      
+      // Add error message to chat
+      const errorMessage: Message = {
+        role: 'assistant',
+        content: 'Sorry, I\'m experiencing technical difficulties. Please try again in a moment.',
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
     }
