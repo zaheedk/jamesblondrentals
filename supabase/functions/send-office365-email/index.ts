@@ -44,20 +44,47 @@ async function sendSMTPEmail(
     const encoder = new TextEncoder()
     const decoder = new TextDecoder()
 
-    async function writeCommand(command: string) {
-      const maskedCommand = command.includes(password) ? command.replace(password, '***') : command
-      console.log('SMTP SEND:', maskedCommand)
-      await conn.write(encoder.encode(command + '\r\n'))
-    }
+  async function writeCommand(command: string) {
+    const maskedCommand = command.includes(password) ? command.replace(password, '***') : command
+    console.log('SMTP SEND:', maskedCommand)
+    await conn.write(encoder.encode(command + '\r\n'))
+    
+    // Add a small delay to ensure command is sent
+    await new Promise(resolve => setTimeout(resolve, 100))
+  }
 
-    async function readResponse(): Promise<string> {
-      const buffer = new Uint8Array(2048)
-      const n = await conn.read(buffer)
-      if (!n) throw new Error('No response from server')
-      const response = decoder.decode(buffer.subarray(0, n))
-      console.log('SMTP RECV:', response.trim())
-      return response.trim()
+  async function readResponse(): Promise<string> {
+    const buffer = new Uint8Array(2048)
+    let response = ''
+    let attempts = 0
+    
+    while (attempts < 10) {
+      try {
+        const n = await conn.read(buffer)
+        if (n && n > 0) {
+          const chunk = decoder.decode(buffer.subarray(0, n))
+          response += chunk
+          
+          // Check if we have a complete response (ends with \r\n)
+          if (response.includes('\r\n')) {
+            break
+          }
+        }
+        attempts++
+        await new Promise(resolve => setTimeout(resolve, 50))
+      } catch (error) {
+        console.error('Error reading response:', error)
+        break
+      }
     }
+    
+    if (!response) {
+      throw new Error('No response from SMTP server')
+    }
+    
+    console.log('SMTP RECV:', response.trim())
+    return response.trim()
+  }
 
     // Read initial greeting
     const greeting = await readResponse()
@@ -116,19 +143,27 @@ async function sendSMTPEmail(
       throw new Error(`DATA command failed: ${dataResponse}`)
     }
 
-    // Email content
+    // Email content - properly formatted
+    const boundary = `boundary_${Date.now()}_${Math.random().toString(36)}`
     const emailContent = [
       `From: ${fromName} <${username}>`,
       `To: ${to}`,
       `Subject: ${subject}`,
-      `Content-Type: text/html; charset=UTF-8`,
       `MIME-Version: 1.0`,
+      `Content-Type: multipart/alternative; boundary="${boundary}"`,
       `Date: ${new Date().toUTCString()}`,
       '',
-      html
-    ].join('\r\n') + '\r\n.'
+      `--${boundary}`,
+      `Content-Type: text/html; charset=UTF-8`,
+      `Content-Transfer-Encoding: 8bit`,
+      '',
+      html,
+      '',
+      `--${boundary}--`
+    ].join('\r\n')
 
     await writeCommand(emailContent)
+    await writeCommand('.')  // End data with a single dot
     const sendResponse = await readResponse()
     if (!sendResponse.startsWith('250')) {
       throw new Error(`Email sending failed: ${sendResponse}`)
