@@ -67,16 +67,11 @@ const ContactForm = () => {
         <p><em>This message was sent via the Auckland contact form on jamesblond.co.nz</em></p>
       `;
 
-      const { error } = await supabase.functions.invoke('send-email', {
+      const { error } = await supabase.functions.invoke('send-postmark-email', {
         body: {
           to: 'info@jamesblond.co.nz',
           subject: `Contact Form: ${values.name} - ${values.email}`,
-          html: emailHtml,
-          type: 'contact-form',
-          from_name: values.name,
-          from_email: values.email,
-          phone: values.phone,
-          message: values.message
+          html: emailHtml
         }
       });
 

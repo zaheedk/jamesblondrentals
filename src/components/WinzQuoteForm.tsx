@@ -90,21 +90,11 @@ const WinzQuoteForm = () => {
         <p style="color: #666; font-style: italic;">This WINZ quote request was submitted via jamesblond.co.nz</p>
       `;
 
-      const { error } = await supabase.functions.invoke('send-office365-email', {
+      const { error } = await supabase.functions.invoke('send-postmark-email', {
         body: {
           to: 'info@jamesblond.co.nz',
           subject: `WINZ Quote Request: ${values.firstName} ${values.lastName} - ${values.winzClientNumber}`,
-          html: emailHtml,
-          from_name: `${values.firstName} ${values.lastName}`,
-          from_email: values.email,
-          phone: values.phone,
-          winz_client_number: values.winzClientNumber,
-          vehicle_type: values.vehicleType,
-          pickup_date: values.pickupDate,
-          return_date: values.returnDate,
-          pickup_location: values.pickupLocation,
-          return_location: values.returnLocation,
-          additional_requirements: values.additionalRequirements
+          html: emailHtml
         }
       });
 
