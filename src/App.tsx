@@ -114,7 +114,7 @@ import SingleCabUteDieselDetail from "./pages/SingleCabUteDieselDetail";
 import FleetCargoVans from "@/pages/FleetCargoVans";
 import WinzQuotes from "./pages/WinzQuotes";
 import CourierOperatorDeals from "./pages/CourierOperatorDeals";
-import EmailTest from "./pages/EmailTest";
+
 
 const App = () => {
   const [queryClient] = useState(() => new QueryClient());
@@ -262,7 +262,7 @@ const App = () => {
                 <Route path="/contact/wellington" element={<ContactWellington />} />
                 <Route path="/contact/christchurch" element={<ContactChristchurch />} />
                 <Route path="/winz-quotes" element={<WinzQuotes />} />
-                <Route path="/email-test" element={<EmailTest />} />
+                
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
