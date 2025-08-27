@@ -50,40 +50,85 @@ serve(async (req) => {
       )
     }
 
-    // Use Microsoft Graph API for reliable email sending
-    const accessTokenResponse = await fetch('https://login.microsoftonline.com/common/oauth2/v2.0/token', {
+    // Send email using Office 365 SMTP via Microsoft Graph API
+    const graphApiUrl = 'https://graph.microsoft.com/v1.0/me/sendMail'
+    
+    const emailMessage = {
+      message: {
+        subject: emailData.subject,
+        body: {
+          contentType: 'HTML',
+          content: emailData.html
+        },
+        toRecipients: [
+          {
+            emailAddress: {
+              address: emailData.to
+            }
+          }
+        ],
+        from: {
+          emailAddress: {
+            address: smtpUsername,
+            name: emailData.from_name || 'WINZ Quote System'
+          }
+        }
+      }
+    }
+
+    // Try to get OAuth token first
+    const tokenResponse = await fetch('https://login.microsoftonline.com/common/oauth2/v2.0/token', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: new URLSearchParams({
         grant_type: 'client_credentials',
-        client_id: smtpUsername.split('@')[0], // Extract client ID from username if needed
-        client_secret: smtpPassword,
+        client_id: Deno.env.get("OFFICE365_CLIENT_ID") || '',
+        client_secret: Deno.env.get("OFFICE365_CLIENT_SECRET") || '',
         scope: 'https://graph.microsoft.com/.default'
       })
     })
 
-    // If Graph API approach doesn't work, fall back to a simple logging approach
-    // that can be monitored and processed
-    console.log('Office 365 Email Details:', JSON.stringify({
-      timestamp: new Date().toISOString(),
-      to: emailData.to,
-      subject: emailData.subject,
-      from_name: emailData.from_name,
-      from_email: emailData.from_email,
-      phone: emailData.phone,
-      winz_client_number: emailData.winz_client_number,
-      vehicle_type: emailData.vehicle_type,
-      pickup_date: emailData.pickup_date,
-      return_date: emailData.return_date,
-      pickup_location: emailData.pickup_location,
-      return_location: emailData.return_location,
-      additional_requirements: emailData.additional_requirements,
-      html_content: emailData.html
-    }, null, 2))
+    if (tokenResponse.ok) {
+      const tokenData = await tokenResponse.json()
+      
+      const sendResponse = await fetch(graphApiUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${tokenData.access_token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(emailMessage)
+      })
 
-    console.log('Email processing completed for Office 365')
+      if (sendResponse.ok) {
+        console.log('Email sent successfully via Microsoft Graph API')
+      } else {
+        console.error('Failed to send email via Graph API:', await sendResponse.text())
+        throw new Error('Failed to send email via Microsoft Graph API')
+      }
+    } else {
+      // Fallback: Log the email for manual processing
+      console.log('Office 365 OAuth failed, logging email for manual processing:', JSON.stringify({
+        timestamp: new Date().toISOString(),
+        to: emailData.to,
+        subject: emailData.subject,
+        from_name: emailData.from_name,
+        from_email: emailData.from_email,
+        phone: emailData.phone,
+        winz_client_number: emailData.winz_client_number,
+        vehicle_type: emailData.vehicle_type,
+        pickup_date: emailData.pickup_date,
+        return_date: emailData.return_date,
+        pickup_location: emailData.pickup_location,
+        return_location: emailData.return_location,
+        additional_requirements: emailData.additional_requirements,
+        html_content: emailData.html
+      }, null, 2))
+      
+      console.log('Email logged for manual processing - please check Office 365 credentials')
+    }
 
     return new Response(
       JSON.stringify({ 
