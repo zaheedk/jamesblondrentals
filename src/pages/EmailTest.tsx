@@ -54,13 +54,12 @@ const EmailTest = () => {
         </div>
       `;
 
-      const { data, error } = await supabase.functions.invoke('send-office365-email', {
+      const { data, error } = await supabase.functions.invoke('send-postmark-email', {
         body: {
           to: formData.to,
           subject: formData.subject,
           html: emailHtml,
-          from_name: 'Email Test System',
-          from_email: 'test@jamesblond.co.nz'
+          from: 'info@jamesblond.co.nz'
         }
       });
 
@@ -74,7 +73,7 @@ const EmailTest = () => {
       if (data?.success) {
         toast({
           title: "✅ Email Sent Successfully!",
-          description: `Test email sent to ${formData.to} via Office 365 SMTP`,
+          description: `Test email sent to ${formData.to} via Postmark`,
         });
       } else {
         throw new Error(data?.error || 'Email sending failed');
@@ -96,11 +95,17 @@ const EmailTest = () => {
     setIsLoading(true);
     
     try {
-      const { data, error } = await supabase.functions.invoke('send-office365-email', {
+      const { data, error } = await supabase.functions.invoke('send-postmark-email', {
         body: {
           to: "zaheedk@gmail.com",
-          subject: "TEST_EMAIL", // This triggers the built-in test email
-          html: "quick test"
+          subject: "Quick Test from Postmark",
+          html: `
+            <h1>Quick Test Email</h1>
+            <p>This is a quick test from the James Blond website via Postmark.</p>
+            <p><strong>Timestamp:</strong> ${new Date().toISOString()}</p>
+            <p>If you receive this, Postmark is working correctly!</p>
+          `,
+          from: 'info@jamesblond.co.nz'
         }
       });
 
@@ -133,7 +138,7 @@ const EmailTest = () => {
         <div className="text-center mb-8">
           <Mail className="w-16 h-16 mx-auto mb-4 text-blue-600" />
           <h1 className="text-4xl font-bold text-gray-900 mb-2">Email Test System</h1>
-          <p className="text-gray-600">Test Office 365 SMTP email functionality</p>
+          <p className="text-gray-600">Test Postmark email functionality</p>
         </div>
 
         <div className="space-y-6">
@@ -147,7 +152,7 @@ const EmailTest = () => {
             </CardHeader>
             <CardContent>
               <p className="text-green-700 mb-4">
-                Send a pre-configured test email to zaheedk@gmail.com to verify SMTP setup.
+                Send a pre-configured test email to zaheedk@gmail.com to verify Postmark setup.
               </p>
               <Button 
                 onClick={sendQuickTest}
@@ -238,10 +243,10 @@ const EmailTest = () => {
             <CardContent className="pt-6">
               <h3 className="font-semibold text-blue-800 mb-2">How it works:</h3>
               <ul className="text-blue-700 space-y-1 text-sm">
-                <li>• Uses your Office 365 SMTP credentials</li>
-                <li>• Connects to smtp.office365.com:587</li>
-                <li>• Sends via TLS encrypted connection</li>
-                <li>• Check the browser console for detailed SMTP logs</li>
+                <li>• Uses Postmark transactional email service</li>
+                <li>• Sends via Postmark's reliable API</li>
+                <li>• High deliverability and detailed tracking</li>
+                <li>• Check the browser console for API response logs</li>
                 <li>• Check the edge function logs for server-side details</li>
               </ul>
             </CardContent>
