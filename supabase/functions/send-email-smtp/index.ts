@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts"
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -57,28 +56,49 @@ serve(async (req) => {
 
     console.log(`Connecting to SMTP server: ${smtpHost}:${smtpPort}`)
 
-    // Initialize SMTP client
-    const client = new SMTPClient({
-      connection: {
-        hostname: smtpHost,
-        port: smtpPort,
-        tls: true,
-        auth: {
-          username: smtpUsername,
-          password: smtpPassword,
-        },
-      },
+    // Use a simpler SMTP approach with plain TCP connection
+    const connection = await Deno.connect({
+      hostname: smtpHost,
+      port: smtpPort,
     })
 
-    // Send email
-    await client.send({
-      from: smtpUsername, // Use the configured Office 365 email as sender
-      to: emailData.to,
-      subject: emailData.subject,
-      html: emailData.html,
-    })
+    const encoder = new TextEncoder()
+    const decoder = new TextDecoder()
 
-    await client.close()
+    // Basic SMTP protocol implementation
+    async function readResponse(): Promise<string> {
+      const buffer = new Uint8Array(1024)
+      const n = await connection.read(buffer)
+      return decoder.decode(buffer.subarray(0, n || 0))
+    }
+
+    async function sendCommand(command: string): Promise<string> {
+      await connection.write(encoder.encode(command + "\r\n"))
+      return await readResponse()
+    }
+
+    // SMTP conversation
+    await readResponse() // Read initial server greeting
+    await sendCommand("EHLO localhost")
+    await sendCommand("STARTTLS")
+    
+    // After STARTTLS, we need to upgrade to TLS
+    const tlsConnection = await Deno.startTls(connection, { hostname: smtpHost })
+    
+    await sendCommand("EHLO localhost")
+    await sendCommand(`AUTH LOGIN`)
+    await sendCommand(btoa(smtpUsername))
+    await sendCommand(btoa(smtpPassword))
+    await sendCommand(`MAIL FROM:<${smtpUsername}>`)
+    await sendCommand(`RCPT TO:<${emailData.to}>`)
+    await sendCommand("DATA")
+    
+    const emailContent = `From: ${smtpUsername}\r\nTo: ${emailData.to}\r\nSubject: ${emailData.subject}\r\nContent-Type: text/html; charset=UTF-8\r\n\r\n${emailData.html}\r\n.\r\n`
+    await tlsConnection.write(encoder.encode(emailContent))
+    await readResponse()
+    
+    await sendCommand("QUIT")
+    tlsConnection.close()
 
     console.log('Email sent successfully via SMTP')
 
