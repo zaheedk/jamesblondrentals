@@ -75,7 +75,6 @@ serve(async (req) => {
       from: smtpUsername, // Use the configured Office 365 email as sender
       to: emailData.to,
       subject: emailData.subject,
-      content: emailData.html,
       html: emailData.html,
     })
 
