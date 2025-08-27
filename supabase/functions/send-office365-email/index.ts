@@ -189,24 +189,30 @@ serve(async (req) => {
 
     console.log(`Connecting to SMTP: ${smtpHost}:${smtpPort} with user: ${smtpUsername}`)
 
+    // Override with test email if requested
+    const isTestEmail = emailData.subject === "TEST_EMAIL"
+    const testTo = "zaheedk@gmail.com"
+    const testSubject = "Hello from Office 365 SMTP"
+    const testHtml = "<h1>Hello!</h1><p>This is a test email sent via Office 365 SMTP from your website.</p><p>If you receive this, the SMTP setup is working correctly!</p>"
+
     try {
       await sendSMTPEmail(
         smtpHost,
         smtpPort,
         smtpUsername,
         smtpPassword,
-        emailData.to,
-        emailData.subject,
-        emailData.html,
-        emailData.from_name || 'WINZ Quote System'
+        isTestEmail ? testTo : emailData.to,
+        isTestEmail ? testSubject : emailData.subject,
+        isTestEmail ? testHtml : emailData.html,
+        isTestEmail ? 'Test Email System' : (emailData.from_name || 'WINZ Quote System')
       )
 
-      console.log(`Email sent successfully to ${emailData.to}`)
+      console.log(`Email sent successfully to ${isTestEmail ? testTo : emailData.to}`)
 
       return new Response(
         JSON.stringify({ 
           success: true, 
-          message: 'Email sent successfully via Office 365 SMTP',
+          message: isTestEmail ? 'Test email sent successfully via Office 365 SMTP' : 'Email sent successfully via Office 365 SMTP',
           timestamp: new Date().toISOString()
         }),
         {
