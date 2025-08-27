@@ -51,70 +51,71 @@ const WinzQuoteForm = () => {
     setIsSubmitting(true);
 
     try {
-      // You'll need to replace this with your actual Zapier webhook URL
-      const zapierWebhookUrl = "YOUR_ZAPIER_WEBHOOK_URL_HERE";
-      
-      console.log("Triggering Zapier webhook:", zapierWebhookUrl);
+      const emailHtml = `
+        <h2>New WINZ Quote Request</h2>
+        <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <h3 style="margin-top: 0; color: #333;">Customer Information</h3>
+          <p><strong>Name:</strong> ${values.firstName} ${values.lastName}</p>
+          <p><strong>Email:</strong> ${values.email}</p>
+          <p><strong>Phone:</strong> ${values.phone}</p>
+          <p><strong>WINZ Client Number:</strong> ${values.winzClientNumber}</p>
+        </div>
+        
+        <div style="background-color: #f0f8ff; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <h3 style="margin-top: 0; color: #333;">Rental Details</h3>
+          <p><strong>Vehicle Type:</strong> ${values.vehicleType}</p>
+          <p><strong>Pickup Date:</strong> ${values.pickupDate}</p>
+          <p><strong>Return Date:</strong> ${values.returnDate}</p>
+          <p><strong>From Address:</strong> ${values.pickupLocation}</p>
+          <p><strong>To Address:</strong> ${values.returnLocation}</p>
+        </div>
+        
+        ${values.additionalRequirements ? `
+        <div style="background-color: #fff8f0; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <h3 style="margin-top: 0; color: #333;">Additional Requirements</h3>
+          <p>${values.additionalRequirements.replace(/\n/g, '<br>')}</p>
+        </div>
+        ` : ''}
+        
+        <div style="background-color: #e8f5e8; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <h3 style="margin-top: 0; color: #333;">Quote Includes</h3>
+          <ul>
+            <li>Best Insurance for vehicles</li>
+            <li>Comprehensive Insurance for trailers</li>
+            <li>$1000 bond for vehicle or trailer hire</li>
+          </ul>
+        </div>
+        
+        <hr style="margin: 30px 0;">
+        <p style="color: #666; font-style: italic;">This WINZ quote request was submitted via jamesblond.co.nz</p>
+      `;
 
-      const webhookData = {
-        timestamp: new Date().toISOString(),
-        triggered_from: window.location.origin,
-        customer_name: `${values.firstName} ${values.lastName}`,
-        customer_email: values.email,
-        customer_phone: values.phone,
-        winz_client_number: values.winzClientNumber,
-        vehicle_type: values.vehicleType,
-        pickup_date: values.pickupDate,
-        return_date: values.returnDate,
-        pickup_location: values.pickupLocation,
-        return_location: values.returnLocation,
-        additional_requirements: values.additionalRequirements || 'None specified',
-        email_subject: `WINZ Quote Request: ${values.firstName} ${values.lastName} - ${values.winzClientNumber}`,
-        email_body: `
-New WINZ Quote Request
-
-Customer Information:
-- Name: ${values.firstName} ${values.lastName}
-- Email: ${values.email}
-- Phone: ${values.phone}
-- WINZ Client Number: ${values.winzClientNumber}
-
-Rental Details:
-- Vehicle Type: ${values.vehicleType}
-- Pickup Date: ${values.pickupDate}
-- Return Date: ${values.returnDate}
-- From Address: ${values.pickupLocation}
-- To Address: ${values.returnLocation}
-
-${values.additionalRequirements ? `Additional Requirements: ${values.additionalRequirements}` : ''}
-
-Quote Includes:
-- Best Insurance for vehicles
-- Comprehensive Insurance for trailers
-- $1000 bond for vehicle or trailer hire
-
-This WINZ quote request was submitted via jamesblond.co.nz
-        `.trim()
-      };
-
-      if (zapierWebhookUrl === "YOUR_ZAPIER_WEBHOOK_URL_HERE") {
-        toast.error("Please configure your Zapier webhook URL first. Contact support for setup instructions.");
-        return;
-      }
-
-      const response = await fetch(zapierWebhookUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        mode: "no-cors",
-        body: JSON.stringify(webhookData),
+      const { error } = await supabase.functions.invoke('send-office365-email', {
+        body: {
+          to: 'info@jamesblond.co.nz',
+          subject: `WINZ Quote Request: ${values.firstName} ${values.lastName} - ${values.winzClientNumber}`,
+          html: emailHtml,
+          from_name: `${values.firstName} ${values.lastName}`,
+          from_email: values.email,
+          phone: values.phone,
+          winz_client_number: values.winzClientNumber,
+          vehicle_type: values.vehicleType,
+          pickup_date: values.pickupDate,
+          return_date: values.returnDate,
+          pickup_location: values.pickupLocation,
+          return_location: values.returnLocation,
+          additional_requirements: values.additionalRequirements
+        }
       });
 
-      toast.success("Thank you! Your WINZ quote request has been submitted. We'll send you a detailed quote via email within 24 hours.");
+      if (error) {
+        throw error;
+      }
+
+      toast.success("Thank you! Your WINZ quote request has been submitted successfully. We'll send you a detailed quote via email within 24 hours.");
       form.reset();
     } catch (error) {
-      console.error('Error submitting request:', error);
+      console.error('Error sending WINZ quote request:', error);
       toast.error("Sorry, there was an error submitting your request. Please try again or call us directly at 0800 525 663.");
     } finally {
       setIsSubmitting(false);
