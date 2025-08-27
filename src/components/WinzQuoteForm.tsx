@@ -90,27 +90,75 @@ const WinzQuoteForm = () => {
         <p style="color: #666; font-style: italic;">This WINZ quote request was submitted via jamesblond.co.nz</p>
       `;
 
-      const { error } = await supabase.functions.invoke('send-email-smtp', {
-        body: {
-          to: 'info@jamesblond.co.nz',
-          subject: `WINZ Quote Request: ${values.firstName} ${values.lastName} - ${values.winzClientNumber}`,
-          html: emailHtml,
-          type: 'winz-quote',
-          from_name: `${values.firstName} ${values.lastName}`,
-          from_email: values.email,
-          phone: values.phone,
-          winz_client_number: values.winzClientNumber,
-          vehicle_type: values.vehicleType,
-          pickup_date: values.pickupDate,
-          return_date: values.returnDate,
-          pickup_location: values.pickupLocation,
-          return_location: values.returnLocation,
-          additional_requirements: values.additionalRequirements
-        }
-      });
+      // Try SMTP first, fallback to regular email if it fails
+      let emailResult;
+      try {
+        emailResult = await supabase.functions.invoke('send-email-smtp', {
+          body: {
+            to: 'info@jamesblond.co.nz',
+            subject: `WINZ Quote Request: ${values.firstName} ${values.lastName} - ${values.winzClientNumber}`,
+            html: emailHtml,
+            type: 'winz-quote',
+            from_name: `${values.firstName} ${values.lastName}`,
+            from_email: values.email,
+            phone: values.phone,
+            winz_client_number: values.winzClientNumber,
+            vehicle_type: values.vehicleType,
+            pickup_date: values.pickupDate,
+            return_date: values.returnDate,
+            pickup_location: values.pickupLocation,
+            return_location: values.returnLocation,
+            additional_requirements: values.additionalRequirements
+          }
+        });
 
-      if (error) {
-        throw error;
+        if (emailResult.error) {
+          console.warn('SMTP email failed, trying fallback:', emailResult.error);
+          // Fallback to regular email function
+          emailResult = await supabase.functions.invoke('send-email', {
+            body: {
+              to: 'info@jamesblond.co.nz',
+              subject: `WINZ Quote Request: ${values.firstName} ${values.lastName} - ${values.winzClientNumber}`,
+              html: emailHtml,
+              type: 'winz-quote',
+              from_name: `${values.firstName} ${values.lastName}`,
+              from_email: values.email,
+              phone: values.phone,
+              winz_client_number: values.winzClientNumber,
+              vehicle_type: values.vehicleType,
+              pickup_date: values.pickupDate,
+              return_date: values.returnDate,
+              pickup_location: values.pickupLocation,
+              return_location: values.returnLocation,
+              additional_requirements: values.additionalRequirements
+            }
+          });
+        }
+      } catch (smtpError) {
+        console.warn('SMTP email failed with exception, trying fallback:', smtpError);
+        // Fallback to regular email function
+        emailResult = await supabase.functions.invoke('send-email', {
+          body: {
+            to: 'info@jamesblond.co.nz',
+            subject: `WINZ Quote Request: ${values.firstName} ${values.lastName} - ${values.winzClientNumber}`,
+            html: emailHtml,
+            type: 'winz-quote',
+            from_name: `${values.firstName} ${values.lastName}`,
+            from_email: values.email,
+            phone: values.phone,
+            winz_client_number: values.winzClientNumber,
+            vehicle_type: values.vehicleType,
+            pickup_date: values.pickupDate,
+            return_date: values.returnDate,
+            pickup_location: values.pickupLocation,
+            return_location: values.returnLocation,
+            additional_requirements: values.additionalRequirements
+          }
+        });
+      }
+
+      if (emailResult.error) {
+        throw emailResult.error;
       }
 
       toast.success("Thank you! Your WINZ quote request has been submitted successfully. We'll send you a detailed quote via email within 24 hours.");
