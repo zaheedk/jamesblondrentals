@@ -202,9 +202,6 @@ const Navbar = () => {
             <Link to="/winz-quotes" className="text-gray-600 hover:text-primary transition-colors font-bold">
               WINZ Quotes
             </Link>
-            <Link to="/email-test" className="text-gray-600 hover:text-primary transition-colors font-bold">
-              Email Test
-            </Link>
             
             {/* Add account navigation */}
             {user ? (
@@ -372,9 +369,6 @@ const Navbar = () => {
               </Link>
               <Link to="/winz-quotes" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>
                 WINZ Quotes
-              </Link>
-              <Link to="/email-test" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>
-                Email Test
               </Link>
 
               {/* Mobile auth buttons */}
