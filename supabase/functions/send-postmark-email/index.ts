@@ -30,10 +30,11 @@ serve(async (req) => {
     }
 
     const emailData = {
-      From: from || "info@jamesblond.co.nz",
+      From: "zaheed@jamesblond.co.nz",
       To: to,
       Subject: subject,
       HtmlBody: html,
+      TextBody: "Email sent from James Blond Car Rentals website",
       MessageStream: "outbound"
     }
 
