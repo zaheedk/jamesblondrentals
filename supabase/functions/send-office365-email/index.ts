@@ -31,60 +31,90 @@ async function sendSMTPEmail(
   html: string,
   fromName: string
 ) {
-  const conn = await Deno.connectTls({
-    hostname: host,
-    port: port,
-  })
-
-  const encoder = new TextEncoder()
-  const decoder = new TextDecoder()
-
-  async function writeCommand(command: string) {
-    console.log('SMTP SEND:', command.replace(password, '***'))
-    await conn.write(encoder.encode(command + '\r\n'))
-  }
-
-  async function readResponse(): Promise<string> {
-    const buffer = new Uint8Array(1024)
-    const n = await conn.read(buffer)
-    const response = decoder.decode(buffer.subarray(0, n || 0))
-    console.log('SMTP RECV:', response.trim())
-    return response
-  }
-
+  console.log(`Attempting SMTP connection to ${host}:${port}`)
+  
+  let conn;
   try {
-    // Read greeting
-    await readResponse()
+    // Use the correct Office 365 SMTP settings
+    conn = await Deno.connectTls({
+      hostname: host,
+      port: port,
+    })
+
+    const encoder = new TextEncoder()
+    const decoder = new TextDecoder()
+
+    async function writeCommand(command: string) {
+      const maskedCommand = command.includes(password) ? command.replace(password, '***') : command
+      console.log('SMTP SEND:', maskedCommand)
+      await conn.write(encoder.encode(command + '\r\n'))
+    }
+
+    async function readResponse(): Promise<string> {
+      const buffer = new Uint8Array(2048)
+      const n = await conn.read(buffer)
+      if (!n) throw new Error('No response from server')
+      const response = decoder.decode(buffer.subarray(0, n))
+      console.log('SMTP RECV:', response.trim())
+      return response.trim()
+    }
+
+    // Read initial greeting
+    const greeting = await readResponse()
+    if (!greeting.startsWith('220')) {
+      throw new Error(`Unexpected greeting: ${greeting}`)
+    }
 
     // EHLO
-    await writeCommand(`EHLO ${host}`)
-    await readResponse()
+    await writeCommand(`EHLO localhost`)
+    const ehloResponse = await readResponse()
+    if (!ehloResponse.startsWith('250')) {
+      throw new Error(`EHLO failed: ${ehloResponse}`)
+    }
 
-    // STARTTLS - not needed since we're already using TLS
-    
     // AUTH LOGIN
     await writeCommand('AUTH LOGIN')
-    await readResponse()
+    const authResponse = await readResponse()
+    if (!authResponse.startsWith('334')) {
+      throw new Error(`AUTH LOGIN failed: ${authResponse}`)
+    }
 
     // Username (base64)
     await writeCommand(btoa(username))
-    await readResponse()
+    const userResponse = await readResponse()
+    if (!userResponse.startsWith('334')) {
+      throw new Error(`Username auth failed: ${userResponse}`)
+    }
 
     // Password (base64)
     await writeCommand(btoa(password))
-    await readResponse()
+    const passResponse = await readResponse()
+    if (!passResponse.startsWith('235')) {
+      throw new Error(`Password auth failed: ${passResponse}`)
+    }
+
+    console.log('SMTP authentication successful')
 
     // MAIL FROM
     await writeCommand(`MAIL FROM:<${username}>`)
-    await readResponse()
+    const mailFromResponse = await readResponse()
+    if (!mailFromResponse.startsWith('250')) {
+      throw new Error(`MAIL FROM failed: ${mailFromResponse}`)
+    }
 
     // RCPT TO
     await writeCommand(`RCPT TO:<${to}>`)
-    await readResponse()
+    const rcptResponse = await readResponse()
+    if (!rcptResponse.startsWith('250')) {
+      throw new Error(`RCPT TO failed: ${rcptResponse}`)
+    }
 
     // DATA
     await writeCommand('DATA')
-    await readResponse()
+    const dataResponse = await readResponse()
+    if (!dataResponse.startsWith('354')) {
+      throw new Error(`DATA command failed: ${dataResponse}`)
+    }
 
     // Email content
     const emailContent = [
@@ -92,24 +122,37 @@ async function sendSMTPEmail(
       `To: ${to}`,
       `Subject: ${subject}`,
       `Content-Type: text/html; charset=UTF-8`,
+      `MIME-Version: 1.0`,
       `Date: ${new Date().toUTCString()}`,
       '',
-      html,
-      '.'
-    ].join('\r\n')
+      html
+    ].join('\r\n') + '\r\n.'
 
     await writeCommand(emailContent)
-    await readResponse()
+    const sendResponse = await readResponse()
+    if (!sendResponse.startsWith('250')) {
+      throw new Error(`Email sending failed: ${sendResponse}`)
+    }
+
+    console.log('Email sent successfully via SMTP')
 
     // QUIT
     await writeCommand('QUIT')
     await readResponse()
 
-    conn.close()
     return true
+
   } catch (error) {
-    conn.close()
+    console.error('SMTP Error details:', error)
     throw error
+  } finally {
+    if (conn) {
+      try {
+        conn.close()
+      } catch (closeError) {
+        console.error('Error closing connection:', closeError)
+      }
+    }
   }
 }
 
