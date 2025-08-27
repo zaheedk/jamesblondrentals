@@ -11,9 +11,9 @@ import { Loader2, Mail, Send } from "lucide-react";
 const EmailTest = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
-    to: "zaheedk@gmail.com",
+    to: "test@jamesblond.co.nz",
     subject: "Test Email from James Blond Website",
-    message: "Hello! This is a test email sent from the James Blond website using Office 365 SMTP. If you receive this, the email system is working correctly!"
+    message: "Hello! This is a test email sent from the James Blond website using Postmark. If you receive this, the email system is working correctly!"
   });
   const { toast } = useToast();
 
@@ -97,7 +97,7 @@ const EmailTest = () => {
     try {
       const { data, error } = await supabase.functions.invoke('send-postmark-email', {
         body: {
-          to: "zaheedk@gmail.com",
+          to: "test@jamesblond.co.nz",
           subject: "Quick Test from Postmark",
           html: `
             <h1>Quick Test Email</h1>
@@ -114,7 +114,7 @@ const EmailTest = () => {
       if (data?.success) {
         toast({
           title: "✅ Quick Test Email Sent!",
-          description: "Built-in test email sent to zaheedk@gmail.com",
+          description: "Built-in test email sent to test@jamesblond.co.nz",
         });
       } else {
         throw new Error(data?.error || 'Quick test failed');
@@ -152,7 +152,7 @@ const EmailTest = () => {
             </CardHeader>
             <CardContent>
               <p className="text-green-700 mb-4">
-                Send a pre-configured test email to zaheedk@gmail.com to verify Postmark setup.
+                Send a pre-configured test email to test@jamesblond.co.nz to verify Postmark setup.
               </p>
               <Button 
                 onClick={sendQuickTest}
@@ -241,11 +241,11 @@ const EmailTest = () => {
           {/* Info Card */}
           <Card className="border-blue-200 bg-blue-50">
             <CardContent className="pt-6">
-              <h3 className="font-semibold text-blue-800 mb-2">How it works:</h3>
+              <h3 className="font-semibold text-blue-800 mb-2">Important Notes:</h3>
               <ul className="text-blue-700 space-y-1 text-sm">
-                <li>• Uses Postmark transactional email service</li>
-                <li>• Sends via Postmark's reliable API</li>
-                <li>• High deliverability and detailed tracking</li>
+                <li>• Your Postmark account is pending approval</li>
+                <li>• Currently can only send to @jamesblond.co.nz addresses</li>
+                <li>• Once approved, you can send to any email address</li>
                 <li>• Check the browser console for API response logs</li>
                 <li>• Check the edge function logs for server-side details</li>
               </ul>
