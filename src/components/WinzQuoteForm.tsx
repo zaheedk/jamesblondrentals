@@ -90,7 +90,7 @@ const WinzQuoteForm = () => {
         <p style="color: #666; font-style: italic;">This WINZ quote request was submitted via jamesblond.co.nz</p>
       `;
 
-      const { error } = await supabase.functions.invoke('send-email-smtp', {
+      const { error } = await supabase.functions.invoke('send-email-webhook', {
         body: {
           to: 'info@jamesblond.co.nz',
           subject: `WINZ Quote Request: ${values.firstName} ${values.lastName} - ${values.winzClientNumber}`,
