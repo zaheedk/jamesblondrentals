@@ -54,12 +54,12 @@ const EmailTest = () => {
         </div>
       `;
 
-      const { data, error } = await supabase.functions.invoke('send-postmark-email', {
+      const { data, error } = await supabase.functions.invoke('send-email', {
         body: {
           to: formData.to,
           subject: formData.subject,
           html: emailHtml,
-          from: 'info@jamesblond.co.nz'
+          type: 'general'
         }
       });
 
@@ -73,7 +73,7 @@ const EmailTest = () => {
       if (data?.success) {
         toast({
           title: "✅ Email Sent Successfully!",
-          description: `Test email sent to ${formData.to} via Postmark`,
+          description: `Test email sent to ${formData.to} via Resend`,
         });
       } else {
         throw new Error(data?.error || 'Email sending failed');
@@ -95,17 +95,17 @@ const EmailTest = () => {
     setIsLoading(true);
     
     try {
-      const { data, error } = await supabase.functions.invoke('send-postmark-email', {
+      const { data, error } = await supabase.functions.invoke('send-email', {
         body: {
           to: "zaheed@jamesblond.co.nz",
-          subject: "Quick Test from Postmark",
+          subject: "Quick Test from Resend",
           html: `
             <h1>Quick Test Email</h1>
-            <p>This is a quick test from the James Blond website via Postmark.</p>
+            <p>This is a quick test from the James Blond website via Resend.</p>
             <p><strong>Timestamp:</strong> ${new Date().toISOString()}</p>
-            <p>If you receive this, Postmark is working correctly!</p>
+            <p>If you receive this, Resend is working correctly!</p>
           `,
-          from: 'info@jamesblond.co.nz'
+          type: 'general'
         }
       });
 
@@ -138,7 +138,7 @@ const EmailTest = () => {
         <div className="text-center mb-8">
           <Mail className="w-16 h-16 mx-auto mb-4 text-blue-600" />
           <h1 className="text-4xl font-bold text-gray-900 mb-2">Email Test System</h1>
-          <p className="text-gray-600">Test Postmark email functionality</p>
+          <p className="text-gray-600">Test Resend email functionality</p>
         </div>
 
         <div className="space-y-6">
