@@ -23,7 +23,6 @@ const winzQuoteFormSchema = z.object({
   pickupLocation: z.string().min(1, { message: "Please enter a pickup address." }),
   returnLocation: z.string().min(1, { message: "Please enter a return address." }),
   additionalRequirements: z.string().optional(),
-  zapierWebhookUrl: z.string().url({ message: "Please enter a valid Zapier webhook URL." }).min(1, { message: "Zapier webhook URL is required." }),
 });
 
 type WinzQuoteFormValues = z.infer<typeof winzQuoteFormSchema>;
@@ -45,7 +44,6 @@ const WinzQuoteForm = () => {
       pickupLocation: "",
       returnLocation: "",
       additionalRequirements: "",
-      zapierWebhookUrl: "",
     },
   });
 
@@ -53,7 +51,10 @@ const WinzQuoteForm = () => {
     setIsSubmitting(true);
 
     try {
-      console.log("Triggering Zapier webhook:", values.zapierWebhookUrl);
+      // You'll need to replace this with your actual Zapier webhook URL
+      const zapierWebhookUrl = "YOUR_ZAPIER_WEBHOOK_URL_HERE";
+      
+      console.log("Triggering Zapier webhook:", zapierWebhookUrl);
 
       const webhookData = {
         timestamp: new Date().toISOString(),
@@ -96,7 +97,12 @@ This WINZ quote request was submitted via jamesblond.co.nz
         `.trim()
       };
 
-      const response = await fetch(values.zapierWebhookUrl, {
+      if (zapierWebhookUrl === "YOUR_ZAPIER_WEBHOOK_URL_HERE") {
+        toast.error("Please configure your Zapier webhook URL first. Contact support for setup instructions.");
+        return;
+      }
+
+      const response = await fetch(zapierWebhookUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -105,12 +111,11 @@ This WINZ quote request was submitted via jamesblond.co.nz
         body: JSON.stringify(webhookData),
       });
 
-      // Since we're using no-cors, we won't get a proper response status
-      toast.success("Thank you! Your WINZ quote request has been sent to Zapier. We'll send you a detailed quote via email within 24 hours.");
+      toast.success("Thank you! Your WINZ quote request has been submitted. We'll send you a detailed quote via email within 24 hours.");
       form.reset();
     } catch (error) {
-      console.error('Error triggering Zapier webhook:', error);
-      toast.error("Sorry, there was an error submitting your request. Please check your Zapier webhook URL and try again.");
+      console.error('Error submitting request:', error);
+      toast.error("Sorry, there was an error submitting your request. Please try again or call us directly at 0800 525 663.");
     } finally {
       setIsSubmitting(false);
     }
@@ -310,26 +315,6 @@ This WINZ quote request was submitted via jamesblond.co.nz
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="zapierWebhookUrl"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Zapier Webhook URL *</FormLabel>
-                  <FormControl>
-                    <Input 
-                      type="url"
-                      placeholder="https://hooks.zapier.com/hooks/catch/..."
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                  <p className="text-sm text-muted-foreground mt-2">
-                    Create a Zap with a webhook trigger, then paste the webhook URL here. The webhook will send the quote data to your connected email service.
-                  </p>
-                </FormItem>
-              )}
-            />
 
             <Button type="submit" className="w-full" disabled={isSubmitting} size="lg">
               {isSubmitting ? "Submitting Request..." : "Request WINZ Quote"}
