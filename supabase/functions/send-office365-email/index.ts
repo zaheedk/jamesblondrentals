@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { Resend } from "npm:resend@2.0.0"
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -21,6 +22,8 @@ interface EmailRequest {
   additional_requirements?: string
 }
 
+const resend = new Resend(Deno.env.get("RESEND_API_KEY"))
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -30,20 +33,17 @@ serve(async (req) => {
   try {
     const emailData: EmailRequest = await req.json()
 
-    console.log(`Processing Office 365 email to ${emailData.to} with subject: ${emailData.subject}`)
+    console.log(`Sending email to ${emailData.to} with subject: ${emailData.subject}`)
 
-    // Get Office 365 credentials from environment
-    const smtpUsername = Deno.env.get("OFFICE365_SMTP_USERNAME")
-    const smtpPassword = Deno.env.get("OFFICE365_SMTP_PASSWORD")
-    const smtpHost = Deno.env.get("OFFICE365_SMTP_HOST") || "smtp-mail.outlook.com"
-    const smtpPort = parseInt(Deno.env.get("OFFICE365_SMTP_PORT") || "587")
+    // Get the reply-to email (Office 365 email for replies)
+    const replyToEmail = Deno.env.get("OFFICE365_SMTP_USERNAME") || "info@jamesblond.co.nz"
 
-    if (!smtpUsername || !smtpPassword) {
-      console.error('Office 365 SMTP credentials not configured')
+    if (!Deno.env.get("RESEND_API_KEY")) {
+      console.error('Resend API key not configured')
       return new Response(
         JSON.stringify({ 
           success: false, 
-          error: 'Office 365 SMTP credentials not configured' 
+          error: 'Email service not configured' 
         }),
         {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -52,87 +52,39 @@ serve(async (req) => {
       )
     }
 
-    console.log(`Using SMTP config: ${smtpHost}:${smtpPort} with user: ${smtpUsername}`)
+    console.log(`Sending via Resend with reply-to: ${replyToEmail}`)
 
-    // Use a more reliable approach - nodemailer-like implementation
-    try {
-      // Create the email message in RFC 2822 format
-      const emailMessage = [
-        `From: ${emailData.from_name || 'WINZ Quote System'} <${smtpUsername}>`,
-        `To: ${emailData.to}`,
-        `Subject: ${emailData.subject}`,
-        `Content-Type: text/html; charset=UTF-8`,
-        `Date: ${new Date().toUTCString()}`,
-        `Message-ID: <${Date.now()}.${Math.random().toString(36)}@jamesblond.co.nz>`,
-        '',
-        emailData.html
-      ].join('\r\n')
+    // Send email using Resend
+    const emailResponse = await resend.emails.send({
+      from: "WINZ Quotes <onboarding@resend.dev>",
+      to: [emailData.to],
+      reply_to: replyToEmail,
+      subject: emailData.subject,
+      html: emailData.html,
+    })
 
-      console.log('Email message prepared for SMTP delivery')
-      console.log('Message length:', emailMessage.length, 'characters')
+    console.log("Email sent successfully via Resend:", emailResponse)
 
-      // Use fetch to send via a more reliable SMTP service
-      // For now, we'll log the complete email for manual processing since direct SMTP is having issues
-      console.log('SMTP Direct connection failed, using fallback email logging:')
-      
-      const emailLog = {
+    return new Response(
+      JSON.stringify({ 
+        success: true, 
+        message: 'Email sent successfully',
         timestamp: new Date().toISOString(),
-        smtp_config: {
-          host: smtpHost,
-          port: smtpPort,
-          username: smtpUsername
-        },
-        email_details: {
-          to: emailData.to,
-          subject: emailData.subject,
-          from_name: emailData.from_name,
-          from_email: emailData.from_email,
-          phone: emailData.phone,
-          winz_client_number: emailData.winz_client_number,
-          vehicle_type: emailData.vehicle_type,
-          pickup_date: emailData.pickup_date,
-          return_date: emailData.return_date,
-          pickup_location: emailData.pickup_location,
-          return_location: emailData.return_location,
-          additional_requirements: emailData.additional_requirements
-        },
-        message_rfc2822: emailMessage
+        messageId: emailResponse.data?.id
+      }),
+      {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200,
       }
-
-      console.log('COMPLETE EMAIL READY FOR MANUAL PROCESSING:', JSON.stringify(emailLog, null, 2))
-      
-      console.log('=== EMAIL CONTENT FOR COPY/PASTE ===')
-      console.log('TO:', emailData.to)
-      console.log('SUBJECT:', emailData.subject)
-      console.log('BODY:')
-      console.log(emailData.html)
-      console.log('=== END EMAIL CONTENT ===')
-
-      return new Response(
-        JSON.stringify({ 
-          success: true, 
-          message: 'Email processed and logged for manual delivery',
-          timestamp: new Date().toISOString(),
-          note: 'Email details have been logged for manual processing due to SMTP connection issues'
-        }),
-        {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          status: 200,
-        }
-      )
-
-    } catch (processingError) {
-      console.error('Email processing error:', processingError)
-      throw new Error(`Email processing failed: ${processingError.message}`)
-    }
+    )
 
   } catch (error) {
-    console.error('Error in Office 365 email function:', error)
+    console.error('Error sending email:', error)
     
     return new Response(
       JSON.stringify({ 
         success: false, 
-        error: error.message || 'Failed to process Office 365 email' 
+        error: error.message || 'Failed to send email' 
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
