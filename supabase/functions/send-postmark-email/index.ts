@@ -48,9 +48,19 @@ serve(async (req) => {
     })
 
     if (!response.ok) {
-      const errorText = await response.text()
-      console.error(`Postmark API error (${response.status}):`, errorText)
-      throw new Error(`Failed to send email: ${response.status} - ${errorText}`)
+      const errorData = await response.json()
+      console.error(`Postmark API error (${response.status}):`, JSON.stringify(errorData, null, 2))
+      
+      let errorMessage = `Failed to send email: ${response.status}`
+      if (errorData.ErrorCode === 412) {
+        errorMessage = "Your Postmark account is pending approval. You can only send emails to addresses on the same domain as your sender address."
+      } else if (errorData.ErrorCode === 300) {
+        errorMessage = "Your domain needs to be verified in Postmark. Please verify your domain in the Postmark dashboard."
+      } else if (errorData.Message) {
+        errorMessage = errorData.Message
+      }
+      
+      throw new Error(errorMessage)
     }
 
     const result = await response.json()
