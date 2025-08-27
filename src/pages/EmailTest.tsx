@@ -11,7 +11,7 @@ import { Loader2, Mail, Send } from "lucide-react";
 const EmailTest = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
-    to: "test@jamesblond.co.nz",
+    to: "zaheed@jamesblond.co.nz",
     subject: "Test Email from James Blond Website",
     message: "Hello! This is a test email sent from the James Blond website using Postmark. If you receive this, the email system is working correctly!"
   });
@@ -97,7 +97,7 @@ const EmailTest = () => {
     try {
       const { data, error } = await supabase.functions.invoke('send-postmark-email', {
         body: {
-          to: "test@jamesblond.co.nz",
+          to: "zaheed@jamesblond.co.nz",
           subject: "Quick Test from Postmark",
           html: `
             <h1>Quick Test Email</h1>
@@ -114,7 +114,7 @@ const EmailTest = () => {
       if (data?.success) {
         toast({
           title: "✅ Quick Test Email Sent!",
-          description: "Built-in test email sent to test@jamesblond.co.nz",
+          description: "Built-in test email sent to zaheed@jamesblond.co.nz",
         });
       } else {
         throw new Error(data?.error || 'Quick test failed');
@@ -152,7 +152,7 @@ const EmailTest = () => {
             </CardHeader>
             <CardContent>
               <p className="text-green-700 mb-4">
-                Send a pre-configured test email to test@jamesblond.co.nz to verify Postmark setup.
+                Send a pre-configured test email to zaheed@jamesblond.co.nz to verify Postmark setup.
               </p>
               <Button 
                 onClick={sendQuickTest}
