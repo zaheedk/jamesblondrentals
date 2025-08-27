@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { SmtpClient } from "https://deno.land/x/smtp@v0.7.0/mod.ts"
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -35,6 +36,8 @@ serve(async (req) => {
     // Get Office 365 credentials from environment
     const smtpUsername = Deno.env.get("OFFICE365_SMTP_USERNAME")
     const smtpPassword = Deno.env.get("OFFICE365_SMTP_PASSWORD")
+    const smtpHost = Deno.env.get("OFFICE365_SMTP_HOST") || "smtp-mail.outlook.com"
+    const smtpPort = parseInt(Deno.env.get("OFFICE365_SMTP_PORT") || "587")
 
     if (!smtpUsername || !smtpPassword) {
       console.error('Office 365 SMTP credentials not configured')
@@ -50,65 +53,90 @@ serve(async (req) => {
       )
     }
 
-    // Get additional SMTP settings
-    const smtpHost = Deno.env.get("OFFICE365_SMTP_HOST") || "smtp.office365.com"
-    const smtpPort = parseInt(Deno.env.get("OFFICE365_SMTP_PORT") || "587")
+    console.log(`Connecting to SMTP: ${smtpHost}:${smtpPort} with user: ${smtpUsername}`)
 
-    console.log(`Using SMTP: ${smtpHost}:${smtpPort} with user: ${smtpUsername}`)
+    // Create SMTP client
+    const client = new SmtpClient()
 
-    // Use basic SMTP with Office 365 - simulation for now since Deno doesn't have built-in SMTP
-    // In a real implementation, you would use an SMTP client library
-    
-    // Create email body in proper format
-    const emailBody = `From: ${emailData.from_name || 'WINZ Quote System'} <${smtpUsername}>
-To: ${emailData.to}
-Subject: ${emailData.subject}
-Content-Type: text/html; charset=UTF-8
+    try {
+      // Connect to SMTP server
+      await client.connectTLS({
+        hostname: smtpHost,
+        port: smtpPort,
+      })
 
-${emailData.html}`
+      // Authenticate
+      await client.ehlo({
+        hostname: "localhost",
+      })
 
-    console.log('Simulating SMTP send with the following details:')
-    console.log('SMTP Host:', smtpHost)
-    console.log('SMTP Port:', smtpPort)
-    console.log('Username:', smtpUsername)
-    console.log('To:', emailData.to)
-    console.log('Subject:', emailData.subject)
-    console.log('Email body prepared for SMTP sending')
+      await client.authLogin({
+        username: smtpUsername,
+        password: smtpPassword,
+      })
 
-    // For now, log the email details for manual processing
-    // In production, you would implement actual SMTP sending here
-    console.log('Email ready for SMTP delivery:', JSON.stringify({
-      timestamp: new Date().toISOString(),
-      smtp_host: smtpHost,
-      smtp_port: smtpPort,
-      smtp_user: smtpUsername,
-      to: emailData.to,
-      subject: emailData.subject,
-      from_name: emailData.from_name,
-      from_email: emailData.from_email,
-      phone: emailData.phone,
-      winz_client_number: emailData.winz_client_number,
-      vehicle_type: emailData.vehicle_type,
-      pickup_date: emailData.pickup_date,
-      return_date: emailData.return_date,
-      pickup_location: emailData.pickup_location,
-      return_location: emailData.return_location,
-      additional_requirements: emailData.additional_requirements,
-    }, null, 2))
+      console.log('SMTP authentication successful')
 
-    console.log('Email processed successfully via Office 365 SMTP (simulated)')
+      // Send email
+      await client.send({
+        from: smtpUsername,
+        to: emailData.to,
+        subject: emailData.subject,
+        content: emailData.html,
+        html: emailData.html,
+      })
 
-    return new Response(
-      JSON.stringify({ 
-        success: true, 
-        message: 'Email processed successfully via Office 365',
-        timestamp: new Date().toISOString()
-      }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200,
+      console.log(`Email sent successfully to ${emailData.to}`)
+
+      // Close connection
+      await client.close()
+
+      return new Response(
+        JSON.stringify({ 
+          success: true, 
+          message: 'Email sent successfully via Office 365 SMTP',
+          timestamp: new Date().toISOString()
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200,
+        }
+      )
+
+    } catch (smtpError) {
+      console.error('SMTP Error:', smtpError)
+      
+      // Try to close connection if it's open
+      try {
+        await client.close()
+      } catch (closeError) {
+        console.error('Error closing SMTP connection:', closeError)
       }
-    )
+
+      // Fallback: Log email details for manual processing
+      console.log('SMTP failed, logging email details:', JSON.stringify({
+        timestamp: new Date().toISOString(),
+        smtp_host: smtpHost,
+        smtp_port: smtpPort,
+        smtp_user: smtpUsername,
+        to: emailData.to,
+        subject: emailData.subject,
+        from_name: emailData.from_name,
+        from_email: emailData.from_email,
+        phone: emailData.phone,
+        winz_client_number: emailData.winz_client_number,
+        vehicle_type: emailData.vehicle_type,
+        pickup_date: emailData.pickup_date,
+        return_date: emailData.return_date,
+        pickup_location: emailData.pickup_location,
+        return_location: emailData.return_location,
+        additional_requirements: emailData.additional_requirements,
+        html_content: emailData.html,
+        error: smtpError.message
+      }, null, 2))
+
+      throw new Error(`SMTP sending failed: ${smtpError.message}`)
+    }
 
   } catch (error) {
     console.error('Error processing Office 365 email:', error)
