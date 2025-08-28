@@ -95,6 +95,132 @@ export type Database = {
         }
         Relationships: []
       }
+      bookings: {
+        Row: {
+          booking_reference: string | null
+          booking_status: string | null
+          created_at: string
+          customer_address: string | null
+          customer_age: number | null
+          customer_email: string | null
+          customer_first_name: string | null
+          customer_last_name: string | null
+          customer_license_number: string | null
+          customer_phone: string | null
+          daily_rate: number | null
+          dropoff_date: string
+          dropoff_location_id: string | null
+          dropoff_location_name: string | null
+          dropoff_time: string
+          extras_total: number | null
+          id: string
+          insurance_options: Json | null
+          insurance_total: number | null
+          notes: string | null
+          payment_intent_id: string | null
+          payment_method: string | null
+          payment_status: string | null
+          pickup_date: string
+          pickup_location_id: string | null
+          pickup_location_name: string | null
+          pickup_time: string
+          reservation_reference: string | null
+          selected_extras: Json | null
+          special_requirements: string | null
+          total_amount: number | null
+          total_days: number
+          updated_at: string
+          user_id: string | null
+          vehicle_category: string | null
+          vehicle_id: string | null
+          vehicle_name: string | null
+          vehicle_total: number | null
+          vehicle_type: string | null
+        }
+        Insert: {
+          booking_reference?: string | null
+          booking_status?: string | null
+          created_at?: string
+          customer_address?: string | null
+          customer_age?: number | null
+          customer_email?: string | null
+          customer_first_name?: string | null
+          customer_last_name?: string | null
+          customer_license_number?: string | null
+          customer_phone?: string | null
+          daily_rate?: number | null
+          dropoff_date: string
+          dropoff_location_id?: string | null
+          dropoff_location_name?: string | null
+          dropoff_time: string
+          extras_total?: number | null
+          id?: string
+          insurance_options?: Json | null
+          insurance_total?: number | null
+          notes?: string | null
+          payment_intent_id?: string | null
+          payment_method?: string | null
+          payment_status?: string | null
+          pickup_date: string
+          pickup_location_id?: string | null
+          pickup_location_name?: string | null
+          pickup_time: string
+          reservation_reference?: string | null
+          selected_extras?: Json | null
+          special_requirements?: string | null
+          total_amount?: number | null
+          total_days: number
+          updated_at?: string
+          user_id?: string | null
+          vehicle_category?: string | null
+          vehicle_id?: string | null
+          vehicle_name?: string | null
+          vehicle_total?: number | null
+          vehicle_type?: string | null
+        }
+        Update: {
+          booking_reference?: string | null
+          booking_status?: string | null
+          created_at?: string
+          customer_address?: string | null
+          customer_age?: number | null
+          customer_email?: string | null
+          customer_first_name?: string | null
+          customer_last_name?: string | null
+          customer_license_number?: string | null
+          customer_phone?: string | null
+          daily_rate?: number | null
+          dropoff_date?: string
+          dropoff_location_id?: string | null
+          dropoff_location_name?: string | null
+          dropoff_time?: string
+          extras_total?: number | null
+          id?: string
+          insurance_options?: Json | null
+          insurance_total?: number | null
+          notes?: string | null
+          payment_intent_id?: string | null
+          payment_method?: string | null
+          payment_status?: string | null
+          pickup_date?: string
+          pickup_location_id?: string | null
+          pickup_location_name?: string | null
+          pickup_time?: string
+          reservation_reference?: string | null
+          selected_extras?: Json | null
+          special_requirements?: string | null
+          total_amount?: number | null
+          total_days?: number
+          updated_at?: string
+          user_id?: string | null
+          vehicle_category?: string | null
+          vehicle_id?: string | null
+          vehicle_name?: string | null
+          vehicle_total?: number | null
+          vehicle_type?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
