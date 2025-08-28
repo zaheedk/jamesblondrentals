@@ -74,13 +74,17 @@ const ChatWidget = () => {
     setIsLoading(true);
 
     try {
-      // Prepare conversation history for the API
+      // Prepare conversation history for the API (excluding current user message)
       const conversation = messages.map(msg => ({
         role: msg.role,
         content: msg.content
       }));
 
-      console.log('🚀 About to send chat request:', { message: messageToSend, conversation });
+      console.log('🚀 About to send chat request:', { 
+        message: messageToSend, 
+        conversationLength: conversation.length,
+        conversation: conversation.slice(-10) // Log last 10 messages for debugging
+      });
       console.log('🔧 Supabase client ready:', !!supabase);
 
       const { data, error } = await supabase.functions.invoke('chat', {

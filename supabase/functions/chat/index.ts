@@ -14,7 +14,12 @@ serve(async (req) => {
 
   try {
     const { message, conversation } = await req.json();
-    console.log('Chat request received:', { message, conversationLength: conversation?.length });
+    console.log('Chat request received:', { 
+      message, 
+      conversationLength: conversation?.length,
+      hasConversation: !!conversation,
+      lastFewMessages: conversation?.slice(-3) // Log last 3 for context debugging
+    });
 
     const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
     if (!openAIApiKey) {
