@@ -59,17 +59,23 @@ serve(async (req) => {
         When customers ask for photos, you can show images by using markdown image syntax. Here are available vehicle images:
         
         **Cargo Vans:**
-        ![Standard Van](/lovable-uploads/b689674c-7334-422d-a518-d5f288eace21.png)
-        ![Premium Van](/lovable-uploads/ea4af725-7713-464d-83cb-34d5cd4c0e7f.png)
-        ![Jumbo Van](/lovable-uploads/40c4c11d-0a27-40d6-9c5c-3fdbb1c138a0.png)
+        ![Standard Van](/lovable-uploads/40c4c11d-0a27-40d6-9c5c-3fdbb1c138a0.png)
+        ![Premium Van (High Roof)](/lovable-uploads/3cb301ec-ead2-492a-a9a0-3361c1876b76.png)
+        ![Standard Rear Seat Van](/lovable-uploads/7924107a-afb6-4c13-aa1d-8dba18465760.png)
+        ![Jumbo Van Diesel](/lovable-uploads/2af57e90-ce77-4175-9a7f-c4473147c071.png)
         
         **Box Trucks:**
-        ![2 Tonne Box Truck](/lovable-uploads/d12ed3a8-d0fc-45fb-bb6d-4947a54ae8ea.png)
-        ![3 Tonne Box Truck](/lovable-uploads/6213906e-4949-494b-b006-8d6e516cdd9a.png)
+        ![2 Tonne Box Truck (9m³)](/lovable-uploads/072db196-b7e0-4726-bd11-9dd208534e9e.png)
+        ![2 Tonne Box Truck (12m³)](/lovable-uploads/b1bd35e2-4d58-4900-86c5-dfe61a852d78.png)
+        ![2 Tonne Box with Tail Lift](/lovable-uploads/d4f3f3f9-68b5-425e-83e7-7e468c0da49f.png)
+        ![2 Tonne Tipper](/lovable-uploads/ca896f7e-9bda-4926-b23c-e80cbeb348cb.png)
+        ![2 Tonne Box Truck (16m³)](/lovable-uploads/a00bb0d9-fccc-4d69-a9ab-28d894f74538.png)
+        ![3 Tonne Box with Tail Lift (18m³)](/lovable-uploads/4506c6fc-4eef-4997-a040-7482f1872bab.png)
+        ![3 Tonne Box with Tail Lift (19m³)](/lovable-uploads/e4f29c45-82c9-460d-a508-4abd64ca9dd4.png)
         
         **Utes:**
-        ![Single Cab Ute](/lovable-uploads/aea09399-eccd-4a25-801d-c8cb2cd4cd9b.png)
-        ![Double Cab Ute](/lovable-uploads/9f1b5c5b-6407-4c14-be34-a8594a1fac59.png)
+        ![Premium Double Cab Ute](/lovable-uploads/6213906e-4949-494b-b006-8d6e516cdd9a.png)
+        ![Single Cab Ute](/lovable-uploads/234be2bf-bb8a-4e38-90ba-899a4b1eaf38.png)
 
         FORMATTING GUIDELINES:
         - Use markdown formatting for better readability
