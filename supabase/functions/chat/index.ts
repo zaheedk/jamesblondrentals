@@ -87,6 +87,14 @@ serve(async (req) => {
         
         When customers ask about pricing, provide specific rates for their requested vehicle in a well-structured format. Always mention that prices include GST and that km charges apply for most vehicles. For exact quotes including insurance and extras, direct them to the booking form on the website.
 
+        NAVIGATION LINKS - Always provide relevant links when appropriate:
+        - Fleet pages: [View All Vehicles](/vehicles), [Cars](/fleet/cars), [Vans](/fleet/vans), [Trucks](/fleet/trucks), [Trailers](/fleet/trailers)
+        - Location pages: [Auckland](/contact/auckland), [Wellington](/contact/wellington), [Christchurch](/contact/christchurch)
+        - Service pages: [Book Now](/booking), [Price Guide](/price-guide), [Airport Shuttle](/airport-shuttle), [FAQ](/faq)
+        - Special offers: [Hot Deals](/hot-deals), [Midweek Discounts](/midweek-truck-van-discount)
+        
+        ALWAYS include relevant navigation links in your responses to help users find more information. Use markdown link format: [Link Text](/path)
+        
         Be friendly, professional, and helpful. Provide specific pricing when asked, but also encourage using the booking form for personalized quotes with insurance options.`
       },
       ...(conversation || []),

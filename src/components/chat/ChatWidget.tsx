@@ -6,6 +6,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 import ReactMarkdown from 'react-markdown';
+import { Link } from 'react-router-dom';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -14,18 +15,41 @@ interface Message {
 }
 
 const ChatWidget = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      role: 'assistant',
-      content: 'Hi! I\'m here to help you with your car rental needs. How can I assist you today?',
-      timestamp: new Date()
+  const [isOpen, setIsOpen] = useState(() => {
+    const saved = localStorage.getItem('chat-widget-open');
+    return saved ? JSON.parse(saved) : false;
+  });
+  const [messages, setMessages] = useState<Message[]>(() => {
+    const saved = localStorage.getItem('chat-messages');
+    if (saved) {
+      const parsedMessages = JSON.parse(saved);
+      return parsedMessages.map((msg: any) => ({
+        ...msg,
+        timestamp: new Date(msg.timestamp)
+      }));
     }
-  ]);
+    return [
+      {
+        role: 'assistant',
+        content: 'Hi! I\'m here to help you with your car rental needs. How can I assist you today?',
+        timestamp: new Date()
+      }
+    ];
+  });
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+
+  // Persist messages to localStorage
+  useEffect(() => {
+    localStorage.setItem('chat-messages', JSON.stringify(messages));
+  }, [messages]);
+
+  // Persist open state to localStorage
+  useEffect(() => {
+    localStorage.setItem('chat-widget-open', JSON.stringify(isOpen));
+  }, [isOpen]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -166,6 +190,29 @@ const ChatWidget = () => {
                             h1: ({ children }) => <h1 className="text-base font-bold mb-2">{children}</h1>,
                             h2: ({ children }) => <h2 className="text-sm font-bold mb-1">{children}</h2>,
                             h3: ({ children }) => <h3 className="text-sm font-semibold mb-1">{children}</h3>,
+                            a: ({ href, children }) => {
+                              if (href?.startsWith('/')) {
+                                return (
+                                  <Link 
+                                    to={href} 
+                                    className="text-primary hover:text-primary/80 underline font-medium"
+                                    onClick={() => setIsOpen(false)}
+                                  >
+                                    {children}
+                                  </Link>
+                                );
+                              }
+                              return (
+                                <a 
+                                  href={href} 
+                                  className="text-primary hover:text-primary/80 underline font-medium"
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                >
+                                  {children}
+                                </a>
+                              );
+                            },
                           }}
                         >
                           {message.content}
