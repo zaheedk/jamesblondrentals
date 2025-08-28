@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Settings, BookOpen, TrendingUp, MessageSquare } from 'lucide-react';
 import BookingHistory from '@/components/member/BookingHistory';
+import SupabaseBookingHistory from '@/components/member/SupabaseBookingHistory';
 
 export default function MemberDashboard() {
   const { user, signOut } = useAuth();
@@ -79,7 +80,17 @@ export default function MemberDashboard() {
         </TabsList>
         
         <TabsContent value="bookings" className="mt-6">
-          <BookingHistory userEmail={user.email || ''} />
+          <div className="space-y-8">
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Recent Bookings</h3>
+              <SupabaseBookingHistory />
+            </div>
+            
+            <div className="border-t pt-6">
+              <h3 className="text-lg font-semibold mb-4">External Booking History</h3>
+              <BookingHistory userEmail={user.email || ''} />
+            </div>
+          </div>
         </TabsContent>
         
         <TabsContent value="profile" className="mt-6">
