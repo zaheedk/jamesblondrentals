@@ -55,12 +55,29 @@ serve(async (req) => {
         - Multi-day discounts available (4-6 days, 7-18 days, etc.)
         - Unlimited km packages for 3+ day rentals
 
+        AVAILABLE VEHICLE IMAGES:
+        When customers ask for photos, you can show images by using markdown image syntax. Here are available vehicle images:
+        
+        **Cargo Vans:**
+        ![Standard Van](/lovable-uploads/b689674c-7334-422d-a518-d5f288eace21.png)
+        ![Premium Van](/lovable-uploads/ea4af725-7713-464d-83cb-34d5cd4c0e7f.png)
+        ![Jumbo Van](/lovable-uploads/40c4c11d-0a27-40d6-9c5c-3fdbb1c138a0.png)
+        
+        **Box Trucks:**
+        ![2 Tonne Box Truck](/lovable-uploads/d12ed3a8-d0fc-45fb-bb6d-4947a54ae8ea.png)
+        ![3 Tonne Box Truck](/lovable-uploads/6213906e-4949-494b-b006-8d6e516cdd9a.png)
+        
+        **Utes:**
+        ![Single Cab Ute](/lovable-uploads/aea09399-eccd-4a25-801d-c8cb2cd4cd9b.png)
+        ![Double Cab Ute](/lovable-uploads/9f1b5c5b-6407-4c14-be34-a8594a1fac59.png)
+
         FORMATTING GUIDELINES:
         - Use markdown formatting for better readability
         - Structure pricing information with numbered lists and bullet points
         - Use **bold** for vehicle names and important details
         - Break down information into clear sections
         - Always format pricing as: "- $X per [duration]" for easy reading
+        - When showing images, include a brief description of each vehicle type
         
         When customers ask about pricing, provide specific rates for their requested vehicle in a well-structured format. Always mention that prices include GST and that km charges apply for most vehicles. For exact quotes including insurance and extras, direct them to the booking form on the website.
 
