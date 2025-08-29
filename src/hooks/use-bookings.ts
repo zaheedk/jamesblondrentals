@@ -7,19 +7,23 @@ export type Booking = Database['public']['Tables']['bookings']['Row'];
 
 export function useBookings() {
   const { user } = useAuth();
+  const isAdmin = user?.email === 'zaheedk@gmail.com';
 
   return useQuery({
-    queryKey: ['bookings', user?.id],
+    queryKey: ['bookings', user?.id, isAdmin],
     queryFn: async (): Promise<Booking[]> => {
       if (!user?.id) {
         throw new Error('User not authenticated');
       }
 
-      const { data, error } = await supabase
-        .from('bookings')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
+      let query = supabase.from('bookings').select('*');
+      
+      // If admin, get all bookings; otherwise only user's own bookings
+      if (!isAdmin) {
+        query = query.eq('user_id', user.id);
+      }
+      
+      const { data, error } = await query.order('created_at', { ascending: false });
 
       if (error) {
         console.error('Error fetching bookings:', error);

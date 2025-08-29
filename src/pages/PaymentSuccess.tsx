@@ -12,6 +12,8 @@ import PaymentStatusHeader from "@/components/payment/PaymentStatusHeader";
 import RentalDetails from "@/components/payment/RentalDetails";
 import PaymentSummary from "@/components/payment/PaymentSummary";
 import BookingExperienceSurvey from "@/components/feedback/BookingExperienceSurvey";
+import { useCreateBooking } from "@/hooks/use-bookings";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface BookingDetails {
   vehicleName: string;
@@ -64,6 +66,8 @@ declare global {
 const PaymentSuccess = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
+  const createBooking = useCreateBooking();
   const [bookingDetails, setBookingDetails] = useState<BookingDetails | null>(null);
   const [paymentStatus, setPaymentStatus] = useState<"success" | "failed" | "pending">("pending");
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -273,6 +277,114 @@ const PaymentSuccess = () => {
       toast.error("Failed to save quotation", {
         description: error instanceof Error ? error.message : "Please try again or contact support"
       });
+    }
+  };
+
+  // Function to save booking to Supabase database
+  const saveBookingToSupabase = async (bookingDetails: BookingDetails, sessionData: any) => {
+    if (!user?.id) {
+      console.log("No authenticated user, skipping Supabase booking save");
+      return;
+    }
+
+    try {
+      console.log("Saving booking to Supabase database...");
+      
+      // Convert date strings to proper Date objects
+      const formatDateForSupabase = (dateStr: string) => {
+        if (!dateStr) return new Date().toISOString().split('T')[0];
+        
+        // Handle different date formats
+        if (dateStr.includes('/')) {
+          const [day, month, year] = dateStr.split('/');
+          return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+        } else if (dateStr.includes('-')) {
+          return dateStr.split('T')[0]; // Remove time if present
+        }
+        return dateStr;
+      };
+
+      const formatTimeForSupabase = (timeStr: string) => {
+        if (!timeStr) return '09:00';
+        return timeStr.includes(':') ? timeStr : '09:00';
+      };
+
+      const pickupDate = formatDateForSupabase(bookingDetails.pickupDate);
+      const dropoffDate = formatDateForSupabase(bookingDetails.dropoffDate);
+      const pickupTime = formatTimeForSupabase(bookingDetails.pickupTime);
+      const dropoffTime = formatTimeForSupabase(bookingDetails.dropoffTime);
+
+      // Calculate rental days
+      const startDate = new Date(pickupDate);
+      const endDate = new Date(dropoffDate);
+      const totalDays = Math.max(1, Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)));
+
+      const bookingData = {
+        user_id: user.id,
+        booking_reference: bookingDetails.reservationRef || null,
+        reservation_reference: bookingDetails.reservationRef || null,
+        
+        // Vehicle details
+        vehicle_id: bookingDetails.vehicleCategoryId?.toString() || null,
+        vehicle_name: bookingDetails.vehicleName || 'Unknown Vehicle',
+        vehicle_type: sessionData?.vehicleCategoryTypeId?.toString() || null,
+        vehicle_category: 'Car', // Default category
+        
+        // Dates and times
+        pickup_date: pickupDate,
+        dropoff_date: dropoffDate,
+        pickup_time: pickupTime,
+        dropoff_time: dropoffTime,
+        total_days: totalDays,
+        
+        // Locations
+        pickup_location_id: bookingDetails.pickupLocationId?.toString() || null,
+        pickup_location_name: bookingDetails.pickupLocationName || null,
+        dropoff_location_id: bookingDetails.dropoffLocationId?.toString() || null,
+        dropoff_location_name: bookingDetails.dropoffLocationName || null,
+        
+        // Customer details
+        customer_first_name: bookingDetails.customerFirstName || sessionData?.customerFirstName || null,
+        customer_last_name: bookingDetails.customerLastName || sessionData?.customerLastName || null,
+        customer_email: bookingDetails.customerEmail || sessionData?.customerEmail || user.email || null,
+        customer_phone: bookingDetails.customerPhone || sessionData?.customerPhone || null,
+        customer_address: bookingDetails.customerAddress || sessionData?.customerAddress || null,
+        customer_license_number: sessionData?.customerLicenseNumber || null,
+        customer_age: sessionData?.customerAge || null,
+        
+        // Pricing
+        daily_rate: bookingDetails.dailyrate || 0,
+        vehicle_total: bookingDetails.totalcost || bookingDetails.basePrice || 0,
+        extras_total: (bookingDetails.selectedExtras || []).reduce((sum, extra) => sum + (extra.price * extra.quantity), 0),
+        insurance_total: bookingDetails.insurancePrice || 0,
+        total_amount: bookingDetails.payment || bookingDetails.paymentAmount || 0,
+        
+        // Extras and insurance
+        selected_extras: bookingDetails.selectedExtras || [],
+        insurance_options: bookingDetails.insuranceName ? {
+          name: bookingDetails.insuranceName,
+          price: bookingDetails.insurancePrice || 0
+        } : {},
+        
+        // Booking status
+        booking_status: paymentStatus === 'success' ? 'confirmed' : 'pending',
+        payment_status: paymentStatus === 'success' ? 'paid' : 'pending',
+        payment_method: 'online',
+        payment_intent_id: transactionId || null,
+        
+        // Additional details
+        special_requirements: sessionData?.specialRequirements || null,
+        notes: sessionData?.notes || null
+      };
+
+      console.log("Booking data to save:", bookingData);
+
+      await createBooking.mutate(bookingData);
+      console.log("Booking successfully saved to Supabase");
+      
+    } catch (error) {
+      console.error("Failed to save booking to Supabase:", error);
+      // Don't show error to user as this is a background operation
     }
   };
 
@@ -503,13 +615,17 @@ const PaymentSuccess = () => {
                 customerFirstName: customerInfo.firstname || sessionData?.customerFirstName || '',
                 customerLastName: customerInfo.lastname || sessionData?.customerLastName || '',
                 customerEmail: customerInfo.email || sessionData?.customerEmail || '',
-                customerPhone: customerInfo.phone || customerInfo.mobile || sessionData?.customerPhone || ''
+                customerPhone: customerInfo.phone || customerInfo.mobile || sessionData?.customerPhone || '',
+                vehicleCategoryId: bookingInfo.vehiclecategoryid || sessionData?.vehicleCategoryId,
+                vehicleCategoryTypeId: (bookingInfo as any).vehiclecategorytypeid || sessionData?.vehicleCategoryTypeId,
+                pickupLocationId: (bookingInfo as any).pickuplocationid || sessionData?.pickupLocationId,
+                dropoffLocationId: (bookingInfo as any).dropofflocationid || sessionData?.dropoffLocationId,
+                driverageId: (bookingInfo as any).ageid || sessionData?.driverageId || sessionData?.ageId,
+                insuranceId: (bookingInfo as any).insuranceid || sessionData?.insuranceId,
+                extraKmsId: (bookingInfo as any).extrakmsid || sessionData?.extraKmsId
               };
               
-              setBookingDetails(prevState => ({
-                ...convertedDetails,
-                vehicleImage: convertedDetails.vehicleImage || prevState?.vehicleImage || ''
-              }));
+              setBookingDetails(convertedDetails);
               
               if (convertedDetails.pickupDate && convertedDetails.dropoffDate) {
                 const days = calculateRentalDuration(convertedDetails.pickupDate, convertedDetails.dropoffDate);
@@ -522,7 +638,9 @@ const PaymentSuccess = () => {
               
               console.log("Booking details set from API:", convertedDetails);
               
-              if (paymentStatus === "success") {
+              // Save booking to Supabase after successful payment
+              if (paymentStatus === 'success') {
+                await saveBookingToSupabase(convertedDetails, sessionData);
                 clearBookingData();
                 console.log("Booking data cleared from session after successful payment");
               }
@@ -552,7 +670,7 @@ const PaymentSuccess = () => {
     };
 
     // Function to set up booking details from session data
-    const setUpSessionDataFallback = (sessionData, paymentStatus) => {
+    const setUpSessionDataFallback = async (sessionData: any, paymentStatus: string) => {
       console.log("Using session data as fallback for booking details");
 
       const cleanedSessionData = JSON.parse(JSON.stringify(sessionData, (key, value) => {
@@ -612,19 +730,19 @@ const PaymentSuccess = () => {
       const paymentAmount = paymentStatus === "success" ? 
         (cleanedSessionData.payment || cleanedSessionData.paymentAmount || 0) : 0;
       
-      const mandatoryFeesWithQuantity = (cleanedSessionData.mandatoryFees || []).map(fee => ({
+      const mandatoryFeesWithQuantity = (cleanedSessionData.mandatoryFees || []).map((fee: any) => ({
         ...fee,
         amount: fee.totalfeeamount || fee.amount || 0,
         quantity: 1
       }));
       
       const mandatoryFeesTotal = mandatoryFeesWithQuantity.reduce(
-        (sum, fee) => sum + (fee.amount || 0), 
+        (sum: number, fee: any) => sum + (fee.amount || 0), 
         0
       );
       
       const extrasTotal = (cleanedSessionData.selectedExtras || []).reduce(
-        (sum, extra) => sum + (extra.price || 0), 
+        (sum: number, extra: any) => sum + (extra.price || 0), 
         0
       );
       
@@ -654,7 +772,7 @@ const PaymentSuccess = () => {
         vehicleImage: vehicleImage,
         insuranceName: cleanedSessionData.insuranceName,
         insurancePrice: cleanedSessionData.insurancePrice || 0,
-        selectedExtras: cleanedSessionData.selectedExtras?.map(extra => ({
+        selectedExtras: cleanedSessionData.selectedExtras?.map((extra: any) => ({
           name: extra.name,
           quantity: extra.quantity,
           price: extra.price
@@ -692,14 +810,16 @@ const PaymentSuccess = () => {
       
       console.log("Booking details set from session:", convertedDetails);
       
+      // Save booking to Supabase after successful payment
       if (paymentStatus === "success") {
+        await saveBookingToSupabase(convertedDetails, cleanedSessionData);
         clearBookingData();
         console.log("Booking data cleared from session after successful payment (fallback path)");
       }
     };
 
     fetchBookingDetails();
-  }, [navigate, location, paymentStatus]);
+  }, [location, paymentStatus]);
 
   useEffect(() => {
     const gaId = 'G-4E4P8VX8DK';
