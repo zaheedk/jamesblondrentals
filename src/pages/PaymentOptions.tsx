@@ -469,7 +469,7 @@ const PaymentOptions = () => {
                 <img
                   src={bookingDetails.vehicleImage.startsWith('http') 
                     ? bookingDetails.vehicleImage 
-                    : `https://www.rentalsoftware.co.nz/images/vehicles/${bookingDetails.vehicleImage}`}
+                    : `//rentalcarmanagerau.blob.core.windows.net/public/nzkuzarentals493/${bookingDetails.vehicleImage}`}
                   alt={bookingDetails.vehicleName}
                   className="w-full h-full object-contain"
                   onError={handleImageError}
