@@ -236,7 +236,10 @@ const PaymentOptions = () => {
         setBookingDetails(prev => ({ 
           ...prev, 
           ...updatedBookingData,
-          vehicleImage: updatedBookingData.vehicleImage || prev?.vehicleImage
+          // Always preserve the existing image if the new one is empty or undefined
+          vehicleImage: updatedBookingData.vehicleImage && updatedBookingData.vehicleImage.trim() !== '' 
+            ? updatedBookingData.vehicleImage 
+            : prev?.vehicleImage
         }));
         
         if (bookingInfo.totalcost) {
