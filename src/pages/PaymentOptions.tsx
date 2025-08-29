@@ -463,26 +463,40 @@ const PaymentOptions = () => {
         <h1 className="text-3xl font-bold mb-6">Payment Options</h1>
         
         <div className="bg-white shadow-md rounded-lg p-6">
-          {bookingDetails?.vehicleImage && !imageError ? (
-            <div className="w-full mb-6">
-              <AspectRatio ratio={4/3} className="bg-gray-100 rounded-lg overflow-hidden">
-                <img
-                  src={bookingDetails.vehicleImage.startsWith('http') 
-                    ? bookingDetails.vehicleImage 
-                    : `//rentalcarmanagerau.blob.core.windows.net/public/nzkuzarentals493/${bookingDetails.vehicleImage}`}
-                  alt={bookingDetails.vehicleName}
-                  className="w-full h-full object-contain"
-                  onError={handleImageError}
-                />
-              </AspectRatio>
-            </div>
-          ) : (
-            <div className="w-full mb-6">
-              <AspectRatio ratio={4/3} className="bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
-                <Car className="h-24 w-24 text-gray-300" />
-              </AspectRatio>
-            </div>
-          )}
+          {(() => {
+            const imageUrl = bookingDetails?.vehicleImage && !imageError 
+              ? (bookingDetails.vehicleImage.startsWith('http') 
+                  ? bookingDetails.vehicleImage 
+                  : `//rentalcarmanagerau.blob.core.windows.net/public/nzkuzarentals493/${bookingDetails.vehicleImage}`)
+              : null;
+            
+            console.log('Vehicle image debug:', {
+              originalImage: bookingDetails?.vehicleImage,
+              imageError,
+              constructedUrl: imageUrl,
+              shouldShowImage: !!(bookingDetails?.vehicleImage && !imageError)
+            });
+            
+            return imageUrl ? (
+              <div className="w-full mb-6">
+                <AspectRatio ratio={4/3} className="bg-gray-100 rounded-lg overflow-hidden">
+                  <img
+                    src={imageUrl}
+                    alt={bookingDetails.vehicleName}
+                    className="w-full h-full object-contain"
+                    onError={handleImageError}
+                    onLoad={() => console.log('Image loaded successfully:', imageUrl)}
+                  />
+                </AspectRatio>
+              </div>
+            ) : (
+              <div className="w-full mb-6">
+                <AspectRatio ratio={4/3} className="bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
+                  <Car className="h-24 w-24 text-gray-300" />
+                </AspectRatio>
+              </div>
+            );
+          })()}
 
           <RentalDetails
             vehicleName={bookingDetails?.vehicleName || ""}
