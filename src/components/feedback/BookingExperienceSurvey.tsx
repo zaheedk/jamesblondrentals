@@ -34,11 +34,17 @@ const BookingExperienceSurvey = ({ isOpen, onClose, bookingReference }: BookingE
       // Get customer details from booking session
       const bookingData = getBookingData();
       console.log('Booking data for feedback:', bookingData);
+      console.log('Booking reference from props:', bookingReference);
       
       const customerName = bookingData ? `${bookingData.customerFirstName || ''} ${bookingData.customerLastName || ''}`.trim() : '';
       const customerEmail = bookingData?.customerEmail || '';
       
-      console.log('Customer details for feedback:', { customerName, customerEmail });
+      console.log('Customer details for feedback submission:', { 
+        customerName, 
+        customerEmail, 
+        bookingReference,
+        fullBookingData: bookingData 
+      });
 
       const { error } = await supabase.functions.invoke('submit-feedback', {
         body: {
