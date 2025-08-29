@@ -269,7 +269,8 @@ const PaymentOptions = () => {
 
   const handleImageError = () => {
     console.log("Error loading vehicle image");
-    setImageError(true);
+    // Only set error state if image actually fails to load, not on timeout
+    setTimeout(() => setImageError(true), 1000);
   };
 
   const handleSaveQuotation = async () => {
