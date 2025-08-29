@@ -272,8 +272,7 @@ const PaymentOptions = () => {
 
   const handleImageError = () => {
     console.log("Error loading vehicle image");
-    // Only set error state if image actually fails to load, not on timeout
-    setTimeout(() => setImageError(true), 1000);
+    setImageError(true);
   };
 
   const handleSaveQuotation = async () => {
@@ -468,7 +467,9 @@ const PaymentOptions = () => {
             <div className="w-full mb-6">
               <AspectRatio ratio={4/3} className="bg-gray-100 rounded-lg overflow-hidden">
                 <img
-                  src={bookingDetails.vehicleImage}
+                  src={bookingDetails.vehicleImage.startsWith('http') 
+                    ? bookingDetails.vehicleImage 
+                    : `https://www.rentalsoftware.co.nz/images/vehicles/${bookingDetails.vehicleImage}`}
                   alt={bookingDetails.vehicleName}
                   className="w-full h-full object-contain"
                   onError={handleImageError}
