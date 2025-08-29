@@ -15,7 +15,8 @@ interface FeedbackRequest {
   customerEmail?: string;
 }
 
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+const resendApiKey = Deno.env.get("RESEND_API_KEY");
+const resend = resendApiKey ? new Resend(resendApiKey) : null;
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -86,32 +87,36 @@ serve(async (req) => {
     }
 
     // Send email notification
-    try {
-      const emailContent = `
-        <h2>New Booking Experience Feedback Received</h2>
-        <p><strong>Rating:</strong> ${rating}/5</p>
-        <p><strong>Customer Name:</strong> ${customerName || 'N/A'}</p>
-        <p><strong>Customer Email:</strong> ${customerEmail || 'N/A'}</p>
-        <p><strong>Booking Reference:</strong> ${bookingReference || 'N/A'}</p>
-        <p><strong>User ID:</strong> ${userId || 'Guest'}</p>
-        <p><strong>Suggestions:</strong></p>
-        <p>${suggestions || 'No suggestions provided'}</p>
-        <p><strong>Submitted at:</strong> ${new Date().toISOString()}</p>
-        <hr>
-        <p>Feedback ID: ${feedback.id}</p>
-      `;
+    if (resend) {
+      try {
+        const emailContent = `
+          <h2>New Booking Experience Feedback Received</h2>
+          <p><strong>Rating:</strong> ${rating}/5</p>
+          <p><strong>Customer Name:</strong> ${customerName || 'N/A'}</p>
+          <p><strong>Customer Email:</strong> ${customerEmail || 'N/A'}</p>
+          <p><strong>Booking Reference:</strong> ${bookingReference || 'N/A'}</p>
+          <p><strong>User ID:</strong> ${userId || 'Guest'}</p>
+          <p><strong>Suggestions:</strong></p>
+          <p>${suggestions || 'No suggestions provided'}</p>
+          <p><strong>Submitted at:</strong> ${new Date().toISOString()}</p>
+          <hr>
+          <p>Feedback ID: ${feedback.id}</p>
+        `;
 
-      await resend.emails.send({
-        from: "James Blond Feedback <feedback@jamesblond.co.nz>",
-        to: ["zaheed@jamesblond.co.nz"],
-        subject: `Booking Experience Feedback - Rating: ${rating}/5`,
-        html: emailContent,
-      });
+        await resend.emails.send({
+          from: "James Blond Feedback <feedback@jamesblond.co.nz>",
+          to: ["zaheed@jamesblond.co.nz"],
+          subject: `Booking Experience Feedback - Rating: ${rating}/5`,
+          html: emailContent,
+        });
 
-      console.log("Email sent successfully to zaheed@jamesblond.co.nz");
-    } catch (emailError) {
-      console.error("Email error:", emailError);
-      // Don't fail the request if email fails, but log it
+        console.log("Email sent successfully to zaheed@jamesblond.co.nz");
+      } catch (emailError) {
+        console.error("Email error:", emailError);
+        // Don't fail the request if email fails, but log it
+      }
+    } else {
+      console.log("Email not sent - RESEND_API_KEY not configured");
     }
 
     return new Response(
