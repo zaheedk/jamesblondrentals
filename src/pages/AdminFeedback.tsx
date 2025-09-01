@@ -172,12 +172,6 @@ const AdminFeedback = () => {
                           Booking: {item.booking_reference}
                         </div>
                       )}
-                      {item.user_id && (
-                        <div className="flex items-center gap-1">
-                          <User className="h-3 w-3" />
-                          User ID: {item.user_id.slice(0, 8)}...
-                        </div>
-                      )}
                     </div>
                   </div>
                 </div>
