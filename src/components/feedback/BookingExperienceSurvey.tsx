@@ -30,6 +30,10 @@ const BookingExperienceSurvey = ({ isOpen, onClose, bookingReference }: BookingE
     if (!rating) return;
     
     setIsSubmitting(true);
+    console.log('=== FEEDBACK SUBMISSION STARTED ===');
+    console.log('Rating:', rating);
+    console.log('Suggestions:', suggestions);
+    
     try {
       // Get customer details from booking session
       const bookingData = getBookingData();
@@ -46,7 +50,8 @@ const BookingExperienceSurvey = ({ isOpen, onClose, bookingReference }: BookingE
         fullBookingData: bookingData 
       });
 
-      const { error } = await supabase.functions.invoke('submit-feedback', {
+      console.log('Calling Supabase edge function...');
+      const { data, error } = await supabase.functions.invoke('submit-feedback', {
         body: {
           rating,
           suggestions,
@@ -56,10 +61,14 @@ const BookingExperienceSurvey = ({ isOpen, onClose, bookingReference }: BookingE
         },
       });
 
+      console.log('Edge function response:', { data, error });
+
       if (error) {
+        console.error('Edge function error:', error);
         throw error;
       }
 
+      console.log('=== FEEDBACK SUBMISSION SUCCESSFUL ===');
       toast({
         title: "Thank you!",
         description: "Your feedback helps us improve our service.",
@@ -68,6 +77,7 @@ const BookingExperienceSurvey = ({ isOpen, onClose, bookingReference }: BookingE
       
       onClose();
     } catch (error) {
+      console.error('=== FEEDBACK SUBMISSION FAILED ===');
       console.error('Error submitting feedback:', error);
       toast({
         title: "Error",
