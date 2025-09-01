@@ -44,20 +44,28 @@ const BookingExperienceSurvey = ({ isOpen, onClose, bookingReference }: BookingE
       const customerEmail = bookingData?.customerEmail || '';
       
       console.log('Customer details for feedback submission:', { 
-        customerName, 
-        customerEmail, 
-        bookingReference,
+        customerName: customerName || 'NOT AVAILABLE', 
+        customerEmail: customerEmail || 'NOT AVAILABLE', 
+        bookingReference: bookingReference || 'NOT AVAILABLE',
+        customerFirstName: bookingData?.customerFirstName,
+        customerLastName: bookingData?.customerLastName,
+        customerEmailFromSession: bookingData?.customerEmail,
         fullBookingData: bookingData 
       });
+
+      // If customer details are not available, show a warning but still submit
+      if (!customerName && !customerEmail) {
+        console.warn('No customer details found in session storage');
+      }
 
       console.log('Calling Supabase edge function...');
       const { data, error } = await supabase.functions.invoke('submit-feedback', {
         body: {
           rating,
           suggestions,
-          bookingReference,
-          customerName,
-          customerEmail,
+          bookingReference: bookingReference || null,
+          customerName: customerName || null,
+          customerEmail: customerEmail || null,
         },
       });
 
