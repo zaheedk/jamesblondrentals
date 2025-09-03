@@ -482,6 +482,29 @@ const PriceGuide = () => {
                       <TableRow 
                         className={isMobile ? "cursor-pointer hover:bg-gray-50 active:bg-gray-100" : ""}
                         onClick={() => handleRowClick({
+                          name: "High Roof Van",
+                          dimensions: "3.4 x 1.6 x 1.6m",
+                          kmRate: "$0.35",
+                          hour2: "$40.00",
+                          hour4: "$70.00", 
+                          hour8: "$100.00",
+                          day1: "$130.00"
+                        })}
+                      >
+                        <TableCell className="font-medium">High Roof Van<br/>3.4 x 1.6 x 1.6m</TableCell>
+                        <TableCell>$0.35</TableCell>
+                        <TableCell>$40.00</TableCell>
+                        <TableCell>$70.00</TableCell>
+                        <TableCell>$100.00</TableCell>
+                        <TableCell>$130.00</TableCell>
+                        <TableCell>$115.00</TableCell>
+                        <TableCell>$100.00</TableCell>
+                        <TableCell>$600.00</TableCell>
+                        <TableCell>$200.00</TableCell>
+                      </TableRow>
+                      <TableRow 
+                        className={isMobile ? "cursor-pointer hover:bg-gray-50 active:bg-gray-100" : ""}
+                        onClick={() => handleRowClick({
                           name: "Rear Seat Van (6m3)",
                           dimensions: "-",
                           kmRate: "-",
