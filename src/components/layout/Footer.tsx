@@ -115,6 +115,19 @@ const Footer = () => {
               <p>Email: info@jamesblond.co.nz</p>
             </address>
             
+            {/* Jumbo Taxi Service */}
+            <div className="mt-6 p-3 bg-primary/10 rounded-lg border border-primary/20">
+              <h4 className="text-sm font-bold mb-2 text-primary">🚗 New Service!</h4>
+              <a 
+                href="https://jumbotaxi.co.nz" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-sm text-primary hover:text-primary/80 transition-colors font-medium"
+              >
+                Jumbo Taxi Service →
+              </a>
+            </div>
+            
             {/* Specialized rentals section */}
             <h3 className="text-lg font-bold mb-2 mt-6">Specialized Rentals</h3>
             <ul className="space-y-1">

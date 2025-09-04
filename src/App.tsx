@@ -103,6 +103,7 @@ import AirportWellington from "./pages/AirportWellington";
 
 import FAQ from "./pages/FAQ";
 import Terms from "./pages/Terms";
+import JumboTaxiLaunch from "./pages/JumboTaxiLaunch";
 import Privacy from "./pages/Privacy";
 
 import AppLayout from "./components/layout/AppLayout";
@@ -263,6 +264,7 @@ const App = () => {
                 <Route path="/contact/christchurch" element={<ContactChristchurch />} />
                 <Route path="/winz-quotes" element={<WinzQuotes />} />
                 
+                <Route path="/jumbo-taxi-launch" element={<JumboTaxiLaunch />} />
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
