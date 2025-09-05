@@ -24,7 +24,17 @@ import {
 // Update location ID if needed - we'll find Kelston location dynamically instead
 const DEFAULT_LOCATION_ID = ""; // Empty to force finding Kelston
 
-const SearchForm = () => {
+interface SearchFormProps {
+  defaultPickupLocation?: string;
+  defaultDropoffLocation?: string;
+  defaultCarCategory?: string;
+}
+
+const SearchForm = ({ 
+  defaultPickupLocation,
+  defaultDropoffLocation,
+  defaultCarCategory = "0"
+}: SearchFormProps = {}) => {
   const navigate = useNavigate();
   
   const [pickupLocation, setPickupLocation] = useState("");
@@ -35,7 +45,7 @@ const SearchForm = () => {
   const [dropoffTime, setDropoffTime] = useState("");
   const [sameLocation, setSameLocation] = useState(true);
   const [age, setAge] = useState("");
-  const [carCategory, setCarCategory] = useState("0");
+  const [carCategory, setCarCategory] = useState(defaultCarCategory);
   const [campaignCode, setCampaignCode] = useState("");
   const [isInitialized, setIsInitialized] = useState(false);
   const [isProcessingDates, setIsProcessingDates] = useState(false);
@@ -116,21 +126,34 @@ const SearchForm = () => {
         if (!pickupLocation && locations.length > 0) {
           console.log("Available locations:", locations.map(loc => ({id: loc.id, name: loc.name})));
           
-          // Look for West Auckland first
-          const westAucklandLocation = locations.find(loc => 
-            loc.name.toLowerCase().includes('west auckland')
-          );
+          let defaultLocation;
           
-          console.log("Found West Auckland location:", westAucklandLocation);
+          // Use prop-provided default location if available
+          if (defaultPickupLocation) {
+            defaultLocation = locations.find(loc => String(loc.id) === defaultPickupLocation);
+            console.log("Using prop default pickup location:", defaultLocation?.name);
+          }
           
-          const defaultLocation = westAucklandLocation || 
-                                  locations.find(loc => String(loc.id) === DEFAULT_LOCATION_ID) || 
-                                  locations[0];
+          // Fallback to West Auckland if no prop provided
+          if (!defaultLocation) {
+            const westAucklandLocation = locations.find(loc => 
+              loc.name.toLowerCase().includes('west auckland')
+            );
+            
+            console.log("Found West Auckland location:", westAucklandLocation);
+            
+            defaultLocation = westAucklandLocation || 
+                             locations.find(loc => String(loc.id) === DEFAULT_LOCATION_ID) || 
+                             locations[0];
+          }
           
           console.log("Setting default pickup location:", defaultLocation.name);
           setPickupLocation(String(defaultLocation.id));
+          
+          // Set dropoff location
           if (sameLocation) {
-            setDropoffLocation(String(defaultLocation.id));
+            const dropoffLocationId = defaultDropoffLocation || String(defaultLocation.id);
+            setDropoffLocation(dropoffLocationId);
           }
         }
 

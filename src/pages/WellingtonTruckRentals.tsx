@@ -454,7 +454,11 @@ const WellingtonTruckRentals = () => {
           <p className="text-center mb-6">Check availability and reserve your moving truck today</p>
           
           <div className="max-w-4xl mx-auto">
-            <SearchForm />
+            <SearchForm 
+              defaultPickupLocation="11"
+              defaultDropoffLocation="11"
+              defaultCarCategory="3"
+            />
           </div>
         </div>
       </section>
