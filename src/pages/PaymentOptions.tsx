@@ -467,7 +467,7 @@ const PaymentOptions = () => {
             const imageUrl = bookingDetails?.vehicleImage && !imageError 
               ? (bookingDetails.vehicleImage.startsWith('http') 
                   ? bookingDetails.vehicleImage 
-                  : `//rentalcarmanagerau.blob.core.windows.net/public/nzkuzarentals493/${bookingDetails.vehicleImage}`)
+                  : `https://rentalcarmanagerau.blob.core.windows.net/public/nzkuzarentals493/${bookingDetails.vehicleImage}`)
               : null;
             
             console.log('Vehicle image debug:', {
