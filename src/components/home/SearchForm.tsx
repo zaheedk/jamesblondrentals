@@ -46,6 +46,13 @@ const SearchForm = ({
   const [sameLocation, setSameLocation] = useState(true);
   const [age, setAge] = useState("");
   const [carCategory, setCarCategory] = useState(defaultCarCategory);
+
+  // Update category when defaultCarCategory prop changes
+  useEffect(() => {
+    if (defaultCarCategory && defaultCarCategory !== "0") {
+      setCarCategory(defaultCarCategory);
+    }
+  }, [defaultCarCategory]);
   const [campaignCode, setCampaignCode] = useState("");
   const [isInitialized, setIsInitialized] = useState(false);
   const [isProcessingDates, setIsProcessingDates] = useState(false);
