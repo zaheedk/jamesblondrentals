@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useSearchParams, useLocation } from "react-router-dom";
+import { useSearchParams, useLocation, useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
@@ -30,6 +30,7 @@ const Vehicles = () => {
   
   const [searchParams] = useSearchParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -58,6 +59,13 @@ const Vehicles = () => {
   const age = searchParams.get("age") || "";
   const carCategory = searchParams.get("carCategory") || "0";
   const campaignCode = searchParams.get("campaignCode") || "";
+
+  // Redirect to home if no query parameters
+  useEffect(() => {
+    if (!pickupLocation && !pickupDate && !dropoffDate && !age) {
+      navigate("/");
+    }
+  }, [pickupLocation, pickupDate, dropoffDate, age, navigate]);
 
   const getValidAgeId = () => {
     if (age && driverAges?.some(driverAge => String(driverAge.id) === age)) {
