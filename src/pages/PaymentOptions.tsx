@@ -200,6 +200,13 @@ const PaymentOptions = () => {
     }
   }, [navigate, locationDetails]);
 
+  // Reset image error when vehicle image changes
+  useEffect(() => {
+    if (bookingDetails?.vehicleImage) {
+      setImageError(false);
+    }
+  }, [bookingDetails?.vehicleImage]);
+
   const fetchBookingDetails = async (reservationRef: string) => {
     try {
       console.log("Fetching booking details for reservation:", reservationRef);
