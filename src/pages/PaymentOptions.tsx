@@ -30,6 +30,7 @@ const PaymentOptions = () => {
   const [totalCost, setTotalCost] = useState(0);
   const [bookingInfoTotalCost, setBookingInfoTotalCost] = useState<number | undefined>(undefined);
   const [lastRequestPayload, setLastRequestPayload] = useState<any>(null);
+  const [securityBond, setSecurityBond] = useState(700); // Default fallback
   const { useLocationDetails } = useRcmApi();
   const { data: locationDetails } = useLocationDetails();
 
@@ -220,6 +221,12 @@ const PaymentOptions = () => {
       if (response.status === "OK" && response.results?.bookinginfo?.[0]) {
         const bookingInfo = response.results.bookinginfo[0];
         
+        // Extract security bond from extrafees
+        const bondFee = response.results.extrafees?.find((fee: any) => fee.isbondfee === true);
+        if (bondFee) {
+          setSecurityBond(typeof bondFee.fees === 'string' ? parseFloat(bondFee.fees) : bondFee.fees);
+        }
+
         // Update booking details with the vehicle category information from API
         const updatedBookingData = {
           vehicleCategoryId: bookingInfo.vehiclecategoryid,
@@ -529,6 +536,7 @@ const PaymentOptions = () => {
             bookingInfoTotalCost={bookingInfoTotalCost}
             payment={paymentType === "deposit" ? DEPOSIT_AMOUNT : totalCost}
             balanceDue={paymentType === "deposit" ? totalCost - DEPOSIT_AMOUNT : 0}
+            securityBond={securityBond}
           />
           
           <div className="mb-6">
