@@ -42,7 +42,7 @@ const PaymentSummary = ({
   bookingInfoTotalCost,
   payment,
   balanceDue,
-  securityBond = 700,
+  securityBond = 0,
 }: PaymentSummaryProps) => {
   const effectiveRentalDays = Math.max(1, rentalDays || 1);
   
