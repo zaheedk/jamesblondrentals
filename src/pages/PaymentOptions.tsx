@@ -30,7 +30,7 @@ const PaymentOptions = () => {
   const [totalCost, setTotalCost] = useState(0);
   const [bookingInfoTotalCost, setBookingInfoTotalCost] = useState<number | undefined>(undefined);
   const [lastRequestPayload, setLastRequestPayload] = useState<any>(null);
-  const [securityBond, setSecurityBond] = useState(700); // Default fallback
+  const [securityBond, setSecurityBond] = useState(0);
   const { useLocationDetails } = useRcmApi();
   const { data: locationDetails } = useLocationDetails();
 
