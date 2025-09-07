@@ -25,6 +25,17 @@ interface RcmVehicleWithPricing {
   mandatoryFee: RCMMandatoryFee | null;
 }
 
+// Helper function to check if location is Auckland Airport or South Auckland
+const isAucklandAirportOrSouthAuckland = (locationId: string, locations: any[]) => {
+  const location = locations.find(loc => String(loc.id) === String(locationId));
+  if (!location) return false;
+  
+  const locationName = location.location?.toLowerCase() || '';
+  return locationName.includes('auckland airport') || 
+         locationName.includes('south auckland') ||
+         locationName.includes('airport') && locationName.includes('auckland');
+};
+
 const Vehicles = () => {
   const sessionVehiclesKey = 'rcm-vehicles-data';
   
@@ -205,6 +216,17 @@ const Vehicles = () => {
         // Clean up category name by removing prefixes like (S), (P), etc.
         const cleanCategoryName = car.vehiclecategory.replace(/^\([A-Z]\)\s*/, '');
         
+        // Apply 25% discount for Auckland Airport and South Auckland if more than 3 units available
+        const isAucklandAirportOrSouth = isAucklandAirportOrSouthAuckland(pickupLocation, locations);
+        const categoryAvailableCount = availablecars.filter(c => 
+          String(c.vehiclecategorytypeid) === String(car.vehiclecategorytypeid) && 
+          c.available > 0
+        ).length;
+        
+        const shouldApplyDiscount = isAucklandAirportOrSouth && categoryAvailableCount > 3;
+        const discountMultiplier = shouldApplyDiscount ? 0.75 : 1; // 25% discount
+        const discountedTotalPrice = totalPrice * discountMultiplier;
+        
         return {
           id: Number(car.vehiclecategoryid),
           make: cleanCategoryName.split(' ')[0] || "Unknown",
@@ -212,7 +234,7 @@ const Vehicles = () => {
           year: new Date().getFullYear(),
           type: cleanCategoryName as VehicleType,
           vehicleCategoryTypeId: Number(car.vehiclecategorytypeid), // Add the numeric category type ID
-          price: totalPrice,
+          price: discountedTotalPrice,
           priceUnit: "total",
           seats: car.numberofadults + car.numberofchildren,
           transmission: "automatic",
@@ -238,7 +260,8 @@ const Vehicles = () => {
           ratesubtotal: ratesubtotal,
           avgrate: car.avgrate || 0,
           discounteddailyrate: car.discounteddailyrate || 0,
-          categoryfriendlydescription: car.categoryfriendlydescription
+          categoryfriendlydescription: car.categoryfriendlydescription,
+          hasLocationDiscount: shouldApplyDiscount
         };
       });
       
@@ -533,6 +556,7 @@ const Vehicles = () => {
                    vehicle={vehicle} 
                    totalRateAfterDiscount={vehicle.ratesubtotal || (typeof vehicle.price === 'number' ? vehicle.price : parseFloat(vehicle.price))}
                    totalDiscountAmount={vehicle.discountAmount}
+                   hasLocationDiscount={(vehicle as any).hasLocationDiscount}
                  />
                ))}
             </div>

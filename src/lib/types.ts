@@ -27,6 +27,7 @@ export interface Vehicle {
   rateperiod?: "hour" | "day"; // New property to determine if rate is hourly or daily
   ratesubtotal?: number; // New property for the rate subtotal from API
   categoryfriendlydescription?: string; // New property for the friendly description from API
+  hasLocationDiscount?: boolean; // Property to track if location discount is applied
 }
 
 export type VehicleType = "economy" | "compact" | "midsize" | "suv" | "luxury" | "van" | "convertible";

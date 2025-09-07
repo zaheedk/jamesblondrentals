@@ -11,12 +11,14 @@ interface VehicleCardProps {
   vehicle: Vehicle;
   totalRateAfterDiscount?: number;
   totalDiscountAmount?: number;
+  hasLocationDiscount?: boolean;
 }
 
 const VehicleCard = ({ 
   vehicle, 
   totalRateAfterDiscount,
-  totalDiscountAmount
+  totalDiscountAmount,
+  hasLocationDiscount = false
 }: VehicleCardProps) => {
   const [searchParams] = useSearchParams();
   const [imageError, setImageError] = React.useState(false);
@@ -140,6 +142,11 @@ const VehicleCard = ({
         {vehicle.fuelType === "electric" && (
           <Badge className="w-fit mb-2 bg-green-100 text-green-800 border-green-200">
             Electric Vehicle
+          </Badge>
+        )}
+        {hasLocationDiscount && (
+          <Badge className="w-fit mb-2 bg-orange-100 text-orange-800 border-orange-200">
+            25% Airport Discount Applied
           </Badge>
         )}
         <div className="space-y-3">
