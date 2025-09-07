@@ -183,6 +183,14 @@ const Vehicles = () => {
         `);
       });
       
+      // Summary of available counts by category
+      console.log('Available vehicle summary:', availablecars.map(car => ({
+        category: car.vehiclecategory,
+        categoryTypeId: car.vehiclecategorytypeid,
+        available: car.available,
+        availableMessage: car.availablemessage
+      })));
+      
       const mappedVehicles: Vehicle[] = availablecars.map(car => {
         const carRates = seasonalrates.filter(rate => 
           String(rate.vehiclecategoryid) === String(car.vehiclecategoryid)
