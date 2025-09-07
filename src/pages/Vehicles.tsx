@@ -244,10 +244,9 @@ const Vehicles = () => {
         
         // Apply 25% discount for Auckland Airport and South Auckland if more than 3 units available
         const isAucklandAirportOrSouth = isAucklandAirportOrSouthAuckland(pickupLocation, locations, pickupLocationName);
-        const categoryAvailableCount = availablecars.filter(c => 
-          String(c.vehiclecategorytypeid) === String(car.vehiclecategorytypeid) && 
-          c.available > 0
-        ).length;
+        const categoryAvailableCount = availablecars
+          .filter(c => String(c.vehiclecategorytypeid) === String(car.vehiclecategorytypeid))
+          .reduce((total, c) => total + (c.available || 0), 0);
         
         const shouldApplyDiscount = isAucklandAirportOrSouth && categoryAvailableCount > 3;
         const discountMultiplier = shouldApplyDiscount ? 0.75 : 1; // 25% discount
