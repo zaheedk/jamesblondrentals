@@ -242,19 +242,14 @@ const Vehicles = () => {
         // Clean up category name by removing prefixes like (S), (P), etc.
         const cleanCategoryName = car.vehiclecategory.replace(/^\([A-Z]\)\s*/, '');
         
-        // Apply 25% discount for Auckland Airport and South Auckland if more than 3 units available
+        // Apply 25% discount for Auckland Airport and South Auckland
         const isAucklandAirportOrSouth = isAucklandAirportOrSouthAuckland(pickupLocation, locations, pickupLocationName);
-        const categoryAvailableCount = availablecars
-          .filter(c => String(c.vehiclecategorytypeid) === String(car.vehiclecategorytypeid))
-          .reduce((total, c) => total + (c.available || 0), 0);
-        
-        const shouldApplyDiscount = isAucklandAirportOrSouth && categoryAvailableCount > 3;
+        const shouldApplyDiscount = isAucklandAirportOrSouth;
         const discountMultiplier = shouldApplyDiscount ? 0.75 : 1; // 25% discount
         const discountedTotalPrice = totalPrice * discountMultiplier;
         
         console.log(`Vehicle ${car.vehiclecategory} discount check:`, {
           isAucklandAirportOrSouth,
-          categoryAvailableCount,
           shouldApplyDiscount,
           originalPrice: totalPrice,
           discountedPrice: discountedTotalPrice,
