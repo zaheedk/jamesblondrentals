@@ -26,14 +26,33 @@ interface RcmVehicleWithPricing {
 }
 
 // Helper function to check if location is Auckland Airport or South Auckland
-const isAucklandAirportOrSouthAuckland = (locationId: string, locations: any[]) => {
+const isAucklandAirportOrSouthAuckland = (locationId: string, locations: any[], locationName?: string) => {
   const location = locations.find(loc => String(loc.id) === String(locationId));
-  if (!location) return false;
+  console.log('Checking location for discount:', { locationId, location, locationName, allLocations: locations });
   
-  const locationName = location.location?.toLowerCase() || '';
-  return locationName.includes('auckland airport') || 
-         locationName.includes('south auckland') ||
-         locationName.includes('airport') && locationName.includes('auckland');
+  // Check by location data from API
+  if (location) {
+    const apiLocationName = location.location?.toLowerCase() || '';
+    const isMatch = apiLocationName.includes('auckland airport') || 
+           apiLocationName.includes('south auckland') ||
+           (apiLocationName.includes('airport') && apiLocationName.includes('auckland'));
+    
+    console.log('Location name check (API):', { apiLocationName, isMatch });
+    if (isMatch) return true;
+  }
+  
+  // Fallback: check by location name from search params
+  if (locationName) {
+    const searchLocationName = locationName.toLowerCase();
+    const isMatch = searchLocationName.includes('auckland airport') || 
+           searchLocationName.includes('south auckland') ||
+           (searchLocationName.includes('airport') && searchLocationName.includes('auckland'));
+    
+    console.log('Location name check (search params):', { searchLocationName, isMatch });
+    return isMatch;
+  }
+  
+  return false;
 };
 
 const Vehicles = () => {
@@ -70,6 +89,13 @@ const Vehicles = () => {
   const age = searchParams.get("age") || "";
   const carCategory = searchParams.get("carCategory") || "0";
   const campaignCode = searchParams.get("campaignCode") || "";
+
+  console.log('Current search params:', {
+    pickupLocation,
+    pickupLocationName,
+    dropoffLocation,
+    dropoffLocationName
+  });
 
   // Redirect to home if no query parameters
   useEffect(() => {
@@ -217,7 +243,7 @@ const Vehicles = () => {
         const cleanCategoryName = car.vehiclecategory.replace(/^\([A-Z]\)\s*/, '');
         
         // Apply 25% discount for Auckland Airport and South Auckland if more than 3 units available
-        const isAucklandAirportOrSouth = isAucklandAirportOrSouthAuckland(pickupLocation, locations);
+        const isAucklandAirportOrSouth = isAucklandAirportOrSouthAuckland(pickupLocation, locations, pickupLocationName);
         const categoryAvailableCount = availablecars.filter(c => 
           String(c.vehiclecategorytypeid) === String(car.vehiclecategorytypeid) && 
           c.available > 0
@@ -226,6 +252,15 @@ const Vehicles = () => {
         const shouldApplyDiscount = isAucklandAirportOrSouth && categoryAvailableCount > 3;
         const discountMultiplier = shouldApplyDiscount ? 0.75 : 1; // 25% discount
         const discountedTotalPrice = totalPrice * discountMultiplier;
+        
+        console.log(`Vehicle ${car.vehiclecategory} discount check:`, {
+          isAucklandAirportOrSouth,
+          categoryAvailableCount,
+          shouldApplyDiscount,
+          originalPrice: totalPrice,
+          discountedPrice: discountedTotalPrice,
+          vehicleCategoryTypeId: car.vehiclecategorytypeid
+        });
         
         return {
           id: Number(car.vehiclecategoryid),
