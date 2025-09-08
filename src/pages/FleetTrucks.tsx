@@ -70,7 +70,7 @@ const trucks = [
       "Box: 4400(L) x 2100(W) x 2050(H)",
       "Max Load: 3000kg",
       "Max Tail Lift Load: 400kg",
-      "62c per km mileage charge"
+      "61c per km mileage charge"
     ],
     image: "/lovable-uploads/4506c6fc-4eef-4997-a040-7482f1872bab.png"
   },
