@@ -116,6 +116,7 @@ import FleetCargoVans from "@/pages/FleetCargoVans";
 import WinzQuotes from "./pages/WinzQuotes";
 import CourierOperatorDeals from "./pages/CourierOperatorDeals";
 import AucklandVanHire from "./pages/AucklandVanHire";
+import WellingtonMinibusHire from "./pages/WellingtonMinibusHire";
 
 
 const App = () => {
@@ -265,6 +266,7 @@ const App = () => {
                 <Route path="/contact/christchurch" element={<ContactChristchurch />} />
                 <Route path="/winz-quotes" element={<WinzQuotes />} />
                 <Route path="/12-seater-van-hire-auckland" element={<AucklandVanHire />} />
+                <Route path="/wellington-10-12-seat-van-minibus-rental" element={<WellingtonMinibusHire />} />
                 
                 <Route path="/jumbo-taxi-launch" element={<JumboTaxiLaunch />} />
                 <Route path="/faq" element={<FAQ />} />
