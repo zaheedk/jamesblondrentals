@@ -251,6 +251,72 @@ export type Database = {
         }
         Relationships: []
       }
+      uploaded_bookings: {
+        Row: {
+          booking_reference: string | null
+          booking_status: string | null
+          created_at: string
+          customer_email: string | null
+          customer_name: string | null
+          data: Json
+          dropoff_date: string | null
+          dropoff_location: string | null
+          file_name: string
+          id: string
+          pickup_date: string | null
+          pickup_location: string | null
+          processed_at: string | null
+          row_count: number | null
+          total_amount: number | null
+          updated_at: string
+          uploaded_at: string
+          vehicle_category: string | null
+          vehicle_type: string | null
+        }
+        Insert: {
+          booking_reference?: string | null
+          booking_status?: string | null
+          created_at?: string
+          customer_email?: string | null
+          customer_name?: string | null
+          data: Json
+          dropoff_date?: string | null
+          dropoff_location?: string | null
+          file_name: string
+          id?: string
+          pickup_date?: string | null
+          pickup_location?: string | null
+          processed_at?: string | null
+          row_count?: number | null
+          total_amount?: number | null
+          updated_at?: string
+          uploaded_at?: string
+          vehicle_category?: string | null
+          vehicle_type?: string | null
+        }
+        Update: {
+          booking_reference?: string | null
+          booking_status?: string | null
+          created_at?: string
+          customer_email?: string | null
+          customer_name?: string | null
+          data?: Json
+          dropoff_date?: string | null
+          dropoff_location?: string | null
+          file_name?: string
+          id?: string
+          pickup_date?: string | null
+          pickup_location?: string | null
+          processed_at?: string | null
+          row_count?: number | null
+          total_amount?: number | null
+          updated_at?: string
+          uploaded_at?: string
+          vehicle_category?: string | null
+          vehicle_type?: string | null
+        }
+        Relationships: []
+      }
       vehicle_rental_rates: {
         Row: {
           created_at: string
