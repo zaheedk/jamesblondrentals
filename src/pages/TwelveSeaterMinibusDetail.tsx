@@ -56,7 +56,7 @@ const TwelveSeaterMinibusDetail = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
         <div>
           <div className="mb-4">
-            <Badge variant="outline" className="mb-2">LDV Deliver 9</Badge>
+            <Badge variant="outline" className="mb-2">Toyota Hiace ZX</Badge>
             <h1 className="text-3xl font-bold mb-2">12-Seat Minibus</h1>
             <p className="text-lg text-gray-600">Group Travel Made Easy</p>
           </div>
@@ -64,7 +64,7 @@ const TwelveSeaterMinibusDetail = () => {
           <AspectRatio ratio={16/9} className="bg-gray-100 rounded-lg overflow-hidden mb-6">
             <img 
               src="/lovable-uploads/bdd5521d-5fab-4187-8d79-fcf80b3f46db.png"
-              alt="12-Seat LDV Deliver 9 Minibus" 
+              alt="12-Seat Toyota Hiace ZX Minibus" 
               className="w-full h-full object-cover"
               loading="lazy"
               width="800"
@@ -74,7 +74,7 @@ const TwelveSeaterMinibusDetail = () => {
 
           <div className="prose max-w-none mb-8">
             <p>
-              Whether you're planning a group adventure, corporate event, or family trip, our 12-seater LDV Deliver 9 
+              Whether you're planning a group adventure, corporate event, or family trip, our 12-seater Toyota Hiace ZX 
               offers the perfect combination of comfort, practicality, and performance. With full-height seats, modern features, 
               and a spacious interior, it's designed to keep everyone happy on the road.
             </p>
