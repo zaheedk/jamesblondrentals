@@ -27,12 +27,12 @@ const Hero = () => {
       <div className="absolute inset-0 bg-black opacity-50"></div>
       
       <div className="container mx-auto px-4 py-12 sm:py-20 md:py-28 relative z-10">
-        {/* Hero content - hidden on mobile */}
-        <div className={`max-w-3xl mx-auto text-center mb-6 ${isMobile ? 'hidden' : 'block'}`}>
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-white">
+        {/* Hero content */}
+        <div className="max-w-3xl mx-auto text-center mb-6">
+          <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-white">
             Premium Car, Van and Truck Rentals for Your Journey
           </h1>
-          <p className="text-base md:text-lg text-white/90 mb-6 md:mb-8">
+          <p className={`text-base md:text-lg text-white/90 mb-6 md:mb-8 ${isMobile ? 'hidden' : 'block'}`}>
             Explore our fleet of luxury and economy vehicles for any occasion.
             Book with ease and hit the road with confidence.
           </p>
