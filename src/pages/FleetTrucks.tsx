@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -71,7 +70,7 @@ const trucks = [
       "Box: 4400(L) x 2100(W) x 2050(H)",
       "Max Load: 3000kg",
       "Max Tail Lift Load: 400kg",
-      "62c per km mileage charge (Requires class-2 (HT) license)"
+      "62c per km mileage charge"
     ],
     image: "/lovable-uploads/4506c6fc-4eef-4997-a040-7482f1872bab.png"
   },
