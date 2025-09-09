@@ -488,4 +488,79 @@
     <priority>0.7</priority>
     <changefreq>weekly</changefreq>
   </url>
+
+  <!-- Additional Fleet Pages -->
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/furniture-truck</loc>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+
+  <!-- Single Cab Ute Diesel -->
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/utes/single-cab-ute-diesel</loc>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+
+  <!-- Two Tonne Box Truck Details -->
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/trucks/2-tonne-box-truck</loc>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+
+  <!-- Additional Location-specific Pages -->
+  <url>
+    <loc>https://jamesblond.co.nz/wellington-minibus-hire</loc>
+    <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/12-seater-van-hire-auckland</loc>
+    <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/wellington-10-12-seat-van-minibus-rental</loc>
+    <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+
+  <!-- Special Launch Pages -->
+  <url>
+    <loc>https://jamesblond.co.nz/jumbo-taxi-launch</loc>
+    <priority>0.6</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+
+  <!-- Admin Pages (restricted access) -->
+  <url>
+    <loc>https://jamesblond.co.nz/admin/blog</loc>
+    <priority>0.3</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/admin/blog/new</loc>
+    <priority>0.3</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/admin/vehicle-rates</loc>
+    <priority>0.3</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/admin/feedback</loc>
+    <priority>0.3</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+
+  <!-- Additional Minibus Routes that were missing -->
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/minibus/10-seat-minibus</loc>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+
 </urlset>
