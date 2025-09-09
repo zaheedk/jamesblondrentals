@@ -59,11 +59,13 @@ export const LazyImage = ({
     setIsLoaded(true);
   };
 
-  // Optimize image URL for better compression
+  // Optimize image URL for better compression and smaller sizes
   const getOptimizedSrc = (originalSrc: string) => {
     if (originalSrc.includes('lovable-uploads')) {
-      // Add compression parameters for lovable uploads
-      return `${originalSrc}?w=${width || 800}&q=${75}&f=webp`;
+      // Use more aggressive compression and smaller dimensions
+      const optimizedWidth = width ? Math.min(width, 1200) : 800;
+      const optimizedHeight = height ? Math.min(height, 800) : 600;
+      return `${originalSrc}?w=${optimizedWidth}&h=${optimizedHeight}&q=70&f=webp&fit=cover`;
     }
     return originalSrc;
   };

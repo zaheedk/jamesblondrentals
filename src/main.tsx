@@ -9,37 +9,34 @@ if (!rootElement) throw new Error('Root element not found');
 
 const root = createRoot(rootElement);
 
-// Defer SpeedInsights to reduce initial JS execution time
-const loadSpeedInsights = async () => {
-  const { SpeedInsights } = await import('@vercel/speed-insights/react');
-  return SpeedInsights;
-};
-
+// Render app immediately without SpeedInsights
 root.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>
 );
 
-// Load SpeedInsights after initial render
-if ('requestIdleCallback' in window) {
-  (window as any).requestIdleCallback(async () => {
-    const SpeedInsights = await loadSpeedInsights();
+// Only load SpeedInsights on user interaction to reduce JS execution time
+let speedInsightsLoaded = false;
+const loadSpeedInsights = async () => {
+  if (speedInsightsLoaded) return;
+  speedInsightsLoaded = true;
+  
+  try {
+    const { SpeedInsights } = await import('@vercel/speed-insights/react');
     root.render(
       <React.StrictMode>
         <App />
         <SpeedInsights />
       </React.StrictMode>
     );
-  });
-} else {
-  setTimeout(async () => {
-    const SpeedInsights = await loadSpeedInsights();
-    root.render(
-      <React.StrictMode>
-        <App />
-        <SpeedInsights />
-      </React.StrictMode>
-    );
-  }, 2000);
-}
+  } catch (error) {
+    console.warn('Failed to load SpeedInsights:', error);
+  }
+};
+
+// Load SpeedInsights only after user interaction or 15 seconds
+['click', 'scroll', 'keydown', 'touchstart'].forEach(event => {
+  document.addEventListener(event, loadSpeedInsights, { once: true, passive: true });
+});
+setTimeout(loadSpeedInsights, 15000);
