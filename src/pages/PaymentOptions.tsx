@@ -579,7 +579,7 @@ const PaymentOptions = () => {
                     className="mt-1 border-primary-foreground data-[state=checked]:bg-primary-foreground data-[state=checked]:text-primary"
                   />
                   <Label htmlFor="license" className="text-sm leading-relaxed cursor-pointer">
-                    To hire a vehicle, you will need a valid and full Driver's Licence. I consent to James Blond verifying my driver licence details with authorised third-party services for the purposes of identity verification and rental eligibility - Please select to confirm
+                    To hire a vehicle, you will need a valid and full or restricted Driver's Licence depending on the type of vehicle you are hiring. I consent to James Blond verifying my driver licence details with authorised third-party services for the purposes of identity verification and rental eligibility - Please select to confirm
                   </Label>
                 </div>
                 
