@@ -1,28 +1,22 @@
 
-import { useState, useEffect } from "react";
 import SearchForm from "./SearchForm";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const Hero = () => {
-  const [imageLoaded, setImageLoaded] = useState(false);
   const isMobile = useIsMobile();
-  
-  useEffect(() => {
-    // Preload the hero image
-    const img = new Image();
-    img.src = '/lovable-uploads/77a83dde-2283-4edc-8c35-e6c97bc2f296.png'; // Car with mountain reflection
-    img.onload = () => setImageLoaded(true);
-  }, []);
 
   return (
     <div className="relative min-h-[500px] md:min-h-[600px]">
-      <div 
-        className={`absolute inset-0 bg-cover bg-center transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
-        style={{
-          backgroundImage: `url('/lovable-uploads/77a83dde-2283-4edc-8c35-e6c97bc2f296.png')`, // Car with mountain reflection
-          backgroundColor: '#1a365d', // Placeholder color while image loads
-        }}
-        aria-hidden="true"
+      {/* Hero image with proper dimensions and optimization */}
+      <img
+        src="/lovable-uploads/77a83dde-2283-4edc-8c35-e6c97bc2f296.png"
+        alt="Premium car rental with mountain reflection"
+        className="absolute inset-0 w-full h-full object-cover"
+        width="1920"
+        height="600"
+        loading="eager"
+        fetchPriority="high"
+        decoding="async"
       />
       <div className="absolute inset-0 bg-black opacity-50"></div>
       

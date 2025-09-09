@@ -43,12 +43,14 @@ const Index = () => {
       
       {/* Truck & Jumbo Van Monday-Thursday Discount Banner */}
       <section className="relative min-h-[400px] overflow-hidden">
-        <div 
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage: `url(${truckPromoBanner})`,
-          }}
-          aria-hidden="true"
+        <img
+          src={truckPromoBanner}
+          alt="Truck rental promotion banner"
+          className="absolute inset-0 w-full h-full object-cover"
+          width="1920"
+          height="400"
+          loading="lazy"
+          decoding="async"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/60"></div>
         

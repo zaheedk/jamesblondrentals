@@ -108,6 +108,7 @@ import Privacy from "./pages/Privacy";
 
 import AppLayout from "./components/layout/AppLayout";
 import { ScrollToTop } from "./components/layout/ScrollToTop";
+import { PerformanceOptimizer } from "./components/PerformanceOptimizer";
 import VanDetail from "./pages/VanDetail";
 
 import SingleCabUteDieselDetail from "./pages/SingleCabUteDieselDetail";
@@ -126,6 +127,7 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <TooltipProvider>
+          <PerformanceOptimizer />
           <Toaster />
           <Sonner />
           <BrowserRouter>
