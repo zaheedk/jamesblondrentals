@@ -591,7 +591,7 @@ const PaymentOptions = () => {
                     className="mt-1 border-primary-foreground data-[state=checked]:bg-primary-foreground data-[state=checked]:text-primary"
                   />
                   <Label htmlFor="bond" className="text-sm leading-relaxed cursor-pointer">
-                    A Full Driver's License and valid Credit/Debit Card matching the name of the hirer must be provided for payment and security at the time of vehicle pick up. A bond of $300 will be applied to your card at the time of pick up.
+                    A Full or Restricted Driver's License and valid Credit/Debit Card matching the name of the hirer must be provided for payment and security at the time of vehicle pick up. A bond of $300 will be applied to your card at the time of pick up.
                   </Label>
                 </div>
               </div>
