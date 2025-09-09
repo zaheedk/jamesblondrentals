@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { getBookingData, updateBookingData } from "@/lib/booking-session";
 import { Label } from "@/components/ui/label";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, getCampaignCode } from "@/lib/utils";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Car, Save } from "lucide-react";
 import PaymentSummary from "@/components/payment/PaymentSummary";
@@ -408,7 +408,18 @@ const PaymentOptions = () => {
         extrakmsid: extrakmsid,
         // Include optional fees (extras) with correct qty parameter
         optionalfees: optionalFees,
-        campaigncode: bookingDetails.campaignCode || sessionData?.campaignCode || "",
+        // Ensure campaign code is properly included to preserve discount
+        ...(getCampaignCode(
+          bookingDetails.campaignCode || sessionData?.campaignCode || "", 
+          pickupDate, 
+          dropoffDate
+        ) ? { 
+          campaigncode: getCampaignCode(
+            bookingDetails.campaignCode || sessionData?.campaignCode || "", 
+            pickupDate, 
+            dropoffDate
+          ) 
+        } : {}),
         customer: {
           firstname: customerInfo?.firstname || bookingDetails.customerFirstName || sessionData?.customerFirstName || "Guest",
           lastname: customerInfo?.lastname || bookingDetails.customerLastName || sessionData?.customerLastName || "Customer",
@@ -422,6 +433,21 @@ const PaymentOptions = () => {
           postcode: customerInfo?.postcode || ""
         }
       };
+      
+      const finalCampaignCode = getCampaignCode(
+        bookingDetails.campaignCode || sessionData?.campaignCode || "", 
+        pickupDate, 
+        dropoffDate
+      );
+      
+      console.log('Campaign code debug info:', {
+        bookingDetailsCampaignCode: bookingDetails.campaignCode,
+        sessionDataCampaignCode: sessionData?.campaignCode,
+        totalDiscountAmount: sessionData?.totalDiscountAmount,
+        finalCampaignCode: finalCampaignCode,
+        pickupDate,
+        dropoffDate
+      });
       
       console.log('Sending save quotation request with payload:', requestPayload);
       setLastRequestPayload(requestPayload);
