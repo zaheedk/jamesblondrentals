@@ -89,8 +89,8 @@ const InsuranceAndExtrasSelection = () => {
         setExtras(extras || []);
         setOptionalFees(optionalfees || []);
         
-        // Update booking data with totalrateafterdiscount from availablecars
-        if (availablecars && availablecars.length > 0) {
+        // Only update totalRateAfterDiscount if it's not already set (preserve discounts from previous steps)
+        if (availablecars && availablecars.length > 0 && !data.totalRateAfterDiscount) {
           const selectedCar = availablecars.find(car => 
             car.vehiclecategoryid.toString() === data.vehicleId.toString()
           );
