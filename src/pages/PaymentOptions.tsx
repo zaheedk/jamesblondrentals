@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -567,7 +567,11 @@ const PaymentOptions = () => {
                     className="mt-1 border-primary-foreground data-[state=checked]:bg-primary-foreground data-[state=checked]:text-primary"
                   />
                   <Label htmlFor="terms" className="text-sm leading-relaxed cursor-pointer">
-                    I agree to the <span className="font-semibold underline">Terms & Conditions</span>.
+                    I agree to the{" "}
+                    <Link to="/terms" className="font-semibold underline hover:text-primary-foreground/80" target="_blank">
+                      Terms & Conditions
+                    </Link>
+                    .
                   </Label>
                 </div>
                 
