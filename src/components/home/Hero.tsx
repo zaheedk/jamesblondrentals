@@ -6,19 +6,20 @@ const Hero = () => {
   const isMobile = useIsMobile();
 
   return (
-    <div className="relative min-h-[500px] md:min-h-[600px]">
-      {/* Hero image with proper dimensions and optimization */}
+    <div className="hero-container relative">
+      {/* Hero image with explicit dimensions to prevent CLS */}
       <img
         src="/lovable-uploads/77a83dde-2283-4edc-8c35-e6c97bc2f296.png"
         alt="Premium car rental with mountain reflection"
-        className="absolute inset-0 w-full h-full object-cover"
+        className="hero-image"
         width="1920"
         height="600"
         loading="eager"
         fetchPriority="high"
-        decoding="async"
+        decoding="sync"
+        style={{ aspectRatio: '16/9' }}
       />
-      <div className="absolute inset-0 bg-black opacity-50"></div>
+      <div className="hero-overlay"></div>
       
       <div className="container mx-auto px-4 py-12 sm:py-20 md:py-28 relative z-10">
         {/* Hero content */}

@@ -3,8 +3,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Font display optimization */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+/* Font optimization moved to HTML head for faster loading */
 
 @layer base {
   :root {
@@ -78,6 +77,24 @@
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  /* Prevent layout shift by setting default dimensions */
+  img {
+    height: auto;
+    max-width: 100%;
+  }
+
+  /* Optimize rendering performance */
+  * {
+    box-sizing: border-box;
+  }
+
+  /* Reduce repaints and reflows */
+  .hero-container,
+  .card-elegant {
+    contain: layout style paint;
   }
 
   h1, h2, h3, h4, h5, h6 {

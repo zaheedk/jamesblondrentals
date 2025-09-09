@@ -38,8 +38,16 @@
     <link rel="dns-prefetch" href="//www.googletagmanager.com">
     <link rel="dns-prefetch" href="//connect.facebook.net">
     
-    <!-- Preload critical hero image -->
+    <!-- Preload critical hero image with WebP fallback -->
     <link rel="preload" href="/lovable-uploads/77a83dde-2283-4edc-8c35-e6c97bc2f296.png" as="image" type="image/png" fetchpriority="high">
+    
+    <!-- Critical CSS inlined for faster LCP -->
+    <style>
+      .hero-container { min-height: 500px; }
+      @media (min-width: 768px) { .hero-container { min-height: 600px; } }
+      .hero-image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+      .hero-overlay { position: absolute; inset: 0; background-color: black; opacity: 0.5; }
+    </style>
     <title>Affordable Car Rentals in New Zealand | Quality Vehicles, Easy Booking & Best Rates</title>
     <meta name="description" content="4WD 7 seater 8 seater 10 seater 12 seater minivan minibus hatch premium Car SUV UTE Van hire rental Auckland Wellington airport" />
     <meta name="author" content="James Blond Rentals" />
@@ -60,9 +68,11 @@
     <meta name="twitter:image" content="/lovable-uploads/f40953dd-07c7-405f-a446-bbb6de3b2aac.png" />
     <meta name="twitter:image:alt" content="10-Seat Toyota Hiace ZL Minibus for hire from James Blond Rentals" />
     
-    <!-- Preload critical resources -->
+    <!-- Optimized font loading with preload -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"></noscript>
     <link rel="preconnect" href="https://images.unsplash.com">
     
     <!-- SearchAtlas Dynamic Optimization -->
