@@ -550,7 +550,6 @@ const PaymentOptions = () => {
             bookingInfoTotalCost={bookingInfoTotalCost}
             payment={paymentType === "deposit" ? DEPOSIT_AMOUNT : totalCost}
             balanceDue={paymentType === "deposit" ? totalCost - DEPOSIT_AMOUNT : 0}
-            securityBond={securityBond}
           />
           
           {/* Complete your booking section */}

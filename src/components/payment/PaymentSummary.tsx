@@ -26,7 +26,6 @@ interface PaymentSummaryProps {
   bookingInfoTotalCost?: number;
   payment: number;
   balanceDue: number;
-  securityBond?: number;
 }
 
 const PaymentSummary = ({
@@ -42,7 +41,6 @@ const PaymentSummary = ({
   bookingInfoTotalCost,
   payment,
   balanceDue,
-  securityBond = 0,
 }: PaymentSummaryProps) => {
   const effectiveRentalDays = Math.max(1, rentalDays || 1);
   
@@ -125,18 +123,8 @@ const PaymentSummary = ({
         )}
         
         <div className="border-t border-gray-300 mt-2 pt-2">
-          <div className="flex justify-between">
-            <span>Subtotal</span>
-            <span>{formatCurrency(displayTotalCost - securityBond)}</span>
-          </div>
-          
-          <div className="flex justify-between text-sm mt-1">
-            <span>Security Bond (Refundable)</span>
-            <span>{formatCurrency(securityBond)}</span>
-          </div>
-          
-          <div className="flex justify-between font-semibold mt-2 pt-2 border-t border-dashed border-gray-200">
-            <span>Total Cost including Refundable Bond</span>
+          <div className="flex justify-between font-semibold">
+            <span>Total Cost</span>
             <span>{formatCurrency(displayTotalCost)}</span>
           </div>
           
