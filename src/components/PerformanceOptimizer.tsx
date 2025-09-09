@@ -2,55 +2,76 @@ import { useEffect } from 'react';
 
 export const PerformanceOptimizer = () => {
   useEffect(() => {
-    // Optimize third-party scripts loading
-    const optimizeScripts = () => {
-      // Defer non-critical analytics
-      setTimeout(() => {
+    // Optimize JavaScript execution by chunking work
+    const optimizeExecution = () => {
+      // Break up script loading into smaller chunks
+      const deferredScripts = [];
+      
+      // Defer analytics until page is loaded and user is idle
+      const deferAnalytics = () => {
         if (window.gtag) {
           window.gtag('config', 'G-504DCLJNP1');
         }
-      }, 1000);
-    };
-
-    // Reduce main thread blocking
-    if ('requestIdleCallback' in window) {
-      (window as any).requestIdleCallback(optimizeScripts);
-    } else {
-      setTimeout(optimizeScripts, 100);
-    }
-
-    // Preload critical resources
-    const preloadCritical = () => {
-      const link = document.createElement('link');
-      link.rel = 'prefetch';
-      link.href = '/vehicles';
-      document.head.appendChild(link);
-    };
-
-    setTimeout(preloadCritical, 2000);
-
-    // Add performance observer for Core Web Vitals
-    if ('PerformanceObserver' in window) {
-      try {
-        // LCP Observer
-        const lcpObserver = new PerformanceObserver((list) => {
-          for (const entry of list.getEntries()) {
-            console.log('LCP:', entry.startTime);
-          }
+      };
+      
+      // Use requestIdleCallback for non-critical work
+      if ('requestIdleCallback' in window) {
+        (window as any).requestIdleCallback(() => {
+          deferAnalytics();
+        }, { timeout: 5000 });
+      } else {
+        setTimeout(deferAnalytics, 3000);
+      }
+      
+      // Preload critical routes only when user is idle
+      const preloadRoutes = () => {
+        const routes = ['/vehicles', '/fleet', '/contact'];
+        routes.forEach((route, index) => {
+          setTimeout(() => {
+            const link = document.createElement('link');
+            link.rel = 'prefetch';
+            link.href = route;
+            document.head.appendChild(link);
+          }, index * 100);
         });
-        lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
+      };
+      
+      if ('requestIdleCallback' in window) {
+        (window as any).requestIdleCallback(preloadRoutes, { timeout: 10000 });
+      } else {
+        setTimeout(preloadRoutes, 5000);
+      }
+    };
 
-        // CLS Observer
-        const clsObserver = new PerformanceObserver((list) => {
-          for (const entry of list.getEntries()) {
-            if (!(entry as any).hadRecentInput) {
-              console.log('CLS:', (entry as any).value);
+    // Optimize third-party script loading
+    const optimizeThirdParty = () => {
+      // Delay non-essential third-party scripts
+      const scripts = document.querySelectorAll('script[src*="google"]');
+      scripts.forEach((script) => {
+        if (script.getAttribute('src')?.includes('gtm') || 
+            script.getAttribute('src')?.includes('analytics')) {
+          script.setAttribute('loading', 'lazy');
+        }
+      });
+    };
+
+    // Run optimizations in phases
+    setTimeout(optimizeThirdParty, 100);
+    setTimeout(optimizeExecution, 500);
+
+    // Simplified performance monitoring (only in dev)
+    if (process.env.NODE_ENV === 'development') {
+      if ('PerformanceObserver' in window) {
+        try {
+          const lcpObserver = new PerformanceObserver((list) => {
+            for (const entry of list.getEntries()) {
+              console.log('LCP:', entry.startTime);
             }
-          }
-        });
-        clsObserver.observe({ entryTypes: ['layout-shift'] });
-      } catch (e) {
-        // Browser doesn't support observers
+          });
+          lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
+        } catch (e) {
+          // Silently fail
+        }
       }
     }
   }, []);

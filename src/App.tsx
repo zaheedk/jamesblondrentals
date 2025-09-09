@@ -3,11 +3,12 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { createElement, useState } from "react";
+import { createElement, useState, lazy, Suspense } from "react";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
-import Index from "./pages/Index";
+// Lazy load heavy pages to reduce initial bundle size
+const Index = lazy(() => import("./pages/Index"));
 import NotFound from "./pages/NotFound";
 import Vehicles from "./pages/Vehicles";
 import VehicleDetail from "./pages/VehicleDetail";
@@ -134,7 +135,11 @@ const App = () => {
             <ScrollToTop />
             <AppLayout>
               <Routes>
-                <Route path="/" element={<Index />} />
+                <Route path="/" element={
+                  <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+                    <Index />
+                  </Suspense>
+                } />
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/vehicles" element={<Vehicles />} />
