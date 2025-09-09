@@ -227,9 +227,11 @@ const PaymentOptions = () => {
         const bookingInfo = response.results.bookinginfo[0];
         
         // Extract security bond from extrafees
+        let bondAmount = 0;
         const bondFee = response.results.extrafees?.find((fee: any) => fee.isbondfee === true);
         if (bondFee) {
-          setSecurityBond(typeof bondFee.fees === 'string' ? parseFloat(bondFee.fees) : bondFee.fees);
+          bondAmount = typeof bondFee.fees === 'string' ? parseFloat(bondFee.fees) : bondFee.fees;
+          setSecurityBond(bondAmount);
         }
 
         // Update booking details with the vehicle category information from API
@@ -265,9 +267,11 @@ const PaymentOptions = () => {
           const totalCostValue = Number(bookingInfo.totalcost);
           
           if (!isNaN(totalCostValue)) {
-            setBookingInfoTotalCost(totalCostValue);
-            setTotalCost(totalCostValue);
-            console.log("Set total cost from booking info:", totalCostValue);
+            // Subtract security bond from total cost for display purposes
+            const displayTotalCost = totalCostValue - bondAmount;
+            setBookingInfoTotalCost(displayTotalCost);
+            setTotalCost(displayTotalCost);
+            console.log("Set total cost from booking info (excluding security bond):", displayTotalCost, "Original:", totalCostValue, "Bond:", bondAmount);
           } else {
             console.warn("Invalid totalcost value:", bookingInfo.totalcost);
           }
