@@ -406,6 +406,256 @@ const Index = () => {
         </div>
       </section>
       
+      {/* Comprehensive Vehicle Types Section */}
+      <section className="section-padding bg-background">
+        <div className="container mx-auto container-padding">
+          <div className="text-center mb-12">
+            <h2 className="text-balance mb-4">Complete Vehicle Rental Solutions</h2>
+            <p className="text-lg text-muted-foreground max-w-4xl mx-auto">
+              From economy cars to luxury SUVs, cargo vans to moving trucks - we have the perfect vehicle for every journey across New Zealand
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            {/* Economy & Compact Cars */}
+            <div className="card-elegant p-6">
+              <h3 className="text-foreground mb-3">Economy & Compact Cars</h3>
+              <p className="text-muted-foreground text-sm mb-4">
+                Fuel-efficient vehicles perfect for city driving and budget-conscious travelers. Ideal for 1-4 passengers.
+              </p>
+              <div className="text-xs text-muted-foreground">
+                Economy • Compact • Hatchback • City Cars
+              </div>
+            </div>
+            
+            {/* Family SUVs & 4WDs */}
+            <div className="card-elegant p-6">
+              <h3 className="text-foreground mb-3">Family SUVs & 4WDs</h3>
+              <p className="text-muted-foreground text-sm mb-4">
+                Spacious 7-seater and 8-seater SUVs with 4WD capability. Perfect for family adventures and rough terrain.
+              </p>
+              <div className="text-xs text-muted-foreground">
+                7-Seater • 8-Seater • 4WD • AWD • Premium SUV
+              </div>
+            </div>
+            
+            {/* Minibuses & People Movers */}
+            <div className="card-elegant p-6">
+              <h3 className="text-foreground mb-3">Minibuses & People Movers</h3>
+              <p className="text-muted-foreground text-sm mb-4">
+                Large group transportation with 10-seater, 12-seater minivans and minibuses for events and group travel.
+              </p>
+              <div className="text-xs text-muted-foreground">
+                10-Seater • 12-Seater • Minivan • Minibus • Group Transport
+              </div>
+            </div>
+            
+            {/* Commercial Vans */}
+            <div className="card-elegant p-6">
+              <h3 className="text-foreground mb-3">Commercial Vans</h3>
+              <p className="text-muted-foreground text-sm mb-4">
+                Cargo vans and panel vans for deliveries, moving, and commercial use. Various sizes available.
+              </p>
+              <div className="text-xs text-muted-foreground">
+                Cargo Van • Panel Van • Transit Van • Commercial Vehicle
+              </div>
+            </div>
+            
+            {/* Trucks & Moving Vehicles */}
+            <div className="card-elegant p-6">
+              <h3 className="text-foreground mb-3">Trucks & Moving Vehicles</h3>
+              <p className="text-muted-foreground text-sm mb-4">
+                Box trucks, tipper trucks, and furniture trucks for large moves and commercial operations.
+              </p>
+              <div className="text-xs text-muted-foreground">
+                Box Truck • Tipper Truck • Furniture Truck • Moving Truck
+              </div>
+            </div>
+            
+            {/* Premium & Luxury */}
+            <div className="card-elegant p-6">
+              <h3 className="text-foreground mb-3">Premium & Luxury</h3>
+              <p className="text-muted-foreground text-sm mb-4">
+                Luxury cars, premium sedans, and executive vehicles for special occasions and business travel.
+              </p>
+              <div className="text-xs text-muted-foreground">
+                Luxury Car • Premium Sedan • Executive • High-End Vehicle
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Easy Booking Process Section */}
+      <section className="section-padding bg-muted/20">
+        <div className="container mx-auto container-padding">
+          <div className="text-center mb-12">
+            <h2 className="text-balance mb-4">Simple 4-Step Booking Process</h2>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+              Book your rental vehicle in minutes with our streamlined online booking system
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+            <div className="card-feature text-center">
+              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl font-bold text-primary">1</span>
+              </div>
+              <h3 className="text-foreground mb-3">Select Dates & Location</h3>
+              <p className="text-muted-foreground text-sm">
+                Choose your pickup and dropoff dates, times, and location from our convenient branches
+              </p>
+            </div>
+            
+            <div className="card-feature text-center">
+              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl font-bold text-primary">2</span>
+              </div>
+              <h3 className="text-foreground mb-3">Choose Your Vehicle</h3>
+              <p className="text-muted-foreground text-sm">
+                Browse our extensive fleet and select the perfect vehicle for your needs and budget
+              </p>
+            </div>
+            
+            <div className="card-feature text-center">
+              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl font-bold text-primary">3</span>
+              </div>
+              <h3 className="text-foreground mb-3">Add Extras & Insurance</h3>
+              <p className="text-muted-foreground text-sm">
+                Customize your rental with optional extras like GPS, child seats, and comprehensive insurance
+              </p>
+            </div>
+            
+            <div className="card-feature text-center">
+              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl font-bold text-primary">4</span>
+              </div>
+              <h3 className="text-foreground mb-3">Confirm & Pay</h3>
+              <p className="text-muted-foreground text-sm">
+                Review your booking details, provide driver information, and complete secure online payment
+              </p>
+            </div>
+          </div>
+          
+          <div className="text-center mt-12">
+            <div className="card-elegant p-6 max-w-2xl mx-auto">
+              <h4 className="text-foreground mb-3">Online Booking Benefits</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-muted-foreground">
+                <div>✓ Instant confirmation</div>
+                <div>✓ Best rate guarantee</div>
+                <div>✓ 24/7 booking availability</div>
+                <div>✓ Secure payment</div>
+                <div>✓ Easy modifications</div>
+                <div>✓ Digital receipts</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Detailed Locations & Services */}
+      <section className="section-padding bg-background">
+        <div className="container mx-auto container-padding">
+          <div className="text-center mb-12">
+            <h2 className="text-balance mb-4">Rental Locations Across New Zealand</h2>
+            <p className="text-lg text-muted-foreground max-w-4xl mx-auto">
+              Convenient pickup and dropoff locations in major cities and airports throughout New Zealand
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            {/* Auckland Services */}
+            <div className="card-elegant p-8">
+              <h3 className="text-foreground mb-6">Auckland Region Services</h3>
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-foreground">Airport Services</h4>
+                    <ul className="text-muted-foreground space-y-1">
+                      <li>• Auckland Airport Domestic</li>
+                      <li>• Auckland Airport International</li>
+                      <li>• Airport shuttle service</li>
+                      <li>• Terminal pickup/dropoff</li>
+                    </ul>
+                  </div>
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-foreground">City Locations</h4>
+                    <ul className="text-muted-foreground space-y-1">
+                      <li>• Central Auckland</li>
+                      <li>• West Auckland</li>
+                      <li>• South Auckland</li>
+                      <li>• North Shore</li>
+                    </ul>
+                  </div>
+                </div>
+                <div className="pt-4 border-t border-border">
+                  <h4 className="font-semibold text-foreground mb-2">Specialized Auckland Services</h4>
+                  <div className="flex flex-wrap gap-2 text-xs">
+                    <span className="bg-primary/10 text-primary px-2 py-1 rounded">Cargo Van Rentals</span>
+                    <span className="bg-primary/10 text-primary px-2 py-1 rounded">Truck Hire</span>
+                    <span className="bg-primary/10 text-primary px-2 py-1 rounded">Minibus Rentals</span>
+                    <span className="bg-primary/10 text-primary px-2 py-1 rounded">Airport Transfers</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Wellington Services */}
+            <div className="card-elegant p-8">
+              <h3 className="text-foreground mb-6">Wellington Region Services</h3>
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-foreground">Airport & City</h4>
+                    <ul className="text-muted-foreground space-y-1">
+                      <li>• Wellington Airport</li>
+                      <li>• Wellington CBD</li>
+                      <li>• Lower Hutt</li>
+                      <li>• Upper Hutt</li>
+                    </ul>
+                  </div>
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-foreground">Regional Areas</h4>
+                    <ul className="text-muted-foreground space-y-1">
+                      <li>• Porirua</li>
+                      <li>• Kapiti Coast</li>
+                      <li>• Wairarapa</li>
+                      <li>• Marlborough</li>
+                    </ul>
+                  </div>
+                </div>
+                <div className="pt-4 border-t border-border">
+                  <h4 className="font-semibold text-foreground mb-2">Wellington Specialties</h4>
+                  <div className="flex flex-wrap gap-2 text-xs">
+                    <span className="bg-primary/10 text-primary px-2 py-1 rounded">Capital City Tours</span>
+                    <span className="bg-primary/10 text-primary px-2 py-1 rounded">Business Rentals</span>
+                    <span className="bg-primary/10 text-primary px-2 py-1 rounded">Government Contracts</span>
+                    <span className="bg-primary/10 text-primary px-2 py-1 rounded">Ferry Connections</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="mt-12 text-center">
+            <div className="card-elegant p-6 max-w-4xl mx-auto">
+              <h4 className="text-foreground mb-4">Additional Services Available</h4>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-muted-foreground">
+                <div>One-way rentals</div>
+                <div>Long-term leasing</div>
+                <div>Corporate accounts</div>
+                <div>Emergency replacements</div>
+                <div>Delivery service</div>
+                <div>Airport meet & greet</div>
+                <div>After-hours pickup</div>
+                <div>Insurance claims</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="section-padding bg-gradient-to-r from-primary to-primary/90">
         <div className="container mx-auto container-padding text-center">
