@@ -15,6 +15,8 @@ import { RCMBookingResponse } from "@/lib/api/rcm-api-types";
 import { format, addDays } from "date-fns";
 import { useRcmApi } from "@/hooks/use-rcm-api";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Card, CardContent } from "@/components/ui/card";
 
 const DEPOSIT_AMOUNT = 50;
 
@@ -31,6 +33,9 @@ const PaymentOptions = () => {
   const [bookingInfoTotalCost, setBookingInfoTotalCost] = useState<number | undefined>(undefined);
   const [lastRequestPayload, setLastRequestPayload] = useState<any>(null);
   const [securityBond, setSecurityBond] = useState(0);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [acceptedLicense, setAcceptedLicense] = useState(false);
+  const [acceptedBond, setAcceptedBond] = useState(false);
   const { useLocationDetails } = useRcmApi();
   const { data: locationDetails } = useLocationDetails();
 
@@ -449,6 +454,15 @@ const PaymentOptions = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate that all checkboxes are checked
+    if (!acceptedTerms || !acceptedLicense || !acceptedBond) {
+      toast.error("Please accept all terms and conditions", {
+        description: "You must agree to all requirements before proceeding.",
+      });
+      return;
+    }
+    
     setIsLoading(true);
     
     try {
@@ -539,6 +553,51 @@ const PaymentOptions = () => {
             securityBond={securityBond}
           />
           
+          {/* Complete your booking section */}
+          <Card className="mb-6 bg-primary text-primary-foreground">
+            <CardContent className="p-6">
+              <h3 className="text-xl font-semibold mb-4">Complete your booking</h3>
+              
+              <div className="space-y-4">
+                <div className="flex items-start space-x-3">
+                  <Checkbox
+                    id="terms"
+                    checked={acceptedTerms}
+                    onCheckedChange={(checked) => setAcceptedTerms(checked as boolean)}
+                    className="mt-1 border-primary-foreground data-[state=checked]:bg-primary-foreground data-[state=checked]:text-primary"
+                  />
+                  <Label htmlFor="terms" className="text-sm leading-relaxed cursor-pointer">
+                    I agree to the <span className="font-semibold underline">Terms & Conditions</span>.
+                  </Label>
+                </div>
+                
+                <div className="flex items-start space-x-3">
+                  <Checkbox
+                    id="license"
+                    checked={acceptedLicense}
+                    onCheckedChange={(checked) => setAcceptedLicense(checked as boolean)}
+                    className="mt-1 border-primary-foreground data-[state=checked]:bg-primary-foreground data-[state=checked]:text-primary"
+                  />
+                  <Label htmlFor="license" className="text-sm leading-relaxed cursor-pointer">
+                    To hire a vehicle, you will need a valid and full Driver's Licence. I consent to James Blond verifying my driver licence details with authorised third-party services for the purposes of identity verification and rental eligibility - Please select to confirm
+                  </Label>
+                </div>
+                
+                <div className="flex items-start space-x-3">
+                  <Checkbox
+                    id="bond"
+                    checked={acceptedBond}
+                    onCheckedChange={(checked) => setAcceptedBond(checked as boolean)}
+                    className="mt-1 border-primary-foreground data-[state=checked]:bg-primary-foreground data-[state=checked]:text-primary"
+                  />
+                  <Label htmlFor="bond" className="text-sm leading-relaxed cursor-pointer">
+                    A Full Driver's License and valid Credit Card matching the name of the hirer must be provided for payment and security at the time of vehicle pick up. If you are paying by Credit Card, EFTPOS or Cash, a pre-authorisation bond of $300 is required ONLY if you take the Standard Insurance. No bond is required with Premium, Gold or Comprehensive Insurance. If you pay by Debit Card, EFTPOS or Cash, the Premium insurance and a $300 bond is mandatory with all hires. For the Premium Categories, a bond of $500 applies. Please select here to confirm all.
+                  </Label>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
           <div className="mb-6">
             <RadioGroup 
               value={paymentType} 
@@ -570,7 +629,7 @@ const PaymentOptions = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <Button 
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || !acceptedTerms || !acceptedLicense || !acceptedBond}
               className="w-full"
             >
               {isLoading ? (
