@@ -7,7 +7,7 @@ const Hero = () => {
 
   return (
     <div className="hero-container relative">
-      {/* Hero image with explicit dimensions to prevent CLS */}
+      {/* Optimized hero image with proper sizing */}
       <img
         src="/lovable-uploads/77a83dde-2283-4edc-8c35-e6c97bc2f296.png"
         alt="Premium car rental with mountain reflection"
@@ -17,6 +17,7 @@ const Hero = () => {
         loading="eager"
         fetchPriority="high"
         decoding="sync"
+        sizes="100vw"
         style={{ aspectRatio: '16/9' }}
       />
       <div className="hero-overlay"></div>

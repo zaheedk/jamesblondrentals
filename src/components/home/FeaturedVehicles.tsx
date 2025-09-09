@@ -200,14 +200,16 @@ const FeaturedVehicles = () => {
               <CarouselItem key={vehicle.id} className="md:basis-1/2 lg:basis-1/3">
                 <Card className="mx-2">
                   <AspectRatio ratio={4/3} className="overflow-hidden bg-white">
-                    {/* Use loading="lazy" for non-critical images */}
+                    {/* Optimized image loading with proper sizes */}
                     <img 
                       src={vehicle.imageurl} 
                       alt={vehicle.vehiclecategoryname}
                       className="w-full h-full object-contain"
                       loading="lazy"
-                      width="300"
-                      height="225"
+                      width="400"
+                      height="300"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      decoding="async"
                       onError={(e) => {
                         (e.target as HTMLImageElement).src = '/placeholder.svg';
                       }}
