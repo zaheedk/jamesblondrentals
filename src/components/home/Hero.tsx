@@ -9,7 +9,7 @@ const Hero = () => {
     <div className="hero-container relative">
       {/* Optimized hero image with proper sizing */}
       <img
-        src="/lovable-uploads/77a83dde-2283-4edc-8c35-e6c97bc2f296.png"
+        src="/lovable-uploads/77a83dde-2283-4edc-8c35-e6c97bc2f296.png?w=1920&h=600&q=60&f=webp&fit=cover"
         alt="Premium car rental with mountain reflection"
         className="hero-image"
         width="1920"

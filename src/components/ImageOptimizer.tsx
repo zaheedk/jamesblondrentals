@@ -17,16 +17,20 @@ export const ImageOptimizer = () => {
           img.setAttribute('decoding', 'async');
         }
         
-        // Optimize lovable-uploads images
+        // Optimize lovable-uploads images - only if not already optimized
         const src = img.getAttribute('src');
         if (src && src.includes('/lovable-uploads/') && !src.includes('?')) {
-          // Get image dimensions or use defaults
-          const width = img.getAttribute('width') || '800';
-          const height = img.getAttribute('height') || '600';
+          // Get image dimensions from attributes or computed styles
+          const width = img.getAttribute('width') || img.offsetWidth || '800';
+          const height = img.getAttribute('height') || img.offsetHeight || '600';
           
-          // Add optimization parameters
-          const optimizedSrc = `${src}?w=${width}&h=${height}&q=70&f=webp&fit=cover`;
-          img.setAttribute('src', optimizedSrc);
+          // Use aggressive compression for better performance
+          const optimizedSrc = `${src}?w=${Math.min(parseInt(width.toString()), 1200)}&h=${Math.min(parseInt(height.toString()), 800)}&q=60&f=webp&fit=cover`;
+          
+          // Prevent duplicate loading by checking if already optimized
+          if (img.getAttribute('src') !== optimizedSrc) {
+            img.setAttribute('src', optimizedSrc);
+          }
         }
         
         // Add sizes attribute for responsive images

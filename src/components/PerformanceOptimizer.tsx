@@ -47,10 +47,11 @@ export const PerformanceOptimizer = () => {
           img.setAttribute('loading', 'lazy');
         }
         
-        // Compress images by adding quality parameter for lovable-uploads
+        // Skip optimization here to prevent duplicate work with ImageOptimizer
         const src = img.getAttribute('src');
         if (src && src.includes('/lovable-uploads/') && !src.includes('?')) {
-          img.setAttribute('src', `${src}?w=800&q=75`);
+          // Use more aggressive compression
+          img.setAttribute('src', `${src}?w=800&q=55&f=webp&fit=cover`);
         }
       });
     };
