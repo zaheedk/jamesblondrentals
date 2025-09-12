@@ -421,11 +421,11 @@ const SearchForm = ({
         </div>
 
         <form onSubmit={handleSearch}>
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-4">
+            <div className="space-y-4">
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <Label htmlFor="pickup-location">Pickup Location</Label>
+                  <Label htmlFor="pickup-location">Pick-up Location</Label>
                 </div>
                 <LocationSelect 
                   id="pickup-location"
@@ -443,10 +443,33 @@ const SearchForm = ({
                 />
               </div>
 
+              <div className="grid grid-cols-2 gap-4">
+                <DateSelect
+                  id="pickup-date"
+                  label="Pick up Date"
+                  date={pickupDate}
+                  onDateChange={handlePickupDateChange}
+                  disableDate={(date) => disablePastDates(date, pickupLocation, locationDetails)}
+                  locationId={pickupLocation}
+                  locationDetails={locationDetails}
+                />
+
+                <TimeSelect
+                  id="pickup-time"
+                  label="Pick up Time"
+                  time={pickupTime}
+                  onTimeChange={handlePickupTimeChange}
+                  timeOptions={pickupTimeOptions}
+                  isLoading={isLoadingOfficeHours}
+                  disabled={!pickupLocation || !pickupDate || pickupTimeOptions.length === 0}
+                  placeholder={!pickupLocation ? "Select location first" : !pickupDate ? "Select date first" : undefined}
+                />
+              </div>
+
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Label htmlFor="dropoff-location">Dropoff Location</Label>
+                    <Label htmlFor="dropoff-location">Return Location</Label>
                   </div>
                   <label className="flex items-center">
                     <input
@@ -455,7 +478,7 @@ const SearchForm = ({
                       checked={sameLocation}
                       onChange={() => setSameLocation(!sameLocation)}
                     />
-                    <span className="text-sm">Same as pickup</span>
+                    <span className="text-sm">Same as Pickup</span>
                   </label>
                 </div>
                 <LocationSelect
@@ -470,88 +493,71 @@ const SearchForm = ({
                 />
               </div>
 
-              <DateSelect
-                id="pickup-date"
-                label="Pickup Date"
-                date={pickupDate}
-                onDateChange={handlePickupDateChange}
-                disableDate={(date) => disablePastDates(date, pickupLocation, locationDetails)}
-                locationId={pickupLocation}
-                locationDetails={locationDetails}
-              />
-
-              <TimeSelect
-                id="pickup-time"
-                label="Pickup Time"
-                time={pickupTime}
-                onTimeChange={handlePickupTimeChange}
-                timeOptions={pickupTimeOptions}
-                isLoading={isLoadingOfficeHours}
-                disabled={!pickupLocation || !pickupDate || pickupTimeOptions.length === 0}
-                placeholder={!pickupLocation ? "Select location first" : !pickupDate ? "Select date first" : undefined}
-              />
-
-              <DateSelect
-                id="dropoff-date"
-                label="Dropoff Date"
-                date={dropoffDate}
-                onDateChange={setDropoffDate}
-                disableDate={(date) => {
-                  // For drop-off date, only disable dates strictly before the pickup date
-                  if (!pickupDate) return true;
-                  
-                  // Compare dates by truncating time part to enable same day selection
-                  const dateWithoutTime = new Date(date);
-                  dateWithoutTime.setHours(0, 0, 0, 0);
-                  
-                  const pickupWithoutTime = new Date(pickupDate);
-                  pickupWithoutTime.setHours(0, 0, 0, 0);
-                  
-                  return dateWithoutTime < pickupWithoutTime;
-                }}
-                locationId={sameLocation ? pickupLocation : dropoffLocation}
-                locationDetails={locationDetails}
-                allowSameDay={true}
-              />
+              <div className="grid grid-cols-2 gap-4">
+                <DateSelect
+                  id="dropoff-date"
+                  label="Drop off Date"
+                  date={dropoffDate}
+                  onDateChange={setDropoffDate}
+                  disableDate={(date) => {
+                    // For drop-off date, only disable dates strictly before the pickup date
+                    if (!pickupDate) return true;
+                    
+                    // Compare dates by truncating time part to enable same day selection
+                    const dateWithoutTime = new Date(date);
+                    dateWithoutTime.setHours(0, 0, 0, 0);
+                    
+                    const pickupWithoutTime = new Date(pickupDate);
+                    pickupWithoutTime.setHours(0, 0, 0, 0);
+                    
+                    return dateWithoutTime < pickupWithoutTime;
+                  }}
+                  locationId={sameLocation ? pickupLocation : dropoffLocation}
+                  locationDetails={locationDetails}
+                  allowSameDay={true}
+                />
+                
+                <TimeSelect
+                  id="dropoff-time"
+                  label="Drop off Time"
+                  time={dropoffTime}
+                  onTimeChange={setDropoffTime}
+                  timeOptions={dropoffTimeOptions}
+                  isLoading={isLoadingOfficeHours}
+                  disabled={!dropoffDate || !(sameLocation ? pickupLocation : dropoffLocation) || dropoffTimeOptions.length === 0}
+                  placeholder={!(sameLocation ? pickupLocation : dropoffLocation) ? "Select location first" : !dropoffDate ? "Select date first" : undefined}
+                />
+              </div>
               
-              <TimeSelect
-                id="dropoff-time"
-                label="Dropoff Time"
-                time={dropoffTime}
-                onTimeChange={setDropoffTime}
-                timeOptions={dropoffTimeOptions}
-                isLoading={isLoadingOfficeHours}
-                disabled={!dropoffDate || !(sameLocation ? pickupLocation : dropoffLocation) || dropoffTimeOptions.length === 0}
-                placeholder={!(sameLocation ? pickupLocation : dropoffLocation) ? "Select location first" : !dropoffDate ? "Select date first" : undefined}
-              />
+              <div className="grid grid-cols-2 gap-4">
+                <OptionSelect
+                  id="driver-age"
+                  label="Age"
+                  value={age}
+                  onValueChange={setAge}
+                  options={driverAges.map(age => ({ id: String(age.id), name: age.driverage }))}
+                  getOptionName={getDriverAgeName}
+                  isLoading={isLoadingAges}
+                  placeholder="Select age"
+                />
+                
+                <OptionSelect
+                  id="car-category"
+                  label="Category"
+                  value={carCategory}
+                  onValueChange={setCarCategory}
+                  options={carCategories.map(category => ({ id: String(category.id), name: category.vehiclecategorytype }))}
+                  getOptionName={getCategoryName}
+                  isLoading={isLoadingCategories}
+                  placeholder="All Categories"
+                  defaultValue="All Categories"
+                  allOptionId="0"
+                  allOptionLabel="All Categories"
+                />
+              </div>
               
-              <OptionSelect
-                id="driver-age"
-                label="Driver Age"
-                value={age}
-                onValueChange={setAge}
-                options={driverAges.map(age => ({ id: String(age.id), name: age.driverage }))}
-                getOptionName={getDriverAgeName}
-                isLoading={isLoadingAges}
-                placeholder="Select age"
-              />
-              
-              <OptionSelect
-                id="car-category"
-                label="Vehicle Category"
-                value={carCategory}
-                onValueChange={setCarCategory}
-                options={carCategories.map(category => ({ id: String(category.id), name: category.vehiclecategorytype }))}
-                getOptionName={getCategoryName}
-                isLoading={isLoadingCategories}
-                placeholder="All Categories"
-                defaultValue="All Categories"
-                allOptionId="0"
-                allOptionLabel="All Categories"
-              />
-              
-              <div className="space-y-2 md:col-span-2">
-                <Label htmlFor="campaign-code">Campaign Code (Optional)</Label>
+              <div className="space-y-2">
+                <Label htmlFor="campaign-code">Promo Code</Label>
                 <Input 
                   id="campaign-code" 
                   type="text" 
