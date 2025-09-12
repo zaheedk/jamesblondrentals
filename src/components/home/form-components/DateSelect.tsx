@@ -68,7 +68,7 @@ export const DateSelect = ({
             )}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
-            {date ? format(date, "PPP") : <span>Select date</span>}
+            {date ? format(date, "dd/MM/yy") : <span>Select date</span>}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0 pointer-events-auto">
