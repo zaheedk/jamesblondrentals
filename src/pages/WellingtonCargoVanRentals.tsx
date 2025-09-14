@@ -11,36 +11,25 @@ const WellingtonCargoVanRentals = () => {
     <div className="container mx-auto px-4 py-8">
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-6 mb-8">
-        <div className="grid md:grid-cols-2 gap-6 items-center">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold mb-4">Wellington Cargo Van Rentals & Hire</h1>
-            <p className="text-lg text-gray-700 mb-6">
-              Affordable, reliable cargo vans for hire in Wellington. Perfect for small moves, deliveries, and business needs throughout the capital city.
-            </p>
-            <div className="flex items-center gap-2">
-              <Button asChild size="lg">
-                <a href="#booking">Book Now</a>
-              </Button>
-              <Button variant="outline" asChild size="lg">
-                <Link to="/fleet/vans">View All Vans</Link>
-              </Button>
-            </div>
-          </div>
-          <div className="relative">
-            <img 
-              src="/lovable-uploads/40c4c11d-0a27-40d6-9c5c-3fdbb1c138a0.png" 
-              alt="Cargo Van for Hire in Wellington" 
-              className="rounded-lg w-full shadow-lg"
-              width="600"
-              height="400"
-              loading="lazy"
-            />
-            <div className="absolute top-4 right-4 bg-primary text-white px-4 py-2 rounded-full text-sm font-bold">
-              Most Popular
-            </div>
-          </div>
+        <div className="text-center mb-6">
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">Wellington Cargo Van Rentals & Hire</h1>
+          <p className="text-lg text-gray-700 mb-6">
+            Affordable, reliable cargo vans for hire in Wellington. Perfect for small moves, deliveries, and business needs throughout the capital city.
+          </p>
         </div>
       </div>
+
+      {/* Booking Form Section - Moved to Top */}
+      <section className="mb-12">
+        <div className="bg-primary/5 border border-primary/10 rounded-lg p-6">
+          <h2 className="text-2xl font-bold mb-6 text-center">Book Your Wellington Cargo Van</h2>
+          <p className="text-center mb-6">Check availability and reserve your van today</p>
+          
+          <div className="max-w-4xl mx-auto">
+            <SearchForm />
+          </div>
+        </div>
+      </section>
 
       {/* Why Choose Us */}
       <section className="mb-12">
@@ -350,17 +339,6 @@ const WellingtonCargoVanRentals = () => {
         </div>
       </section>
 
-      {/* Booking Frame Section */}
-      <section id="booking" className="mb-12 scroll-mt-16">
-        <div className="bg-primary/5 border border-primary/10 rounded-lg p-6">
-          <h2 className="text-2xl font-bold mb-6 text-center">Book Your Wellington Cargo Van</h2>
-          <p className="text-center mb-6">Check availability and reserve your van today</p>
-          
-          <div className="max-w-4xl mx-auto">
-            <SearchForm />
-          </div>
-        </div>
-      </section>
 
       {/* FAQs */}
       <section className="mb-12">
