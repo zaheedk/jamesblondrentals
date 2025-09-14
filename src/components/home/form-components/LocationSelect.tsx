@@ -49,16 +49,16 @@ export const LocationSelect = ({
     }
   };
 
-  // Set default location based on user's region
+  // Set default location based on page context
   useEffect(() => {
     if (locations.length > 0 && !value) {
       const setDefaultLocation = async () => {
-        // If on Wellington page, always prefer Wellington CBD location
+        // If on Wellington page, always prefer Wellington CBD location (regardless of user's actual location)
         if (isWellingtonPage) {
           console.log("On Wellington page, looking for Wellington CBD location");
           const wellingtonLocation = locations.find(loc => 
             loc.name.toLowerCase().includes('wellington') && 
-            loc.name.toLowerCase().includes('cbd')
+            (loc.name.toLowerCase().includes('cbd') || loc.name.toLowerCase().includes('central'))
           );
           
           if (wellingtonLocation) {
@@ -66,9 +66,20 @@ export const LocationSelect = ({
             onValueChange(String(wellingtonLocation.id));
             return;
           }
+          
+          // If Wellington CBD not found, try any Wellington location
+          const anyWellingtonLocation = locations.find(loc => 
+            loc.name.toLowerCase().includes('wellington')
+          );
+          
+          if (anyWellingtonLocation) {
+            console.log(`Setting default location to Wellington:`, anyWellingtonLocation.id);
+            onValueChange(String(anyWellingtonLocation.id));
+            return;
+          }
         }
         
-        // Otherwise, try to detect if user is in Wellington
+        // For non-Wellington pages, try to detect if user is in Wellington
         const isWellington = await checkWellingtonRegion();
         
         if (isWellington) {
@@ -85,7 +96,7 @@ export const LocationSelect = ({
           }
         }
         
-        // If not Wellington or Wellington location not found, fallback to previous logic
+        // If not Wellington page/user, fallback to Auckland logic
         console.log("Using default location fallback logic");
         
         // Prioritize West Auckland location
