@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { GoogleMap, LoadScript, DirectionsRenderer } from '@react-google-maps/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, MapPin, Calculator } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
+import { useRcmApi } from '@/hooks/use-rcm-api';
 
 const containerStyle = {
   width: '100%',
@@ -19,14 +20,20 @@ const center = {
   lng: 174.7762
 };
 
-const nzVehicles = [
-  { value: 'toyota-corolla', label: 'Toyota Corolla', consumption: 6.5 },
-  { value: 'ford-ranger', label: 'Ford Ranger', consumption: 9.2 },
-  { value: 'holden-commodore', label: 'Holden Commodore', consumption: 8.1 },
-  { value: 'mazda-cx5', label: 'Mazda CX-5', consumption: 7.4 },
-  { value: 'transit-van', label: 'Transit Van', consumption: 11.5 },
-  { value: 'isuzu-truck', label: 'Isuzu Truck', consumption: 15.2 }
-];
+// Default fuel consumption estimates by vehicle category
+const defaultConsumptionByCategory: Record<string, number> = {
+  'Car': 7.0,
+  'Small Car': 6.0,
+  'Medium Car': 7.5,
+  'Large Car': 8.5,
+  'Premium Car': 9.0,
+  'SUV': 10.0,
+  'Van': 11.5,
+  'Truck': 15.0,
+  'Ute': 9.5,
+  'Minibus': 12.0,
+  'People Mover': 10.5
+};
 
 const nzCities = [
   'Auckland CBD',
@@ -53,13 +60,19 @@ const FuelCalculator = () => {
   const [estimatedCost, setEstimatedCost] = useState(0);
   const [mapLoaded, setMapLoaded] = useState(false);
 
+  const { useVehicleCategories } = useRcmApi();
+  const { data: vehicleCategories = [], isLoading: isLoadingCategories } = useVehicleCategories();
+
   const handleVehicleChange = useCallback((value: string) => {
     setSelectedVehicle(value);
-    const vehicle = nzVehicles.find(v => v.value === value);
-    if (vehicle) {
-      setConsumption(vehicle.consumption.toString());
+    const category = vehicleCategories.find(c => c.id.toString() === value);
+    if (category) {
+      // Use default consumption based on category type or fallback to 8.0
+      const categoryType = category.vehiclecategorytype;
+      const defaultConsumption = defaultConsumptionByCategory[categoryType] || 8.0;
+      setConsumption(defaultConsumption.toString());
     }
-  }, []);
+  }, [vehicleCategories]);
 
   const handleLocationChange = (index: number, value: string) => {
     const newLocations = [...locations];
@@ -165,11 +178,15 @@ const FuelCalculator = () => {
                         <SelectValue placeholder="Select a vehicle" />
                       </SelectTrigger>
                       <SelectContent>
-                        {nzVehicles.map((vehicle) => (
-                          <SelectItem key={vehicle.value} value={vehicle.value}>
-                            {vehicle.label}
-                          </SelectItem>
-                        ))}
+                        {isLoadingCategories ? (
+                          <SelectItem value="loading" disabled>Loading vehicle types...</SelectItem>
+                        ) : (
+                          vehicleCategories.map((category) => (
+                            <SelectItem key={category.id} value={category.id.toString()}>
+                              {category.vehiclecategorytype}
+                            </SelectItem>
+                          ))
+                        )}
                       </SelectContent>
                     </Select>
                   </div>
