@@ -2,6 +2,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
+import { HelmetProvider } from 'react-helmet-async';
 import './index.css';
 
 const rootElement = document.getElementById('root');
@@ -12,7 +13,9 @@ const root = createRoot(rootElement);
 // Render app immediately without SpeedInsights
 root.render(
   <React.StrictMode>
-    <App />
+    <HelmetProvider>
+      <App />
+    </HelmetProvider>
   </React.StrictMode>
 );
 
@@ -26,8 +29,10 @@ const loadSpeedInsights = async () => {
     const { SpeedInsights } = await import('@vercel/speed-insights/react');
     root.render(
       <React.StrictMode>
-        <App />
-        <SpeedInsights />
+        <HelmetProvider>
+          <App />
+          <SpeedInsights />
+        </HelmetProvider>
       </React.StrictMode>
     );
   } catch (error) {
