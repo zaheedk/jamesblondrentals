@@ -9,6 +9,9 @@ import { Plus, MapPin, Calculator } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { useRcmApi } from '@/hooks/use-rcm-api';
 
+// Static libraries array to prevent LoadScript reloading
+const GOOGLE_MAPS_LIBRARIES: ("places")[] = ['places'];
+
 const containerStyle = {
   width: '100%',
   height: '600px',
@@ -49,11 +52,13 @@ const FuelCalculator = () => {
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
   const autocompleteRefs = useRef<(google.maps.places.Autocomplete | null)[]>([]);
 
-  const { useVehicleCategories, useStep3Details } = useRcmApi();
+  const { useVehicleCategories, useStep3Details, useDriverAges } = useRcmApi();
   const { data: vehicleCategories = [], isLoading: isLoadingCategories } = useVehicleCategories();
+  const { data: driverAges = [] } = useDriverAges();
   
-  // Fetch km charges when a vehicle is selected
-  const step3Params = selectedCategory ? {
+  // Fetch km charges when a vehicle is selected and we have driver ages
+  const defaultAge = driverAges.find(age => age.isdefault) || driverAges[0];
+  const step3Params = selectedCategory && defaultAge ? {
     vehiclecategoryid: selectedCategory.id,
     vehiclecategorytypeid: selectedCategory.vehiclecategorytypeid || selectedCategory.id,
     pickuplocationid: '1', // dummy location id  
@@ -62,7 +67,7 @@ const FuelCalculator = () => {
     dropofflocationid: '1', // dummy return location
     dropoffdate: new Date(Date.now() + 24 * 60 * 60 * 1000).toLocaleDateString('en-GB'),
     dropofftime: '10:00',
-    ageid: '1' // dummy age id
+    ageid: defaultAge.id.toString()
   } : null;
   
   const { data: step3Data } = useStep3Details(step3Params);
@@ -82,6 +87,8 @@ const FuelCalculator = () => {
       } else {
         setKmCharges(0);
       }
+    } else {
+      setKmCharges(0);
     }
   }, [step3Data, selectedCategory]);
 
@@ -178,7 +185,7 @@ const FuelCalculator = () => {
         }
       }
     );
-  }, [locations, consumption, fuelPrice]);
+  }, [locations, consumption, fuelPrice, kmCharges, mapLoaded]);
 
   return (
     <>
@@ -386,7 +393,7 @@ const FuelCalculator = () => {
                         autocompleteRefs.current = new Array(locations.length).fill(null);
                       }}
                       onError={(e) => console.error('Google Maps failed to load:', e)}
-                      libraries={['places']}
+                      libraries={GOOGLE_MAPS_LIBRARIES}
                     >
                       <GoogleMap
                         mapContainerStyle={containerStyle}
