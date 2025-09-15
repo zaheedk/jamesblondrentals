@@ -61,6 +61,7 @@
     "react-color": "^2.19.3",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.3.1",
+    "react-helmet-async": "^2.0.5",
     "react-hook-form": "^7.53.0",
     "react-input-mask": "^2.0.4",
     "react-markdown": "^10.1.0",
