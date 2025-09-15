@@ -97,7 +97,7 @@ const WellingtonMinibusRentals = () => {
                   <MapPin className="h-8 w-8 text-primary" />
                 </div>
                 <h3 className="font-semibold mb-2">Central Wellington Location</h3>
-                <p className="text-gray-600">Convenient pickup from our Te Aro branch, close to Wellington CBD and major transport links.</p>
+                <p className="text-gray-600">Convenient pickup from our branch at 24 Abel Smith Street, Te Aro, close to Wellington CBD and major transport links.</p>
               </div>
             </CardContent>
           </Card>

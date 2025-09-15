@@ -78,7 +78,7 @@ const WellingtonCargoVanRentals = () => {
                   <Map className="h-8 w-8 text-primary" />
                 </div>
                 <h3 className="font-semibold mb-2">Central Location</h3>
-                <p className="text-gray-600">Our Wellington branch in Te Aro provides easy access for pickup and drop-off in the heart of the city.</p>
+                <p className="text-gray-600">Our Wellington branch at 24 Abel Smith Street, Te Aro provides easy access for pickup and drop-off in the heart of the city.</p>
               </div>
             </CardContent>
           </Card>

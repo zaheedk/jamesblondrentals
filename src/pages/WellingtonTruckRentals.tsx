@@ -90,7 +90,7 @@ const WellingtonTruckRentals = () => {
                   <Package className="h-8 w-8 text-primary" />
                 </div>
                 <h3 className="font-semibold mb-2">Central Location</h3>
-                <p className="text-gray-600">Conveniently located in Te Aro, making pickup and drop-off quick and easy for your move.</p>
+                <p className="text-gray-600">Conveniently located at 24 Abel Smith Street, Te Aro, making pickup and drop-off quick and easy for your move.</p>
               </div>
             </CardContent>
           </Card>

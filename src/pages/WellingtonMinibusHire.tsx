@@ -115,7 +115,7 @@ const WellingtonMinibusHire = () => {
                   <Shield className="h-8 w-8 text-primary" />
                 </div>
                 <h3 className="font-semibold mb-2">Central Location</h3>
-                <p className="text-gray-600">Conveniently located in Te Aro, Wellington for quick pickup and drop-off for your family trip.</p>
+                <p className="text-gray-600">Conveniently located at 24 Abel Smith Street, Te Aro, Wellington for quick pickup and drop-off for your family trip.</p>
               </div>
             </CardContent>
           </Card>
