@@ -59,14 +59,50 @@ const FuelCalculator = () => {
   const [distance, setDistance] = useState(0);
   const [estimatedCost, setEstimatedCost] = useState(0);
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [kmCharges, setKmCharges] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState<any>(null);
 
-  const { useVehicleCategories } = useRcmApi();
+  const { useVehicleCategories, useStep3Details } = useRcmApi();
   const { data: vehicleCategories = [], isLoading: isLoadingCategories } = useVehicleCategories();
+  
+  // Fetch km charges when a vehicle is selected
+  const step3Params = selectedCategory ? {
+    vehiclecategoryid: selectedCategory.id,
+    vehiclecategorytypeid: selectedCategory.vehiclecategorytypeid || selectedCategory.id,
+    pickuplocationid: '1', // dummy location id  
+    pickupdate: new Date().toLocaleDateString('en-GB'),
+    pickuptime: '10:00',
+    dropofflocationid: '1', // dummy return location
+    dropoffdate: new Date(Date.now() + 24 * 60 * 60 * 1000).toLocaleDateString('en-GB'),
+    dropofftime: '10:00',
+    ageid: '1' // dummy age id
+  } : null;
+  
+  const { data: step3Data } = useStep3Details(step3Params);
+
+  // Categories that should include km charges
+  const categoriesWithKmCharges = ['Truck', 'Jumbo Van', 'Premium Van', 'Van'];
+
+  useEffect(() => {
+    if (step3Data?.results?.kmcharges && selectedCategory) {
+      const categoryType = selectedCategory.vehiclecategorytype;
+      if (categoriesWithKmCharges.some(cat => categoryType.includes(cat))) {
+        // Get the first km charge rate (usually per km rate)
+        const kmCharge = step3Data.results.kmcharges[0];
+        if (kmCharge) {
+          setKmCharges(kmCharge.feeforeachadditionalkm || 0);
+        }
+      } else {
+        setKmCharges(0);
+      }
+    }
+  }, [step3Data, selectedCategory]);
 
   const handleVehicleChange = useCallback((value: string) => {
     setSelectedVehicle(value);
     const category = vehicleCategories.find(c => c.id.toString() === value);
     if (category) {
+      setSelectedCategory(category);
       // Use default consumption based on category type or fallback to 8.0
       const categoryType = category.vehiclecategorytype;
       const defaultConsumption = defaultConsumptionByCategory[categoryType] || 8.0;
@@ -130,8 +166,13 @@ const FuelCalculator = () => {
           const fuelPriceNum = parseFloat(fuelPrice);
           if (consumptionNum && fuelPriceNum) {
             const fuelNeeded = (distanceKm / 100) * consumptionNum;
-            const cost = fuelNeeded * fuelPriceNum;
-            setEstimatedCost(cost);
+            const fuelCost = fuelNeeded * fuelPriceNum;
+            
+            // Add km charges for applicable vehicles
+            const kmCost = kmCharges * distanceKm;
+            const totalCost = fuelCost + kmCost;
+            
+            setEstimatedCost(totalCost);
           }
         }
       }
@@ -291,10 +332,34 @@ const FuelCalculator = () => {
                             <span className="text-sm text-muted-foreground">Distance:</span>
                             <span className="font-semibold">{distance.toFixed(0)} km</span>
                           </div>
-                          <div className="flex justify-between">
-                            <span className="text-sm text-muted-foreground">Estimated Fuel Cost:</span>
-                            <span className="font-semibold text-green-600">${estimatedCost.toFixed(2)}</span>
-                          </div>
+                          {(() => {
+                            const consumptionNum = parseFloat(consumption);
+                            const fuelPriceNum = parseFloat(fuelPrice);
+                            const fuelNeeded = (distance / 100) * consumptionNum;
+                            const fuelCost = fuelNeeded * fuelPriceNum;
+                            const kmCost = kmCharges * distance;
+                            
+                            return (
+                              <>
+                                <div className="flex justify-between">
+                                  <span className="text-sm text-muted-foreground">Fuel Cost:</span>
+                                  <span className="font-semibold">${fuelCost.toFixed(2)}</span>
+                                </div>
+                                {kmCharges > 0 && (
+                                  <div className="flex justify-between">
+                                    <span className="text-sm text-muted-foreground">KM Charges (${kmCharges.toFixed(2)}/km):</span>
+                                    <span className="font-semibold">${kmCost.toFixed(2)}</span>
+                                  </div>
+                                )}
+                                <div className="border-t pt-2">
+                                  <div className="flex justify-between">
+                                    <span className="text-sm font-medium">Total Estimated Cost:</span>
+                                    <span className="font-bold text-green-600">${estimatedCost.toFixed(2)}</span>
+                                  </div>
+                                </div>
+                              </>
+                            );
+                          })()}
                         </div>
                       </CardContent>
                     </Card>
