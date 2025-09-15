@@ -32,7 +32,7 @@ const WellingtonMinibusRentals = () => {
             </Button>
             <div className="flex items-center text-primary font-semibold">
               <Phone className="h-5 w-5 mr-2" />
-              <span>Call: 0800 227 5663</span>
+              <span>Call: 0800 525 663</span>
             </div>
           </div>
         </div>
@@ -392,11 +392,11 @@ const WellingtonMinibusRentals = () => {
               <div className="space-y-3">
                 <div>
                   <span className="font-semibold">Address:</span>
-                  <p className="text-gray-600">123 Cambridge Terrace, Te Aro, Wellington 6011</p>
+                  <p className="text-gray-600">24 Abel Smith Street, Te Aro, Wellington 6011</p>
                 </div>
                 <div>
                   <span className="font-semibold">Phone:</span>
-                  <p className="text-gray-600">0800 227 5663</p>
+                  <p className="text-gray-600">0800 525 663</p>
                 </div>
                 <div>
                   <span className="font-semibold">Email:</span>
@@ -493,7 +493,7 @@ const WellingtonMinibusRentals = () => {
           </Button>
         </div>
         <p className="mt-4 text-sm text-gray-600">
-          Need help choosing? Call <strong>0800 227 5663</strong> and speak to our Wellington vehicle specialists.
+          Need help choosing? Call <strong>0800 525 663</strong> and speak to our Wellington vehicle specialists.
         </p>
       </section>
     </div>
