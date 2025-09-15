@@ -80,6 +80,10 @@ const FuelCalculator = () => {
 
   const calculateRoute = useCallback(() => {
     if (locations.length < 2 || !locations[0] || !locations[1]) return;
+    if (!mapLoaded || !window.google?.maps) {
+      console.error('Google Maps API not loaded yet');
+      return;
+    }
 
     const directionsService = new google.maps.DirectionsService();
     
@@ -290,6 +294,8 @@ const FuelCalculator = () => {
                     <LoadScript 
                       googleMapsApiKey="AIzaSyC2BGBMGyKkuOlkIcXj_EcmQ6k7gYcT-rg"
                       onLoad={() => setMapLoaded(true)}
+                      onError={(e) => console.error('Google Maps failed to load:', e)}
+                      libraries={['places']}
                     >
                       <GoogleMap
                         mapContainerStyle={containerStyle}
