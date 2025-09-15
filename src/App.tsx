@@ -119,6 +119,7 @@ import WinzQuotes from "./pages/WinzQuotes";
 import CourierOperatorDeals from "./pages/CourierOperatorDeals";
 import AucklandVanHire from "./pages/AucklandVanHire";
 import WellingtonMinibusHire from "./pages/WellingtonMinibusHire";
+import WellingtonMinibusRentals from "./pages/WellingtonMinibusRentals";
 
 
 const App = () => {
@@ -274,6 +275,8 @@ const App = () => {
                 <Route path="/winz-quotes" element={<WinzQuotes />} />
                 <Route path="/12-seater-van-hire-auckland" element={<AucklandVanHire />} />
                 <Route path="/wellington-10-12-seat-van-minibus-rental" element={<WellingtonMinibusHire />} />
+                <Route path="/wellington-minibus-hire" element={<WellingtonMinibusHire />} />
+                <Route path="/wellington-minibus-rentals" element={<WellingtonMinibusRentals />} />
                 
                 <Route path="/jumbo-taxi-launch" element={<JumboTaxiLaunch />} />
                 <Route path="/faq" element={<FAQ />} />
