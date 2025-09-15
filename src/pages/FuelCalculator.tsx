@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { GoogleMap, LoadScript, DirectionsRenderer } from '@react-google-maps/api';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { GoogleMap, LoadScript, DirectionsRenderer, Autocomplete } from '@react-google-maps/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -35,20 +35,6 @@ const defaultConsumptionByCategory: Record<string, number> = {
   'People Mover': 10.5
 };
 
-const nzCities = [
-  'Auckland CBD',
-  'Wellington CBD', 
-  'Christchurch CBD',
-  'Hamilton CBD',
-  'Tauranga CBD',
-  'Napier CBD',
-  'Palmerston North CBD',
-  'Nelson CBD',
-  'Rotorua CBD',
-  'Invercargill CBD',
-  'Queenstown CBD',
-  'Dunedin CBD'
-];
 
 const FuelCalculator = () => {
   const [selectedVehicle, setSelectedVehicle] = useState('');
@@ -61,6 +47,7 @@ const FuelCalculator = () => {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [kmCharges, setKmCharges] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
+  const autocompleteRefs = useRef<(google.maps.places.Autocomplete | null)[]>([]);
 
   const { useVehicleCategories, useStep3Details } = useRcmApi();
   const { data: vehicleCategories = [], isLoading: isLoadingCategories } = useVehicleCategories();
@@ -116,14 +103,28 @@ const FuelCalculator = () => {
     setLocations(newLocations);
   };
 
+  const onPlaceChanged = (index: number) => {
+    const autocomplete = autocompleteRefs.current[index];
+    if (autocomplete) {
+      const place = autocomplete.getPlace();
+      if (place?.formatted_address) {
+        handleLocationChange(index, place.formatted_address);
+      }
+    }
+  };
+
   const addStop = () => {
     setLocations([...locations, '']);
+    // Initialize autocomplete ref for new location
+    autocompleteRefs.current.push(null);
   };
 
   const removeLocation = (index: number) => {
     if (locations.length > 2) {
       const newLocations = locations.filter((_, i) => i !== index);
       setLocations(newLocations);
+      // Remove corresponding autocomplete ref
+      autocompleteRefs.current.splice(index, 1);
     }
   };
 
@@ -137,14 +138,14 @@ const FuelCalculator = () => {
     const directionsService = new google.maps.DirectionsService();
     
     const waypoints = locations.slice(1, -1).map(location => ({
-      location: location + ', New Zealand',
+      location: location,
       stopover: true
     }));
 
     directionsService.route(
       {
-        origin: locations[0] + ', New Zealand',
-        destination: locations[locations.length - 1] + ', New Zealand',
+        origin: locations[0],
+        destination: locations[locations.length - 1],
         waypoints: waypoints,
         travelMode: google.maps.TravelMode.DRIVING,
       },
@@ -271,25 +272,29 @@ const FuelCalculator = () => {
                               'bg-blue-500'
                             }`}></div>
                           </div>
-                          <Select 
-                            value={location} 
-                            onValueChange={(value) => handleLocationChange(index, value)}
-                          >
-                            <SelectTrigger className="flex-1">
-                              <SelectValue placeholder={
-                                index === 0 ? "Start location" : 
-                                index === locations.length - 1 ? "End location" : 
-                                "Stop location"
-                              } />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {nzCities.map((city) => (
-                                <SelectItem key={city} value={city}>
-                                  {city}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                          <div className="flex-1">
+                            <Autocomplete
+                              onLoad={(autocomplete) => {
+                                autocompleteRefs.current[index] = autocomplete;
+                              }}
+                              onPlaceChanged={() => onPlaceChanged(index)}
+                              options={{
+                                componentRestrictions: { country: 'nz' },
+                                types: ['address']
+                              }}
+                            >
+                              <Input
+                                value={location}
+                                onChange={(e) => handleLocationChange(index, e.target.value)}
+                                placeholder={
+                                  index === 0 ? "Enter start address" : 
+                                  index === locations.length - 1 ? "Enter destination address" : 
+                                  "Enter stop address"
+                                }
+                                className="w-full"
+                              />
+                            </Autocomplete>
+                          </div>
                           {locations.length > 2 && index > 0 && index < locations.length - 1 && (
                             <Button
                               variant="ghost"
@@ -375,7 +380,11 @@ const FuelCalculator = () => {
                   <div className="relative w-full h-[600px] rounded-lg overflow-hidden">
                     <LoadScript 
                       googleMapsApiKey="AIzaSyC2BGBMGyKkuOlkIcXj_EcmQ6k7gYcT-rg"
-                      onLoad={() => setMapLoaded(true)}
+                      onLoad={() => {
+                        setMapLoaded(true);
+                        // Initialize autocomplete refs array
+                        autocompleteRefs.current = new Array(locations.length).fill(null);
+                      }}
                       onError={(e) => console.error('Google Maps failed to load:', e)}
                       libraries={['places']}
                     >
