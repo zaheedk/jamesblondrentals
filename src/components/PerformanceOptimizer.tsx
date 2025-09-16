@@ -38,29 +38,51 @@ export const PerformanceOptimizer = () => {
       setTimeout(enableAnalytics, 10000);
     };
 
-    // Optimize images - reduce quality for non-critical images
+    // Optimize images - defer to avoid blocking interactions
     const optimizeImages = () => {
-      const images = document.querySelectorAll('img');
-      images.forEach((img) => {
-        // Add intersection observer for better lazy loading
-        if (!img.hasAttribute('loading')) {
-          img.setAttribute('loading', 'lazy');
-        }
+      // Use requestIdleCallback to avoid blocking user interactions
+      const runOptimization = () => {
+        const images = document.querySelectorAll('img:not([data-optimized])');
         
-        // Skip optimization here to prevent duplicate work with ImageOptimizer
-        const src = img.getAttribute('src');
-        if (src && src.includes('/lovable-uploads/') && !src.includes('?')) {
-          // Use more aggressive compression
-          img.setAttribute('src', `${src}?w=800&q=55&f=webp&fit=cover`);
+        // Process only 5 images at a time to avoid blocking
+        const imagesToProcess = Array.from(images).slice(0, 5);
+        
+        imagesToProcess.forEach((img) => {
+          img.setAttribute('data-optimized', 'true');
+          
+          if (!img.hasAttribute('loading')) {
+            img.setAttribute('loading', 'lazy');
+          }
+          
+          const src = img.getAttribute('src');
+          if (src && src.includes('/lovable-uploads/') && !src.includes('?')) {
+            img.setAttribute('src', `${src}?w=800&q=55&f=webp&fit=cover`);
+          }
+        });
+        
+        // If more images to process, schedule next batch
+        if (images.length > 5) {
+          if ('requestIdleCallback' in window) {
+            requestIdleCallback(runOptimization);
+          } else {
+            setTimeout(runOptimization, 100);
+          }
         }
-      });
+      };
+      
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(runOptimization);
+      } else {
+        setTimeout(runOptimization, 100);
+      }
     };
 
-    // Minimize main thread work by using scheduler
+    // Minimize main thread work by using scheduler with smaller time slices
     const scheduleWork = (tasks: (() => void)[]) => {
       const runTasks = () => {
         const startTime = performance.now();
-        while (tasks.length > 0 && (performance.now() - startTime) < 5) {
+        // Reduced from 5ms to 2ms to reduce INP impact
+        while (tasks.length > 0 && (performance.now() - startTime) < 2) {
           const task = tasks.shift();
           task?.();
         }
@@ -69,7 +91,12 @@ export const PerformanceOptimizer = () => {
           if ('scheduler' in window && 'postTask' in (window as any).scheduler) {
             (window as any).scheduler.postTask(runTasks, { priority: 'background' });
           } else {
-            setTimeout(runTasks, 0);
+            // Use requestIdleCallback for better timing
+            if ('requestIdleCallback' in window) {
+              requestIdleCallback(runTasks);
+            } else {
+              setTimeout(runTasks, 16); // Next frame
+            }
           }
         }
       };
