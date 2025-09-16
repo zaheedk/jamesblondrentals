@@ -5,10 +5,18 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import SearchForm from '@/components/home/SearchForm';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 const WellingtonCargoVanRentals = () => {
   return (
-    <div className="container mx-auto px-4 py-8">
+    <>
+      <Helmet>
+        <title>Wellington Cargo Van Rentals | Affordable Van Hire in Wellington</title>
+        <meta name="description" content="Cheap Wellington cargo van hire & rentals. Perfect for small moves, deliveries & business needs. Book online for the best rates in Wellington CBD." />
+        <meta name="keywords" content="Wellington cargo van hire, van rental Wellington, cheap van hire Wellington, cargo van Wellington, delivery van Wellington" />
+        <link rel="canonical" href="https://www.jamesblond.co.nz/wellington-cargo-van-rentals-hire" />
+      </Helmet>
+      <div className="container mx-auto px-4 py-8">
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-6 mb-8">
         <div className="text-center mb-6">
@@ -390,6 +398,7 @@ const WellingtonCargoVanRentals = () => {
         </div>
       </section>
     </div>
+    </>
   );
 };
 
