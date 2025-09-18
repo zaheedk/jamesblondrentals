@@ -127,14 +127,12 @@ const InsuranceAndExtrasSelection = () => {
         setSelectedInsurance(insuranceToSelect);
         setSelectedKmCharge(kmChargeToSelect);
         
-        // Update booking data with default insurance price if selected
+        // Update booking data with default insurance total if selected
         if (insuranceToSelect && !data.insuranceId) {
-          const numberOfDays = calculateNumberOfDays();
-          const perDayRate = insuranceToSelect.totalinsuranceamount / numberOfDays;
           updateBookingData({
             insuranceId: insuranceToSelect.id?.toString(),
             insuranceName: insuranceToSelect.name || insuranceToSelect.description,
-            insurancePrice: perDayRate
+            insurancePrice: insuranceToSelect.totalinsuranceamount
           });
         }
         
@@ -175,10 +173,8 @@ const InsuranceAndExtrasSelection = () => {
     
     // Update booking data immediately so accordion shows correct total
     if (selected) {
-      const numberOfDays = calculateNumberOfDays();
-      const perDayRate = selected.totalinsuranceamount / numberOfDays;
       updateBookingData({
-        insurancePrice: perDayRate
+        insurancePrice: selected.totalinsuranceamount
       });
     }
   };

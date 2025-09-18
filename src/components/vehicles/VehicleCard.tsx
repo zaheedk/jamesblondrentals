@@ -208,7 +208,7 @@ const VehicleCard = ({
             dropoffTime={searchParams.get("dropoffTime") || ""}
             ageId={searchParams.get("age") || ""}
             vehicleImageUrl={imageUrl}
-            totalRateAfterDiscount={displayRate}
+            totalRateAfterDiscount={totalAmount}
             totalDiscountAmount={totalDiscountAmount}
             campaignCode={searchParams.get("campaignCode") || ""}
           />
