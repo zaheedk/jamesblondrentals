@@ -416,34 +416,34 @@ const SearchForm = ({
   return (
     <Card className="shadow-lg border-0">
       <CardContent className="p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold">Find Your Vehicle</h3>
+        <div className="mb-6">
+          <h3 className="text-lg font-semibold text-center">Find Your Vehicle</h3>
         </div>
 
         <form onSubmit={handleSearch}>
-          <div className="space-y-4">
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="pickup-location">Pick-up Location</Label>
-                </div>
-                <LocationSelect 
-                  id="pickup-location"
-                  label=""
-                  locations={locations}
-                  value={pickupLocation}
-                  onValueChange={(value) => {
-                    setPickupLocation(value);
-                    if (sameLocation) {
-                      setDropoffLocation(value);
-                    }
-                  }}
-                  isLoading={isLoadingLocations}
-                  hasError={isLocationError}
-                />
-              </div>
+          <div className="space-y-6">
+            {/* Pick-up Location */}
+            <div className="space-y-2">
+              <Label htmlFor="pickup-location" className="text-sm font-medium">Pick-up Location</Label>
+              <LocationSelect 
+                id="pickup-location"
+                label=""
+                locations={locations}
+                value={pickupLocation}
+                onValueChange={(value) => {
+                  setPickupLocation(value);
+                  if (sameLocation) {
+                    setDropoffLocation(value);
+                  }
+                }}
+                isLoading={isLoadingLocations}
+                hasError={isLocationError}
+              />
+            </div>
 
-              <div className="grid grid-cols-2 gap-4">
+            {/* Pick-up Date and Time */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
                 <DateSelect
                   id="pickup-date"
                   label="Pick up Date"
@@ -453,7 +453,9 @@ const SearchForm = ({
                   locationId={pickupLocation}
                   locationDetails={locationDetails}
                 />
+              </div>
 
+              <div className="space-y-2">
                 <TimeSelect
                   id="pickup-time"
                   label="Pick up Time"
@@ -465,35 +467,37 @@ const SearchForm = ({
                   placeholder={!pickupLocation ? "Select location first" : !pickupDate ? "Select date first" : undefined}
                 />
               </div>
+            </div>
 
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Label htmlFor="dropoff-location">Return Location</Label>
-                  </div>
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
-                      className="mr-2"
-                      checked={sameLocation}
-                      onChange={() => setSameLocation(!sameLocation)}
-                    />
-                    <span className="text-sm">Same as Pickup</span>
-                  </label>
-                </div>
-                <LocationSelect
-                  id="dropoff-location"
-                  label=""
-                  locations={locations}
-                  value={sameLocation ? pickupLocation : dropoffLocation}
-                  onValueChange={setDropoffLocation}
-                  isLoading={isLoadingLocations}
-                  hasError={isLocationError}
-                  disabled={sameLocation}
-                />
+            {/* Return Location */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="dropoff-location" className="text-sm font-medium">Return Location</Label>
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    className="mr-2"
+                    checked={sameLocation}
+                    onChange={() => setSameLocation(!sameLocation)}
+                  />
+                  <span className="text-sm">Same as Pickup</span>
+                </label>
               </div>
+              <LocationSelect
+                id="dropoff-location"
+                label=""
+                locations={locations}
+                value={sameLocation ? pickupLocation : dropoffLocation}
+                onValueChange={setDropoffLocation}
+                isLoading={isLoadingLocations}
+                hasError={isLocationError}
+                disabled={sameLocation}
+              />
+            </div>
 
-              <div className="grid grid-cols-2 gap-4">
+            {/* Drop-off Date and Time */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
                 <DateSelect
                   id="dropoff-date"
                   label="Drop off Date"
@@ -516,7 +520,9 @@ const SearchForm = ({
                   locationDetails={locationDetails}
                   allowSameDay={true}
                 />
-                
+              </div>
+              
+              <div className="space-y-2">
                 <TimeSelect
                   id="dropoff-time"
                   label="Drop off Time"
@@ -528,8 +534,11 @@ const SearchForm = ({
                   placeholder={!(sameLocation ? pickupLocation : dropoffLocation) ? "Select location first" : !dropoffDate ? "Select date first" : undefined}
                 />
               </div>
-              
-              <div className="grid grid-cols-2 gap-4">
+            </div>
+            
+            {/* Age and Category */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
                 <OptionSelect
                   id="driver-age"
                   label="Age"
@@ -540,7 +549,9 @@ const SearchForm = ({
                   isLoading={isLoadingAges}
                   placeholder="Select age"
                 />
-                
+              </div>
+              
+              <div className="space-y-2">
                 <OptionSelect
                   id="car-category"
                   label="Category"
@@ -555,17 +566,18 @@ const SearchForm = ({
                   allOptionLabel="All Categories"
                 />
               </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="campaign-code">Promo Code</Label>
-                <Input 
-                  id="campaign-code" 
-                  type="text" 
-                  value={campaignCode} 
-                  onChange={(e) => setCampaignCode(e.target.value)}
-                  placeholder="Enter campaign code" 
-                />
-              </div>
+            </div>
+            
+            {/* Promo Code */}
+            <div className="space-y-2">
+              <Label htmlFor="campaign-code" className="text-sm font-medium">Promo Code</Label>
+              <Input 
+                id="campaign-code" 
+                type="text" 
+                value={campaignCode} 
+                onChange={(e) => setCampaignCode(e.target.value)}
+                placeholder="Enter campaign code" 
+              />
             </div>
 
             <Button
