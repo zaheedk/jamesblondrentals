@@ -416,15 +416,11 @@ const SearchForm = ({
   return (
     <Card className="shadow-lg border-0">
       <CardContent className="p-6">
-        <div className="mb-6">
-          <h3 className="text-lg font-semibold text-center">Find Your Vehicle</h3>
-        </div>
-
         <form onSubmit={handleSearch}>
-          <div className="space-y-6">
-            {/* Pick-up Location */}
-            <div className="space-y-2">
-              <Label htmlFor="pickup-location" className="text-sm font-medium">Pick-up Location</Label>
+          <div className="space-y-4">
+            {/* Pick-up Section */}
+            <div className="space-y-3">
+              <Label className="text-sm font-medium text-gray-600">Pick-up</Label>
               <LocationSelect 
                 id="pickup-location"
                 label=""
@@ -439,26 +435,20 @@ const SearchForm = ({
                 isLoading={isLoadingLocations}
                 hasError={isLocationError}
               />
-            </div>
-
-            {/* Pick-up Date and Time */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
+              
+              <div className="grid grid-cols-2 gap-3">
                 <DateSelect
                   id="pickup-date"
-                  label="Pick up Date"
+                  label=""
                   date={pickupDate}
                   onDateChange={handlePickupDateChange}
                   disableDate={(date) => disablePastDates(date, pickupLocation, locationDetails)}
                   locationId={pickupLocation}
                   locationDetails={locationDetails}
                 />
-              </div>
-
-              <div className="space-y-2">
                 <TimeSelect
                   id="pickup-time"
-                  label="Pick up Time"
+                  label=""
                   time={pickupTime}
                   onTimeChange={handlePickupTimeChange}
                   timeOptions={pickupTimeOptions}
@@ -469,20 +459,10 @@ const SearchForm = ({
               </div>
             </div>
 
-            {/* Return Location */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="dropoff-location" className="text-sm font-medium">Return Location</Label>
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    className="mr-2"
-                    checked={sameLocation}
-                    onChange={() => setSameLocation(!sameLocation)}
-                  />
-                  <span className="text-sm">Same as Pickup</span>
-                </label>
-              </div>
+            {/* Drop-off Section */}
+            <div className="space-y-3">
+              <Label className="text-sm font-medium text-gray-600">Drop-off</Label>
+              
               <LocationSelect
                 id="dropoff-location"
                 label=""
@@ -493,14 +473,11 @@ const SearchForm = ({
                 hasError={isLocationError}
                 disabled={sameLocation}
               />
-            </div>
-
-            {/* Drop-off Date and Time */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
+              
+              <div className="grid grid-cols-2 gap-3">
                 <DateSelect
                   id="dropoff-date"
-                  label="Drop off Date"
+                  label=""
                   date={dropoffDate}
                   onDateChange={setDropoffDate}
                   disableDate={(date) => {
@@ -520,12 +497,9 @@ const SearchForm = ({
                   locationDetails={locationDetails}
                   allowSameDay={true}
                 />
-              </div>
-              
-              <div className="space-y-2">
                 <TimeSelect
                   id="dropoff-time"
-                  label="Drop off Time"
+                  label=""
                   time={dropoffTime}
                   onTimeChange={setDropoffTime}
                   timeOptions={dropoffTimeOptions}
@@ -535,57 +509,74 @@ const SearchForm = ({
                 />
               </div>
             </div>
-            
-            {/* Age and Category */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <OptionSelect
-                  id="driver-age"
-                  label="Age"
-                  value={age}
-                  onValueChange={setAge}
-                  options={driverAges.map(age => ({ id: String(age.id), name: age.driverage }))}
-                  getOptionName={getDriverAgeName}
-                  isLoading={isLoadingAges}
-                  placeholder="Select age"
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <OptionSelect
-                  id="car-category"
-                  label="Category"
-                  value={carCategory}
-                  onValueChange={setCarCategory}
-                  options={carCategories.map(category => ({ id: String(category.id), name: category.vehiclecategorytype }))}
-                  getOptionName={getCategoryName}
-                  isLoading={isLoadingCategories}
-                  placeholder="All Categories"
-                  defaultValue="All Categories"
-                  allOptionId="0"
-                  allOptionLabel="All Categories"
-                />
-              </div>
+
+            {/* Same Location Toggle */}
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="same-location"
+                checked={sameLocation}
+                onChange={() => setSameLocation(!sameLocation)}
+                className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+              />
+              <Label htmlFor="same-location" className="text-sm">
+                Same as Pickup
+              </Label>
             </div>
-            
-            {/* Promo Code */}
+
+            {/* Campaign Code Input */}
             <div className="space-y-2">
-              <Label htmlFor="campaign-code" className="text-sm font-medium">Promo Code</Label>
-              <Input 
-                id="campaign-code" 
-                type="text" 
-                value={campaignCode} 
+              <Input
+                id="campaign-code"
+                type="text"
+                placeholder="Add a promo code"
+                value={campaignCode}
                 onChange={(e) => setCampaignCode(e.target.value)}
-                placeholder="Enter campaign code" 
+                className="h-11"
               />
             </div>
 
+            {/* Driver Age and Category (Hidden) */}
+            <div className="hidden">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <OptionSelect
+                    id="driver-age"
+                    label="Age"
+                    value={age}
+                    onValueChange={setAge}
+                    options={driverAges.map(age => ({ id: String(age.id), name: age.driverage }))}
+                    getOptionName={getDriverAgeName}
+                    isLoading={isLoadingAges}
+                    placeholder="Select age"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <OptionSelect
+                    id="car-category"
+                    label="Category"
+                    value={carCategory}
+                    onValueChange={setCarCategory}
+                    options={carCategories.map(category => ({ id: String(category.id), name: category.vehiclecategorytype }))}
+                    getOptionName={getCategoryName}
+                    isLoading={isLoadingCategories}
+                    placeholder="All Categories"
+                    defaultValue="All Categories"
+                    allOptionId="0"
+                    allOptionLabel="All Categories"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Submit Button */}
             <Button
               type="submit"
-              className="w-full bg-yellow-400 hover:bg-yellow-500 text-black"
+              className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-medium rounded-full"
               disabled={isLoading || !pickupLocation || !pickupDate || !dropoffDate || !pickupTime || !dropoffTime}
             >
-              {isLoading ? "Searching..." : "Search Available Vehicles"}
+              Find my car →
             </Button>
           </div>
         </form>
