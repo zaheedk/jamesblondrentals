@@ -48,7 +48,8 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
     return total + (extra.price * extra.quantity);
   }, 0) || 0;
   
-  const insurancePrice = bookingData.insurancePrice || 0;
+  // Calculate insurance for the total rental duration
+  const insurancePrice = (bookingData.insurancePrice || 0) * duration;
   
   const totalPrice = basePrice + insurancePrice + extrasTotal;
 
