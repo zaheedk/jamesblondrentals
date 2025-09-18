@@ -51,13 +51,23 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
   // Insurance price is stored as total for the rental (not per day)
   const insurancePrice = bookingData.insurancePrice || 0;
   
-  // Subtract refundable security bond if present
-  const bondAmount = (bookingData.mandatoryFees || []).reduce((sum, fee) => {
-    const name = (fee.name || '').toLowerCase();
-    return name.includes('bond') ? sum + (fee.amount || 0) : sum;
-  }, 0);
+  // Mileage charge is per day; multiply by duration if present
+  const extraKmsDaily = bookingData.extraKmsPrice || 0;
+  const extraKmsTotal = extraKmsDaily * duration;
   
-  const totalPrice = Math.max(0, basePrice + insurancePrice + extrasTotal - bondAmount);
+  // Separate mandatory fees: include all except bond
+  const { nonBondFeesTotal, bondAmount } = (bookingData.mandatoryFees || []).reduce(
+    (acc, fee) => {
+      const name = (fee.name || '').toLowerCase();
+      const amount = fee.amount || 0;
+      if (name.includes('bond')) acc.bondAmount += amount;
+      else acc.nonBondFeesTotal += amount;
+      return acc;
+    },
+    { nonBondFeesTotal: 0, bondAmount: 0 }
+  );
+  
+  const totalPrice = Math.max(0, basePrice + nonBondFeesTotal + insurancePrice + extrasTotal + extraKmsTotal);
 
   // Get vehicle image with fallback
   const getImageUrl = () => {

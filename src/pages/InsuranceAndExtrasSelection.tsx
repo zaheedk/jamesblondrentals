@@ -88,6 +88,29 @@ const InsuranceAndExtrasSelection = () => {
         setKmCharges(kmcharges || []);
         setExtras(extras || []);
         setOptionalFees(optionalfees || []);
+
+        // Fetch mandatory fees (e.g., security bond) from step2 so we can subtract bond in totals
+        rcmApi.getStep2({
+          vehiclecategorytypeid: data.vehicleCategoryTypeId,
+          pickuplocationid: data.pickupLocationId,
+          pickupdate: data.pickupDate,
+          pickuptime: data.pickupTime,
+          dropofflocationid: data.dropoffLocationId,
+          dropoffdate: data.dropoffDate,
+          dropofftime: data.dropoffTime,
+          ageid: data.ageId,
+          ...(data.campaignCode && { campaigncode: data.campaignCode })
+        }).then((step2) => {
+          if (step2?.status === 'OK' && step2.results?.mandatoryfees) {
+            const mapped = (step2.results.mandatoryfees || []).map((f: any) => ({
+              name: f.name || f.feegroupname || 'Fee',
+              amount: Number(f.totalfeeamount ?? f.amount ?? 0),
+            }));
+            updateBookingData({ mandatoryFees: mapped });
+          }
+        }).catch((e: any) => {
+          console.warn('Failed to load mandatory fees from step2:', e);
+        });
         
         // Only update totalRateAfterDiscount if it's not already set (preserve discounts from previous steps)
         if (availablecars && availablecars.length > 0 && !data.totalRateAfterDiscount) {
@@ -182,6 +205,16 @@ const InsuranceAndExtrasSelection = () => {
   const handleKmChargeChange = (kmChargeId: string | number) => {
     const selected = kmCharges.find(k => k.id.toString() === kmChargeId.toString()) || null;
     setSelectedKmCharge(selected);
+
+    // Persist immediately so totals update live in the accordion
+    if (selected) {
+      updateBookingData({
+        extraKmsId: selected.id?.toString(),
+        extraKmsName: selected.name || selected.mileagedesc,
+        // Store daily rate; we'll multiply by days in the accordion
+        extraKmsPrice: selected.dailyrate,
+      });
+    }
   };
 
   const handleExtrasChange = (extraId: string | number, quantity: number) => {
@@ -228,6 +261,11 @@ const InsuranceAndExtrasSelection = () => {
     
     console.log('Updated selected extras:', updatedExtras);
     setSelectedExtras(updatedExtras);
+
+    // Persist immediately so totals update in the accordion
+    updateBookingData({
+      selectedExtras: updatedExtras
+    });
   };
 
   const handleProceedToDetails = () => {
