@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Bus, MapPin, Phone, Mail, ArrowRight } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -10,6 +10,9 @@ import { Badge } from '@/components/ui/badge';
 import SearchForm from '@/components/home/SearchForm';
 
 const AucklandAirportMinibusRentals = () => {
+  useEffect(() => {
+    document.title = "Affordable 10 and 12 Seater Vans Rental Auckland New Zealand";
+  }, []);
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Hero Section */}
