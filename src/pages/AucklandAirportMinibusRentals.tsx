@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { Bus, MapPin, Phone, Mail, ArrowRight } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -10,10 +11,12 @@ import { Badge } from '@/components/ui/badge';
 import SearchForm from '@/components/home/SearchForm';
 
 const AucklandAirportMinibusRentals = () => {
-  useEffect(() => {
-    document.title = "Affordable 10 and 12 Seater Vans Rental Auckland New Zealand";
-  }, []);
   return (
+    <>
+      <Helmet>
+        <title>Affordable 10 and 12 Seater Vans Rental Auckland New Zealand</title>
+        <meta name="description" content="Premium minibus rentals at Auckland Airport. 10 & 12 seater vans perfect for groups, families & corporate travel. Book your Auckland Airport minibus hire today!" />
+      </Helmet>
     <div className="container mx-auto px-4 py-8">
       {/* Hero Section */}
       <section className="bg-primary/5 rounded-lg p-6 mb-12">
@@ -429,7 +432,8 @@ const AucklandAirportMinibusRentals = () => {
           </div>
         </div>
       </section>
-    </div>
+     </div>
+    </>
   );
 };
 
