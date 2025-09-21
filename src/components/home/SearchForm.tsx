@@ -28,12 +28,14 @@ interface SearchFormProps {
   defaultPickupLocation?: string;
   defaultDropoffLocation?: string;
   defaultCarCategory?: string;
+  defaultLocation?: string;
 }
 
 const SearchForm = ({ 
   defaultPickupLocation,
   defaultDropoffLocation,
-  defaultCarCategory = "0"
+  defaultCarCategory = "0",
+  defaultLocation
 }: SearchFormProps = {}) => {
   const navigate = useNavigate();
   
@@ -139,6 +141,13 @@ const SearchForm = ({
           if (defaultPickupLocation) {
             defaultLocation = locations.find(loc => String(loc.id) === defaultPickupLocation);
             console.log("Using prop default pickup location:", defaultLocation?.name);
+          } else if (defaultLocation) {
+            // Find location by name if defaultLocation prop is provided
+            defaultLocation = locations.find(loc => 
+              loc.name.toLowerCase().includes(defaultLocation.toLowerCase()) ||
+              loc.city?.toLowerCase().includes(defaultLocation.toLowerCase())
+            );
+            console.log("Using prop default location by name:", defaultLocation?.name);
           }
           
           // Fallback to West Auckland if no prop provided

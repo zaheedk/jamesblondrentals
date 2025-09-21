@@ -120,6 +120,7 @@ import CourierOperatorDeals from "./pages/CourierOperatorDeals";
 import AucklandVanHire from "./pages/AucklandVanHire";
 import WellingtonMinibusHire from "./pages/WellingtonMinibusHire";
 import WellingtonMinibusRentals from "./pages/WellingtonMinibusRentals";
+import WellingtonMinibusHireCBD from "./pages/WellingtonMinibusHireCBD";
 import FuelCalculator from "./pages/FuelCalculator";
 
 
@@ -278,6 +279,7 @@ const App = () => {
                 <Route path="/wellington-10-12-seat-van-minibus-rental" element={<WellingtonMinibusHire />} />
                 <Route path="/wellington-minibus-hire" element={<WellingtonMinibusHire />} />
                 <Route path="/wellington-minibus-rentals" element={<WellingtonMinibusRentals />} />
+                <Route path="/wellington-minibus-hire-cbd" element={<WellingtonMinibusHireCBD />} />
                 <Route path="/fuel-calculator" element={<FuelCalculator />} />
                 
                 <Route path="/jumbo-taxi-launch" element={<JumboTaxiLaunch />} />
