@@ -202,7 +202,7 @@ const FeaturedVehicles = () => {
                   <AspectRatio ratio={4/3} className="overflow-hidden bg-white">
                     {/* Optimized image loading with proper sizes */}
                     <img 
-                      src={vehicle.imageurl} 
+                      src={`${vehicle.imageurl}?f=webp&q=60&w=400&h=300&fit=cover`} 
                       alt={vehicle.vehiclecategoryname}
                       className="w-full h-full object-contain"
                       loading="lazy"
