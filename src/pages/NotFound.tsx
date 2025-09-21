@@ -22,11 +22,8 @@ const NotFound = () => {
         </div>
         
         <div className="bg-muted/50 rounded-lg p-6 mb-6">
-          <p className="text-muted-foreground mb-4">
+          <p className="text-muted-foreground">
             The website does not have this page.
-          </p>
-          <p className="text-sm text-muted-foreground">
-            The 404 webpage status informs the users and the search engines that a webpage is missing.
           </p>
         </div>
 
