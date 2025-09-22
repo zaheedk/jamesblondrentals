@@ -92,7 +92,7 @@ const PaymentSummary = ({
         {hasDiscount && (
           <div className="flex justify-between text-sm text-green-600">
             <span>25% Midweek Discount Applied</span>
-            <span>-{formatCurrency((dailyRate - adjustedDailyRate) * effectiveRentalDays)}</span>
+            <span></span>
           </div>
         )}
         
