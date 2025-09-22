@@ -167,7 +167,16 @@ const PaymentOptions = () => {
         0
       );
       
-      const mandatoryTotal = (bookingData.mandatoryFees || []).reduce(
+      // Deduplicate mandatory fees by name before calculating total
+      const deduplicatedMandatoryFees = (bookingData.mandatoryFees || []).reduce((acc: any[], current: any) => {
+        const existingFee = acc.find(fee => fee.name === current.name);
+        if (!existingFee) {
+          acc.push(current);
+        }
+        return acc;
+      }, []);
+      
+      const mandatoryTotal = deduplicatedMandatoryFees.reduce(
         (sum: number, fee: any) => sum + fee.amount,
         0
       );
@@ -187,7 +196,16 @@ const PaymentOptions = () => {
       });
     }
 
-    const mandatoryTotal = (bookingData.mandatoryFees || []).reduce(
+    // Deduplicate mandatory fees by name before calculating total
+    const deduplicatedMandatoryFees = (bookingData.mandatoryFees || []).reduce((acc: any[], current: any) => {
+      const existingFee = acc.find(fee => fee.name === current.name);
+      if (!existingFee) {
+        acc.push(current);
+      }
+      return acc;
+    }, []);
+    
+    const mandatoryTotal = deduplicatedMandatoryFees.reduce(
       (sum: number, fee: any) => sum + fee.amount,
       0
     );
@@ -575,7 +593,15 @@ const PaymentOptions = () => {
             extraKmsName={bookingDetails?.extraKmsName}
             extraKmsPrice={bookingDetails?.extraKmsPrice}
             selectedExtras={bookingDetails?.selectedExtras}
-            mandatoryFees={bookingDetails?.mandatoryFees}
+            mandatoryFees={bookingDetails?.mandatoryFees ? 
+              bookingDetails.mandatoryFees.reduce((acc: any[], current: any) => {
+                const existingFee = acc.find(fee => fee.name === current.name);
+                if (!existingFee) {
+                  acc.push(current);
+                }
+                return acc;
+              }, []) : []
+            }
             totalCost={totalCost}
             bookingInfoTotalCost={bookingInfoTotalCost}
             payment={paymentType === "deposit" ? DEPOSIT_AMOUNT : totalCost}
