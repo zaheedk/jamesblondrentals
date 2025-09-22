@@ -484,7 +484,8 @@ const PaymentSuccess = () => {
                   quantity: 1
                 }));
 
-              const combinedMandatoryFees = [
+              // Combine and deduplicate mandatory fees by name
+              const allMandatoryFees = [
                 ...(apiMandatoryFeesFromOldField.map((fee: any) => ({
                   name: fee.name ?? "",
                   amount: fee.totalfeeamount || 
@@ -494,6 +495,15 @@ const PaymentSuccess = () => {
                 })) ?? []),
                 ...apiMandatoryFeesFromExtraFees,
               ];
+
+              // Deduplicate by fee name, keeping the first occurrence
+              const combinedMandatoryFees = allMandatoryFees.reduce((acc: any[], current: any) => {
+                const existingFee = acc.find(fee => fee.name === current.name);
+                if (!existingFee) {
+                  acc.push(current);
+                }
+                return acc;
+              }, []);
               
               const pickupLocationFromApi = bookingInfo.pickuplocationname || 
                                           bookingInfo.pickuplocation || 
@@ -730,11 +740,20 @@ const PaymentSuccess = () => {
       const paymentAmount = paymentStatus === "success" ? 
         (cleanedSessionData.payment || cleanedSessionData.paymentAmount || 0) : 0;
       
-      const mandatoryFeesWithQuantity = (cleanedSessionData.mandatoryFees || []).map((fee: any) => ({
-        ...fee,
-        amount: fee.totalfeeamount || fee.amount || 0,
-        quantity: 1
-      }));
+      // Deduplicate mandatory fees from session data by name
+      const sessionMandatoryFees = (cleanedSessionData.mandatoryFees || []).reduce((acc: any[], current: any) => {
+        const existingFee = acc.find(fee => fee.name === current.name);
+        if (!existingFee) {
+          acc.push({
+            ...current,
+            amount: current.totalfeeamount || current.amount || 0,
+            quantity: 1
+          });
+        }
+        return acc;
+      }, []);
+      
+      const mandatoryFeesWithQuantity = sessionMandatoryFees;
       
       const mandatoryFeesTotal = mandatoryFeesWithQuantity.reduce(
         (sum: number, fee: any) => sum + (fee.amount || 0), 
