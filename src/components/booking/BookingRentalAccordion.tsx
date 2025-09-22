@@ -47,14 +47,12 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
     ? dailyRate * duration
     : (bookingData.totalRateAfterDiscount || bookingData.basePrice || 0);
     
-  // Apply 25% midweek discount if booking qualifies
+  // Check if discount qualifies (for display purposes only - don't apply discount as it may already be applied)
   const pickupDate = new Date(bookingData.pickupDate.split('/').reverse().join('-'));
   const dropoffDate = new Date(bookingData.dropoffDate.split('/').reverse().join('-'));
   const qualifiesForDiscount = qualifiesForMidweekDiscount(pickupDate, dropoffDate);
   
-  if (qualifiesForDiscount) {
-    basePrice = basePrice * 0.75; // Apply 25% discount
-  }
+  // Note: Do not apply discount here as dailyrate from API may already include discounts
   
   const extrasTotal = bookingData.selectedExtras?.reduce((total, extra) => {
     return total + (extra.price * extra.quantity);
