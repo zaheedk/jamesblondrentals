@@ -22,7 +22,7 @@ const WinzQuotes = () => {
             <strong>James Blond Rentals specializes in providing comprehensive moving assistance quotes for WINZ applications, covering our full range of trucks, vans, trailers and accessories.</strong>
           </p>
           <p className="text-lg">
-            <strong>Our dedicated team ensures your quote includes all necessary costs and documentation for a smooth WINZ application process.</strong>
+            <strong>James Blond Rentals specializes in WINZ quote for customers in Auckland and Wellington.</strong>
           </p>
         </div>
 
