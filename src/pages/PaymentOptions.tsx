@@ -587,7 +587,7 @@ const PaymentOptions = () => {
 
           <PaymentSummary
             rentalDays={rentalDays}
-            dailyRate={bookingDetails?.basePrice || 0}
+            dailyRate={bookingDetails?.dailyrate || bookingDetails?.basePrice || 0}
             insuranceName={bookingDetails?.insuranceName}
             insurancePrice={bookingDetails?.insurancePrice}
             extraKmsName={bookingDetails?.extraKmsName}
