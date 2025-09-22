@@ -120,7 +120,8 @@ const InsuranceAndExtrasSelection = () => {
           
           if (selectedCar && selectedCar.totalrateafterdiscount) {
             updateBookingData({
-              totalRateAfterDiscount: selectedCar.totalrateafterdiscount
+              totalRateAfterDiscount: selectedCar.totalrateafterdiscount,
+              dailyrate: selectedCar.discounteddailyrate || selectedCar.avgrate || 0,
             });
           }
         }
@@ -157,6 +158,16 @@ const InsuranceAndExtrasSelection = () => {
             insuranceName: insuranceToSelect.name || insuranceToSelect.description,
             insurancePrice: insuranceToSelect.totalinsuranceamount
           });
+        }
+        
+        // Ensure dailyrate is present even if preserved earlier
+        if (!data.dailyrate && availablecars && availablecars.length > 0) {
+          const selectedCar = availablecars.find(car => 
+            car.vehiclecategoryid.toString() === data.vehicleId.toString()
+          );
+          if (selectedCar) {
+            updateBookingData({ dailyrate: selectedCar.discounteddailyrate || selectedCar.avgrate || 0 });
+          }
         }
         
         // Restore previously selected extras if they exist

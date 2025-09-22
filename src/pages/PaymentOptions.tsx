@@ -587,7 +587,9 @@ const PaymentOptions = () => {
 
           <PaymentSummary
             rentalDays={rentalDays}
-            dailyRate={rentalDays > 0 ? (bookingDetails?.dailyrate || bookingDetails?.basePrice || 0) / rentalDays : 0}
+            dailyRate={(bookingDetails?.dailyrate && bookingDetails.dailyrate > 0)
+              ? bookingDetails.dailyrate
+              : (rentalDays > 0 ? ((bookingDetails?.totalcost || bookingDetails?.basePrice || 0) / rentalDays) : 0)}
             insuranceName={bookingDetails?.insuranceName}
             insurancePrice={bookingDetails?.insurancePrice}
             extraKmsName={bookingDetails?.extraKmsName}

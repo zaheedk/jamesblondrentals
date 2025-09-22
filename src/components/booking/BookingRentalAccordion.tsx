@@ -40,9 +40,11 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
 
   const duration = calculateDuration();
   
-  // Use totalrateafterdiscount from availablecars in the API response
-  // This is stored in bookingData.totalRateAfterDiscount when set from insurance/extras pages
-  const basePrice = bookingData.totalRateAfterDiscount || bookingData.basePrice || 0;
+  // Prefer daily rate when available; otherwise fall back to stored total
+  const dailyRate = (bookingData as any).dailyrate || 0;
+  const basePrice = dailyRate > 0
+    ? dailyRate * duration
+    : (bookingData.totalRateAfterDiscount || bookingData.basePrice || 0);
   
   const extrasTotal = bookingData.selectedExtras?.reduce((total, extra) => {
     return total + (extra.price * extra.quantity);
@@ -68,6 +70,7 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
   );
   
   const totalPrice = Math.max(0, basePrice + nonBondFeesTotal + insurancePrice + extrasTotal + extraKmsTotal);
+  console.log('BookingRentalAccordion totals:', { duration, dailyRate, basePrice, insurancePrice, extrasTotal, extraKmsTotal, nonBondFeesTotal, totalPrice });
 
   // Get vehicle image with fallback
   const getImageUrl = () => {
