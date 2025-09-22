@@ -47,12 +47,17 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
     ? dailyRate * duration
     : (bookingData.totalRateAfterDiscount || bookingData.basePrice || 0);
     
-  // Check if discount qualifies (for display purposes only - don't apply discount as it may already be applied)
+  // Check if discount qualifies (for display purposes only - discount is applied via API campaign code)
   const pickupDate = new Date(bookingData.pickupDate.split('/').reverse().join('-'));
   const dropoffDate = new Date(bookingData.dropoffDate.split('/').reverse().join('-'));
-  const qualifiesForDiscount = qualifiesForMidweekDiscount(pickupDate, dropoffDate);
+  const qualifiesForDiscount = qualifiesForMidweekDiscount(pickupDate, dropoffDate) && 
+    (bookingData.vehicleName?.toLowerCase().includes('jumbo') || 
+     bookingData.vehicleName?.toLowerCase().includes('truck') ||
+     bookingData.vehicleName?.toLowerCase().includes('ton') ||
+     bookingData.vehicleName?.toLowerCase().includes('box') ||
+     bookingData.vehicleName?.toLowerCase().includes('tipper'));
   
-  // Note: Do not apply discount here as dailyrate from API may already include discounts
+  // Note: Discount is applied via API campaign code, not locally
   
   const extrasTotal = bookingData.selectedExtras?.reduce((total, extra) => {
     return total + (extra.price * extra.quantity);

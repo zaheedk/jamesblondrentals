@@ -79,20 +79,37 @@ export function isWeekdayRental(pickupDate: string, dropoffDate: string): boolea
 }
 
 /**
- * Get campaign code with automatic weekday detection
+ * Get campaign code with automatic midweek discount for Jumbo Vans and Trucks only
  * @param originalCampaignCode - Original campaign code (may be blank)
  * @param pickupDate - Pickup date string
  * @param dropoffDate - Dropoff date string
+ * @param vehicleName - Vehicle name to check if it's a Jumbo Van or Truck
+ * @param vehicleCategoryTypeId - Vehicle category type ID (optional)
  * @returns string - Campaign code to use
  */
-export function getCampaignCode(originalCampaignCode: string, pickupDate: string, dropoffDate: string): string {
+export function getCampaignCode(
+  originalCampaignCode: string, 
+  pickupDate: string, 
+  dropoffDate: string, 
+  vehicleName?: string,
+  vehicleCategoryTypeId?: string | number
+): string {
   // If there's already a campaign code, use it
   if (originalCampaignCode && originalCampaignCode.trim() !== "") {
     return originalCampaignCode;
   }
   
-  // If no campaign code and dates are weekdays, use midweek25
-  if (isWeekdayRental(pickupDate, dropoffDate)) {
+  // Check if vehicle qualifies for midweek discount (Jumbo Van or Truck only)
+  const isQualifyingVehicle = vehicleName && (
+    vehicleName.toLowerCase().includes('jumbo') ||
+    vehicleName.toLowerCase().includes('truck') ||
+    vehicleName.toLowerCase().includes('ton') ||
+    vehicleName.toLowerCase().includes('box') ||
+    vehicleName.toLowerCase().includes('tipper')
+  );
+  
+  // If qualifying vehicle and dates are weekdays, use midweek25
+  if (isQualifyingVehicle && isWeekdayRental(pickupDate, dropoffDate)) {
     return "midweek25";
   }
   

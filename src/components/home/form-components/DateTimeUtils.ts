@@ -275,6 +275,8 @@ export const getDefaultDropoffDate = (pickupDate: Date): Date => {
 
 /**
  * Check if booking dates fall within Monday-Thursday of the same week for 25% discount
+ * NOTE: This discount only applies to Jumbo Vans and Trucks. 
+ * The actual discount is applied via "midweek25" campaign code in the RCM API.
  * @param pickupDate - The pickup date
  * @param dropoffDate - The dropoff date
  * @returns true if booking qualifies for 25% discount (both dates within Mon-Thu of same week)

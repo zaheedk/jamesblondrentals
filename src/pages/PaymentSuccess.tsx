@@ -243,7 +243,9 @@ const PaymentSuccess = () => {
         campaigncode: getCampaignCode(
           sessionData?.campaignCode || "", 
           pickupDate, 
-          dropoffDate
+          dropoffDate,
+          sessionData?.vehicleName,
+          sessionData?.vehicleCategoryTypeId
         ),
         customer: {
           firstname: customerInfo?.firstname || bookingDetails.customerFirstName || sessionData?.customerFirstName || "Guest",

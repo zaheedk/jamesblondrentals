@@ -430,12 +430,16 @@ const PaymentOptions = () => {
         ...(getCampaignCode(
           bookingDetails.campaignCode || sessionData?.campaignCode || "", 
           pickupDate, 
-          dropoffDate
+          dropoffDate,
+          sessionData?.vehicleName,
+          sessionData?.vehicleCategoryTypeId
         ) ? { 
           campaigncode: getCampaignCode(
             bookingDetails.campaignCode || sessionData?.campaignCode || "", 
             pickupDate, 
-            dropoffDate
+            dropoffDate,
+            sessionData?.vehicleName,
+            sessionData?.vehicleCategoryTypeId
           ) 
         } : {}),
         customer: {
@@ -455,12 +459,16 @@ const PaymentOptions = () => {
       const finalCampaignCode = getCampaignCode(
         bookingDetails.campaignCode || sessionData?.campaignCode || "", 
         pickupDate, 
-        dropoffDate
+        dropoffDate,
+        sessionData?.vehicleName,
+        sessionData?.vehicleCategoryTypeId
       );
       
       console.log('Campaign code debug info:', {
         bookingDetailsCampaignCode: bookingDetails.campaignCode,
         sessionDataCampaignCode: sessionData?.campaignCode,
+        vehicleName: sessionData?.vehicleName,
+        vehicleCategoryTypeId: sessionData?.vehicleCategoryTypeId,
         totalDiscountAmount: sessionData?.totalDiscountAmount,
         finalCampaignCode: finalCampaignCode,
         pickupDate,

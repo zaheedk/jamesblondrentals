@@ -121,7 +121,9 @@ const CustomerDetails = () => {
         campaigncode: getCampaignCode(
           bookingData.campaignCode || "", 
           bookingData.pickupDate, 
-          bookingData.dropoffDate
+          bookingData.dropoffDate,
+          bookingData.vehicleName,
+          bookingData.vehicleCategoryTypeId
         ),
         customer: {
           firstname: formData.firstName,

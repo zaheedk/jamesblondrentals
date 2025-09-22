@@ -47,14 +47,21 @@ const PaymentSummary = ({
 }: PaymentSummaryProps) => {
   const effectiveRentalDays = Math.max(1, rentalDays || 1);
   
-  // Check for midweek discount (for display purposes only)
+  // Check for midweek discount (for display purposes only - only for qualifying vehicles)
   const bookingData = getBookingData();
   let hasDiscount = false;
   
   if (bookingData) {
     const pickupDate = new Date(bookingData.pickupDate.split('/').reverse().join('-'));
     const dropoffDate = new Date(bookingData.dropoffDate.split('/').reverse().join('-'));
-    hasDiscount = qualifiesForMidweekDiscount(pickupDate, dropoffDate);
+    const isQualifyingVehicle = bookingData.vehicleName && (
+      bookingData.vehicleName.toLowerCase().includes('jumbo') ||
+      bookingData.vehicleName.toLowerCase().includes('truck') ||
+      bookingData.vehicleName.toLowerCase().includes('ton') ||
+      bookingData.vehicleName.toLowerCase().includes('box') ||
+      bookingData.vehicleName.toLowerCase().includes('tipper')
+    );
+    hasDiscount = isQualifyingVehicle && qualifiesForMidweekDiscount(pickupDate, dropoffDate);
   }
   
   const extrasTotal = selectedExtras.reduce((sum, extra) => sum + (extra.price * extra.quantity), 0);
