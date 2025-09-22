@@ -1,13 +1,21 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle, AlertCircle, CreditCard, FileText, Users, Clock } from 'lucide-react';
 import WinzQuoteForm from '@/components/WinzQuoteForm';
 
 const WinzQuotes = () => {
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8 text-center">WINZ Quote for Vans & Trucks, Auckland & Wellington</h1>
+    <>
+      <Helmet>
+        <title>Work & Income Quote for Van and Truck | James Blond Rentals</title>
+        <meta name="description" content="Get comprehensive Work & Income quotes for van and truck rentals. James Blond Rentals specializes in WINZ moving assistance quotes with all necessary documentation included." />
+        <meta name="keywords" content="Work Income quote, WINZ quote, van rental, truck rental, moving assistance, James Blond Rentals" />
+        <link rel="canonical" href="https://www.jamesblond.co.nz/winz-quotes" />
+      </Helmet>
+      <div className="container mx-auto px-4 py-12">
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-4xl font-bold mb-8 text-center">Work & Income Quote for Van and Truck | James Blond Rentals</h1>
         
         <div className="mb-12 text-center">
           <p className="text-lg mb-4">
@@ -118,8 +126,9 @@ const WinzQuotes = () => {
 
         {/* WINZ Quote Form */}
         <WinzQuoteForm />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
