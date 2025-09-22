@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/accordion';
 import { getBookingData } from '@/lib/booking-session';
 import { useRcmApi } from '@/hooks/use-rcm-api';
+import { qualifiesForMidweekDiscount } from '@/components/home/form-components/DateTimeUtils';
 import RentalDetails from '@/components/payment/RentalDetails';
 
 interface BookingRentalAccordionProps {
@@ -42,9 +43,18 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
   
   // Prefer daily rate when available; otherwise fall back to stored total
   const dailyRate = (bookingData as any).dailyrate || 0;
-  const basePrice = dailyRate > 0
+  let basePrice = dailyRate > 0
     ? dailyRate * duration
     : (bookingData.totalRateAfterDiscount || bookingData.basePrice || 0);
+    
+  // Apply 25% midweek discount if booking qualifies
+  const pickupDate = new Date(bookingData.pickupDate.split('/').reverse().join('-'));
+  const dropoffDate = new Date(bookingData.dropoffDate.split('/').reverse().join('-'));
+  const qualifiesForDiscount = qualifiesForMidweekDiscount(pickupDate, dropoffDate);
+  
+  if (qualifiesForDiscount) {
+    basePrice = basePrice * 0.75; // Apply 25% discount
+  }
   
   const extrasTotal = bookingData.selectedExtras?.reduce((total, extra) => {
     return total + (extra.price * extra.quantity);
@@ -70,7 +80,7 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
   );
   
   const totalPrice = Math.max(0, basePrice + nonBondFeesTotal + insurancePrice + extrasTotal + extraKmsTotal);
-  console.log('BookingRentalAccordion totals:', { duration, dailyRate, basePrice, insurancePrice, extrasTotal, extraKmsTotal, nonBondFeesTotal, totalPrice });
+  console.log('BookingRentalAccordion totals:', { duration, dailyRate, basePrice, insurancePrice, extrasTotal, extraKmsTotal, nonBondFeesTotal, totalPrice, qualifiesForDiscount });
 
   // Get vehicle image with fallback
   const getImageUrl = () => {

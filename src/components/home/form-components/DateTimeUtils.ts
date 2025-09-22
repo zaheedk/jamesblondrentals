@@ -1,5 +1,5 @@
 
-import { format, parse, isAfter, isBefore, addDays, addHours, addMinutes } from "date-fns";
+import { format, parse, isAfter, isBefore, addDays, addHours, addMinutes, getDay, startOfWeek, endOfWeek } from "date-fns";
 import { formatInTimeZone, toZonedTime } from 'date-fns-tz';
 import { 
   RCMLocation, 
@@ -271,4 +271,27 @@ export const getDefaultDropoffDate = (pickupDate: Date): Date => {
   const dropoffDate = new Date(pickupDate);
   dropoffDate.setDate(dropoffDate.getDate() + 1);
   return dropoffDate;
+};
+
+/**
+ * Check if booking dates fall within Monday-Thursday of the same week for 25% discount
+ * @param pickupDate - The pickup date
+ * @param dropoffDate - The dropoff date
+ * @returns true if booking qualifies for 25% discount (both dates within Mon-Thu of same week)
+ */
+export const qualifiesForMidweekDiscount = (pickupDate: Date, dropoffDate: Date): boolean => {
+  // Get day of week (0 = Sunday, 1 = Monday, ... 6 = Saturday)
+  const pickupDay = getDay(pickupDate);
+  const dropoffDay = getDay(dropoffDate);
+  
+  // Check if both dates are Monday (1) through Thursday (4)
+  const pickupIsMidweek = pickupDay >= 1 && pickupDay <= 4;
+  const dropoffIsMidweek = dropoffDay >= 1 && dropoffDay <= 4;
+  
+  // Check if both dates are in the same week
+  const pickupWeekStart = startOfWeek(pickupDate, { weekStartsOn: 1 }); // Week starts on Monday
+  const dropoffWeekStart = startOfWeek(dropoffDate, { weekStartsOn: 1 });
+  const sameWeek = pickupWeekStart.getTime() === dropoffWeekStart.getTime();
+  
+  return pickupIsMidweek && dropoffIsMidweek && sameWeek;
 };

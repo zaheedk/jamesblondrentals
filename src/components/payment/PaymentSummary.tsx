@@ -1,5 +1,8 @@
 import React from 'react';
 import { formatCurrency } from '@/lib/utils';
+import { qualifiesForMidweekDiscount } from "@/components/home/form-components/DateTimeUtils";
+import { getBookingData } from "@/lib/booking-session";
+import { parse } from "date-fns";
 
 interface Extra {
   name: string;
@@ -44,6 +47,21 @@ const PaymentSummary = ({
 }: PaymentSummaryProps) => {
   const effectiveRentalDays = Math.max(1, rentalDays || 1);
   
+  // Check for midweek discount
+  const bookingData = getBookingData();
+  let adjustedDailyRate = dailyRate;
+  let hasDiscount = false;
+  
+  if (bookingData) {
+    const pickupDate = new Date(bookingData.pickupDate.split('/').reverse().join('-'));
+    const dropoffDate = new Date(bookingData.dropoffDate.split('/').reverse().join('-'));
+    hasDiscount = qualifiesForMidweekDiscount(pickupDate, dropoffDate);
+    
+    if (hasDiscount) {
+      adjustedDailyRate = dailyRate * 0.75; // Apply 25% discount
+    }
+  }
+  
   const extrasTotal = selectedExtras.reduce((sum, extra) => sum + (extra.price * extra.quantity), 0);
   
   const mandatoryFeesTotal = mandatoryFees.reduce((sum, fee) => {
@@ -52,7 +70,7 @@ const PaymentSummary = ({
   
   const totalOptionalFees = insurancePrice + (extraKmsPrice || 0) + extrasTotal;
   
-  const calculatedTotalCost = (dailyRate * effectiveRentalDays) + mandatoryFeesTotal + totalOptionalFees;
+  const calculatedTotalCost = (adjustedDailyRate * effectiveRentalDays) + mandatoryFeesTotal + totalOptionalFees;
   
   const displayTotalCost = bookingInfoTotalCost || 
     (totalCost > 0 ? totalCost : calculatedTotalCost);
@@ -69,8 +87,14 @@ const PaymentSummary = ({
       <div className="space-y-2">
         <div className="flex justify-between">
           <span>Vehicle Rate ({effectiveRentalDays} {effectiveRentalDays === 1 ? 'day' : 'days'})</span>
-          <span>{formatCurrency(dailyRate * effectiveRentalDays)}</span>
+          <span>{formatCurrency(adjustedDailyRate * effectiveRentalDays)}</span>
         </div>
+        {hasDiscount && (
+          <div className="flex justify-between text-sm text-green-600">
+            <span>25% Midweek Discount Applied</span>
+            <span>-{formatCurrency((dailyRate - adjustedDailyRate) * effectiveRentalDays)}</span>
+          </div>
+        )}
         
         {(mandatoryFees.length > 0) && (
           <div className="border-t border-gray-300 mt-2 pt-2">
