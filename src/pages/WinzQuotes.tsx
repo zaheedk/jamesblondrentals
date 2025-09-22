@@ -15,7 +15,7 @@ const WinzQuotes = () => {
       </Helmet>
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl font-bold mb-8 text-center">Work & Income Quote for Van and Truck | James Blond Rentals</h1>
+          <h1 className="text-4xl font-bold mb-8 text-center">Request your WINZ rental quote online in 4 simple steps. James Blond Rentals Auckland and Wellington</h1>
         
         <div className="mb-12 text-center">
           <p className="text-lg mb-4">
