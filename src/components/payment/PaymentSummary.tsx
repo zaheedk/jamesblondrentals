@@ -47,19 +47,14 @@ const PaymentSummary = ({
 }: PaymentSummaryProps) => {
   const effectiveRentalDays = Math.max(1, rentalDays || 1);
   
-  // Check for midweek discount
+  // Check for midweek discount (for display purposes only)
   const bookingData = getBookingData();
-  let adjustedDailyRate = dailyRate;
   let hasDiscount = false;
   
   if (bookingData) {
     const pickupDate = new Date(bookingData.pickupDate.split('/').reverse().join('-'));
     const dropoffDate = new Date(bookingData.dropoffDate.split('/').reverse().join('-'));
     hasDiscount = qualifiesForMidweekDiscount(pickupDate, dropoffDate);
-    
-    if (hasDiscount) {
-      adjustedDailyRate = dailyRate * 0.75; // Apply 25% discount
-    }
   }
   
   const extrasTotal = selectedExtras.reduce((sum, extra) => sum + (extra.price * extra.quantity), 0);
@@ -70,7 +65,7 @@ const PaymentSummary = ({
   
   const totalOptionalFees = insurancePrice + (extraKmsPrice || 0) + extrasTotal;
   
-  const calculatedTotalCost = (adjustedDailyRate * effectiveRentalDays) + mandatoryFeesTotal + totalOptionalFees;
+  const calculatedTotalCost = (dailyRate * effectiveRentalDays) + mandatoryFeesTotal + totalOptionalFees;
   
   const displayTotalCost = bookingInfoTotalCost || 
     (totalCost > 0 ? totalCost : calculatedTotalCost);
@@ -87,7 +82,7 @@ const PaymentSummary = ({
       <div className="space-y-2">
         <div className="flex justify-between">
           <span>Vehicle Rate ({effectiveRentalDays} {effectiveRentalDays === 1 ? 'day' : 'days'})</span>
-          <span>{formatCurrency(adjustedDailyRate * effectiveRentalDays)}</span>
+          <span>{formatCurrency(dailyRate * effectiveRentalDays)}</span>
         </div>
         {hasDiscount && (
           <div className="flex justify-between text-sm text-green-600">
