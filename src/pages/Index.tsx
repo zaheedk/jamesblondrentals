@@ -6,7 +6,6 @@ import { format } from "date-fns";
 import { useState, useEffect } from "react";
 import { Truck } from "lucide-react";
 import truckPromoBanner from "@/assets/truck-promo-banner.jpg";
-import TrustpilotWidget from "@/components/TrustpilotWidget";
 
 
 const Index = () => {
@@ -106,21 +105,6 @@ const Index = () => {
                 <span>Automatic discount applied during booking</span>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Trustpilot Reviews Section */}
-      <section className="section-padding bg-background border-t border-border">
-        <div className="container mx-auto container-padding">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold mb-4">What Our Customers Say</h2>
-            <p className="text-muted-foreground mb-6">
-              See why thousands of customers trust James Blond Rentals for their vehicle hire needs
-            </p>
-          </div>
-          <div className="max-w-2xl mx-auto">
-            <TrustpilotWidget />
           </div>
         </div>
       </section>
