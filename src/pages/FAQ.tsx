@@ -161,6 +161,238 @@ const faqData = [
       </>
     ),
   },
+  {
+    question: "How do I pay, and is there a bond or deposit?",
+    answer: (
+      <>
+        We accept debit/credit cards and cash. A bond may apply depending on your licence type and payment method, refundable on vehicle return.
+      </>
+    ),
+  },
+  {
+    question: "Do your rental prices include GST and insurance?",
+    answer: (
+      <>
+        Yes, all prices include GST and standard insurance. Optional extras like child seats, GPS, or excess reduction are available.
+      </>
+    ),
+  },
+  {
+    question: "Is fuel included in the rental rate?",
+    answer: (
+      <>
+        Vehicles are supplied with a full tank and must be returned full. Refuelling charges apply if not returned at the same level.
+      </>
+    ),
+  },
+  {
+    question: "Can I hire accessories like trolleys or moving blankets?",
+    answer: (
+      <>
+        Yes, we offer a range of hire accessories, including moving trolleys, blankets, and tie-downs. Add them during booking or pickup.
+      </>
+    ),
+  },
+  {
+    question: "How are toll roads handled in New Zealand?",
+    answer: (
+      <>
+        We offer a toll pass option covering up to 10 toll road trips for a one-time fee. Avoid direct NZTA toll payments during rental.
+      </>
+    ),
+  },
+  {
+    question: "What happens if I receive a ticket or toll charge?",
+    answer: (
+      <>
+        Infringements are forwarded to us, and transferred into your name. A small admin fee may apply.
+      </>
+    ),
+  },
+  {
+    question: "What kind of safety checks are done on your vehicles?",
+    answer: (
+      <>
+        All our vehicles undergo regular servicing, tyre and fluid checks, and safety inspections to meet NZTA standards before every hire.
+      </>
+    ),
+  },
+  {
+    question: "What is the standard insurance excess?",
+    answer: (
+      <>
+        Our standard excess starts at $2,000. You can reduce this with an optional excess reduction plan during booking.
+      </>
+    ),
+  },
+  {
+    question: "Do you offer long-term vehicle rentals?",
+    answer: (
+      <>
+        Yes, we offer competitive long-term rental rates for cars, vans, and utes. Contact us to get a custom quote.
+      </>
+    ),
+  },
+  {
+    question: "Do you offer long-term rentals or monthly hire rates?",
+    answer: (
+      <>
+        Yes! We offer special long-term and monthly hire deals for businesses, tradies, or anyone needing extended use. Contact us for a custom quote.
+      </>
+    ),
+  },
+  {
+    question: "Can I rent a car without a credit card?",
+    answer: (
+      <>
+        Yes, we accept debit cards or cash, but a refundable bond applies. Speak with our team to confirm details based on your rental.
+      </>
+    ),
+  },
+  {
+    question: "Do you offer insurance to cover damage to or loss of the vehicle?",
+    answer: (
+      <>
+        Yes. This insurance is included in the cost of the hire. Vehicles are covered by full comprehensive insurance with an excess payable. This excess may be reduced with an additional payment. The only things we do not cover are overhead damage, refueling with the wrong fuel and immersion in water. The full cost of repair applies for these three things.
+      </>
+    ),
+  },
+  {
+    question: "Do I need a special driver's licence to rent a truck or van?",
+    answer: (
+      <>
+        No, you don't need a special licence. A full NZ or overseas driver's licence is all you need to hire and drive our trucks and vans.
+      </>
+    ),
+  },
+  {
+    question: "Is there anything special I need to know before driving a truck?",
+    answer: (
+      <>
+        While no special licence is needed, trucks are larger and higher than cars. Always watch your overhead clearance, take wider turns, and allow more braking distance.
+      </>
+    ),
+  },
+  {
+    question: "Are automatic vehicles available for rent?",
+    answer: (
+      <>
+        Yes! Most of our cars, vans, and many trucks come with automatic transmission. You can filter by transmission when browsing our fleet online.
+      </>
+    ),
+  },
+  {
+    question: "What if I need to change my booking dates?",
+    answer: (
+      <>
+        We're flexible — if your plans change, give us as much notice as possible. We'll do our best to accommodate new dates based on availability.
+      </>
+    ),
+  },
+  {
+    question: "Does your insurance cover personal belongings?",
+    answer: (
+      <>
+        No, our rental insurance only covers the vehicle. We recommend securing personal travel insurance for your own items during hire.
+      </>
+    ),
+  },
+  {
+    question: "Do you sell packaging supplies like boxes or tape?",
+    answer: (
+      <>
+        We don't currently sell packaging materials, but we do offer moving trucks, blankets, and tie-downs to make your move easier.
+      </>
+    ),
+  },
+  {
+    question: "I'm moving house — what size truck should I hire?",
+    answer: (
+      <>
+        We offer a range of moving trucks from 10m³ to 20m³. Need help? Call us and our team can recommend the best size for your move.
+      </>
+    ),
+  },
+  {
+    question: "Can I request a tarp or cover for messy loads?",
+    answer: (
+      <>
+        Yes! If you're transporting rubbish, soil, or other loose loads, let us know — we can supply covers or tarps with your rental truck.
+      </>
+    ),
+  },
+  {
+    question: "Do you provide WINZ or MSD vehicle quotes?",
+    answer: (
+      <>
+        Yes, we're happy to provide official quotes for Work and Income New Zealand. Just call or email us your request and requirements.
+      </>
+    ),
+  },
+  {
+    question: "Can I take the rental truck on the inter-island ferry?",
+    answer: (
+      <>
+        Yes, most of our vehicles are ferry-approved and can travel between the North and South Islands. Check with us if you're booking a large truck.
+      </>
+    ),
+  },
+  {
+    question: "What are the dimensions of your trucks and vans?",
+    answer: (
+      <>
+        Each vehicle's dimensions and load capacity are listed on our website under the fleet pages. Still unsure? Our team can help.
+      </>
+    ),
+  },
+  {
+    question: "Do your trucks have tail lifts?",
+    answer: (
+      <>
+        Yes! Many of our box body trucks come with a hydraulic tail lift for easy loading. You'll see it noted in the vehicle specs online.
+      </>
+    ),
+  },
+  {
+    question: "Are Road User Charges (RUCs) included in the price?",
+    answer: (
+      <>
+        Yes, all RUCs are included in our pricing — no hidden charges. The price you see is the price you pay.
+      </>
+    ),
+  },
+  {
+    question: "How far can I travel on a full tank?",
+    answer: (
+      <>
+        Fuel range varies by vehicle and load. Our diesel trucks can typically travel between 400–600 km on a full tank.
+      </>
+    ),
+  },
+  {
+    question: "Is it cheaper to rent a truck than hire movers?",
+    answer: (
+      <>
+        Yes, self-hiring a truck is often far more affordable. You get full control over your schedule, and we provide the right vehicle for the job.
+      </>
+    ),
+  },
+  {
+    question: "Do you offer special rates for business customers?",
+    answer: (
+      <>
+        Yes! We work with tradespeople, contractors, and businesses of all sizes. Ask us about custom rates or repeat hire discounts.
+      </>
+    ),
+  },
+  {
+    question: "Can I lease or rent long-term?",
+    answer: (
+      <>
+        Absolutely. We offer weekly and monthly hire plans for cars, vans, utes, and trucks. Perfect for long-term projects or seasonal needs.
+      </>
+    ),
+  },
 ];
 
 const FAQ = () => (
