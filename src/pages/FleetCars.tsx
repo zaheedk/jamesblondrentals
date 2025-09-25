@@ -1,9 +1,21 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { ChevronDown } from "lucide-react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 const cars = [
   {
@@ -92,6 +104,7 @@ const cars = [
 ];
 
 const FleetCars = () => {
+  const [faqOpen, setFaqOpen] = useState(false);
 
   return (
     <div className="container mx-auto px-4 py-10">
@@ -143,6 +156,97 @@ const FleetCars = () => {
         </Card>
       ))}
     </div>
+
+    {/* FAQ Section */}
+    <section className="mt-16 border-t pt-8">
+      <Collapsible open={faqOpen} onOpenChange={setFaqOpen}>
+        <CollapsibleTrigger className="flex items-center justify-between w-full mb-6 text-left group">
+          <div>
+            <h2 className="text-xl font-bold mb-2">Car Rental FAQ</h2>
+            <p className="text-muted-foreground text-sm">
+              Get answers to common questions about car rentals in Auckland
+            </p>
+          </div>
+          <ChevronDown className={`h-5 w-5 transition-transform ${faqOpen ? 'rotate-180' : ''}`} />
+        </CollapsibleTrigger>
+        
+        <CollapsibleContent className="mt-4">
+          <div className="max-w-4xl">
+            <Accordion type="single" collapsible className="w-full text-sm">
+              <AccordionItem value="item-1">
+                <AccordionTrigger className="text-left text-sm font-medium">What do I need to rent a car in Auckland from James Blond?</AccordionTrigger>
+                <AccordionContent className="text-left text-sm">
+                  You'll need a valid full driver's licence (international licences are welcome), photo ID, and a credit or debit card.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-2">
+                <AccordionTrigger className="text-left text-sm font-medium">Is there a minimum age requirement to hire a car?</AccordionTrigger>
+                <AccordionContent className="text-left text-sm">
+                  Yes, you must be at least 21 years old to rent a car from us. Drivers under 25 may incur a young driver surcharge.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-3">
+                <AccordionTrigger className="text-left text-sm font-medium">Are there any mileage limits on rental cars?</AccordionTrigger>
+                <AccordionContent className="text-left text-sm">
+                  All our rental cars come with generous mileage limits. Some vehicles offer unlimited kilometres — check your booking details or ask us directly.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-4">
+                <AccordionTrigger className="text-left text-sm font-medium">Can I rent a car for just one day?</AccordionTrigger>
+                <AccordionContent className="text-left text-sm">
+                  Absolutely. We offer flexible rental durations — whether it's just for a day, a weekend, or a longer trip.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-5">
+                <AccordionTrigger className="text-left text-sm font-medium">Do your cars come with insurance?</AccordionTrigger>
+                <AccordionContent className="text-left text-sm">
+                  Yes, all vehicles include standard insurance. You can choose to upgrade for additional protection and lower excess.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-6">
+                <AccordionTrigger className="text-left text-sm font-medium">Can I take the rental car outside Auckland?</AccordionTrigger>
+                <AccordionContent className="text-left text-sm">
+                  Yes, you're free to explore New Zealand. Just let us know if you're planning long-distance travel so we can guide you on the best vehicle options.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-7">
+                <AccordionTrigger className="text-left text-sm font-medium">How much does it cost to rent a car in Auckland?</AccordionTrigger>
+                <AccordionContent className="text-left text-sm">
+                  Prices vary based on vehicle type, duration, and season. Use our online booking tool or call us on 0800 525 663 for an instant quote.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-8">
+                <AccordionTrigger className="text-left text-sm font-medium">Can I add an extra driver to my rental?</AccordionTrigger>
+                <AccordionContent className="text-left text-sm">
+                  Yes, additional drivers can be added for a small fee. All drivers must present their licence at pickup.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-9">
+                <AccordionTrigger className="text-left text-sm font-medium">What happens if I return the car late?</AccordionTrigger>
+                <AccordionContent className="text-left text-sm">
+                  We allow a grace period, but late returns may incur extra charges. It's best to notify us in advance if there's a delay.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-10">
+                <AccordionTrigger className="text-left text-sm font-medium">Do you offer child seats or GPS add-ons?</AccordionTrigger>
+                <AccordionContent className="text-left text-sm">
+                  Yes, we have child seats, GPS units, and other accessories available. Add them when booking or request at pickup.
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
+    </section>
   </div>
   );
 };
