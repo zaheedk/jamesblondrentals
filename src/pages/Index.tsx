@@ -4,7 +4,7 @@ import Hero from "@/components/home/Hero";
 import FeaturedVehicles from "@/components/home/FeaturedVehicles";
 import { format } from "date-fns";
 import { useState, useEffect } from "react";
-import { Truck } from "lucide-react";
+import { Truck, ChevronDown } from "lucide-react";
 import truckPromoBanner from "@/assets/truck-promo-banner.jpg";
 import {
   Accordion,
@@ -12,9 +12,15 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 
 const Index = () => {
+  const [faqOpen, setFaqOpen] = useState(false);
 
 
   // Get today's date at noon as the default pickup date
@@ -111,134 +117,6 @@ const Index = () => {
                 <span>Automatic discount applied during booking</span>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <section className="section-padding bg-muted/20">
-        <div className="container mx-auto container-padding">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Frequently Asked Questions</h2>
-            <p className="text-muted-foreground text-lg">
-              Get answers to common questions about van and truck hire in Auckland and Wellington
-            </p>
-          </div>
-          
-          <div className="max-w-4xl mx-auto">
-            <Accordion type="single" collapsible className="w-full">
-              <AccordionItem value="item-1">
-                <AccordionTrigger>Do you offer van hire in Auckland and Wellington?</AccordionTrigger>
-                <AccordionContent>
-                  Yes, James Blond Rentals provides affordable van hire in both Auckland and Wellington, with multiple sizes including 7-seater, 10-seater and 12-seater options.
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="item-2">
-                <AccordionTrigger>Can I hire a moving truck in Auckland or Wellington?</AccordionTrigger>
-                <AccordionContent>
-                  Yes, moving truck hire is available in both Auckland and Wellington. Daily and multi-day hire options are offered with flexible booking times.
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="item-3">
-                <AccordionTrigger>Is same day rental available for vans or trucks?</AccordionTrigger>
-                <AccordionContent>
-                  Same day rental for vans and trucks is often available depending on fleet status. Call 0800 525 663 to check current availability.
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="item-4">
-                <AccordionTrigger>Do you provide airport pickup for rentals?</AccordionTrigger>
-                <AccordionContent>
-                  Yes, van rental with airport pickup can be arranged in Auckland. Please contact us in advance to confirm timing and vehicle size.
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="item-5">
-                <AccordionTrigger>What documents do I need to rent a van or truck?</AccordionTrigger>
-                <AccordionContent>
-                  A valid driver licence and a payment method for the bond are required for all rentals. Additional ID may be requested for certain vehicles.
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="item-6">
-                <AccordionTrigger>Are weekend rentals available in both cities?</AccordionTrigger>
-                <AccordionContent>
-                  Yes, weekend truck and van rentals are available in both Auckland and Wellington. Early booking is recommended during busy periods.
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="item-7">
-                <AccordionTrigger>How much does it cost to hire a van in Auckland?</AccordionTrigger>
-                <AccordionContent>
-                  Van hire prices in Auckland depend on the vehicle size and rental duration. Daily rates start from affordable options, with discounts for longer rentals.
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="item-8">
-                <AccordionTrigger>Can I hire a truck in Wellington for moving house?</AccordionTrigger>
-                <AccordionContent>
-                  Yes, moving truck hire is available in Wellington for house moves, office relocations, and deliveries. Trucks can be hired for a single day or longer periods.
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="item-9">
-                <AccordionTrigger>Do you provide 12 seater van hire for group travel?</AccordionTrigger>
-                <AccordionContent>
-                  Yes, 12 seater vans are available for hire, perfect for group trips, sports teams, or family outings in both Auckland and Wellington.
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="item-10">
-                <AccordionTrigger>What licence do I need to rent a moving truck?</AccordionTrigger>
-                <AccordionContent>
-                  Most moving trucks can be driven on a standard full car licence. Larger trucks may require a Class 2 licence depending on weight.
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="item-11">
-                <AccordionTrigger>Is one way truck hire available between Auckland and Wellington?</AccordionTrigger>
-                <AccordionContent>
-                  Yes, one way truck hire can be arranged between branches. Availability and extra fees apply, so booking ahead is recommended.
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="item-12">
-                <AccordionTrigger>Do rental vans include insurance?</AccordionTrigger>
-                <AccordionContent>
-                  Yes, rental vans and trucks include standard insurance. Optional excess reduction and additional cover can be added for extra peace of mind.
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="item-13">
-                <AccordionTrigger>Can I rent a van with unlimited kilometres?</AccordionTrigger>
-                <AccordionContent>
-                  Yes, unlimited kilometre van hire is available on selected rentals. Always confirm during booking as conditions may vary by vehicle type.
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="item-14">
-                <AccordionTrigger>Do you offer weekend specials for truck hire?</AccordionTrigger>
-                <AccordionContent>
-                  Weekend truck and van hire is popular in both Auckland and Wellington. Book early to secure vehicles and check for available weekend packages.
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="item-15">
-                <AccordionTrigger>Can international visitors rent vans or trucks?</AccordionTrigger>
-                <AccordionContent>
-                  Yes, overseas visitors can hire vans and trucks using a valid driver licence in English or an approved international driving permit.
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="item-16">
-                <AccordionTrigger>What is the bond required for van or truck rental?</AccordionTrigger>
-                <AccordionContent>
-                  A refundable bond is required for all rentals. The amount depends on the vehicle type and insurance option chosen.
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
           </div>
         </div>
       </section>
@@ -809,6 +687,141 @@ const Index = () => {
               </Button>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="section-padding bg-muted/20 border-t">
+        <div className="container mx-auto container-padding">
+          <Collapsible open={faqOpen} onOpenChange={setFaqOpen}>
+            <CollapsibleTrigger className="flex items-center justify-between w-full mb-6 text-left group">
+              <div>
+                <h2 className="text-xl font-bold mb-2">Frequently Asked Questions</h2>
+                <p className="text-muted-foreground text-sm">
+                  Get answers to common questions about van and truck hire
+                </p>
+              </div>
+              <ChevronDown className={`h-5 w-5 transition-transform ${faqOpen ? 'rotate-180' : ''}`} />
+            </CollapsibleTrigger>
+            
+            <CollapsibleContent className="mt-4">
+              <div className="max-w-4xl">
+                <Accordion type="single" collapsible className="w-full text-sm">
+                  <AccordionItem value="item-1">
+                    <AccordionTrigger className="text-left text-sm font-medium">Do you offer van hire in Auckland and Wellington?</AccordionTrigger>
+                    <AccordionContent className="text-left text-sm">
+                      Yes, James Blond Rentals provides affordable van hire in both Auckland and Wellington, with multiple sizes including 7-seater, 10-seater and 12-seater options.
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="item-2">
+                    <AccordionTrigger className="text-left text-sm font-medium">Can I hire a moving truck in Auckland or Wellington?</AccordionTrigger>
+                    <AccordionContent className="text-left text-sm">
+                      Yes, moving truck hire is available in both Auckland and Wellington. Daily and multi-day hire options are offered with flexible booking times.
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="item-3">
+                    <AccordionTrigger className="text-left text-sm font-medium">Is same day rental available for vans or trucks?</AccordionTrigger>
+                    <AccordionContent className="text-left text-sm">
+                      Same day rental for vans and trucks is often available depending on fleet status. Call 0800 525 663 to check current availability.
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="item-4">
+                    <AccordionTrigger className="text-left text-sm font-medium">Do you provide airport pickup for rentals?</AccordionTrigger>
+                    <AccordionContent className="text-left text-sm">
+                      Yes, van rental with airport pickup can be arranged in Auckland. Please contact us in advance to confirm timing and vehicle size.
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="item-5">
+                    <AccordionTrigger className="text-left text-sm font-medium">What documents do I need to rent a van or truck?</AccordionTrigger>
+                    <AccordionContent className="text-left text-sm">
+                      A valid driver licence and a payment method for the bond are required for all rentals. Additional ID may be requested for certain vehicles.
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="item-6">
+                    <AccordionTrigger className="text-left text-sm font-medium">Are weekend rentals available in both cities?</AccordionTrigger>
+                    <AccordionContent className="text-left text-sm">
+                      Yes, weekend truck and van rentals are available in both Auckland and Wellington. Early booking is recommended during busy periods.
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="item-7">
+                    <AccordionTrigger className="text-left text-sm font-medium">How much does it cost to hire a van in Auckland?</AccordionTrigger>
+                    <AccordionContent className="text-left text-sm">
+                      Van hire prices in Auckland depend on the vehicle size and rental duration. Daily rates start from affordable options, with discounts for longer rentals.
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="item-8">
+                    <AccordionTrigger className="text-left text-sm font-medium">Can I hire a truck in Wellington for moving house?</AccordionTrigger>
+                    <AccordionContent className="text-left text-sm">
+                      Yes, moving truck hire is available in Wellington for house moves, office relocations, and deliveries. Trucks can be hired for a single day or longer periods.
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="item-9">
+                    <AccordionTrigger className="text-left text-sm font-medium">Do you provide 12 seater van hire for group travel?</AccordionTrigger>
+                    <AccordionContent className="text-left text-sm">
+                      Yes, 12 seater vans are available for hire, perfect for group trips, sports teams, or family outings in both Auckland and Wellington.
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="item-10">
+                    <AccordionTrigger className="text-left text-sm font-medium">What licence do I need to rent a moving truck?</AccordionTrigger>
+                    <AccordionContent className="text-left text-sm">
+                      Most moving trucks can be driven on a standard full car licence. Larger trucks may require a Class 2 licence depending on weight.
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="item-11">
+                    <AccordionTrigger className="text-left text-sm font-medium">Is one way truck hire available between Auckland and Wellington?</AccordionTrigger>
+                    <AccordionContent className="text-left text-sm">
+                      Yes, one way truck hire can be arranged between branches. Availability and extra fees apply, so booking ahead is recommended.
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="item-12">
+                    <AccordionTrigger className="text-left text-sm font-medium">Do rental vans include insurance?</AccordionTrigger>
+                    <AccordionContent className="text-left text-sm">
+                      Yes, rental vans and trucks include standard insurance. Optional excess reduction and additional cover can be added for extra peace of mind.
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="item-13">
+                    <AccordionTrigger className="text-left text-sm font-medium">Can I rent a van with unlimited kilometres?</AccordionTrigger>
+                    <AccordionContent className="text-left text-sm">
+                      Yes, unlimited kilometre van hire is available on selected rentals. Always confirm during booking as conditions may vary by vehicle type.
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="item-14">
+                    <AccordionTrigger className="text-left text-sm font-medium">Do you offer weekend specials for truck hire?</AccordionTrigger>
+                    <AccordionContent className="text-left text-sm">
+                      Weekend truck and van hire is popular in both Auckland and Wellington. Book early to secure vehicles and check for available weekend packages.
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="item-15">
+                    <AccordionTrigger className="text-left text-sm font-medium">Can international visitors rent vans or trucks?</AccordionTrigger>
+                    <AccordionContent className="text-left text-sm">
+                      Yes, overseas visitors can hire vans and trucks using a valid driver licence in English or an approved international driving permit.
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="item-16">
+                    <AccordionTrigger className="text-left text-sm font-medium">What is the bond required for van or truck rental?</AccordionTrigger>
+                    <AccordionContent className="text-left text-sm">
+                      A refundable bond is required for all rentals. The amount depends on the vehicle type and insurance option chosen.
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
         </div>
       </section>
 
