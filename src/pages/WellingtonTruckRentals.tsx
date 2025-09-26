@@ -43,6 +43,22 @@ const WellingtonTruckRentals = () => {
         </div>
       </div>
 
+      {/* Booking Frame Section */}
+      <section id="booking" className="mb-12 scroll-mt-16">
+        <div className="bg-primary/5 border border-primary/10 rounded-lg p-6">
+          <h2 className="text-2xl font-bold mb-6 text-center">Book Your Wellington Truck Rental</h2>
+          <p className="text-center mb-6">Check availability and reserve your moving truck today</p>
+          
+          <div className="max-w-4xl mx-auto">
+            <SearchForm 
+              defaultPickupLocation="11"
+              defaultDropoffLocation="11"
+              defaultCarCategory="3"
+            />
+          </div>
+        </div>
+      </section>
+
       {/* Why Choose Us */}
       <section className="mb-12">
         <h2 className="text-2xl font-bold mb-6 text-center">Why Choose James Blond for Your Wellington Move?</h2>
@@ -447,21 +463,6 @@ const WellingtonTruckRentals = () => {
         </div>
       </section>
 
-      {/* Booking Frame Section */}
-      <section id="booking" className="mb-12 scroll-mt-16">
-        <div className="bg-primary/5 border border-primary/10 rounded-lg p-6">
-          <h2 className="text-2xl font-bold mb-6 text-center">Book Your Wellington Truck Rental</h2>
-          <p className="text-center mb-6">Check availability and reserve your moving truck today</p>
-          
-          <div className="max-w-4xl mx-auto">
-            <SearchForm 
-              defaultPickupLocation="11"
-              defaultDropoffLocation="11"
-              defaultCarCategory="3"
-            />
-          </div>
-        </div>
-      </section>
 
       {/* FAQs */}
       <section className="mb-12">
