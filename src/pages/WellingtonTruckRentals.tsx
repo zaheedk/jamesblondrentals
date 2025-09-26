@@ -53,7 +53,7 @@ const WellingtonTruckRentals = () => {
             <SearchForm 
               defaultPickupLocation="11"
               defaultDropoffLocation="11"
-              defaultCarCategory="3"
+              defaultCarCategory="4"
             />
           </div>
         </div>
