@@ -545,48 +545,51 @@ const SearchForm = ({
               </div>
             </div>
             
-            {/* Age and Category */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <OptionSelect
-                  id="driver-age"
-                  label="Age"
-                  value={age}
-                  onValueChange={setAge}
-                  options={driverAges.map(age => ({ id: String(age.id), name: age.driverage }))}
-                  getOptionName={getDriverAgeName}
-                  isLoading={isLoadingAges}
-                  placeholder="Select age"
-                />
+            {/* Age, Category and Promo Code */}
+            <div className="grid grid-cols-1 gap-4">
+              {/* Age and Category Row for Mobile */}
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <OptionSelect
+                    id="driver-age"
+                    label="Age"
+                    value={age}
+                    onValueChange={setAge}
+                    options={driverAges.map(age => ({ id: String(age.id), name: age.driverage }))}
+                    getOptionName={getDriverAgeName}
+                    isLoading={isLoadingAges}
+                    placeholder="Select age"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <OptionSelect
+                    id="car-category"
+                    label="Category"
+                    value={carCategory}
+                    onValueChange={setCarCategory}
+                    options={carCategories.map(category => ({ id: String(category.id), name: category.vehiclecategorytype }))}
+                    getOptionName={getCategoryName}
+                    isLoading={isLoadingCategories}
+                    placeholder="All Categories"
+                    defaultValue="All Categories"
+                    allOptionId="0"
+                    allOptionLabel="All Categories"
+                  />
+                </div>
               </div>
               
+              {/* Promo Code */}
               <div className="space-y-2">
-                <OptionSelect
-                  id="car-category"
-                  label="Category"
-                  value={carCategory}
-                  onValueChange={setCarCategory}
-                  options={carCategories.map(category => ({ id: String(category.id), name: category.vehiclecategorytype }))}
-                  getOptionName={getCategoryName}
-                  isLoading={isLoadingCategories}
-                  placeholder="All Categories"
-                  defaultValue="All Categories"
-                  allOptionId="0"
-                  allOptionLabel="All Categories"
+                <Label htmlFor="campaign-code" className="text-sm font-medium">Promo Code</Label>
+                <Input 
+                  id="campaign-code" 
+                  type="text" 
+                  value={campaignCode} 
+                  onChange={(e) => setCampaignCode(e.target.value)}
+                  placeholder="Enter campaign code" 
                 />
               </div>
-            </div>
-            
-            {/* Promo Code */}
-            <div className="space-y-2">
-              <Label htmlFor="campaign-code" className="text-sm font-medium">Promo Code</Label>
-              <Input 
-                id="campaign-code" 
-                type="text" 
-                value={campaignCode} 
-                onChange={(e) => setCampaignCode(e.target.value)}
-                placeholder="Enter campaign code" 
-              />
             </div>
 
             <Button
