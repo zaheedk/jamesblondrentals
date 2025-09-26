@@ -451,7 +451,7 @@ const SearchForm = ({
             </div>
 
             {/* Pick-up Date and Time */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <DateSelect
                   id="pickup-date"
@@ -505,7 +505,7 @@ const SearchForm = ({
             </div>
 
             {/* Drop-off Date and Time */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <DateSelect
                   id="dropoff-date"
