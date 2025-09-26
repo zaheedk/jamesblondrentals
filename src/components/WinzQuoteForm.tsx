@@ -228,7 +228,7 @@ const WinzQuoteForm = () => {
               )}
             />
 
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
                 name="pickupDate"
