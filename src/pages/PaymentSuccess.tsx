@@ -1103,6 +1103,8 @@ const PaymentSuccess = () => {
         isOpen={showSurvey}
         onClose={() => setShowSurvey(false)}
         bookingReference={bookingDetails?.reservationRef}
+        customerName={bookingDetails ? `${bookingDetails.customerFirstName || ''} ${bookingDetails.customerLastName || ''}`.trim() : undefined}
+        customerEmail={bookingDetails?.customerEmail}
       />
     </div>
   );

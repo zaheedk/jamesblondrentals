@@ -9,9 +9,11 @@ interface BookingExperienceSurveyProps {
   isOpen: boolean;
   onClose: () => void;
   bookingReference?: string;
+  customerName?: string;
+  customerEmail?: string;
 }
 
-const BookingExperienceSurvey = ({ isOpen, onClose, bookingReference }: BookingExperienceSurveyProps) => {
+const BookingExperienceSurvey = ({ isOpen, onClose, bookingReference, customerName, customerEmail }: BookingExperienceSurveyProps) => {
   const [rating, setRating] = useState<number | null>(null);
   const [currentStep, setCurrentStep] = useState(1);
   const [suggestions, setSuggestions] = useState('');
@@ -35,18 +37,21 @@ const BookingExperienceSurvey = ({ isOpen, onClose, bookingReference }: BookingE
     console.log('Suggestions:', suggestions);
     
     try {
-      // Get customer details from booking session
+      // Use customer details from props or fallback to booking session
       const bookingData = getBookingData();
       console.log('Booking data for feedback:', bookingData);
       console.log('Booking reference from props:', bookingReference);
+      console.log('Customer details from props:', { customerName, customerEmail });
       
-      const customerName = bookingData ? `${bookingData.customerFirstName || ''} ${bookingData.customerLastName || ''}`.trim() : '';
-      const customerEmail = bookingData?.customerEmail || '';
+      const finalCustomerName = customerName || (bookingData ? `${bookingData.customerFirstName || ''} ${bookingData.customerLastName || ''}`.trim() : '');
+      const finalCustomerEmail = customerEmail || bookingData?.customerEmail || '';
       
       console.log('Customer details for feedback submission:', { 
-        customerName: customerName || 'NOT AVAILABLE', 
-        customerEmail: customerEmail || 'NOT AVAILABLE', 
+        finalCustomerName: finalCustomerName || 'NOT AVAILABLE', 
+        finalCustomerEmail: finalCustomerEmail || 'NOT AVAILABLE', 
         bookingReference: bookingReference || 'NOT AVAILABLE',
+        customerNameFromProps: customerName,
+        customerEmailFromProps: customerEmail,
         customerFirstName: bookingData?.customerFirstName,
         customerLastName: bookingData?.customerLastName,
         customerEmailFromSession: bookingData?.customerEmail,
@@ -54,8 +59,8 @@ const BookingExperienceSurvey = ({ isOpen, onClose, bookingReference }: BookingE
       });
 
       // If customer details are not available, show a warning but still submit
-      if (!customerName && !customerEmail) {
-        console.warn('No customer details found in session storage');
+      if (!finalCustomerName && !finalCustomerEmail) {
+        console.warn('No customer details found in props or session storage');
       }
 
       console.log('Calling Supabase edge function...');
@@ -64,8 +69,8 @@ const BookingExperienceSurvey = ({ isOpen, onClose, bookingReference }: BookingE
           rating,
           suggestions,
           bookingReference: bookingReference || null,
-          customerName: customerName || null,
-          customerEmail: customerEmail || null,
+          customerName: finalCustomerName || null,
+          customerEmail: finalCustomerEmail || null,
         },
       });
 
