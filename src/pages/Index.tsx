@@ -5,6 +5,7 @@ import FeaturedVehicles from "@/components/home/FeaturedVehicles";
 import { format } from "date-fns";
 import { useState, useEffect } from "react";
 import { Truck, ChevronDown } from "lucide-react";
+import { Helmet } from "react-helmet-async";
 import truckPromoBanner from "@/assets/truck-promo-banner.jpg";
 import {
   Accordion,
@@ -47,6 +48,9 @@ const Index = () => {
 
   return (
     <div>
+      <Helmet>
+        <title>Cheap & Affordable Vehicle Rentals Auckland | Wellington</title>
+      </Helmet>
       
       <Hero />
       
