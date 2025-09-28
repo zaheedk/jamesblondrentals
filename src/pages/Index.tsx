@@ -49,7 +49,7 @@ const Index = () => {
   return (
     <div>
       <Helmet>
-        <title>Cheap & Affordable Vehicle Rentals Auckland | Wellington</title>
+        <title>Affordable Vehicle Rental Auckland & Wellington – James Blond</title>
       </Helmet>
       
       <Hero />
