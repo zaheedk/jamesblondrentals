@@ -26,7 +26,7 @@ const Hero = () => {
         {/* Hero content */}
         <div className="max-w-3xl mx-auto text-center mb-6">
           <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-white">
-            Car, Van, Minibus & Truck Rentals in Auckland, Wellington & Christchurch
+            Car, Van, Minibus & Truck Hire in Auckland, Wellington & Christchurch
           </h1>
           <p className={`text-base md:text-lg text-white/90 mb-6 md:mb-8 ${isMobile ? 'hidden' : 'block'}`}>
             Premium car hire, van hire, and truck hire across Auckland, Wellington, and Christchurch. 
