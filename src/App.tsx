@@ -76,6 +76,7 @@ import HotDeals from "./pages/HotDeals";
 import CarRentalWellington from "./pages/CarRentalWellington"; // Import the new Wellington car rental page
 import CarRentalAucklandAirport from "./pages/CarRentalAucklandAirport"; // Import the new Auckland Airport car rental page
 import AucklandAirportMinibusRentals from "./pages/AucklandAirportMinibusRentals"; // Import the new Auckland Airport Minibus Rentals page
+import AucklandAirportCarRentals from "./pages/AucklandAirportCarRentals"; // Import the new Auckland Airport Car Rentals page
 import CagedTrailerDetail from "./pages/CagedTrailerDetail"; // Import the new Caged Trailer detail page
 import LuggageTrailerDetail from "./pages/LuggageTrailerDetail"; // Import the new Luggage Trailer detail page
 import CarTransporterTrailerDetail from "./pages/CarTransporterTrailerDetail"; // Import the new Car Transporter Trailer detail page
@@ -208,6 +209,7 @@ const App = () => {
                 <Route path="/car-rental-wellington-new-zealand" element={<CarRentalWellington />} />
                 <Route path="/car-rental-auckland-airport-new-zealand" element={<CarRentalAucklandAirport />} />
                 <Route path="/auckland-airport-minibus-rentals-hire" element={<AucklandAirportMinibusRentals />} />
+                <Route path="/auckland-airport-car-rentals" element={<AucklandAirportCarRentals />} />
                 <Route path="/west-auckland-truck-rentals-hire" element={<WestAucklandTruckRentals />} />
                 <Route path="/auckland-truck-rentals-hire" element={<AucklandTruckRentals />} />
                 <Route path="/wellington-truck-rentals-hire" element={<WellingtonTruckRentals />} />
