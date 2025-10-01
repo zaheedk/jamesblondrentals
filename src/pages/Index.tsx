@@ -7,6 +7,8 @@ import { useState, useEffect } from "react";
 import { Truck, ChevronDown } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import truckPromoBanner from "@/assets/truck-promo-banner.jpg";
+import perfectVehicleImage from "@/assets/perfect-vehicle-match-fleet.jpg";
+import convenientLocationImage from "@/assets/convenient-locations-airport.jpg";
 import {
   Accordion,
   AccordionContent,
@@ -76,19 +78,35 @@ const Index = () => {
               </p>
             </div>
             <div className="grid md:grid-cols-2 gap-8">
-              <div className="card-elegant p-6">
-                <h4 className="text-foreground mb-4">Perfect Vehicle Match</h4>
-                <p>
-                  Whether you're seeking an affordable rental or a luxurious driving experience, James Blond Rentals ensures 
-                  you'll find the perfect vehicle for your needs.
-                </p>
+              <div className="card-elegant overflow-hidden">
+                <img 
+                  src={perfectVehicleImage} 
+                  alt="Diverse fleet of rental vehicles including cars, vans and minibuses at James Blond Rentals Auckland" 
+                  className="w-full h-48 object-cover"
+                  loading="lazy"
+                />
+                <div className="p-6">
+                  <h4 className="text-foreground mb-4">Perfect Vehicle Match</h4>
+                  <p>
+                    Whether you're seeking an affordable rental or a luxurous driving experience, James Blond Rentals ensures 
+                    you'll find the perfect vehicle for your needs.
+                  </p>
+                </div>
               </div>
-              <div className="card-elegant p-6">
-                <h4 className="text-foreground mb-4">Convenient Locations</h4>
-                <p>
-                  With convenient locations, including service from both domestic and international terminals at Auckland Airport, 
-                  the company provides seamless access to top-quality rental options.
-                </p>
+              <div className="card-elegant overflow-hidden">
+                <img 
+                  src={convenientLocationImage} 
+                  alt="Convenient rental car pickup location at Auckland Airport domestic and international terminals" 
+                  className="w-full h-48 object-cover"
+                  loading="lazy"
+                />
+                <div className="p-6">
+                  <h4 className="text-foreground mb-4">Convenient Locations</h4>
+                  <p>
+                    With convenient locations, including service from both domestic and international terminals at Auckland Airport, 
+                    the company provides seamless access to top-quality rental options.
+                  </p>
+                </div>
               </div>
             </div>
             <div className="text-center">
