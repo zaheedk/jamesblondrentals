@@ -6,6 +6,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import SearchForm from '@/components/home/SearchForm';
 import { Link } from 'react-router-dom';
+import familyUnloadingTruck from '@/assets/family-unloading-removal-truck.jpg';
+import familyUnpacking from '@/assets/family-unpacking-moving-truck.jpg';
 
 const WestAucklandTruckRentals = () => {
   return (
@@ -239,53 +241,109 @@ const WestAucklandTruckRentals = () => {
         </Tabs>
       </section>
 
+      {/* Customer Experience Section */}
+      <section className="mb-12">
+        <div className="grid md:grid-cols-2 gap-8 items-center">
+          <div>
+            <img 
+              src={familyUnloadingTruck}
+              alt="Happy family unloading furniture from rental truck in West Auckland"
+              className="rounded-lg shadow-lg w-full h-auto"
+              loading="lazy"
+              width="800"
+              height="600"
+            />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold mb-4">Trusted by West Auckland Families</h2>
+            <p className="text-muted-foreground mb-6">
+              Join thousands of satisfied customers who've made their West Auckland moves easier with our reliable truck rentals. 
+              Our fleet is perfect for residential moves, furniture transport, and business relocations throughout West Auckland.
+            </p>
+            <div className="space-y-4">
+              <div className="flex items-start gap-3">
+                <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">✓</div>
+                <div>
+                  <h3 className="font-semibold">Easy Self-Service</h3>
+                  <p className="text-sm text-muted-foreground">Pick up, move, and return at your convenience</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">✓</div>
+                <div>
+                  <h3 className="font-semibold">Transparent Pricing</h3>
+                  <p className="text-sm text-muted-foreground">No hidden fees, pay only for the time you use</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">✓</div>
+                <div>
+                  <h3 className="font-semibold">Well-Maintained Fleet</h3>
+                  <p className="text-sm text-muted-foreground">Regular servicing ensures reliable performance</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Tips Section */}
       <section className="mb-12">
         <h2 className="text-2xl font-bold mb-6">West Auckland Moving Tips</h2>
         <div className="bg-primary/5 border border-primary/10 rounded-lg p-6">
-          <div className="grid md:grid-cols-2 gap-8">
-            <div>
-              <h3 className="font-bold text-xl mb-4">Planning Your West Auckland Move</h3>
-              <ul className="space-y-3">
-                <li className="flex items-start">
-                  <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">1</span>
-                  <span>Book your truck at least a week in advance for weekend moves</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">2</span>
-                  <span>Plan your route to avoid West Auckland's busiest roads during peak hours</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">3</span>
-                  <span>Organize plenty of helpers - loading and unloading goes much faster</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">4</span>
-                  <span>Check truck dimensions to ensure your larger items will fit</span>
-                </li>
-              </ul>
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="md:col-span-2">
+              <div>
+                <h3 className="font-bold text-xl mb-4">Planning Your West Auckland Move</h3>
+                <ul className="space-y-3">
+                  <li className="flex items-start">
+                    <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">1</span>
+                    <span>Book your truck at least a week in advance for weekend moves</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">2</span>
+                    <span>Plan your route to avoid West Auckland's busiest roads during peak hours</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">3</span>
+                    <span>Organize plenty of helpers - loading and unloading goes much faster</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">4</span>
+                    <span>Check truck dimensions to ensure your larger items will fit</span>
+                  </li>
+                </ul>
+              
+                <h3 className="font-bold text-xl mb-4 mt-6">Loading Your Truck Efficiently</h3>
+                <ul className="space-y-3">
+                  <li className="flex items-start">
+                    <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">1</span>
+                    <span>Load heaviest items first and place them at the front of the truck</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">2</span>
+                    <span>Use furniture blankets to protect items (available as extras)</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">3</span>
+                    <span>Disassemble furniture when possible to save space</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">4</span>
+                    <span>Consider our hand trolley extras for moving heavy items</span>
+                  </li>
+                </ul>
+              </div>
             </div>
-            
             <div>
-              <h3 className="font-bold text-xl mb-4">Loading Your Truck Efficiently</h3>
-              <ul className="space-y-3">
-                <li className="flex items-start">
-                  <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">1</span>
-                  <span>Load heaviest items first and place them at the front of the truck</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">2</span>
-                  <span>Use furniture blankets to protect items (available as extras)</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">3</span>
-                  <span>Disassemble furniture when possible to save space</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">4</span>
-                  <span>Consider our hand trolley extras for moving heavy items</span>
-                </li>
-              </ul>
+              <img 
+                src={familyUnpacking}
+                alt="Family unpacking moving boxes from rental truck at new West Auckland home"
+                className="rounded-lg shadow-lg w-full h-auto"
+                loading="lazy"
+                width="400"
+                height="600"
+              />
             </div>
           </div>
         </div>

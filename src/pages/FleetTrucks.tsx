@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import truckMovingBoxes from "@/assets/truck-moving-boxes-household-items.jpg";
+import familyUnloadingTruck from "@/assets/family-unloading-removal-truck.jpg";
 
 const trucks = [
   {
@@ -89,56 +91,121 @@ const trucks = [
 
 const FleetTrucks = () => (
   <div className="container mx-auto px-4 py-10">
-    <div className="text-center mb-12">
-      <h1 className="text-3xl font-bold mb-4">Heavy-Duty Fleet – The Right Truck for Every Job</h1>
-      <p className="text-lg text-gray-700">
-        Choose from our range of professional trucks for all your heavy-duty transportation needs.
-      </p>
+    {/* Hero Section with Image */}
+    <div className="grid md:grid-cols-5 gap-8 mb-12 items-center">
+      <div className="md:col-span-3">
+        <h1 className="text-3xl md:text-4xl font-bold mb-4">Heavy-Duty Fleet – The Right Truck for Every Job</h1>
+        <p className="text-lg text-muted-foreground mb-6">
+          Choose from our range of professional trucks for all your heavy-duty transportation needs. 
+          From furniture moves to commercial deliveries, we have the perfect truck rental solution.
+        </p>
+        <Button asChild size="lg">
+          <a href="#trucks">View Our Fleet</a>
+        </Button>
+      </div>
+      <div className="md:col-span-2">
+        <img 
+          src={truckMovingBoxes}
+          alt="Professional moving truck loaded with boxes and household items for furniture removals"
+          className="rounded-lg shadow-lg w-full h-auto"
+          loading="eager"
+          width="600"
+          height="400"
+        />
+      </div>
     </div>
     
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {trucks.map((truck) => (
-        <Card key={truck.id} className="flex flex-col h-full">
-          {truck.image && (
-            <AspectRatio ratio={16/9} className="w-full">
-              <img 
-                src={truck.image} 
-                alt={`${truck.title}`} 
-                className="w-full h-full object-cover rounded-t-lg"
-                loading="lazy"
-                width="400"
-                height="225"
-              />
-            </AspectRatio>
-          )}
-          <CardHeader>
-            <CardTitle className="text-lg font-bold text-primary">{truck.title}</CardTitle>
-            <CardDescription className="text-xl font-semibold">{truck.subtitle}</CardDescription>
-          </CardHeader>
-          <CardContent className="flex-grow">
-            <ul className="space-y-2">
-              {truck.specs.map((spec, index) => (
-                <li key={index} className="flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0" />
-                  <span className="text-gray-600">{spec}</span>
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-          <CardFooter>
-            {(truck.id === "2-tonne-box-9m3" || truck.id === "2-tonne-box-12m3" || 
-              truck.id === "2-tonne-box-12m3-tail" || truck.id === "2-tonne-tipper" ||
-              truck.id === "2-tonne-box-16m3" || truck.id === "3-tonne-box-18m3" ||
-              truck.id === "3-tonne-box-19m3") ? (
-              <Link to={`/fleet/trucks/${truck.id}`} className="w-full">
-                <Button variant="outline" className="w-full">View Details</Button>
-              </Link>
-            ) : (
-              <Button variant="outline" className="w-full" disabled>Coming Soon</Button>
+    {/* Truck Grid Section */}
+    <div id="trucks" className="mb-12">
+      <h2 className="text-2xl font-bold mb-6 text-center">Our Truck Fleet</h2>
+    
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {trucks.map((truck) => (
+          <Card key={truck.id} className="flex flex-col h-full">
+            {truck.image && (
+              <AspectRatio ratio={16/9} className="w-full">
+                <img 
+                  src={truck.image} 
+                  alt={`${truck.title} rental truck for moving and transport`} 
+                  className="w-full h-full object-cover rounded-t-lg"
+                  loading="lazy"
+                  width="400"
+                  height="225"
+                />
+              </AspectRatio>
             )}
-          </CardFooter>
-        </Card>
-      ))}
+            <CardHeader>
+              <CardTitle className="text-lg font-bold text-primary">{truck.title}</CardTitle>
+              <CardDescription className="text-xl font-semibold">{truck.subtitle}</CardDescription>
+            </CardHeader>
+            <CardContent className="flex-grow">
+              <ul className="space-y-2">
+                {truck.specs.map((spec, index) => (
+                  <li key={index} className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0" />
+                    <span className="text-gray-600">{spec}</span>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+            <CardFooter>
+              {(truck.id === "2-tonne-box-9m3" || truck.id === "2-tonne-box-12m3" || 
+                truck.id === "2-tonne-box-12m3-tail" || truck.id === "2-tonne-tipper" ||
+                truck.id === "2-tonne-box-16m3" || truck.id === "3-tonne-box-18m3" ||
+                truck.id === "3-tonne-box-19m3") ? (
+                <Link to={`/fleet/trucks/${truck.id}`} className="w-full">
+                  <Button variant="outline" className="w-full">View Details</Button>
+                </Link>
+              ) : (
+                <Button variant="outline" className="w-full" disabled>Coming Soon</Button>
+              )}
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
+    </div>
+
+    {/* Moving Experience Section */}
+    <div className="grid md:grid-cols-5 gap-8 mt-16 bg-muted/30 p-8 rounded-xl items-center">
+      <div className="md:col-span-2">
+        <img 
+          src={familyUnloadingTruck}
+          alt="Happy family unloading furniture and boxes from moving truck rental"
+          className="rounded-lg shadow-lg w-full h-auto"
+          loading="lazy"
+          width="600"
+          height="400"
+        />
+      </div>
+      <div className="md:col-span-3">
+        <h2 className="text-2xl font-bold mb-4">Make Your Move Easy</h2>
+        <p className="text-muted-foreground mb-4">
+          Our professional truck fleet is designed to make your moving experience as smooth as possible. 
+          Whether you're relocating your home, transporting furniture, or handling commercial deliveries, 
+          our trucks are equipped to handle the job.
+        </p>
+        <ul className="space-y-2 mb-6">
+          <li className="flex items-center gap-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0" />
+            <span>Easy-to-drive automatic transmission available</span>
+          </li>
+          <li className="flex items-center gap-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0" />
+            <span>Spacious cargo areas for household items</span>
+          </li>
+          <li className="flex items-center gap-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0" />
+            <span>Tail lift options for heavy items</span>
+          </li>
+          <li className="flex items-center gap-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0" />
+            <span>Competitive hourly rates with transparent pricing</span>
+          </li>
+        </ul>
+        <Button asChild>
+          <Link to="/contact">Get in Touch</Link>
+        </Button>
+      </div>
     </div>
   </div>
 );

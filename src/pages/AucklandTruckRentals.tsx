@@ -6,6 +6,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import SearchForm from '@/components/home/SearchForm';
 import { Link } from 'react-router-dom';
+import truckOpenDoors from '@/assets/truck-open-doors-loading-boxes.jpg';
+import familyUnpacking from '@/assets/family-unpacking-moving-truck.jpg';
+import coupleMoving from '@/assets/couple-moving-boxes-truck.jpg';
 
 const AucklandTruckRentals = () => {
   return (
@@ -239,53 +242,106 @@ const AucklandTruckRentals = () => {
         </Tabs>
       </section>
 
+      {/* Moving Experience Section */}
+      <section className="mb-12 bg-muted/30 rounded-xl overflow-hidden">
+        <div className="grid md:grid-cols-2 gap-0">
+          <div className="relative h-64 md:h-auto">
+            <img 
+              src={truckOpenDoors}
+              alt="Professional moving truck with open doors loaded with boxes ready for Auckland move"
+              className="w-full h-full object-cover"
+              loading="lazy"
+              width="800"
+              height="600"
+            />
+          </div>
+          <div className="p-8 flex flex-col justify-center">
+            <h2 className="text-2xl font-bold mb-4">Perfect for Auckland Moves</h2>
+            <p className="text-muted-foreground mb-6">
+              Our trucks are specifically chosen for Auckland's diverse neighborhoods and moving challenges. 
+              From tight apartment parking to spacious suburban moves, we have the right vehicle for your needs.
+            </p>
+            <div className="space-y-3">
+              <div className="flex items-start gap-3">
+                <div className="bg-primary/10 p-2 rounded-full mt-1">
+                  <Truck className="h-4 w-4 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-1">Multiple Size Options</h3>
+                  <p className="text-sm text-muted-foreground">From 9m³ to 19m³ capacity trucks</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="bg-primary/10 p-2 rounded-full mt-1">
+                  <Package className="h-4 w-4 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-1">Tail Lift Available</h3>
+                  <p className="text-sm text-muted-foreground">Easy loading for heavy furniture and appliances</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Tips Section */}
       <section className="mb-12">
         <h2 className="text-2xl font-bold mb-6">Auckland Moving Tips</h2>
         <div className="bg-primary/5 border border-primary/10 rounded-lg p-6">
-          <div className="grid md:grid-cols-2 gap-8">
-            <div>
-              <h3 className="font-bold text-xl mb-4">Planning Your Auckland Move</h3>
-              <ul className="space-y-3">
-                <li className="flex items-start">
-                  <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">1</span>
-                  <span>Book your truck at least a week in advance for weekend moves</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">2</span>
-                  <span>Plan your route to avoid Auckland's motorway congestion during peak hours</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">3</span>
-                  <span>Organize plenty of helpers - loading and unloading goes much faster</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">4</span>
-                  <span>Check truck dimensions to ensure your larger items will fit</span>
-                </li>
-              </ul>
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="md:col-span-2">
+              <div>
+                <h3 className="font-bold text-xl mb-4">Planning Your Auckland Move</h3>
+                <ul className="space-y-3">
+                  <li className="flex items-start">
+                    <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">1</span>
+                    <span>Book your truck at least a week in advance for weekend moves</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">2</span>
+                    <span>Plan your route to avoid Auckland's motorway congestion during peak hours</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">3</span>
+                    <span>Organize plenty of helpers - loading and unloading goes much faster</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">4</span>
+                    <span>Check truck dimensions to ensure your larger items will fit</span>
+                  </li>
+                </ul>
+              
+                <h3 className="font-bold text-xl mb-4 mt-6">Loading Your Truck Efficiently</h3>
+                <ul className="space-y-3">
+                  <li className="flex items-start">
+                    <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">1</span>
+                    <span>Load heaviest items first and place them at the front of the truck</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">2</span>
+                    <span>Use furniture blankets to protect items (available as extras)</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">3</span>
+                    <span>Disassemble furniture when possible to save space</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">4</span>
+                    <span>Consider our hand trolley extras for moving heavy items</span>
+                  </li>
+                </ul>
+              </div>
             </div>
-            
             <div>
-              <h3 className="font-bold text-xl mb-4">Loading Your Truck Efficiently</h3>
-              <ul className="space-y-3">
-                <li className="flex items-start">
-                  <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">1</span>
-                  <span>Load heaviest items first and place them at the front of the truck</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">2</span>
-                  <span>Use furniture blankets to protect items (available as extras)</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">3</span>
-                  <span>Disassemble furniture when possible to save space</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">4</span>
-                  <span>Consider our hand trolley extras for moving heavy items</span>
-                </li>
-              </ul>
+              <img 
+                src={coupleMoving}
+                alt="Couple loading moving boxes into rental truck for Auckland home relocation"
+                className="rounded-lg shadow-lg w-full h-auto"
+                loading="lazy"
+                width="400"
+                height="600"
+              />
             </div>
           </div>
         </div>
