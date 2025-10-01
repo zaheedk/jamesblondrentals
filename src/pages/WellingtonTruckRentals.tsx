@@ -1,15 +1,29 @@
 
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Truck, Home, Box, Package, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import SearchForm from '@/components/home/SearchForm';
 import { Link } from 'react-router-dom';
+import truckMovingBoxes from '@/assets/truck-moving-boxes-household-items.jpg';
+import truckOpenDoors from '@/assets/truck-open-doors-loading-boxes.jpg';
+import familyUnloading from '@/assets/family-unloading-removal-truck.jpg';
+import familyUnpacking from '@/assets/family-unpacking-moving-truck.jpg';
+import coupleMoving from '@/assets/couple-moving-boxes-truck.jpg';
 
 const WellingtonTruckRentals = () => {
   return (
-    <div className="container mx-auto px-4 py-8">
+    <>
+      <Helmet>
+        <title>Wellington Truck Rentals | Furniture & Moving Trucks - James Blond</title>
+        <meta name="description" content="Affordable truck hire in Wellington. Perfect for moving furniture, house moves, and commercial relocations. Tail lift options available. Expert service for Wellington's hilly terrain." />
+        <meta name="keywords" content="Wellington truck rentals, moving trucks Wellington, furniture truck hire, Wellington moving, truck hire CBD" />
+        <link rel="canonical" href="https://www.jamesblond.co.nz/wellington-truck-rentals-hire" />
+      </Helmet>
+      
+      <div className="container mx-auto px-4 py-8">
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-6 mb-8">
         <div className="grid md:grid-cols-2 gap-6 items-center">
@@ -276,61 +290,106 @@ const WellingtonTruckRentals = () => {
         </Tabs>
       </section>
 
-      {/* Tips Section */}
+      {/* Tips Section with Images */}
       <section className="mb-12">
         <h2 className="text-2xl font-bold mb-6">Wellington Moving Tips</h2>
         <div className="bg-primary/5 border border-primary/10 rounded-lg p-6">
-          <div className="grid md:grid-cols-2 gap-8">
-            <div>
-              <h3 className="font-bold text-xl mb-4">Planning Your Wellington Move</h3>
-              <ul className="space-y-3">
-                <li className="flex items-start">
-                  <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">1</span>
-                  <span>Book at least two weeks in advance for weekend moves in Wellington</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">2</span>
-                  <span>Plan your route to avoid the Mount Victoria tunnel during peak hours</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">3</span>
-                  <span>Check weather forecasts - Wellington winds can affect driving larger vehicles</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">4</span>
-                  <span>Reserve parking with the council for loading/unloading in CBD areas</span>
-                </li>
-              </ul>
+          <div className="grid lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2 grid md:grid-cols-2 gap-8">
+              <div>
+                <h3 className="font-bold text-xl mb-4">Planning Your Wellington Move</h3>
+                <ul className="space-y-3">
+                  <li className="flex items-start">
+                    <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">1</span>
+                    <span>Book at least two weeks in advance for weekend moves in Wellington</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">2</span>
+                    <span>Plan your route to avoid the Mount Victoria tunnel during peak hours</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">3</span>
+                    <span>Check weather forecasts - Wellington winds can affect driving larger vehicles</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">4</span>
+                    <span>Reserve parking with the council for loading/unloading in CBD areas</span>
+                  </li>
+                </ul>
+              </div>
+              
+              <div>
+                <h3 className="font-bold text-xl mb-4">Navigating Wellington's Challenges</h3>
+                <ul className="space-y-3">
+                  <li className="flex items-start">
+                    <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">1</span>
+                    <span>Use lower gears when descending steep streets like Aro or Brooklyn hills</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">2</span>
+                    <span>Secure items well - Wellington's winding roads can shift cargo</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">3</span>
+                    <span>Consider a tail lift truck for multi-story apartment buildings</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">4</span>
+                    <span>Allow extra time for narrow streets in older suburbs like Newtown</span>
+                  </li>
+                </ul>
+              </div>
             </div>
             
-            <div>
-              <h3 className="font-bold text-xl mb-4">Navigating Wellington's Challenges</h3>
-              <ul className="space-y-3">
-                <li className="flex items-start">
-                  <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">1</span>
-                  <span>Use lower gears when descending steep streets like Aro or Brooklyn hills</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">2</span>
-                  <span>Secure items well - Wellington's winding roads can shift cargo</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">3</span>
-                  <span>Consider a tail lift truck for multi-story apartment buildings</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="bg-primary/20 text-primary font-bold rounded-full w-6 h-6 flex items-center justify-center mr-2 mt-0.5">4</span>
-                  <span>Allow extra time for narrow streets in older suburbs like Newtown</span>
-                </li>
-              </ul>
+            <div className="space-y-4">
+              <img 
+                src={truckOpenDoors}
+                alt="Moving truck with open doors ready for loading household items in Wellington"
+                className="rounded-lg w-full h-auto shadow-md"
+                width="400"
+                height="300"
+                loading="lazy"
+              />
+              <img 
+                src={truckMovingBoxes}
+                alt="Truck loaded with moving boxes and household belongings for Wellington relocation"
+                className="rounded-lg w-full h-auto shadow-md"
+                width="400"
+                height="300"
+                loading="lazy"
+              />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Wellington Specific Info */}
+      {/* Wellington Specific Info with Images */}
       <section className="mb-12">
         <h2 className="text-2xl font-bold mb-6">Wellington Moving Services</h2>
+        
+        <div className="grid lg:grid-cols-2 gap-8 mb-8">
+          <div>
+            <img 
+              src={familyUnloading}
+              alt="Family unloading furniture from removal truck into their new Wellington home"
+              className="rounded-lg w-full h-auto shadow-lg mb-6"
+              width="600"
+              height="400"
+              loading="lazy"
+            />
+          </div>
+          <div>
+            <img 
+              src={familyUnpacking}
+              alt="Family unpacking moving boxes from rental truck in Wellington"
+              className="rounded-lg w-full h-auto shadow-lg mb-6"
+              width="600"
+              height="400"
+              loading="lazy"
+            />
+          </div>
+        </div>
+        
         <div className="grid md:grid-cols-3 gap-6">
           <Card>
             <CardContent className="pt-6">
@@ -369,7 +428,7 @@ const WellingtonTruckRentals = () => {
         </div>
       </section>
 
-      {/* Hutt Valley Services */}
+      {/* Hutt Valley Services with Image */}
       <section className="mb-12">
         <h2 className="text-2xl font-bold mb-6">Truck Hire Services for Lower Hutt & Upper Hutt</h2>
         <div className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-lg p-6 mb-6">
@@ -379,7 +438,8 @@ const WellingtonTruckRentals = () => {
           </p>
         </div>
         
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 grid md:grid-cols-2 gap-8">
           <div>
             <h3 className="font-bold text-xl mb-4 text-primary">Lower Hutt Truck Rentals</h3>
             <div className="space-y-4">
@@ -430,6 +490,18 @@ const WellingtonTruckRentals = () => {
                 </ul>
               </div>
             </div>
+          </div>
+          </div>
+          
+          <div className="flex items-start">
+            <img 
+              src={coupleMoving}
+              alt="Couple loading boxes into rental truck for Wellington Hutt Valley move"
+              className="rounded-lg w-full h-auto shadow-lg sticky top-4"
+              width="400"
+              height="500"
+              loading="lazy"
+            />
           </div>
         </div>
         
@@ -514,7 +586,8 @@ const WellingtonTruckRentals = () => {
           </Button>
         </div>
       </section>
-    </div>
+      </div>
+    </>
   );
 };
 
