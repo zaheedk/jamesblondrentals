@@ -7,6 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import SearchForm from '@/components/home/SearchForm';
 import { Link } from 'react-router-dom';
+import { LazyImage } from '@/components/LazyImage';
 import truckMovingBoxes from '@/assets/truck-moving-boxes-household-items.jpg';
 import truckOpenDoors from '@/assets/truck-open-doors-loading-boxes.jpg';
 import familyUnloading from '@/assets/family-unloading-removal-truck.jpg';
@@ -42,13 +43,15 @@ const WellingtonTruckRentals = () => {
             </div>
           </div>
           <div className="relative">
-            <img 
+            <LazyImage 
               src="/lovable-uploads/b1bd35e2-4d58-4900-86c5-dfe61a852d78.png" 
               alt="Box Truck for Moving in Wellington" 
               className="rounded-lg w-full shadow-lg"
-              width="600"
-              height="400"
-              loading="lazy"
+              width={600}
+              height={400}
+              loading="eager"
+              sizes="(max-width: 768px) 100vw, 50vw"
+              quality={75}
             />
             <div className="absolute top-4 right-4 bg-primary text-white px-4 py-2 rounded-full text-sm font-bold">
               Most Popular
@@ -141,13 +144,15 @@ const WellingtonTruckRentals = () => {
           <TabsContent value="furniture">
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <img 
+                <LazyImage 
                   src="/lovable-uploads/b1bd35e2-4d58-4900-86c5-dfe61a852d78.png" 
                   alt="Box Truck for Furniture Moving" 
                   className="rounded-lg mb-4"
-                  width="500"
-                  height="300"
+                  width={500}
+                  height={300}
                   loading="lazy"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  quality={70}
                 />
                 <h3 className="font-bold text-xl mb-2">2 TONNE BOX (12M³)</h3>
                 <ul className="list-disc list-inside mb-4 text-gray-600 space-y-1">
@@ -164,13 +169,15 @@ const WellingtonTruckRentals = () => {
               </div>
               
               <div>
-                <img 
+                <LazyImage 
                   src="/lovable-uploads/d4f3f3f9-68b5-425e-83e7-7e468c0da49f.png" 
                   alt="Box Truck with Tail Lift" 
                   className="rounded-lg mb-4"
-                  width="500"
-                  height="300"
+                  width={500}
+                  height={300}
                   loading="lazy"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  quality={70}
                 />
                 <h3 className="font-bold text-xl mb-2">2 TONNE BOX (12M³) +TAIL LIFT</h3>
                 <ul className="list-disc list-inside mb-4 text-gray-600 space-y-1">
@@ -191,13 +198,15 @@ const WellingtonTruckRentals = () => {
           <TabsContent value="house">
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <img 
+                <LazyImage 
                   src="/lovable-uploads/a00bb0d9-fccc-4d69-a9ab-28d894f74538.png" 
                   alt="Large Box Truck" 
                   className="rounded-lg mb-4"
-                  width="500"
-                  height="300"
+                  width={500}
+                  height={300}
                   loading="lazy"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  quality={70}
                 />
                 <h3 className="font-bold text-xl mb-2">2 TONNE BOX (16M³)</h3>
                 <ul className="list-disc list-inside mb-4 text-gray-600 space-y-1">
@@ -214,13 +223,15 @@ const WellingtonTruckRentals = () => {
               </div>
               
               <div>
-                <img 
+                <LazyImage 
                   src="/lovable-uploads/e4f29c45-82c9-460d-a508-4abd64ca9dd4.png" 
                   alt="Large Box Truck with Tail Lift" 
                   className="rounded-lg mb-4"
-                  width="500"
-                  height="300"
+                  width={500}
+                  height={300}
                   loading="lazy"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  quality={70}
                 />
                 <h3 className="font-bold text-xl mb-2">3 TONNE BOX (19M³) +TAIL LIFT</h3>
                 <ul className="list-disc list-inside mb-4 text-gray-600 space-y-1">
@@ -241,13 +252,15 @@ const WellingtonTruckRentals = () => {
           <TabsContent value="commercial">
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <img 
+                <LazyImage 
                   src="/lovable-uploads/ca896f7e-9bda-4926-b23c-e80cbeb348cb.png" 
                   alt="Tipper Truck" 
                   className="rounded-lg mb-4"
-                  width="500"
-                  height="300"
+                  width={500}
+                  height={300}
                   loading="lazy"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  quality={70}
                 />
                 <h3 className="font-bold text-xl mb-2">2 TONNE TIPPER</h3>
                 <ul className="list-disc list-inside mb-4 text-gray-600 space-y-1">
@@ -264,13 +277,15 @@ const WellingtonTruckRentals = () => {
               </div>
               
               <div>
-                <img 
+                <LazyImage 
                   src="/lovable-uploads/4506c6fc-4eef-4997-a040-7482f1872bab.png" 
                   alt="Large Box Truck with Tail Lift for Commercial Use" 
                   className="rounded-lg mb-4"
-                  width="500"
-                  height="300"
+                  width={500}
+                  height={300}
                   loading="lazy"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  quality={70}
                 />
                 <h3 className="font-bold text-xl mb-2">3 TONNE BOX (18M³) +TAIL LIFT</h3>
                 <ul className="list-disc list-inside mb-4 text-gray-600 space-y-1">
@@ -342,21 +357,25 @@ const WellingtonTruckRentals = () => {
             </div>
             
             <div className="space-y-4">
-              <img 
+              <LazyImage 
                 src={truckOpenDoors}
                 alt="Moving truck with open doors ready for loading household items in Wellington"
                 className="rounded-lg w-full h-auto shadow-md"
-                width="400"
-                height="300"
+                width={400}
+                height={300}
                 loading="lazy"
+                sizes="(max-width: 768px) 100vw, 33vw"
+                quality={70}
               />
-              <img 
+              <LazyImage 
                 src={truckMovingBoxes}
                 alt="Truck loaded with moving boxes and household belongings for Wellington relocation"
                 className="rounded-lg w-full h-auto shadow-md"
-                width="400"
-                height="300"
+                width={400}
+                height={300}
                 loading="lazy"
+                sizes="(max-width: 768px) 100vw, 33vw"
+                quality={70}
               />
             </div>
           </div>
@@ -369,23 +388,27 @@ const WellingtonTruckRentals = () => {
         
         <div className="grid lg:grid-cols-2 gap-8 mb-8">
           <div>
-            <img 
+            <LazyImage 
               src={familyUnloading}
               alt="Family unloading furniture from removal truck into their new Wellington home"
               className="rounded-lg w-full h-auto shadow-lg mb-6"
-              width="600"
-              height="400"
+              width={600}
+              height={400}
               loading="lazy"
+              sizes="(max-width: 768px) 100vw, 50vw"
+              quality={70}
             />
           </div>
           <div>
-            <img 
+            <LazyImage 
               src={familyUnpacking}
               alt="Family unpacking moving boxes from rental truck in Wellington"
               className="rounded-lg w-full h-auto shadow-lg mb-6"
-              width="600"
-              height="400"
+              width={600}
+              height={400}
               loading="lazy"
+              sizes="(max-width: 768px) 100vw, 50vw"
+              quality={70}
             />
           </div>
         </div>
@@ -494,13 +517,15 @@ const WellingtonTruckRentals = () => {
           </div>
           
           <div className="flex items-start">
-            <img 
+            <LazyImage 
               src={coupleMoving}
               alt="Couple loading boxes into rental truck for Wellington Hutt Valley move"
               className="rounded-lg w-full h-auto shadow-lg sticky top-4"
-              width="400"
-              height="500"
+              width={400}
+              height={500}
               loading="lazy"
+              sizes="(max-width: 768px) 100vw, 33vw"
+              quality={70}
             />
           </div>
         </div>
