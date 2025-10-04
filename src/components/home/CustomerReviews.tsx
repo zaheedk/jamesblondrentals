@@ -136,8 +136,8 @@ const CustomerReviews = () => {
                 <CarouselContent>
                   {reviews.map((review, index) => (
                     <CarouselItem key={index} className="md:basis-1/2">
-                      <Card className="h-full bg-card/80 backdrop-blur border-border/50 hover:border-primary/50 transition-colors">
-                        <CardContent className="p-6">
+                      <Card className="h-[280px] bg-card/80 backdrop-blur border-border/50 hover:border-primary/50 transition-colors">
+                        <CardContent className="p-6 h-full flex flex-col">
                           <div className="flex items-start justify-between mb-4">
                             <div className="flex items-center gap-3">
                               <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
@@ -167,9 +167,11 @@ const CustomerReviews = () => {
                               />
                             ))}
                           </div>
-                          <p className="text-sm text-foreground/90 leading-relaxed">
-                            {review.text}
-                          </p>
+                          <div className="overflow-y-auto flex-1 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
+                            <p className="text-sm text-foreground/90 leading-relaxed">
+                              {review.text}
+                            </p>
+                          </div>
                         </CardContent>
                       </Card>
                     </CarouselItem>
