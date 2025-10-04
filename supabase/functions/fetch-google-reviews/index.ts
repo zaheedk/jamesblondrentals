@@ -55,18 +55,20 @@ serve(async (req) => {
 
     const reviews = data.reviews || [];
 
-    // Transform reviews to match our component format
-    const transformedReviews = reviews.map((review: any) => ({
-      name: review.authorAttribution?.displayName || 'Anonymous',
-      date: review.publishTime ? new Date(review.publishTime).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-      rating: review.rating || 5,
-      text: review.text?.text || review.originalText?.text || '',
-      verified: true,
-      initial: (review.authorAttribution?.displayName || 'A').charAt(0).toUpperCase(),
-      profile_photo_url: review.authorAttribution?.photoUri,
-    }));
+    // Transform reviews to match our component format and filter for 5-star reviews only
+    const transformedReviews = reviews
+      .map((review: any) => ({
+        name: review.authorAttribution?.displayName || 'Anonymous',
+        date: review.publishTime ? new Date(review.publishTime).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+        rating: review.rating || 5,
+        text: review.text?.text || review.originalText?.text || '',
+        verified: true,
+        initial: (review.authorAttribution?.displayName || 'A').charAt(0).toUpperCase(),
+        profile_photo_url: review.authorAttribution?.photoUri,
+      }))
+      .filter(review => review.rating === 5);
 
-    console.log(`Successfully fetched ${transformedReviews.length} reviews`);
+    console.log(`Successfully fetched ${transformedReviews.length} 5-star reviews`);
 
     return new Response(
       JSON.stringify({
