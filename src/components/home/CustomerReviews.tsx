@@ -8,43 +8,81 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
-const reviews = [
-  {
-    name: "Tia Epiha",
-    date: "2024-11-28",
-    rating: 4,
-    text: "Cheap Straightforward and easy to work with.. Would definetly use there rental vehicles again..",
-    verified: true,
-    initial: "T"
-  },
-  {
-    name: "Tracey Hopkins",
-    date: "2024-11-24",
-    rating: 5,
-    text: "Great service, excellent truck, no problems at all. Will definitely use Basic Rentals again. Highly recommend them.",
-    verified: true,
-    initial: "T"
-  },
-  {
-    name: "Sarah Mitchell",
-    date: "2024-11-20",
-    rating: 5,
-    text: "Fantastic service! The van was clean and well-maintained. Staff were very helpful and professional.",
-    verified: true,
-    initial: "S"
-  },
-  {
-    name: "David Chen",
-    date: "2024-11-15",
-    rating: 5,
-    text: "Best rental experience I've had. Great prices and excellent customer service. Highly recommended!",
-    verified: true,
-    initial: "D"
-  }
-];
+interface Review {
+  name: string;
+  date: string;
+  rating: number;
+  text: string;
+  verified: boolean;
+  initial: string;
+  profile_photo_url?: string;
+}
+
+interface GoogleReviewsData {
+  businessName: string;
+  rating: number;
+  totalReviews: number;
+  reviews: Review[];
+}
 
 const CustomerReviews = () => {
+  const [reviewsData, setReviewsData] = useState<GoogleReviewsData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke('fetch-google-reviews');
+        
+        if (error) {
+          console.error('Error fetching reviews:', error);
+          toast({
+            title: "Error loading reviews",
+            description: "Could not load Google reviews. Showing cached reviews.",
+            variant: "destructive"
+          });
+          return;
+        }
+
+        setReviewsData(data);
+      } catch (error) {
+        console.error('Error:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReviews();
+  }, [toast]);
+
+  // Fallback reviews if API fails
+  const fallbackReviews: Review[] = [
+    {
+      name: "Tia Epiha",
+      date: "2024-11-28",
+      rating: 4,
+      text: "Cheap Straightforward and easy to work with.. Would definetly use there rental vehicles again..",
+      verified: true,
+      initial: "T"
+    },
+    {
+      name: "Tracey Hopkins",
+      date: "2024-11-24",
+      rating: 5,
+      text: "Great service, excellent truck, no problems at all. Will definitely use Basic Rentals again. Highly recommend them.",
+      verified: true,
+      initial: "T"
+    }
+  ];
+
+  const reviews = reviewsData?.reviews || fallbackReviews;
+  const rating = reviewsData?.rating || 4.5;
+  const totalReviews = reviewsData?.totalReviews || 215;
   return (
     <section className="py-16 bg-gradient-to-b from-background to-secondary/20">
       <div className="container mx-auto px-4">
@@ -55,15 +93,25 @@ const CustomerReviews = () => {
             {/* Google Rating Summary */}
             <Card className="lg:col-span-1 bg-card/50 backdrop-blur">
               <CardContent className="p-8 text-center">
-                <div className="text-2xl font-bold mb-2">GOOD</div>
+                <div className="text-2xl font-bold mb-2">
+                  {rating >= 4.5 ? 'EXCELLENT' : rating >= 4 ? 'GOOD' : 'GREAT'}
+                </div>
                 <div className="flex justify-center gap-1 mb-3">
-                  {[1, 2, 3, 4].map((star) => (
-                    <Star key={star} className="w-6 h-6 fill-yellow-400 text-yellow-400" />
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star 
+                      key={star} 
+                      className={`w-6 h-6 ${
+                        star <= Math.floor(rating)
+                          ? 'fill-yellow-400 text-yellow-400'
+                          : star - rating < 1
+                          ? 'fill-yellow-400/50 text-yellow-400'
+                          : 'fill-muted text-muted'
+                      }`}
+                    />
                   ))}
-                  <Star className="w-6 h-6 fill-yellow-400/50 text-yellow-400" />
                 </div>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Based on <span className="font-semibold">215 reviews</span>
+                  Based on <span className="font-semibold">{totalReviews} reviews</span>
                 </p>
                 <svg className="w-24 h-8 mx-auto" viewBox="0 0 272 92" xmlns="http://www.w3.org/2000/svg">
                   <path fill="#4285F4" d="M115.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18C71.25 34.32 81.24 25 93.5 25s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44S80.99 39.2 80.99 47.18c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z"/>
