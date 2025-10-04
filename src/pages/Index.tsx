@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Hero from "@/components/home/Hero";
 import FeaturedVehicles from "@/components/home/FeaturedVehicles";
+import CustomerReviews from "@/components/home/CustomerReviews";
 import { format } from "date-fns";
 import { useState, useEffect } from "react";
 import { Truck, ChevronDown } from "lucide-react";
@@ -61,6 +62,7 @@ const Index = () => {
       
       <Hero />
       
+      <CustomerReviews />
       
       <FeaturedVehicles />
       
