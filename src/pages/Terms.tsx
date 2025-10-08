@@ -68,12 +68,15 @@ const Terms = () => {
         <AccordionItem value="payments">
           <AccordionTrigger>6. Payments By Hirer</AccordionTrigger>
           <AccordionContent>
-            The hirer shall pay to the owner as payment for the hire of the vehicle, accessories, insurance upgrade 
-            options, and any extra charges incurred for the period of hire the sum as specified in this agreement. 
-            In addition the hirer shall pay to the owner on termination of the hiring a distance charge at the rate 
-            referred to in this agreement. The total distance that the hirer may run the vehicle during the period 
-            of hire shall not exceed the number of kilometres specified in this agreement. The hirer shall also pay 
-            for fuel (but not oil) used in the vehicle during the period of hire.
+            <ul className="list-disc pl-6 space-y-2">
+              <li><strong>Deposit Required:</strong> A non-refundable deposit of $50 is required for all bookings.</li>
+              <li>The hirer shall pay to the owner as payment for the hire of the vehicle, accessories, insurance upgrade 
+                  options, and any extra charges incurred for the period of hire the sum as specified in this agreement.</li>
+              <li>In addition the hirer shall pay to the owner on termination of the hiring a distance charge at the rate 
+                  referred to in this agreement. The total distance that the hirer may run the vehicle during the period 
+                  of hire shall not exceed the number of kilometres specified in this agreement.</li>
+              <li>The hirer shall also pay for fuel (but not oil) used in the vehicle during the period of hire.</li>
+            </ul>
           </AccordionContent>
         </AccordionItem>
 
