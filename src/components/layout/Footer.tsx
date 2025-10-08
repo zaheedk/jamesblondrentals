@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { Facebook, Instagram, Twitter } from "lucide-react";
 import { useLocation } from "react-router-dom";
-import TrustpilotWidget from "@/components/TrustpilotWidget";
 
 const Footer = () => {
   const location = useLocation();
@@ -160,19 +159,6 @@ const Footer = () => {
                 <Link to="/auckland-airport-minibus-rentals-hire" className="text-gray-300 hover:text-white transition-colors text-sm">Auckland Airport Minibus Rentals</Link>
               </li>
             </ul>
-          </div>
-        </div>
-
-        {/* Trustpilot Reviews */}
-        <div className="border-t border-gray-800 mt-8 pt-6">
-          <div className="text-center mb-4">
-            <h3 className="text-lg font-bold mb-2">Customer Reviews</h3>
-            <p className="text-gray-400 text-sm mb-4">
-              See what our customers say about James Blond Rentals
-            </p>
-          </div>
-          <div className="max-w-2xl mx-auto">
-            <TrustpilotWidget />
           </div>
         </div>
 
