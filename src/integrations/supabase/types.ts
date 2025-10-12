@@ -25,6 +25,7 @@ export type Database = {
           image_url: string | null
           meta_description: string | null
           meta_title: string | null
+          page_title: string | null
           published: boolean
           read_time: string
           slug: string
@@ -41,6 +42,7 @@ export type Database = {
           image_url?: string | null
           meta_description?: string | null
           meta_title?: string | null
+          page_title?: string | null
           published?: boolean
           read_time?: string
           slug: string
@@ -57,6 +59,7 @@ export type Database = {
           image_url?: string | null
           meta_description?: string | null
           meta_title?: string | null
+          page_title?: string | null
           published?: boolean
           read_time?: string
           slug?: string
