@@ -23,6 +23,7 @@ interface BlogFormData {
   category: string;
   read_time: string;
   published: boolean;
+  page_title: string;
   meta_title: string;
   meta_description: string;
 }
@@ -44,6 +45,7 @@ const AdminBlogEditor = () => {
       category: 'Tips & Guides',
       read_time: '5 min read',
       published: false,
+      page_title: '',
       meta_title: '',
       meta_description: '',
     },
@@ -75,6 +77,7 @@ const AdminBlogEditor = () => {
         category: data.category,
         read_time: data.read_time,
         published: data.published,
+        page_title: data.page_title || '',
         meta_title: data.meta_title || '',
         meta_description: data.meta_description || '',
       });
@@ -235,6 +238,24 @@ const AdminBlogEditor = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="page_title"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Page Title</FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            placeholder="Browser tab title (max 60 characters)"
+                            maxLength={60}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
                   <FormField
                     control={form.control}
                     name="meta_title"
