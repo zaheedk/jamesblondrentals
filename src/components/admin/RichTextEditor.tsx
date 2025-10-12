@@ -36,6 +36,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   const [linkText, setLinkText] = useState('');
   const [htmlValue, setHtmlValue] = useState('');
   const quillRef = useRef<ReactQuill>(null);
+  const cursorPositionRef = useRef<number | null>(null);
 
   // Format HTML when switching to HTML mode
   useEffect(() => {
@@ -355,7 +356,25 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
             ref={quillRef}
             theme="snow"
             value={value}
-            onChange={onChange}
+            onChange={(content, delta, source, editor) => {
+              // Save cursor position before update
+              const quill = quillRef.current?.getEditor();
+              if (quill) {
+                const selection = quill.getSelection();
+                if (selection) {
+                  cursorPositionRef.current = selection.index;
+                }
+              }
+              
+              onChange(content);
+              
+              // Restore cursor position after update
+              setTimeout(() => {
+                if (quill && cursorPositionRef.current !== null) {
+                  quill.setSelection(cursorPositionRef.current, 0);
+                }
+              }, 0);
+            }}
             modules={modules}
             formats={formats}
             placeholder={placeholder}
