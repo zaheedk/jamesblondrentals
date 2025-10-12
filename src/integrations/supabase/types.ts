@@ -23,6 +23,8 @@ export type Database = {
           excerpt: string
           id: string
           image_url: string | null
+          meta_description: string | null
+          meta_title: string | null
           published: boolean
           read_time: string
           slug: string
@@ -37,6 +39,8 @@ export type Database = {
           excerpt: string
           id?: string
           image_url?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
           published?: boolean
           read_time?: string
           slug: string
@@ -51,6 +55,8 @@ export type Database = {
           excerpt?: string
           id?: string
           image_url?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
           published?: boolean
           read_time?: string
           slug?: string
@@ -218,6 +224,57 @@ export type Database = {
           vehicle_name?: string | null
           vehicle_total?: number | null
           vehicle_type?: string | null
+        }
+        Relationships: []
+      }
+      low_cost_rental_blogs: {
+        Row: {
+          author: string
+          category: string
+          content: string
+          created_at: string
+          excerpt: string
+          id: string
+          image_url: string | null
+          meta_description: string | null
+          meta_title: string | null
+          published: boolean
+          read_time: string
+          slug: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author?: string
+          category?: string
+          content: string
+          created_at?: string
+          excerpt: string
+          id?: string
+          image_url?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
+          published?: boolean
+          read_time?: string
+          slug: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author?: string
+          category?: string
+          content?: string
+          created_at?: string
+          excerpt?: string
+          id?: string
+          image_url?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
+          published?: boolean
+          read_time?: string
+          slug?: string
+          title?: string
+          updated_at?: string
         }
         Relationships: []
       }
