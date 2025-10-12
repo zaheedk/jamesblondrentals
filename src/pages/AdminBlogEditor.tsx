@@ -23,6 +23,8 @@ interface BlogFormData {
   category: string;
   read_time: string;
   published: boolean;
+  meta_title: string;
+  meta_description: string;
 }
 
 const AdminBlogEditor = () => {
@@ -42,6 +44,8 @@ const AdminBlogEditor = () => {
       category: 'Tips & Guides',
       read_time: '5 min read',
       published: false,
+      meta_title: '',
+      meta_description: '',
     },
   });
 
@@ -71,6 +75,8 @@ const AdminBlogEditor = () => {
         category: data.category,
         read_time: data.read_time,
         published: data.published,
+        meta_title: data.meta_title || '',
+        meta_description: data.meta_description || '',
       });
     } catch (error) {
       toast({
@@ -212,6 +218,53 @@ const AdminBlogEditor = () => {
                             value={field.value}
                             onChange={field.onChange}
                             placeholder="Write your article content..."
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>SEO Settings</CardTitle>
+                  <CardDescription>
+                    Optimize your article for search engines
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="meta_title"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Meta Title</FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            placeholder="SEO optimized title (max 60 characters)"
+                            maxLength={60}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="meta_description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Meta Description</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            {...field}
+                            placeholder="SEO optimized description (max 160 characters)"
+                            rows={3}
+                            maxLength={160}
                           />
                         </FormControl>
                         <FormMessage />
