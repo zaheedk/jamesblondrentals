@@ -1,5 +1,5 @@
 
-import React, { useCallback, useState, useRef, useEffect } from 'react';
+import React, { useCallback, useState, useRef, useEffect, useMemo } from 'react';
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { supabase } from '@/integrations/supabase/client';
@@ -36,7 +36,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   const [linkText, setLinkText] = useState('');
   const [htmlValue, setHtmlValue] = useState('');
   const quillRef = useRef<ReactQuill>(null);
-  const cursorPositionRef = useRef<number | null>(null);
+  const isUpdatingRef = useRef(false);
 
   // Format HTML when switching to HTML mode
   useEffect(() => {
@@ -139,6 +139,12 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       }
     };
   }, [toast]);
+
+  const handleQuillChange = useCallback((content: string) => {
+    if (!isUpdatingRef.current) {
+      onChange(content);
+    }
+  }, [onChange]);
 
   const modules = {
     toolbar: {
@@ -356,25 +362,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
             ref={quillRef}
             theme="snow"
             value={value}
-            onChange={(content, delta, source, editor) => {
-              // Save cursor position before update
-              const quill = quillRef.current?.getEditor();
-              if (quill) {
-                const selection = quill.getSelection();
-                if (selection) {
-                  cursorPositionRef.current = selection.index;
-                }
-              }
-              
-              onChange(content);
-              
-              // Restore cursor position after update
-              setTimeout(() => {
-                if (quill && cursorPositionRef.current !== null) {
-                  quill.setSelection(cursorPositionRef.current, 0);
-                }
-              }, 0);
-            }}
+            onChange={handleQuillChange}
             modules={modules}
             formats={formats}
             placeholder={placeholder}
