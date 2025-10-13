@@ -264,6 +264,14 @@ const Vehicles = () => {
           vehicleCategoryTypeId: car.vehiclecategorytypeid
         });
         
+        // Determine transmission type from vehicle descriptions
+        const descriptions = [car.vehicledescription1, car.vehicledescription2, car.vehicledescription3]
+          .filter(Boolean)
+          .join(' ')
+          .toLowerCase();
+        const isManual = descriptions.includes('manual');
+        const transmissionType = isManual ? "manual" : "automatic";
+        
         return {
           id: Number(car.vehiclecategoryid),
           make: cleanCategoryName.split(' ')[0] || "Unknown",
@@ -274,7 +282,7 @@ const Vehicles = () => {
           price: discountedTotalPrice,
           priceUnit: "total",
           seats: car.numberofadults + car.numberofchildren,
-          transmission: "automatic",
+          transmission: transmissionType,
           fuelType: "gasoline",
           fuelEfficiency: "N/A",
           available: car.available,
