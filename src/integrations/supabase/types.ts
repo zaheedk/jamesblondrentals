@@ -230,6 +230,69 @@ export type Database = {
         }
         Relationships: []
       }
+      customers: {
+        Row: {
+          address: string | null
+          city: string | null
+          country: string | null
+          created_at: string
+          customer_id: string | null
+          dob: string | null
+          email: string
+          first_name: string
+          id: string
+          last_name: string
+          license_number: string | null
+          mobile: string | null
+          passport_number: string | null
+          phone: string | null
+          postcode: string | null
+          state_province: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          customer_id?: string | null
+          dob?: string | null
+          email: string
+          first_name: string
+          id?: string
+          last_name: string
+          license_number?: string | null
+          mobile?: string | null
+          passport_number?: string | null
+          phone?: string | null
+          postcode?: string | null
+          state_province?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          customer_id?: string | null
+          dob?: string | null
+          email?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          license_number?: string | null
+          mobile?: string | null
+          passport_number?: string | null
+          phone?: string | null
+          postcode?: string | null
+          state_province?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       low_cost_rental_blogs: {
         Row: {
           author: string
