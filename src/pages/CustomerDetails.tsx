@@ -21,6 +21,8 @@ import { cn, getCampaignCode } from "@/lib/utils";
 import { getBookingData, updateBookingData } from "@/lib/booking-session";
 import { toast } from "sonner";
 import { useRcmApi } from "@/hooks/use-rcm-api";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 import BookingRentalAccordion from '@/components/booking/BookingRentalAccordion';
 import ExitIntentPopup from "@/components/ExitIntentPopup";
@@ -67,6 +69,7 @@ const CustomerDetails = () => {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const bookingData = getBookingData();
   const { rcmApi } = useRcmApi();
+  const { user } = useAuth();
   
   
   React.useEffect(() => {
@@ -178,6 +181,72 @@ const CustomerDetails = () => {
         // Log all the booking reference data
         console.log('Updated booking data with references:', updatedData);
         console.log('Updated booking data with customer info:', customerData);
+        
+        // Save booking to Supabase database
+        try {
+          // Calculate totals
+          const extrasTotal = (bookingData.selectedExtras || []).reduce((sum, extra) => 
+            sum + (extra.price * extra.quantity), 0);
+          const insuranceTotal = (bookingData.insurancePrice || 0);
+          const vehicleTotal = bookingData.totalcost || bookingData.basePrice || 0;
+          const totalAmount = vehicleTotal + extrasTotal + insuranceTotal;
+          
+          const dbBooking = {
+            user_id: user?.id || null,
+            booking_reference: response.bookingReference || response.results?.bookingref || null,
+            reservation_reference: response.reservationRef || response.results?.reservationref || null,
+            vehicle_id: bookingData.vehicleId,
+            vehicle_name: bookingData.vehicleName || null,
+            vehicle_type: bookingData.vehicleCategoryId?.toString() || null,
+            vehicle_category: bookingData.vehicleCategoryTypeId || null,
+            pickup_location_id: bookingData.pickupLocationId,
+            pickup_location_name: bookingData.pickupLocationName || null,
+            dropoff_location_id: bookingData.dropoffLocationId,
+            dropoff_location_name: bookingData.dropoffLocationName || null,
+            pickup_date: bookingData.pickupDate,
+            pickup_time: bookingData.pickupTime,
+            dropoff_date: bookingData.dropoffDate,
+            dropoff_time: bookingData.dropoffTime,
+            total_days: bookingData.numberofdays || bookingData.rentalDays || 1,
+            customer_first_name: formData.firstName,
+            customer_last_name: formData.lastName,
+            customer_email: formData.email,
+            customer_phone: formData.phone,
+            customer_age: parseInt(bookingData.ageId) || null,
+            daily_rate: bookingData.dailyrate || null,
+            vehicle_total: vehicleTotal,
+            extras_total: extrasTotal,
+            insurance_total: insuranceTotal,
+            total_amount: totalAmount,
+            selected_extras: bookingData.selectedExtras || [],
+            insurance_options: {
+              id: bookingData.insuranceId,
+              name: bookingData.insuranceName,
+              price: bookingData.insurancePrice
+            },
+            booking_status: 'pending',
+            payment_status: 'pending',
+            special_requirements: formData.flightNumber ? `Flight: ${formData.flightNumber}` : null,
+          };
+          
+          console.log('Saving booking to database:', dbBooking);
+          
+          const { data: savedBooking, error: dbError } = await supabase
+            .from('bookings')
+            .insert(dbBooking)
+            .select()
+            .single();
+            
+          if (dbError) {
+            console.error('Error saving booking to database:', dbError);
+            // Don't block the user from continuing even if database save fails
+          } else {
+            console.log('Booking saved to database successfully:', savedBooking);
+          }
+        } catch (dbError) {
+          console.error('Exception saving booking to database:', dbError);
+          // Don't block the user from continuing
+        }
         
         toast.success("Booking created successfully", {
           description: response.confirmationNumber 
