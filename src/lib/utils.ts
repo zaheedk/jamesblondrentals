@@ -99,17 +99,34 @@ export function getCampaignCode(
     return originalCampaignCode;
   }
   
-  // Check if vehicle qualifies for midweek discount (Jumbo Van or Truck only)
-  const isQualifyingVehicle = vehicleName && (
+  // Check if vehicle category or name qualifies for midweek discount (Jumbo Van or Truck)
+  // Category type IDs for trucks and vans (common RCM IDs):
+  // 5 = Van, 6 = Truck, 7 = Minibus, etc.
+  const categoryQualifies = vehicleCategoryTypeId && (
+    String(vehicleCategoryTypeId) === "5" || // Van
+    String(vehicleCategoryTypeId) === "6" || // Truck
+    String(vehicleCategoryTypeId) === "0"    // All categories - apply to all when searching all
+  );
+  
+  const nameQualifies = vehicleName && (
     vehicleName.toLowerCase().includes('jumbo') ||
     vehicleName.toLowerCase().includes('truck') ||
     vehicleName.toLowerCase().includes('ton') ||
     vehicleName.toLowerCase().includes('box') ||
-    vehicleName.toLowerCase().includes('tipper')
+    vehicleName.toLowerCase().includes('tipper') ||
+    vehicleName.toLowerCase().includes('van')
   );
+  
+  const isQualifyingVehicle = categoryQualifies || nameQualifies;
   
   // If qualifying vehicle and dates are weekdays, use midweek25
   if (isQualifyingVehicle && isWeekdayRental(pickupDate, dropoffDate)) {
+    console.log('Applying midweek25 campaign code', { 
+      vehicleName, 
+      vehicleCategoryTypeId, 
+      pickupDate, 
+      dropoffDate 
+    });
     return "midweek25";
   }
   

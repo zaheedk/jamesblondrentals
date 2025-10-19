@@ -113,6 +113,15 @@ const Vehicles = () => {
     return defaultAge ? String(defaultAge.id) : "";
   };
 
+  // Generate campaign code - for midweek discount, we pass category info
+  const effectiveCampaignCode = getCampaignCode(
+    campaignCode || "", 
+    pickupDate, 
+    dropoffDate,
+    "", // vehicle name not available at this stage
+    carCategory // pass category ID to help determine if it's truck/van
+  );
+
   const step2Params = pickupLocation && driverAges?.length ? {
     pickuplocationid: pickupLocation,
     pickupdate: pickupDate,
@@ -122,7 +131,7 @@ const Vehicles = () => {
     dropofftime: dropoffTime,
     ageid: getValidAgeId(),
     vehiclecategorytypeid: carCategory,
-    campaigncode: getCampaignCode(campaignCode || "", pickupDate, dropoffDate)
+    campaigncode: effectiveCampaignCode
   } : null;
 
   const { data: step2Data, isLoading: isLoadingStep2, error: step2Error, refetch: refetchStep2 } = useStep2Vehicles(step2Params);
