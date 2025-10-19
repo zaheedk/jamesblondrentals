@@ -38,6 +38,7 @@ import AdminBlog from "./pages/AdminBlog";
 import AdminBlogEditor from "./pages/AdminBlogEditor";
 import AdminVehicleRates from "./pages/AdminVehicleRates";
 import AdminFeedback from "./pages/AdminFeedback";
+import AdminBookings from "./pages/AdminBookings";
 
 import Fleet from "./pages/Fleet";
 import FleetCars from "./pages/FleetCars";
@@ -186,6 +187,11 @@ const App = () => {
                 <Route path="/admin/feedback" element={
                   <ProtectedRoute>
                     <AdminFeedback />
+                  </ProtectedRoute>
+                } />
+                <Route path="/admin/bookings" element={
+                  <ProtectedRoute>
+                    <AdminBookings />
                   </ProtectedRoute>
                 } />
                 
