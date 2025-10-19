@@ -39,6 +39,7 @@ import AdminBlogEditor from "./pages/AdminBlogEditor";
 import AdminVehicleRates from "./pages/AdminVehicleRates";
 import AdminFeedback from "./pages/AdminFeedback";
 import AdminBookings from "./pages/AdminBookings";
+import AdminCustomers from "./pages/AdminCustomers";
 
 import Fleet from "./pages/Fleet";
 import FleetCars from "./pages/FleetCars";
@@ -189,11 +190,16 @@ const App = () => {
                     <AdminFeedback />
                   </ProtectedRoute>
                 } />
-                <Route path="/admin/bookings" element={
-                  <ProtectedRoute>
-                    <AdminBookings />
-                  </ProtectedRoute>
-                } />
+          <Route path="/admin/bookings" element={
+            <ProtectedRoute>
+              <AdminBookings />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/customers" element={
+            <ProtectedRoute>
+              <AdminCustomers />
+            </ProtectedRoute>
+          } />
                 
                 {/* Auth routes */}
                 <Route path="/login" element={<Login />} />

@@ -6,7 +6,7 @@ import { useRcmApi } from '@/hooks/use-rcm-api';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Settings, BookOpen, TrendingUp, MessageSquare, Calendar } from 'lucide-react';
+import { Settings, BookOpen, TrendingUp, MessageSquare, Calendar, Users } from 'lucide-react';
 import BookingHistory from '@/components/member/BookingHistory';
 import SupabaseBookingHistory from '@/components/member/SupabaseBookingHistory';
 
@@ -42,7 +42,7 @@ export default function MemberDashboard() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid md:grid-cols-4 gap-4">
+              <div className="grid md:grid-cols-5 gap-4">
                 <Link to="/admin/blog">
                   <Button variant="outline" className="w-full justify-start" size="lg">
                     <BookOpen className="w-4 h-4 mr-2" />
@@ -65,6 +65,12 @@ export default function MemberDashboard() {
                   <Button variant="outline" className="w-full justify-start" size="lg">
                     <Calendar className="w-4 h-4 mr-2" />
                     All Bookings
+                  </Button>
+                </Link>
+                <Link to="/admin/customers">
+                  <Button variant="outline" className="w-full justify-start" size="lg">
+                    <Users className="w-4 h-4 mr-2" />
+                    Customers
                   </Button>
                 </Link>
               </div>
