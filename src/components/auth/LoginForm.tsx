@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { supabase, isSupabaseConfigured } from '@/lib/supabase-client';
+import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -75,11 +75,6 @@ export default function LoginForm() {
   });
 
   const onSubmit = async (data: FormValues) => {
-    if (!isSupabaseConfigured()) {
-      setError('Authentication service is not properly configured. Please try again later.');
-      return;
-    }
-    
     if (networkStatus === 'offline') {
       setError('You are currently offline. Please check your internet connection and try again.');
       toast({
@@ -152,14 +147,6 @@ export default function LoginForm() {
           <Alert className="bg-green-50 border-green-200">
             <AlertDescription className="text-green-800">
               {message}
-            </AlertDescription>
-          </Alert>
-        )}
-        
-        {!isSupabaseConfigured() && (
-          <Alert>
-            <AlertDescription className="text-amber-800">
-              Authentication service is currently unavailable. Login may not work at this time.
             </AlertDescription>
           </Alert>
         )}
@@ -239,7 +226,7 @@ export default function LoginForm() {
             <Button 
               type="submit" 
               className="w-full" 
-              disabled={isSubmitting || !isSupabaseConfigured() || networkStatus === 'offline'}
+              disabled={isSubmitting || networkStatus === 'offline'}
             >
               {isSubmitting ? "Signing in..." : "Sign in"}
             </Button>

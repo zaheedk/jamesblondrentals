@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { supabase, isSupabaseConfigured } from '@/lib/supabase-client';
+import { supabase } from '@/integrations/supabase/client';
 import type { User, AuthError } from '@supabase/supabase-js';
 import { useToast } from "@/hooks/use-toast";
 
@@ -10,7 +10,6 @@ type AuthContextType = {
   signUp: (email: string, password: string) => Promise<{ error: Error | null; message?: string }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null; message?: string }>;
   signInWithProvider: (provider: 'google' | 'facebook' | 'azure') => Promise<{ error: Error | null }>;
-  isSupabaseReady: boolean;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -48,15 +47,9 @@ const getRedirectUrl = (): string => {
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isSupabaseReady, setIsSupabaseReady] = useState(isSupabaseConfigured());
   const { toast } = useToast();
 
   useEffect(() => {
-    // Skip Supabase auth if not configured
-    if (!isSupabaseReady) {
-      setLoading(false);
-      return;
-    }
 
     // Check current auth status
     const checkUser = async () => {
@@ -81,11 +74,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => {
       subscription.unsubscribe();
     };
-  }, [isSupabaseReady]);
+  }, []);
 
   const signOut = async () => {
-    if (!isSupabaseReady) return Promise.resolve();
-    
     try {
       await supabase.auth.signOut();
       setUser(null);
@@ -95,10 +86,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signInWithProvider = async (provider: 'google' | 'facebook' | 'azure') => {
-    if (!isSupabaseReady) {
-      return { error: new Error('Supabase is not configured') };
-    }
-
     try {
       const redirectUrl = getRedirectUrl();
       console.log(`Using redirect URL for ${provider} login:`, redirectUrl);
@@ -120,13 +107,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signIn = async (email: string, password: string) => {
-    if (!isSupabaseReady) {
-      return { 
-        error: new Error('Supabase is not configured'),
-        message: 'Authentication service is not available. Please try again later or contact support.'
-      };
-    }
-
     try {
       const { error } = await supabase.auth.signInWithPassword({
         email,
@@ -178,14 +158,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     console.log('Starting signup process for:', email);
     
     try {
-      if (!isSupabaseReady) {
-        console.error('Supabase not ready');
-        return { 
-          error: new Error('Authentication service not available'),
-          message: 'Authentication service is not properly configured. Please try again later.'
-        };
-      }
-
       // Test connectivity before attempting signup
       console.log('Testing Supabase connectivity...');
       try {
@@ -270,7 +242,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signOut, signUp, signIn, signInWithProvider, isSupabaseReady }}>
+    <AuthContext.Provider value={{ user, loading, signOut, signUp, signIn, signInWithProvider }}>
       {children}
     </AuthContext.Provider>
   );
