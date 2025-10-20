@@ -7,23 +7,22 @@ export type Booking = Database['public']['Tables']['bookings']['Row'];
 
 export function useBookings() {
   const { user } = useAuth();
-  const isAdmin = user?.email === 'zaheedk@gmail.com';
+  // Admin status is now determined by RLS policy using is_admin_user() function
+  // which checks the user_roles table instead of hardcoded email
 
   return useQuery({
-    queryKey: ['bookings', user?.id, isAdmin],
+    queryKey: ['bookings', user?.id],
     queryFn: async (): Promise<Booking[]> => {
       if (!user?.id) {
         throw new Error('User not authenticated');
       }
 
-      let query = supabase.from('bookings').select('*');
-      
-      // If admin, get all bookings; otherwise only user's own bookings
-      if (!isAdmin) {
-        query = query.eq('user_id', user.id);
-      }
-      
-      const { data, error } = await query.order('created_at', { ascending: false });
+      // RLS policy handles admin vs regular user access automatically
+      // Admins see all bookings, users see only their own
+      const { data, error } = await supabase
+        .from('bookings')
+        .select('*')
+        .order('created_at', { ascending: false });
 
       if (error) {
         console.error('Error fetching bookings:', error);
