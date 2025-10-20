@@ -191,6 +191,16 @@ const CustomerDetails = () => {
           const vehicleTotal = bookingData.totalcost || bookingData.basePrice || 0;
           const totalAmount = vehicleTotal + extrasTotal + insuranceTotal;
           
+          // Format dates from DD/MM/YYYY to YYYY-MM-DD for Postgres
+          const formatDateForDB = (dateStr: string): string => {
+            if (!dateStr) return new Date().toISOString().split('T')[0];
+            if (dateStr.includes('/')) {
+              const [day, month, year] = dateStr.split('/');
+              return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+            }
+            return dateStr;
+          };
+
           const dbBooking = {
             user_id: user?.id || null,
             booking_reference: response.bookingReference || response.results?.bookingref || null,
@@ -203,9 +213,9 @@ const CustomerDetails = () => {
             pickup_location_name: bookingData.pickupLocationName || null,
             dropoff_location_id: bookingData.dropoffLocationId,
             dropoff_location_name: bookingData.dropoffLocationName || null,
-            pickup_date: bookingData.pickupDate,
+            pickup_date: formatDateForDB(bookingData.pickupDate),
             pickup_time: bookingData.pickupTime,
-            dropoff_date: bookingData.dropoffDate,
+            dropoff_date: formatDateForDB(bookingData.dropoffDate),
             dropoff_time: bookingData.dropoffTime,
             total_days: bookingData.numberofdays || bookingData.rentalDays || 1,
             customer_first_name: formData.firstName,
