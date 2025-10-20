@@ -43,10 +43,9 @@ export default function BuyUsedVehicles() {
                 following purposes:
               </p>
               <ul className="list-disc pl-6 space-y-2">
-                <li>Verifying vehicle ownership before making purchase offers</li>
-                <li>Contacting registered owners about potential vehicle purchases</li>
-                <li>Conducting due diligence on vehicles being considered for our rental fleet</li>
-                <li>Ensuring compliance with legal requirements for vehicle transactions</li>
+                <li>To confirm the vendor is the registered person of a motor vehicle that the Motor Vehicle Trader is proposing to purchase.</li>
+                <li>To assist in verifying that a change of registered person has been completed correctly for transaction in which the Motor Vehicle Trader is the purchaser or seller.</li>
+                <li>In the case of Wholesalers only, where a motor vehicle is the subject of a safety recall listed in the safety recalls portal, to contact the registered person to advise them of any required actions in relation to the vehicle&apos;s safe operation.</li>
               </ul>
               <p className="leading-relaxed mt-3">
                 We do not use this information for any other purpose, and we do not share it with third parties 
