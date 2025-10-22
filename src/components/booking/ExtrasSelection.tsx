@@ -5,7 +5,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { RCMExtra, RCMOptionalFee } from "@/lib/api/rcm-api-types";
-import { AlertCircle, Info } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface ExtrasSelectionProps {
@@ -122,191 +122,212 @@ const ExtrasSelection = ({
     );
   }
 
-  const renderExtraItem = (extra: RCMExtra) => (
-    <Card 
-      key={extra.id}
-      className={`relative p-0 cursor-pointer transition-all duration-200 bg-card hover:bg-accent/50 text-card-foreground overflow-hidden ${
-        selectedExtras.has(extra.id.toString()) ? 'border-2 border-primary' : 'border border-border'
-      }`}
-      onClick={() => handleCheckboxChange(extra.id, !selectedExtras.has(extra.id.toString()))}
-    >
-      <div className="p-4 flex items-center gap-4">
-        <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
-          {getExtraItemImage(extra.name, extra.id) ? (
-            <img 
-              src={getExtraItemImage(extra.name, extra.id)}
-              alt={extra.name}
-              className="w-full h-full object-cover rounded-lg"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.style.display = 'none';
-                target.nextElementSibling?.classList.remove('hidden');
-              }}
-            />
-          ) : (
-            <div className="text-gray-500 text-xs text-center">No Image</div>
-          )}
-          <div className="hidden text-gray-500 text-xs text-center">No Image</div>
-        </div>
-        
-        <div className="flex-1 min-w-0">
-          <h3 className="text-base font-bold text-card-foreground">
-            {extra.name}
-          </h3>
-          {extra.description && (
-            <p className="text-sm text-muted-foreground line-clamp-2">
-              {extra.description}
-            </p>
-          )}
-        </div>
+  // Helper to check if item is mileage related
+  const isMileageItem = (name: string, groupName?: string) => {
+    const lowerName = name.toLowerCase();
+    const lowerGroup = groupName?.toLowerCase() || '';
+    return lowerName.includes('km') || lowerName.includes('mileage') || 
+           lowerName.includes('kilometre') || lowerName.includes('kilometer') ||
+           lowerGroup.includes('km') || lowerGroup.includes('mileage');
+  };
 
-        <div className="flex items-center gap-4 flex-shrink-0">
-          {selectedExtras.has(extra.id.toString()) && (
-            <div className="flex items-center gap-2">
-              <Label htmlFor={`quantity-${extra.id}`} className="text-sm font-bold text-card-foreground">Qty:</Label>
-              <Input
-                id={`quantity-${extra.id}`}
-                type="number"
-                min="1"
-                max={extra.maxquantity}
-                value={selectedExtras.get(extra.id.toString()) || 1}
-                onChange={(e) => {
-                  e.stopPropagation();
-                  handleQuantityChange(extra.id, parseInt(e.target.value, 10));
-                }}
-                className="w-16 h-8 text-sm"
-                onClick={(e) => e.stopPropagation()}
-              />
+  const renderExtraItem = (extra: RCMExtra) => {
+    const showImage = !isMileageItem(extra.name, extra.feegroupname);
+    
+    return (
+      <Card 
+        key={extra.id}
+        className={`relative p-0 cursor-pointer transition-all duration-200 bg-card hover:bg-accent/50 text-card-foreground overflow-hidden ${
+          selectedExtras.has(extra.id.toString()) ? 'border-2 border-primary' : 'border border-border'
+        }`}
+        onClick={() => handleCheckboxChange(extra.id, !selectedExtras.has(extra.id.toString()))}
+      >
+        <div className="p-4 flex items-center gap-4">
+          {showImage && (
+            <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
+              {getExtraItemImage(extra.name, extra.id) ? (
+                <img 
+                  src={getExtraItemImage(extra.name, extra.id)}
+                  alt={extra.name}
+                  className="w-full h-full object-cover rounded-lg"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                    target.nextElementSibling?.classList.remove('hidden');
+                  }}
+                />
+              ) : (
+                <div className="text-gray-500 text-xs text-center">No Image</div>
+              )}
+              <div className="hidden text-gray-500 text-xs text-center">No Image</div>
             </div>
           )}
           
-          <div className="text-right">
-            <div className="text-lg font-bold text-card-foreground">
-              {selectedExtras.has(extra.id.toString()) 
-                ? `${currencySymbol}${((selectedExtras.get(extra.id.toString()) || 1) * extra.unitprice).toFixed(2)}`
-                : `${currencySymbol}${extra.unitprice.toFixed(2)}`
-              }
-            </div>
-            <div className="text-xs text-muted-foreground">
-              {selectedExtras.has(extra.id.toString()) ? 'total' : 'each'}
-            </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="text-base font-bold text-card-foreground">
+              {extra.name}
+            </h3>
+            {extra.description && (
+              <p className="text-sm text-muted-foreground line-clamp-2">
+                {extra.description}
+              </p>
+            )}
           </div>
 
-          <div 
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-              selectedExtras.has(extra.id.toString()) 
-                ? 'bg-red-500 hover:bg-red-600 text-white'
-                : 'bg-yellow-400 hover:bg-yellow-500 text-black'
-            }`}
-          >
-            {selectedExtras.has(extra.id.toString()) ? 'Remove' : 'Add'}
-          </div>
-        </div>
-      </div>
-      
-      <Checkbox 
-        id={`extra-${extra.id}`}
-        checked={selectedExtras.has(extra.id.toString())} 
-        onCheckedChange={(checked) => {
-          handleCheckboxChange(extra.id, checked as boolean);
-        }}
-        className="sr-only"
-      />
-    </Card>
-  );
+          <div className="flex items-center gap-4 flex-shrink-0">
+            {selectedExtras.has(extra.id.toString()) && (
+              <div className="flex items-center gap-2">
+                <Label htmlFor={`quantity-${extra.id}`} className="text-sm font-bold text-card-foreground">Qty:</Label>
+                <Input
+                  id={`quantity-${extra.id}`}
+                  type="number"
+                  min="1"
+                  max={extra.maxquantity}
+                  value={selectedExtras.get(extra.id.toString()) || 1}
+                  onChange={(e) => {
+                    e.stopPropagation();
+                    handleQuantityChange(extra.id, parseInt(e.target.value, 10));
+                  }}
+                  className="w-16 h-8 text-sm"
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </div>
+            )}
+            
+            <div className="text-right">
+              <div className="text-lg font-bold text-card-foreground">
+                {selectedExtras.has(extra.id.toString()) 
+                  ? `${currencySymbol}${((selectedExtras.get(extra.id.toString()) || 1) * extra.unitprice).toFixed(2)}`
+                  : `${currencySymbol}${extra.unitprice.toFixed(2)}`
+                }
+              </div>
+              <div className="text-xs text-muted-foreground">
+                {selectedExtras.has(extra.id.toString()) ? 'total' : 'each'}
+              </div>
+            </div>
 
-  const renderOptionalFeeItem = (fee: RCMOptionalFee) => (
-    <Card 
-      key={fee.id}
-      className={`relative p-0 cursor-pointer transition-all duration-200 bg-card hover:bg-accent/50 text-card-foreground overflow-hidden ${
-        selectedExtras.has(fee.id.toString()) ? 'border-2 border-primary' : 'border border-border'
-      }`}
-      onClick={() => handleCheckboxChange(fee.id, !selectedExtras.has(fee.id.toString()))}
-    >
-      <div className="p-4 flex items-center gap-4">
-        <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
-          {getExtraItemImage(fee.name, fee.id) ? (
-            <img 
-              src={getExtraItemImage(fee.name, fee.id)}
-              alt={fee.name}
-              className="w-full h-full object-cover rounded-lg"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.style.display = 'none';
-                target.nextElementSibling?.classList.remove('hidden');
-              }}
-            />
-          ) : (
-            <div className="text-gray-500 text-xs text-center">No Image</div>
-          )}
-          <div className="hidden text-gray-500 text-xs text-center">No Image</div>
+            <div 
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                selectedExtras.has(extra.id.toString()) 
+                  ? 'bg-red-500 hover:bg-red-600 text-white'
+                  : 'bg-yellow-400 hover:bg-yellow-500 text-black'
+              }`}
+            >
+              {selectedExtras.has(extra.id.toString()) ? 'Remove' : 'Add'}
+            </div>
+          </div>
         </div>
         
-        <div className="flex-1 min-w-0">
-          <h3 className="text-base font-bold text-card-foreground">
-            {fee.name}
-          </h3>
-          {fee.feedescription && (
-            <p className="text-sm text-muted-foreground line-clamp-2">
-              {fee.feedescription}
-            </p>
-          )}
-        </div>
+        <Checkbox 
+          id={`extra-${extra.id}`}
+          checked={selectedExtras.has(extra.id.toString())} 
+          onCheckedChange={(checked) => {
+            handleCheckboxChange(extra.id, checked as boolean);
+          }}
+          className="sr-only"
+        />
+      </Card>
+    );
+  };
 
-        <div className="flex items-center gap-4 flex-shrink-0">
-          {selectedExtras.has(fee.id.toString()) && (
-            <div className="flex items-center gap-2">
-              <Label htmlFor={`quantity-fee-${fee.id}`} className="text-sm font-bold text-card-foreground">Qty:</Label>
-              <Input
-                id={`quantity-fee-${fee.id}`}
-                type="number"
-                min="1"
-                max="10"
-                value={selectedExtras.get(fee.id.toString()) || 1}
-                onChange={(e) => {
-                  e.stopPropagation();
-                  handleQuantityChange(fee.id, parseInt(e.target.value, 10));
-                }}
-                className="w-16 h-8 text-sm"
-                onClick={(e) => e.stopPropagation()}
-              />
+  const renderOptionalFeeItem = (fee: RCMOptionalFee) => {
+    const showImage = !isMileageItem(fee.name, fee.feegroupname);
+    
+    return (
+      <Card 
+        key={fee.id}
+        className={`relative p-0 cursor-pointer transition-all duration-200 bg-card hover:bg-accent/50 text-card-foreground overflow-hidden ${
+          selectedExtras.has(fee.id.toString()) ? 'border-2 border-primary' : 'border border-border'
+        }`}
+        onClick={() => handleCheckboxChange(fee.id, !selectedExtras.has(fee.id.toString()))}
+      >
+        <div className="p-4 flex items-center gap-4">
+          {showImage && (
+            <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
+              {getExtraItemImage(fee.name, fee.id) ? (
+                <img 
+                  src={getExtraItemImage(fee.name, fee.id)}
+                  alt={fee.name}
+                  className="w-full h-full object-cover rounded-lg"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                    target.nextElementSibling?.classList.remove('hidden');
+                  }}
+                />
+              ) : (
+                <div className="text-gray-500 text-xs text-center">No Image</div>
+              )}
+              <div className="hidden text-gray-500 text-xs text-center">No Image</div>
             </div>
           )}
           
-          <div className="text-right">
-            <div className="text-lg font-bold text-card-foreground">
-              {selectedExtras.has(fee.id.toString()) 
-                ? `${currencySymbol}${((selectedExtras.get(fee.id.toString()) || 1) * fee.fees).toFixed(2)}`
-                : `${currencySymbol}${fee.fees.toFixed(2)}`
-              }
-            </div>
-            <div className="text-xs text-muted-foreground">
-              {selectedExtras.has(fee.id.toString()) ? 'total' : 'each'}
-            </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="text-base font-bold text-card-foreground">
+              {fee.name}
+            </h3>
+            {fee.feedescription && (
+              <p className="text-sm text-muted-foreground line-clamp-2">
+                {fee.feedescription}
+              </p>
+            )}
           </div>
 
-          <div 
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-              selectedExtras.has(fee.id.toString()) 
-                ? 'bg-red-500 hover:bg-red-600 text-white'
-                : 'bg-yellow-400 hover:bg-yellow-500 text-black'
-            }`}
-          >
-            {selectedExtras.has(fee.id.toString()) ? 'Remove' : 'Add'}
+          <div className="flex items-center gap-4 flex-shrink-0">
+            {selectedExtras.has(fee.id.toString()) && (
+              <div className="flex items-center gap-2">
+                <Label htmlFor={`quantity-fee-${fee.id}`} className="text-sm font-bold text-card-foreground">Qty:</Label>
+                <Input
+                  id={`quantity-fee-${fee.id}`}
+                  type="number"
+                  min="1"
+                  max="10"
+                  value={selectedExtras.get(fee.id.toString()) || 1}
+                  onChange={(e) => {
+                    e.stopPropagation();
+                    handleQuantityChange(fee.id, parseInt(e.target.value, 10));
+                  }}
+                  className="w-16 h-8 text-sm"
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </div>
+            )}
+            
+            <div className="text-right">
+              <div className="text-lg font-bold text-card-foreground">
+                {selectedExtras.has(fee.id.toString()) 
+                  ? `${currencySymbol}${((selectedExtras.get(fee.id.toString()) || 1) * fee.fees).toFixed(2)}`
+                  : `${currencySymbol}${fee.fees.toFixed(2)}`
+                }
+              </div>
+              <div className="text-xs text-muted-foreground">
+                {selectedExtras.has(fee.id.toString()) ? 'total' : 'each'}
+              </div>
+            </div>
+
+            <div 
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                selectedExtras.has(fee.id.toString()) 
+                  ? 'bg-red-500 hover:bg-red-600 text-white'
+                  : 'bg-yellow-400 hover:bg-yellow-500 text-black'
+              }`}
+            >
+              {selectedExtras.has(fee.id.toString()) ? 'Remove' : 'Add'}
+            </div>
           </div>
         </div>
-      </div>
-      
-      <Checkbox 
-        id={`fee-${fee.id}`}
-        checked={selectedExtras.has(fee.id.toString())} 
-        onCheckedChange={(checked) => {
-          handleCheckboxChange(fee.id, checked as boolean);
-        }}
-        className="sr-only"
-      />
-    </Card>
-  );
+        
+        <Checkbox 
+          id={`fee-${fee.id}`}
+          checked={selectedExtras.has(fee.id.toString())} 
+          onCheckedChange={(checked) => {
+            handleCheckboxChange(fee.id, checked as boolean);
+          }}
+          className="sr-only"
+        />
+      </Card>
+    );
+  };
 
   return (
     <div className="space-y-8">
