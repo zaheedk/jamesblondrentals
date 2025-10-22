@@ -241,11 +241,22 @@ const CustomerDetails = () => {
           
           console.log('Saving booking to database:', dbBooking);
           
-          const { data: savedBooking, error: dbError } = await supabase
-            .from('bookings')
-            .insert(dbBooking)
-            .select()
-            .single();
+          let savedBooking: any = null;
+          let dbError: any = null;
+          if (user?.id) {
+            const { data, error } = await supabase
+              .from('bookings')
+              .insert(dbBooking)
+              .select()
+              .single();
+            savedBooking = data;
+            dbError = error;
+          } else {
+            const { error } = await supabase
+              .from('bookings')
+              .insert(dbBooking);
+            dbError = error;
+          }
             
           if (dbError) {
             console.error('Error saving booking to database:', dbError);
