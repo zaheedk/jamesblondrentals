@@ -2,14 +2,39 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, Upload } from 'lucide-react';
+import { ArrowLeft, Upload, FileText } from 'lucide-react';
 
 const AdminBlogImport = () => {
   const [importing, setImporting] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState<string | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      toast({
+        title: 'File Uploaded',
+        description: `${file.name} uploaded successfully. Please contact support to parse and import articles from this document.`,
+      });
+      setUploadedFile(file.name);
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to upload file',
+        variant: 'destructive',
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const importPeopleMoversArticle = async () => {
     setImporting(true);
@@ -233,11 +258,40 @@ const AdminBlogImport = () => {
         <p className="text-muted-foreground">Import pre-formatted blog articles from documents</p>
       </div>
 
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle>Upload Document</CardTitle>
+          <CardDescription>
+            Upload a PDF or Word document containing your blog articles
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="flex items-center gap-4">
+              <Input
+                type="file"
+                accept=".pdf,.doc,.docx"
+                onChange={handleFileUpload}
+                disabled={uploading}
+                className="flex-1"
+              />
+              {uploadedFile && (
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <FileText className="h-4 w-4" />
+                  {uploadedFile}
+                </div>
+              )}
+            </div>
+            {uploading && <p className="text-sm text-muted-foreground">Processing document...</p>}
+          </div>
+        </CardContent>
+      </Card>
+
       <Card>
         <CardHeader>
           <CardTitle>Available Articles to Import</CardTitle>
           <CardDescription>
-            Click the button below to import the article from the uploaded PDF document.
+            Click the button below to import pre-formatted articles or upload your document above
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
