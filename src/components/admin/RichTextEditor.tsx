@@ -140,9 +140,21 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     };
   }, [toast]);
 
-  const handleQuillChange = useCallback((content: string) => {
+  const handleQuillChange = useCallback((content: string, delta: any, source: any, editor: any) => {
     if (!isUpdatingRef.current) {
+      // Save current selection before onChange
+      const selection = editor.getSelection();
       onChange(content);
+      
+      // Restore selection after onChange if it exists
+      if (selection && quillRef.current) {
+        setTimeout(() => {
+          const quill = quillRef.current?.getEditor();
+          if (quill) {
+            quill.setSelection(selection.index, selection.length);
+          }
+        }, 0);
+      }
     }
   }, [onChange]);
 
