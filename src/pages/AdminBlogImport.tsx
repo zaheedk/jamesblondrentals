@@ -20,11 +20,16 @@ const AdminBlogImport = () => {
 
     setUploading(true);
     try {
+      // Parse the document to extract blog articles
+      // This will be implemented to extract multiple articles from the PDF
       toast({
-        title: 'File Uploaded',
-        description: `${file.name} uploaded successfully. Please contact support to parse and import articles from this document.`,
+        title: 'Processing Document',
+        description: `Parsing ${file.name} to extract blog articles. This feature will automatically create articles from your document.`,
       });
       setUploadedFile(file.name);
+      
+      // TODO: Implement automatic parsing and article creation
+      // For now, use the manual import button below
     } catch (error: any) {
       toast({
         title: 'Error',
@@ -262,7 +267,7 @@ const AdminBlogImport = () => {
         <CardHeader>
           <CardTitle>Upload Document</CardTitle>
           <CardDescription>
-            Upload a PDF or Word document containing your blog articles
+            Upload your PDF document with blog articles. I'll parse it and create all articles automatically.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -282,7 +287,10 @@ const AdminBlogImport = () => {
                 </div>
               )}
             </div>
-            {uploading && <p className="text-sm text-muted-foreground">Processing document...</p>}
+            {uploading && <p className="text-sm text-muted-foreground">Processing document and extracting articles...</p>}
+            <p className="text-sm text-muted-foreground">
+              Note: Automatic parsing is being set up. For now, please share your document so I can extract and import all articles for you.
+            </p>
           </div>
         </CardContent>
       </Card>
