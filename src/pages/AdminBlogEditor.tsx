@@ -247,8 +247,8 @@ const AdminBlogEditor = () => {
                         <FormControl>
                           <Input
                             {...field}
-                            placeholder="Browser tab title (max 60 characters)"
-                            maxLength={60}
+                            placeholder="Browser tab title (max 100 characters)"
+                            maxLength={100}
                           />
                         </FormControl>
                         <FormMessage />
