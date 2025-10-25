@@ -38,111 +38,157 @@ const AdminBlogImport = () => {
     if (!uploadedFile) {
       toast({
         title: 'No File Selected',
-        description: 'Please select a PDF file first.',
+        description: 'Please select a document first.',
         variant: 'destructive',
       });
       return;
     }
 
     setParsing(true);
-    setProgress(0);
+    setProgress(1);
     setCreatedArticles(0);
 
     try {
-      // Read file as base64 for parsing
-      const reader = new FileReader();
-      
-      reader.onload = async (e) => {
-        try {
-          const base64Content = e.target?.result as string;
-          
-          // Parse the document content
-          // Note: Since we can't directly call parse_document from client,
-          // we'll implement a basic parser for the PDF structure
-          toast({
-            title: 'Parsing Document',
-            description: 'Extracting articles from your PDF...',
-          });
+      // Helper utilities (scoped to this function for minimal changes)
+      const slugify = (s: string) =>
+        s
+          .toLowerCase()
+          .replace(/[^a-z0-9\s-]/g, '')
+          .trim()
+          .replace(/\s+/g, '-')
+          .replace(/-+/g, '-');
 
-          // Simulate parsing - in production, you'd send to an edge function
-          // that uses document parsing capabilities
-          setProgress(30);
-          
-          // For now, we'll create a placeholder structure
-          // In production, this would be replaced with actual PDF parsing
-          const articles = [
-            {
-              title: 'Sample Article 1',
-              slug: 'sample-article-1',
-              excerpt: 'This is a sample excerpt',
-              content: '<p>Sample content</p>',
-              category: 'Tips & Guides',
-              read_time: '5 min read',
-              author: 'James Blond Team',
-            }
-          ];
-          
-          setTotalArticles(articles.length);
-          setProgress(50);
-          
-          // Import articles to database
-          for (let i = 0; i < articles.length; i++) {
-            const article = articles[i];
-            
-            const { error } = await supabase
-              .from('blog_articles')
-              .insert({
-                ...article,
-                published: false, // Non-published state
-              });
-            
-            if (error) throw error;
-            
-            setCreatedArticles(i + 1);
-            setProgress(50 + ((i + 1) / articles.length) * 50);
-            
-            await new Promise(resolve => setTimeout(resolve, 200)); // Small delay for UX
+      const estimateReadTime = (txt: string) => {
+        const words = txt.trim().split(/\s+/).length || 1;
+        const minutes = Math.max(1, Math.round(words / 200));
+        return `${minutes} min read`;
+      };
+
+      const extractArticlesFromText = (t: string) => {
+        const lines = t.split(/\r?\n/);
+        type Acc = { title: string; body: string[] };
+        const articles: Acc[] = [];
+        let current: Acc | null = null;
+
+        for (let i = 0; i < lines.length; i++) {
+          const prevBlank = i === 0 || lines[i - 1].trim() === '';
+          const line = lines[i].trim();
+          const isHeading =
+            prevBlank &&
+            /^([A-Z][A-Za-z0-9 ,&'()\-:]{5,120})$/.test(line) &&
+            (i + 1 < lines.length ? lines[i + 1].trim().length > 0 : true);
+
+          if (isHeading) {
+            if (current) articles.push(current);
+            current = { title: line, body: [] };
+          } else if (current) {
+            current.body.push(line);
           }
-          
-          toast({
-            title: 'Import Complete',
-            description: `Successfully imported ${articles.length} article(s) in draft state.`,
-          });
-          
-          setProgress(100);
-          
-        } catch (error: any) {
-          console.error('Error importing articles:', error);
-          toast({
-            title: 'Error',
-            description: error.message || 'Failed to import articles',
-            variant: 'destructive',
-          });
         }
-      };
-      
-      reader.onerror = () => {
-        toast({
-          title: 'Error',
-          description: 'Failed to read file',
-          variant: 'destructive',
+        if (current) articles.push(current);
+
+        if (articles.length === 0) {
+          const fallbackTitle = uploadedFile.name
+            .replace(/\.[^/.]+$/, '')
+            .replace(/[-_]/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim() || 'Untitled';
+          articles.push({ title: fallbackTitle, body: [t] });
+        }
+
+        return articles.map((a) => {
+          const bodyText = a.body.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+          const firstPara = bodyText.split(/\n{2,}/).find((p) => p.trim().length > 0) || bodyText;
+          const excerpt = firstPara.substring(0, 160);
+          const html = `<p>${bodyText
+            .split(/\n{2,}/)
+            .map((p) => p.replace(/</g, '&lt;').replace(/>/g, '&gt;'))
+            .join('</p><p>')}</p>`;
+
+          return {
+            title: a.title,
+            slug: slugify(a.title),
+            excerpt,
+            content: html,
+            category: 'Tips & Guides',
+            read_time: estimateReadTime(bodyText),
+            author: 'James Blond Team',
+          };
         });
-        setParsing(false);
       };
-      
-      reader.readAsDataURL(uploadedFile);
-      
+
+      // Read file into ArrayBuffer for parsing
+      const arrayBuffer = await uploadedFile.arrayBuffer();
+      let extractedText = '';
+
+      // Detect type by extension or mime
+      const name = uploadedFile.name.toLowerCase();
+      const isPdf = name.endsWith('.pdf') || uploadedFile.type.includes('pdf');
+      const isDocx = name.endsWith('.docx') || uploadedFile.type.includes('word');
+
+      if (isPdf) {
+        toast({ title: 'Parsing PDF', description: 'Extracting text from pages...' });
+        // Dynamic import to avoid bundler issues and heavy initial load
+        const pdfjsLib: any = await import('pdfjs-dist');
+        // Run without a web worker to simplify setup
+        const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer, disableWorker: true });
+        const pdf = await loadingTask.promise;
+
+        const textParts: string[] = [];
+        const pages = pdf.numPages as number;
+        for (let i = 1; i <= pages; i++) {
+          const page = await pdf.getPage(i);
+          const content = await page.getTextContent();
+          const strings = content.items.map((it: any) => (it && 'str' in it ? it.str : '') as string);
+          textParts.push(strings.join(' '));
+          setProgress(5 + Math.round((i / pages) * 45));
+        }
+        extractedText = textParts.join('\n\n');
+      } else if (isDocx) {
+        toast({ title: 'Parsing DOCX', description: 'Extracting text...' });
+        const mammothMod: any = await import('mammoth');
+        const result = await mammothMod.default.extractRawText({ arrayBuffer });
+        extractedText = result.value || '';
+        setProgress(50);
+      } else {
+        // Fallback: try to read as UTF-8 text
+        extractedText = new TextDecoder().decode(arrayBuffer);
+        setProgress(50);
+      }
+
+      // Build articles from extracted text
+      const articles = extractArticlesFromText(extractedText);
+      setTotalArticles(articles.length);
+
+      // Insert into Supabase
+      for (let i = 0; i < articles.length; i++) {
+        const article = articles[i];
+        const { error } = await supabase.from('blog_articles').insert({
+          ...article,
+          published: false,
+        });
+        if (error) throw error;
+        setCreatedArticles(i + 1);
+        setProgress(50 + Math.round(((i + 1) / articles.length) * 50));
+      }
+
+      toast({
+        title: 'Import Complete',
+        description: `Successfully imported ${articles.length} article(s) to drafts.`,
+      });
+
+      setProgress(100);
     } catch (error: any) {
+      console.error('Error importing articles:', error);
       toast({
         title: 'Error',
-        description: error.message || 'Failed to parse document',
+        description: error?.message || 'Failed to parse and import document',
         variant: 'destructive',
       });
     } finally {
       setParsing(false);
     }
   };
-
   const importPeopleMoversArticle = async () => {
     setImporting(true);
     try {
