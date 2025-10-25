@@ -131,8 +131,11 @@ const AdminBlogImport = () => {
         toast({ title: 'Parsing PDF', description: 'Extracting text from pages...' });
         // Dynamic import to avoid bundler issues and heavy initial load
         const pdfjsLib: any = await import('pdfjs-dist');
-        // Run without a web worker to simplify setup
-        const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer, disableWorker: true });
+        
+        // Configure worker - use CDN version to avoid bundling issues
+        pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+        
+        const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
         const pdf = await loadingTask.promise;
 
         const textParts: string[] = [];
