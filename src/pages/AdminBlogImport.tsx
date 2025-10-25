@@ -131,8 +131,11 @@ const AdminBlogImport = () => {
         // Dynamic import to avoid bundler issues and heavy initial load
         const pdfjsLib: any = await import('pdfjs-dist');
         
-        // Configure worker - use CDN version to avoid bundling issues
-        pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+        // Configure worker using legacy build which works better with bundlers
+        pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+          'pdfjs-dist/build/pdf.worker.min.mjs',
+          import.meta.url
+        ).toString();
         
         const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
         const pdf = await loadingTask.promise;
