@@ -125,7 +125,6 @@ const AdminBlogImport = () => {
       const name = uploadedFile.name.toLowerCase();
       const isPdf = name.endsWith('.pdf') || uploadedFile.type.includes('pdf');
       const isDocx = name.endsWith('.docx') || uploadedFile.type.includes('word');
-      const isImage = /image\/(png|jpe?g|webp|gif|bmp|tiff)/i.test(uploadedFile.type) || /\.(png|jpe?g|jpg|webp|gif|bmp|tif|tiff)$/i.test(name);
 
       if (isPdf) {
         toast({ title: 'Parsing PDF', description: 'Extracting text from pages...' });
@@ -154,25 +153,6 @@ const AdminBlogImport = () => {
         const result = await mammothMod.default.extractRawText({ arrayBuffer });
         extractedText = result.value || '';
         setProgress(50);
-      } else if (isImage) {
-        toast({ title: 'Performing OCR', description: 'Recognising text in the image...' });
-        const TesseractMod: any = await import('tesseract.js');
-        const Tesseract = TesseractMod.default || TesseractMod;
-        const blob = new Blob([arrayBuffer], { type: uploadedFile.type || 'image/png' });
-        const imageUrl = URL.createObjectURL(blob);
-        try {
-          const result = await Tesseract.recognize(imageUrl, 'eng', {
-            logger: (m: any) => {
-              if (m?.progress != null) {
-                setProgress(5 + Math.round(Math.min(1, Math.max(0, m.progress)) * 45));
-              }
-            },
-          });
-          extractedText = result?.data?.text || '';
-          setProgress(50);
-        } finally {
-          URL.revokeObjectURL(imageUrl);
-        }
       } else {
         // Fallback: try to read as UTF-8 text
         extractedText = new TextDecoder().decode(arrayBuffer);
