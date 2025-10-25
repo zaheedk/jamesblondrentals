@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Edit, Trash2, Eye } from 'lucide-react';
+import { Plus, Edit, Trash2, Eye, Upload } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -124,6 +124,12 @@ const AdminBlog = () => {
             <Link to="/admin/vehicle-rates">
               <Eye className="h-4 w-4 mr-2" />
               Vehicle Rates
+            </Link>
+          </Button>
+          <Button asChild variant="outline">
+            <Link to="/admin/blog/import">
+              <Upload className="h-4 w-4 mr-2" />
+              Import Articles
             </Link>
           </Button>
           <Button asChild>
