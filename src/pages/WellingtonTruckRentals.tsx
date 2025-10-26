@@ -18,7 +18,7 @@ const WellingtonTruckRentals = () => {
   return (
     <>
       <Helmet>
-        <title>Wellington Truck Rentals | Furniture & Moving Trucks - James Blond</title>
+        <title>Truck Hire Wellington | Affordable Truck Rentals – James Blond</title>
         <meta name="description" content="Affordable truck hire in Wellington. Perfect for moving furniture, house moves, and commercial relocations. Tail lift options available. Expert service for Wellington's hilly terrain." />
         <meta name="keywords" content="Wellington truck rentals, moving trucks Wellington, furniture truck hire, Wellington moving, truck hire CBD" />
         <link rel="canonical" href="https://www.jamesblond.co.nz/truck-hire-wellington" />
