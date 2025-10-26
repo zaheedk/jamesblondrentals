@@ -22,7 +22,7 @@ const WellingtonMinibusRentals = () => {
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-6 mb-8">
         <div className="text-center mb-6">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">Wellington Minibus Rentals | 10 & 12 Seater Van Hire</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">Minibus Hire in Wellington – 10 to 12-Seater Rentals</h1>
           <p className="text-lg text-gray-700 mb-6">
             Premium minibus rentals in Wellington for groups, families, and corporate travel. Comfortable, reliable transport for up to 12 passengers throughout the capital city and greater Wellington region.
           </p>
