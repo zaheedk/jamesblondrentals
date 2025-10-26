@@ -13,7 +13,7 @@ const WellingtonMinibusRentals = () => {
     // Update meta description for SEO
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'Premium 10 & 12 seater minibus rentals in Wellington. Comfortable group transport for families, corporate events, and airport transfers. Book your Wellington minibus today.');
+      metaDescription.setAttribute('content', 'Affordable minibus hire in Wellington. Choose from 8, 10, and 12-seater rentals for group travel, tours, and events. Book online today.');
     }
   }, []);
 
