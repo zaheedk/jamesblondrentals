@@ -158,7 +158,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     }
   }, [onChange]);
 
-  const modules = {
+  const modules = useMemo(() => ({
     toolbar: {
       container: [
         [{ 'font': [] }],
@@ -183,8 +183,11 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       delay: 2000,
       maxStack: 500,
       userOnly: true
+    },
+    clipboard: {
+      matchVisual: false
     }
-  };
+  }), [imageHandler]);
 
   const formats = [
     'font', 'size', 'header', 'bold', 'italic', 'underline', 'strike',
