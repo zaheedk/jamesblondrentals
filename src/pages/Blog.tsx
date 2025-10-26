@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Calendar, User, ArrowRight } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface BlogArticle {
@@ -63,52 +63,38 @@ const Blog = () => {
       {/* Blog Posts Grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
         {articles.map((article) => (
-          <Card key={article.id} className="hover:shadow-lg transition-shadow">
-            <CardHeader className="p-0">
-              {article.image_url && (
-                <img 
-                  src={article.image_url} 
-                  alt={article.title}
-                  className="w-full h-48 object-cover rounded-t-lg"
-                />
-              )}
-            </CardHeader>
-            <CardContent className="p-6">
-              <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
-                <span className="bg-primary/10 text-primary px-2 py-1 rounded text-xs font-medium">
-                  {article.category}
-                </span>
-                <div className="flex items-center gap-1">
-                  <Calendar className="h-4 w-4" />
-                  {new Date(article.created_at).toLocaleDateString()}
-                </div>
-              </div>
-              
-              <CardTitle className="mb-3 line-clamp-2">
-                {article.title}
-              </CardTitle>
-              
-              <CardDescription className="mb-4 line-clamp-3">
-                {article.excerpt}
-              </CardDescription>
-              
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-sm text-gray-500">
-                  <User className="h-4 w-4" />
-                  <span>{article.author}</span>
-                  <span>•</span>
-                  <span>{article.read_time}</span>
+          <Link key={article.id} to={`/blog/${article.slug}`} className="block">
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
+              <CardHeader className="p-0">
+                {article.image_url && (
+                  <img 
+                    src={article.image_url} 
+                    alt={article.title}
+                    className="w-full h-48 object-cover rounded-t-lg"
+                  />
+                )}
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
+                  <span className="bg-primary/10 text-primary px-2 py-1 rounded text-xs font-medium">
+                    {article.category}
+                  </span>
+                  <div className="flex items-center gap-1">
+                    <Calendar className="h-4 w-4" />
+                    {new Date(article.created_at).toLocaleDateString()}
+                  </div>
                 </div>
                 
-                <Button variant="outline" size="sm" asChild>
-                  <Link to={`/blog/${article.slug}`} className="flex items-center gap-1">
-                    Read More
-                    <ArrowRight className="h-3 w-3" />
-                  </Link>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+                <CardTitle className="mb-3 line-clamp-2">
+                  {article.title}
+                </CardTitle>
+                
+                <CardDescription className="line-clamp-3">
+                  {article.excerpt}
+                </CardDescription>
+              </CardContent>
+            </Card>
+          </Link>
         ))}
       </div>
 
