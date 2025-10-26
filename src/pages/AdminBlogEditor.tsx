@@ -12,6 +12,8 @@ import { useForm } from 'react-hook-form';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import RichTextEditor from '@/components/admin/RichTextEditor';
+import MediaLibrary from '@/components/admin/MediaLibrary';
+import { Image } from 'lucide-react';
 
 interface BlogFormData {
   title: string;
@@ -33,6 +35,7 @@ const AdminBlogEditor = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const isEditing = Boolean(id);
+  const [isMediaLibraryOpen, setIsMediaLibraryOpen] = useState(false);
 
   const form = useForm<BlogFormData>({
     defaultValues: {
@@ -134,6 +137,11 @@ const AdminBlogEditor = () => {
     if (!isEditing) {
       form.setValue('slug', generateSlug(title));
     }
+  };
+
+  const handleImageSelect = (url: string) => {
+    form.setValue('image_url', url);
+    setIsMediaLibraryOpen(false);
   };
 
   return (
@@ -365,9 +373,34 @@ const AdminBlogEditor = () => {
                     name="image_url"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Featured Image URL</FormLabel>
+                        <FormLabel>Featured Image</FormLabel>
                         <FormControl>
-                          <Input {...field} placeholder="/path/to/image.jpg" />
+                          <div className="space-y-2">
+                            {field.value && (
+                              <div className="relative w-full aspect-video rounded-lg overflow-hidden border">
+                                <img 
+                                  src={field.value} 
+                                  alt="Featured" 
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                            )}
+                            <div className="flex gap-2">
+                              <Input 
+                                {...field} 
+                                placeholder="Image URL or click Upload" 
+                                className="flex-1"
+                              />
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="icon"
+                                onClick={() => setIsMediaLibraryOpen(true)}
+                              >
+                                <Image className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -384,6 +417,12 @@ const AdminBlogEditor = () => {
           </div>
         </form>
       </Form>
+
+      <MediaLibrary
+        isOpen={isMediaLibraryOpen}
+        onClose={() => setIsMediaLibraryOpen(false)}
+        onSelect={handleImageSelect}
+      />
     </div>
   );
 };
