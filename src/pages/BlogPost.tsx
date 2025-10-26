@@ -1162,42 +1162,37 @@ const BlogPost = () => {
 
       {/* Blog Post Header */}
       <div className="max-w-4xl mx-auto">
-        <Card className="mb-8">
-          <CardHeader className="p-0">
-            {article.image_url && (
-              <img 
-                src={article.image_url} 
-                alt={article.title}
-                className="w-full h-64 md:h-96 object-cover rounded-t-lg"
-              />
-            )}
-          </CardHeader>
-          <CardContent className="p-8">
-            <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
-              <Badge variant="outline">{article.category}</Badge>
-              <div className="flex items-center gap-1">
-                <Calendar className="h-4 w-4" />
-                {new Date(article.created_at).toLocaleDateString()}
-              </div>
-              <div className="flex items-center gap-1">
-                <User className="h-4 w-4" />
-                {article.author}
-              </div>
-              <div className="flex items-center gap-1">
-                <Clock className="h-4 w-4" />
-                {article.read_time}
-              </div>
+        <div className="mb-8">
+          {/* Title and metadata above image */}
+          <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
+            <Badge variant="outline">{article.category}</Badge>
+            <div className="flex items-center gap-1">
+              <Calendar className="h-4 w-4" />
+              {new Date(article.created_at).toLocaleDateString()}
             </div>
-            
-            <h1 className="text-3xl md:text-4xl font-bold mb-4">
-              {article.title}
-            </h1>
-            
-            <p className="text-lg text-gray-600 mb-8">
-              {article.excerpt}
-            </p>
-          </CardContent>
-        </Card>
+            <div className="flex items-center gap-1">
+              <User className="h-4 w-4" />
+              {article.author}
+            </div>
+            <div className="flex items-center gap-1">
+              <Clock className="h-4 w-4" />
+              {article.read_time}
+            </div>
+          </div>
+          
+          <h1 className="text-3xl md:text-4xl font-bold mb-8">
+            {article.title}
+          </h1>
+          
+          {/* Featured image */}
+          {article.image_url && (
+            <img 
+              src={article.image_url} 
+              alt={article.title}
+              className="w-full h-64 md:h-96 object-cover rounded-lg mb-8"
+            />
+          )}
+        </div>
 
         {/* Blog Post Content */}
         <Card>
