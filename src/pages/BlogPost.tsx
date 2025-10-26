@@ -1197,14 +1197,14 @@ const BlogPost = () => {
         {/* Blog Post Content */}
         <Card>
           <CardContent className="p-8">
-            {article.content.includes('<h') ? (
-              // If content contains HTML tags, render as HTML (for hardcoded articles)
+            {article.content.includes('<') ? (
+              // If content contains HTML tags, render as HTML
               <div 
                 className="prose prose-lg max-w-none"
                 dangerouslySetInnerHTML={{ __html: article.content }}
               />
             ) : (
-              // If content is markdown, render using ReactMarkdown (for database articles)
+              // If content is plain text/markdown, render using ReactMarkdown
               <div className="prose prose-lg max-w-none">
                 <ReactMarkdown 
                   components={{
