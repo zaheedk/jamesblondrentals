@@ -20,7 +20,7 @@ const WellingtonCargoVanRentals = () => {
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-6 mb-8">
         <div className="text-center mb-6">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">Cheap Wellington Cargo Van Hire & Rentals</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">Van Hire in Wellington – Affordable Cargo Van Rentals</h1>
           <p className="text-lg text-gray-700 mb-6">
             Affordable, reliable cargo vans for hire in Wellington. Perfect for small moves, deliveries, and business needs throughout the capital city.
           </p>
