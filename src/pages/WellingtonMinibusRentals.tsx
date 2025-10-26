@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 
 const WellingtonMinibusRentals = () => {
   useEffect(() => {
-    document.title = "Wellington Minibus Rentals | 10 & 12 Seater Van Hire | James Blond";
+    document.title = "Minibus Hire Wellington | 10–12 Seater Rentals – James Blond";
     
     // Update meta description for SEO
     const metaDescription = document.querySelector('meta[name="description"]');
