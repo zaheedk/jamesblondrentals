@@ -11,7 +11,7 @@ const WellingtonCargoVanRentals = () => {
   return (
     <>
       <Helmet>
-        <title>Wellington Cargo Van Rentals | Affordable Van Hire in Wellington</title>
+        <title>Van Hire Wellington | Affordable Van Rental – James Blond</title>
         <meta name="description" content="Cheap Wellington cargo van hire & rentals. Perfect for small moves, deliveries & business needs. Book online for the best rates in Wellington CBD." />
         <meta name="keywords" content="Wellington cargo van hire, van rental Wellington, cheap van hire Wellington, cargo van Wellington, delivery van Wellington" />
         <link rel="canonical" href="https://www.jamesblond.co.nz/van-hire-wellington" />
