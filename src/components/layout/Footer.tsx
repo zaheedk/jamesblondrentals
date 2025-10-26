@@ -141,7 +141,7 @@ const Footer = () => {
                 <Link to="/truck-hire-wellington" className="text-gray-300 hover:text-white transition-colors text-sm">Wellington Truck Rentals</Link>
               </li>
               <li>
-                <Link to="/wellington-minibus-rentals" className="text-gray-300 hover:text-white transition-colors text-sm">Wellington Minibus Rentals</Link>
+                <Link to="/minibus-hire-wellington" className="text-gray-300 hover:text-white transition-colors text-sm">Wellington Minibus Rentals</Link>
               </li>
               <li>
                 <Link to="/fuel-calculator" className="text-gray-300 hover:text-white transition-colors text-sm">Fuel & Trip Calculator</Link>
