@@ -340,7 +340,7 @@ const Index = () => {
                   <Link to="/west-auckland-truck-rentals-hire">West Auckland Trucks</Link>
                 </Button>
                 <Button variant="outline" asChild size="sm">
-                  <Link to="/wellington-truck-rentals-hire">Wellington Trucks</Link>
+                  <Link to="/truck-hire-wellington">Wellington Trucks</Link>
                 </Button>
                 <Button variant="outline" asChild size="sm">
                   <Link to="/wellington-cargo-van-rentals-hire">Wellington Cargo Vans</Link>
