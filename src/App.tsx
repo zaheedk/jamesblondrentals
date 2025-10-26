@@ -234,7 +234,7 @@ const App = () => {
                 <Route path="/west-auckland-truck-rentals-hire" element={<WestAucklandTruckRentals />} />
                 <Route path="/auckland-truck-rentals-hire" element={<AucklandTruckRentals />} />
                 <Route path="/wellington-truck-rentals-hire" element={<WellingtonTruckRentals />} />
-                <Route path="/wellington-cargo-van-rentals-hire" element={<WellingtonCargoVanRentals />} />
+                <Route path="/van-hire-wellington" element={<WellingtonCargoVanRentals />} />
                 <Route path="/west-auckland-cargo-van-rentals-hire" element={<WestAucklandCargoVanRentals />} />
                 <Route path="/south-auckland-cargo-van-rentals-hire" element={<SouthAucklandCargoVanRentals />} />
                 <Route path="/central-auckland-cargo-van-rentals-hire" element={<CentralAucklandCargoVanRentals />} />

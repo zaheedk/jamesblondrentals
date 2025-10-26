@@ -14,7 +14,7 @@ const WellingtonCargoVanRentals = () => {
         <title>Wellington Cargo Van Rentals | Affordable Van Hire in Wellington</title>
         <meta name="description" content="Cheap Wellington cargo van hire & rentals. Perfect for small moves, deliveries & business needs. Book online for the best rates in Wellington CBD." />
         <meta name="keywords" content="Wellington cargo van hire, van rental Wellington, cheap van hire Wellington, cargo van Wellington, delivery van Wellington" />
-        <link rel="canonical" href="https://www.jamesblond.co.nz/wellington-cargo-van-rentals-hire" />
+        <link rel="canonical" href="https://www.jamesblond.co.nz/van-hire-wellington" />
       </Helmet>
       <div className="container mx-auto px-4 py-8">
       {/* Hero Section */}
