@@ -29,7 +29,7 @@ const WellingtonTruckRentals = () => {
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-6 mb-8">
         <div className="grid md:grid-cols-2 gap-6 items-center">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold mb-4">Affordable Furniture & Moving Truck Hire Wellington</h1>
+            <h1 className="text-3xl md:text-4xl font-bold mb-4">Truck Hire in Wellington – Affordable Rentals</h1>
             <p className="text-lg text-gray-700 mb-6">
               Making your move in Wellington easier and more affordable with our range of rental trucks tailored for the capital city.
             </p>
