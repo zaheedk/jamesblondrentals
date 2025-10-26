@@ -354,34 +354,51 @@ const WellingtonCargoVanRentals = () => {
         
         <div className="space-y-4">
           <div className="border rounded-lg p-4">
-            <h3 className="font-bold mb-2">What license do I need to hire a van in Wellington?</h3>
+            <h3 className="font-bold mb-2">How much does van hire in Wellington cost?</h3>
             <p className="text-gray-600">
-              A standard New Zealand full driver's license is sufficient for all our cargo vans. 
-              International visitors can use their home license (with translation if not in English) or an International Driving Permit.
+              Prices start from affordable daily rates, depending on van size and hire duration.
             </p>
           </div>
           
           <div className="border rounded-lg p-4">
-            <h3 className="font-bold mb-2">Do your Wellington vans have automatic transmission?</h3>
+            <h3 className="font-bold mb-2">Can I hire a van for just one day in Wellington?</h3>
             <p className="text-gray-600">
-              Yes, most of our cargo vans in Wellington feature automatic transmission, making them easier to 
-              drive in stop-start city traffic and on Wellington's steep hills.
+              Yes, we offer same-day and short-term van rentals for maximum flexibility.
             </p>
           </div>
           
           <div className="border rounded-lg p-4">
-            <h3 className="font-bold mb-2">Can I pick up in Wellington and drop off in Auckland?</h3>
+            <h3 className="font-bold mb-2">Do you provide same-day van rentals in Wellington?</h3>
             <p className="text-gray-600">
-              Yes, one-way rentals between our Wellington and Auckland locations are available for an additional 
-              fee. Please specify this requirement when booking.
+              Yes, subject to availability. Customers can often book and drive away on the same day.
             </p>
           </div>
           
           <div className="border rounded-lg p-4">
-            <h3 className="font-bold mb-2">Do you offer weekend specials for Wellington van hire?</h3>
+            <h3 className="font-bold mb-2">Where can I pick up a rental van in Wellington?</h3>
             <p className="text-gray-600">
-              Yes, we frequently offer weekend specials for Wellington cargo van rentals. Check our website 
-              for current promotions or ask our staff when booking.
+              Vans can be picked up at our Wellington branch, conveniently located for both city and suburban travel.
+            </p>
+          </div>
+          
+          <div className="border rounded-lg p-4">
+            <h3 className="font-bold mb-2">Are your vans suitable for moving house in Wellington?</h3>
+            <p className="text-gray-600">
+              Yes, our vans are spacious and perfect for moving furniture, appliances, or large items.
+            </p>
+          </div>
+          
+          <div className="border rounded-lg p-4">
+            <h3 className="font-bold mb-2">Do your rental vans include insurance?</h3>
+            <p className="text-gray-600">
+              Yes, insurance options are available for added peace of mind when you book a van.
+            </p>
+          </div>
+          
+          <div className="border rounded-lg p-4">
+            <h3 className="font-bold mb-2">What sizes of vans are available for hire in Wellington?</h3>
+            <p className="text-gray-600">
+              We offer a range of vans, from compact options to large cargo vans, depending on your needs.
             </p>
           </div>
         </div>
