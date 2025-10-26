@@ -147,7 +147,7 @@ const Footer = () => {
                 <Link to="/fuel-calculator" className="text-gray-300 hover:text-white transition-colors text-sm">Fuel & Trip Calculator</Link>
               </li>
               <li>
-                <Link to="/wellington-cargo-van-rentals-hire" className="text-gray-300 hover:text-white transition-colors text-sm">Wellington Cargo Van Rentals</Link>
+                <Link to="/van-hire-wellington" className="text-gray-300 hover:text-white transition-colors text-sm">Wellington Cargo Van Rentals</Link>
               </li>
               <li>
                 <Link to="/west-auckland-cargo-van-rentals-hire" className="text-gray-300 hover:text-white transition-colors text-sm">West Auckland Cargo Van Rentals</Link>
