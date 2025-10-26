@@ -1180,7 +1180,7 @@ const BlogPost = () => {
             </div>
           </div>
           
-          <h1 className="text-3xl md:text-4xl font-bold mb-8">
+          <h1 className="text-3xl md:text-4xl font-bold mb-8 leading-relaxed">
             {article.title}
           </h1>
           
