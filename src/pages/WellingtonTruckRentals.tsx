@@ -567,35 +567,30 @@ const WellingtonTruckRentals = () => {
         
         <div className="space-y-4">
           <div className="border rounded-lg p-4">
-            <h3 className="font-bold mb-2">Do I need to worry about Wellington's hills when driving a rental truck?</h3>
+            <h3 className="font-bold mb-2">How much does it cost to hire a truck in Wellington?</h3>
             <p className="text-gray-600">
-              Our trucks are selected with Wellington's terrain in mind. We recommend automatic transmission 
-              options for those less confident with hill starts, and always suggest using lower gears when 
-              descending steep hills.
+              Truck hire in Wellington starts from affordable daily rates, and the cost depends on the size of the truck and how long you need it. For an exact quote, call 0800 525 663 or book online.
             </p>
           </div>
           
           <div className="border rounded-lg p-4">
-            <h3 className="font-bold mb-2">Where is your Wellington branch located?</h3>
+            <h3 className="font-bold mb-2">Do you offer same-day truck rentals?</h3>
             <p className="text-gray-600">
-              Our Wellington branch is conveniently located at 24 Abel Smith Street in Te Aro, 
-              just minutes from the CBD and with easy access to all Wellington suburbs.
+              Yes, same-day truck rentals are available in Wellington, subject to availability. You can often book and drive away on the very same day.
             </p>
           </div>
           
           <div className="border rounded-lg p-4">
-            <h3 className="font-bold mb-2">Can I get a truck with a tail lift for Wellington's steep driveways?</h3>
+            <h3 className="font-bold mb-2">What size trucks can I hire in Wellington?</h3>
             <p className="text-gray-600">
-              Yes, we offer several trucks with tail lifts which are perfect for Wellington's steep properties. 
-              These make loading and unloading much easier, especially for heavy items on sloping driveways or streets.
+              We offer a range of trucks, from smaller models for lighter loads to larger trucks suitable for moving house or handling commercial deliveries.
             </p>
           </div>
           
           <div className="border rounded-lg p-4">
-            <h3 className="font-bold mb-2">Do you offer moving supplies for Wellington's often wet weather?</h3>
+            <h3 className="font-bold mb-2">Do your trucks come with insurance?</h3>
             <p className="text-gray-600">
-              Yes, we offer waterproof covers, furniture blankets, and plastic wrap options to protect your 
-              belongings from Wellington's unpredictable weather during your move.
+              Yes, all our truck rentals include standard insurance options, and you can add extra coverage for additional peace of mind when booking.
             </p>
           </div>
         </div>
