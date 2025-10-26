@@ -437,42 +437,30 @@ const WellingtonMinibusRentals = () => {
         
         <div className="space-y-4">
           <div className="border rounded-lg p-4">
-            <h3 className="font-bold mb-2">What license do I need to drive a minibus in Wellington?</h3>
+            <h3 className="font-bold mb-2">How much does minibus hire in Wellington cost?</h3>
             <p className="text-gray-600">
-              A standard New Zealand full driver's license allows you to drive our 10 and 12 seater minibuses. 
-              For international visitors, a valid overseas license or International Driving Permit is required.
+              Minibus hire in Wellington starts from affordable daily rates, with pricing based on the size of the vehicle and the length of the rental. Whether you need a 8-seater for a short trip or a 12-seater for a longer journey, we provide clear, upfront costs with no hidden fees. For an exact quote, call 0800 525 663 or check availability online.
             </p>
           </div>
           
           <div className="border rounded-lg p-4">
-            <h3 className="font-bold mb-2">Are your Wellington minibuses automatic?</h3>
+            <h3 className="font-bold mb-2">What minibus sizes are available for hire?</h3>
             <p className="text-gray-600">
-              Yes, all our Wellington minibuses feature automatic transmission, making them much easier to 
-              drive on Wellington's steep hills and in busy city traffic.
+              We offer a full range of minibuses to suit different group sizes and travel needs. Our Wellington fleet includes 8-seater, 10-seater, and 12-seater minibuses. Each vehicle is well-maintained, spacious, and designed for comfort, making them ideal for family trips, school outings, business travel, or group events.
             </p>
           </div>
           
           <div className="border rounded-lg p-4">
-            <h3 className="font-bold mb-2">Can I take the minibus to the South Island?</h3>
+            <h3 className="font-bold mb-2">Can I hire a minibus for one day in Wellington?</h3>
             <p className="text-gray-600">
-              Yes, our minibuses can travel on the Interislander and Bluebridge ferries. Additional charges 
-              apply for South Island travel and ferry costs are separate.
+              Yes, you can hire a minibus for just one day in Wellington. We offer flexible hire options ranging from single-day rentals to longer-term bookings, so you only pay for the time you need. Same-day bookings are available subject to vehicle availability.
             </p>
           </div>
           
           <div className="border rounded-lg p-4">
-            <h3 className="font-bold mb-2">Do you offer airport pickup/drop-off?</h3>
+            <h3 className="font-bold mb-2">Do you provide airport transfers with your minibus?</h3>
             <p className="text-gray-600">
-              We offer convenient pickup and drop-off at Wellington Airport. Our Te Aro branch is just 
-              20 minutes from the airport via the airport tunnel.
-            </p>
-          </div>
-          
-          <div className="border rounded-lg p-4">
-            <h3 className="font-bold mb-2">What's included with my Wellington minibus rental?</h3>
-            <p className="text-gray-600">
-              All rentals include: comprehensive insurance (with excess), unlimited kilometres within New Zealand, 
-              24/7 roadside assistance, and a full tank of fuel at pickup (return with same level).
+              Yes, our Minibuses are available for airport pickups and drop-offs in Wellington. This makes group travel to and from the airport simple, affordable, and convenient. Whether it's for a family trip, a business group, or visiting guests, our minibuses provide a reliable airport transfer option.
             </p>
           </div>
         </div>
