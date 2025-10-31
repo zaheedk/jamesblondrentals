@@ -79,7 +79,7 @@ const AdminBookings = () => {
       <div className="container mx-auto py-8">
         <Card>
           <CardHeader>
-            <CardTitle className="text-destructive">Error Loading Bookings</CardTitle>
+            <CardTitle className="text-destructive">Error Loading Quotes</CardTitle>
             <CardDescription>{error.message}</CardDescription>
           </CardHeader>
         </Card>
@@ -90,8 +90,8 @@ const AdminBookings = () => {
   return (
     <div className="container mx-auto py-8 space-y-6">
       <div>
-        <h1 className="text-3xl font-bold mb-2">All Bookings</h1>
-        <p className="text-muted-foreground">Manage and view all customer bookings</p>
+        <h1 className="text-3xl font-bold mb-2">All Quotes</h1>
+        <p className="text-muted-foreground">Manage and view all customer quotes</p>
       </div>
 
       <Card>
@@ -107,7 +107,7 @@ const AdminBookings = () => {
               />
             </div>
             <Badge variant="secondary" className="text-sm">
-              {filteredBookings.length} bookings
+              {filteredBookings.length} quotes
             </Badge>
           </div>
         </CardHeader>
@@ -132,7 +132,7 @@ const AdminBookings = () => {
                 {filteredBookings.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={10} className="text-center py-8 text-muted-foreground">
-                      No bookings found
+                      No quotes found
                     </TableCell>
                   </TableRow>
                 ) : (
