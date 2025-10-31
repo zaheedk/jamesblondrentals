@@ -60,6 +60,24 @@ const AdminBookings = () => {
     );
   };
 
+  const getTypeBadge = (bookingStatus?: string, paymentStatus?: string) => {
+    const isQuote = bookingStatus === 'pending' && paymentStatus === 'pending';
+    
+    if (isQuote) {
+      return (
+        <Badge variant="outline" className="bg-purple-500/10 text-purple-500 border-purple-500/20">
+          Quote
+        </Badge>
+      );
+    }
+    
+    return (
+      <Badge variant="outline" className="bg-blue-500/10 text-blue-500 border-blue-500/20">
+        Booking
+      </Badge>
+    );
+  };
+
   const formatCurrency = (amount?: number) => {
     if (!amount) return "$0.00";
     return `$${amount.toFixed(2)}`;
@@ -90,8 +108,8 @@ const AdminBookings = () => {
   return (
     <div className="container mx-auto py-8 space-y-6">
       <div>
-        <h1 className="text-3xl font-bold mb-2">All Quotes</h1>
-        <p className="text-muted-foreground">Manage and view all customer quotes</p>
+        <h1 className="text-3xl font-bold mb-2">Quotes & Bookings</h1>
+        <p className="text-muted-foreground">Manage and view all customer quotes and bookings</p>
       </div>
 
       <Card>
@@ -107,7 +125,7 @@ const AdminBookings = () => {
               />
             </div>
             <Badge variant="secondary" className="text-sm">
-              {filteredBookings.length} quotes
+              {filteredBookings.length} records
             </Badge>
           </div>
         </CardHeader>
@@ -117,6 +135,7 @@ const AdminBookings = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead>Reference</TableHead>
+                  <TableHead>Type</TableHead>
                   <TableHead>Customer</TableHead>
                   <TableHead>Vehicle</TableHead>
                   <TableHead>Pickup</TableHead>
@@ -131,8 +150,8 @@ const AdminBookings = () => {
               <TableBody>
                 {filteredBookings.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={10} className="text-center py-8 text-muted-foreground">
-                      No quotes found
+                    <TableCell colSpan={11} className="text-center py-8 text-muted-foreground">
+                      No records found
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -140,6 +159,9 @@ const AdminBookings = () => {
                     <TableRow key={booking.id}>
                       <TableCell className="font-mono text-sm">
                         {booking.booking_reference || "N/A"}
+                      </TableCell>
+                      <TableCell>
+                        {getTypeBadge(booking.booking_status, booking.payment_status)}
                       </TableCell>
                       <TableCell>
                         <div>
