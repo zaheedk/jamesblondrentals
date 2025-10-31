@@ -60,20 +60,20 @@ const AdminBookings = () => {
     );
   };
 
-  const getTypeBadge = (bookingStatus?: string, paymentStatus?: string) => {
-    const isQuote = bookingStatus === 'pending' && paymentStatus === 'pending';
+  const getTypeBadge = (bookingReference?: string) => {
+    const isBooking = bookingReference?.startsWith('BK');
     
-    if (isQuote) {
+    if (isBooking) {
       return (
-        <Badge variant="outline" className="bg-purple-500/10 text-purple-500 border-purple-500/20">
-          Quote
+        <Badge variant="outline" className="bg-blue-500/10 text-blue-500 border-blue-500/20">
+          Booking
         </Badge>
       );
     }
     
     return (
-      <Badge variant="outline" className="bg-blue-500/10 text-blue-500 border-blue-500/20">
-        Booking
+      <Badge variant="outline" className="bg-purple-500/10 text-purple-500 border-purple-500/20">
+        Quote
       </Badge>
     );
   };
@@ -161,7 +161,7 @@ const AdminBookings = () => {
                         {booking.booking_reference || "N/A"}
                       </TableCell>
                       <TableCell>
-                        {getTypeBadge(booking.booking_status, booking.payment_status)}
+                        {getTypeBadge(booking.booking_reference)}
                       </TableCell>
                       <TableCell>
                         <div>
