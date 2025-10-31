@@ -60,20 +60,21 @@ const AdminBookings = () => {
     );
   };
 
-  const getTypeBadge = (bookingReference?: string) => {
-    const isBooking = bookingReference?.startsWith('BK');
+  const getTypeBadge = (bookingStatus?: string, paymentStatus?: string) => {
+    // A quote is when both statuses are pending (no payment made yet)
+    const isQuote = bookingStatus === 'pending' && paymentStatus === 'pending';
     
-    if (isBooking) {
+    if (isQuote) {
       return (
-        <Badge variant="outline" className="bg-blue-500/10 text-blue-500 border-blue-500/20">
-          Booking
+        <Badge variant="outline" className="bg-purple-500/10 text-purple-500 border-purple-500/20">
+          Quote
         </Badge>
       );
     }
     
     return (
-      <Badge variant="outline" className="bg-purple-500/10 text-purple-500 border-purple-500/20">
-        Quote
+      <Badge variant="outline" className="bg-blue-500/10 text-blue-500 border-blue-500/20">
+        Booking
       </Badge>
     );
   };
@@ -161,7 +162,7 @@ const AdminBookings = () => {
                         {booking.booking_reference || "N/A"}
                       </TableCell>
                       <TableCell>
-                        {getTypeBadge(booking.booking_reference)}
+                        {getTypeBadge(booking.booking_status, booking.payment_status)}
                       </TableCell>
                       <TableCell>
                         <div>
