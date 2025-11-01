@@ -122,6 +122,14 @@ const Vehicles = () => {
     carCategory // pass category ID to help determine if it's truck/van
   );
 
+  console.log('Campaign code being passed to API:', {
+    effectiveCampaignCode,
+    originalCampaignCode: campaignCode,
+    pickupDate,
+    dropoffDate,
+    carCategory
+  });
+
   const step2Params = pickupLocation && driverAges?.length ? {
     pickuplocationid: pickupLocation,
     pickupdate: pickupDate,
