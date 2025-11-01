@@ -130,6 +130,16 @@ const Vehicles = () => {
     carCategory
   });
 
+  // If we generated a campaign code and the user didn't manually enter one,
+  // persist it into the URL so it carries through to selection/checkout
+  useEffect(() => {
+    if (effectiveCampaignCode && !campaignCode) {
+      const params = new URLSearchParams(location.search);
+      params.set('campaignCode', effectiveCampaignCode);
+      navigate(`${location.pathname}?${params.toString()}`, { replace: true });
+    }
+  }, [effectiveCampaignCode, campaignCode, location.search, location.pathname, navigate]);
+
   const step2Params = pickupLocation && driverAges?.length ? {
     pickuplocationid: pickupLocation,
     pickupdate: pickupDate,
