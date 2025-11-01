@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Table,
   TableBody,
@@ -21,15 +22,24 @@ const AdminBookings = () => {
 
   const filteredBookings = bookings?.filter((booking) => {
     const searchLower = searchQuery.toLowerCase();
-    return (
+    const matchesSearch = 
       booking.booking_reference?.toLowerCase().includes(searchLower) ||
       booking.customer_first_name?.toLowerCase().includes(searchLower) ||
       booking.customer_last_name?.toLowerCase().includes(searchLower) ||
       booking.customer_email?.toLowerCase().includes(searchLower) ||
       booking.vehicle_name?.toLowerCase().includes(searchLower) ||
-      booking.pickup_location_name?.toLowerCase().includes(searchLower)
-    );
+      booking.pickup_location_name?.toLowerCase().includes(searchLower);
+    
+    return matchesSearch;
   }) || [];
+
+  const quotes = filteredBookings.filter(
+    (booking) => booking.booking_status === 'pending' && booking.payment_status === 'pending'
+  );
+
+  const confirmedBookings = filteredBookings.filter(
+    (booking) => !(booking.booking_status === 'pending' && booking.payment_status === 'pending')
+  );
 
   const getStatusBadge = (status?: string) => {
     const statusColors: Record<string, string> = {
@@ -125,94 +135,181 @@ const AdminBookings = () => {
                 className="pl-10"
               />
             </div>
-            <Badge variant="secondary" className="text-sm">
-              {filteredBookings.length} records
-            </Badge>
           </div>
         </CardHeader>
         <CardContent>
-          <div className="rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Reference</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Customer</TableHead>
-                  <TableHead>Vehicle</TableHead>
-                  <TableHead>Pickup</TableHead>
-                  <TableHead>Dropoff</TableHead>
-                  <TableHead>Location</TableHead>
-                  <TableHead>Total</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Payment</TableHead>
-                  <TableHead>Created</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredBookings.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={11} className="text-center py-8 text-muted-foreground">
-                      No records found
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  filteredBookings.map((booking) => (
-                    <TableRow key={booking.id}>
-                      <TableCell className="font-mono text-sm">
-                        {booking.booking_reference || "N/A"}
-                      </TableCell>
-                      <TableCell>
-                        {getTypeBadge(booking.booking_status, booking.payment_status)}
-                      </TableCell>
-                      <TableCell>
-                        <div>
-                          <div className="font-medium">
-                            {booking.customer_first_name} {booking.customer_last_name}
-                          </div>
-                          <div className="text-xs text-muted-foreground">
-                            {booking.customer_email}
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="max-w-[200px]">
-                          <div className="font-medium truncate">{booking.vehicle_name}</div>
-                          <div className="text-xs text-muted-foreground">{booking.vehicle_category}</div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="text-sm">
-                          {booking.pickup_date ? format(new Date(booking.pickup_date), "MMM dd, yyyy") : "N/A"}
-                          <div className="text-xs text-muted-foreground">
-                            {booking.pickup_time?.toString().slice(0, 5)}
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="text-sm">
-                          {booking.dropoff_date ? format(new Date(booking.dropoff_date), "MMM dd, yyyy") : "N/A"}
-                          <div className="text-xs text-muted-foreground">
-                            {booking.dropoff_time?.toString().slice(0, 5)}
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell className="max-w-[150px]">
-                        <div className="truncate text-sm">{booking.pickup_location_name}</div>
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        {formatCurrency(booking.total_amount)}
-                      </TableCell>
-                      <TableCell>{getStatusBadge(booking.booking_status)}</TableCell>
-                      <TableCell>{getPaymentBadge(booking.payment_status)}</TableCell>
-                      <TableCell className="text-sm text-muted-foreground">
-                        {booking.created_at ? format(new Date(booking.created_at), "MMM dd, yyyy") : "N/A"}
-                      </TableCell>
+          <Tabs defaultValue="bookings" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 mb-4">
+              <TabsTrigger value="bookings">
+                Bookings ({confirmedBookings.length})
+              </TabsTrigger>
+              <TabsTrigger value="quotes">
+                Quotes ({quotes.length})
+              </TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="bookings">
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Reference</TableHead>
+                      <TableHead>Customer</TableHead>
+                      <TableHead>Vehicle</TableHead>
+                      <TableHead>Pickup</TableHead>
+                      <TableHead>Dropoff</TableHead>
+                      <TableHead>Location</TableHead>
+                      <TableHead>Total</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Payment</TableHead>
+                      <TableHead>Created</TableHead>
                     </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </div>
+                  </TableHeader>
+                  <TableBody>
+                    {confirmedBookings.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={10} className="text-center py-8 text-muted-foreground">
+                          No bookings found
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      confirmedBookings.map((booking) => (
+                        <TableRow key={booking.id}>
+                          <TableCell className="font-mono text-sm">
+                            {booking.booking_reference || "N/A"}
+                          </TableCell>
+                          <TableCell>
+                            <div>
+                              <div className="font-medium">
+                                {booking.customer_first_name} {booking.customer_last_name}
+                              </div>
+                              <div className="text-xs text-muted-foreground">
+                                {booking.customer_email}
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="max-w-[200px]">
+                              <div className="font-medium truncate">{booking.vehicle_name}</div>
+                              <div className="text-xs text-muted-foreground">{booking.vehicle_category}</div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="text-sm">
+                              {booking.pickup_date ? format(new Date(booking.pickup_date), "MMM dd, yyyy") : "N/A"}
+                              <div className="text-xs text-muted-foreground">
+                                {booking.pickup_time?.toString().slice(0, 5)}
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="text-sm">
+                              {booking.dropoff_date ? format(new Date(booking.dropoff_date), "MMM dd, yyyy") : "N/A"}
+                              <div className="text-xs text-muted-foreground">
+                                {booking.dropoff_time?.toString().slice(0, 5)}
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell className="max-w-[150px]">
+                            <div className="truncate text-sm">{booking.pickup_location_name}</div>
+                          </TableCell>
+                          <TableCell className="font-medium">
+                            {formatCurrency(booking.total_amount)}
+                          </TableCell>
+                          <TableCell>{getStatusBadge(booking.booking_status)}</TableCell>
+                          <TableCell>{getPaymentBadge(booking.payment_status)}</TableCell>
+                          <TableCell className="text-sm text-muted-foreground">
+                            {booking.created_at ? format(new Date(booking.created_at), "MMM dd, yyyy") : "N/A"}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="quotes">
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Reference</TableHead>
+                      <TableHead>Customer</TableHead>
+                      <TableHead>Vehicle</TableHead>
+                      <TableHead>Pickup</TableHead>
+                      <TableHead>Dropoff</TableHead>
+                      <TableHead>Location</TableHead>
+                      <TableHead>Total</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Payment</TableHead>
+                      <TableHead>Created</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {quotes.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={10} className="text-center py-8 text-muted-foreground">
+                          No quotes found
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      quotes.map((booking) => (
+                        <TableRow key={booking.id}>
+                          <TableCell className="font-mono text-sm">
+                            {booking.booking_reference || "N/A"}
+                          </TableCell>
+                          <TableCell>
+                            <div>
+                              <div className="font-medium">
+                                {booking.customer_first_name} {booking.customer_last_name}
+                              </div>
+                              <div className="text-xs text-muted-foreground">
+                                {booking.customer_email}
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="max-w-[200px]">
+                              <div className="font-medium truncate">{booking.vehicle_name}</div>
+                              <div className="text-xs text-muted-foreground">{booking.vehicle_category}</div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="text-sm">
+                              {booking.pickup_date ? format(new Date(booking.pickup_date), "MMM dd, yyyy") : "N/A"}
+                              <div className="text-xs text-muted-foreground">
+                                {booking.pickup_time?.toString().slice(0, 5)}
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="text-sm">
+                              {booking.dropoff_date ? format(new Date(booking.dropoff_date), "MMM dd, yyyy") : "N/A"}
+                              <div className="text-xs text-muted-foreground">
+                                {booking.dropoff_time?.toString().slice(0, 5)}
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell className="max-w-[150px]">
+                            <div className="truncate text-sm">{booking.pickup_location_name}</div>
+                          </TableCell>
+                          <TableCell className="font-medium">
+                            {formatCurrency(booking.total_amount)}
+                          </TableCell>
+                          <TableCell>{getStatusBadge(booking.booking_status)}</TableCell>
+                          <TableCell>{getPaymentBadge(booking.payment_status)}</TableCell>
+                          <TableCell className="text-sm text-muted-foreground">
+                            {booking.created_at ? format(new Date(booking.created_at), "MMM dd, yyyy") : "N/A"}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            </TabsContent>
+          </Tabs>
         </CardContent>
       </Card>
     </div>
