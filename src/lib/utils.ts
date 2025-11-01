@@ -110,11 +110,12 @@ export function getCampaignCode(
   
   // Check if vehicle category or name qualifies for midweek discount (Jumbo Van or Truck)
   // Category type IDs for trucks and vans (common RCM IDs):
-  // 5 = Van, 6 = Truck, 7 = Minibus, etc.
+  // 11 = Standard Van, 24 = Jumbo Van, 12 = Truck, 10 = Ute
   const categoryQualifies = vehicleCategoryTypeId && (
-    String(vehicleCategoryTypeId) === "5" || // Van
-    String(vehicleCategoryTypeId) === "6" || // Truck
-    String(vehicleCategoryTypeId) === "0"    // All categories - apply to all when searching all
+    String(vehicleCategoryTypeId) === "11" || // Standard Van
+    String(vehicleCategoryTypeId) === "24" || // Jumbo Van
+    String(vehicleCategoryTypeId) === "12" || // Truck
+    String(vehicleCategoryTypeId) === "10"    // Ute
   );
   
   const nameQualifies = vehicleName && (
