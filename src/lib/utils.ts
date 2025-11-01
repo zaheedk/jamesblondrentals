@@ -94,8 +94,17 @@ export function getCampaignCode(
   vehicleName?: string,
   vehicleCategoryTypeId?: string | number
 ): string {
+  console.log('getCampaignCode called with:', {
+    originalCampaignCode,
+    pickupDate,
+    dropoffDate,
+    vehicleName,
+    vehicleCategoryTypeId
+  });
+
   // If there's already a campaign code, use it
   if (originalCampaignCode && originalCampaignCode.trim() !== "") {
+    console.log('Using existing campaign code:', originalCampaignCode);
     return originalCampaignCode;
   }
   
@@ -119,9 +128,24 @@ export function getCampaignCode(
   
   const isQualifyingVehicle = categoryQualifies || nameQualifies;
   
-  // If qualifying vehicle and dates are weekdays, use midweek25
-  if (isQualifyingVehicle && isWeekdayRental(pickupDate, dropoffDate)) {
-    console.log('Applying midweek25 campaign code', { 
+  console.log('Vehicle qualification check:', {
+    categoryQualifies,
+    nameQualifies,
+    isQualifyingVehicle,
+    vehicleCategoryTypeId: String(vehicleCategoryTypeId)
+  });
+
+  // Check if dates qualify for weekday discount
+  const isWeekday = isWeekdayRental(pickupDate, dropoffDate);
+  console.log('Weekday rental check:', {
+    pickupDate,
+    dropoffDate,
+    isWeekday
+  });
+  
+  // If qualifying vehicle and dates are weekdays, use EarlyWeek25
+  if (isQualifyingVehicle && isWeekday) {
+    console.log('✅ Applying EarlyWeek25 campaign code', { 
       vehicleName, 
       vehicleCategoryTypeId, 
       pickupDate, 
@@ -130,6 +154,7 @@ export function getCampaignCode(
     return "EarlyWeek25";
   }
   
+  console.log('❌ No campaign code applied - not qualifying');
   // Default to empty string
   return "";
 }
