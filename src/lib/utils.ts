@@ -127,7 +127,7 @@ export function getCampaignCode(
       pickupDate, 
       dropoffDate 
     });
-    return "midweek25";
+    return "EarlyWeek25";
   }
   
   // Default to empty string
