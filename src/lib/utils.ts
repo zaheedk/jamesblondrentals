@@ -102,41 +102,13 @@ export function getCampaignCode(
     vehicleCategoryTypeId
   });
 
-  // If there's already a campaign code, use it
+  // If there's already a campaign code (user manually entered), use it
   if (originalCampaignCode && originalCampaignCode.trim() !== "") {
     console.log('Using existing campaign code:', originalCampaignCode);
     return originalCampaignCode;
   }
   
-  // Check if vehicle category or name qualifies for midweek discount (Jumbo Van or Truck)
-  // Category type IDs for trucks and vans (common RCM IDs):
-  // 11 = Standard Van, 24 = Jumbo Van, 12 = Truck, 10 = Ute
-  const categoryQualifies = vehicleCategoryTypeId && (
-    String(vehicleCategoryTypeId) === "11" || // Standard Van
-    String(vehicleCategoryTypeId) === "24" || // Jumbo Van
-    String(vehicleCategoryTypeId) === "12" || // Truck
-    String(vehicleCategoryTypeId) === "10"    // Ute
-  );
-  
-  const nameQualifies = vehicleName && (
-    vehicleName.toLowerCase().includes('jumbo') ||
-    vehicleName.toLowerCase().includes('truck') ||
-    vehicleName.toLowerCase().includes('ton') ||
-    vehicleName.toLowerCase().includes('box') ||
-    vehicleName.toLowerCase().includes('tipper') ||
-    vehicleName.toLowerCase().includes('van')
-  );
-  
-  const isQualifyingVehicle = categoryQualifies || nameQualifies;
-  
-  console.log('Vehicle qualification check:', {
-    categoryQualifies,
-    nameQualifies,
-    isQualifyingVehicle,
-    vehicleCategoryTypeId: String(vehicleCategoryTypeId)
-  });
-
-  // Check if dates qualify for weekday discount
+  // Check if dates qualify for weekday discount (Monday-Thursday same week)
   const isWeekday = isWeekdayRental(pickupDate, dropoffDate);
   console.log('Weekday rental check:', {
     pickupDate,
@@ -144,18 +116,13 @@ export function getCampaignCode(
     isWeekday
   });
   
-  // If qualifying vehicle and dates are weekdays, use EarlyWeek25
-  if (isQualifyingVehicle && isWeekday) {
-    console.log('✅ Applying EarlyWeek25 campaign code', { 
-      vehicleName, 
-      vehicleCategoryTypeId, 
-      pickupDate, 
-      dropoffDate 
-    });
+  // If weekday booking, pass EarlyWeek25 and let RCM apply it to qualifying categories
+  if (isWeekday) {
+    console.log('✅ Applying EarlyWeek25 campaign code for weekday booking');
     return "EarlyWeek25";
   }
   
-  console.log('❌ No campaign code applied - not qualifying');
+  console.log('❌ No campaign code applied - not a weekday booking');
   // Default to empty string
   return "";
 }
