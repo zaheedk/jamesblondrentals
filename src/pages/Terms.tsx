@@ -187,8 +187,11 @@ const Terms = () => {
         <AccordionItem value="cancellation">
           <AccordionTrigger>18. Cancellation Fees</AccordionTrigger>
           <AccordionContent>
-            A cancellation fee of 1 days hireage applies if cancelled 24-72 hours before pickup. For cancellations 
-            within 24 hours or no-shows, the fee is $150 or 50% of the total rental, whichever is greater.
+            <ul className="list-disc pl-6 space-y-2">
+              <li>The $50 deposit required for all bookings is non-refundable.</li>
+              <li>A cancellation fee of 1 days hireage applies if cancelled 24-72 hours before pickup.</li>
+              <li>For cancellations within 24 hours or no-shows, the fee is $150 or 50% of the total rental, whichever is greater.</li>
+            </ul>
           </AccordionContent>
         </AccordionItem>
 
