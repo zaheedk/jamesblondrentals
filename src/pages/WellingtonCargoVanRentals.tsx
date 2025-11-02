@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import SearchForm from '@/components/home/SearchForm';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { LazyImage } from '@/components/LazyImage';
 
 const WellingtonCargoVanRentals = () => {
   return (
@@ -107,13 +108,13 @@ const WellingtonCargoVanRentals = () => {
           <TabsContent value="standard">
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <img 
+                <LazyImage 
                   src="/lovable-uploads/40c4c11d-0a27-40d6-9c5c-3fdbb1c138a0.png" 
-                  alt="Standard Cargo Van for Wellington Hire" 
+                  alt="Standard Cargo Van for Wellington Hire - Compact van rental for city deliveries" 
                   className="rounded-lg mb-4"
-                  width="500"
-                  height="300"
-                  loading="lazy"
+                  width={500}
+                  height={300}
+                  loading="eager"
                 />
                 <h3 className="font-bold text-xl mb-2">STANDARD VAN</h3>
                 <ul className="list-disc list-inside mb-4 text-gray-600 space-y-1">
@@ -130,12 +131,12 @@ const WellingtonCargoVanRentals = () => {
               </div>
               
               <div>
-                <img 
+                <LazyImage 
                   src="/lovable-uploads/7924107a-afb6-4c13-aa1d-8dba18465760.png" 
-                  alt="Standard Van with Rear Seats" 
+                  alt="Standard Van with Rear Seats - Versatile van for cargo and passengers in Wellington" 
                   className="rounded-lg mb-4"
-                  width="500"
-                  height="300"
+                  width={500}
+                  height={300}
                   loading="lazy"
                 />
                 <h3 className="font-bold text-xl mb-2">STANDARD VAN WITH REAR SEATS</h3>
@@ -157,12 +158,12 @@ const WellingtonCargoVanRentals = () => {
           <TabsContent value="premium">
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <img 
+                <LazyImage 
                   src="/lovable-uploads/3cb301ec-ead2-492a-a9a0-3361c1876b76.png" 
-                  alt="Premium Van for Wellington Business Hire" 
+                  alt="Premium Van for Wellington Business Hire - High-spec cargo van with enhanced features" 
                   className="rounded-lg mb-4"
-                  width="500"
-                  height="300"
+                  width={500}
+                  height={300}
                   loading="lazy"
                 />
                 <h3 className="font-bold text-xl mb-2">PREMIUM VAN</h3>
@@ -180,12 +181,12 @@ const WellingtonCargoVanRentals = () => {
               </div>
               
               <div>
-                <img 
+                <LazyImage 
                   src="/lovable-uploads/6dde201c-13f3-4671-9e88-6cc1a388d647.png" 
-                  alt="Jumbo Van for Maximum Cargo Space" 
+                  alt="Jumbo Van for Maximum Cargo Space - Large van rental for apartment moves in Wellington" 
                   className="rounded-lg mb-4"
-                  width="500"
-                  height="300"
+                  width={500}
+                  height={300}
                   loading="lazy"
                 />
                 <h3 className="font-bold text-xl mb-2">JUMBO VAN</h3>
@@ -207,12 +208,12 @@ const WellingtonCargoVanRentals = () => {
           <TabsContent value="specialty">
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <img 
+                <LazyImage 
                   src="/lovable-uploads/6dde201c-13f3-4671-9e88-6cc1a388d647.png" 
-                  alt="Refrigerated Van for Wellington Food Deliveries" 
+                  alt="Refrigerated Van for Wellington Food Deliveries - Temperature-controlled cargo space" 
                   className="rounded-lg mb-4"
-                  width="500"
-                  height="300"
+                  width={500}
+                  height={300}
                   loading="lazy"
                 />
                 <h3 className="font-bold text-xl mb-2">REFRIGERATED VAN</h3>
@@ -230,12 +231,12 @@ const WellingtonCargoVanRentals = () => {
               </div>
               
               <div>
-                <img 
+                <LazyImage 
                   src="/lovable-uploads/7924107a-afb6-4c13-aa1d-8dba18465760.png" 
-                  alt="Long-term Van Hire Wellington" 
+                  alt="Long-term Van Hire Wellington - Flexible rental contracts for businesses" 
                   className="rounded-lg mb-4"
-                  width="500"
-                  height="300"
+                  width={500}
+                  height={300}
                   loading="lazy"
                 />
                 <h3 className="font-bold text-xl mb-2">LONG-TERM HIRE VANS</h3>
