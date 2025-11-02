@@ -1,9 +1,9 @@
-
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { LazyImage } from "@/components/LazyImage";
 
 const ThreeTonneBox19m3Detail = () => {
   const specs = [
@@ -54,10 +54,13 @@ const ThreeTonneBox19m3Detail = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
         <div className="lg:col-span-2">
           <AspectRatio ratio={16/9} className="bg-gray-100 rounded-lg overflow-hidden mb-4">
-            <img 
+            <LazyImage 
               src="/lovable-uploads/e4f29c45-82c9-460d-a508-4abd64ca9dd4.png" 
-              alt="3 Tonne Box Truck with Tail Lift" 
-              className="w-full h-full object-contain"
+              alt="3 Tonne Box Truck with Tail Lift - 19m³ cargo capacity for commercial transport" 
+              className="w-full h-full"
+              width={1200}
+              height={675}
+              loading="eager"
             />
           </AspectRatio>
           

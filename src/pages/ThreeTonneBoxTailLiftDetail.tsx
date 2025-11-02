@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { LazyImage } from "@/components/LazyImage";
 
 const ThreeTonneBoxTailLiftDetail = () => {
   const specs = [
@@ -54,10 +55,13 @@ const ThreeTonneBoxTailLiftDetail = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
         <div className="lg:col-span-2">
           <AspectRatio ratio={16/9} className="bg-gray-100 rounded-lg overflow-hidden mb-4">
-            <img 
+            <LazyImage 
               src="/lovable-uploads/4506c6fc-4eef-4997-a040-7482f1872bab.png" 
-              alt="3 Tonne Box Truck with Tail Lift" 
-              className="w-full h-full object-contain"
+              alt="3 Tonne Box Truck with Tail Lift - 18m³ cargo capacity for large deliveries" 
+              className="w-full h-full"
+              width={1200}
+              height={675}
+              loading="eager"
             />
           </AspectRatio>
           
