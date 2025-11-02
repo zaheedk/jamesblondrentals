@@ -116,10 +116,10 @@ export function getCampaignCode(
     isWeekday
   });
   
-  // If weekday booking, pass earlyweekcommerical25 and let RCM apply it to qualifying categories
+  // If weekday booking, pass earlyweekcommercial25 and let RCM apply it to qualifying categories
   if (isWeekday) {
-    console.log('✅ Applying earlyweekcommerical25 campaign code for weekday booking');
-    return "earlyweekcommerical25";
+    console.log('✅ Applying earlyweekcommercial25 campaign code for weekday booking');
+    return "earlyweekcommercial25";
   }
   
   console.log('❌ No campaign code applied - not a weekday booking');
