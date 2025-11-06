@@ -21,7 +21,7 @@ const AirportAuckland = () => (
           <div className="mt-6">
             <h3 className="text-xl font-semibold mb-2">Contact Information</h3>
             <p className="text-gray-600">Address:</p>
-            <p className="text-gray-600">310 Landing Drive</p>
+            <p className="text-gray-600">5/203 Kirkbride Road</p>
             <p className="text-gray-600 mb-2">Mangere, Auckland 2022, New Zealand</p>
             <p className="text-gray-600">Phone: <a href="tel:0800525663" className="text-primary hover:underline">0800 525 663</a></p>
             <p className="text-gray-600">Email: <a href="mailto:info@jamesblond.co.nz" className="text-primary hover:underline">info@jamesblond.co.nz</a></p>
@@ -66,7 +66,7 @@ const AirportAuckland = () => (
         <div>
           <h4 className="font-semibold mb-2">Drop-Off Instructions:</h4>
           <ul className="list-disc list-inside text-gray-600 space-y-2 ml-4">
-            <li>Return your vehicle to 310 Landing Drive, Mangere</li>
+            <li>Return your vehicle to 5/203 Kirkbride Road, Mangere</li>
             <li>After a quick check, we'll shuttle you directly to your terminal</li>
             <li>For early or after-hours returns, follow the signage to our drop-off box and contact our shuttle team</li>
           </ul>

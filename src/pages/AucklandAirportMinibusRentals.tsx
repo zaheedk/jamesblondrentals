@@ -316,7 +316,7 @@ const AucklandAirportMinibusRentals = () => {
                   <MapPin className="w-5 h-5 mt-1 text-primary" />
                   <div>
                     <p className="font-medium">Address:</p>
-                    <p>310 Landing Drive</p>
+                    <p>5/203 Kirkbride Road</p>
                     <p>Mangere</p>
                     <p>Auckland 2022</p>
                   </div>
