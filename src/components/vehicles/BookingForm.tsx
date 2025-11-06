@@ -199,7 +199,8 @@ export default function BookingForm({
       totalRateAfterDiscount,
       totalDiscountAmount,
       vehicleImage: vehicleImageUrl || getFirstVehicleImage(vehicle),
-      rateType: isHourlyRate() ? 'hourly' : 'daily', // Add rate type to booking data
+      rateType: isHourlyRate() ? 'hourly' : 'daily',
+      numberofdays: vehicle.totalDays || 1, // Include number of days from API
       campaignCode: campaignCode || ""
     });
     

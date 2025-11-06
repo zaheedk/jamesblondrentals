@@ -34,6 +34,13 @@ const InsuranceAndExtrasSelection = () => {
 
   const calculateNumberOfDays = () => {
     if (!bookingData) return 1;
+    
+    // First, use numberofdays from RCM API if available
+    if (bookingData.numberofdays && typeof bookingData.numberofdays === 'number' && bookingData.numberofdays > 0) {
+      return bookingData.numberofdays;
+    }
+    
+    // Fallback: calculate from dates if API value not available
     try {
       const pickupDate = typeof bookingData.pickupDate === 'string' ? 
         parseISO(bookingData.pickupDate.includes('/') ? 
@@ -47,8 +54,6 @@ const InsuranceAndExtrasSelection = () => {
         bookingData.dropoffDate) : 
         new Date();
 
-      // Add 1 to include both pickup and dropoff days (24-hour rental periods)
-      // e.g., pickup Nov 14, dropoff Nov 16 = 3 rental days (14th, 15th, 16th)
       const daysDiff = differenceInDays(dropoffDate, pickupDate);
       return daysDiff >= 0 ? daysDiff + 1 : 1;
     } catch (e) {
