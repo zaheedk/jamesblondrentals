@@ -316,10 +316,12 @@ const PaymentSuccess = () => {
       const pickupTime = formatTimeForSupabase(bookingDetails.pickupTime);
       const dropoffTime = formatTimeForSupabase(bookingDetails.dropoffTime);
 
-      // Calculate rental days
+      // Calculate rental days - add 1 to include both pickup and dropoff days
+      // e.g., pickup Nov 14, dropoff Nov 16 = 3 rental days (14th, 15th, 16th)
       const startDate = new Date(pickupDate);
       const endDate = new Date(dropoffDate);
-      const totalDays = Math.max(1, Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)));
+      const daysDiff = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+      const totalDays = Math.max(1, daysDiff + 1);
 
       const bookingData = {
         user_id: user.id,

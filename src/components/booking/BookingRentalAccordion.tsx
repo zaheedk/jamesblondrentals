@@ -33,7 +33,8 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
       const dropoff = parse(bookingData.dropoffDate, 'dd/MM/yyyy', new Date());
       const diffInTime = dropoff.getTime() - pickup.getTime();
       const diffInDays = Math.ceil(diffInTime / (1000 * 3600 * 24));
-      return Math.max(1, diffInDays);
+      // Add 1 to include both pickup and dropoff days
+      return Math.max(1, diffInDays + 1);
     } catch {
       return 1;
     }

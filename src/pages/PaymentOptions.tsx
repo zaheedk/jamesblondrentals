@@ -142,7 +142,8 @@ const PaymentOptions = () => {
         if (pickupDate && dropoffDate && !isNaN(pickupDate.getTime()) && !isNaN(dropoffDate.getTime())) {
           const timeDiff = dropoffDate.getTime() - pickupDate.getTime();
           const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-          calculatedDays = Math.max(1, daysDiff);
+          // Add 1 to include both pickup and dropoff days
+          calculatedDays = Math.max(1, daysDiff + 1);
           console.log("Calculated rental days from dates:", calculatedDays);
         }
       } catch (error) {

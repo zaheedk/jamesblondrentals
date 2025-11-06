@@ -47,8 +47,10 @@ const InsuranceAndExtrasSelection = () => {
         bookingData.dropoffDate) : 
         new Date();
 
+      // Add 1 to include both pickup and dropoff days (24-hour rental periods)
+      // e.g., pickup Nov 14, dropoff Nov 16 = 3 rental days (14th, 15th, 16th)
       const daysDiff = differenceInDays(dropoffDate, pickupDate);
-      return daysDiff > 0 ? daysDiff : 1;
+      return daysDiff >= 0 ? daysDiff + 1 : 1;
     } catch (e) {
       console.error('Error calculating rental days:', e);
       return 1;
