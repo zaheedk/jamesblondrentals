@@ -188,9 +188,15 @@ const CustomerReviews = () => {
               variant="outline" 
               size="lg"
               className="px-8"
-              onClick={() => window.open('https://www.google.com/search?q=james+blond+reviews', '_blank')}
+              asChild
             >
-              VIEW ALL REVIEWS
+              <a 
+                href="https://www.google.com/search?q=james+blond+reviews" 
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
+                VIEW ALL REVIEWS
+              </a>
             </Button>
           </div>
         </div>
