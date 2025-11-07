@@ -641,14 +641,10 @@ const PaymentSuccess = () => {
               
               setBookingDetails(convertedDetails);
               
-              if (convertedDetails.pickupDate && convertedDetails.dropoffDate) {
-                const days = calculateRentalDuration(convertedDetails.pickupDate, convertedDetails.dropoffDate);
-                setRentalDuration(days || numberofdays || 1);
-                console.log("Setting rental duration to:", days || numberofdays || 1);
-              } else {
-                setRentalDuration(numberofdays || 1);
-                console.log("Setting rental duration to numberofdays:", numberofdays || 1);
-              }
+              // Use RCM-provided number of days only; avoid local calculation
+              const rcmDays = (typeof numberofdays === 'number' && numberofdays > 0) ? numberofdays : 1;
+              setRentalDuration(rcmDays);
+              console.log('Setting rental duration from API numberofdays:', rcmDays);
               
               console.log("Booking details set from API:", convertedDetails);
               
@@ -822,14 +818,10 @@ const PaymentSuccess = () => {
       
       setBookingDetails(convertedDetails);
       
-      if (convertedDetails.pickupDate && convertedDetails.dropoffDate) {
-        const days = calculateRentalDuration(convertedDetails.pickupDate, convertedDetails.dropoffDate);
-        setRentalDuration(days || numberofdays || 1);
-        console.log("Setting rental duration from session to:", days || numberofdays || 1);
-      } else {
-        setRentalDuration(numberofdays || 1);
-        console.log("Setting rental duration from session to numberofdays:", numberofdays || 1);
-      }
+      // Use RCM-provided number of days only; avoid local calculation
+      const rcmDays = (typeof numberofdays === 'number' && numberofdays > 0) ? numberofdays : 1;
+      setRentalDuration(rcmDays);
+      console.log('Setting rental duration from RCM numberofdays:', rcmDays);
       
       console.log("Booking details set from session:", convertedDetails);
       

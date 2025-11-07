@@ -25,22 +25,10 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
     return null;
   }
 
-  // Calculate rental duration first
-  const calculateDuration = () => {
-    if (!bookingData.pickupDate || !bookingData.dropoffDate) return 1;
-    try {
-      const pickup = parse(bookingData.pickupDate, 'dd/MM/yyyy', new Date());
-      const dropoff = parse(bookingData.dropoffDate, 'dd/MM/yyyy', new Date());
-      const diffInTime = dropoff.getTime() - pickup.getTime();
-      const diffInDays = Math.ceil(diffInTime / (1000 * 3600 * 24));
-      // Add 1 to include both pickup and dropoff days
-      return Math.max(1, diffInDays + 1);
-    } catch {
-      return 1;
-    }
-  };
-
-  const duration = calculateDuration();
+  // Use RCM-provided number of days; avoid local calculation per requirements
+  const duration = (typeof (bookingData as any).numberofdays === 'number' && (bookingData as any).numberofdays > 0)
+    ? (bookingData as any).numberofdays
+    : 1;
   
   // Prefer daily rate when available; otherwise fall back to stored total
   const dailyRate = (bookingData as any).dailyrate || 0;

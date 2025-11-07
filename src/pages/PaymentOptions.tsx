@@ -128,75 +128,24 @@ const PaymentOptions = () => {
       dropoffLocationName
     }));
 
-    let calculatedDays = 1;
-    let calculatedTotal = 0;
+    // Use RCM-provided number of days only; avoid local calculation
+    const rcmDays = (typeof bookingData.numberofdays === 'number' && bookingData.numberofdays > 0)
+      ? bookingData.numberofdays
+      : 1;
+    console.log('Setting rental days from RCM numberofdays:', rcmDays);
+    setRentalDays(rcmDays);
+    updateBookingData({ rentalDays: rcmDays });
     
-    if (bookingData.numberofdays && typeof bookingData.numberofdays === 'number' && bookingData.numberofdays > 0) {
-      console.log("Using numberofdays from booking data:", bookingData.numberofdays);
-      calculatedDays = bookingData.numberofdays;
-    } 
-    else if (bookingData.pickupDate && bookingData.dropoffDate) {
-      try {
-        const pickupDate = new Date(bookingData.pickupDate);
-        const dropoffDate = new Date(bookingData.dropoffDate);
-        if (pickupDate && dropoffDate && !isNaN(pickupDate.getTime()) && !isNaN(dropoffDate.getTime())) {
-          const timeDiff = dropoffDate.getTime() - pickupDate.getTime();
-          const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-          // Add 1 to include both pickup and dropoff days
-          calculatedDays = Math.max(1, daysDiff + 1);
-          console.log("Calculated rental days from dates:", calculatedDays);
-        }
-      } catch (error) {
-        console.error("Error calculating rental days:", error);
-        calculatedDays = 1;
-      }
-    }
+    const basePrice = bookingData.totalRateAfterDiscount || bookingData.basePrice || 0;
+    console.log("Using price for calculation:", basePrice, 
+      bookingData.totalRateAfterDiscount ? "(from totalRateAfterDiscount)" : "(from basePrice)");
     
-    setRentalDays(calculatedDays);
-    updateBookingData({ rentalDays: calculatedDays });
+    const insurancePrice = bookingData.insurancePrice || 0;
+    const extrasTotal = (bookingData.selectedExtras || []).reduce(
+      (sum: number, extra: any) => sum + (extra.price * extra.quantity), 
+      0
+    );
     
-    if (calculatedTotal > 0) {
-      setTotalAmount(calculatedTotal);
-    } else {
-      const basePrice = bookingData.totalRateAfterDiscount || bookingData.basePrice || 0;
-      console.log("Using price for calculation:", basePrice, 
-        bookingData.totalRateAfterDiscount ? "(from totalRateAfterDiscount)" : "(from basePrice)");
-      
-      const insurancePrice = bookingData.insurancePrice || 0;
-      const extrasTotal = (bookingData.selectedExtras || []).reduce(
-        (sum: number, extra: any) => sum + (extra.price * extra.quantity), 
-        0
-      );
-      
-      // Deduplicate mandatory fees by name before calculating total
-      const deduplicatedMandatoryFees = (bookingData.mandatoryFees || []).reduce((acc: any[], current: any) => {
-        const existingFee = acc.find(fee => fee.name === current.name);
-        if (!existingFee) {
-          acc.push(current);
-        }
-        return acc;
-      }, []);
-      
-      const mandatoryTotal = deduplicatedMandatoryFees.reduce(
-        (sum: number, fee: any) => sum + fee.amount,
-        0
-      );
-      setMandatoryFeesTotal(mandatoryTotal);
-      
-      const calculatedTotal = basePrice + insurancePrice + extrasTotal;
-      setTotalAmount(calculatedTotal);
-      
-      console.log("Payment calculation details:", {
-        basePrice,
-        rentalDays: calculatedDays,
-        insurancePrice,
-        extrasTotal,
-        mandatoryTotal,
-        calculatedTotal,
-        fullData: bookingData
-      });
-    }
-
     // Deduplicate mandatory fees by name before calculating total
     const deduplicatedMandatoryFees = (bookingData.mandatoryFees || []).reduce((acc: any[], current: any) => {
       const existingFee = acc.find(fee => fee.name === current.name);
@@ -210,6 +159,22 @@ const PaymentOptions = () => {
       (sum: number, fee: any) => sum + fee.amount,
       0
     );
+    setMandatoryFeesTotal(mandatoryTotal);
+    
+    const calculatedTotal = basePrice + insurancePrice + extrasTotal;
+    setTotalAmount(calculatedTotal);
+    
+    console.log("Payment calculation details:", {
+      basePrice,
+      rentalDays: rcmDays,
+      insurancePrice,
+      extrasTotal,
+      mandatoryTotal,
+      calculatedTotal,
+      fullData: bookingData
+    });
+
+    // Mandatory fees already calculated above (mandatoryTotal)
     
     const fullTotal = totalAmount + mandatoryTotal;
     setTotalCost(fullTotal);
