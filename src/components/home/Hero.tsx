@@ -1,6 +1,6 @@
-
 import SearchForm from "./SearchForm";
 import { useIsMobile } from "@/hooks/use-mobile";
+import heroImage from "@/assets/hero-lake-taupo-summer.jpg";
 
 const Hero = () => {
   const isMobile = useIsMobile();
@@ -9,15 +9,11 @@ const Hero = () => {
     <div className="hero-container relative">
       {/* Mobile-optimized hero image with responsive srcset */}
       <img
-        src="/lovable-uploads/77a83dde-2283-4edc-8c35-e6c97bc2f296.png?w=800&h=400&q=50&f=webp&fit=cover"
-        srcSet="/lovable-uploads/77a83dde-2283-4edc-8c35-e6c97bc2f296.png?w=480&h=240&q=45&f=webp&fit=cover 480w,
-                /lovable-uploads/77a83dde-2283-4edc-8c35-e6c97bc2f296.png?w=800&h=400&q=50&f=webp&fit=cover 800w,
-                /lovable-uploads/77a83dde-2283-4edc-8c35-e6c97bc2f296.png?w=1200&h=600&q=55&f=webp&fit=cover 1200w"
-        sizes="100vw"
-        alt="Best price car rental with mountain reflection"
+        src={heroImage}
+        alt="Car rental in New Zealand - scenic drive around Lake Taupo during summer"
         className="hero-image"
-        width="800"
-        height="400"
+        width="1920"
+        height="960"
         loading="eager"
         fetchPriority="high"
         decoding="async"
