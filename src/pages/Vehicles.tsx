@@ -324,8 +324,7 @@ const Vehicles = () => {
           description: [car.vehicledescription1, car.vehicledescription2, car.vehicledescription3]
             .filter(Boolean)
             .join(' '),
-          dailyRate: firstRate?.dailyrateafterdiscount || 0,
-          totalDays: firstRate?.numberofdays || 1,
+          totalDays: Number(car.numberofdays) || 1,
           discountAmount: car.totaldiscountamount,
           numberofhours: numberofhours,
           rateperiod: rateperiod,
