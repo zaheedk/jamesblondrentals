@@ -347,6 +347,7 @@ const Vehicles = () => {
           discountAmount: car.totaldiscountamount,
           numberofhours: numberofhours,
           rateperiod: rateperiod,
+          dailyRate: car.discounteddailyrate || car.avgrate || 0,
           ratesubtotal: ratesubtotal,
           avgrate: car.avgrate || 0,
           discounteddailyrate: car.discounteddailyrate || 0,
