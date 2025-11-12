@@ -200,13 +200,21 @@ const Vehicles = () => {
         return acc;
       }, {} as Record<number, number>);
       
+      console.log('PRICE DEBUG - Step2 API Response:', {
+        availablecarsCount: availablecars.length,
+        seasonalratesCount: seasonalrates.length,
+        mandatoryfeesCount: mandatoryfees.length,
+        sampleCar: availablecars[0]
+      });
+      
       availablecars.forEach((car, index) => {
-        console.log(`Car ${index + 1} Details:
-          - Available: ${car.available}
-          - Available Message: ${car.availablemessage || 'No message'}
-          - Vehicle Category: ${car.vehiclecategory}
-          - Vehicle Category ID: ${car.vehiclecategoryid}
+        console.log(`Car ${index + 1} PRICING Details:
+          - Vehicle: ${car.vehiclecategory}
           - Total Rate After Discount: ${car.totalrateafterdiscount}
+          - Avg Rate: ${car.avgrate}
+          - Discounted Daily Rate: ${car.discounteddailyrate}
+          - Number of Days: ${car.numberofdays}
+          - Available: ${car.available}
         `);
       });
       
@@ -229,7 +237,18 @@ const Vehicles = () => {
         );
         
         const feeAmount = mandatoryFee ? Number(mandatoryFee.totalfeeamount) : 0;
-        const totalPrice = car.totalrateafterdiscount + feeAmount;
+        const rateAfterDiscount = Number(car.totalrateafterdiscount) || 0;
+        const totalPrice = rateAfterDiscount + feeAmount;
+        
+        if (rateAfterDiscount === 0) {
+          console.warn(`WARNING: Vehicle ${car.vehiclecategory} has $0 rate from API:`, {
+            totalrateafterdiscount: car.totalrateafterdiscount,
+            avgrate: car.avgrate,
+            discounteddailyrate: car.discounteddailyrate,
+            numberofdays: car.numberofdays,
+            available: car.available
+          });
+        }
         
         // Determine rate period and related data from seasonal rates
         const firstRate = carRates[0];
