@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { MapPin, Calendar, Clock, Car } from 'lucide-react';
+import { getBookingData } from '@/lib/booking-session';
 
 interface RentalDetailsProps {
   vehicleName: string;
@@ -27,6 +28,9 @@ const RentalDetails = ({
   rateType = "daily",
   numberOfHours,
 }: RentalDetailsProps) => {
+  const sessionData = getBookingData();
+  const rcmDays = (typeof sessionData?.numberofdays === 'number' && sessionData.numberofdays > 0) ? sessionData.numberofdays : undefined;
+  
   const displayPickupLocation = pickupLocationName && 
     pickupLocationName !== "undefined" && 
     pickupLocationName !== "null" &&
@@ -39,20 +43,17 @@ const RentalDetails = ({
     dropoffLocationName.trim() !== "" ? 
     dropoffLocationName : "Not specified";
 
-  // Calculate hours for hourly rate display
+  // Compute duration display using RCM-provided values
   const getDurationDisplay = () => {
-    // First check if we have explicit hourly data
-    if (numberOfHours !== undefined && numberOfHours > 0) {
-      return `${numberOfHours} ${numberOfHours === 1 ? 'hour' : 'hours'}`;
-    }
-    
-    // Fallback to the previous logic
+    // Prefer explicit hourly value when provided by RCM
     if (rateType === "hourly") {
-      const hours = Math.round(rentalDuration * 24); // Convert days to hours
-      return `${hours} ${hours === 1 ? 'hour' : 'hours'}`;
-    } else {
-      return `${rentalDuration || 1} ${rentalDuration === 1 ? 'day' : 'days'}`;
+      if (typeof numberOfHours === 'number' && numberOfHours > 0) {
+        return `${numberOfHours} ${numberOfHours === 1 ? 'hour' : 'hours'}`;
+      }
+      // If hourly but no hours provided, do not convert locally; fall back to days from RCM
     }
+    const days = (typeof rcmDays === 'number' && rcmDays > 0) ? rcmDays : (rentalDuration || 1);
+    return `${days} ${days === 1 ? 'day' : 'days'}`;
   };
 
   return (
