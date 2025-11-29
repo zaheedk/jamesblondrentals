@@ -316,7 +316,7 @@ const Vehicles = () => {
           .join(' ')
           .toLowerCase();
         const isManual = descriptions.includes('manual');
-        const transmissionType = isManual ? "manual" : "automatic";
+        const transmissionType: "manual" | "automatic" = isManual ? "manual" : "automatic";
         
         return {
           id: Number(car.vehiclecategoryid),
@@ -326,10 +326,10 @@ const Vehicles = () => {
           type: cleanCategoryName as VehicleType,
           vehicleCategoryTypeId: Number(car.vehiclecategorytypeid), // Add the numeric category type ID
           price: discountedTotalPrice,
-          priceUnit: "total",
+          priceUnit: "total" as const,
           seats: car.numberofadults + car.numberofchildren,
           transmission: transmissionType,
-          fuelType: "gasoline",
+          fuelType: "gasoline" as const,
           fuelEfficiency: "N/A",
           available: car.available,
           location: pickupLocation,
@@ -354,6 +354,22 @@ const Vehicles = () => {
           categoryfriendlydescription: car.categoryfriendlydescription,
           hasLocationDiscount: shouldApplyDiscount
         };
+      }).filter(vehicle => {
+        // Filter out vehicles without essential data (image, seats, or description)
+        const hasEssentialData = vehicle.images[0] && 
+                                 vehicle.seats > 0 && 
+                                 vehicle.categoryfriendlydescription;
+        
+        if (!hasEssentialData) {
+          console.log(`Filtering out vehicle ${vehicle.make} ${vehicle.model} - missing essential data:`, {
+            hasImage: !!vehicle.images[0],
+            seats: vehicle.seats,
+            hasDescription: !!vehicle.categoryfriendlydescription,
+            available: vehicle.available
+          });
+        }
+        
+        return hasEssentialData;
       });
       
       mappedVehicles.forEach((vehicle) => {
