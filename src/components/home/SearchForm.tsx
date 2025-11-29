@@ -43,9 +43,11 @@ const SearchForm = ({
   // Check cookies immediately on component mount
   const savedPickupLocationId = Cookies.get('pickupLocation');
   const savedDropoffLocationId = Cookies.get('dropoffLocation');
+  const savedSameLocation = Cookies.get('sameLocation');
   console.log("🍪 SearchForm mounted - cookies found:", { 
     pickup: savedPickupLocationId, 
-    dropoff: savedDropoffLocationId 
+    dropoff: savedDropoffLocationId,
+    sameLocation: savedSameLocation
   });
   
   const [pickupLocation, setPickupLocation] = useState(savedPickupLocationId || "");
@@ -54,7 +56,7 @@ const SearchForm = ({
   const [dropoffDate, setDropoffDate] = useState<Date>();
   const [pickupTime, setPickupTime] = useState("");
   const [dropoffTime, setDropoffTime] = useState("");
-  const [sameLocation, setSameLocation] = useState(true);
+  const [sameLocation, setSameLocation] = useState(savedSameLocation === 'true' || savedSameLocation === undefined);
   const [age, setAge] = useState("");
   const [carCategory, setCarCategory] = useState(defaultCarCategory);
 
@@ -526,7 +528,25 @@ const SearchForm = ({
                     type="checkbox"
                     className="mr-2"
                     checked={sameLocation}
-                    onChange={() => setSameLocation(!sameLocation)}
+                    onChange={() => {
+                      const newSameLocation = !sameLocation;
+                      setSameLocation(newSameLocation);
+                      Cookies.set('sameLocation', String(newSameLocation), { expires: 365 });
+                      console.log("🍪 Saved sameLocation cookie:", newSameLocation);
+                      
+                      // If unchecking, restore dropoff location from cookie
+                      if (!newSameLocation) {
+                        const savedDropoff = Cookies.get('dropoffLocation');
+                        if (savedDropoff) {
+                          console.log("🔄 Restoring dropoff location from cookie:", savedDropoff);
+                          setDropoffLocation(savedDropoff);
+                        }
+                      } else {
+                        // If checking, sync dropoff with pickup
+                        setDropoffLocation(pickupLocation);
+                        Cookies.set('dropoffLocation', pickupLocation, { expires: 365 });
+                      }
+                    }}
                   />
                   <span className="text-sm">Same as Pickup</span>
                 </label>
