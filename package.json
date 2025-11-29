@@ -53,6 +53,7 @@
     "date-fns-tz": "^3.0.0",
     "embla-carousel-react": "^8.3.0",
     "input-otp": "^1.2.4",
+    "js-cookie": "^3.0.5",
     "lucide-react": "^0.462.0",
     "mammoth": "^1.11.0",
     "moment": "^2.30.1",

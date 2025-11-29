@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { addDays, isBefore, format, parse } from "date-fns";
 import { toast } from "sonner";
 import { useRcmApi } from "@/hooks/use-rcm-api";
+import Cookies from "js-cookie";
 
 import { LocationSelect } from "./form-components/LocationSelect";
 import { DateSelect } from "./form-components/DateSelect";
@@ -136,12 +137,31 @@ const SearchForm = ({
           console.log("Available locations:", locations.map(loc => ({id: loc.id, name: loc.name})));
           
           let defaultLocation;
+          let defaultDropoffLoc;
           
-          // Use prop-provided default location if available
-          if (defaultPickupLocation) {
+          // Priority 1: Check cookies for saved locations
+          const savedPickupLocationId = Cookies.get('pickupLocation');
+          const savedDropoffLocationId = Cookies.get('dropoffLocation');
+          
+          if (savedPickupLocationId) {
+            defaultLocation = locations.find(loc => String(loc.id) === savedPickupLocationId);
+            if (defaultLocation) {
+              console.log("Using saved pickup location from cookie:", defaultLocation.name);
+            }
+          }
+          
+          if (savedDropoffLocationId) {
+            defaultDropoffLoc = locations.find(loc => String(loc.id) === savedDropoffLocationId);
+            if (defaultDropoffLoc) {
+              console.log("Using saved dropoff location from cookie:", defaultDropoffLoc.name);
+            }
+          }
+          
+          // Priority 2: Use prop-provided default location if available
+          if (!defaultLocation && defaultPickupLocation) {
             defaultLocation = locations.find(loc => String(loc.id) === defaultPickupLocation);
             console.log("Using prop default pickup location:", defaultLocation?.name);
-          } else if (defaultLocation) {
+          } else if (!defaultLocation && defaultLocation) {
             // Find location by name if defaultLocation prop is provided
             defaultLocation = locations.find(loc => 
               loc.name.toLowerCase().includes(defaultLocation.toLowerCase()) ||
@@ -150,7 +170,7 @@ const SearchForm = ({
             console.log("Using prop default location by name:", defaultLocation?.name);
           }
           
-          // Fallback to West Auckland if no prop provided
+          // Priority 3: Fallback to West Auckland if no prop provided
           if (!defaultLocation) {
             const westAucklandLocation = locations.find(loc => 
               loc.name.toLowerCase().includes('west auckland')
@@ -168,8 +188,11 @@ const SearchForm = ({
           
           // Set dropoff location
           if (sameLocation) {
-            const dropoffLocationId = defaultDropoffLocation || String(defaultLocation.id);
+            const dropoffLocationId = defaultDropoffLoc ? String(defaultDropoffLoc.id) : 
+                                     (defaultDropoffLocation || String(defaultLocation.id));
             setDropoffLocation(dropoffLocationId);
+          } else if (defaultDropoffLoc) {
+            setDropoffLocation(String(defaultDropoffLoc.id));
           }
         }
 
@@ -441,8 +464,10 @@ const SearchForm = ({
                 value={pickupLocation}
                 onValueChange={(value) => {
                   setPickupLocation(value);
+                  Cookies.set('pickupLocation', value, { expires: 365 });
                   if (sameLocation) {
                     setDropoffLocation(value);
+                    Cookies.set('dropoffLocation', value, { expires: 365 });
                   }
                 }}
                 isLoading={isLoadingLocations}
@@ -497,7 +522,10 @@ const SearchForm = ({
                 label=""
                 locations={locations}
                 value={sameLocation ? pickupLocation : dropoffLocation}
-                onValueChange={setDropoffLocation}
+                onValueChange={(value) => {
+                  setDropoffLocation(value);
+                  Cookies.set('dropoffLocation', value, { expires: 365 });
+                }}
                 isLoading={isLoadingLocations}
                 hasError={isLocationError}
                 disabled={sameLocation}
