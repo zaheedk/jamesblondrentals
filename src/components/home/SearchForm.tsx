@@ -143,17 +143,23 @@ const SearchForm = ({
           const savedPickupLocationId = Cookies.get('pickupLocation');
           const savedDropoffLocationId = Cookies.get('dropoffLocation');
           
+          console.log("Checking cookies - pickup:", savedPickupLocationId, "dropoff:", savedDropoffLocationId);
+          
           if (savedPickupLocationId) {
             defaultLocation = locations.find(loc => String(loc.id) === savedPickupLocationId);
             if (defaultLocation) {
-              console.log("Using saved pickup location from cookie:", defaultLocation.name);
+              console.log("✓ Using saved pickup location from cookie:", defaultLocation.name);
+            } else {
+              console.log("✗ Cookie pickup location not found in locations list");
             }
           }
           
           if (savedDropoffLocationId) {
             defaultDropoffLoc = locations.find(loc => String(loc.id) === savedDropoffLocationId);
             if (defaultDropoffLoc) {
-              console.log("Using saved dropoff location from cookie:", defaultDropoffLoc.name);
+              console.log("✓ Using saved dropoff location from cookie:", defaultDropoffLoc.name);
+            } else {
+              console.log("✗ Cookie dropoff location not found in locations list");
             }
           }
           
@@ -161,13 +167,6 @@ const SearchForm = ({
           if (!defaultLocation && defaultPickupLocation) {
             defaultLocation = locations.find(loc => String(loc.id) === defaultPickupLocation);
             console.log("Using prop default pickup location:", defaultLocation?.name);
-          } else if (!defaultLocation && defaultLocation) {
-            // Find location by name if defaultLocation prop is provided
-            defaultLocation = locations.find(loc => 
-              loc.name.toLowerCase().includes(defaultLocation.toLowerCase()) ||
-              loc.city?.toLowerCase().includes(defaultLocation.toLowerCase())
-            );
-            console.log("Using prop default location by name:", defaultLocation?.name);
           }
           
           // Priority 3: Fallback to West Auckland if no prop provided
@@ -463,11 +462,13 @@ const SearchForm = ({
                 locations={locations}
                 value={pickupLocation}
                 onValueChange={(value) => {
+                  console.log("Setting pickup location cookie:", value);
                   setPickupLocation(value);
                   Cookies.set('pickupLocation', value, { expires: 365 });
                   if (sameLocation) {
                     setDropoffLocation(value);
                     Cookies.set('dropoffLocation', value, { expires: 365 });
+                    console.log("Setting dropoff location cookie (same as pickup):", value);
                   }
                 }}
                 isLoading={isLoadingLocations}
@@ -523,6 +524,7 @@ const SearchForm = ({
                 locations={locations}
                 value={sameLocation ? pickupLocation : dropoffLocation}
                 onValueChange={(value) => {
+                  console.log("Setting dropoff location cookie:", value);
                   setDropoffLocation(value);
                   Cookies.set('dropoffLocation', value, { expires: 365 });
                 }}
