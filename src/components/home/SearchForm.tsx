@@ -48,8 +48,8 @@ const SearchForm = ({
     dropoff: savedDropoffLocationId 
   });
   
-  const [pickupLocation, setPickupLocation] = useState("");
-  const [dropoffLocation, setDropoffLocation] = useState("");
+  const [pickupLocation, setPickupLocation] = useState(savedPickupLocationId || "");
+  const [dropoffLocation, setDropoffLocation] = useState(savedDropoffLocationId || "");
   const [pickupDate, setPickupDate] = useState<Date>();
   const [dropoffDate, setDropoffDate] = useState<Date>();
   const [pickupTime, setPickupTime] = useState("");
