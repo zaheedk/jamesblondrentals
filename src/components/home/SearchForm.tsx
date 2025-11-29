@@ -40,6 +40,14 @@ const SearchForm = ({
 }: SearchFormProps = {}) => {
   const navigate = useNavigate();
   
+  // Check cookies immediately on component mount
+  const savedPickupLocationId = Cookies.get('pickupLocation');
+  const savedDropoffLocationId = Cookies.get('dropoffLocation');
+  console.log("🍪 SearchForm mounted - cookies found:", { 
+    pickup: savedPickupLocationId, 
+    dropoff: savedDropoffLocationId 
+  });
+  
   const [pickupLocation, setPickupLocation] = useState("");
   const [dropoffLocation, setDropoffLocation] = useState("");
   const [pickupDate, setPickupDate] = useState<Date>();
@@ -143,7 +151,11 @@ const SearchForm = ({
           const savedPickupLocationId = Cookies.get('pickupLocation');
           const savedDropoffLocationId = Cookies.get('dropoffLocation');
           
-          console.log("Checking cookies - pickup:", savedPickupLocationId, "dropoff:", savedDropoffLocationId);
+          console.log("🔍 Checking cookies during initialization:", { 
+            pickup: savedPickupLocationId, 
+            dropoff: savedDropoffLocationId,
+            availableLocations: locations.length 
+          });
           
           if (savedPickupLocationId) {
             defaultLocation = locations.find(loc => String(loc.id) === savedPickupLocationId);
@@ -462,13 +474,14 @@ const SearchForm = ({
                 locations={locations}
                 value={pickupLocation}
                 onValueChange={(value) => {
-                  console.log("Setting pickup location cookie:", value);
+                  console.log("📍 Setting pickup location:", value);
                   setPickupLocation(value);
                   Cookies.set('pickupLocation', value, { expires: 365 });
+                  console.log("🍪 Saved pickup cookie:", Cookies.get('pickupLocation'));
                   if (sameLocation) {
                     setDropoffLocation(value);
                     Cookies.set('dropoffLocation', value, { expires: 365 });
-                    console.log("Setting dropoff location cookie (same as pickup):", value);
+                    console.log("🍪 Saved dropoff cookie (same):", Cookies.get('dropoffLocation'));
                   }
                 }}
                 isLoading={isLoadingLocations}
@@ -524,9 +537,10 @@ const SearchForm = ({
                 locations={locations}
                 value={sameLocation ? pickupLocation : dropoffLocation}
                 onValueChange={(value) => {
-                  console.log("Setting dropoff location cookie:", value);
+                  console.log("📍 Setting dropoff location:", value);
                   setDropoffLocation(value);
                   Cookies.set('dropoffLocation', value, { expires: 365 });
+                  console.log("🍪 Saved dropoff cookie:", Cookies.get('dropoffLocation'));
                 }}
                 isLoading={isLoadingLocations}
                 hasError={isLocationError}
