@@ -65,8 +65,16 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
   const extraKmsDaily = bookingData.extraKmsPrice || 0;
   const extraKmsTotal = extraKmsDaily * duration;
   
+  // Deduplicate mandatory fees by name before calculation (safety net)
+  const dedupedFees = (bookingData.mandatoryFees || []).reduce((acc: any[], current: any) => {
+    if (!acc.find(fee => fee.name === current.name)) {
+      acc.push(current);
+    }
+    return acc;
+  }, []);
+  
   // Separate mandatory fees: include all except bond
-  const { nonBondFeesTotal, bondAmount } = (bookingData.mandatoryFees || []).reduce(
+  const { nonBondFeesTotal, bondAmount } = dedupedFees.reduce(
     (acc, fee) => {
       const name = (fee.name || '').toLowerCase();
       const amount = fee.amount || 0;

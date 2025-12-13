@@ -1,5 +1,5 @@
 
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { rcmApi } from '@/lib/api/rcm-api';
 import type { 
@@ -433,7 +433,7 @@ export function useRcmApi() {
     });
   };
 
-  return {
+  return useMemo(() => ({
     rcmApi,
     initializeApi,
     useLocations,
@@ -448,5 +448,5 @@ export function useRcmApi() {
     useStep3Details,
     useFindBookings,
     useBookingDetails
-  };
+  }), [initializeApi]);
 }

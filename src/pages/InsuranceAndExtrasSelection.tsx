@@ -113,7 +113,14 @@ const InsuranceAndExtrasSelection = () => {
               name: f.name || f.feegroupname || 'Fee',
               amount: Number(f.totalfeeamount ?? f.amount ?? 0),
             }));
-            updateBookingData({ mandatoryFees: mapped });
+            // Deduplicate by fee name to prevent accumulation
+            const deduped = mapped.reduce((acc: any[], current: any) => {
+              if (!acc.find(fee => fee.name === current.name)) {
+                acc.push(current);
+              }
+              return acc;
+            }, []);
+            updateBookingData({ mandatoryFees: deduped });
           }
         }).catch((e: any) => {
           console.warn('Failed to load mandatory fees from step2:', e);
