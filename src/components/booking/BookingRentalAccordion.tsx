@@ -53,7 +53,13 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
   }, 0) || 0;
   
   // Insurance price is stored as total for the rental (not per day)
-  const insurancePrice = bookingData.insurancePrice || 0;
+  const rawInsurancePrice = bookingData.insurancePrice;
+  const insurancePrice = typeof rawInsurancePrice === 'number' ? rawInsurancePrice : parseFloat(String(rawInsurancePrice)) || 0;
+  console.log('BookingRentalAccordion - insurance debug:', { 
+    rawInsurancePrice, 
+    parsedInsurancePrice: insurancePrice,
+    typeOf: typeof rawInsurancePrice 
+  });
   
   // Mileage charge is per day; multiply by duration if present
   const extraKmsDaily = bookingData.extraKmsPrice || 0;
