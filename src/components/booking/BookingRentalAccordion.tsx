@@ -73,20 +73,24 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
     return acc;
   }, []);
   
-  // Separate mandatory fees: include all except bond
-  const { nonBondFeesTotal, bondAmount } = dedupedFees.reduce(
+  // Separate mandatory fees: bond, one-way fee, and other fees
+  const { otherFeesTotal, bondAmount, oneWayFee } = dedupedFees.reduce(
     (acc, fee) => {
       const name = (fee.name || '').toLowerCase();
       const amount = fee.amount || 0;
       if (name.includes('bond')) acc.bondAmount += amount;
-      else acc.nonBondFeesTotal += amount;
+      else if (name.includes('one way') || name.includes('oneway')) acc.oneWayFee += amount;
+      else acc.otherFeesTotal += amount;
       return acc;
     },
-    { nonBondFeesTotal: 0, bondAmount: 0 }
+    { otherFeesTotal: 0, bondAmount: 0, oneWayFee: 0 }
   );
   
-  const totalPrice = Math.max(0, basePrice + nonBondFeesTotal + insurancePrice + extrasTotal + extraKmsTotal);
-  console.log('BookingRentalAccordion totals:', { duration, dailyRate, basePrice, insurancePrice, extrasTotal, extraKmsTotal, nonBondFeesTotal, totalPrice, qualifiesForDiscount });
+  // Rental + Insurance combined (includes base price, insurance, extras, km charges, and other fees)
+  const rentalAndInsurance = basePrice + insurancePrice + extrasTotal + extraKmsTotal + otherFeesTotal;
+  
+  const totalPrice = Math.max(0, rentalAndInsurance + oneWayFee);
+  console.log('BookingRentalAccordion totals:', { duration, dailyRate, basePrice, insurancePrice, extrasTotal, extraKmsTotal, otherFeesTotal, oneWayFee, rentalAndInsurance, totalPrice, qualifiesForDiscount });
 
   // Get vehicle image with fallback
   const getImageUrl = () => {
@@ -149,9 +153,10 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
                 <div className="text-xl sm:text-2xl font-bold text-primary">
                   NZ${totalPrice.toFixed(2)} <span className="text-xs sm:text-sm font-normal">TOTAL</span>
                 </div>
-                {/* Additional price details - hidden on mobile when collapsed */}
-                <div className="hidden sm:block text-xs text-muted-foreground">
-                  Includes taxes, fees & surcharges
+                {/* Price breakdown - hidden on mobile when collapsed */}
+                <div className="hidden sm:block text-xs text-muted-foreground space-y-0.5">
+                  <div>Rental + Insurance: NZ${rentalAndInsurance.toFixed(2)}</div>
+                  {oneWayFee > 0 && <div>One Way Fee: NZ${oneWayFee.toFixed(2)}</div>}
                 </div>
               </div>
             </div>
