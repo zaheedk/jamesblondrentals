@@ -160,10 +160,15 @@ const InsuranceAndExtrasSelection = () => {
         
         // Update booking data with default insurance total if selected
         if (insuranceToSelect && !data.insuranceId) {
+          const insuranceTotal = parseFloat(String(insuranceToSelect.totalinsuranceamount)) || 0;
+          console.log('Default insurance set:', { 
+            rawTotal: insuranceToSelect.totalinsuranceamount, 
+            parsedTotal: insuranceTotal 
+          });
           updateBookingData({
             insuranceId: insuranceToSelect.id?.toString(),
             insuranceName: insuranceToSelect.name || insuranceToSelect.description,
-            insurancePrice: insuranceToSelect.totalinsuranceamount
+            insurancePrice: insuranceTotal
           });
         }
         
@@ -214,8 +219,18 @@ const InsuranceAndExtrasSelection = () => {
     
     // Update booking data immediately so accordion shows correct total
     if (selected) {
+      // Ensure totalinsuranceamount is a proper number
+      const insuranceTotal = parseFloat(String(selected.totalinsuranceamount)) || 0;
+      console.log('Insurance change:', { 
+        selectedId: insuranceId, 
+        rawTotalInsuranceAmount: selected.totalinsuranceamount,
+        parsedInsuranceTotal: insuranceTotal,
+        insuranceName: selected.name
+      });
       updateBookingData({
-        insurancePrice: selected.totalinsuranceamount
+        insuranceId: selected.id?.toString(),
+        insuranceName: selected.name || selected.description,
+        insurancePrice: insuranceTotal
       });
     }
   };
@@ -289,10 +304,11 @@ const InsuranceAndExtrasSelection = () => {
   const handleProceedToDetails = () => {
     // Save insurance and km charge data
     if (selectedInsurance) {
+      const insuranceTotal = parseFloat(String(selectedInsurance.totalinsuranceamount)) || 0;
       updateBookingData({
         insuranceId: selectedInsurance.id?.toString(),
         insuranceName: selectedInsurance.name || selectedInsurance.description,
-        insurancePrice: selectedInsurance.totalinsuranceamount,
+        insurancePrice: insuranceTotal,
         extraKmsId: selectedKmCharge?.id?.toString(),
         extraKmsName: selectedKmCharge?.name || selectedKmCharge?.mileagedesc,
         extraKmsPrice: selectedKmCharge?.dailyrate
@@ -357,7 +373,7 @@ const InsuranceAndExtrasSelection = () => {
       <BookingSteps currentStep={3} />
       <div className="container mx-auto px-4 py-8">
         <ExitIntentPopup />
-        <BookingRentalAccordion />
+        <BookingRentalAccordion key={`accordion-${selectedInsurance?.id}-${selectedKmCharge?.id}-${JSON.stringify(selectedExtras)}`} />
         
         <div className="space-y-8">
           {/* Insurance Section */}
