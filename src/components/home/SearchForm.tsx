@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, startTransition, useDeferredValue } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -332,34 +332,44 @@ const SearchForm = ({
     }
   };
 
-  // Handle pickup date changes and update dropoff date accordingly
+  // Handle pickup date changes and update dropoff date accordingly - wrapped in startTransition for better INP
   const handlePickupDateChange = useCallback((date: Date | undefined) => {
     if (!date) return;
     
     console.log("Pickup date changed to:", date);
-    setPickupDate(date);
-    
-    // We need to set minDropoffDate, but we need to create a new Date object
-    // to avoid reference issues while still allowing same-day selection
-    const newMinDate = new Date(date.getTime());
-    setMinDropoffDate(newMinDate);
-    
-    // Only update dropoff date if it's before the new pickup date
-    if (dropoffDate && isBefore(dropoffDate, date)) {
-      console.log("Dropoff date is before new pickup date, updating to same day");
-      setDropoffDate(new Date(date.getTime())); // Create a new Date instance to avoid reference issues
-    }
+    // Use startTransition for non-urgent state updates to improve INP
+    startTransition(() => {
+      setPickupDate(date);
+      
+      // We need to set minDropoffDate, but we need to create a new Date object
+      // to avoid reference issues while still allowing same-day selection
+      const newMinDate = new Date(date.getTime());
+      setMinDropoffDate(newMinDate);
+      
+      // Only update dropoff date if it's before the new pickup date
+      if (dropoffDate && isBefore(dropoffDate, date)) {
+        console.log("Dropoff date is before new pickup date, updating to same day");
+        setDropoffDate(new Date(date.getTime())); // Create a new Date instance to avoid reference issues
+      }
+    });
   }, [dropoffDate]);
 
-  // Handle pickup time change
-  const handlePickupTimeChange = (time: string) => {
-    setPickupTime(time);
+  // Handle pickup time change - wrapped in startTransition for better INP
+  const handlePickupTimeChange = useCallback((time: string) => {
+    startTransition(() => {
+      setPickupTime(time);
+    });
     
     // If same day rental, validate that dropoff time is after pickup time
     if (pickupDate && dropoffDate && pickupDate.toDateString() === dropoffDate.toDateString()) {
-      setTimeout(() => validateSameDayTimes(), 0);
+      // Use requestIdleCallback for non-critical validation
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => validateSameDayTimes());
+      } else {
+        setTimeout(() => validateSameDayTimes(), 0);
+      }
     }
-  };
+  }, [pickupDate, dropoffDate]);
 
   // Helper function to check if a location is Wellington CBD
   const isWellingtonCBD = (locationId: string) => {
@@ -477,14 +487,17 @@ const SearchForm = ({
                 value={pickupLocation}
                 onValueChange={(value) => {
                   console.log("📍 Setting pickup location:", value);
-                  setPickupLocation(value);
-                  Cookies.set('pickupLocation', value, { expires: 365 });
-                  console.log("🍪 Saved pickup cookie:", Cookies.get('pickupLocation'));
-                  if (sameLocation) {
-                    setDropoffLocation(value);
-                    Cookies.set('dropoffLocation', value, { expires: 365 });
-                    console.log("🍪 Saved dropoff cookie (same):", Cookies.get('dropoffLocation'));
-                  }
+                  // Use startTransition for non-urgent state updates to improve INP
+                  startTransition(() => {
+                    setPickupLocation(value);
+                    Cookies.set('pickupLocation', value, { expires: 365 });
+                    console.log("🍪 Saved pickup cookie:", Cookies.get('pickupLocation'));
+                    if (sameLocation) {
+                      setDropoffLocation(value);
+                      Cookies.set('dropoffLocation', value, { expires: 365 });
+                      console.log("🍪 Saved dropoff cookie (same):", Cookies.get('dropoffLocation'));
+                    }
+                  });
                 }}
                 isLoading={isLoadingLocations}
                 hasError={isLocationError}
@@ -530,22 +543,25 @@ const SearchForm = ({
                     checked={sameLocation}
                     onChange={() => {
                       const newSameLocation = !sameLocation;
-                      setSameLocation(newSameLocation);
-                      Cookies.set('sameLocation', String(newSameLocation), { expires: 365 });
-                      console.log("🍪 Saved sameLocation cookie:", newSameLocation);
-                      
-                      // If unchecking, restore dropoff location from cookie
-                      if (!newSameLocation) {
-                        const savedDropoff = Cookies.get('dropoffLocation');
-                        if (savedDropoff) {
-                          console.log("🔄 Restoring dropoff location from cookie:", savedDropoff);
-                          setDropoffLocation(savedDropoff);
+                      // Use startTransition for non-urgent state updates
+                      startTransition(() => {
+                        setSameLocation(newSameLocation);
+                        Cookies.set('sameLocation', String(newSameLocation), { expires: 365 });
+                        console.log("🍪 Saved sameLocation cookie:", newSameLocation);
+                        
+                        // If unchecking, restore dropoff location from cookie
+                        if (!newSameLocation) {
+                          const savedDropoff = Cookies.get('dropoffLocation');
+                          if (savedDropoff) {
+                            console.log("🔄 Restoring dropoff location from cookie:", savedDropoff);
+                            setDropoffLocation(savedDropoff);
+                          }
+                        } else {
+                          // If checking, sync dropoff with pickup
+                          setDropoffLocation(pickupLocation);
+                          Cookies.set('dropoffLocation', pickupLocation, { expires: 365 });
                         }
-                      } else {
-                        // If checking, sync dropoff with pickup
-                        setDropoffLocation(pickupLocation);
-                        Cookies.set('dropoffLocation', pickupLocation, { expires: 365 });
-                      }
+                      });
                     }}
                   />
                   <span className="text-sm">Same as Pickup</span>
@@ -558,9 +574,12 @@ const SearchForm = ({
                 value={sameLocation ? pickupLocation : dropoffLocation}
                 onValueChange={(value) => {
                   console.log("📍 Setting dropoff location:", value);
-                  setDropoffLocation(value);
-                  Cookies.set('dropoffLocation', value, { expires: 365 });
-                  console.log("🍪 Saved dropoff cookie:", Cookies.get('dropoffLocation'));
+                  // Use startTransition for non-urgent state updates
+                  startTransition(() => {
+                    setDropoffLocation(value);
+                    Cookies.set('dropoffLocation', value, { expires: 365 });
+                    console.log("🍪 Saved dropoff cookie:", Cookies.get('dropoffLocation'));
+                  });
                 }}
                 isLoading={isLoadingLocations}
                 hasError={isLocationError}
@@ -575,7 +594,7 @@ const SearchForm = ({
                   id="dropoff-date"
                   label="Drop off Date"
                   date={dropoffDate}
-                  onDateChange={setDropoffDate}
+                  onDateChange={(date) => startTransition(() => setDropoffDate(date))}
                   disableDate={(date) => {
                     // For drop-off date, only disable dates strictly before the pickup date
                     if (!pickupDate) return true;
@@ -600,7 +619,7 @@ const SearchForm = ({
                   id="dropoff-time"
                   label="Drop off Time"
                   time={dropoffTime}
-                  onTimeChange={setDropoffTime}
+                  onTimeChange={(time) => startTransition(() => setDropoffTime(time))}
                   timeOptions={dropoffTimeOptions}
                   isLoading={isLoadingOfficeHours}
                   disabled={!dropoffDate || !(sameLocation ? pickupLocation : dropoffLocation) || dropoffTimeOptions.length === 0}
@@ -618,7 +637,7 @@ const SearchForm = ({
                     id="driver-age"
                     label="Age"
                     value={age}
-                    onValueChange={setAge}
+                    onValueChange={(value) => startTransition(() => setAge(value))}
                     options={driverAges.map(age => ({ id: String(age.id), name: age.driverage }))}
                     getOptionName={getDriverAgeName}
                     isLoading={isLoadingAges}
@@ -631,7 +650,7 @@ const SearchForm = ({
                     id="car-category"
                     label="Category"
                     value={carCategory}
-                    onValueChange={setCarCategory}
+                    onValueChange={(value) => startTransition(() => setCarCategory(value))}
                     options={carCategories.map(category => ({ id: String(category.id), name: category.vehiclecategorytype }))}
                     getOptionName={getCategoryName}
                     isLoading={isLoadingCategories}
@@ -650,7 +669,10 @@ const SearchForm = ({
                   id="campaign-code" 
                   type="text" 
                   value={campaignCode} 
-                  onChange={(e) => setCampaignCode(e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    startTransition(() => setCampaignCode(value));
+                  }}
                   placeholder="Enter campaign code" 
                 />
               </div>
