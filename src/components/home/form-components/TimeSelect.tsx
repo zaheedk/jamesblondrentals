@@ -2,6 +2,7 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Clock, ClockAlert } from "lucide-react";
+import { memo, useCallback } from "react";
 
 interface TimeSelectProps {
   id: string;
@@ -14,7 +15,8 @@ interface TimeSelectProps {
   placeholder?: string;
 }
 
-export const TimeSelect = ({
+// Memoize TimeSelect to prevent unnecessary re-renders and improve INP
+export const TimeSelect = memo(({
   id,
   label,
   time,
@@ -87,4 +89,6 @@ export const TimeSelect = ({
       )}
     </div>
   );
-};
+});
+
+TimeSelect.displayName = 'TimeSelect';

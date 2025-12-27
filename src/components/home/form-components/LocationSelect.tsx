@@ -1,7 +1,7 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { RCMLocation } from "@/lib/api/rcm-api-types";
-import { useEffect } from "react";
+import { useEffect, memo, useCallback, startTransition } from "react";
 import { useLocation } from "react-router-dom";
 
 interface LocationSelectProps {
@@ -16,7 +16,8 @@ interface LocationSelectProps {
   placeholder?: string;
 }
 
-export const LocationSelect = ({
+// Memoize the LocationSelect component to prevent unnecessary re-renders
+export const LocationSelect = memo(({
   id,
   label,
   locations,
@@ -49,7 +50,7 @@ export const LocationSelect = ({
     }
   };
 
-  // Set default location based on page context
+  // Set default location based on page context - with startTransition for better INP
   useEffect(() => {
     if (locations.length > 0 && !value) {
       const setDefaultLocation = async () => {
@@ -63,7 +64,7 @@ export const LocationSelect = ({
           
           if (wellingtonLocation) {
             console.log(`Setting default location to Wellington CBD:`, wellingtonLocation.id);
-            onValueChange(String(wellingtonLocation.id));
+            startTransition(() => onValueChange(String(wellingtonLocation.id)));
             return;
           }
           
@@ -74,7 +75,7 @@ export const LocationSelect = ({
           
           if (anyWellingtonLocation) {
             console.log(`Setting default location to Wellington:`, anyWellingtonLocation.id);
-            onValueChange(String(anyWellingtonLocation.id));
+            startTransition(() => onValueChange(String(anyWellingtonLocation.id)));
             return;
           }
         }
@@ -91,7 +92,7 @@ export const LocationSelect = ({
           
           if (wellingtonLocation) {
             console.log(`Setting default location to Wellington CBD:`, wellingtonLocation.id);
-            onValueChange(String(wellingtonLocation.id));
+            startTransition(() => onValueChange(String(wellingtonLocation.id)));
             return;
           }
         }
@@ -106,7 +107,7 @@ export const LocationSelect = ({
         
         if (westAucklandLocation) {
           console.log(`Setting default location to West Auckland:`, westAucklandLocation.id);
-          onValueChange(String(westAucklandLocation.id));
+          startTransition(() => onValueChange(String(westAucklandLocation.id)));
           return;
         } 
         
@@ -119,18 +120,23 @@ export const LocationSelect = ({
         
         if (aucklandAirportLocation) {
           console.log(`Setting default location to Auckland Airport:`, aucklandAirportLocation.id);
-          onValueChange(String(aucklandAirportLocation.id));
+          startTransition(() => onValueChange(String(aucklandAirportLocation.id)));
           return;
         }
         
         // Last resort: use first available location
         if (locations[0]) {
           console.log(`Setting default location to first available:`, locations[0].id);
-          onValueChange(String(locations[0].id));
+          startTransition(() => onValueChange(String(locations[0].id)));
         }
       };
       
-      setDefaultLocation();
+      // Defer location detection to idle time to avoid blocking interactions
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => setDefaultLocation());
+      } else {
+        setTimeout(setDefaultLocation, 100);
+      }
     }
   }, [locations, value, onValueChange, isWellingtonPage]);
 
@@ -164,4 +170,6 @@ export const LocationSelect = ({
       {hasError && <p className="text-xs text-amber-600">Using fallback locations - couldn't connect to server</p>}
     </div>
   );
-};
+});
+
+LocationSelect.displayName = 'LocationSelect';

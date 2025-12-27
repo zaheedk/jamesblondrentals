@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, memo, startTransition } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useRcmApi } from "@/hooks/use-rcm-api";
@@ -143,14 +143,19 @@ const FeaturedVehicles = () => {
             .filter(vehicle => vehicle.vehiclecategoryname.toLowerCase().includes('premium'))
             .slice(0, 4);
           
-          setVehicles(premiumVehicles);
+          // Use startTransition for non-urgent state updates to improve INP
+          startTransition(() => {
+            setVehicles(premiumVehicles);
+          });
         }
       } catch (error) {
         console.error("Error fetching vehicles:", error);
         toast.error("Failed to load premium vehicles", {
           description: "Please try again later"
         });
-        setVehicles([]);
+        startTransition(() => {
+          setVehicles([]);
+        });
       } finally {
         setIsLoading(false);
       }
@@ -162,7 +167,10 @@ const FeaturedVehicles = () => {
   useEffect(() => {
     if (locations.length > 0) {
       getDefaultSearchParams().then(params => {
-        setSearchParams(params);
+        // Use startTransition for non-urgent state updates
+        startTransition(() => {
+          setSearchParams(params);
+        });
       });
     }
   }, [locations, getDefaultSearchParams]);
