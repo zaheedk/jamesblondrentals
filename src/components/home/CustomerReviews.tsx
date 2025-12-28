@@ -8,7 +8,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState, startTransition, memo } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -49,25 +49,15 @@ const CustomerReviews = () => {
           return;
         }
 
-        // Use startTransition for non-urgent state updates to improve INP
-        startTransition(() => {
-          setReviewsData(data);
-        });
+        setReviewsData(data);
       } catch (error) {
         console.error('Error:', error);
       } finally {
-        startTransition(() => {
-          setLoading(false);
-        });
+        setLoading(false);
       }
     };
 
-    // Defer the fetch to idle time to improve initial page INP
-    if ('requestIdleCallback' in window) {
-      requestIdleCallback(() => fetchReviews());
-    } else {
-      setTimeout(fetchReviews, 100);
-    }
+    fetchReviews();
   }, [toast]);
 
   // Fallback reviews if API fails
