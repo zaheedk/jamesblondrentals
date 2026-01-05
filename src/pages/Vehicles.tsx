@@ -355,15 +355,21 @@ const Vehicles = () => {
           hasLocationDiscount: shouldApplyDiscount
         };
       }).filter(vehicle => {
+        // Check if this is a trailer (trailers have 0 seats and typically have "trailer" in the name)
+        const isTrailer = vehicle.type.toLowerCase().includes('trailer') || 
+                          vehicle.description?.toLowerCase().includes('trailer');
+        
         // Filter out vehicles without essential data (image, seats, or description)
+        // Trailers are exempt from the seats requirement
         const hasEssentialData = vehicle.images[0] && 
-                                 vehicle.seats > 0 && 
+                                 (vehicle.seats > 0 || isTrailer) && 
                                  vehicle.categoryfriendlydescription;
         
         if (!hasEssentialData) {
           console.log(`Filtering out vehicle ${vehicle.make} ${vehicle.model} - missing essential data:`, {
             hasImage: !!vehicle.images[0],
             seats: vehicle.seats,
+            isTrailer,
             hasDescription: !!vehicle.categoryfriendlydescription,
             available: vehicle.available
           });
