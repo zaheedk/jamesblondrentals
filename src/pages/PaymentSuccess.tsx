@@ -283,7 +283,13 @@ const PaymentSuccess = () => {
   };
 
   // Function to update booking payment status in Supabase database
-  const updateBookingInSupabase = async (bookingDetails: BookingDetails, sessionData: any) => {
+  // Takes status and txnId as parameters to avoid async state issues
+  const updateBookingInSupabaseWithStatus = async (
+    bookingDetails: BookingDetails, 
+    sessionData: any, 
+    status: 'success' | 'failed' | 'pending',
+    txnId: string
+  ) => {
     const bookingRef = bookingDetails.reservationRef || 
                        sessionData?.reservationRef || 
                        sessionData?.bookingReference ||
@@ -298,15 +304,15 @@ const PaymentSuccess = () => {
     try {
       console.log("Updating booking payment status in Supabase...", { 
         bookingRef, 
-        paymentStatus, 
-        transactionId 
+        status, 
+        txnId 
       });
       
       const result = await updateBookingPaymentStatus(
         bookingRef,
-        paymentStatus === 'success' ? 'paid' : 'pending',
-        paymentStatus === 'success' ? 'confirmed' : 'pending',
-        transactionId || undefined
+        status === 'success' ? 'paid' : 'pending',
+        status === 'success' ? 'confirmed' : 'pending',
+        txnId || undefined
       );
 
       if (result) {
@@ -577,8 +583,9 @@ const PaymentSuccess = () => {
               console.log("Booking details set from API:", convertedDetails);
               
               // Update booking payment status in Supabase after successful payment
-              if (paymentStatus === 'success') {
-                await updateBookingInSupabase(convertedDetails, sessionData);
+              // Use 'result' from URL params (not state) since state update is async
+              if (result === 'success') {
+                await updateBookingInSupabaseWithStatus(convertedDetails, sessionData, 'success', txnId);
                 clearBookingData();
                 console.log("Booking data cleared from session after successful payment");
               }
@@ -589,12 +596,12 @@ const PaymentSuccess = () => {
             console.error("Error fetching booking details from API:", apiError);
             // Fall back to session data for failed API calls
             if (sessionData) {
-              setUpSessionDataFallback(sessionData, paymentStatus);
+              setUpSessionDataFallback(sessionData, result || 'pending', txnId);
             }
           }
         } else if (sessionData) {
           // No reservation reference but session data exists
-          setUpSessionDataFallback(sessionData, paymentStatus);
+          setUpSessionDataFallback(sessionData, result || 'pending', txnId);
         }
         
         setIsLoading(false);
@@ -608,7 +615,7 @@ const PaymentSuccess = () => {
     };
 
     // Function to set up booking details from session data
-    const setUpSessionDataFallback = async (sessionData: any, paymentStatus: string) => {
+    const setUpSessionDataFallback = async (sessionData: any, resultStatus: string, txnId: string) => {
       console.log("Using session data as fallback for booking details");
 
       const cleanedSessionData = JSON.parse(JSON.stringify(sessionData, (key, value) => {
@@ -754,8 +761,8 @@ const PaymentSuccess = () => {
       console.log("Booking details set from session:", convertedDetails);
       
       // Update booking payment status in Supabase after successful payment
-      if (paymentStatus === "success") {
-        await updateBookingInSupabase(convertedDetails, cleanedSessionData);
+      if (resultStatus === "success") {
+        await updateBookingInSupabaseWithStatus(convertedDetails, cleanedSessionData, 'success', txnId);
         clearBookingData();
         console.log("Booking data cleared from session after successful payment (fallback path)");
       }
