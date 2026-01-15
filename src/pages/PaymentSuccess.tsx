@@ -282,112 +282,40 @@ const PaymentSuccess = () => {
     }
   };
 
-  // Function to save booking to Supabase database
-  const saveBookingToSupabase = async (bookingDetails: BookingDetails, sessionData: any) => {
-    if (!user?.id) {
-      console.log("No authenticated user, skipping Supabase booking save");
+  // Function to update booking payment status in Supabase database
+  const updateBookingInSupabase = async (bookingDetails: BookingDetails, sessionData: any) => {
+    const bookingRef = bookingDetails.reservationRef || 
+                       sessionData?.reservationRef || 
+                       sessionData?.bookingReference ||
+                       sessionData?.confirmationNumber ||
+                       sessionData?.reservationNo;
+
+    if (!bookingRef) {
+      console.log("No booking reference found, cannot update payment status");
       return;
     }
 
     try {
-      console.log("Saving booking to Supabase database...");
+      console.log("Updating booking payment status in Supabase...", { 
+        bookingRef, 
+        paymentStatus, 
+        transactionId 
+      });
       
-      // Convert date strings to proper Date objects
-      const formatDateForSupabase = (dateStr: string) => {
-        if (!dateStr) return new Date().toISOString().split('T')[0];
-        
-        // Handle different date formats
-        if (dateStr.includes('/')) {
-          const [day, month, year] = dateStr.split('/');
-          return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-        } else if (dateStr.includes('-')) {
-          return dateStr.split('T')[0]; // Remove time if present
-        }
-        return dateStr;
-      };
+      const result = await updateBookingPaymentStatus(
+        bookingRef,
+        paymentStatus === 'success' ? 'paid' : 'pending',
+        paymentStatus === 'success' ? 'confirmed' : 'pending',
+        transactionId || undefined
+      );
 
-      const formatTimeForSupabase = (timeStr: string) => {
-        if (!timeStr) return '09:00';
-        return timeStr.includes(':') ? timeStr : '09:00';
-      };
-
-      const pickupDate = formatDateForSupabase(bookingDetails.pickupDate);
-      const dropoffDate = formatDateForSupabase(bookingDetails.dropoffDate);
-      const pickupTime = formatTimeForSupabase(bookingDetails.pickupTime);
-      const dropoffTime = formatTimeForSupabase(bookingDetails.dropoffTime);
-
-      // Calculate rental days - add 1 to include both pickup and dropoff days
-      // e.g., pickup Nov 14, dropoff Nov 16 = 3 rental days (14th, 15th, 16th)
-      const startDate = new Date(pickupDate);
-      const endDate = new Date(dropoffDate);
-      const daysDiff = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
-      const totalDays = Math.max(1, daysDiff + 1);
-
-      const bookingData = {
-        user_id: user.id,
-        booking_reference: bookingDetails.reservationRef || null,
-        reservation_reference: bookingDetails.reservationRef || null,
-        
-        // Vehicle details
-        vehicle_id: bookingDetails.vehicleCategoryId?.toString() || null,
-        vehicle_name: bookingDetails.vehicleName || 'Unknown Vehicle',
-        vehicle_type: sessionData?.vehicleCategoryTypeId?.toString() || null,
-        vehicle_category: 'Car', // Default category
-        
-        // Dates and times
-        pickup_date: pickupDate,
-        dropoff_date: dropoffDate,
-        pickup_time: pickupTime,
-        dropoff_time: dropoffTime,
-        total_days: totalDays,
-        
-        // Locations
-        pickup_location_id: bookingDetails.pickupLocationId?.toString() || null,
-        pickup_location_name: bookingDetails.pickupLocationName || null,
-        dropoff_location_id: bookingDetails.dropoffLocationId?.toString() || null,
-        dropoff_location_name: bookingDetails.dropoffLocationName || null,
-        
-        // Customer details
-        customer_first_name: bookingDetails.customerFirstName || sessionData?.customerFirstName || null,
-        customer_last_name: bookingDetails.customerLastName || sessionData?.customerLastName || null,
-        customer_email: bookingDetails.customerEmail || sessionData?.customerEmail || user.email || null,
-        customer_phone: bookingDetails.customerPhone || sessionData?.customerPhone || null,
-        customer_address: bookingDetails.customerAddress || sessionData?.customerAddress || null,
-        customer_license_number: sessionData?.customerLicenseNumber || null,
-        customer_age: sessionData?.customerAge || null,
-        
-        // Pricing
-        daily_rate: bookingDetails.dailyrate || 0,
-        vehicle_total: bookingDetails.totalcost || bookingDetails.basePrice || 0,
-        extras_total: (bookingDetails.selectedExtras || []).reduce((sum, extra) => sum + (extra.price * extra.quantity), 0),
-        insurance_total: bookingDetails.insurancePrice || 0,
-        total_amount: bookingDetails.payment || bookingDetails.paymentAmount || 0,
-        
-        // Extras and insurance
-        selected_extras: bookingDetails.selectedExtras || [],
-        insurance_options: bookingDetails.insuranceName ? {
-          name: bookingDetails.insuranceName,
-          price: bookingDetails.insurancePrice || 0
-        } : {},
-        
-        // Booking status
-        booking_status: paymentStatus === 'success' ? 'confirmed' : 'pending',
-        payment_status: paymentStatus === 'success' ? 'paid' : 'pending',
-        payment_method: 'online',
-        payment_intent_id: transactionId || null,
-        
-        // Additional details
-        special_requirements: sessionData?.specialRequirements || null,
-        notes: sessionData?.notes || null
-      };
-
-      console.log("Booking data to save:", bookingData);
-
-      await createBooking.mutate(bookingData);
-      console.log("Booking successfully saved to Supabase");
-      
+      if (result) {
+        console.log("Booking payment status updated successfully:", result);
+      } else {
+        console.log("Could not update booking - may not exist in database yet");
+      }
     } catch (error) {
-      console.error("Failed to save booking to Supabase:", error);
+      console.error("Failed to update booking payment status:", error);
       // Don't show error to user as this is a background operation
     }
   };
@@ -648,9 +576,9 @@ const PaymentSuccess = () => {
               
               console.log("Booking details set from API:", convertedDetails);
               
-              // Save booking to Supabase after successful payment
+              // Update booking payment status in Supabase after successful payment
               if (paymentStatus === 'success') {
-                await saveBookingToSupabase(convertedDetails, sessionData);
+                await updateBookingInSupabase(convertedDetails, sessionData);
                 clearBookingData();
                 console.log("Booking data cleared from session after successful payment");
               }
@@ -825,9 +753,9 @@ const PaymentSuccess = () => {
       
       console.log("Booking details set from session:", convertedDetails);
       
-      // Save booking to Supabase after successful payment
+      // Update booking payment status in Supabase after successful payment
       if (paymentStatus === "success") {
-        await saveBookingToSupabase(convertedDetails, cleanedSessionData);
+        await updateBookingInSupabase(convertedDetails, cleanedSessionData);
         clearBookingData();
         console.log("Booking data cleared from session after successful payment (fallback path)");
       }
