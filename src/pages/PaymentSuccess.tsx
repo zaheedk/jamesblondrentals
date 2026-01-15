@@ -12,7 +12,7 @@ import PaymentStatusHeader from "@/components/payment/PaymentStatusHeader";
 import RentalDetails from "@/components/payment/RentalDetails";
 import PaymentSummary from "@/components/payment/PaymentSummary";
 import BookingExperienceSurvey from "@/components/feedback/BookingExperienceSurvey";
-import { useCreateBooking } from "@/hooks/use-bookings";
+import { useCreateBooking, updateBookingPaymentStatus } from "@/hooks/use-bookings";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface BookingDetails {
