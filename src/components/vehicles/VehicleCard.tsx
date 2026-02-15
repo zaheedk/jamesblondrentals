@@ -154,9 +154,10 @@ const VehicleCard = ({
             <h3 className="font-bold text-lg capitalize">
               {vehicle.type} {vehicle.type === "suv" ? "SUV" : ""}
             </h3>
-            <p className="text-sm text-muted-foreground mt-1">
-              {(vehicle as any).categoryfriendlydescription}
-            </p>
+            <p 
+              className="text-sm text-muted-foreground mt-1"
+              dangerouslySetInnerHTML={{ __html: (vehicle as any).categoryfriendlydescription || '' }}
+            />
           </div>
           
           <div className="flex items-center justify-between">
