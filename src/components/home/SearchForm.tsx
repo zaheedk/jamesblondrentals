@@ -592,6 +592,7 @@ const SearchForm = ({
                   locationId={sameLocation ? pickupLocation : dropoffLocation}
                   locationDetails={locationDetails}
                   allowSameDay={true}
+                  defaultMonth={pickupDate}
                 />
               </div>
               

@@ -19,6 +19,7 @@ interface DateSelectProps {
   locationId?: string;
   allowSameDay?: boolean;
   locationDetails?: any[];
+  defaultMonth?: Date;
 }
 
 export const DateSelect = ({
@@ -28,8 +29,9 @@ export const DateSelect = ({
   onDateChange,
   disableDate,
   locationId,
-  allowSameDay = true, // Default to allowing same day selections
-  locationDetails = []
+  allowSameDay = true,
+  locationDetails = [],
+  defaultMonth
 }: DateSelectProps) => {
   const [open, setOpen] = useState(false);
 
@@ -78,7 +80,9 @@ export const DateSelect = ({
             onSelect={handleDateSelect}
             initialFocus
             disabled={combinedDisabledDate}
+            defaultMonth={defaultMonth || date}
             className="p-3 pointer-events-auto"
+            fixedWeeks
           />
         </PopoverContent>
       </Popover>
