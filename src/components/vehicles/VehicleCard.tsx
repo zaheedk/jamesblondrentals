@@ -216,9 +216,17 @@ const VehicleCard = ({
         ) : (
           <div className="w-full p-3 bg-muted text-muted-foreground text-center rounded space-y-1">
             <p className="font-medium text-sm">Not Available for Selected Dates</p>
-            <p className="text-xs">
-              Contact us: <a href="tel:098134134" className="text-primary font-semibold hover:underline">09 813 4134</a>
-            </p>
+            {vehicle.isCheckingAvailability ? (
+              <p className="text-xs italic">Checking next available date...</p>
+            ) : vehicle.nextAvailableDate ? (
+              <p className="text-xs">
+                Next available from: <span className="font-semibold text-primary">{vehicle.nextAvailableDate}</span>
+              </p>
+            ) : (
+              <p className="text-xs">
+                Contact us: <a href="tel:098134134" className="text-primary font-semibold hover:underline">09 813 4134</a>
+              </p>
+            )}
           </div>
         )}
       </CardFooter>

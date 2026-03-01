@@ -28,6 +28,8 @@ export interface Vehicle {
   ratesubtotal?: number; // New property for the rate subtotal from API
   categoryfriendlydescription?: string; // New property for the friendly description from API
   hasLocationDiscount?: boolean; // Property to track if location discount is applied
+  nextAvailableDate?: string; // Next date the vehicle becomes available (dd/MM/yyyy format)
+  isCheckingAvailability?: boolean; // Whether we're currently checking future dates
 }
 
 export type VehicleType = "economy" | "compact" | "midsize" | "suv" | "luxury" | "van" | "convertible";
