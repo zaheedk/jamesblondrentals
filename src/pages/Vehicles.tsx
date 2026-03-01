@@ -542,7 +542,9 @@ const Vehicles = () => {
         ? parseFloat(vehicle.price) 
         : (vehicle.price || 0);
       
-      console.log(`Filtering vehicle ${vehicle.make} ${vehicle.model}: price=${price}, range=[${priceRange[0]}, ${priceRange[1]}]`);
+      // Always show unavailable vehicles (they have price 0) so the "next available date" feature works
+      const isAvail = typeof vehicle.available === 'boolean' ? vehicle.available : (vehicle.available === 1 || vehicle.available === 2);
+      if (!isAvail) return true;
       
       return price >= priceRange[0] && price <= priceRange[1];
     });
