@@ -214,8 +214,11 @@ const VehicleCard = ({
             campaignCode={searchParams.get("campaignCode") || ""}
           />
         ) : (
-          <div className="w-full p-2 bg-gray-100 text-gray-500 text-center rounded">
-            Not Available
+          <div className="w-full p-3 bg-muted text-muted-foreground text-center rounded space-y-1">
+            <p className="font-medium text-sm">Not Available for Selected Dates</p>
+            <p className="text-xs">
+              Contact us: <a href="tel:098134134" className="text-primary font-semibold hover:underline">09 813 4134</a>
+            </p>
           </div>
         )}
       </CardFooter>
