@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSearchParams, useLocation, useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -8,6 +8,7 @@ import VehicleCard from "@/components/vehicles/VehicleCard";
 import { Vehicle, VehicleType } from "@/lib/types";
 import { useRcmApi } from "@/hooks/use-rcm-api";
 import { RCMAvailableCar, RCMMandatoryFee, RCMSeasonalRate } from "@/lib/api/rcm-api-types";
+import { rcmApi } from "@/lib/api/rcm-api";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -18,6 +19,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/compon
 import { getCampaignCode } from "@/lib/utils";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
 import BookingSteps from "@/components/booking/BookingSteps";
+import { parse, format, addDays } from "date-fns";
 
 interface RcmVehicleWithPricing {
   vehicle: RCMAvailableCar;
@@ -442,6 +444,89 @@ const Vehicles = () => {
       });
     }
   }, [step2Data, step2Error, driverAges, location.state]);
+
+  // Check next available dates for unavailable vehicles
+  const nextAvailCheckRef = useRef<Set<number>>(new Set());
+  
+  useEffect(() => {
+    if (!vehicles.length || !step2Params) return;
+    
+    const unavailableVehicles = vehicles.filter(v => {
+      const isAvail = typeof v.available === 'boolean' ? v.available : (v.available === 1 || v.available === 2);
+      return !isAvail && !nextAvailCheckRef.current.has(v.id);
+    });
+    
+    if (!unavailableVehicles.length) return;
+    
+    // Mark these as being checked
+    unavailableVehicles.forEach(v => nextAvailCheckRef.current.add(v.id));
+    
+    // Mark vehicles as checking
+    setVehicles(prev => prev.map(v => {
+      const isAvail = typeof v.available === 'boolean' ? v.available : (v.available === 1 || v.available === 2);
+      if (!isAvail && unavailableVehicles.some(uv => uv.id === v.id)) {
+        return { ...v, isCheckingAvailability: true };
+      }
+      return v;
+    }));
+    
+    const checkNextAvailableDates = async () => {
+      const pickupDateParsed = parse(pickupDate, 'dd/MM/yyyy', new Date());
+      const dropoffDateParsed = parse(dropoffDate, 'dd/MM/yyyy', new Date());
+      const rentalDurationMs = dropoffDateParsed.getTime() - pickupDateParsed.getTime();
+      
+      // Check each day offset from 1 to 7
+      for (let dayOffset = 1; dayOffset <= 7; dayOffset++) {
+        const newPickup = addDays(pickupDateParsed, dayOffset);
+        const newDropoff = new Date(newPickup.getTime() + rentalDurationMs);
+        
+        const newPickupStr = format(newPickup, 'dd/MM/yyyy');
+        const newDropoffStr = format(newDropoff, 'dd/MM/yyyy');
+        
+        try {
+          console.log(`[Next Available] Checking day +${dayOffset}: ${newPickupStr} - ${newDropoffStr}`);
+          
+          const response = await rcmApi.getStep2({
+            ...step2Params,
+            pickupdate: newPickupStr,
+            dropoffdate: newDropoffStr,
+          });
+          
+          if (response.status === "OK" && response.results?.availablecars) {
+            const nowAvailable = response.results.availablecars.filter(car => 
+              car.available === 1 || car.available === 2
+            );
+            
+            setVehicles(prev => prev.map(v => {
+              if (v.nextAvailableDate || !unavailableVehicles.some(uv => uv.id === v.id)) return v;
+              
+              const matchingCar = nowAvailable.find(car => 
+                String(car.vehiclecategoryid) === String(v.id)
+              );
+              
+              if (matchingCar) {
+                console.log(`[Next Available] ${v.make} ${v.model} available on ${newPickupStr}`);
+                return { ...v, nextAvailableDate: newPickupStr, isCheckingAvailability: false };
+              }
+              return v;
+            }));
+          }
+        } catch (error) {
+          console.error(`[Next Available] Error checking day +${dayOffset}:`, error);
+        }
+      }
+      
+      // Mark remaining vehicles as done checking (no date found)
+      setVehicles(prev => prev.map(v => {
+        if (v.isCheckingAvailability && unavailableVehicles.some(uv => uv.id === v.id)) {
+          return { ...v, isCheckingAvailability: false };
+        }
+        return v;
+      }));
+    };
+    
+    checkNextAvailableDates();
+  }, [vehicles.length, step2Params, pickupDate, dropoffDate]);
 
   useEffect(() => {
     let results = [...vehicles];
