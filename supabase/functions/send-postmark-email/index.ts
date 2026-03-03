@@ -24,13 +24,15 @@ serve(async (req) => {
 
     console.log(`Sending email via Postmark to ${to} with subject: ${subject}`)
 
-    // Use the API key directly since environment variable isn't working
-    const postmarkApiKey = "08623402-431c-433b-ad91-53d4c4bbf8b7"
+    const postmarkApiKey = Deno.env.get("POSTMARK_API_KEY")
+    if (!postmarkApiKey) {
+      throw new Error("POSTMARK_API_KEY secret is not configured")
+    }
     
     console.log("Using Postmark API key:", postmarkApiKey ? "Present" : "Missing")
 
     const emailData = {
-      From: "zaheed@jamesblond.co.nz",
+      From: "info@jamesblond.co.nz",
       To: to,
       Subject: subject,
       HtmlBody: html,
