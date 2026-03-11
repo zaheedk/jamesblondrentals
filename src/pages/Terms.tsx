@@ -201,6 +201,19 @@ const Terms = () => {
             The owner will arrange for any repairs at his discretion with a repair agent/provider of his choosing.
           </AccordionContent>
         </AccordionItem>
+
+        <AccordionItem value="midweek-discount">
+          <AccordionTrigger>20. Midweek 25% Discount</AccordionTrigger>
+          <AccordionContent>
+            <ul className="list-disc pl-6 space-y-2">
+              <li>The 25% Midweek Discount applies <strong>only to bookings made online</strong> through our website.</li>
+              <li>Bookings made over the phone or in store <strong>do not qualify</strong> for the midweek discount.</li>
+              <li>The discount applies to eligible vehicle categories for Monday–Thursday rentals within the same week.</li>
+              <li>This offer cannot be combined with other promotional codes or discounts unless otherwise stated.</li>
+              <li>Kanthawala Ltd reserves the right to modify or withdraw this offer at any time without prior notice.</li>
+            </ul>
+          </AccordionContent>
+        </AccordionItem>
       </Accordion>
 
       <div className="mt-8 p-4 bg-gray-50 rounded-lg">
