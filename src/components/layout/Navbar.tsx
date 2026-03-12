@@ -192,7 +192,13 @@ const Navbar = () => {
                         to="/contact/christchurch" 
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
                       >
-                        Christchurch
+                        Christchurch Airport
+                      </Link>
+                      <Link 
+                        to="/contact/christchurch-central" 
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
+                      >
+                        Christchurch Central
                       </Link>
                     </div>
                   </NavigationMenuContent>
