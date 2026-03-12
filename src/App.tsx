@@ -298,6 +298,7 @@ const App = () => {
                 <Route path="/contact/auckland" element={<ContactAuckland />} />
                 <Route path="/contact/wellington" element={<ContactWellington />} />
                 <Route path="/contact/christchurch" element={<ContactChristchurch />} />
+                <Route path="/contact/christchurch-central" element={<ContactChristchurchCentral />} />
                 <Route path="/winz-quotes" element={<WinzQuotes />} />
                 <Route path="/12-seater-van-hire-auckland" element={<AucklandVanHire />} />
                 <Route path="/wellington-10-12-seat-van-minibus-rental" element={<WellingtonMinibusHire />} />
