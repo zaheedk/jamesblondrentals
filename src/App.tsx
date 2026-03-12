@@ -23,6 +23,7 @@ import Contact from "./pages/Contact";
 import ContactAuckland from "./pages/ContactAuckland";
 import ContactWellington from "./pages/ContactWellington";
 import ContactChristchurch from "./pages/ContactChristchurch";
+import ContactChristchurchCentral from "./pages/ContactChristchurchCentral";
 
 // Auth Pages
 import Login from "./pages/Login";
