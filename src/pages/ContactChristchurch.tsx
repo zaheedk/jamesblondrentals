@@ -18,11 +18,11 @@ const ContactChristchurch = () => {
               <div className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 mt-1 text-primary" />
                 <div>
-                   <p className="font-medium">Address:</p>
-                   <p>515 Moorhouse Avenue</p>
-                   <p>Waltham</p>
-                   <p>Christchurch 8011</p>
-                 </div>
+                  <p className="font-medium">Address:</p>
+                  <p>25 Logistics Drive</p>
+                  <p>Harewood</p>
+                  <p>Christchurch 8544</p>
+                </div>
               </div>
               
               <div className="flex items-center gap-3">
@@ -90,7 +90,7 @@ const ContactChristchurch = () => {
             <h2 className="text-2xl font-semibold mb-6">Location</h2>
             <div className="aspect-video">
               <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2892.5!2d172.6445!3d-43.5381!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6d318a3b00000001%3A0x1!2s515%20Moorhouse%20Avenue%2C%20Waltham%2C%20Christchurch%208011!5e0!3m2!1sen!2snz!4v1682305436010!5m2!1sen!2snz"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2891.8965506079387!2d172.5357799!3d-43.4840799!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6d31f54c76716d61%3A0x4097d71c235d8948!2s17%2F25%20Logistics%20Dr%2C%20Harewood%2C%20Christchurch%208051!5e0!3m2!1sen!2snz!4v1682305436010!5m2!1sen!2snz"
                 className="w-full h-full border-0"
                 allowFullScreen
                 loading="lazy"
