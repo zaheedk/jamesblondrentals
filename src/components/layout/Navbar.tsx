@@ -328,7 +328,10 @@ const Navbar = () => {
                       Wellington
                     </Link>
                     <Link to="/contact/christchurch" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
-                      Christchurch
+                      Christchurch Airport
+                    </Link>
+                    <Link to="/contact/christchurch-central" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
+                      Christchurch Central
                     </Link>
                   </div>
                 </AccordionContent>
