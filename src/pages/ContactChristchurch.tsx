@@ -18,11 +18,11 @@ const ContactChristchurch = () => {
               <div className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 mt-1 text-primary" />
                 <div>
-                  <p className="font-medium">Address:</p>
-                  <p>25 Logistics Drive</p>
-                  <p>Harewood</p>
-                  <p>Christchurch 8544</p>
-                </div>
+                   <p className="font-medium">Address:</p>
+                   <p>515 Moorhouse Avenue</p>
+                   <p>Waltham</p>
+                   <p>Christchurch 8011</p>
+                 </div>
               </div>
               
               <div className="flex items-center gap-3">
