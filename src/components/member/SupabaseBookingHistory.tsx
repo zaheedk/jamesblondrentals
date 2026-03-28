@@ -154,6 +154,9 @@ const SupabaseBookingHistory = () => {
                 </div>
                 <p className="text-sm text-muted-foreground">
                   Booking Reference: {booking.booking_reference || 'N/A'}
+                  {booking.reservation_reference && (
+                    <span className="ml-3">RCM Ref: {booking.reservation_reference}</span>
+                  )}
                 </p>
               </CardHeader>
               
