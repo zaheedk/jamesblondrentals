@@ -570,6 +570,17 @@ export interface RCMBookingInfoResponse {
       phone?: string;
       email?: string;
     }>;
+    extradrivers?: Array<{
+      firstname?: string;
+      lastname?: string;
+      dateofbirth?: string;
+      licenseno?: string;
+      licenseissued?: string;
+      licenseexpires?: string;
+      phone?: string;
+      mobile?: string;
+      email?: string;
+    }>;
     rateinfo?: Array<{
       season?: string;
       numberofdays?: number;
