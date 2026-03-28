@@ -57,7 +57,11 @@ const RentalAgreement = () => {
     }
     setLoading(true);
     setSaved(false);
-    try {
+    setAlreadySigned(false);
+    setExistingSignature(null);
+    setExistingAdditionalSig(null);
+    setSignedAt(null);
+    setPdfUrl(null);
       const response = await rcmApi.getBookingInfo(reservationRef.trim());
       if (response.status === "OK" && response.results) {
         console.log("RCM API full response:", JSON.stringify(response.results, null, 2));
