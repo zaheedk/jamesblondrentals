@@ -284,20 +284,15 @@ const RentalAgreement = () => {
         }
       }
 
-      // Email the signed agreement with download link
+      // Email the signed agreement with PDF attachment
       const customerEmail = customer?.email;
-      if (customerEmail) {
+      if (customerEmail && pdfBlob) {
         const vehicleName = booking?.vehiclecategory || "Vehicle";
         const pickupDate = booking?.pickupdate || "";
         const dropoffDate = booking?.dropoffdate || "";
 
-        const downloadSection = downloadUrl
-          ? `<tr style="border-top: 2px solid #1a365d;">
-               <td colspan="2" style="padding: 16px 8px; text-align: center;">
-                 <a href="${downloadUrl}" style="display: inline-block; background-color: #1a365d; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">Download Signed Agreement (PDF)</a>
-               </td>
-             </tr>`
-          : "";
+        // Convert PDF blob to base64 for attachment
+        const pdfBase64 = await blobToBase64(pdfBlob);
 
         try {
           await supabase.functions.invoke('send-postmark-email', {
@@ -309,7 +304,7 @@ const RentalAgreement = () => {
                   <h1 style="color: #1a365d; font-size: 24px;">James Blond Rentals</h1>
                   <h2 style="color: #333; font-size: 18px;">Signed Rental Agreement Confirmation</h2>
                   <p>Dear ${customer?.firstname || 'Customer'},</p>
-                  <p>Thank you for signing your rental agreement. Here is a summary of your rental:</p>
+                  <p>Thank you for signing your rental agreement. Please find your signed agreement attached as a PDF.</p>
                   <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
                     <tr style="border-bottom: 1px solid #e2e8f0;">
                       <td style="padding: 8px; font-weight: bold;">Agreement Ref:</td>
@@ -339,7 +334,6 @@ const RentalAgreement = () => {
                       <td style="padding: 8px; font-weight: bold;">Signed By:</td>
                       <td style="padding: 8px;">${customer?.firstname} ${customer?.lastname}</td>
                     </tr>
-                    ${downloadSection}
                   </table>
                   <p style="color: #666; font-size: 13px;">This email confirms that the rental agreement has been electronically signed. A copy of the full terms and conditions was presented at the time of signing.</p>
                   <p style="color: #666; font-size: 13px;">If you have any questions, please contact us at <a href="tel:0800525663">0800 525 663</a> or <a href="mailto:info@jamesblond.co.nz">info@jamesblond.co.nz</a>.</p>
@@ -348,6 +342,13 @@ const RentalAgreement = () => {
                 </div>
               `,
               from: 'James Blond Rentals <info@jamesblond.co.nz>',
+              attachments: [
+                {
+                  Name: `Rental-Agreement-${agreementRef}.pdf`,
+                  Content: pdfBase64,
+                  ContentType: "application/pdf"
+                }
+              ],
             },
           });
           toast.success("Confirmation email sent to " + customerEmail);
