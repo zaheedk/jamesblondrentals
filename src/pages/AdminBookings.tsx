@@ -3,6 +3,7 @@ import { useBookings } from "@/hooks/use-bookings";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -13,12 +14,83 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Search } from "lucide-react";
+import { Search, Send, FileSignature } from "lucide-react";
 import { format } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import { Link } from "react-router-dom";
 
 const AdminBookings = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [sendingEmail, setSendingEmail] = useState<string | null>(null);
   const { data: bookings, isLoading, error } = useBookings();
+
+  const siteUrl = window.location.origin;
+
+  const handleSendRentalAgreementLink = async (booking: typeof bookings extends (infer T)[] | undefined ? T : never) => {
+    const email = booking.customer_email;
+    const resRef = booking.reservation_reference;
+    
+    if (!email) {
+      toast.error("No customer email address found for this booking");
+      return;
+    }
+    if (!resRef) {
+      toast.error("No RCM reservation reference found for this booking");
+      return;
+    }
+
+    setSendingEmail(booking.id);
+    
+    const agreementUrl = `${siteUrl}/admin/rental-agreement?ref=${resRef}`;
+    const customerName = booking.customer_first_name 
+      ? `${booking.customer_first_name} ${booking.customer_last_name || ''}`.trim()
+      : 'Customer';
+
+    const html = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #1a1a1a;">James Blond Car Rentals - Rental Agreement</h2>
+        <p>Dear ${customerName},</p>
+        <p>Please click the link below to review and sign your rental agreement:</p>
+        <p style="margin: 24px 0;">
+          <a href="${agreementUrl}" 
+             style="background-color: #f59e0b; color: #1a1a1a; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
+            Sign Rental Agreement
+          </a>
+        </p>
+        <p style="font-size: 13px; color: #666;">
+          Reservation Reference: ${resRef}<br/>
+          Booking Reference: ${booking.booking_reference || 'N/A'}
+        </p>
+        <p style="font-size: 12px; color: #999; margin-top: 24px;">
+          If the button doesn't work, copy and paste this link into your browser:<br/>
+          <a href="${agreementUrl}">${agreementUrl}</a>
+        </p>
+        <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
+        <p style="font-size: 12px; color: #999;">James Blond Car Rentals | www.jamesblond.co.nz</p>
+      </div>
+    `;
+
+    try {
+      const { data, error } = await supabase.functions.invoke('send-postmark-email', {
+        body: {
+          to: email,
+          subject: `James Blond Car Rentals - Sign Your Rental Agreement (${resRef})`,
+          html,
+        },
+      });
+
+      if (error) throw error;
+      if (data?.success === false) throw new Error(data.error);
+
+      toast.success(`Rental agreement link sent to ${email}`);
+    } catch (err: any) {
+      console.error('Error sending rental agreement email:', err);
+      toast.error(`Failed to send email: ${err.message || 'Unknown error'}`);
+    } finally {
+      setSendingEmail(null);
+    }
+  };
 
   const filteredBookings = bookings?.filter((booking) => {
     const searchLower = searchQuery.toLowerCase();
@@ -154,6 +226,7 @@ const AdminBookings = () => {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Reference</TableHead>
+                      <TableHead>RCM Ref</TableHead>
                       <TableHead>Customer</TableHead>
                       <TableHead>Vehicle</TableHead>
                       <TableHead>Pickup</TableHead>
@@ -163,12 +236,13 @@ const AdminBookings = () => {
                       <TableHead>Status</TableHead>
                       <TableHead>Payment</TableHead>
                       <TableHead>Created</TableHead>
+                      <TableHead>Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {confirmedBookings.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={10} className="text-center py-8 text-muted-foreground">
+                        <TableCell colSpan={12} className="text-center py-8 text-muted-foreground">
                           No bookings found
                         </TableCell>
                       </TableRow>
@@ -177,6 +251,9 @@ const AdminBookings = () => {
                         <TableRow key={booking.id}>
                           <TableCell className="font-mono text-sm">
                             {booking.booking_reference || "N/A"}
+                          </TableCell>
+                          <TableCell className="font-mono text-xs">
+                            {booking.reservation_reference || "N/A"}
                           </TableCell>
                           <TableCell>
                             <div>
@@ -221,6 +298,30 @@ const AdminBookings = () => {
                           <TableCell className="text-sm text-muted-foreground">
                             {booking.created_at ? format(new Date(booking.created_at), "MMM dd, yyyy") : "N/A"}
                           </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-1">
+                              {booking.reservation_reference && (
+                                <>
+                                  <Link to={`/admin/rental-agreement?ref=${booking.reservation_reference}`}>
+                                    <Button variant="ghost" size="sm" title="View Rental Agreement">
+                                      <FileSignature className="h-4 w-4" />
+                                    </Button>
+                                  </Link>
+                                  {booking.customer_email && (
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      title="Send Rental Agreement Link"
+                                      disabled={sendingEmail === booking.id}
+                                      onClick={() => handleSendRentalAgreementLink(booking)}
+                                    >
+                                      <Send className="h-4 w-4" />
+                                    </Button>
+                                  )}
+                                </>
+                              )}
+                            </div>
+                          </TableCell>
                         </TableRow>
                       ))
                     )}
@@ -235,6 +336,7 @@ const AdminBookings = () => {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Reference</TableHead>
+                      <TableHead>RCM Ref</TableHead>
                       <TableHead>Customer</TableHead>
                       <TableHead>Vehicle</TableHead>
                       <TableHead>Pickup</TableHead>
@@ -249,7 +351,7 @@ const AdminBookings = () => {
                   <TableBody>
                     {quotes.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={10} className="text-center py-8 text-muted-foreground">
+                        <TableCell colSpan={11} className="text-center py-8 text-muted-foreground">
                           No quotes found
                         </TableCell>
                       </TableRow>
@@ -258,6 +360,9 @@ const AdminBookings = () => {
                         <TableRow key={booking.id}>
                           <TableCell className="font-mono text-sm">
                             {booking.booking_reference || "N/A"}
+                          </TableCell>
+                          <TableCell className="font-mono text-xs">
+                            {booking.reservation_reference || "N/A"}
                           </TableCell>
                           <TableCell>
                             <div>
