@@ -280,58 +280,28 @@ const RentalAgreement = () => {
                       {booking?.vehicledescription1}
                     </div>
                     <div>
-                      <Label htmlFor="vehicle-rego" className="font-medium">Licence Plate:</Label>
-                      <Input
-                        id="vehicle-rego"
-                        value={vehicleRego}
-                        onChange={(e) => setVehicleRego(e.target.value)}
-                        placeholder="Enter rego"
-                        className="mt-1"
-                      />
+                      <Label className="font-medium">Licence Plate:</Label>
+                      <div className="mt-1 px-3 py-2 border rounded-md bg-muted text-sm">{vehicleRego || "N/A"}</div>
                     </div>
                     <div>
                       <span className="font-medium">Fuel Type:</span>{" "}
                       {booking?.fueltype || "N/A"}
                     </div>
                     <div>
-                      <Label htmlFor="kms-out" className="font-medium">Kms Out:</Label>
-                      <Input
-                        id="kms-out"
-                        value={kmsOut}
-                        onChange={(e) => setKmsOut(e.target.value)}
-                        placeholder="Enter kms"
-                        className="mt-1"
-                      />
+                      <Label className="font-medium">Kms Out:</Label>
+                      <div className="mt-1 px-3 py-2 border rounded-md bg-muted text-sm">{kmsOut || "N/A"}</div>
                     </div>
                     <div>
-                      <Label htmlFor="kms-in" className="font-medium">Kms In:</Label>
-                      <Input
-                        id="kms-in"
-                        value={kmsIn}
-                        onChange={(e) => setKmsIn(e.target.value)}
-                        placeholder="Enter kms"
-                        className="mt-1"
-                      />
+                      <Label className="font-medium">Kms In:</Label>
+                      <div className="mt-1 px-3 py-2 border rounded-md bg-muted text-sm">{kmsIn || "N/A"}</div>
                     </div>
                     <div>
-                      <Label htmlFor="fuel-out" className="font-medium">Fuel Out:</Label>
-                      <Input
-                        id="fuel-out"
-                        value={fuelOut}
-                        onChange={(e) => setFuelOut(e.target.value)}
-                        placeholder="e.g. Full"
-                        className="mt-1"
-                      />
+                      <Label className="font-medium">Fuel Out:</Label>
+                      <div className="mt-1 px-3 py-2 border rounded-md bg-muted text-sm">{fuelOut || "N/A"}</div>
                     </div>
                     <div>
-                      <Label htmlFor="fuel-in" className="font-medium">Fuel In:</Label>
-                      <Input
-                        id="fuel-in"
-                        value={fuelIn}
-                        onChange={(e) => setFuelIn(e.target.value)}
-                        placeholder="e.g. Full"
-                        className="mt-1"
-                      />
+                      <Label className="font-medium">Fuel In:</Label>
+                      <div className="mt-1 px-3 py-2 border rounded-md bg-muted text-sm">{fuelIn || "N/A"}</div>
                     </div>
                   </div>
                 </CardContent>
