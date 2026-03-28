@@ -115,6 +115,72 @@ const RentalAgreement = () => {
       if (error) throw error;
       setSaved(true);
       toast.success("Rental agreement saved successfully!");
+
+      // Email the signed agreement to the customer
+      const customerEmail = customer?.email;
+      if (customerEmail) {
+        const booking = bookingData.bookinginfo?.[0];
+        const agreementRef = booking?.reservationdocumentno || booking?.reservationno || reservationRef;
+        const vehicleName = booking?.vehiclecategory || "Vehicle";
+        const pickupDate = booking?.pickupdate || "";
+        const dropoffDate = booking?.dropoffdate || "";
+
+        try {
+          await supabase.functions.invoke('send-postmark-email', {
+            body: {
+              to: customerEmail,
+              subject: `Your Signed Rental Agreement - ${agreementRef} | James Blond Rentals`,
+              html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                  <h1 style="color: #1a365d; font-size: 24px;">James Blond Rentals</h1>
+                  <h2 style="color: #333; font-size: 18px;">Signed Rental Agreement Confirmation</h2>
+                  <p>Dear ${customer?.firstname || 'Customer'},</p>
+                  <p>Thank you for signing your rental agreement. Here is a summary of your rental:</p>
+                  <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                      <td style="padding: 8px; font-weight: bold;">Agreement Ref:</td>
+                      <td style="padding: 8px;">${agreementRef}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                      <td style="padding: 8px; font-weight: bold;">Vehicle:</td>
+                      <td style="padding: 8px;">${vehicleName}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                      <td style="padding: 8px; font-weight: bold;">Registration:</td>
+                      <td style="padding: 8px;">${vehicleRego || 'N/A'}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                      <td style="padding: 8px; font-weight: bold;">Pickup:</td>
+                      <td style="padding: 8px;">${pickupDate} ${booking?.pickuptime || ''}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                      <td style="padding: 8px; font-weight: bold;">Return:</td>
+                      <td style="padding: 8px;">${dropoffDate} ${booking?.dropofftime || ''}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                      <td style="padding: 8px; font-weight: bold;">Total Cost:</td>
+                      <td style="padding: 8px;">$${Number(booking?.totalcost || 0).toFixed(2)}</td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 8px; font-weight: bold;">Signed By:</td>
+                      <td style="padding: 8px;">${customer?.firstname} ${customer?.lastname}</td>
+                    </tr>
+                  </table>
+                  <p style="color: #666; font-size: 13px;">This email confirms that the rental agreement has been electronically signed. A copy of the full terms and conditions was presented at the time of signing.</p>
+                  <p style="color: #666; font-size: 13px;">If you have any questions, please contact us at <a href="tel:0800525663">0800 525 663</a> or <a href="mailto:info@jamesblond.co.nz">info@jamesblond.co.nz</a>.</p>
+                  <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
+                  <p style="color: #999; font-size: 11px;">James Blond Rentals | GST: 140-174-963</p>
+                </div>
+              `,
+              from: 'James Blond Rentals <info@jamesblond.co.nz>',
+            },
+          });
+          toast.success("Confirmation email sent to " + customerEmail);
+        } catch (emailError) {
+          console.error("Error sending confirmation email:", emailError);
+          toast.error("Agreement saved but failed to send confirmation email");
+        }
+      }
     } catch (error) {
       console.error("Error saving rental agreement:", error);
       toast.error("Failed to save rental agreement");
