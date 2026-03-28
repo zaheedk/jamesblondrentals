@@ -35,6 +35,7 @@ const RentalAgreement = () => {
   const [existingAdditionalSig, setExistingAdditionalSig] = useState<string | null>(null);
   const [signedAt, setSignedAt] = useState<string | null>(null);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [bookingData, setBookingData] = useState<RCMBookingInfoResponse["results"] | null>(null);
   const [kmsOut, setKmsOut] = useState("");
   const [kmsIn, setKmsIn] = useState("");
   const [fuelOut, setFuelOut] = useState("");
