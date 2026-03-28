@@ -374,6 +374,63 @@ export type Database = {
         }
         Relationships: []
       }
+      rental_agreements: {
+        Row: {
+          additional_driver_signature: string | null
+          booking_data: Json
+          created_at: string
+          created_by: string | null
+          fuel_in: string | null
+          fuel_out: string | null
+          hirer_signature: string | null
+          id: string
+          kms_in: string | null
+          kms_out: string | null
+          notes: string | null
+          reservation_ref: string
+          signed_at: string | null
+          signed_by_name: string | null
+          updated_at: string
+          vehicle_rego: string | null
+        }
+        Insert: {
+          additional_driver_signature?: string | null
+          booking_data?: Json
+          created_at?: string
+          created_by?: string | null
+          fuel_in?: string | null
+          fuel_out?: string | null
+          hirer_signature?: string | null
+          id?: string
+          kms_in?: string | null
+          kms_out?: string | null
+          notes?: string | null
+          reservation_ref: string
+          signed_at?: string | null
+          signed_by_name?: string | null
+          updated_at?: string
+          vehicle_rego?: string | null
+        }
+        Update: {
+          additional_driver_signature?: string | null
+          booking_data?: Json
+          created_at?: string
+          created_by?: string | null
+          fuel_in?: string | null
+          fuel_out?: string | null
+          hirer_signature?: string | null
+          id?: string
+          kms_in?: string | null
+          kms_out?: string | null
+          notes?: string | null
+          reservation_ref?: string
+          signed_at?: string | null
+          signed_by_name?: string | null
+          updated_at?: string
+          vehicle_rego?: string | null
+        }
+        Relationships: []
+      }
       uploaded_bookings: {
         Row: {
           booking_reference: string | null
