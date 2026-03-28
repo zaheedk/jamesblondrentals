@@ -107,8 +107,44 @@ const RentalAgreement = () => {
     }
   };
 
+  const generatePdf = async (): Promise<Blob | null> => {
+    const element = document.getElementById("rental-agreement");
+    if (!element) return null;
+
+    try {
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: "#ffffff",
+      });
+
+      const imgData = canvas.toDataURL("image/jpeg", 0.95);
+      const pdf = new jsPDF("p", "mm", "a4");
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+      const ratio = pdfWidth / imgWidth;
+      const totalPdfHeight = imgHeight * ratio;
+      let position = 0;
+
+      // Add pages as needed
+      while (position < totalPdfHeight) {
+        if (position > 0) pdf.addPage();
+        pdf.addImage(imgData, "JPEG", 0, -position, pdfWidth, totalPdfHeight);
+        position += pdfHeight;
+      }
+
+      return pdf.output("blob");
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      return null;
+    }
+  };
+
   const handleSave = async () => {
-    if (!bookingData) return;
+    if (!bookingData || alreadySigned) return;
 
     const hirerSignature = hirerSigRef.current?.isEmpty()
       ? null
@@ -126,6 +162,9 @@ const RentalAgreement = () => {
     setSaving(true);
     try {
       const customer = bookingData.customerinfo?.[0];
+      const booking = bookingData.bookinginfo?.[0];
+      const agreementRef = booking?.reservationdocumentno || booking?.reservationno || reservationRef;
+
       const { error } = await supabase.from("rental_agreements" as any).insert({
         reservation_ref: reservationRef,
         booking_data: bookingData as any,
@@ -142,16 +181,52 @@ const RentalAgreement = () => {
 
       if (error) throw error;
       setSaved(true);
+      setAlreadySigned(true);
+      setExistingSignature(hirerSignature);
+      setExistingAdditionalSig(additionalDriverSignature);
+      setSignedAt(new Date().toISOString());
       toast.success("Rental agreement saved successfully!");
 
-      // Email the signed agreement to the customer
+      // Generate PDF and upload to storage
+      toast.info("Generating PDF...");
+      const pdfBlob = await generatePdf();
+      let downloadUrl: string | null = null;
+
+      if (pdfBlob) {
+        const fileName = `agreement-${reservationRef}-${Date.now()}.pdf`;
+        const { error: uploadError } = await supabase.storage
+          .from("signed-agreements")
+          .upload(fileName, pdfBlob, {
+            contentType: "application/pdf",
+            upsert: false,
+          });
+
+        if (!uploadError) {
+          const { data: urlData } = supabase.storage
+            .from("signed-agreements")
+            .getPublicUrl(fileName);
+          downloadUrl = urlData?.publicUrl || null;
+          setPdfUrl(downloadUrl);
+          toast.success("PDF generated and stored");
+        } else {
+          console.error("Error uploading PDF:", uploadError);
+        }
+      }
+
+      // Email the signed agreement with download link
       const customerEmail = customer?.email;
       if (customerEmail) {
-        const booking = bookingData.bookinginfo?.[0];
-        const agreementRef = booking?.reservationdocumentno || booking?.reservationno || reservationRef;
         const vehicleName = booking?.vehiclecategory || "Vehicle";
         const pickupDate = booking?.pickupdate || "";
         const dropoffDate = booking?.dropoffdate || "";
+
+        const downloadSection = downloadUrl
+          ? `<tr style="border-top: 2px solid #1a365d;">
+               <td colspan="2" style="padding: 16px 8px; text-align: center;">
+                 <a href="${downloadUrl}" style="display: inline-block; background-color: #1a365d; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">Download Signed Agreement (PDF)</a>
+               </td>
+             </tr>`
+          : "";
 
         try {
           await supabase.functions.invoke('send-postmark-email', {
@@ -189,10 +264,11 @@ const RentalAgreement = () => {
                       <td style="padding: 8px; font-weight: bold;">Total Cost:</td>
                       <td style="padding: 8px;">$${Number(booking?.totalcost || 0).toFixed(2)}</td>
                     </tr>
-                    <tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
                       <td style="padding: 8px; font-weight: bold;">Signed By:</td>
                       <td style="padding: 8px;">${customer?.firstname} ${customer?.lastname}</td>
                     </tr>
+                    ${downloadSection}
                   </table>
                   <p style="color: #666; font-size: 13px;">This email confirms that the rental agreement has been electronically signed. A copy of the full terms and conditions was presented at the time of signing.</p>
                   <p style="color: #666; font-size: 13px;">If you have any questions, please contact us at <a href="tel:0800525663">0800 525 663</a> or <a href="mailto:info@jamesblond.co.nz">info@jamesblond.co.nz</a>.</p>
