@@ -124,8 +124,13 @@ const RentalAgreement = () => {
   const payments = bookingData?.paymentinfo;
   const extras = bookingData?.extrafees;
   const additionalDrivers = bookingData?.additionaldrivers;
+  const rateInfo = bookingData?.rateinfo;
   const rentalDays = Math.max(1, parseMoneyValue(booking?.numberofdays) || 1);
-  const dailyRate = parseMoneyValue(booking?.dailyrate);
+  // Prefer rateinfo daily rate (after discount), fallback to bookinginfo dailyrate
+  const rateInfoDailyRate = rateInfo?.[0]?.dailyrateafterdiscount ?? rateInfo?.[0]?.dailyratebeforediscount;
+  const dailyRate = rateInfoDailyRate != null && rateInfoDailyRate > 0
+    ? rateInfoDailyRate
+    : parseMoneyValue(booking?.dailyrate);
   const insuranceAmount = parseMoneyValue(booking?.insuranceamount);
   const extrasTotal = (extras || []).reduce((sum, extra) => sum + parseMoneyValue(extra.fees), 0);
   const mandatoryFeesTotal = (booking?.mandatoryfees || []).reduce(
@@ -134,8 +139,12 @@ const RentalAgreement = () => {
   );
   const totalCost = parseMoneyValue(booking?.totalcost);
   const totalRateAfterDiscount = parseMoneyValue(booking?.totalrateafterdiscount);
+  // Sum rateinfo subtotals for multi-season rentals
+  const rateInfoSubtotal = (rateInfo || []).reduce((sum, r) => sum + (r.ratesubtotal || 0), 0);
   const reconstructedRentalAmount = totalCost - insuranceAmount - extrasTotal - mandatoryFeesTotal;
-  const rentalAmount = totalRateAfterDiscount > 0
+  const rentalAmount = rateInfoSubtotal > 0
+    ? rateInfoSubtotal
+    : totalRateAfterDiscount > 0
     ? totalRateAfterDiscount
     : dailyRate > 0
       ? dailyRate * rentalDays
