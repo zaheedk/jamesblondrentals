@@ -422,12 +422,6 @@ const RentalAgreement = () => {
                     onKeyDown={(e) => e.key === "Enter" && fetchBookingInfo()}
                   />
                 </div>
-                <div className="flex items-end">
-                  <Button onClick={fetchBookingInfo} disabled={loading}>
-                    {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4 mr-2" />}
-                    {loading ? "Loading..." : "Fetch Booking"}
-                  </Button>
-                </div>
               </div>
             </CardContent>
           </Card>
