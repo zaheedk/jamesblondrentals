@@ -14,7 +14,9 @@ import type {
   RCMStep3Request,
   RCMStep3Response,
   RCMPaymentRequest,
-  RCMPaymentResponse
+  RCMPaymentResponse,
+  RCMBookingInfoRequest,
+  RCMBookingInfoResponse
 } from './rcm-api-types';
 
 // API Configuration

@@ -473,6 +473,103 @@ export interface RCMPaymentConfirmationResponse {
   results?: any;
 }
 
+export interface RCMBookingInfoRequest {
+  reservationref: string;
+}
+
+export interface RCMBookingInfoResponse {
+  status: string;
+  error?: string;
+  results?: {
+    bookinginfo?: Array<{
+      reservationref?: string;
+      reservationno?: string | number;
+      vehiclecategoryid?: string | number;
+      vehiclecategory?: string;
+      vehicledescription1?: string;
+      vehicledescription2?: string;
+      vehicledescription3?: string;
+      vehiclerego?: string;
+      vehiclemake?: string;
+      vehiclemodel?: string;
+      pickupdate?: string;
+      pickuptime?: string;
+      dropoffdate?: string;
+      dropofftime?: string;
+      pickuplocationname?: string;
+      pickuplocation?: string;
+      dropofflocationname?: string;
+      dropofflocation?: string;
+      totalcost?: string | number;
+      totalrateafterdiscount?: string | number;
+      numberofdays?: string | number;
+      dailyrate?: string | number;
+      balancedue?: string | number;
+      payment?: string | number;
+      insuranceoption?: string;
+      insuranceamount?: string | number;
+      vehicleimage?: string;
+      fueltype?: string;
+      kmsout?: string | number;
+      kmsin?: string | number;
+      fuelout?: string;
+      fuelin?: string;
+      urlpathfordocuments?: string;
+      mandatoryfees?: Array<{
+        name?: string;
+        amount?: string | number;
+        totalfeeamount?: string | number;
+      }>;
+      seasonalrates?: Array<{
+        seasonname?: string;
+        numberofdays?: number;
+        dailyrate?: number;
+        subtotal?: number;
+      }>;
+    }>;
+    customerinfo?: Array<{
+      firstname?: string;
+      lastname?: string;
+      email?: string;
+      phone?: string;
+      mobile?: string;
+      dateofbirth?: string;
+      licenseno?: string;
+      licenseissued?: string;
+      licenseexpires?: string;
+      address?: string;
+      city?: string;
+      state?: string;
+      postcode?: string;
+      country?: string;
+    }>;
+    paymentinfo?: Array<{
+      paidamount: string | number;
+      paymentdate?: string;
+      paymentmethod?: string;
+      paymentlocation?: string;
+      paymentdetails?: string;
+    }>;
+    extrafees?: Array<{
+      name: string;
+      fees: string | number;
+      qty?: number;
+      days?: number;
+      isoptionalfee: boolean;
+    }>;
+    additionaldrivers?: Array<{
+      firstname?: string;
+      lastname?: string;
+      dateofbirth?: string;
+      licenseno?: string;
+      licenseissued?: string;
+      licenseexpires?: string;
+      phone?: string;
+      email?: string;
+    }>;
+  };
+}
+
 export interface RCMApiConfig {
   apiKey: string;
   apiSecret: string;
