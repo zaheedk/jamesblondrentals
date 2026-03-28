@@ -443,8 +443,8 @@ const RentalAgreement = () => {
                           {payments.map((payment, idx) => (
                             <tr key={idx} className="border-b">
                               <td className="py-2">{payment.paymentdate}</td>
-                              <td className="py-2">{payment.paymentmethod}</td>
-                              <td className="py-2">{payment.paymentdetails || ""}</td>
+                              <td className="py-2">{payment.paymenttype || payment.paymentmethod || ""}</td>
+                              <td className="py-2">{payment.paysource || payment.paymentdetails || ""}</td>
                               <td className="text-right py-2">
                                 ${Number(payment.paidamount || 0).toFixed(2)}
                               </td>

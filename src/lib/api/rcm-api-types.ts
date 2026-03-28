@@ -549,6 +549,9 @@ export interface RCMBookingInfoResponse {
       paymentmethod?: string;
       paymentlocation?: string;
       paymentdetails?: string;
+      paymenttype?: string;
+      paysource?: string;
+      billinglocation?: string;
     }>;
     extrafees?: Array<{
       name: string;
