@@ -567,6 +567,16 @@ export interface RCMBookingInfoResponse {
       phone?: string;
       email?: string;
     }>;
+    rateinfo?: Array<{
+      season?: string;
+      numberofdays?: number;
+      numberofhours?: number;
+      dailyratebeforediscount?: number;
+      dailyrateafterdiscount?: number;
+      ratesubtotal?: number;
+      discountname?: string;
+      discountpercentagerate?: number;
+    }>;
   };
 }
 
