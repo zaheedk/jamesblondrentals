@@ -53,6 +53,10 @@ const RentalAgreement = () => {
     try {
       const response = await rcmApi.getBookingInfo(reservationRef.trim());
       if (response.status === "OK" && response.results) {
+        console.log("RCM API full response:", JSON.stringify(response.results, null, 2));
+        console.log("bookinginfo[0] keys:", Object.keys(response.results.bookinginfo?.[0] || {}));
+        console.log("vehiclerego:", response.results.bookinginfo?.[0]?.vehiclerego);
+        console.log("fueltype:", response.results.bookinginfo?.[0]?.fueltype);
         setBookingData(response.results);
         // Pre-fill fields from API data
         const booking = response.results.bookinginfo?.[0];
