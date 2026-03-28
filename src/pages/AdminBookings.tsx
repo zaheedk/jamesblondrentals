@@ -318,9 +318,16 @@ const AdminBookings = () => {
                               {booking.reservation_reference && (
                                 <>
                                   <Link to={`/admin/rental-agreement?ref=${booking.reservation_reference}`}>
-                                    <Button variant="ghost" size="sm" title="View Rental Agreement">
-                                      <FileSignature className="h-4 w-4" />
-                                    </Button>
+                                    {signedAgreements.has(booking.reservation_reference) ? (
+                                      <Button variant="ghost" size="sm" title="View Signed Agreement" className="text-green-600 hover:text-green-700">
+                                        <Eye className="h-4 w-4 mr-1" />
+                                        <span className="text-xs">View Signed</span>
+                                      </Button>
+                                    ) : (
+                                      <Button variant="ghost" size="sm" title="Create Rental Agreement">
+                                        <FileSignature className="h-4 w-4" />
+                                      </Button>
+                                    )}
                                   </Link>
                                   {booking.customer_email && (
                                     <Button
