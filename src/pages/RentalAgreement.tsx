@@ -62,6 +62,23 @@ const RentalAgreement = () => {
     setExistingAdditionalSig(null);
     setSignedAt(null);
     setPdfUrl(null);
+    try {
+      // Check if agreement already exists in Supabase
+      const { data: existingAgreements } = await supabase
+        .from("rental_agreements" as any)
+        .select("*")
+        .eq("reservation_ref", reservationRef.trim())
+        .not("hirer_signature", "is", null);
+
+      if (existingAgreements && (existingAgreements as any[]).length > 0) {
+        const existing = (existingAgreements as any[])[0];
+        setAlreadySigned(true);
+        setSaved(true);
+        setExistingSignature(existing.hirer_signature);
+        setExistingAdditionalSig(existing.additional_driver_signature);
+        setSignedAt(existing.signed_at);
+      }
+
       const response = await rcmApi.getBookingInfo(reservationRef.trim());
       if (response.status === "OK" && response.results) {
         console.log("RCM API full response:", JSON.stringify(response.results, null, 2));
