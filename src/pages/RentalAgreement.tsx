@@ -81,6 +81,20 @@ const RentalAgreement = () => {
         setExistingSignature(existing.hirer_signature);
         setExistingAdditionalSig(existing.additional_driver_signature);
         setSignedAt(existing.signed_at);
+
+        // Load existing vehicle photos from storage
+        const { data: photoFiles } = await supabase.storage
+          .from("vehicle-photos")
+          .list(reservationRef.trim(), { limit: 50 });
+        if (photoFiles && photoFiles.length > 0) {
+          const photos = photoFiles.map(f => {
+            const { data: urlData } = supabase.storage
+              .from("vehicle-photos")
+              .getPublicUrl(`${reservationRef.trim()}/${f.name}`);
+            return { url: urlData.publicUrl, name: f.name };
+          });
+          setExistingPhotos(photos);
+        }
       }
 
       const response = await rcmApi.getBookingInfo(reservationRef.trim());
