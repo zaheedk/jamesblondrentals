@@ -161,6 +161,59 @@ const RentalAgreement = () => {
     }
   };
 
+
+  const handlePhotoCapture = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files || !reservationRef.trim()) return;
+
+    setUploadingPhotos(true);
+    try {
+      const newPhotos: { url: string; name: string }[] = [];
+      for (const file of Array.from(files)) {
+        const fileName = `${Date.now()}-${file.name}`;
+        const filePath = `${reservationRef.trim()}/${fileName}`;
+        const { error } = await supabase.storage
+          .from("vehicle-photos")
+          .upload(filePath, file);
+
+        if (!error) {
+          const { data: urlData } = supabase.storage
+            .from("vehicle-photos")
+            .getPublicUrl(filePath);
+          newPhotos.push({ url: urlData.publicUrl, name: fileName });
+        } else {
+          console.error("Error uploading photo:", error);
+        }
+      }
+      setVehiclePhotos(prev => [...prev, ...newPhotos]);
+      toast.success(`${newPhotos.length} photo(s) uploaded`);
+    } catch (error) {
+      console.error("Error uploading photos:", error);
+      toast.error("Failed to upload photos");
+    } finally {
+      setUploadingPhotos(false);
+      if (photoInputRef.current) photoInputRef.current.value = "";
+    }
+  };
+
+  const removePhoto = async (photo: { url: string; name: string }) => {
+    const filePath = `${reservationRef.trim()}/${photo.name}`;
+    await supabase.storage.from("vehicle-photos").remove([filePath]);
+    setVehiclePhotos(prev => prev.filter(p => p.name !== photo.name));
+  };
+
+  const blobToBase64 = (blob: Blob): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64 = (reader.result as string).split(",")[1];
+        resolve(base64);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  };
+
   const handleSave = async () => {
     if (!bookingData || alreadySigned) return;
 
