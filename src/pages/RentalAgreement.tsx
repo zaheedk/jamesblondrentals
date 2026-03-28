@@ -13,6 +13,15 @@ import { toast } from "sonner";
 import { Loader2, Search, FileText, CheckCircle } from "lucide-react";
 import type { RCMBookingInfoResponse } from "@/lib/api/rcm-api-types";
 
+const parseMoneyValue = (value: unknown) => {
+  if (typeof value === "number") return Number.isFinite(value) ? value : 0;
+  if (typeof value === "string") {
+    const parsed = Number.parseFloat(value.replace(/[^0-9.-]/g, ""));
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+  return 0;
+};
+
 const RentalAgreement = () => {
   const [searchParams] = useSearchParams();
   const [reservationRef, setReservationRef] = useState(searchParams.get("ref") || "");
@@ -115,6 +124,24 @@ const RentalAgreement = () => {
   const payments = bookingData?.paymentinfo;
   const extras = bookingData?.extrafees;
   const additionalDrivers = bookingData?.additionaldrivers;
+  const rentalDays = Math.max(1, parseMoneyValue(booking?.numberofdays) || 1);
+  const dailyRate = parseMoneyValue(booking?.dailyrate);
+  const insuranceAmount = parseMoneyValue(booking?.insuranceamount);
+  const extrasTotal = (extras || []).reduce((sum, extra) => sum + parseMoneyValue(extra.fees), 0);
+  const mandatoryFeesTotal = (booking?.mandatoryfees || []).reduce(
+    (sum, fee) => sum + parseMoneyValue(fee.totalfeeamount ?? fee.amount),
+    0
+  );
+  const totalCost = parseMoneyValue(booking?.totalcost);
+  const totalRateAfterDiscount = parseMoneyValue(booking?.totalrateafterdiscount);
+  const reconstructedRentalAmount = totalCost - insuranceAmount - extrasTotal - mandatoryFeesTotal;
+  const rentalAmount = totalRateAfterDiscount > 0
+    ? totalRateAfterDiscount
+    : dailyRate > 0
+      ? dailyRate * rentalDays
+      : reconstructedRentalAmount > 0
+        ? reconstructedRentalAmount
+        : totalCost;
 
   return (
     <>
@@ -344,10 +371,10 @@ const RentalAgreement = () => {
                       <tbody>
                         <tr className="border-b">
                           <td className="py-2">
-                            Vehicle Rental ({booking?.numberofdays} days × ${Number(booking?.dailyrate || 0).toFixed(2)})
+                            Vehicle Rental ({rentalDays} days × ${dailyRate.toFixed(2)})
                           </td>
                           <td className="text-right py-2">
-                            ${(Number(booking?.totalrateafterdiscount) || (Number(booking?.dailyrate || 0) * Number(booking?.numberofdays || 1))).toFixed(2)}
+                            ${rentalAmount.toFixed(2)}
                           </td>
                         </tr>
                         {booking?.insuranceoption && (
