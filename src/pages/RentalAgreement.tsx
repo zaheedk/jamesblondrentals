@@ -10,8 +10,10 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import { Loader2, Search, FileText, CheckCircle } from "lucide-react";
+import { Loader2, Search, FileText, CheckCircle, Download, ShieldCheck } from "lucide-react";
 import type { RCMBookingInfoResponse } from "@/lib/api/rcm-api-types";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 const parseMoneyValue = (value: unknown) => {
   if (typeof value === "number") return Number.isFinite(value) ? value : 0;
@@ -28,6 +30,11 @@ const RentalAgreement = () => {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [alreadySigned, setAlreadySigned] = useState(false);
+  const [existingSignature, setExistingSignature] = useState<string | null>(null);
+  const [existingAdditionalSig, setExistingAdditionalSig] = useState<string | null>(null);
+  const [signedAt, setSignedAt] = useState<string | null>(null);
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [bookingData, setBookingData] = useState<RCMBookingInfoResponse["results"] | null>(null);
   const [kmsOut, setKmsOut] = useState("");
   const [kmsIn, setKmsIn] = useState("");
@@ -50,7 +57,28 @@ const RentalAgreement = () => {
     }
     setLoading(true);
     setSaved(false);
+    setAlreadySigned(false);
+    setExistingSignature(null);
+    setExistingAdditionalSig(null);
+    setSignedAt(null);
+    setPdfUrl(null);
     try {
+      // Check if agreement already exists in Supabase
+      const { data: existingAgreements } = await supabase
+        .from("rental_agreements" as any)
+        .select("*")
+        .eq("reservation_ref", reservationRef.trim())
+        .not("hirer_signature", "is", null);
+
+      if (existingAgreements && (existingAgreements as any[]).length > 0) {
+        const existing = (existingAgreements as any[])[0];
+        setAlreadySigned(true);
+        setSaved(true);
+        setExistingSignature(existing.hirer_signature);
+        setExistingAdditionalSig(existing.additional_driver_signature);
+        setSignedAt(existing.signed_at);
+      }
+
       const response = await rcmApi.getBookingInfo(reservationRef.trim());
       if (response.status === "OK" && response.results) {
         console.log("RCM API full response:", JSON.stringify(response.results, null, 2));
@@ -79,8 +107,44 @@ const RentalAgreement = () => {
     }
   };
 
+  const generatePdf = async (): Promise<Blob | null> => {
+    const element = document.getElementById("rental-agreement");
+    if (!element) return null;
+
+    try {
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: "#ffffff",
+      });
+
+      const imgData = canvas.toDataURL("image/jpeg", 0.95);
+      const pdf = new jsPDF("p", "mm", "a4");
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+      const ratio = pdfWidth / imgWidth;
+      const totalPdfHeight = imgHeight * ratio;
+      let position = 0;
+
+      // Add pages as needed
+      while (position < totalPdfHeight) {
+        if (position > 0) pdf.addPage();
+        pdf.addImage(imgData, "JPEG", 0, -position, pdfWidth, totalPdfHeight);
+        position += pdfHeight;
+      }
+
+      return pdf.output("blob");
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      return null;
+    }
+  };
+
   const handleSave = async () => {
-    if (!bookingData) return;
+    if (!bookingData || alreadySigned) return;
 
     const hirerSignature = hirerSigRef.current?.isEmpty()
       ? null
@@ -98,6 +162,9 @@ const RentalAgreement = () => {
     setSaving(true);
     try {
       const customer = bookingData.customerinfo?.[0];
+      const booking = bookingData.bookinginfo?.[0];
+      const agreementRef = booking?.reservationdocumentno || booking?.reservationno || reservationRef;
+
       const { error } = await supabase.from("rental_agreements" as any).insert({
         reservation_ref: reservationRef,
         booking_data: bookingData as any,
@@ -114,16 +181,52 @@ const RentalAgreement = () => {
 
       if (error) throw error;
       setSaved(true);
+      setAlreadySigned(true);
+      setExistingSignature(hirerSignature);
+      setExistingAdditionalSig(additionalDriverSignature);
+      setSignedAt(new Date().toISOString());
       toast.success("Rental agreement saved successfully!");
 
-      // Email the signed agreement to the customer
+      // Generate PDF and upload to storage
+      toast.info("Generating PDF...");
+      const pdfBlob = await generatePdf();
+      let downloadUrl: string | null = null;
+
+      if (pdfBlob) {
+        const fileName = `agreement-${reservationRef}-${Date.now()}.pdf`;
+        const { error: uploadError } = await supabase.storage
+          .from("signed-agreements")
+          .upload(fileName, pdfBlob, {
+            contentType: "application/pdf",
+            upsert: false,
+          });
+
+        if (!uploadError) {
+          const { data: urlData } = supabase.storage
+            .from("signed-agreements")
+            .getPublicUrl(fileName);
+          downloadUrl = urlData?.publicUrl || null;
+          setPdfUrl(downloadUrl);
+          toast.success("PDF generated and stored");
+        } else {
+          console.error("Error uploading PDF:", uploadError);
+        }
+      }
+
+      // Email the signed agreement with download link
       const customerEmail = customer?.email;
       if (customerEmail) {
-        const booking = bookingData.bookinginfo?.[0];
-        const agreementRef = booking?.reservationdocumentno || booking?.reservationno || reservationRef;
         const vehicleName = booking?.vehiclecategory || "Vehicle";
         const pickupDate = booking?.pickupdate || "";
         const dropoffDate = booking?.dropoffdate || "";
+
+        const downloadSection = downloadUrl
+          ? `<tr style="border-top: 2px solid #1a365d;">
+               <td colspan="2" style="padding: 16px 8px; text-align: center;">
+                 <a href="${downloadUrl}" style="display: inline-block; background-color: #1a365d; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">Download Signed Agreement (PDF)</a>
+               </td>
+             </tr>`
+          : "";
 
         try {
           await supabase.functions.invoke('send-postmark-email', {
@@ -161,10 +264,11 @@ const RentalAgreement = () => {
                       <td style="padding: 8px; font-weight: bold;">Total Cost:</td>
                       <td style="padding: 8px;">$${Number(booking?.totalcost || 0).toFixed(2)}</td>
                     </tr>
-                    <tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
                       <td style="padding: 8px; font-weight: bold;">Signed By:</td>
                       <td style="padding: 8px;">${customer?.firstname} ${customer?.lastname}</td>
                     </tr>
+                    ${downloadSection}
                   </table>
                   <p style="color: #666; font-size: 13px;">This email confirms that the rental agreement has been electronically signed. A copy of the full terms and conditions was presented at the time of signing.</p>
                   <p style="color: #666; font-size: 13px;">If you have any questions, please contact us at <a href="tel:0800525663">0800 525 663</a> or <a href="mailto:info@jamesblond.co.nz">info@jamesblond.co.nz</a>.</p>
@@ -641,89 +745,142 @@ const RentalAgreement = () => {
                   <CardTitle className="text-lg">Signatures</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <p className="text-sm text-muted-foreground italic">
-                    I accept the terms and conditions of this rental agreement. You should not sign this unless you are sure you understand its effect.
-                  </p>
-
-                  {/* Hirer Signature */}
-                  <div>
-                    <Label className="font-medium mb-2 block">
-                      Signature of Hirer — {customer?.firstname} {customer?.lastname}
-                    </Label>
-                    <div className="border rounded-md bg-white">
-                      <SignatureCanvas
-                        ref={hirerSigRef}
-                        canvasProps={{
-                          className: "w-full h-32",
-                          style: { width: "100%", height: "128px" },
-                        }}
-                        backgroundColor="white"
-                      />
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="mt-2"
-                      onClick={() => hirerSigRef.current?.clear()}
-                    >
-                      Clear Signature
-                    </Button>
-                  </div>
-
-                  {/* Additional Driver Signature */}
-                  {additionalDrivers && additionalDrivers.length > 0 && (
-                    <div>
-                      <Label className="font-medium mb-2 block">
-                        Signature of Additional Driver — {additionalDrivers[0]?.firstname} {additionalDrivers[0]?.lastname}
-                      </Label>
-                      <div className="border rounded-md bg-white">
-                        <SignatureCanvas
-                          ref={additionalDriverSigRef}
-                          canvasProps={{
-                            className: "w-full h-32",
-                            style: { width: "100%", height: "128px" },
-                          }}
-                          backgroundColor="white"
-                        />
+                  {alreadySigned ? (
+                    <>
+                      <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-md">
+                        <ShieldCheck className="h-5 w-5 text-green-600" />
+                        <div>
+                          <p className="font-medium text-green-800">This agreement has been signed</p>
+                          {signedAt && (
+                            <p className="text-xs text-green-600">
+                              Signed on: {new Date(signedAt).toLocaleString("en-NZ")}
+                            </p>
+                          )}
+                        </div>
                       </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="mt-2"
-                        onClick={() => additionalDriverSigRef.current?.clear()}
-                      >
-                        Clear Signature
-                      </Button>
-                    </div>
-                  )}
 
-                  <Separator />
-
-                  {/* Save Button */}
-                  <div className="flex justify-center">
-                    {saved ? (
-                      <div className="flex items-center gap-2 text-primary">
-                        <CheckCircle className="h-5 w-5" />
-                        <span className="font-medium">Agreement Saved Successfully</span>
-                      </div>
-                    ) : (
-                      <Button
-                        size="lg"
-                        onClick={handleSave}
-                        disabled={saving}
-                        className="px-12"
-                      >
-                        {saving ? (
-                          <>
-                            <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                            Saving...
-                          </>
-                        ) : (
-                          "Save Signed Agreement"
+                      {/* Show existing hirer signature */}
+                      <div>
+                        <Label className="font-medium mb-2 block">
+                          Signature of Hirer — {customer?.firstname} {customer?.lastname}
+                        </Label>
+                        {existingSignature && (
+                          <div className="border rounded-md bg-white p-2">
+                            <img src={existingSignature} alt="Hirer signature" className="max-h-32" />
+                          </div>
                         )}
-                      </Button>
-                    )}
-                  </div>
+                      </div>
+
+                      {/* Show existing additional driver signature */}
+                      {existingAdditionalSig && (
+                        <div>
+                          <Label className="font-medium mb-2 block">
+                            Signature of Additional Driver
+                          </Label>
+                          <div className="border rounded-md bg-white p-2">
+                            <img src={existingAdditionalSig} alt="Additional driver signature" className="max-h-32" />
+                          </div>
+                        </div>
+                      )}
+
+                      {pdfUrl && (
+                        <div className="flex justify-center">
+                          <a href={pdfUrl} target="_blank" rel="noopener noreferrer">
+                            <Button variant="outline" size="lg">
+                              <Download className="h-4 w-4 mr-2" />
+                              Download Signed Agreement (PDF)
+                            </Button>
+                          </a>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-sm text-muted-foreground italic">
+                        I accept the terms and conditions of this rental agreement. You should not sign this unless you are sure you understand its effect.
+                      </p>
+
+                      {/* Hirer Signature */}
+                      <div>
+                        <Label className="font-medium mb-2 block">
+                          Signature of Hirer — {customer?.firstname} {customer?.lastname}
+                        </Label>
+                        <div className="border rounded-md bg-white">
+                          <SignatureCanvas
+                            ref={hirerSigRef}
+                            canvasProps={{
+                              className: "w-full h-32",
+                              style: { width: "100%", height: "128px" },
+                            }}
+                            backgroundColor="white"
+                          />
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="mt-2"
+                          onClick={() => hirerSigRef.current?.clear()}
+                        >
+                          Clear Signature
+                        </Button>
+                      </div>
+
+                      {/* Additional Driver Signature */}
+                      {allAdditionalDrivers.length > 0 && (
+                        <div>
+                          <Label className="font-medium mb-2 block">
+                            Signature of Additional Driver — {allAdditionalDrivers[0]?.firstname} {allAdditionalDrivers[0]?.lastname}
+                          </Label>
+                          <div className="border rounded-md bg-white">
+                            <SignatureCanvas
+                              ref={additionalDriverSigRef}
+                              canvasProps={{
+                                className: "w-full h-32",
+                                style: { width: "100%", height: "128px" },
+                              }}
+                              backgroundColor="white"
+                            />
+                          </div>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="mt-2"
+                            onClick={() => additionalDriverSigRef.current?.clear()}
+                          >
+                            Clear Signature
+                          </Button>
+                        </div>
+                      )}
+
+                      <Separator />
+
+                      {/* Save Button */}
+                      <div className="flex justify-center">
+                        {saved ? (
+                          <div className="flex items-center gap-2 text-primary">
+                            <CheckCircle className="h-5 w-5" />
+                            <span className="font-medium">Agreement Saved Successfully</span>
+                          </div>
+                        ) : (
+                          <Button
+                            size="lg"
+                            onClick={handleSave}
+                            disabled={saving}
+                            className="px-12"
+                          >
+                            {saving ? (
+                              <>
+                                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                                Saving...
+                              </>
+                            ) : (
+                              "Save Signed Agreement"
+                            )}
+                          </Button>
+                        )}
+                      </div>
+                    </>
+                  )}
                 </CardContent>
               </Card>
             </div>
