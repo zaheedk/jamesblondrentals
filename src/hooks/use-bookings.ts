@@ -58,14 +58,34 @@ export async function updateBookingPaymentStatus(
   bookingReference: string,
   paymentStatus: 'paid' | 'failed' | 'pending',
   bookingStatus: 'confirmed' | 'pending' | 'cancelled',
-  transactionId?: string
+  transactionId?: string,
+  references?: {
+    bookingReference?: string | null;
+    reservationReference?: string | null;
+  }
 ) {
   if (!bookingReference) {
     console.error('No booking reference provided for payment status update');
     return null;
   }
 
-  console.log('Updating booking payment status:', { bookingReference, paymentStatus, bookingStatus, transactionId });
+  const referenceCandidates = [
+    bookingReference,
+    references?.bookingReference,
+    references?.reservationReference,
+  ]
+    .map((reference) => reference?.trim())
+    .filter((reference): reference is string => Boolean(reference));
+
+  const uniqueReferences = [...new Set(referenceCandidates)];
+
+  console.log('Updating booking payment status:', {
+    bookingReference,
+    paymentStatus,
+    bookingStatus,
+    transactionId,
+    references: uniqueReferences,
+  });
 
   const updateData: Database['public']['Tables']['bookings']['Update'] = {
     payment_status: paymentStatus,
@@ -77,33 +97,34 @@ export async function updateBookingPaymentStatus(
     updateData.payment_intent_id = transactionId;
   }
 
-  // Try to find booking by booking_reference first
-  let { data, error } = await supabase
+  if (references?.bookingReference) {
+    updateData.booking_reference = references.bookingReference;
+  }
+
+  if (references?.reservationReference) {
+    updateData.reservation_reference = references.reservationReference;
+  }
+
+  const referenceFilter = uniqueReferences
+    .flatMap((reference) => [
+      `booking_reference.eq.${reference}`,
+      `reservation_reference.eq.${reference}`,
+    ])
+    .join(',');
+
+  const { error } = await supabase
     .from('bookings')
     .update(updateData)
-    .eq('booking_reference', bookingReference)
-    .select()
-    .single();
-
-  // If not found by booking_reference, try reservation_reference
-  if (error && error.code === 'PGRST116') {
-    console.log('Booking not found by booking_reference, trying reservation_reference...');
-    const result = await supabase
-      .from('bookings')
-      .update(updateData)
-      .eq('reservation_reference', bookingReference)
-      .select()
-      .single();
-    
-    data = result.data;
-    error = result.error;
-  }
+    .or(referenceFilter);
 
   if (error) {
     console.error('Error updating booking payment status:', error);
     return null;
   }
 
-  console.log('Booking payment status updated successfully:', data);
-  return data;
+  console.log('Booking payment status update request completed successfully');
+  return {
+    updated: true,
+    references: uniqueReferences,
+  };
 }
