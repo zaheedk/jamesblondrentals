@@ -484,6 +484,7 @@ export interface RCMBookingInfoResponse {
     bookinginfo?: Array<{
       reservationref?: string;
       reservationno?: string | number;
+      reservationdocumentno?: string;
       vehiclecategoryid?: string | number;
       vehiclecategory?: string;
       vehicledescription1?: string;
