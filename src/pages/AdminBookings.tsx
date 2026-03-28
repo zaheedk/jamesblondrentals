@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useBookings } from "@/hooks/use-bookings";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Search, Send, FileSignature } from "lucide-react";
+import { Search, Send, FileSignature, Eye } from "lucide-react";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -23,7 +23,22 @@ import { Link } from "react-router-dom";
 const AdminBookings = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sendingEmail, setSendingEmail] = useState<string | null>(null);
+  const [signedAgreements, setSignedAgreements] = useState<Set<string>>(new Set());
   const { data: bookings, isLoading, error } = useBookings();
+
+  // Fetch which reservation refs have signed agreements
+  useEffect(() => {
+    const fetchSignedAgreements = async () => {
+      const { data } = await supabase
+        .from("rental_agreements" as any)
+        .select("reservation_ref")
+        .not("hirer_signature", "is", null);
+      if (data) {
+        setSignedAgreements(new Set((data as any[]).map((d: any) => d.reservation_ref)));
+      }
+    };
+    fetchSignedAgreements();
+  }, []);
 
   const siteUrl = window.location.origin;
 
