@@ -491,6 +491,7 @@ export interface RCMBookingInfoResponse {
       vehicledescription2?: string;
       vehicledescription3?: string;
       vehiclerego?: string;
+      vehicle_registrationnumber?: string;
       vehiclemake?: string;
       vehiclemodel?: string;
       pickupdate?: string;

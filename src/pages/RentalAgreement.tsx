@@ -65,7 +65,7 @@ const RentalAgreement = () => {
           setKmsIn(String(booking.kmsin || ""));
           setFuelOut(booking.fuelout || "");
           setFuelIn(booking.fuelin || "");
-          setVehicleRego(booking.vehiclerego || "");
+          setVehicleRego(booking.vehicle_registrationnumber || booking.vehiclerego || "");
         }
         toast.success("Booking data loaded");
       } else {
