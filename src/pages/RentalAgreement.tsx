@@ -231,6 +231,123 @@ const RentalAgreement = () => {
     setVehiclePhotos(prev => prev.filter(p => p.name !== photo.name));
   };
 
+  const blobToBase64 = (blob: Blob): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64 = (reader.result as string).split(",")[1];
+        resolve(base64);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  };
+
+  const sendAgreementEmail = async (
+    customerEmail: string,
+    customerData: any,
+    bookingItem: any,
+    pdfBlob: Blob
+  ) => {
+    const agreementRef = bookingItem?.reservationdocumentno || bookingItem?.reservationno || reservationRef;
+    const vehicleName = bookingItem?.vehiclecategory || "Vehicle";
+    const pickupDate = bookingItem?.pickupdate || "";
+    const dropoffDate = bookingItem?.dropoffdate || "";
+    const pdfBase64 = await blobToBase64(pdfBlob);
+
+    console.log("Sending email with PDF attachment, base64 length:", pdfBase64.length);
+
+    const { data, error: emailError } = await supabase.functions.invoke('send-postmark-email', {
+      body: {
+        to: customerEmail,
+        subject: `Your Signed Rental Agreement - ${agreementRef} | James Blond Rentals`,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <h1 style="color: #1a365d; font-size: 24px;">James Blond Rentals</h1>
+            <h2 style="color: #333; font-size: 18px;">Signed Rental Agreement Confirmation</h2>
+            <p>Dear ${customerData?.firstname || 'Customer'},</p>
+            <p>Thank you for signing your rental agreement. Please find your signed agreement attached as a PDF.</p>
+            <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 8px; font-weight: bold;">Agreement Ref:</td>
+                <td style="padding: 8px;">${agreementRef}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 8px; font-weight: bold;">Vehicle:</td>
+                <td style="padding: 8px;">${vehicleName}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 8px; font-weight: bold;">Registration:</td>
+                <td style="padding: 8px;">${vehicleRego || 'N/A'}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 8px; font-weight: bold;">Pickup:</td>
+                <td style="padding: 8px;">${pickupDate} ${bookingItem?.pickuptime || ''}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 8px; font-weight: bold;">Return:</td>
+                <td style="padding: 8px;">${dropoffDate} ${bookingItem?.dropofftime || ''}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 8px; font-weight: bold;">Total Cost:</td>
+                <td style="padding: 8px;">$${Number(bookingItem?.totalcost || 0).toFixed(2)}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 8px; font-weight: bold;">Signed By:</td>
+                <td style="padding: 8px;">${customerData?.firstname} ${customerData?.lastname}</td>
+              </tr>
+            </table>
+            <p style="color: #666; font-size: 13px;">This email confirms that the rental agreement has been electronically signed. A copy of the full terms and conditions was presented at the time of signing.</p>
+            <p style="color: #666; font-size: 13px;">If you have any questions, please contact us at <a href="tel:0800525663">0800 525 663</a> or <a href="mailto:info@jamesblond.co.nz">info@jamesblond.co.nz</a>.</p>
+            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
+            <p style="color: #999; font-size: 11px;">James Blond Rentals | GST: 140-174-963</p>
+          </div>
+        `,
+        attachments: [
+          {
+            Name: `Rental-Agreement-${agreementRef}.pdf`,
+            Content: pdfBase64,
+            ContentType: "application/pdf"
+          }
+        ],
+      },
+    });
+
+    if (emailError) throw emailError;
+    if (data?.success === false) throw new Error(data.error || "Failed to send email");
+    console.log("Email sent successfully, attachmentCount:", data?.attachmentCount);
+    return data;
+  };
+
+  const handleResendEmail = async () => {
+    if (!bookingData) return;
+    const customerEmail = bookingData.customerinfo?.[0]?.email;
+    if (!customerEmail) {
+      toast.error("No customer email found");
+      return;
+    }
+
+    setResending(true);
+    try {
+      toast.info("Generating PDF for email...");
+      const pdfBlob = await generatePdf();
+      if (!pdfBlob) throw new Error("Failed to generate PDF");
+
+      await sendAgreementEmail(
+        customerEmail,
+        bookingData.customerinfo?.[0],
+        bookingData.bookinginfo?.[0],
+        pdfBlob
+      );
+      toast.success(`Signed agreement emailed to ${customerEmail}`);
+    } catch (error: any) {
+      console.error("Error resending agreement email:", error);
+      toast.error(`Failed to send email: ${error.message}`);
+    } finally {
+      setResending(false);
+    }
+  };
+
   const handleSave = async () => {
     if (!bookingData || alreadySigned) return;
 
