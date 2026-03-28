@@ -14,7 +14,9 @@ import type {
   RCMStep3Request,
   RCMStep3Response,
   RCMPaymentRequest,
-  RCMPaymentResponse
+  RCMPaymentResponse,
+  RCMBookingInfoRequest,
+  RCMBookingInfoResponse
 } from './rcm-api-types';
 
 // API Configuration
@@ -383,6 +385,13 @@ class RCMApiClient {
   async getStep3(params: RCMStep3Request): Promise<RCMStep3Response> {
     console.log('Fetching Step3 data with params:', params);
     return this.request<RCMStep3Response>('POST', 'step3', params);
+  }
+
+  async getBookingInfo(reservationRef: string): Promise<RCMBookingInfoResponse> {
+    console.log('Fetching booking info for reservation:', reservationRef);
+    return this.request<RCMBookingInfoResponse>('POST', 'bookinginfo', {
+      reservationref: reservationRef
+    });
   }
 }
 
