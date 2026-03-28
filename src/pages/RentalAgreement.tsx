@@ -811,6 +811,87 @@ const RentalAgreement = () => {
                 </CardContent>
               </Card>
 
+              {/* Vehicle Photos */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Camera className="h-5 w-5" />
+                    Vehicle Condition Photos
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {alreadySigned ? (
+                    <>
+                      {existingPhotos.length > 0 ? (
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                          {existingPhotos.map((photo, idx) => (
+                            <div key={idx} className="relative aspect-square rounded-md overflow-hidden border">
+                              <img src={photo.url} alt={`Vehicle photo ${idx + 1}`} className="w-full h-full object-cover" />
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-muted-foreground">No vehicle photos were captured for this agreement.</p>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        Take photos of the vehicle condition before driving away. Capture all angles including any existing damage.
+                      </p>
+                      <div className="flex gap-2 mb-4">
+                        <input
+                          ref={photoInputRef}
+                          type="file"
+                          accept="image/*"
+                          capture="environment"
+                          multiple
+                          onChange={handlePhotoCapture}
+                          className="hidden"
+                        />
+                        <Button
+                          variant="outline"
+                          onClick={() => photoInputRef.current?.click()}
+                          disabled={uploadingPhotos}
+                        >
+                          <Camera className="h-4 w-4 mr-2" />
+                          {uploadingPhotos ? "Uploading..." : "Take Photo"}
+                        </Button>
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            if (photoInputRef.current) {
+                              photoInputRef.current.removeAttribute("capture");
+                              photoInputRef.current.click();
+                              setTimeout(() => photoInputRef.current?.setAttribute("capture", "environment"), 100);
+                            }
+                          }}
+                          disabled={uploadingPhotos}
+                        >
+                          <ImageIcon className="h-4 w-4 mr-2" />
+                          Upload from Gallery
+                        </Button>
+                      </div>
+                      {vehiclePhotos.length > 0 && (
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                          {vehiclePhotos.map((photo, idx) => (
+                            <div key={idx} className="relative aspect-square rounded-md overflow-hidden border group">
+                              <img src={photo.url} alt={`Vehicle photo ${idx + 1}`} className="w-full h-full object-cover" />
+                              <button
+                                onClick={() => removePhoto(photo)}
+                                className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                              >
+                                <X className="h-3 w-3" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  )}
+                </CardContent>
+              </Card>
+
               {/* Signatures */}
               <Card>
                 <CardHeader>
