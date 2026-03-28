@@ -202,18 +202,6 @@ const RentalAgreement = () => {
     setVehiclePhotos(prev => prev.filter(p => p.name !== photo.name));
   };
 
-  const blobToBase64 = (blob: Blob): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64 = (reader.result as string).split(",")[1];
-        resolve(base64);
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
-  };
-
   const handleSave = async () => {
     if (!bookingData || alreadySigned) return;
 
@@ -262,40 +250,45 @@ const RentalAgreement = () => {
       toast.info("Generating PDF...");
       const pdfBlob = await generatePdf();
       let downloadUrl: string | null = null;
+      const fileName = `agreement-${reservationRef}-${Date.now()}.pdf`;
 
-      if (pdfBlob) {
-        const fileName = `agreement-${reservationRef}-${Date.now()}.pdf`;
-        const { error: uploadError } = await supabase.storage
-          .from("signed-agreements")
-          .upload(fileName, pdfBlob, {
-            contentType: "application/pdf",
-            upsert: false,
-          });
-
-        if (!uploadError) {
-          const { data: urlData } = supabase.storage
-            .from("signed-agreements")
-            .getPublicUrl(fileName);
-          downloadUrl = urlData?.publicUrl || null;
-          setPdfUrl(downloadUrl);
-          toast.success("PDF generated and stored");
-        } else {
-          console.error("Error uploading PDF:", uploadError);
-        }
+      if (!pdfBlob) {
+        throw new Error("Failed to generate signed PDF");
       }
+
+      const { error: uploadError } = await supabase.storage
+        .from("signed-agreements")
+        .upload(fileName, pdfBlob, {
+          contentType: "application/pdf",
+          upsert: true,
+        });
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      const { data: urlData } = supabase.storage
+        .from("signed-agreements")
+        .getPublicUrl(fileName);
+
+      downloadUrl = urlData?.publicUrl || null;
+
+      if (!downloadUrl) {
+        throw new Error("Failed to prepare signed PDF for email");
+      }
+
+      setPdfUrl(downloadUrl);
+      toast.success("PDF generated and stored");
 
       // Email the signed agreement with PDF attachment
       const customerEmail = customer?.email;
-      if (customerEmail && pdfBlob) {
+      if (customerEmail) {
         const vehicleName = booking?.vehiclecategory || "Vehicle";
         const pickupDate = booking?.pickupdate || "";
         const dropoffDate = booking?.dropoffdate || "";
 
-        // Convert PDF blob to base64 for attachment
-        const pdfBase64 = await blobToBase64(pdfBlob);
-
         try {
-          await supabase.functions.invoke('send-postmark-email', {
+          const { data, error: emailError } = await supabase.functions.invoke('send-postmark-email', {
             body: {
               to: customerEmail,
               subject: `Your Signed Rental Agreement - ${agreementRef} | James Blond Rentals`,
@@ -342,15 +335,19 @@ const RentalAgreement = () => {
                 </div>
               `,
               from: 'James Blond Rentals <info@jamesblond.co.nz>',
-              attachments: [
+              remoteAttachments: [
                 {
                   Name: `Rental-Agreement-${agreementRef}.pdf`,
-                  Content: pdfBase64,
+                  Url: downloadUrl,
                   ContentType: "application/pdf"
                 }
               ],
             },
           });
+
+          if (emailError) throw emailError;
+          if (data?.success === false) throw new Error(data.error || "Failed to send signed agreement email");
+
           toast.success("Confirmation email sent to " + customerEmail);
         } catch (emailError) {
           console.error("Error sending confirmation email:", emailError);

@@ -11,6 +11,12 @@ interface Attachment {
   ContentType: string
 }
 
+interface RemoteAttachment {
+  Name: string
+  Url: string
+  ContentType?: string
+}
+
 interface EmailRequest {
   to: string
   subject: string
@@ -18,6 +24,20 @@ interface EmailRequest {
   from?: string
   from_name?: string
   attachments?: Attachment[]
+  remoteAttachments?: RemoteAttachment[]
+}
+
+const arrayBufferToBase64 = (buffer: ArrayBuffer) => {
+  const bytes = new Uint8Array(buffer)
+  const chunkSize = 0x8000
+  let binary = ''
+
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    const chunk = bytes.subarray(i, i + chunkSize)
+    binary += String.fromCharCode(...chunk)
+  }
+
+  return btoa(binary)
 }
 
 serve(async (req) => {
@@ -26,7 +46,7 @@ serve(async (req) => {
   }
 
   try {
-    const { to, subject, html, from, from_name, attachments }: EmailRequest = await req.json()
+    const { to, subject, html, from, from_name, attachments, remoteAttachments }: EmailRequest = await req.json()
 
     console.log(`Sending email via Postmark to ${to} with subject: ${subject}`)
 
@@ -36,12 +56,36 @@ serve(async (req) => {
     }
     
     console.log("Using Postmark API key:", postmarkApiKey ? "Present" : "Missing")
-    if (attachments?.length) {
-      console.log(`Including ${attachments.length} attachment(s)`)
+
+    const fetchedRemoteAttachments = remoteAttachments?.length
+      ? await Promise.all(
+          remoteAttachments.map(async (attachment) => {
+            const fileResponse = await fetch(attachment.Url)
+
+            if (!fileResponse.ok) {
+              throw new Error(`Failed to fetch remote attachment: ${attachment.Name}`)
+            }
+
+            const contentType = attachment.ContentType || fileResponse.headers.get("content-type") || "application/octet-stream"
+            const content = arrayBufferToBase64(await fileResponse.arrayBuffer())
+
+            return {
+              Name: attachment.Name,
+              Content: content,
+              ContentType: contentType,
+            }
+          })
+        )
+      : []
+
+    const normalizedAttachments = [...(attachments || []), ...fetchedRemoteAttachments]
+
+    if (normalizedAttachments.length) {
+      console.log(`Including ${normalizedAttachments.length} attachment(s)`)
     }
 
     const emailData: Record<string, unknown> = {
-      From: "info@jamesblond.co.nz",
+      From: from || "info@jamesblond.co.nz",
       To: to,
       Subject: subject,
       HtmlBody: html,
@@ -49,8 +93,12 @@ serve(async (req) => {
       MessageStream: "outbound"
     }
 
-    if (attachments && attachments.length > 0) {
-      emailData.Attachments = attachments
+    if (from_name) {
+      emailData.FromName = from_name
+    }
+
+    if (normalizedAttachments.length > 0) {
+      emailData.Attachments = normalizedAttachments
     }
 
     const response = await fetch("https://api.postmarkapp.com/email", {
@@ -86,7 +134,8 @@ serve(async (req) => {
       JSON.stringify({ 
         success: true, 
         message: 'Email sent successfully via Postmark',
-        messageId: result.MessageID
+          messageId: result.MessageID,
+          attachmentCount: normalizedAttachments.length
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
