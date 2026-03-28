@@ -43,6 +43,10 @@ const RentalAgreement = () => {
   const [vehicleRego, setVehicleRego] = useState("");
   const hirerSigRef = useRef<SignatureCanvas>(null);
   const additionalDriverSigRef = useRef<SignatureCanvas>(null);
+  const photoInputRef = useRef<HTMLInputElement>(null);
+  const [vehiclePhotos, setVehiclePhotos] = useState<{ url: string; name: string }[]>([]);
+  const [uploadingPhotos, setUploadingPhotos] = useState(false);
+  const [existingPhotos, setExistingPhotos] = useState<{ url: string; name: string }[]>([]);
 
   useEffect(() => {
     if (searchParams.get("ref")) {
