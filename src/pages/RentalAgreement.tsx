@@ -210,7 +210,7 @@ const RentalAgreement = () => {
                         <span className="text-lg font-semibold">Rental Agreement</span>
                       </div>
                       <p className="text-sm text-muted-foreground mt-1">
-                        Ref: {booking?.reservationref || reservationRef}
+                        Ref: {booking?.reservationdocumentno || booking?.reservationno || booking?.reservationref || reservationRef}
                       </p>
                     </div>
                   </div>
