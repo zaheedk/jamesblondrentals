@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getBookingData, updateBookingData } from "@/lib/booking-session";
+import { updateBookingPaymentStatus } from "@/hooks/use-bookings";
 import { toast } from "sonner";
 import { rcmApi } from "@/lib/api/rcm-api";
 import type { RCMPaymentResponse, RCMPaymentConfirmationResponse } from "@/lib/api/rcm-api-types";
@@ -113,11 +114,25 @@ const Payment = () => {
       if (response && response.results) {
         const transactionId = response.results.TransactionId || 'N/A';
         const reservationRefFromResponse = response.results.ReservationRef || reservationRef;
+        const bookingReferenceFromSession = bookingData?.bookingReference || null;
         
         let paymentStatus: "Approved" | "Failed" | "Pending" | "Unknown" = "Unknown";
         if (response.results.Status === "Approved") {
           paymentStatus = "Approved";
           await confirmPayment(response.results);
+
+          const updatedBooking = await updateBookingPaymentStatus(
+            reservationRefFromResponse,
+            'paid',
+            'confirmed',
+            transactionId,
+            {
+              bookingReference: bookingReferenceFromSession,
+              reservationReference: reservationRefFromResponse,
+            }
+          );
+
+          console.log('Booking updated after approved Windcave payment:', updatedBooking);
         } else if (response.results.Status === "Failed") {
           paymentStatus = "Failed";
         } else if (response.results.Status === "Pending") {
