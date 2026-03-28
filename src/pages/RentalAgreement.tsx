@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import { Loader2, Search, FileText, CheckCircle, Download, ShieldCheck, Camera, X, ImageIcon } from "lucide-react";
+import { Loader2, Search, FileText, CheckCircle, Download, ShieldCheck, Camera, X, ImageIcon, Send } from "lucide-react";
 import type { RCMBookingInfoResponse } from "@/lib/api/rcm-api-types";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
@@ -47,6 +47,7 @@ const RentalAgreement = () => {
   const [vehiclePhotos, setVehiclePhotos] = useState<{ url: string; name: string }[]>([]);
   const [uploadingPhotos, setUploadingPhotos] = useState(false);
   const [existingPhotos, setExistingPhotos] = useState<{ url: string; name: string }[]>([]);
+  const [resending, setResending] = useState(false);
 
   useEffect(() => {
     if (searchParams.get("ref")) {
@@ -230,6 +231,123 @@ const RentalAgreement = () => {
     setVehiclePhotos(prev => prev.filter(p => p.name !== photo.name));
   };
 
+  const blobToBase64 = (blob: Blob): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64 = (reader.result as string).split(",")[1];
+        resolve(base64);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  };
+
+  const sendAgreementEmail = async (
+    customerEmail: string,
+    customerData: any,
+    bookingItem: any,
+    pdfBlob: Blob
+  ) => {
+    const agreementRef = bookingItem?.reservationdocumentno || bookingItem?.reservationno || reservationRef;
+    const vehicleName = bookingItem?.vehiclecategory || "Vehicle";
+    const pickupDate = bookingItem?.pickupdate || "";
+    const dropoffDate = bookingItem?.dropoffdate || "";
+    const pdfBase64 = await blobToBase64(pdfBlob);
+
+    console.log("Sending email with PDF attachment, base64 length:", pdfBase64.length);
+
+    const { data, error: emailError } = await supabase.functions.invoke('send-postmark-email', {
+      body: {
+        to: customerEmail,
+        subject: `Your Signed Rental Agreement - ${agreementRef} | James Blond Rentals`,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <h1 style="color: #1a365d; font-size: 24px;">James Blond Rentals</h1>
+            <h2 style="color: #333; font-size: 18px;">Signed Rental Agreement Confirmation</h2>
+            <p>Dear ${customerData?.firstname || 'Customer'},</p>
+            <p>Thank you for signing your rental agreement. Please find your signed agreement attached as a PDF.</p>
+            <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 8px; font-weight: bold;">Agreement Ref:</td>
+                <td style="padding: 8px;">${agreementRef}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 8px; font-weight: bold;">Vehicle:</td>
+                <td style="padding: 8px;">${vehicleName}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 8px; font-weight: bold;">Registration:</td>
+                <td style="padding: 8px;">${vehicleRego || 'N/A'}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 8px; font-weight: bold;">Pickup:</td>
+                <td style="padding: 8px;">${pickupDate} ${bookingItem?.pickuptime || ''}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 8px; font-weight: bold;">Return:</td>
+                <td style="padding: 8px;">${dropoffDate} ${bookingItem?.dropofftime || ''}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 8px; font-weight: bold;">Total Cost:</td>
+                <td style="padding: 8px;">$${Number(bookingItem?.totalcost || 0).toFixed(2)}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 8px; font-weight: bold;">Signed By:</td>
+                <td style="padding: 8px;">${customerData?.firstname} ${customerData?.lastname}</td>
+              </tr>
+            </table>
+            <p style="color: #666; font-size: 13px;">This email confirms that the rental agreement has been electronically signed. A copy of the full terms and conditions was presented at the time of signing.</p>
+            <p style="color: #666; font-size: 13px;">If you have any questions, please contact us at <a href="tel:0800525663">0800 525 663</a> or <a href="mailto:info@jamesblond.co.nz">info@jamesblond.co.nz</a>.</p>
+            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
+            <p style="color: #999; font-size: 11px;">James Blond Rentals | GST: 140-174-963</p>
+          </div>
+        `,
+        attachments: [
+          {
+            Name: `Rental-Agreement-${agreementRef}.pdf`,
+            Content: pdfBase64,
+            ContentType: "application/pdf"
+          }
+        ],
+      },
+    });
+
+    if (emailError) throw emailError;
+    if (data?.success === false) throw new Error(data.error || "Failed to send email");
+    console.log("Email sent successfully, attachmentCount:", data?.attachmentCount);
+    return data;
+  };
+
+  const handleResendEmail = async () => {
+    if (!bookingData) return;
+    const customerEmail = bookingData.customerinfo?.[0]?.email;
+    if (!customerEmail) {
+      toast.error("No customer email found");
+      return;
+    }
+
+    setResending(true);
+    try {
+      toast.info("Generating PDF for email...");
+      const pdfBlob = await generatePdf();
+      if (!pdfBlob) throw new Error("Failed to generate PDF");
+
+      await sendAgreementEmail(
+        customerEmail,
+        bookingData.customerinfo?.[0],
+        bookingData.bookinginfo?.[0],
+        pdfBlob
+      );
+      toast.success(`Signed agreement emailed to ${customerEmail}`);
+    } catch (error: any) {
+      console.error("Error resending agreement email:", error);
+      toast.error(`Failed to send email: ${error.message}`);
+    } finally {
+      setResending(false);
+    }
+  };
+
   const handleSave = async () => {
     if (!bookingData || alreadySigned) return;
 
@@ -277,110 +395,16 @@ const RentalAgreement = () => {
       // Generate PDF and upload to storage
       toast.info("Generating PDF...");
       const pdfBlob = await generatePdf();
-      let downloadUrl: string | null = null;
-      const fileName = `agreement-${reservationRef}-${Date.now()}.pdf`;
-
       if (!pdfBlob) {
         throw new Error("Failed to generate signed PDF");
       }
 
-      const { error: uploadError } = await supabase.storage
-        .from("signed-agreements")
-        .upload(fileName, pdfBlob, {
-          contentType: "application/pdf",
-          upsert: true,
-        });
+      toast.success("PDF generated");
 
-      if (uploadError) {
-        throw uploadError;
-      }
-
-      const { data: urlData } = supabase.storage
-        .from("signed-agreements")
-        .getPublicUrl(fileName);
-
-      downloadUrl = urlData?.publicUrl || null;
-
-      if (!downloadUrl) {
-        throw new Error("Failed to prepare signed PDF for email");
-      }
-
-      setPdfUrl(downloadUrl);
-      toast.success("PDF generated and stored");
-
-      // Email the signed agreement with PDF attachment
+      // Send email with inline base64 PDF attachment
       const customerEmail = customer?.email;
       if (customerEmail) {
-        const vehicleName = booking?.vehiclecategory || "Vehicle";
-        const pickupDate = booking?.pickupdate || "";
-        const dropoffDate = booking?.dropoffdate || "";
-
-        try {
-          const { data, error: emailError } = await supabase.functions.invoke('send-postmark-email', {
-            body: {
-              to: customerEmail,
-              subject: `Your Signed Rental Agreement - ${agreementRef} | James Blond Rentals`,
-              html: `
-                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-                  <h1 style="color: #1a365d; font-size: 24px;">James Blond Rentals</h1>
-                  <h2 style="color: #333; font-size: 18px;">Signed Rental Agreement Confirmation</h2>
-                  <p>Dear ${customer?.firstname || 'Customer'},</p>
-                  <p>Thank you for signing your rental agreement. Please find your signed agreement attached as a PDF.</p>
-                  <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
-                    <tr style="border-bottom: 1px solid #e2e8f0;">
-                      <td style="padding: 8px; font-weight: bold;">Agreement Ref:</td>
-                      <td style="padding: 8px;">${agreementRef}</td>
-                    </tr>
-                    <tr style="border-bottom: 1px solid #e2e8f0;">
-                      <td style="padding: 8px; font-weight: bold;">Vehicle:</td>
-                      <td style="padding: 8px;">${vehicleName}</td>
-                    </tr>
-                    <tr style="border-bottom: 1px solid #e2e8f0;">
-                      <td style="padding: 8px; font-weight: bold;">Registration:</td>
-                      <td style="padding: 8px;">${vehicleRego || 'N/A'}</td>
-                    </tr>
-                    <tr style="border-bottom: 1px solid #e2e8f0;">
-                      <td style="padding: 8px; font-weight: bold;">Pickup:</td>
-                      <td style="padding: 8px;">${pickupDate} ${booking?.pickuptime || ''}</td>
-                    </tr>
-                    <tr style="border-bottom: 1px solid #e2e8f0;">
-                      <td style="padding: 8px; font-weight: bold;">Return:</td>
-                      <td style="padding: 8px;">${dropoffDate} ${booking?.dropofftime || ''}</td>
-                    </tr>
-                    <tr style="border-bottom: 1px solid #e2e8f0;">
-                      <td style="padding: 8px; font-weight: bold;">Total Cost:</td>
-                      <td style="padding: 8px;">$${Number(booking?.totalcost || 0).toFixed(2)}</td>
-                    </tr>
-                    <tr style="border-bottom: 1px solid #e2e8f0;">
-                      <td style="padding: 8px; font-weight: bold;">Signed By:</td>
-                      <td style="padding: 8px;">${customer?.firstname} ${customer?.lastname}</td>
-                    </tr>
-                  </table>
-                  <p style="color: #666; font-size: 13px;">This email confirms that the rental agreement has been electronically signed. A copy of the full terms and conditions was presented at the time of signing.</p>
-                  <p style="color: #666; font-size: 13px;">If you have any questions, please contact us at <a href="tel:0800525663">0800 525 663</a> or <a href="mailto:info@jamesblond.co.nz">info@jamesblond.co.nz</a>.</p>
-                  <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
-                  <p style="color: #999; font-size: 11px;">James Blond Rentals | GST: 140-174-963</p>
-                </div>
-              `,
-              from: 'James Blond Rentals <info@jamesblond.co.nz>',
-              remoteAttachments: [
-                {
-                  Name: `Rental-Agreement-${agreementRef}.pdf`,
-                  Url: downloadUrl,
-                  ContentType: "application/pdf"
-                }
-              ],
-            },
-          });
-
-          if (emailError) throw emailError;
-          if (data?.success === false) throw new Error(data.error || "Failed to send signed agreement email");
-
-          toast.success("Confirmation email sent to " + customerEmail);
-        } catch (emailError) {
-          console.error("Error sending confirmation email:", emailError);
-          toast.error("Agreement saved but failed to send confirmation email");
-        }
+        await sendAgreementEmail(customerEmail, customer, booking, pdfBlob);
       }
     } catch (error) {
       console.error("Error saving rental agreement:", error);
@@ -951,16 +975,34 @@ const RentalAgreement = () => {
                         </div>
                       )}
 
-                      {pdfUrl && (
-                        <div className="flex justify-center">
-                          <a href={pdfUrl} target="_blank" rel="noopener noreferrer">
-                            <Button variant="outline" size="lg">
-                              <Download className="h-4 w-4 mr-2" />
-                              Download Signed Agreement (PDF)
-                            </Button>
-                          </a>
-                        </div>
-                      )}
+                      <div className="flex justify-center gap-3 flex-wrap">
+                        <Button
+                          variant="outline"
+                          size="lg"
+                          onClick={async () => {
+                            const blob = await generatePdf();
+                            if (blob) {
+                              const url = URL.createObjectURL(blob);
+                              const a = document.createElement("a");
+                              a.href = url;
+                              a.download = `Rental-Agreement-${booking?.reservationdocumentno || reservationRef}.pdf`;
+                              a.click();
+                              URL.revokeObjectURL(url);
+                            }
+                          }}
+                        >
+                          <Download className="h-4 w-4 mr-2" />
+                          Download PDF
+                        </Button>
+                        <Button
+                          size="lg"
+                          onClick={handleResendEmail}
+                          disabled={resending}
+                        >
+                          {resending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Send className="h-4 w-4 mr-2" />}
+                          {resending ? "Sending..." : "Resend Agreement Email"}
+                        </Button>
+                      </div>
                     </>
                   ) : (
                     <>
