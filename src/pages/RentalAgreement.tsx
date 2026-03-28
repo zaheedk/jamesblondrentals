@@ -30,7 +30,11 @@ const RentalAgreement = () => {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [bookingData, setBookingData] = useState<RCMBookingInfoResponse["results"] | null>(null);
+  const [alreadySigned, setAlreadySigned] = useState(false);
+  const [existingSignature, setExistingSignature] = useState<string | null>(null);
+  const [existingAdditionalSig, setExistingAdditionalSig] = useState<string | null>(null);
+  const [signedAt, setSignedAt] = useState<string | null>(null);
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [kmsOut, setKmsOut] = useState("");
   const [kmsIn, setKmsIn] = useState("");
   const [fuelOut, setFuelOut] = useState("");
