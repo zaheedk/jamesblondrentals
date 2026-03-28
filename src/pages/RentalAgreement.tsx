@@ -975,16 +975,34 @@ const RentalAgreement = () => {
                         </div>
                       )}
 
-                      {pdfUrl && (
-                        <div className="flex justify-center">
-                          <a href={pdfUrl} target="_blank" rel="noopener noreferrer">
-                            <Button variant="outline" size="lg">
-                              <Download className="h-4 w-4 mr-2" />
-                              Download Signed Agreement (PDF)
-                            </Button>
-                          </a>
-                        </div>
-                      )}
+                      <div className="flex justify-center gap-3 flex-wrap">
+                        <Button
+                          variant="outline"
+                          size="lg"
+                          onClick={async () => {
+                            const blob = await generatePdf();
+                            if (blob) {
+                              const url = URL.createObjectURL(blob);
+                              const a = document.createElement("a");
+                              a.href = url;
+                              a.download = `Rental-Agreement-${booking?.reservationdocumentno || reservationRef}.pdf`;
+                              a.click();
+                              URL.revokeObjectURL(url);
+                            }
+                          }}
+                        >
+                          <Download className="h-4 w-4 mr-2" />
+                          Download PDF
+                        </Button>
+                        <Button
+                          size="lg"
+                          onClick={handleResendEmail}
+                          disabled={resending}
+                        >
+                          {resending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Send className="h-4 w-4 mr-2" />}
+                          {resending ? "Sending..." : "Resend Agreement Email"}
+                        </Button>
+                      </div>
                     </>
                   ) : (
                     <>
