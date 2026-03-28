@@ -5,22 +5,28 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
+interface Attachment {
+  Name: string
+  Content: string // base64 encoded
+  ContentType: string
+}
+
 interface EmailRequest {
   to: string
   subject: string
   html: string
   from?: string
   from_name?: string
+  attachments?: Attachment[]
 }
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
 
   try {
-    const { to, subject, html, from, from_name }: EmailRequest = await req.json()
+    const { to, subject, html, from, from_name, attachments }: EmailRequest = await req.json()
 
     console.log(`Sending email via Postmark to ${to} with subject: ${subject}`)
 
@@ -30,14 +36,21 @@ serve(async (req) => {
     }
     
     console.log("Using Postmark API key:", postmarkApiKey ? "Present" : "Missing")
+    if (attachments?.length) {
+      console.log(`Including ${attachments.length} attachment(s)`)
+    }
 
-    const emailData = {
+    const emailData: Record<string, unknown> = {
       From: "info@jamesblond.co.nz",
       To: to,
       Subject: subject,
       HtmlBody: html,
       TextBody: "Email sent from James Blond Car Rentals website",
       MessageStream: "outbound"
+    }
+
+    if (attachments && attachments.length > 0) {
+      emailData.Attachments = attachments
     }
 
     const response = await fetch("https://api.postmarkapp.com/email", {
