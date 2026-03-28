@@ -408,25 +408,21 @@ const RentalAgreement = () => {
 
       <div className="min-h-screen bg-muted/30 py-8 px-4">
         <div className="max-w-4xl mx-auto">
-          {/* Search */}
-          <Card className="mb-6">
-            <CardContent className="pt-6">
-              <div className="flex gap-3">
-                <div className="flex-1">
-                  <Label htmlFor="reservation-ref">Reservation Reference</Label>
-                  <Input
-                    id="reservation-ref"
-                    value={reservationRef}
-                    onChange={(e) => setReservationRef(e.target.value)}
-                    placeholder="e.g. 000092DE2AD59C0"
-                    onKeyDown={(e) => e.key === "Enter" && fetchBookingInfo()}
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          {loading && (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+          )}
 
-          {bookingData && (
+          {!loading && !bookingData && (
+            <Card>
+              <CardContent className="py-12 text-center text-muted-foreground">
+                <p>No reservation reference provided. Please use a valid rental agreement link.</p>
+              </CardContent>
+            </Card>
+          )}
+
+          {!loading && bookingData && (
             <div className="space-y-6" id="rental-agreement">
               {/* Header */}
               <Card>
