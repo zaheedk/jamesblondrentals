@@ -745,89 +745,142 @@ const RentalAgreement = () => {
                   <CardTitle className="text-lg">Signatures</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <p className="text-sm text-muted-foreground italic">
-                    I accept the terms and conditions of this rental agreement. You should not sign this unless you are sure you understand its effect.
-                  </p>
-
-                  {/* Hirer Signature */}
-                  <div>
-                    <Label className="font-medium mb-2 block">
-                      Signature of Hirer — {customer?.firstname} {customer?.lastname}
-                    </Label>
-                    <div className="border rounded-md bg-white">
-                      <SignatureCanvas
-                        ref={hirerSigRef}
-                        canvasProps={{
-                          className: "w-full h-32",
-                          style: { width: "100%", height: "128px" },
-                        }}
-                        backgroundColor="white"
-                      />
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="mt-2"
-                      onClick={() => hirerSigRef.current?.clear()}
-                    >
-                      Clear Signature
-                    </Button>
-                  </div>
-
-                  {/* Additional Driver Signature */}
-                  {additionalDrivers && additionalDrivers.length > 0 && (
-                    <div>
-                      <Label className="font-medium mb-2 block">
-                        Signature of Additional Driver — {additionalDrivers[0]?.firstname} {additionalDrivers[0]?.lastname}
-                      </Label>
-                      <div className="border rounded-md bg-white">
-                        <SignatureCanvas
-                          ref={additionalDriverSigRef}
-                          canvasProps={{
-                            className: "w-full h-32",
-                            style: { width: "100%", height: "128px" },
-                          }}
-                          backgroundColor="white"
-                        />
+                  {alreadySigned ? (
+                    <>
+                      <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-md">
+                        <ShieldCheck className="h-5 w-5 text-green-600" />
+                        <div>
+                          <p className="font-medium text-green-800">This agreement has been signed</p>
+                          {signedAt && (
+                            <p className="text-xs text-green-600">
+                              Signed on: {new Date(signedAt).toLocaleString("en-NZ")}
+                            </p>
+                          )}
+                        </div>
                       </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="mt-2"
-                        onClick={() => additionalDriverSigRef.current?.clear()}
-                      >
-                        Clear Signature
-                      </Button>
-                    </div>
-                  )}
 
-                  <Separator />
-
-                  {/* Save Button */}
-                  <div className="flex justify-center">
-                    {saved ? (
-                      <div className="flex items-center gap-2 text-primary">
-                        <CheckCircle className="h-5 w-5" />
-                        <span className="font-medium">Agreement Saved Successfully</span>
-                      </div>
-                    ) : (
-                      <Button
-                        size="lg"
-                        onClick={handleSave}
-                        disabled={saving}
-                        className="px-12"
-                      >
-                        {saving ? (
-                          <>
-                            <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                            Saving...
-                          </>
-                        ) : (
-                          "Save Signed Agreement"
+                      {/* Show existing hirer signature */}
+                      <div>
+                        <Label className="font-medium mb-2 block">
+                          Signature of Hirer — {customer?.firstname} {customer?.lastname}
+                        </Label>
+                        {existingSignature && (
+                          <div className="border rounded-md bg-white p-2">
+                            <img src={existingSignature} alt="Hirer signature" className="max-h-32" />
+                          </div>
                         )}
-                      </Button>
-                    )}
-                  </div>
+                      </div>
+
+                      {/* Show existing additional driver signature */}
+                      {existingAdditionalSig && (
+                        <div>
+                          <Label className="font-medium mb-2 block">
+                            Signature of Additional Driver
+                          </Label>
+                          <div className="border rounded-md bg-white p-2">
+                            <img src={existingAdditionalSig} alt="Additional driver signature" className="max-h-32" />
+                          </div>
+                        </div>
+                      )}
+
+                      {pdfUrl && (
+                        <div className="flex justify-center">
+                          <a href={pdfUrl} target="_blank" rel="noopener noreferrer">
+                            <Button variant="outline" size="lg">
+                              <Download className="h-4 w-4 mr-2" />
+                              Download Signed Agreement (PDF)
+                            </Button>
+                          </a>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-sm text-muted-foreground italic">
+                        I accept the terms and conditions of this rental agreement. You should not sign this unless you are sure you understand its effect.
+                      </p>
+
+                      {/* Hirer Signature */}
+                      <div>
+                        <Label className="font-medium mb-2 block">
+                          Signature of Hirer — {customer?.firstname} {customer?.lastname}
+                        </Label>
+                        <div className="border rounded-md bg-white">
+                          <SignatureCanvas
+                            ref={hirerSigRef}
+                            canvasProps={{
+                              className: "w-full h-32",
+                              style: { width: "100%", height: "128px" },
+                            }}
+                            backgroundColor="white"
+                          />
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="mt-2"
+                          onClick={() => hirerSigRef.current?.clear()}
+                        >
+                          Clear Signature
+                        </Button>
+                      </div>
+
+                      {/* Additional Driver Signature */}
+                      {allAdditionalDrivers.length > 0 && (
+                        <div>
+                          <Label className="font-medium mb-2 block">
+                            Signature of Additional Driver — {allAdditionalDrivers[0]?.firstname} {allAdditionalDrivers[0]?.lastname}
+                          </Label>
+                          <div className="border rounded-md bg-white">
+                            <SignatureCanvas
+                              ref={additionalDriverSigRef}
+                              canvasProps={{
+                                className: "w-full h-32",
+                                style: { width: "100%", height: "128px" },
+                              }}
+                              backgroundColor="white"
+                            />
+                          </div>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="mt-2"
+                            onClick={() => additionalDriverSigRef.current?.clear()}
+                          >
+                            Clear Signature
+                          </Button>
+                        </div>
+                      )}
+
+                      <Separator />
+
+                      {/* Save Button */}
+                      <div className="flex justify-center">
+                        {saved ? (
+                          <div className="flex items-center gap-2 text-primary">
+                            <CheckCircle className="h-5 w-5" />
+                            <span className="font-medium">Agreement Saved Successfully</span>
+                          </div>
+                        ) : (
+                          <Button
+                            size="lg"
+                            onClick={handleSave}
+                            disabled={saving}
+                            className="px-12"
+                          >
+                            {saving ? (
+                              <>
+                                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                                Saving...
+                              </>
+                            ) : (
+                              "Save Signed Agreement"
+                            )}
+                          </Button>
+                        )}
+                      </div>
+                    </>
+                  )}
                 </CardContent>
               </Card>
             </div>
