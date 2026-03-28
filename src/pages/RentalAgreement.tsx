@@ -124,6 +124,11 @@ const RentalAgreement = () => {
   const payments = bookingData?.paymentinfo;
   const extras = bookingData?.extrafees;
   const additionalDrivers = bookingData?.additionaldrivers;
+  const extraDrivers = bookingData?.extradrivers;
+  const allAdditionalDrivers = [
+    ...(additionalDrivers || []),
+    ...(extraDrivers || []),
+  ];
   const rateInfo = bookingData?.rateinfo;
   const rentalDays = Math.max(1, parseMoneyValue(booking?.numberofdays) || 1);
   // Prefer rateinfo daily rate (after discount), fallback to bookinginfo dailyrate
@@ -461,13 +466,13 @@ const RentalAgreement = () => {
               )}
 
               {/* Additional Drivers */}
-              {additionalDrivers && additionalDrivers.length > 0 && (
+              {allAdditionalDrivers.length > 0 && (
                 <Card>
                   <CardHeader>
                     <CardTitle className="text-lg">Additional Driver(s)</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    {additionalDrivers.map((driver, idx) => (
+                    {allAdditionalDrivers.map((driver, idx) => (
                       <div key={idx} className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mb-4">
                         <div>
                           <span className="font-medium">Name:</span>{" "}
