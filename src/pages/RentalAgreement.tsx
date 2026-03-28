@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import { Loader2, Search, FileText, CheckCircle, Download, ShieldCheck, Camera, X, ImageIcon } from "lucide-react";
+import { Loader2, Search, FileText, CheckCircle, Download, ShieldCheck, Camera, X, ImageIcon, Send } from "lucide-react";
 import type { RCMBookingInfoResponse } from "@/lib/api/rcm-api-types";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
