@@ -716,7 +716,7 @@ const RentalAgreement = () => {
                     <p><strong>19. DAMAGE REPAIRS/REMEDIATION</strong></p>
                     <p>The owner will arrange for any repairs at his discretion with a repair agent/provider of his choosing.</p>
 
-                    <Separator className="my-3" />
+                    <hr className="my-3 border-muted" />
 
                     <p className="font-semibold text-foreground">NOTE TO THE HIRER</p>
                     <p>The owner must give you at least one copy of this agreement. A copy must be kept in the vehicle throughout the term of the hire and produced on demand by any Police Officer, Traffic Officer or any other authorised employee of the Land Safety Transport Authority. Vehicle may be fitted and monitored with GPS Tracking Technology.</p>
@@ -930,7 +930,7 @@ const RentalAgreement = () => {
                         </div>
                       )}
 
-                      <Separator />
+                      <hr className="border-muted" />
 
                       {/* Save Button */}
                       <div className="flex justify-center">
