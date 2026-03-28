@@ -347,7 +347,7 @@ const RentalAgreement = () => {
                             Vehicle Rental ({booking?.numberofdays} days × ${Number(booking?.dailyrate || 0).toFixed(2)})
                           </td>
                           <td className="text-right py-2">
-                            ${Number(booking?.totalrateafterdiscount || 0).toFixed(2)}
+                            ${(Number(booking?.totalrateafterdiscount) || (Number(booking?.dailyrate || 0) * Number(booking?.numberofdays || 1))).toFixed(2)}
                           </td>
                         </tr>
                         {booking?.insuranceoption && (
