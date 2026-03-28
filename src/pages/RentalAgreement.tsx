@@ -475,290 +475,165 @@ const RentalAgreement = () => {
           )}
 
           {!loading && bookingData && (
-            <div className="space-y-6" id="rental-agreement">
+            <div className="bg-white shadow-sm border rounded-lg" id="rental-agreement">
+              <div className="p-8 md:p-12 space-y-8 text-[13px] leading-relaxed text-foreground">
+
               {/* Header */}
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h1 className="text-2xl font-bold text-primary">James Blond</h1>
-                      <p className="text-sm text-muted-foreground">
-                        {booking?.pickuplocationname || booking?.pickuplocation}
-                      </p>
-                      <p className="text-sm text-muted-foreground">Tel: 0800 525 663</p>
-                      <p className="text-sm text-muted-foreground">Email: info@jamesblond.co.nz</p>
-                      <p className="text-sm text-muted-foreground">GST: 140-174-963</p>
-                    </div>
-                    <div className="text-right">
-                      <div className="flex items-center gap-2 justify-end">
-                        <FileText className="h-5 w-5 text-primary" />
-                        <span className="text-lg font-semibold">Rental Agreement</span>
-                      </div>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        Ref: {booking?.reservationdocumentno || booking?.reservationno || booking?.reservationref || reservationRef}
-                      </p>
-                    </div>
+              <div className="flex justify-between items-start border-b-2 border-primary pb-4">
+                <div>
+                  <h1 className="text-2xl font-bold text-primary tracking-tight">James Blond</h1>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {booking?.pickuplocationname || booking?.pickuplocation}
+                  </p>
+                  <p className="text-xs text-muted-foreground">Tel: 0800 525 663</p>
+                  <p className="text-xs text-muted-foreground">Email: info@jamesblond.co.nz</p>
+                  <p className="text-xs text-muted-foreground">GST: 140-174-963</p>
+                </div>
+                <div className="text-right">
+                  <div className="flex items-center gap-2 justify-end">
+                    <FileText className="h-5 w-5 text-primary" />
+                    <span className="text-lg font-bold text-foreground">Rental Agreement</span>
                   </div>
-                </CardContent>
-              </Card>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Ref: #{booking?.reservationdocumentno || booking?.reservationno || booking?.reservationref || reservationRef}
+                  </p>
+                </div>
+              </div>
 
               {/* Hirer Details */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Hirer's Details</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <span className="font-medium">Name:</span>{" "}
-                      {customer?.firstname} {customer?.lastname}
-                    </div>
-                    <div>
-                      <span className="font-medium">DOB:</span>{" "}
-                      {customer?.dateofbirth}
-                    </div>
-                    <div>
-                      <span className="font-medium">Licence No:</span>{" "}
-                      {customer?.licenseno}
-                    </div>
-                    <div>
-                      <span className="font-medium">Issued In:</span>{" "}
-                      {customer?.licenseissued || customer?.country}
-                    </div>
-                    <div>
-                      <span className="font-medium">Expiry:</span>{" "}
-                      {customer?.licenseexpires}
-                    </div>
-                    <div>
-                      <span className="font-medium">Phone:</span>{" "}
-                      {customer?.phone || customer?.mobile}
-                    </div>
-                    <div className="md:col-span-2">
-                      <span className="font-medium">Address:</span>{" "}
-                      {[customer?.address, customer?.city, customer?.state, customer?.postcode].filter(Boolean).join(", ")}
-                    </div>
-                    <div className="md:col-span-2">
-                      <span className="font-medium">Email:</span>{" "}
-                      {customer?.email}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              <div>
+                <h2 className="text-base font-bold text-primary mb-3 border-b pb-1">Hirer's Details</h2>
+                <div className="grid grid-cols-2 gap-x-8 gap-y-2">
+                  <div><span className="font-semibold">Name:</span> {customer?.firstname} {customer?.lastname}</div>
+                  <div><span className="font-semibold">DOB:</span> {customer?.dateofbirth}</div>
+                  <div><span className="font-semibold">Licence No:</span> {customer?.licenseno}</div>
+                  <div><span className="font-semibold">Issued In:</span> {customer?.licenseissued || customer?.country}</div>
+                  <div><span className="font-semibold">Expiry:</span> {customer?.licenseexpires}</div>
+                  <div><span className="font-semibold">Phone:</span> {customer?.phone || customer?.mobile}</div>
+                  <div className="col-span-2"><span className="font-semibold">Address:</span> {[customer?.address, customer?.city, customer?.state, customer?.postcode].filter(Boolean).join(", ")}</div>
+                  <div className="col-span-2"><span className="font-semibold">Email:</span> {customer?.email}</div>
+                </div>
+              </div>
 
               {/* Vehicle Details */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Vehicle Details</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <span className="font-medium">Category:</span>{" "}
-                      {booking?.vehiclecategory}
-                    </div>
-                    <div>
-                      <span className="font-medium">Description:</span>{" "}
-                      {booking?.vehicledescription1}
-                    </div>
-                    <div>
-                      <Label className="font-medium">Licence Plate:</Label>
-                      <div className="mt-1 px-3 py-2 border rounded-md bg-muted text-sm">{vehicleRego || "N/A"}</div>
-                    </div>
-                    <div>
-                      <span className="font-medium">Fuel Type:</span>{" "}
-                      {booking?.fueltype || "N/A"}
-                    </div>
-                    <div>
-                      <Label className="font-medium">Kms Out:</Label>
-                      <div className="mt-1 px-3 py-2 border rounded-md bg-muted text-sm">{kmsOut || "N/A"}</div>
-                    </div>
-                    <div>
-                      <Label className="font-medium">Kms In:</Label>
-                      <div className="mt-1 px-3 py-2 border rounded-md bg-muted text-sm">{kmsIn || "N/A"}</div>
-                    </div>
-                    <div>
-                      <Label className="font-medium">Fuel Out:</Label>
-                      <div className="mt-1 px-3 py-2 border rounded-md bg-muted text-sm">{fuelOut || "N/A"}</div>
-                    </div>
-                    <div>
-                      <Label className="font-medium">Fuel In:</Label>
-                      <div className="mt-1 px-3 py-2 border rounded-md bg-muted text-sm">{fuelIn || "N/A"}</div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              <div>
+                <h2 className="text-base font-bold text-primary mb-3 border-b pb-1">Vehicle Details</h2>
+                <div className="grid grid-cols-2 gap-x-8 gap-y-2">
+                  <div><span className="font-semibold">Category:</span> {booking?.vehiclecategory}</div>
+                  <div><span className="font-semibold">Description:</span> {booking?.vehicledescription1}</div>
+                  <div><span className="font-semibold">Licence Plate:</span> {vehicleRego || "N/A"}</div>
+                  <div><span className="font-semibold">Fuel Type:</span> {booking?.fueltype || "N/A"}</div>
+                  <div><span className="font-semibold">Kms Out:</span> {kmsOut || "N/A"}</div>
+                  <div><span className="font-semibold">Kms In:</span> {kmsIn || "N/A"}</div>
+                  <div><span className="font-semibold">Fuel Out:</span> {fuelOut || "N/A"}</div>
+                  <div><span className="font-semibold">Fuel In:</span> {fuelIn || "N/A"}</div>
+                </div>
+              </div>
 
               {/* Rental Details */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Rental Details</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <span className="font-medium">Pickup:</span>{" "}
-                      {booking?.pickupdate} {booking?.pickuptime}
-                    </div>
-                    <div>
-                      <span className="font-medium">Pickup Location:</span>{" "}
-                      {booking?.pickuplocationname || booking?.pickuplocation}
-                    </div>
-                    <div>
-                      <span className="font-medium">Return:</span>{" "}
-                      {booking?.dropoffdate} {booking?.dropofftime}
-                    </div>
-                    <div>
-                      <span className="font-medium">Return Location:</span>{" "}
-                      {booking?.dropofflocationname || booking?.dropofflocation}
-                    </div>
-                    <div>
-                      <span className="font-medium">Days:</span>{" "}
-                      {booking?.numberofdays}
-                    </div>
-                    <div>
-                      <span className="font-medium">Daily Rate:</span>{" "}
-                      ${Number(booking?.dailyrate || 0).toFixed(2)}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              <div>
+                <h2 className="text-base font-bold text-primary mb-3 border-b pb-1">Rental Details</h2>
+                <div className="grid grid-cols-2 gap-x-8 gap-y-2">
+                  <div><span className="font-semibold">Pickup:</span> {booking?.pickupdate} {booking?.pickuptime}</div>
+                  <div><span className="font-semibold">Pickup Location:</span> {booking?.pickuplocationname || booking?.pickuplocation}</div>
+                  <div><span className="font-semibold">Return:</span> {booking?.dropoffdate} {booking?.dropofftime}</div>
+                  <div><span className="font-semibold">Return Location:</span> {booking?.dropofflocationname || booking?.dropofflocation}</div>
+                  <div><span className="font-semibold">Days:</span> {booking?.numberofdays}</div>
+                  <div><span className="font-semibold">Daily Rate:</span> ${Number(booking?.dailyrate || 0).toFixed(2)}</div>
+                </div>
+              </div>
 
               {/* Rates & Fees */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Rates & Fees</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                      <thead>
-                        <tr className="border-b">
-                          <th className="text-left py-2 font-medium">Item</th>
-                          <th className="text-right py-2 font-medium">Amount</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr className="border-b">
-                          <td className="py-2">
-                            Vehicle Rental ({rentalDays} days × ${dailyRate.toFixed(2)})
-                          </td>
-                          <td className="text-right py-2">
-                            ${rentalAmount.toFixed(2)}
-                          </td>
-                        </tr>
-                        {booking?.insuranceoption && (
-                          <tr className="border-b">
-                            <td className="py-2">{booking.insuranceoption}</td>
-                            <td className="text-right py-2">
-                              ${Number(booking?.insuranceamount || 0).toFixed(2)}
-                            </td>
-                          </tr>
-                        )}
-                        {extras?.map((extra, idx) => (
-                          <tr key={idx} className="border-b">
-                            <td className="py-2">{extra.name}</td>
-                            <td className="text-right py-2">
-                              ${Number(extra.fees || 0).toFixed(2)}
-                            </td>
-                          </tr>
-                        ))}
-                        {booking?.mandatoryfees?.map((fee, idx) => (
-                          <tr key={idx} className="border-b">
-                            <td className="py-2">{fee.name || "Mandatory Fee"}</td>
-                            <td className="text-right py-2">
-                              ${Number(fee.totalfeeamount || fee.amount || 0).toFixed(2)}
-                            </td>
-                          </tr>
-                        ))}
-                        <tr className="font-bold border-t-2">
-                          <td className="py-2">Total</td>
-                          <td className="text-right py-2">
-                            ${Number(booking?.totalcost || 0).toFixed(2)}
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </CardContent>
-              </Card>
+              <div>
+                <h2 className="text-base font-bold text-primary mb-3 border-b pb-1">Rates & Fees</h2>
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b-2 border-muted">
+                      <th className="text-left py-1.5 font-semibold">Item</th>
+                      <th className="text-right py-1.5 font-semibold">Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="border-b border-muted">
+                      <td className="py-1.5">Vehicle Rental ({rentalDays} days × ${dailyRate.toFixed(2)})</td>
+                      <td className="text-right py-1.5">${rentalAmount.toFixed(2)}</td>
+                    </tr>
+                    {booking?.insuranceoption && (
+                      <tr className="border-b border-muted">
+                        <td className="py-1.5">{booking.insuranceoption}</td>
+                        <td className="text-right py-1.5">${Number(booking?.insuranceamount || 0).toFixed(2)}</td>
+                      </tr>
+                    )}
+                    {extras?.map((extra, idx) => (
+                      <tr key={idx} className="border-b border-muted">
+                        <td className="py-1.5">{extra.name}</td>
+                        <td className="text-right py-1.5">${Number(extra.fees || 0).toFixed(2)}</td>
+                      </tr>
+                    ))}
+                    {booking?.mandatoryfees?.map((fee, idx) => (
+                      <tr key={idx} className="border-b border-muted">
+                        <td className="py-1.5">{fee.name || "Mandatory Fee"}</td>
+                        <td className="text-right py-1.5">${Number(fee.totalfeeamount || fee.amount || 0).toFixed(2)}</td>
+                      </tr>
+                    ))}
+                    <tr className="font-bold border-t-2 border-foreground">
+                      <td className="py-1.5">Total</td>
+                      <td className="text-right py-1.5">${Number(booking?.totalcost || 0).toFixed(2)}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
 
               {/* Payment Details */}
               {payments && payments.length > 0 && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg">Payment Details</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-sm">
-                        <thead>
-                          <tr className="border-b">
-                            <th className="text-left py-2 font-medium">Date</th>
-                            <th className="text-left py-2 font-medium">Method</th>
-                            <th className="text-left py-2 font-medium">Details</th>
-                            <th className="text-right py-2 font-medium">Amount</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {payments.map((payment, idx) => (
-                            <tr key={idx} className="border-b">
-                              <td className="py-2">{payment.paymentdate}</td>
-                              <td className="py-2">{payment.paymenttype || payment.paymentmethod || ""}</td>
-                              <td className="py-2">{payment.paysource || payment.paymentdetails || ""}</td>
-                              <td className="text-right py-2">
-                                ${Number(payment.paidamount || 0).toFixed(2)}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                    <div className="mt-4 text-right font-bold">
-                      Balance Due: ${Number(booking?.balancedue || 0).toFixed(2)}
-                    </div>
-                  </CardContent>
-                </Card>
+                <div>
+                  <h2 className="text-base font-bold text-primary mb-3 border-b pb-1">Payment Details</h2>
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b-2 border-muted">
+                        <th className="text-left py-1.5 font-semibold">Date</th>
+                        <th className="text-left py-1.5 font-semibold">Method</th>
+                        <th className="text-left py-1.5 font-semibold">Details</th>
+                        <th className="text-right py-1.5 font-semibold">Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {payments.map((payment, idx) => (
+                        <tr key={idx} className="border-b border-muted">
+                          <td className="py-1.5">{payment.paymentdate}</td>
+                          <td className="py-1.5">{payment.paymenttype || payment.paymentmethod || ""}</td>
+                          <td className="py-1.5">{payment.paysource || payment.paymentdetails || ""}</td>
+                          <td className="text-right py-1.5">${Number(payment.paidamount || 0).toFixed(2)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="mt-2 text-right font-bold">
+                    Balance Due: ${Number(booking?.balancedue || 0).toFixed(2)}
+                  </div>
+                </div>
               )}
 
               {/* Additional Drivers */}
               {allAdditionalDrivers.length > 0 && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg">Additional Driver(s)</CardTitle>
-                  </CardHeader>
-                  <CardContent>
+                <div>
+                  <h2 className="text-base font-bold text-primary mb-3 border-b pb-1">Additional Driver(s)</h2>
                     {allAdditionalDrivers.map((driver, idx) => (
-                      <div key={idx} className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mb-4">
-                        <div>
-                          <span className="font-medium">Name:</span>{" "}
-                          {driver.firstname} {driver.lastname}
-                        </div>
-                        <div>
-                          <span className="font-medium">DOB:</span>{" "}
-                          {driver.dateofbirth}
-                        </div>
-                        <div>
-                          <span className="font-medium">Licence No:</span>{" "}
-                          {driver.licenseno}
-                        </div>
-                        <div>
-                          <span className="font-medium">Expiry:</span>{" "}
-                          {driver.licenseexpires}
-                        </div>
+                      <div key={idx} className="grid grid-cols-2 gap-x-8 gap-y-2 mb-3">
+                        <div><span className="font-semibold">Name:</span> {driver.firstname} {driver.lastname}</div>
+                        <div><span className="font-semibold">DOB:</span> {driver.dateofbirth}</div>
+                        <div><span className="font-semibold">Licence No:</span> {driver.licenseno}</div>
+                        <div><span className="font-semibold">Expiry:</span> {driver.licenseexpires}</div>
                       </div>
                     ))}
-                  </CardContent>
-                </Card>
+                </div>
               )}
 
               {/* Terms & Conditions */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Terms & Conditions</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-xs text-muted-foreground space-y-3 max-h-96 overflow-y-auto pr-2">
-                    <p className="font-semibold text-foreground">
+              <div>
+                <h2 className="text-base font-bold text-primary mb-3 border-b pb-1">Terms & Conditions</h2>
+                  <div className="text-[11px] leading-snug space-y-2 text-foreground">
+                    <p className="font-semibold">
                       SUBJECT TO FOLLOWING TERMS AND CONDITIONS
                     </p>
                     <p>
@@ -841,24 +716,20 @@ const RentalAgreement = () => {
                     <p><strong>19. DAMAGE REPAIRS/REMEDIATION</strong></p>
                     <p>The owner will arrange for any repairs at his discretion with a repair agent/provider of his choosing.</p>
 
-                    <Separator className="my-3" />
+                    <hr className="my-3 border-muted" />
 
                     <p className="font-semibold text-foreground">NOTE TO THE HIRER</p>
                     <p>The owner must give you at least one copy of this agreement. A copy must be kept in the vehicle throughout the term of the hire and produced on demand by any Police Officer, Traffic Officer or any other authorised employee of the Land Safety Transport Authority. Vehicle may be fitted and monitored with GPS Tracking Technology.</p>
                     <p>Please note that unless prior credit terms have been agreed and approved by James Blond Ltd, then your account is required to remain in credit at all times. When you return our vehicle, any shortfall is payable immediately upon return of the vehicle. Should you be unable to pay we will send the matter for immediate collection, holding you liable for all other costs that may be incurred in the pursuit of your debt. This may include, but is not limited to, additional collection agents' fees, legal costs and any court costs that we may incur in the pursuit of outstanding rental.</p>
                   </div>
-                </CardContent>
-              </Card>
+              </div>
 
               {/* Vehicle Photos */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <Camera className="h-5 w-5" />
-                    Vehicle Condition Photos
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
+              <div>
+                <h2 className="text-base font-bold text-primary mb-3 border-b pb-1 flex items-center gap-2">
+                  <Camera className="h-4 w-4" />
+                  Vehicle Condition Photos
+                </h2>
                   {alreadySigned ? (
                     <>
                       {existingPhotos.length > 0 ? (
@@ -928,15 +799,12 @@ const RentalAgreement = () => {
                       )}
                     </>
                   )}
-                </CardContent>
-              </Card>
+              </div>
 
               {/* Signatures */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Signatures</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
+              <div>
+                <h2 className="text-base font-bold text-primary mb-3 border-b pb-1">Signatures</h2>
+                <div className="space-y-6">
                   {alreadySigned ? (
                     <>
                       <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-md">
@@ -1062,7 +930,7 @@ const RentalAgreement = () => {
                         </div>
                       )}
 
-                      <Separator />
+                      <hr className="border-muted" />
 
                       {/* Save Button */}
                       <div className="flex justify-center">
@@ -1091,8 +959,10 @@ const RentalAgreement = () => {
                       </div>
                     </>
                   )}
-                </CardContent>
-              </Card>
+                </div>
+              </div>
+
+              </div>
             </div>
           )}
         </div>
