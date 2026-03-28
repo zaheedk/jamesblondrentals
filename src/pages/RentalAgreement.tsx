@@ -476,21 +476,95 @@ const RentalAgreement = () => {
                   <CardTitle className="text-lg">Terms & Conditions</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-xs text-muted-foreground space-y-3 max-h-64 overflow-y-auto pr-2">
+                  <div className="text-xs text-muted-foreground space-y-3 max-h-96 overflow-y-auto pr-2">
                     <p className="font-semibold text-foreground">
                       SUBJECT TO FOLLOWING TERMS AND CONDITIONS
                     </p>
                     <p>
                       Subject to the terms & conditions contained on the front and reverse hereof of which the hirer(s) acknowledges that they are aware, the hirer agrees to rent the above vehicle and elects to pay all amounts payable under this agreement by the method of payment of which details are given on this document. By signing this contract, you hereby agree to these terms and authorise Kanthawala Ltd charging your credit card for the rental, the bond and any additional costs incurred.
                     </p>
-                    <p><strong>1. ACCIDENTS</strong> — Any accident must be reported within twenty four(24) hours and must be accompanied by a police report.</p>
-                    <p><strong>2. TRAFFIC INFRINGEMENTS</strong> — The Hirer(s) accept responsibility for all traffic violations infringements. A $35 administration fee will apply for any fines received.</p>
-                    <p><strong>3. HIRER(S) RESPONSIBILITY</strong> — Maintaining water and oil levels is the hirer(s) responsibility.</p>
-                    <p><strong>4. LATE RETURNS</strong> — Charged at $20.00 per hour for up to 3 hours late, after which full 24 hours rental will be charged.</p>
-                    <p><strong>5. PERSONS WHO MAY DRIVE</strong> — The vehicle may be driven only by persons described in this agreement who hold a current driver's licence.</p>
-                    <p><strong>6. PAYMENTS</strong> — The hirer shall pay all hire charges as specified in this agreement.</p>
-                    <p><strong>7. INSURANCE</strong> — The hirer shall ensure all reasonable care is taken in handling and parking the vehicle.</p>
-                    <p><strong>8-19.</strong> Full terms available at jamesblond.co.nz/terms</p>
+
+                    <p><strong>1. ACCIDENTS</strong></p>
+                    <p>Any accident must be reported within twenty four(24) hours and must be accompanied by a police report. Should the hirer(s) fail to comply with any conditions of this contract, all losses and damages suffered by the owner arising out of such failure shall be borne by and paid for by the hirer(s).</p>
+
+                    <p><strong>2. TRAFFIC INFRINGEMENTS</strong></p>
+                    <p>The Hirer(s) accept responsibility for all traffic violations infringements, including parking, speeding and lane violations and impound fees incurred during the rental. A $35 administration fee will apply for any fines received.</p>
+
+                    <p><strong>3. HIRER(S) RESPONSIBILITY</strong></p>
+                    <p>Maintaining water and oil levels is the hirer(s) responsibility. Any approved cost incurred will be reimbursed upon production of a receipt. Should any malfunction of the vehicle occur, any warning light or any sign of overheating, you must stop the vehicle immediately and contact James Blond or you will be held liable and loss of bond may occur.</p>
+                    <p>Vehicles are provided with a full tank of fuel, and must be returned with full tank of fuel. If not, hirer is liable for Fuel cost plus $50.00 fee.</p>
+                    <p>Vehicles are provided in a clean and tidy manner and should be returned in a similar state otherwise a cleaning fee of $200.00 will apply.</p>
+                    <p>The hirer accepts that SMOKING and/or transporting ANIMALS in the vehicle is strictly PROHIBITED. Doing so will incur a strict $200.00 Fine.</p>
+
+                    <p><strong>4. LATE RETURNS</strong></p>
+                    <p>Will be charged for at the rate at $20.00 per hour for up to 3 hours late, after which full 24 hours rental will be charged, including the insurance fee. A non-compliance fee of $200 will be charged if returned late without prior approval of James Blond Rentals.</p>
+
+                    <p><strong>5. PERSONS WHO MAY DRIVE VEHICLE</strong></p>
+                    <p>The vehicle may be driven during the period of hire only by the persons described in this agreement and only if such person holds a current driver's license appropriate for the vehicle at the time when they are driving the vehicle. Non-compliance will result in a $200 fine.</p>
+
+                    <p><strong>6. PAYMENTS BY HIRER</strong></p>
+                    <p>The hirer shall pay to the owner as payment for the hire of the vehicle, accessories, insurance upgrade options, and any extra charges incurred for the period of hire the sum as specified in this agreement. In addition the hirer shall pay to the owner on termination of the hiring a distance charge at the rate referred to in this agreement. The total distance that the hirer may run the vehicle during the period of hire shall not exceed the number of kilometres specified in this agreement. The hirer shall also pay for fuel (but not oil) used in the vehicle during the period of hire.</p>
+
+                    <p><strong>7. INSURANCE</strong></p>
+                    <p>The hirer shall ensure that all reasonable care is taken in handling and parking the vehicle, and that it is left securely locked when not in use. The insurance excess will be determined by the insurance option taken by the customer prior to checkout.</p>
+
+                    <p><strong>8. INDEMNITY</strong></p>
+                    <p>Subject to the exclusions set out below, the hirer and any driver authorised to drive the vehicle is:</p>
+                    <p className="pl-4">(a) fully indemnified in respect of any liability he/she might have to the owner in respect of loss or of damage to the vehicle and any consequential loss of revenue or other expenses of the owner including towing and salvage costs associated with the recovery of the vehicle and its accessories and spare parts.</p>
+                    <p className="pl-4">(b) indemnified to the extent of $NZ250,000 in respect of any liability he/she might have for damage to any property (including injury to any animal) belonging to any other 3rd party person and arising out of the use of the vehicle.</p>
+
+                    <p><strong>9. EXCLUSIONS</strong></p>
+                    <p>The indemnities referred to above shall not apply where the damage, injury or loss arises when:</p>
+                    <p className="pl-4">(a) The driver of the vehicle is under the influence of alcohol, or any drug which affects his/her ability to drive the vehicle;</p>
+                    <p className="pl-4">(b) The vehicle is in an unsafe or un-roadworthy condition that arose during the course of the hire and that caused or contributed to the damage or loss, and the hirer or the driver was aware or ought to have been aware of the unsafe or un-roadworthy condition of the vehicle;</p>
+                    <p className="pl-4">(c) The vehicle is operated in any race, speed test, rally or contest;</p>
+                    <p className="pl-4">(d) Any damage caused to the vehicle above the height of the windscreen or third party damage to property caused by the vehicle above this height is excluded from our cover and will be the responsibility of the hirer;</p>
+                    <p className="pl-4">(e) The vehicle is driven by any person who at the time when he/she drives the vehicle is disqualified from holding or has never held a driver's license appropriate for that vehicle;</p>
+                    <p className="pl-4">(f) The vehicle is damaged due to driver abuse or negligence, or is wilfully or recklessly damaged by the hirer or any other person named in this agreement, or driving the vehicle under the authority of the hirer, or is lost as a result of the wilful or reckless behaviour of the hirer or any such person; This includes but is not limited to burnt out clutch, overloading, incorrect fuel etc;</p>
+                    <p className="pl-4">(g) The vehicle is operated on any of the following roads: Skipper's Canyon Queenstown; Ball Hut Access Mt Cook; Crown Range Queenstown; unsealed section of SH1 far north beyond Waitiki Landing; all beaches and off-road unsealed areas;</p>
+                    <p className="pl-4">(h) The vehicle is operated outside the term of hire or any agreed extension of that term.</p>
+                    <p className="pl-4">(i) Any insurance claim received by any other party after the termination of the hire where the hirer has not advised the company will be deemed to be a claim against the hirer.</p>
+                    <p>It is agreed between the owner and hirer that Section 11 of the Insurance Law Reform Act 1977 shall apply with respect to the above exclusions as if this clause constituted a contract of insurance.</p>
+
+                    <p><strong>10. OWNERS OBLIGATIONS</strong></p>
+                    <p>The owner shall supply the vehicle in a safe & roadworthy condition & shall be responsible for all ordinary costs of running the vehicle during the term of the hire except to the extent that by the terms of this agreement those costs are payable by the hirer.</p>
+
+                    <p><strong>11. MECHANICAL REPAIRS & ACCIDENTS</strong></p>
+                    <p>If the vehicle is damaged or requires repair or salvage, because of an accident or breakdown, the hirer shall advise the owner of the full circumstances by telephone or email as soon as possible but no later than 24 hours after the accident.</p>
+
+                    <p><strong>12. REPAIRS/SALVAGE</strong></p>
+                    <p>The hirer shall not arrange or undertake any repairs or salvage without the authority of the owner except to the extent to the extent that the repairs or salvage are necessary to prevent further damage to the vehicle or to other property.</p>
+
+                    <p><strong>13. TAMPERING</strong></p>
+                    <p>The hirer shall ensure that no person shall interfere with the distance recorder or speedometer or, except in an emergency, any part of the engine, transmission, braking, electrical or suspension systems of the vehicle.</p>
+
+                    <p><strong>14. PUNCTURES, TYRE DAMAGE, GLASS, LENSES & HEADLIGHT DAMAGE</strong></p>
+                    <p>Are at the hirer's expense unless they have upgraded to an insurance option providing extra cover for this.</p>
+
+                    <p><strong>15. USE OF THE VEHICLE</strong></p>
+                    <p>The hirer shall not:</p>
+                    <p className="pl-4">(a) use or permit the vehicle to be used for the carriage of passengers for hire or reward unless the vehicle is hired with the knowledge of the owner for use in passenger service licensed under part VII of the Transport Act 1962 or exempted from licensing under that Act.</p>
+                    <p className="pl-4">(b) sublet or hire the vehicle to any other person nor permit the vehicle to be operated outside his/her authority;</p>
+                    <p className="pl-4">(c) operate the vehicle, or permit it to be operated or driven.</p>
+
+                    <p><strong>16. RETURN OF THE VEHICLE</strong></p>
+                    <p className="pl-4">(a) The hirer shall, at or before the expiry of the term of hire, deliver the vehicle to the owner's place of business or the owner's agent at the agent's place of business, or obtain the owner's consent to the continuation of hire.</p>
+                    <p className="pl-4">(b) Where a vehicle remains overdue and no contact has been made by the hirer and outstanding rental payments are due, James Blond Ltd will consider the vehicle as stolen and will take appropriate measures to recover their vehicle passing all associated costs to the hirer.</p>
+
+                    <p><strong>17. IMMEDIATE RETURN OF VEHICLE WHERE DEFAULT OR DAMAGE</strong></p>
+                    <p>The owner shall have the right to terminate the hiring and take immediate possession of the vehicle if the hirer fails to comply with any of the terms of this agreement or if the vehicle is damaged. The termination of the hiring under the authority of this clause shall be without prejudice to the other rights of the owner and the rights of the hirer under this agreement or otherwise.</p>
+
+                    <p><strong>18. CANCELLATION FEES</strong></p>
+                    <p>Under any circumstances, a minimum Cancellation fee of $50.00 will apply. A cancellation fee of 1 days hireage at the total daily rate will be incurred if the rental is cancelled 24-72 hours prior to pick up, and a fee of either $150 or 50% of the total rental whichever is the greater will be incurred in the event of cancellation within 24 hrs or if you fail to collect the car.</p>
+
+                    <p><strong>19. DAMAGE REPAIRS/REMEDIATION</strong></p>
+                    <p>The owner will arrange for any repairs at his discretion with a repair agent/provider of his choosing.</p>
+
+                    <Separator className="my-3" />
+
+                    <p className="font-semibold text-foreground">NOTE TO THE HIRER</p>
+                    <p>The owner must give you at least one copy of this agreement. A copy must be kept in the vehicle throughout the term of the hire and produced on demand by any Police Officer, Traffic Officer or any other authorised employee of the Land Safety Transport Authority. Vehicle may be fitted and monitored with GPS Tracking Technology.</p>
+                    <p>Please note that unless prior credit terms have been agreed and approved by James Blond Ltd, then your account is required to remain in credit at all times. When you return our vehicle, any shortfall is payable immediately upon return of the vehicle. Should you be unable to pay we will send the matter for immediate collection, holding you liable for all other costs that may be incurred in the pursuit of your debt. This may include, but is not limited to, additional collection agents' fees, legal costs and any court costs that we may incur in the pursuit of outstanding rental.</p>
                   </div>
                 </CardContent>
               </Card>
