@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useBookings } from "@/hooks/use-bookings";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Search, Send, FileSignature } from "lucide-react";
+import { Search, Send, FileSignature, Eye } from "lucide-react";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -23,7 +23,22 @@ import { Link } from "react-router-dom";
 const AdminBookings = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sendingEmail, setSendingEmail] = useState<string | null>(null);
+  const [signedAgreements, setSignedAgreements] = useState<Set<string>>(new Set());
   const { data: bookings, isLoading, error } = useBookings();
+
+  // Fetch which reservation refs have signed agreements
+  useEffect(() => {
+    const fetchSignedAgreements = async () => {
+      const { data } = await supabase
+        .from("rental_agreements" as any)
+        .select("reservation_ref")
+        .not("hirer_signature", "is", null);
+      if (data) {
+        setSignedAgreements(new Set((data as any[]).map((d: any) => d.reservation_ref)));
+      }
+    };
+    fetchSignedAgreements();
+  }, []);
 
   const siteUrl = window.location.origin;
 
@@ -303,9 +318,16 @@ const AdminBookings = () => {
                               {booking.reservation_reference && (
                                 <>
                                   <Link to={`/admin/rental-agreement?ref=${booking.reservation_reference}`}>
-                                    <Button variant="ghost" size="sm" title="View Rental Agreement">
-                                      <FileSignature className="h-4 w-4" />
-                                    </Button>
+                                    {signedAgreements.has(booking.reservation_reference) ? (
+                                      <Button variant="ghost" size="sm" title="View Signed Agreement" className="text-green-600 hover:text-green-700">
+                                        <Eye className="h-4 w-4 mr-1" />
+                                        <span className="text-xs">View Signed</span>
+                                      </Button>
+                                    ) : (
+                                      <Button variant="ghost" size="sm" title="Create Rental Agreement">
+                                        <FileSignature className="h-4 w-4" />
+                                      </Button>
+                                    )}
                                   </Link>
                                   {booking.customer_email && (
                                     <Button

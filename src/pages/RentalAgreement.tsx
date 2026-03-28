@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import { Loader2, Search, FileText, CheckCircle, Download, ShieldCheck } from "lucide-react";
+import { Loader2, Search, FileText, CheckCircle, Download, ShieldCheck, Camera, X, ImageIcon } from "lucide-react";
 import type { RCMBookingInfoResponse } from "@/lib/api/rcm-api-types";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
@@ -43,6 +43,10 @@ const RentalAgreement = () => {
   const [vehicleRego, setVehicleRego] = useState("");
   const hirerSigRef = useRef<SignatureCanvas>(null);
   const additionalDriverSigRef = useRef<SignatureCanvas>(null);
+  const photoInputRef = useRef<HTMLInputElement>(null);
+  const [vehiclePhotos, setVehiclePhotos] = useState<{ url: string; name: string }[]>([]);
+  const [uploadingPhotos, setUploadingPhotos] = useState(false);
+  const [existingPhotos, setExistingPhotos] = useState<{ url: string; name: string }[]>([]);
 
   useEffect(() => {
     if (searchParams.get("ref")) {
@@ -77,6 +81,20 @@ const RentalAgreement = () => {
         setExistingSignature(existing.hirer_signature);
         setExistingAdditionalSig(existing.additional_driver_signature);
         setSignedAt(existing.signed_at);
+
+        // Load existing vehicle photos from storage
+        const { data: photoFiles } = await supabase.storage
+          .from("vehicle-photos")
+          .list(reservationRef.trim(), { limit: 50 });
+        if (photoFiles && photoFiles.length > 0) {
+          const photos = photoFiles.map(f => {
+            const { data: urlData } = supabase.storage
+              .from("vehicle-photos")
+              .getPublicUrl(`${reservationRef.trim()}/${f.name}`);
+            return { url: urlData.publicUrl, name: f.name };
+          });
+          setExistingPhotos(photos);
+        }
       }
 
       const response = await rcmApi.getBookingInfo(reservationRef.trim());
@@ -141,6 +159,59 @@ const RentalAgreement = () => {
       console.error("Error generating PDF:", error);
       return null;
     }
+  };
+
+
+  const handlePhotoCapture = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files || !reservationRef.trim()) return;
+
+    setUploadingPhotos(true);
+    try {
+      const newPhotos: { url: string; name: string }[] = [];
+      for (const file of Array.from(files)) {
+        const fileName = `${Date.now()}-${file.name}`;
+        const filePath = `${reservationRef.trim()}/${fileName}`;
+        const { error } = await supabase.storage
+          .from("vehicle-photos")
+          .upload(filePath, file);
+
+        if (!error) {
+          const { data: urlData } = supabase.storage
+            .from("vehicle-photos")
+            .getPublicUrl(filePath);
+          newPhotos.push({ url: urlData.publicUrl, name: fileName });
+        } else {
+          console.error("Error uploading photo:", error);
+        }
+      }
+      setVehiclePhotos(prev => [...prev, ...newPhotos]);
+      toast.success(`${newPhotos.length} photo(s) uploaded`);
+    } catch (error) {
+      console.error("Error uploading photos:", error);
+      toast.error("Failed to upload photos");
+    } finally {
+      setUploadingPhotos(false);
+      if (photoInputRef.current) photoInputRef.current.value = "";
+    }
+  };
+
+  const removePhoto = async (photo: { url: string; name: string }) => {
+    const filePath = `${reservationRef.trim()}/${photo.name}`;
+    await supabase.storage.from("vehicle-photos").remove([filePath]);
+    setVehiclePhotos(prev => prev.filter(p => p.name !== photo.name));
+  };
+
+  const blobToBase64 = (blob: Blob): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64 = (reader.result as string).split(",")[1];
+        resolve(base64);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
   };
 
   const handleSave = async () => {
@@ -213,20 +284,15 @@ const RentalAgreement = () => {
         }
       }
 
-      // Email the signed agreement with download link
+      // Email the signed agreement with PDF attachment
       const customerEmail = customer?.email;
-      if (customerEmail) {
+      if (customerEmail && pdfBlob) {
         const vehicleName = booking?.vehiclecategory || "Vehicle";
         const pickupDate = booking?.pickupdate || "";
         const dropoffDate = booking?.dropoffdate || "";
 
-        const downloadSection = downloadUrl
-          ? `<tr style="border-top: 2px solid #1a365d;">
-               <td colspan="2" style="padding: 16px 8px; text-align: center;">
-                 <a href="${downloadUrl}" style="display: inline-block; background-color: #1a365d; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">Download Signed Agreement (PDF)</a>
-               </td>
-             </tr>`
-          : "";
+        // Convert PDF blob to base64 for attachment
+        const pdfBase64 = await blobToBase64(pdfBlob);
 
         try {
           await supabase.functions.invoke('send-postmark-email', {
@@ -238,7 +304,7 @@ const RentalAgreement = () => {
                   <h1 style="color: #1a365d; font-size: 24px;">James Blond Rentals</h1>
                   <h2 style="color: #333; font-size: 18px;">Signed Rental Agreement Confirmation</h2>
                   <p>Dear ${customer?.firstname || 'Customer'},</p>
-                  <p>Thank you for signing your rental agreement. Here is a summary of your rental:</p>
+                  <p>Thank you for signing your rental agreement. Please find your signed agreement attached as a PDF.</p>
                   <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
                     <tr style="border-bottom: 1px solid #e2e8f0;">
                       <td style="padding: 8px; font-weight: bold;">Agreement Ref:</td>
@@ -268,7 +334,6 @@ const RentalAgreement = () => {
                       <td style="padding: 8px; font-weight: bold;">Signed By:</td>
                       <td style="padding: 8px;">${customer?.firstname} ${customer?.lastname}</td>
                     </tr>
-                    ${downloadSection}
                   </table>
                   <p style="color: #666; font-size: 13px;">This email confirms that the rental agreement has been electronically signed. A copy of the full terms and conditions was presented at the time of signing.</p>
                   <p style="color: #666; font-size: 13px;">If you have any questions, please contact us at <a href="tel:0800525663">0800 525 663</a> or <a href="mailto:info@jamesblond.co.nz">info@jamesblond.co.nz</a>.</p>
@@ -277,6 +342,13 @@ const RentalAgreement = () => {
                 </div>
               `,
               from: 'James Blond Rentals <info@jamesblond.co.nz>',
+              attachments: [
+                {
+                  Name: `Rental-Agreement-${agreementRef}.pdf`,
+                  Content: pdfBase64,
+                  ContentType: "application/pdf"
+                }
+              ],
             },
           });
           toast.success("Confirmation email sent to " + customerEmail);
@@ -736,6 +808,87 @@ const RentalAgreement = () => {
                     <p>The owner must give you at least one copy of this agreement. A copy must be kept in the vehicle throughout the term of the hire and produced on demand by any Police Officer, Traffic Officer or any other authorised employee of the Land Safety Transport Authority. Vehicle may be fitted and monitored with GPS Tracking Technology.</p>
                     <p>Please note that unless prior credit terms have been agreed and approved by James Blond Ltd, then your account is required to remain in credit at all times. When you return our vehicle, any shortfall is payable immediately upon return of the vehicle. Should you be unable to pay we will send the matter for immediate collection, holding you liable for all other costs that may be incurred in the pursuit of your debt. This may include, but is not limited to, additional collection agents' fees, legal costs and any court costs that we may incur in the pursuit of outstanding rental.</p>
                   </div>
+                </CardContent>
+              </Card>
+
+              {/* Vehicle Photos */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Camera className="h-5 w-5" />
+                    Vehicle Condition Photos
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {alreadySigned ? (
+                    <>
+                      {existingPhotos.length > 0 ? (
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                          {existingPhotos.map((photo, idx) => (
+                            <div key={idx} className="relative aspect-square rounded-md overflow-hidden border">
+                              <img src={photo.url} alt={`Vehicle photo ${idx + 1}`} className="w-full h-full object-cover" />
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-muted-foreground">No vehicle photos were captured for this agreement.</p>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        Take photos of the vehicle condition before driving away. Capture all angles including any existing damage.
+                      </p>
+                      <div className="flex gap-2 mb-4">
+                        <input
+                          ref={photoInputRef}
+                          type="file"
+                          accept="image/*"
+                          capture="environment"
+                          multiple
+                          onChange={handlePhotoCapture}
+                          className="hidden"
+                        />
+                        <Button
+                          variant="outline"
+                          onClick={() => photoInputRef.current?.click()}
+                          disabled={uploadingPhotos}
+                        >
+                          <Camera className="h-4 w-4 mr-2" />
+                          {uploadingPhotos ? "Uploading..." : "Take Photo"}
+                        </Button>
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            if (photoInputRef.current) {
+                              photoInputRef.current.removeAttribute("capture");
+                              photoInputRef.current.click();
+                              setTimeout(() => photoInputRef.current?.setAttribute("capture", "environment"), 100);
+                            }
+                          }}
+                          disabled={uploadingPhotos}
+                        >
+                          <ImageIcon className="h-4 w-4 mr-2" />
+                          Upload from Gallery
+                        </Button>
+                      </div>
+                      {vehiclePhotos.length > 0 && (
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                          {vehiclePhotos.map((photo, idx) => (
+                            <div key={idx} className="relative aspect-square rounded-md overflow-hidden border group">
+                              <img src={photo.url} alt={`Vehicle photo ${idx + 1}`} className="w-full h-full object-cover" />
+                              <button
+                                onClick={() => removePhoto(photo)}
+                                className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                              >
+                                <X className="h-3 w-3" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  )}
                 </CardContent>
               </Card>
 
