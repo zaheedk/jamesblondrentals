@@ -21,6 +21,7 @@ import PaymentSuccess from "./pages/PaymentSuccess";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import ContactAuckland from "./pages/ContactAuckland";
+import ContactAucklandAirport from "./pages/ContactAucklandAirport";
 import ContactWellington from "./pages/ContactWellington";
 import ContactChristchurch from "./pages/ContactChristchurch";
 import ContactChristchurchCentral from "./pages/ContactChristchurchCentral";
@@ -296,6 +297,7 @@ const App = () => {
                 <Route path="/airport/wellington" element={<AirportWellington />} />
                 
                 <Route path="/contact/auckland" element={<ContactAuckland />} />
+                <Route path="/contact/auckland-airport" element={<ContactAucklandAirport />} />
                 <Route path="/contact/wellington" element={<ContactWellington />} />
                 <Route path="/contact/christchurch" element={<ContactChristchurch />} />
                 <Route path="/contact/christchurch-central" element={<ContactChristchurchCentral />} />
