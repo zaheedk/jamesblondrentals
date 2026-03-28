@@ -180,7 +180,7 @@ const Navbar = () => {
                         to="/contact/auckland" 
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
                       >
-                        Auckland - Glen Eden
+                        Auckland West
                       </Link>
                       <Link 
                         to="/contact/auckland-airport" 
@@ -328,7 +328,7 @@ const Navbar = () => {
                 <AccordionContent>
                   <div className="pl-4 space-y-2">
                     <Link to="/contact/auckland" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
-                      Auckland - Glen Eden
+                      Auckland West
                     </Link>
                     <Link to="/contact/auckland-airport" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
                       Auckland Airport
