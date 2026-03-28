@@ -43,6 +43,7 @@ import AdminVehicleRates from "./pages/AdminVehicleRates";
 import AdminFeedback from "./pages/AdminFeedback";
 import AdminBookings from "./pages/AdminBookings";
 import AdminCustomers from "./pages/AdminCustomers";
+import RentalAgreement from "./pages/RentalAgreement";
 
 import Fleet from "./pages/Fleet";
 import FleetCars from "./pages/FleetCars";
