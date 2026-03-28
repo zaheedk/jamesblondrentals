@@ -130,12 +130,40 @@ const RentalAgreement = () => {
     if (!element) return null;
 
     try {
+      // Convert all remote images to data URLs to avoid CORS issues with html2canvas
+      const images = element.querySelectorAll("img");
+      const originalSrcs: { img: HTMLImageElement; src: string }[] = [];
+      
+      await Promise.all(
+        Array.from(images).map(async (img) => {
+          if (img.src && img.src.startsWith("http")) {
+            try {
+              const response = await fetch(img.src);
+              const blob = await response.blob();
+              const dataUrl = await new Promise<string>((resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result as string);
+                reader.readAsDataURL(blob);
+              });
+              originalSrcs.push({ img, src: img.src });
+              img.src = dataUrl;
+            } catch (e) {
+              console.warn("Could not convert image to data URL:", e);
+            }
+          }
+        })
+      );
+
       const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
         logging: false,
         backgroundColor: "#ffffff",
+        allowTaint: false,
       });
+
+      // Restore original sources
+      originalSrcs.forEach(({ img, src }) => { img.src = src; });
 
       const imgData = canvas.toDataURL("image/jpeg", 0.95);
       const pdf = new jsPDF("p", "mm", "a4");
