@@ -126,62 +126,77 @@ const RentalAgreement = () => {
     }
   };
 
+  const convertImagesToDataUrls = async (container: HTMLElement) => {
+    const images = container.querySelectorAll("img");
+    const originalSrcs: { img: HTMLImageElement; src: string }[] = [];
+    await Promise.all(
+      Array.from(images).map(async (img) => {
+        if (img.src && img.src.startsWith("http")) {
+          try {
+            const response = await fetch(img.src);
+            const blob = await response.blob();
+            const dataUrl = await new Promise<string>((resolve) => {
+              const reader = new FileReader();
+              reader.onloadend = () => resolve(reader.result as string);
+              reader.readAsDataURL(blob);
+            });
+            originalSrcs.push({ img, src: img.src });
+            img.src = dataUrl;
+          } catch (e) {
+            console.warn("Could not convert image to data URL:", e);
+          }
+        }
+      })
+    );
+    return originalSrcs;
+  };
+
   const generatePdf = async (): Promise<Blob | null> => {
     const element = document.getElementById("rental-agreement");
     if (!element) return null;
 
     try {
-      // Convert all remote images to data URLs to avoid CORS issues with html2canvas
-      const images = element.querySelectorAll("img");
-      const originalSrcs: { img: HTMLImageElement; src: string }[] = [];
-      
-      await Promise.all(
-        Array.from(images).map(async (img) => {
-          if (img.src && img.src.startsWith("http")) {
-            try {
-              const response = await fetch(img.src);
-              const blob = await response.blob();
-              const dataUrl = await new Promise<string>((resolve) => {
-                const reader = new FileReader();
-                reader.onloadend = () => resolve(reader.result as string);
-                reader.readAsDataURL(blob);
-              });
-              originalSrcs.push({ img, src: img.src });
-              img.src = dataUrl;
-            } catch (e) {
-              console.warn("Could not convert image to data URL:", e);
-            }
-          }
-        })
-      );
+      const originalSrcs = await convertImagesToDataUrls(element);
 
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        backgroundColor: "#ffffff",
-        allowTaint: false,
-      });
+      const A4_WIDTH_MM = 210;
+      const A4_HEIGHT_MM = 297;
+      const MARGIN_MM = 10;
+      const CONTENT_WIDTH_MM = A4_WIDTH_MM - MARGIN_MM * 2;
+      const CONTENT_HEIGHT_MM = A4_HEIGHT_MM - MARGIN_MM * 2;
+      const SECTION_GAP_MM = 2;
+
+      const sections = Array.from(
+        element.querySelectorAll("[data-pdf-section]")
+      ) as HTMLElement[];
+
+      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+      let currentY = MARGIN_MM;
+
+      for (const section of sections) {
+        const canvas = await html2canvas(section, {
+          scale: 2,
+          useCORS: true,
+          logging: false,
+          backgroundColor: "#ffffff",
+          allowTaint: false,
+        });
+
+        const scaleFactor = CONTENT_WIDTH_MM / (canvas.width / 2);
+        const heightMM = (canvas.height / 2) * scaleFactor;
+        const remainingSpace = A4_HEIGHT_MM - MARGIN_MM - currentY;
+
+        if (heightMM > remainingSpace && currentY > MARGIN_MM) {
+          pdf.addPage();
+          currentY = MARGIN_MM;
+        }
+
+        const imgData = canvas.toDataURL("image/jpeg", 0.95);
+        pdf.addImage(imgData, "JPEG", MARGIN_MM, currentY, CONTENT_WIDTH_MM, heightMM);
+        currentY += heightMM + SECTION_GAP_MM;
+      }
 
       // Restore original sources
       originalSrcs.forEach(({ img, src }) => { img.src = src; });
-
-      const imgData = canvas.toDataURL("image/jpeg", 0.95);
-      const pdf = new jsPDF("p", "mm", "a4");
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-      const imgWidth = canvas.width;
-      const imgHeight = canvas.height;
-      const ratio = pdfWidth / imgWidth;
-      const totalPdfHeight = imgHeight * ratio;
-      let position = 0;
-
-      // Add pages as needed
-      while (position < totalPdfHeight) {
-        if (position > 0) pdf.addPage();
-        pdf.addImage(imgData, "JPEG", 0, -position, pdfWidth, totalPdfHeight);
-        position += pdfHeight;
-      }
 
       return pdf.output("blob");
     } catch (error) {
