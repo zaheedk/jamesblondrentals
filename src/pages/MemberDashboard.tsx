@@ -4,13 +4,14 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Settings, BookOpen, TrendingUp, MessageSquare, Calendar, Users, Car, UserCircle } from 'lucide-react';
+import { Settings, BookOpen, TrendingUp, MessageSquare, Calendar, Users, Car, UserCircle, FileText } from 'lucide-react';
 import SupabaseBookingHistory from '@/components/member/SupabaseBookingHistory';
 import ProfileForm from '@/components/member/ProfileForm';
+import { useUserRole } from '@/hooks/use-user-role';
 
 export default function MemberDashboard() {
   const { user, signOut } = useAuth();
-  const isAdmin = user?.email === 'zaheedk@gmail.com';
+  const { isAdmin, isOfficeAdmin } = useUserRole();
 
   if (!user) {
     return null;
@@ -67,6 +68,35 @@ export default function MemberDashboard() {
                   <Button variant="outline" className="w-full justify-start" size="lg">
                     <Users className="w-4 h-4 mr-2" />
                     Customers
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {isOfficeAdmin && !isAdmin && (
+        <div className="mb-8">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="w-5 h-5" />
+                Office Admin
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-3 gap-4">
+                <Link to="/admin/rental-agreements">
+                  <Button variant="outline" className="w-full justify-start" size="lg">
+                    <FileText className="w-4 h-4 mr-2" />
+                    Rental Agreements
+                  </Button>
+                </Link>
+                <Link to="/admin/bookings">
+                  <Button variant="outline" className="w-full justify-start" size="lg">
+                    <Calendar className="w-4 h-4 mr-2" />
+                    Bookings
                   </Button>
                 </Link>
               </div>
