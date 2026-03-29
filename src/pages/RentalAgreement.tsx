@@ -742,6 +742,8 @@ const RentalAgreement = () => {
 
               {/* Vehicle Photos */}
               <div data-pdf-section className="mb-4">
+                <div style={{ fontSize: "11px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>
+                  Vehicle Condition Photos
                 </div>
                   {alreadySigned ? (
                     <>
