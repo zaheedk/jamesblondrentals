@@ -118,14 +118,14 @@ const AdminRentalAgreements = () => {
 
                 <div className="flex gap-3 pt-2">
                   <Button
-                    onClick={() => navigate(`/admin/rental-agreement?ref=${booking.reservationdocumentno || booking.reservationref || reservationRef.trim()}`)}
+                    onClick={() => navigate(`/admin/rental-agreement?ref=${booking.reservationref || reservationRef.trim()}`)}
                   >
                     <FileText className="h-4 w-4 mr-2" />
                     Open Rental Agreement
                   </Button>
                   <Button
                     variant="outline"
-                    onClick={() => window.open(`/admin/rental-agreement?ref=${booking.reservationdocumentno || booking.reservationref || reservationRef.trim()}`, "_blank")}
+                    onClick={() => window.open(`/admin/rental-agreement?ref=${booking.reservationref || reservationRef.trim()}`, "_blank")}
                   >
                     <ExternalLink className="h-4 w-4 mr-2" />
                     Open in New Tab
