@@ -25,6 +25,9 @@ const AdminBookings = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sendingEmail, setSendingEmail] = useState<string | null>(null);
   const [signedAgreements, setSignedAgreements] = useState<Set<string>>(new Set());
+  const [bookingsPage, setBookingsPage] = useState(1);
+  const [quotesPage, setQuotesPage] = useState(1);
+  const [pageSize, setPageSize] = useState(25);
   const { data: bookings, isLoading, error } = useBookings();
 
   // Fetch which reservation refs have signed agreements
