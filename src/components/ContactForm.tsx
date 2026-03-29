@@ -56,22 +56,20 @@ const ContactForm = () => {
     setIsSubmitting(true);
 
     try {
-      const emailHtml = `
-        <h2>New Contact Form Submission</h2>
-        <p><strong>Name:</strong> ${values.name}</p>
-        <p><strong>Email:</strong> ${values.email}</p>
-        <p><strong>Phone:</strong> ${values.phone}</p>
-        <p><strong>Message:</strong></p>
-        <p>${values.message.replace(/\n/g, '<br>')}</p>
-        <hr>
-        <p><em>This message was sent via the Auckland contact form on jamesblond.co.nz</em></p>
-      `;
+      const idempotencyKey = `contact-${Date.now()}-${values.email}`;
 
-      const { error } = await supabase.functions.invoke('send-postmark-email', {
+      const { error } = await supabase.functions.invoke('send-transactional-email', {
         body: {
-          to: 'info@jamesblond.co.nz',
-          subject: `Contact Form: ${values.name} - ${values.email}`,
-          html: emailHtml
+          templateName: 'contact-form-notification',
+          recipientEmail: 'info@jamesblond.co.nz',
+          idempotencyKey,
+          templateData: {
+            name: values.name,
+            email: values.email,
+            phone: values.phone,
+            message: values.message,
+            source: 'Auckland',
+          },
         }
       });
 
