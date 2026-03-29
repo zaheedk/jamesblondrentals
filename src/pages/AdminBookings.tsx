@@ -254,14 +254,14 @@ const AdminBookings = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {confirmedBookings.length === 0 ? (
+                    {paginatedBookings.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={12} className="text-center py-8 text-muted-foreground">
                           No bookings found
                         </TableCell>
                       </TableRow>
                     ) : (
-                      confirmedBookings.map((booking) => (
+                      paginatedBookings.map((booking) => (
                         <TableRow key={booking.id}>
                           <TableCell className="font-mono text-sm">
                             {booking.booking_reference || "N/A"}
