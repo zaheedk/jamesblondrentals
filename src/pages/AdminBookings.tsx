@@ -115,6 +115,18 @@ const AdminBookings = () => {
     (booking) => !(booking.booking_status === 'pending' && booking.payment_status === 'pending')
   );
 
+  // Reset pages when search or page size changes
+  useEffect(() => {
+    setBookingsPage(1);
+    setQuotesPage(1);
+  }, [searchQuery, pageSize]);
+
+  const bookingsTotalPages = Math.max(1, Math.ceil(confirmedBookings.length / pageSize));
+  const quotesTotalPages = Math.max(1, Math.ceil(quotes.length / pageSize));
+
+  const paginatedBookings = confirmedBookings.slice((bookingsPage - 1) * pageSize, bookingsPage * pageSize);
+  const paginatedQuotes = quotes.slice((quotesPage - 1) * pageSize, quotesPage * pageSize);
+
   const getStatusBadge = (status?: string) => {
     const statusColors: Record<string, string> = {
       pending: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20",
