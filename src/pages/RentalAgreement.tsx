@@ -453,6 +453,7 @@ const RentalAgreement = () => {
     const filePath = `${reservationRef.trim()}/${photo.name}`;
     await supabase.storage.from("vehicle-photos").remove([filePath]);
     setVehiclePhotos(prev => prev.filter(p => p.name !== photo.name));
+    setExistingPhotos(prev => prev.filter(p => p.name !== photo.name));
   };
 
   const blobToBase64 = (blob: Blob): Promise<string> => {
