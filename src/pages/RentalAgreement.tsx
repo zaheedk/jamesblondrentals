@@ -261,7 +261,7 @@ const RentalAgreement = () => {
       setUploadingPhotos(false);
       if (photoInputRef.current) photoInputRef.current.value = "";
       // Auto-reopen camera for continuous capture
-      if (photoInputRef.current?.hasAttribute("capture")) {
+      if (continuousCapture && photoInputRef.current?.hasAttribute("capture")) {
         setTimeout(() => {
           photoInputRef.current?.click();
         }, 500);
