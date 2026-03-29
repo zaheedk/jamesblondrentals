@@ -5,9 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Loader2, Search, FileText, ExternalLink } from "lucide-react";
+import { Loader2, Search } from "lucide-react";
 import { rcmApi } from "@/lib/api/rcm-api";
-import type { RCMBookingInfoResponse } from "@/lib/api/rcm-api-types";
 
 const AdminRentalAgreements = () => {
   const navigate = useNavigate();
