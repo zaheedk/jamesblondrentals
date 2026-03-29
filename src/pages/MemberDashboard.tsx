@@ -3,8 +3,10 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Settings, BookOpen, TrendingUp, MessageSquare, Calendar, Users } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Settings, BookOpen, TrendingUp, MessageSquare, Calendar, Users, Car, UserCircle } from 'lucide-react';
 import SupabaseBookingHistory from '@/components/member/SupabaseBookingHistory';
+import ProfileForm from '@/components/member/ProfileForm';
 
 export default function MemberDashboard() {
   const { user, signOut } = useAuth();
@@ -73,7 +75,26 @@ export default function MemberDashboard() {
         </div>
       )}
 
-      <SupabaseBookingHistory />
+      <Tabs defaultValue="bookings" className="w-full">
+        <TabsList className="mb-6">
+          <TabsTrigger value="bookings" className="flex items-center gap-2">
+            <Car className="w-4 h-4" />
+            Bookings
+          </TabsTrigger>
+          <TabsTrigger value="profile" className="flex items-center gap-2">
+            <UserCircle className="w-4 h-4" />
+            Profile
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="bookings">
+          <SupabaseBookingHistory />
+        </TabsContent>
+
+        <TabsContent value="profile">
+          <ProfileForm />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
