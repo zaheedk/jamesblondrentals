@@ -793,29 +793,43 @@ const RentalAgreement = () => {
                       <p style={{ fontSize: "10px", color: "#666", marginBottom: "8px" }}>
                         Take photos of the vehicle condition before driving away. Capture all angles including any existing damage.
                       </p>
-                      <div className="flex gap-2 mb-3">
+                      <div className="flex flex-wrap gap-2 mb-3">
                         <input
                           ref={photoInputRef}
                           type="file"
                           accept="image/*"
                           capture="environment"
-                          multiple
                           onChange={handlePhotoCapture}
                           className="hidden"
                         />
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => photoInputRef.current?.click()}
-                          disabled={uploadingPhotos}
-                        >
-                          <Camera className="h-4 w-4 mr-2" />
-                          {uploadingPhotos ? "Uploading..." : "Take Photo"}
-                        </Button>
+                        {continuousCapture ? (
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => setContinuousCapture(false)}
+                          >
+                            <X className="h-4 w-4 mr-2" />
+                            Stop Capturing ({vehiclePhotos.length} taken)
+                          </Button>
+                        ) : (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setContinuousCapture(true);
+                              photoInputRef.current?.click();
+                            }}
+                            disabled={uploadingPhotos}
+                          >
+                            <Camera className="h-4 w-4 mr-2" />
+                            {uploadingPhotos ? "Uploading..." : "Take Photos"}
+                          </Button>
+                        )}
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => {
+                            setContinuousCapture(false);
                             if (photoInputRef.current) {
                               photoInputRef.current.removeAttribute("capture");
                               photoInputRef.current.click();
