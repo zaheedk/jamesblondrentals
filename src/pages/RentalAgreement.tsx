@@ -133,12 +133,34 @@ const RentalAgreement = () => {
       Array.from(images).map(async (img) => {
         if (img.src && img.src.startsWith("http")) {
           try {
-            const response = await fetch(img.src);
-            const blob = await response.blob();
-            const dataUrl = await new Promise<string>((resolve) => {
-              const reader = new FileReader();
-              reader.onloadend = () => resolve(reader.result as string);
-              reader.readAsDataURL(blob);
+            // Use a proxy approach: create a canvas to convert the image
+            const imgEl = new Image();
+            imgEl.crossOrigin = "anonymous";
+            const dataUrl = await new Promise<string>((resolve, reject) => {
+              imgEl.onload = () => {
+                try {
+                  const canvas = document.createElement("canvas");
+                  canvas.width = imgEl.naturalWidth;
+                  canvas.height = imgEl.naturalHeight;
+                  const ctx = canvas.getContext("2d");
+                  ctx?.drawImage(imgEl, 0, 0);
+                  resolve(canvas.toDataURL("image/jpeg", 0.9));
+                } catch (canvasErr) {
+                  reject(canvasErr);
+                }
+              };
+              imgEl.onerror = () => {
+                // Fallback: try fetch with no-cors
+                fetch(img.src, { mode: "cors" })
+                  .then(r => r.blob())
+                  .then(blob => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result as string);
+                    reader.readAsDataURL(blob);
+                  })
+                  .catch(reject);
+              };
+              imgEl.src = img.src;
             });
             originalSrcs.push({ img, src: img.src });
             img.src = dataUrl;
@@ -237,6 +259,12 @@ const RentalAgreement = () => {
     } finally {
       setUploadingPhotos(false);
       if (photoInputRef.current) photoInputRef.current.value = "";
+      // Auto-reopen camera for continuous capture
+      if (photoInputRef.current?.hasAttribute("capture")) {
+        setTimeout(() => {
+          photoInputRef.current?.click();
+        }, 500);
+      }
     }
   };
 
