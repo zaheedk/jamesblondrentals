@@ -518,7 +518,7 @@ const RentalAgreement = () => {
               </div>
 
               {/* Hirer Details + Vehicle Details side by side */}
-              <div className="grid grid-cols-2 gap-6 mb-4">
+              <div data-pdf-section className="grid grid-cols-2 gap-6 mb-4">
                 <div>
                   <div style={{ fontSize: "11px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>Hirer's Details</div>
                   <table style={{ width: "100%", fontSize: "10.5px" }}>
@@ -824,7 +824,7 @@ const RentalAgreement = () => {
               </div>
 
               {/* Signatures */}
-              <div>
+              <div data-pdf-section>
                 <div style={{ fontSize: "11px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>Signatures</div>
                 <div className="space-y-4">
                   {alreadySigned ? (
