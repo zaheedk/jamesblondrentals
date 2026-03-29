@@ -14,7 +14,6 @@ const AdminRentalAgreements = () => {
   const [reservationRef, setReservationRef] = useState("");
   const [lastName, setLastName] = useState("");
   const [loading, setLoading] = useState(false);
-  const [bookingData, setBookingData] = useState<RCMBookingInfoResponse["results"] | null>(null);
 
   const handleFetch = async () => {
     if (!reservationRef.trim()) {
