@@ -251,19 +251,13 @@ const RentalAgreement = () => {
         }
       }
       setVehiclePhotos(prev => [...prev, ...newPhotos]);
-      toast.success(`${newPhotos.length} photo(s) uploaded`);
+      toast.success(`${newPhotos.length} photo(s) uploaded — tap "Next Photo" to continue`);
     } catch (error) {
       console.error("Error uploading photos:", error);
       toast.error("Failed to upload photos");
     } finally {
       setUploadingPhotos(false);
       if (photoInputRef.current) photoInputRef.current.value = "";
-      // Auto-reopen camera for continuous capture
-      if (continuousCapture && photoInputRef.current?.hasAttribute("capture")) {
-        setTimeout(() => {
-          photoInputRef.current?.click();
-        }, 500);
-      }
     }
   };
 
