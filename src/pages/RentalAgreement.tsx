@@ -46,7 +46,7 @@ const RentalAgreement = () => {
   const photoInputRef = useRef<HTMLInputElement>(null);
   const [vehiclePhotos, setVehiclePhotos] = useState<{ url: string; name: string }[]>([]);
   const [uploadingPhotos, setUploadingPhotos] = useState(false);
-  const [continuousCapture, setContinuousCapture] = useState(false);
+  const [, setContinuousCapture] = useState(false); // kept for compatibility
   const [existingPhotos, setExistingPhotos] = useState<{ url: string; name: string }[]>([]);
   const [resending, setResending] = useState(false);
 
@@ -251,19 +251,13 @@ const RentalAgreement = () => {
         }
       }
       setVehiclePhotos(prev => [...prev, ...newPhotos]);
-      toast.success(`${newPhotos.length} photo(s) uploaded`);
+      toast.success(`${newPhotos.length} photo(s) uploaded — tap "Next Photo" to continue`);
     } catch (error) {
       console.error("Error uploading photos:", error);
       toast.error("Failed to upload photos");
     } finally {
       setUploadingPhotos(false);
       if (photoInputRef.current) photoInputRef.current.value = "";
-      // Auto-reopen camera for continuous capture
-      if (continuousCapture && photoInputRef.current?.hasAttribute("capture")) {
-        setTimeout(() => {
-          photoInputRef.current?.click();
-        }, 500);
-      }
     }
   };
 
@@ -791,43 +785,42 @@ const RentalAgreement = () => {
                       <p style={{ fontSize: "10px", color: "#666", marginBottom: "8px" }}>
                         Take photos of the vehicle condition before driving away. Capture all angles including any existing damage.
                       </p>
+                      <input
+                        ref={photoInputRef}
+                        type="file"
+                        accept="image/*"
+                        capture="environment"
+                        onChange={handlePhotoCapture}
+                        className="hidden"
+                      />
                       <div className="flex flex-wrap gap-2 mb-3">
-                        <input
-                          ref={photoInputRef}
-                          type="file"
-                          accept="image/*"
-                          capture="environment"
-                          onChange={handlePhotoCapture}
-                          className="hidden"
-                        />
-                        {continuousCapture ? (
+                        {vehiclePhotos.length > 0 ? (
                           <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => setContinuousCapture(false)}
+                            size="lg"
+                            onClick={() => photoInputRef.current?.click()}
+                            disabled={uploadingPhotos}
+                            className="flex-1 min-h-[48px] text-base"
+                            style={{ backgroundColor: "#0d6b3d", color: "#fff" }}
                           >
-                            <X className="h-4 w-4 mr-2" />
-                            Stop Capturing ({vehiclePhotos.length} taken)
+                            <Camera className="h-5 w-5 mr-2" />
+                            {uploadingPhotos ? "Saving..." : `📸 Next Photo (${vehiclePhotos.length} taken)`}
                           </Button>
                         ) : (
                           <Button
                             variant="outline"
-                            size="sm"
-                            onClick={() => {
-                              setContinuousCapture(true);
-                              photoInputRef.current?.click();
-                            }}
+                            size="lg"
+                            onClick={() => photoInputRef.current?.click()}
                             disabled={uploadingPhotos}
+                            className="flex-1 min-h-[48px] text-base"
                           >
-                            <Camera className="h-4 w-4 mr-2" />
-                            {uploadingPhotos ? "Uploading..." : "Take Photos"}
+                            <Camera className="h-5 w-5 mr-2" />
+                            {uploadingPhotos ? "Saving..." : "Take First Photo"}
                           </Button>
                         )}
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => {
-                            setContinuousCapture(false);
                             if (photoInputRef.current) {
                               photoInputRef.current.removeAttribute("capture");
                               photoInputRef.current.click();
@@ -837,7 +830,7 @@ const RentalAgreement = () => {
                           disabled={uploadingPhotos}
                         >
                           <ImageIcon className="h-4 w-4 mr-2" />
-                          Upload from Gallery
+                          Gallery
                         </Button>
                       </div>
                       {vehiclePhotos.length > 0 && (
