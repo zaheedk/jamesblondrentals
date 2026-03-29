@@ -22,18 +22,18 @@ const AdminRentalAgreements = () => {
       return;
     }
     setLoading(true);
-    setBookingData(null);
     try {
       const response = await rcmApi.getBookingInfoByReservationNo(reservationRef.trim(), lastName.trim() || undefined);
       if (response.status === "OK" && response.results) {
-        setBookingData(response.results);
-        toast.success("Booking data loaded");
+        const booking = response.results.bookinginfo?.[0];
+        const ref = booking?.reservationref || reservationRef.trim();
+        navigate(`/admin/rental-agreement?ref=${ref}`);
       } else {
-        toast.error(response.error || "Failed to fetch booking info");
+        toast.error(response.error || "No booking found with that reference");
       }
     } catch (error) {
       console.error("Error fetching booking info:", error);
-      toast.error("Failed to fetch booking data");
+      toast.error("No booking found. Please check the reservation number and last name.");
     } finally {
       setLoading(false);
     }
