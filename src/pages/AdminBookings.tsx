@@ -396,14 +396,14 @@ const AdminBookings = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {quotes.length === 0 ? (
+                    {paginatedQuotes.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={11} className="text-center py-8 text-muted-foreground">
                           No quotes found
                         </TableCell>
                       </TableRow>
                     ) : (
-                      quotes.map((booking) => (
+                      paginatedQuotes.map((booking) => (
                         <TableRow key={booking.id}>
                           <TableCell className="font-mono text-sm">
                             {booking.booking_reference || "N/A"}
