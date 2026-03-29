@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Settings, BookOpen, TrendingUp, MessageSquare, Calendar, Users } from 'lucide-react';
 import BookingHistory from '@/components/member/BookingHistory';
 import SupabaseBookingHistory from '@/components/member/SupabaseBookingHistory';
+import ProfileForm from '@/components/member/ProfileForm';
 
 export default function MemberDashboard() {
   const { user, signOut } = useAuth();
