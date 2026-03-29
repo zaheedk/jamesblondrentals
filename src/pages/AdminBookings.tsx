@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useBookings } from "@/hooks/use-bookings";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -14,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Search, Send, FileSignature, Eye } from "lucide-react";
+import { Search, Send, FileSignature, Eye, ChevronLeft, ChevronRight } from "lucide-react";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -24,6 +25,9 @@ const AdminBookings = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sendingEmail, setSendingEmail] = useState<string | null>(null);
   const [signedAgreements, setSignedAgreements] = useState<Set<string>>(new Set());
+  const [bookingsPage, setBookingsPage] = useState(1);
+  const [quotesPage, setQuotesPage] = useState(1);
+  const [pageSize, setPageSize] = useState(25);
   const { data: bookings, isLoading, error } = useBookings();
 
   // Fetch which reservation refs have signed agreements
@@ -110,6 +114,18 @@ const AdminBookings = () => {
   const confirmedBookings = filteredBookings.filter(
     (booking) => !(booking.booking_status === 'pending' && booking.payment_status === 'pending')
   );
+
+  // Reset pages when search or page size changes
+  useEffect(() => {
+    setBookingsPage(1);
+    setQuotesPage(1);
+  }, [searchQuery, pageSize]);
+
+  const bookingsTotalPages = Math.max(1, Math.ceil(confirmedBookings.length / pageSize));
+  const quotesTotalPages = Math.max(1, Math.ceil(quotes.length / pageSize));
+
+  const paginatedBookings = confirmedBookings.slice((bookingsPage - 1) * pageSize, bookingsPage * pageSize);
+  const paginatedQuotes = quotes.slice((quotesPage - 1) * pageSize, quotesPage * pageSize);
 
   const getStatusBadge = (status?: string) => {
     const statusColors: Record<string, string> = {
@@ -238,14 +254,14 @@ const AdminBookings = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {confirmedBookings.length === 0 ? (
+                    {paginatedBookings.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={12} className="text-center py-8 text-muted-foreground">
                           No bookings found
                         </TableCell>
                       </TableRow>
                     ) : (
-                      confirmedBookings.map((booking) => (
+                      paginatedBookings.map((booking) => (
                         <TableRow key={booking.id}>
                           <TableCell className="font-mono text-sm">
                             {booking.booking_reference || "N/A"}
@@ -333,6 +349,33 @@ const AdminBookings = () => {
                   </TableBody>
                 </Table>
               </div>
+              {/* Bookings Pagination */}
+              <div className="flex items-center justify-between mt-4">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <span>Rows per page:</span>
+                  <Select value={String(pageSize)} onValueChange={(v) => setPageSize(Number(v))}>
+                    <SelectTrigger className="w-[70px] h-8">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="10">10</SelectItem>
+                      <SelectItem value="25">25</SelectItem>
+                      <SelectItem value="50">50</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">
+                    {confirmedBookings.length === 0 ? 0 : (bookingsPage - 1) * pageSize + 1}–{Math.min(bookingsPage * pageSize, confirmedBookings.length)} of {confirmedBookings.length}
+                  </span>
+                  <Button variant="outline" size="icon" className="h-8 w-8" disabled={bookingsPage <= 1} onClick={() => setBookingsPage(p => p - 1)}>
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  <Button variant="outline" size="icon" className="h-8 w-8" disabled={bookingsPage >= bookingsTotalPages} onClick={() => setBookingsPage(p => p + 1)}>
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
             </TabsContent>
 
             <TabsContent value="quotes">
@@ -354,14 +397,14 @@ const AdminBookings = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {quotes.length === 0 ? (
+                    {paginatedQuotes.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={11} className="text-center py-8 text-muted-foreground">
                           No quotes found
                         </TableCell>
                       </TableRow>
                     ) : (
-                      quotes.map((booking) => (
+                      paginatedQuotes.map((booking) => (
                         <TableRow key={booking.id}>
                           <TableCell className="font-mono text-sm">
                             {booking.booking_reference || "N/A"}
@@ -417,6 +460,33 @@ const AdminBookings = () => {
                     )}
                   </TableBody>
                 </Table>
+              </div>
+              {/* Quotes Pagination */}
+              <div className="flex items-center justify-between mt-4">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <span>Rows per page:</span>
+                  <Select value={String(pageSize)} onValueChange={(v) => setPageSize(Number(v))}>
+                    <SelectTrigger className="w-[70px] h-8">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="10">10</SelectItem>
+                      <SelectItem value="25">25</SelectItem>
+                      <SelectItem value="50">50</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">
+                    {quotes.length === 0 ? 0 : (quotesPage - 1) * pageSize + 1}–{Math.min(quotesPage * pageSize, quotes.length)} of {quotes.length}
+                  </span>
+                  <Button variant="outline" size="icon" className="h-8 w-8" disabled={quotesPage <= 1} onClick={() => setQuotesPage(p => p - 1)}>
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  <Button variant="outline" size="icon" className="h-8 w-8" disabled={quotesPage >= quotesTotalPages} onClick={() => setQuotesPage(p => p + 1)}>
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </TabsContent>
           </Tabs>
