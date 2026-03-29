@@ -24,7 +24,7 @@ const AdminRentalAgreements = () => {
     setLoading(true);
     setBookingData(null);
     try {
-      const response = await rcmApi.getBookingInfo(reservationRef.trim(), lastName.trim() || undefined);
+      const response = await rcmApi.getBookingInfoByReservationNo(reservationRef.trim(), lastName.trim() || undefined);
       if (response.status === "OK" && response.results) {
         setBookingData(response.results);
         toast.success("Booking data loaded");
