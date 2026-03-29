@@ -64,6 +64,24 @@ const RentalAgreement = () => {
   const [cameraOpen, setCameraOpen] = useState(false);
   const [hiddenPhotos, setHiddenPhotos] = useState<string[]>([]);
   const [photoToDelete, setPhotoToDelete] = useState<{ url: string; name: string; source: 'existing' | 'uploaded' } | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    // Check if current user is admin
+    const checkAdmin = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        const { data } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", session.user.id)
+          .eq("role", "admin")
+          .maybeSingle();
+        setIsAdmin(!!data);
+      }
+    };
+    checkAdmin();
+  }, []);
 
   useEffect(() => {
     if (searchParams.get("ref")) {
@@ -475,7 +493,7 @@ const RentalAgreement = () => {
       setExistingPhotos(prev => prev.filter(p => p.name !== photoToDelete.name));
     }
     setPhotoToDelete(null);
-    toast.success("Photo hidden from agreement");
+    toast.success("Photo deleted successfully");
   };
 
   const blobToBase64 = (blob: Blob): Promise<string> => {
@@ -973,12 +991,14 @@ const RentalAgreement = () => {
                           {existingPhotos.filter(p => !hiddenPhotos.includes(p.name)).map((photo, idx) => (
                             <div key={idx} className="relative aspect-square overflow-hidden border group" style={{ borderRadius: "4px" }}>
                               <img src={photo.url} alt={`Vehicle photo ${idx + 1}`} className="w-full h-full object-cover" />
-                              <button
-                                onClick={() => confirmDeletePhoto(photo, 'existing')}
-                                className="absolute top-1 right-1 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                              >
-                                <Trash2 className="h-3 w-3" />
-                              </button>
+                              {isAdmin && (
+                                <button
+                                  onClick={() => confirmDeletePhoto(photo, 'existing')}
+                                  className="absolute top-1 right-1 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                                >
+                                  <Trash2 className="h-3 w-3" />
+                                </button>
+                              )}
                             </div>
                           ))}
                         </div>
@@ -1053,12 +1073,14 @@ const RentalAgreement = () => {
                           {vehiclePhotos.map((photo, idx) => (
                             <div key={idx} className="relative aspect-square overflow-hidden border group" style={{ borderRadius: "4px" }}>
                               <img src={photo.url} alt={`Vehicle photo ${idx + 1}`} className="w-full h-full object-cover" />
-                              <button
-                                onClick={() => confirmDeletePhoto(photo, 'uploaded')}
-                                className="absolute top-1 right-1 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                              >
-                                <Trash2 className="h-3 w-3" />
-                              </button>
+                              {isAdmin && (
+                                <button
+                                  onClick={() => confirmDeletePhoto(photo, 'uploaded')}
+                                  className="absolute top-1 right-1 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                                >
+                                  <Trash2 className="h-3 w-3" />
+                                </button>
+                              )}
                             </div>
                           ))}
                         </div>
@@ -1256,15 +1278,15 @@ const RentalAgreement = () => {
       <AlertDialog open={!!photoToDelete} onOpenChange={(open) => { if (!open) setPhotoToDelete(null); }}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Hide this photo?</AlertDialogTitle>
+            <AlertDialogTitle>Delete this photo?</AlertDialogTitle>
             <AlertDialogDescription>
-              This photo will be hidden from the agreement but will remain in storage and can be restored later.
+              Are you sure you want to delete this photo from the agreement?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={handleDeletePhoto} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-              Hide Photo
+              Delete Photo
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
