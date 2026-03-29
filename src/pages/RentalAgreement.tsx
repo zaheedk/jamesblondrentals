@@ -132,41 +132,21 @@ const RentalAgreement = () => {
     const originalSrcs: { img: HTMLImageElement; src: string }[] = [];
     await Promise.all(
       Array.from(images).map(async (img) => {
-        if (img.src && img.src.startsWith("http")) {
+        if (img.src && (img.src.startsWith("http://") || img.src.startsWith("https://"))) {
           try {
-            // Use a proxy approach: create a canvas to convert the image
-            const imgEl = new Image();
-            imgEl.crossOrigin = "anonymous";
+            // Fetch the image as a blob to avoid CORS canvas tainting
+            const response = await fetch(img.src, { mode: "cors" });
+            const blob = await response.blob();
             const dataUrl = await new Promise<string>((resolve, reject) => {
-              imgEl.onload = () => {
-                try {
-                  const canvas = document.createElement("canvas");
-                  canvas.width = imgEl.naturalWidth;
-                  canvas.height = imgEl.naturalHeight;
-                  const ctx = canvas.getContext("2d");
-                  ctx?.drawImage(imgEl, 0, 0);
-                  resolve(canvas.toDataURL("image/jpeg", 0.9));
-                } catch (canvasErr) {
-                  reject(canvasErr);
-                }
-              };
-              imgEl.onerror = () => {
-                // Fallback: try fetch with no-cors
-                fetch(img.src, { mode: "cors" })
-                  .then(r => r.blob())
-                  .then(blob => {
-                    const reader = new FileReader();
-                    reader.onloadend = () => resolve(reader.result as string);
-                    reader.readAsDataURL(blob);
-                  })
-                  .catch(reject);
-              };
-              imgEl.src = img.src;
+              const reader = new FileReader();
+              reader.onloadend = () => resolve(reader.result as string);
+              reader.onerror = reject;
+              reader.readAsDataURL(blob);
             });
             originalSrcs.push({ img, src: img.src });
             img.src = dataUrl;
           } catch (e) {
-            console.warn("Could not convert image to data URL:", e);
+            console.warn("Could not convert image to data URL:", img.src, e);
           }
         }
       })
@@ -179,47 +159,65 @@ const RentalAgreement = () => {
     if (!element) return null;
 
     try {
+      // Pre-convert all images to data URLs to avoid CORS issues
       const originalSrcs = await convertImagesToDataUrls(element);
+
+      // Hide elements that should not appear in PDF
+      const ignoreEls = element.querySelectorAll("[data-html2canvas-ignore]");
+      ignoreEls.forEach(el => (el as HTMLElement).style.display = "none");
+
+      // Render entire agreement as one canvas
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: "#ffffff",
+        allowTaint: true,
+      });
+
+      // Restore hidden elements
+      ignoreEls.forEach(el => (el as HTMLElement).style.display = "");
+      // Restore original image sources
+      originalSrcs.forEach(({ img, src }) => { img.src = src; });
 
       const A4_WIDTH_MM = 210;
       const A4_HEIGHT_MM = 297;
       const MARGIN_MM = 10;
       const CONTENT_WIDTH_MM = A4_WIDTH_MM - MARGIN_MM * 2;
       const CONTENT_HEIGHT_MM = A4_HEIGHT_MM - MARGIN_MM * 2;
-      const SECTION_GAP_MM = 2;
-
-      const sections = Array.from(
-        element.querySelectorAll("[data-pdf-section]")
-      ) as HTMLElement[];
 
       const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-      let currentY = MARGIN_MM;
+      const imgData = canvas.toDataURL("image/jpeg", 0.92);
 
-      for (const section of sections) {
-        const canvas = await html2canvas(section, {
-          scale: 2,
-          useCORS: true,
-          logging: false,
-          backgroundColor: "#ffffff",
-          allowTaint: false,
-        });
+      // Calculate how tall the content is in mm
+      const scaleFactor = CONTENT_WIDTH_MM / (canvas.width / 2);
+      const totalHeightMM = (canvas.height / 2) * scaleFactor;
 
-        const scaleFactor = CONTENT_WIDTH_MM / (canvas.width / 2);
-        const heightMM = (canvas.height / 2) * scaleFactor;
-        const remainingSpace = A4_HEIGHT_MM - MARGIN_MM - currentY;
+      // Slice the single canvas image across multiple pages
+      let position = 0; // mm offset into the image
+      let pageNum = 0;
 
-        if (heightMM > remainingSpace && currentY > MARGIN_MM) {
-          pdf.addPage();
-          currentY = MARGIN_MM;
-        }
+      while (position < totalHeightMM) {
+        if (pageNum > 0) pdf.addPage();
 
-        const imgData = canvas.toDataURL("image/jpeg", 0.95);
-        pdf.addImage(imgData, "JPEG", MARGIN_MM, currentY, CONTENT_WIDTH_MM, heightMM);
-        currentY += heightMM + SECTION_GAP_MM;
+        // We place the full image at an offset so only the current page slice is visible
+        pdf.addImage(
+          imgData,
+          "JPEG",
+          MARGIN_MM,
+          MARGIN_MM - position,
+          CONTENT_WIDTH_MM,
+          totalHeightMM
+        );
+
+        // Add white rectangles to mask overflow above and below content area
+        pdf.setFillColor(255, 255, 255);
+        pdf.rect(0, 0, A4_WIDTH_MM, MARGIN_MM, "F"); // top margin mask
+        pdf.rect(0, A4_HEIGHT_MM - MARGIN_MM, A4_WIDTH_MM, MARGIN_MM, "F"); // bottom margin mask
+
+        position += CONTENT_HEIGHT_MM;
+        pageNum++;
       }
-
-      // Restore original sources
-      originalSrcs.forEach(({ img, src }) => { img.src = src; });
 
       return pdf.output("blob");
     } catch (error) {
