@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Settings, BookOpen, TrendingUp, MessageSquare, Calendar, Users } from 'lucide-react';
 import BookingHistory from '@/components/member/BookingHistory';
 import SupabaseBookingHistory from '@/components/member/SupabaseBookingHistory';
+import ProfileForm from '@/components/member/ProfileForm';
 
 export default function MemberDashboard() {
   const { user, signOut } = useAuth();
@@ -106,21 +107,7 @@ export default function MemberDashboard() {
         </TabsContent>
         
         <TabsContent value="profile" className="mt-6">
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-semibold mb-4">Your Profile</h2>
-            <div className="space-y-4">
-              <div>
-                <p className="text-sm text-gray-500">Email</p>
-                <p className="font-medium">{user.email}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Member Since</p>
-                <p className="font-medium">
-                  {user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}
-                </p>
-              </div>
-            </div>
-          </div>
+          <ProfileForm />
         </TabsContent>
         
         <TabsContent value="preferences" className="mt-6">
