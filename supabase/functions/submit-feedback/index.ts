@@ -70,24 +70,41 @@ serve(async (req) => {
       );
     }
 
-    // Send notification via transactional email
+    // Send notification via Resend
     try {
-      await supabaseService.functions.invoke('send-transactional-email', {
-        body: {
-          templateName: 'feedback-notification',
-          recipientEmail: 'zaheed@jamesblond.co.nz',
-          idempotencyKey: `feedback-${feedback.id}`,
-          templateData: {
-            rating,
-            customerName: customerName || 'N/A',
-            customerEmail: customerEmail || 'N/A',
-            bookingReference: bookingReference || 'N/A',
-            suggestions: suggestions || '',
-            feedbackId: feedback.id,
+      const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+      if (RESEND_API_KEY) {
+        const stars = '⭐'.repeat(rating);
+        const emailHtml = `
+          <h2>New Booking Feedback</h2>
+          <p><strong>Rating:</strong> ${stars} (${rating}/5)</p>
+          <p><strong>Customer:</strong> ${customerName || 'N/A'}</p>
+          <p><strong>Email:</strong> ${customerEmail || 'N/A'}</p>
+          <p><strong>Booking Ref:</strong> ${bookingReference || 'N/A'}</p>
+          ${suggestions ? `<p><strong>Suggestions:</strong> ${suggestions}</p>` : ''}
+        `;
+
+        const res = await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${RESEND_API_KEY}`,
           },
-        },
-      });
-      console.log("Feedback notification email enqueued");
+          body: JSON.stringify({
+            from: "James Blond Rentals <info@jamesblond.co.nz>",
+            to: ["zaheed@jamesblond.co.nz"],
+            subject: `New Feedback: ${stars} (${rating}/5)`,
+            html: emailHtml,
+          }),
+        });
+
+        if (!res.ok) {
+          const errData = await res.json();
+          console.error("Resend API error:", errData);
+        } else {
+          console.log("Feedback notification email sent via Resend");
+        }
+      }
     } catch (emailError) {
       console.error("Email error:", emailError);
     }

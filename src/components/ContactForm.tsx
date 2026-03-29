@@ -56,20 +56,21 @@ const ContactForm = () => {
     setIsSubmitting(true);
 
     try {
-      const idempotencyKey = `contact-${Date.now()}-${values.email}`;
+      const html = `
+        <h2>New Contact Form Submission</h2>
+        <p><strong>Name:</strong> ${values.name}</p>
+        <p><strong>Email:</strong> ${values.email}</p>
+        <p><strong>Phone:</strong> ${values.phone}</p>
+        <p><strong>Message:</strong></p>
+        <p>${values.message}</p>
+      `;
 
-      const { error } = await supabase.functions.invoke('send-transactional-email', {
+      const { error } = await supabase.functions.invoke('send-email-resend', {
         body: {
-          templateName: 'contact-form-notification',
-          recipientEmail: 'info@jamesblond.co.nz',
-          idempotencyKey,
-          templateData: {
-            name: values.name,
-            email: values.email,
-            phone: values.phone,
-            message: values.message,
-            source: 'Auckland',
-          },
+          to: 'info@jamesblond.co.nz',
+          subject: `New Contact Form: ${values.name}`,
+          html,
+          replyTo: values.email,
         }
       });
 
