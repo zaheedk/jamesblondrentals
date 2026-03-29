@@ -387,11 +387,11 @@ class RCMApiClient {
     return this.request<RCMStep3Response>('POST', 'step3', params);
   }
 
-  async getBookingInfo(reservationNo: string): Promise<RCMBookingInfoResponse> {
+  async getBookingInfo(reservationNo: string, lastName?: string): Promise<RCMBookingInfoResponse> {
     console.log('Fetching booking info for reservation:', reservationNo);
-    return this.request<RCMBookingInfoResponse>('POST', 'bookinginfo', {
-      reservationno: reservationNo
-    });
+    const params: Record<string, string> = { reservationno: reservationNo };
+    if (lastName) params.lastname = lastName;
+    return this.request<RCMBookingInfoResponse>('POST', 'bookinginfo', params);
   }
 }
 
