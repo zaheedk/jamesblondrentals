@@ -785,43 +785,42 @@ const RentalAgreement = () => {
                       <p style={{ fontSize: "10px", color: "#666", marginBottom: "8px" }}>
                         Take photos of the vehicle condition before driving away. Capture all angles including any existing damage.
                       </p>
+                      <input
+                        ref={photoInputRef}
+                        type="file"
+                        accept="image/*"
+                        capture="environment"
+                        onChange={handlePhotoCapture}
+                        className="hidden"
+                      />
                       <div className="flex flex-wrap gap-2 mb-3">
-                        <input
-                          ref={photoInputRef}
-                          type="file"
-                          accept="image/*"
-                          capture="environment"
-                          onChange={handlePhotoCapture}
-                          className="hidden"
-                        />
-                        {continuousCapture ? (
+                        {vehiclePhotos.length > 0 ? (
                           <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => setContinuousCapture(false)}
+                            size="lg"
+                            onClick={() => photoInputRef.current?.click()}
+                            disabled={uploadingPhotos}
+                            className="flex-1 min-h-[48px] text-base"
+                            style={{ backgroundColor: "#0d6b3d", color: "#fff" }}
                           >
-                            <X className="h-4 w-4 mr-2" />
-                            Stop Capturing ({vehiclePhotos.length} taken)
+                            <Camera className="h-5 w-5 mr-2" />
+                            {uploadingPhotos ? "Saving..." : `📸 Next Photo (${vehiclePhotos.length} taken)`}
                           </Button>
                         ) : (
                           <Button
                             variant="outline"
-                            size="sm"
-                            onClick={() => {
-                              setContinuousCapture(true);
-                              photoInputRef.current?.click();
-                            }}
+                            size="lg"
+                            onClick={() => photoInputRef.current?.click()}
                             disabled={uploadingPhotos}
+                            className="flex-1 min-h-[48px] text-base"
                           >
-                            <Camera className="h-4 w-4 mr-2" />
-                            {uploadingPhotos ? "Uploading..." : "Take Photos"}
+                            <Camera className="h-5 w-5 mr-2" />
+                            {uploadingPhotos ? "Saving..." : "Take First Photo"}
                           </Button>
                         )}
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => {
-                            setContinuousCapture(false);
                             if (photoInputRef.current) {
                               photoInputRef.current.removeAttribute("capture");
                               photoInputRef.current.click();
@@ -831,7 +830,7 @@ const RentalAgreement = () => {
                           disabled={uploadingPhotos}
                         >
                           <ImageIcon className="h-4 w-4 mr-2" />
-                          Upload from Gallery
+                          Gallery
                         </Button>
                       </div>
                       {vehiclePhotos.length > 0 && (
