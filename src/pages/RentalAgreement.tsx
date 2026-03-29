@@ -46,7 +46,7 @@ const RentalAgreement = () => {
   const photoInputRef = useRef<HTMLInputElement>(null);
   const [vehiclePhotos, setVehiclePhotos] = useState<{ url: string; name: string }[]>([]);
   const [uploadingPhotos, setUploadingPhotos] = useState(false);
-  const [continuousCapture, setContinuousCapture] = useState(false);
+  const [, setContinuousCapture] = useState(false); // kept for compatibility
   const [existingPhotos, setExistingPhotos] = useState<{ url: string; name: string }[]>([]);
   const [resending, setResending] = useState(false);
 
