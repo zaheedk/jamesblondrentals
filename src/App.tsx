@@ -213,11 +213,7 @@ const App = () => {
             </ProtectedRoute>
           } />
           <Route path="/admin/rental-agreement" element={<RentalAgreement />} />
-          <Route path="/admin/rental-agreements" element={
-            <ProtectedRoute>
-              <AdminRentalAgreements />
-            </ProtectedRoute>
-          } />
+          <Route path="/admin/rental-agreements" element={<AdminRentalAgreements />} />
                 
                 {/* Auth routes */}
                 <Route path="/login" element={<Login />} />
