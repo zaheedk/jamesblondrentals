@@ -1,23 +1,17 @@
 
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { useRcmApi } from '@/hooks/use-rcm-api';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Settings, BookOpen, TrendingUp, MessageSquare, Calendar, Users } from 'lucide-react';
-import BookingHistory from '@/components/member/BookingHistory';
 import SupabaseBookingHistory from '@/components/member/SupabaseBookingHistory';
-import ProfileForm from '@/components/member/ProfileForm';
 
 export default function MemberDashboard() {
   const { user, signOut } = useAuth();
-  const [activeTab, setActiveTab] = useState('bookings');
   const isAdmin = user?.email === 'zaheedk@gmail.com';
 
   if (!user) {
-    return null; // Will be handled by ProtectedRoute
+    return null;
   }
 
   return (
@@ -25,14 +19,13 @@ export default function MemberDashboard() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold">Member Dashboard</h1>
-          <p className="text-gray-500">Welcome, {user.email}</p>
+          <p className="text-muted-foreground">Welcome, {user.email}</p>
         </div>
         <Button variant="outline" onClick={signOut} className="mt-4 md:mt-0">
           Log Out
         </Button>
       </div>
 
-      {/* Admin Links */}
       {isAdmin && (
         <div className="mb-8">
           <Card>
@@ -80,45 +73,7 @@ export default function MemberDashboard() {
         </div>
       )}
 
-      <Tabs 
-        defaultValue="bookings" 
-        value={activeTab} 
-        onValueChange={setActiveTab} 
-        className="w-full"
-      >
-        <TabsList className="grid grid-cols-2 md:grid-cols-3 w-full max-w-md">
-          <TabsTrigger value="bookings">My Bookings</TabsTrigger>
-          <TabsTrigger value="profile">Profile</TabsTrigger>
-          <TabsTrigger value="preferences">Preferences</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="bookings" className="mt-6">
-          <div className="space-y-8">
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Recent Bookings</h3>
-              <SupabaseBookingHistory />
-            </div>
-            
-            <div className="border-t pt-6">
-              <h3 className="text-lg font-semibold mb-4">External Booking History</h3>
-              <BookingHistory userEmail={user.email || ''} />
-            </div>
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="profile" className="mt-6">
-          <ProfileForm />
-        </TabsContent>
-        
-        <TabsContent value="preferences" className="mt-6">
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-semibold mb-4">Preferences</h2>
-            <p className="text-gray-500">
-              This section will be available soon.
-            </p>
-          </div>
-        </TabsContent>
-      </Tabs>
+      <SupabaseBookingHistory />
     </div>
   );
 }
