@@ -51,50 +51,26 @@ const WinzQuoteForm = () => {
     setIsSubmitting(true);
 
     try {
-      const emailHtml = `
-        <h2>New WINZ Quote Request</h2>
-        <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
-          <h3 style="margin-top: 0; color: #333;">Customer Information</h3>
-          <p><strong>Name:</strong> ${values.firstName} ${values.lastName}</p>
-          <p><strong>Email:</strong> ${values.email}</p>
-          <p><strong>Phone:</strong> ${values.phone}</p>
-          <p><strong>WINZ Client Number:</strong> ${values.winzClientNumber}</p>
-        </div>
-        
-        <div style="background-color: #f0f8ff; padding: 20px; border-radius: 8px; margin: 20px 0;">
-          <h3 style="margin-top: 0; color: #333;">Rental Details</h3>
-          <p><strong>Vehicle Type:</strong> ${values.vehicleType}</p>
-          <p><strong>Pickup Date:</strong> ${values.pickupDate}</p>
-          <p><strong>Return Date:</strong> ${values.returnDate}</p>
-          <p><strong>From Address:</strong> ${values.pickupLocation}</p>
-          <p><strong>To Address:</strong> ${values.returnLocation}</p>
-        </div>
-        
-        ${values.additionalRequirements ? `
-        <div style="background-color: #fff8f0; padding: 20px; border-radius: 8px; margin: 20px 0;">
-          <h3 style="margin-top: 0; color: #333;">Additional Requirements</h3>
-          <p>${values.additionalRequirements.replace(/\n/g, '<br>')}</p>
-        </div>
-        ` : ''}
-        
-        <div style="background-color: #e8f5e8; padding: 20px; border-radius: 8px; margin: 20px 0;">
-          <h3 style="margin-top: 0; color: #333;">Quote Includes</h3>
-          <ul>
-            <li>Best Insurance for vehicles</li>
-            <li>Comprehensive Insurance for trailers</li>
-            <li>$1000 bond for vehicle or trailer hire</li>
-          </ul>
-        </div>
-        
-        <hr style="margin: 30px 0;">
-        <p style="color: #666; font-style: italic;">This WINZ quote request was submitted via jamesblond.co.nz</p>
-      `;
+      const idempotencyKey = `winz-${Date.now()}-${values.winzClientNumber}`;
 
-      const { error } = await supabase.functions.invoke('send-postmark-email', {
+      const { error } = await supabase.functions.invoke('send-transactional-email', {
         body: {
-          to: 'info@jamesblond.co.nz',
-          subject: `WINZ Quote Request: ${values.firstName} ${values.lastName} - ${values.winzClientNumber}`,
-          html: emailHtml
+          templateName: 'winz-quote-notification',
+          recipientEmail: 'info@jamesblond.co.nz',
+          idempotencyKey,
+          templateData: {
+            firstName: values.firstName,
+            lastName: values.lastName,
+            email: values.email,
+            phone: values.phone,
+            winzClientNumber: values.winzClientNumber,
+            vehicleType: values.vehicleType,
+            pickupDate: values.pickupDate,
+            returnDate: values.returnDate,
+            pickupLocation: values.pickupLocation,
+            returnLocation: values.returnLocation,
+            additionalRequirements: values.additionalRequirements,
+          },
         }
       });
 

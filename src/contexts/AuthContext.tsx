@@ -205,18 +205,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         };
       }
 
-      console.log('Signup successful, attempting to send welcome email...');
-      
-      // Send welcome email after successful signup - but don't fail signup if email fails
-      try {
-        const { useEmail } = await import('@/hooks/use-email');
-        const { sendSignupWelcomeEmail } = useEmail();
-        await sendSignupWelcomeEmail(email);
-        console.log('Welcome email sent successfully');
-      } catch (emailError) {
-        console.error('Failed to send welcome email (but signup was successful):', emailError);
-        // Continue with successful signup even if email fails
-      }
+      console.log('Signup successful');
 
       console.log('Signup process completed successfully');
       return { 
