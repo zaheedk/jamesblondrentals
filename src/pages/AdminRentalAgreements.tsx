@@ -12,6 +12,7 @@ import type { RCMBookingInfoResponse } from "@/lib/api/rcm-api-types";
 const AdminRentalAgreements = () => {
   const navigate = useNavigate();
   const [reservationRef, setReservationRef] = useState("");
+  const [lastName, setLastName] = useState("");
   const [loading, setLoading] = useState(false);
   const [bookingData, setBookingData] = useState<RCMBookingInfoResponse["results"] | null>(null);
 
@@ -58,9 +59,15 @@ const AdminRentalAgreements = () => {
             <CardContent>
               <div className="flex gap-3">
                 <Input
-                  placeholder="Enter reservation reference..."
+                  placeholder="Reservation number..."
                   value={reservationRef}
                   onChange={(e) => setReservationRef(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleFetch()}
+                />
+                <Input
+                  placeholder="Last name..."
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleFetch()}
                 />
                 <Button onClick={handleFetch} disabled={loading}>
