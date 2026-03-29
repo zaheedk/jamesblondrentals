@@ -376,6 +376,7 @@ const AdminBookings = () => {
                   </Button>
                 </div>
               </div>
+            </TabsContent>
 
             <TabsContent value="quotes">
               <div className="rounded-md border">
