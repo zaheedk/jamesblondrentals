@@ -4,9 +4,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
-import { Loader2, Save } from 'lucide-react';
+import { Loader2, Save, User, CreditCard, MapPin, Phone, Mail, Globe, Calendar, Hash } from 'lucide-react';
 
 interface ProfileData {
   first_name: string;
@@ -35,6 +35,24 @@ const initialData: ProfileData = {
   postcode: '',
   country: 'New Zealand',
 };
+
+function FieldWithIcon({ icon: Icon, label, required, children }: {
+  icon: React.ElementType;
+  label: string;
+  required?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="space-y-1.5">
+      <Label className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        <Icon className="w-3.5 h-3.5" />
+        {label}
+        {required && <span className="text-destructive">*</span>}
+      </Label>
+      {children}
+    </div>
+  );
+}
 
 export default function ProfileForm() {
   const { user } = useAuth();
@@ -137,101 +155,153 @@ export default function ProfileForm() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-8">
-        <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="w-6 h-6 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="max-w-3xl mx-auto space-y-8">
       {/* Personal Details */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Personal Details</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="first_name">First Name *</Label>
-              <Input id="first_name" value={form.first_name} onChange={e => handleChange('first_name', e.target.value)} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="last_name">Last Name *</Label>
-              <Input id="last_name" value={form.last_name} onChange={e => handleChange('last_name', e.target.value)} />
-            </div>
+      <section>
+        <div className="flex items-center gap-2 mb-4">
+          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10">
+            <User className="w-4 h-4 text-primary" />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" value={user?.email || ''} disabled className="bg-muted" />
+          <h3 className="text-lg font-bold text-foreground">Personal Details</h3>
+        </div>
+        <div className="rounded-lg border bg-card p-6 space-y-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <FieldWithIcon icon={User} label="First Name" required>
+              <Input
+                value={form.first_name}
+                onChange={e => handleChange('first_name', e.target.value)}
+                className="h-11"
+              />
+            </FieldWithIcon>
+            <FieldWithIcon icon={User} label="Last Name" required>
+              <Input
+                value={form.last_name}
+                onChange={e => handleChange('last_name', e.target.value)}
+                className="h-11"
+              />
+            </FieldWithIcon>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="mobile">Mobile</Label>
-            <Input id="mobile" value={form.mobile} onChange={e => handleChange('mobile', e.target.value)} placeholder="+64 21 123 4567" />
-          </div>
-        </CardContent>
-      </Card>
+          <FieldWithIcon icon={Mail} label="Email">
+            <Input value={user?.email || ''} disabled className="h-11 bg-muted/50 text-muted-foreground" />
+          </FieldWithIcon>
+          <FieldWithIcon icon={Phone} label="Mobile">
+            <Input
+              value={form.mobile}
+              onChange={e => handleChange('mobile', e.target.value)}
+              placeholder="+64 21 123 4567"
+              className="h-11"
+            />
+          </FieldWithIcon>
+        </div>
+      </section>
+
+      <Separator />
 
       {/* License Details */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">License Details</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="license_number">License Number</Label>
-            <Input id="license_number" value={form.license_number} onChange={e => handleChange('license_number', e.target.value)} />
+      <section>
+        <div className="flex items-center gap-2 mb-4">
+          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10">
+            <CreditCard className="w-4 h-4 text-primary" />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="license_expiry">Date of Expiry</Label>
-              <Input id="license_expiry" type="date" value={form.license_expiry} onChange={e => handleChange('license_expiry', e.target.value)} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="license_country">Country of Issue</Label>
-              <Input id="license_country" value={form.license_country} onChange={e => handleChange('license_country', e.target.value)} placeholder="New Zealand" />
-            </div>
+          <h3 className="text-lg font-bold text-foreground">Driver's License</h3>
+        </div>
+        <div className="rounded-lg border bg-card p-6 space-y-5">
+          <FieldWithIcon icon={Hash} label="License Number">
+            <Input
+              value={form.license_number}
+              onChange={e => handleChange('license_number', e.target.value)}
+              className="h-11"
+            />
+          </FieldWithIcon>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <FieldWithIcon icon={Calendar} label="Date of Expiry">
+              <Input
+                type="date"
+                value={form.license_expiry}
+                onChange={e => handleChange('license_expiry', e.target.value)}
+                className="h-11"
+              />
+            </FieldWithIcon>
+            <FieldWithIcon icon={Globe} label="Country of Issue">
+              <Input
+                value={form.license_country}
+                onChange={e => handleChange('license_country', e.target.value)}
+                placeholder="New Zealand"
+                className="h-11"
+              />
+            </FieldWithIcon>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </section>
+
+      <Separator />
 
       {/* Home Address */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Home Address</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="address">Street Address</Label>
-            <Input id="address" value={form.address} onChange={e => handleChange('address', e.target.value)} placeholder="123 Queen Street" />
+      <section>
+        <div className="flex items-center gap-2 mb-4">
+          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10">
+            <MapPin className="w-4 h-4 text-primary" />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="suburb">Suburb</Label>
-              <Input id="suburb" value={form.suburb} onChange={e => handleChange('suburb', e.target.value)} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="city">City</Label>
-              <Input id="city" value={form.city} onChange={e => handleChange('city', e.target.value)} />
-            </div>
+          <h3 className="text-lg font-bold text-foreground">Home Address</h3>
+        </div>
+        <div className="rounded-lg border bg-card p-6 space-y-5">
+          <FieldWithIcon icon={MapPin} label="Street Address">
+            <Input
+              value={form.address}
+              onChange={e => handleChange('address', e.target.value)}
+              placeholder="123 Queen Street"
+              className="h-11"
+            />
+          </FieldWithIcon>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <FieldWithIcon icon={MapPin} label="Suburb">
+              <Input
+                value={form.suburb}
+                onChange={e => handleChange('suburb', e.target.value)}
+                className="h-11"
+              />
+            </FieldWithIcon>
+            <FieldWithIcon icon={MapPin} label="City">
+              <Input
+                value={form.city}
+                onChange={e => handleChange('city', e.target.value)}
+                className="h-11"
+              />
+            </FieldWithIcon>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="postcode">Postcode</Label>
-              <Input id="postcode" value={form.postcode} onChange={e => handleChange('postcode', e.target.value)} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="country">Country</Label>
-              <Input id="country" value={form.country} onChange={e => handleChange('country', e.target.value)} />
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <FieldWithIcon icon={Hash} label="Postcode">
+              <Input
+                value={form.postcode}
+                onChange={e => handleChange('postcode', e.target.value)}
+                className="h-11"
+              />
+            </FieldWithIcon>
+            <FieldWithIcon icon={Globe} label="Country">
+              <Input
+                value={form.country}
+                onChange={e => handleChange('country', e.target.value)}
+                className="h-11"
+              />
+            </FieldWithIcon>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </section>
 
-      <Button onClick={handleSave} disabled={saving} size="lg">
-        {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
-        Save Profile
-      </Button>
+      {/* Save Button */}
+      <div className="flex justify-end pt-2 pb-4">
+        <Button onClick={handleSave} disabled={saving} size="lg" className="min-w-[160px]">
+          {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+          Save Profile
+        </Button>
+      </div>
     </div>
   );
 }
