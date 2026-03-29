@@ -86,21 +86,10 @@ const RentalAgreement = () => {
         setExistingSignature(existing.hirer_signature);
         setExistingAdditionalSig(existing.additional_driver_signature);
         setSignedAt(existing.signed_at);
-
-        // Load existing vehicle photos from storage
-        const { data: photoFiles } = await supabase.storage
-          .from("vehicle-photos")
-          .list(reservationRef.trim(), { limit: 50 });
-        if (photoFiles && photoFiles.length > 0) {
-          const photos = photoFiles.map(f => {
-            const { data: urlData } = supabase.storage
-              .from("vehicle-photos")
-              .getPublicUrl(`${reservationRef.trim()}/${f.name}`);
-            return { url: urlData.publicUrl, name: f.name };
-          });
-          setExistingPhotos(photos);
-        }
       }
+
+      // Load existing vehicle photos from storage (always, even without signature)
+      await loadExistingPhotos(reservationRef.trim());
 
       const response = await rcmApi.getBookingInfoByReference(reservationRef.trim());
       if (response.status === "OK" && response.results) {
@@ -307,6 +296,92 @@ const RentalAgreement = () => {
   };
 
 
+  // Load existing photos from storage for a given reservation ref
+  const loadExistingPhotos = async (ref: string) => {
+    const { data: folders } = await supabase.storage
+      .from("vehicle-photos")
+      .list(ref, { limit: 100 });
+    
+    if (!folders || folders.length === 0) return;
+
+    const allPhotos: { url: string; name: string }[] = [];
+
+    for (const item of folders) {
+      // Check if item is a folder (has no metadata/id typically) by listing inside it
+      const { data: subFiles } = await supabase.storage
+        .from("vehicle-photos")
+        .list(`${ref}/${item.name}`, { limit: 100 });
+      
+      if (subFiles && subFiles.length > 0) {
+        // It's a folder (rego subfolder)
+        for (const f of subFiles) {
+          if (f.name === '.emptyFolderPlaceholder') continue;
+          const { data: urlData } = supabase.storage
+            .from("vehicle-photos")
+            .getPublicUrl(`${ref}/${item.name}/${f.name}`);
+          allPhotos.push({ url: urlData.publicUrl, name: `${item.name}/${f.name}` });
+        }
+      } else if (item.id) {
+        // It's a file directly in the ref folder (legacy)
+        const { data: urlData } = supabase.storage
+          .from("vehicle-photos")
+          .getPublicUrl(`${ref}/${item.name}`);
+        allPhotos.push({ url: urlData.publicUrl, name: item.name });
+      }
+    }
+    
+    if (allPhotos.length > 0) {
+      setExistingPhotos(allPhotos);
+    }
+  };
+
+  // Add date/time stamp overlay to a photo file using canvas
+  const addTimestampToPhoto = (file: File): Promise<File> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) { resolve(file); return; }
+
+        ctx.drawImage(img, 0, 0);
+
+        // Timestamp text
+        const now = new Date();
+        const stamp = now.toLocaleString("en-NZ", {
+          day: "2-digit", month: "2-digit", year: "numeric",
+          hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false,
+        });
+
+        const fontSize = Math.max(16, Math.floor(img.width / 40));
+        ctx.font = `bold ${fontSize}px Arial`;
+        const textWidth = ctx.measureText(stamp).width;
+        const padding = 8;
+        const x = img.width - textWidth - padding * 2;
+        const y = img.height - padding * 2;
+
+        // Semi-transparent background
+        ctx.fillStyle = "rgba(0,0,0,0.5)";
+        ctx.fillRect(x - padding, y - fontSize - padding, textWidth + padding * 2, fontSize + padding * 2);
+
+        // White text
+        ctx.fillStyle = "#ffffff";
+        ctx.fillText(stamp, x, y);
+
+        canvas.toBlob((blob) => {
+          URL.revokeObjectURL(url);
+          if (!blob) { resolve(file); return; }
+          resolve(new File([blob], file.name, { type: "image/jpeg" }));
+        }, "image/jpeg", 0.85);
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); resolve(file); };
+      img.src = url;
+    });
+  };
+
   // Queue photos locally without uploading
   const handlePhotoCapture = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -326,25 +401,29 @@ const RentalAgreement = () => {
     setPendingPhotos(prev => [...prev, { file, previewUrl }]);
   };
 
-  // Upload all pending photos at once
+  // Upload all pending photos at once with timestamp overlay
   const handleUploadAllPhotos = async () => {
     if (!pendingPhotos.length || !reservationRef.trim()) return;
+
+    const rego = vehicleRego.trim() || "unknown-rego";
 
     setUploadingPhotos(true);
     try {
       const uploaded: { url: string; name: string }[] = [];
       for (const pending of pendingPhotos) {
-        const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}-${pending.file.name}`;
-        const filePath = `${reservationRef.trim()}/${fileName}`;
+        // Add timestamp overlay
+        const stampedFile = await addTimestampToPhoto(pending.file);
+        const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`;
+        const filePath = `${reservationRef.trim()}/${rego}/${fileName}`;
         const { error } = await supabase.storage
           .from("vehicle-photos")
-          .upload(filePath, pending.file);
+          .upload(filePath, stampedFile);
 
         if (!error) {
           const { data: urlData } = supabase.storage
             .from("vehicle-photos")
             .getPublicUrl(filePath);
-          uploaded.push({ url: urlData.publicUrl, name: fileName });
+          uploaded.push({ url: urlData.publicUrl, name: `${rego}/${fileName}` });
         } else {
           console.error("Error uploading photo:", error);
         }
@@ -374,6 +453,7 @@ const RentalAgreement = () => {
     const filePath = `${reservationRef.trim()}/${photo.name}`;
     await supabase.storage.from("vehicle-photos").remove([filePath]);
     setVehiclePhotos(prev => prev.filter(p => p.name !== photo.name));
+    setExistingPhotos(prev => prev.filter(p => p.name !== photo.name));
   };
 
   const blobToBase64 = (blob: Blob): Promise<string> => {
