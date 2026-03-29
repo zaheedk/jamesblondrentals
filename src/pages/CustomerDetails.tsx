@@ -71,7 +71,11 @@ const CustomerDetails = () => {
   const { rcmApi } = useRcmApi();
   const { user } = useAuth();
   
-  
+  const form = useForm<CustomerFormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues,
+  });
+
   React.useEffect(() => {
     if (!bookingData) {
       toast.error("No booking information found", {
@@ -81,10 +85,56 @@ const CustomerDetails = () => {
     }
   }, [bookingData, navigate]);
 
-  const form = useForm<CustomerFormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues,
-  });
+  // Pre-fill form from logged-in user's profile and customer record
+  React.useEffect(() => {
+    const prefillFromProfile = async () => {
+      if (!user) return;
+      
+      // Start with auth profile data
+      const fullName = user.user_metadata?.full_name || user.user_metadata?.name || "";
+      const nameParts = fullName.split(" ");
+      const firstName = nameParts[0] || "";
+      const lastName = nameParts.slice(1).join(" ") || "";
+      
+      let prefillData: Partial<CustomerFormValues> = {
+        email: user.email || "",
+        firstName,
+        lastName,
+      };
+
+      // Try to get richer data from the customers table
+      try {
+        const { data: customer } = await supabase
+          .from('customers')
+          .select('first_name, last_name, email, mobile, phone, dob')
+          .eq('user_id', user.id)
+          .maybeSingle();
+
+        if (customer) {
+          prefillData = {
+            firstName: customer.first_name || prefillData.firstName,
+            lastName: customer.last_name || prefillData.lastName,
+            email: customer.email || prefillData.email,
+            phone: customer.mobile || customer.phone || prefillData.phone || "",
+            dateOfBirth: customer.dob 
+              ? new Date(customer.dob).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '/')
+              : "",
+          };
+        }
+      } catch (err) {
+        console.error('Error fetching customer profile:', err);
+      }
+
+      // Only set values that are not empty
+      Object.entries(prefillData).forEach(([key, value]) => {
+        if (value) {
+          form.setValue(key as keyof CustomerFormValues, value);
+        }
+      });
+    };
+
+    prefillFromProfile();
+  }, [user, form]);
 
   const formatDateForApi = (dateStr: string): string => {
     if (!dateStr || dateStr.trim() === "" || dateStr === "dd/mm/yyyy") return "";
