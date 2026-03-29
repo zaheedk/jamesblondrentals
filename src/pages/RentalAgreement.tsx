@@ -1144,6 +1144,13 @@ const RentalAgreement = () => {
           )}
         </div>
       </div>
+      {cameraOpen && (
+        <VehicleCamera
+          onPhotoCaptured={handleCameraCapture}
+          onClose={() => setCameraOpen(false)}
+          photoCount={pendingPhotos.length + vehiclePhotos.length}
+        />
+      )}
     </>
   );
 };
