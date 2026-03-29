@@ -552,8 +552,7 @@ const RentalAgreement = () => {
               </div>
 
               {/* Rental Details */}
-              <div className="mb-4">
-                <div style={{ fontSize: "11px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>Rental Details</div>
+              <div data-pdf-section className="mb-4">
                 <div className="grid grid-cols-3 gap-x-6" style={{ fontSize: "10.5px" }}>
                   <div><span style={{ fontWeight: 600 }}>Pickup:</span> {booking?.pickupdate} {booking?.pickuptime}</div>
                   <div><span style={{ fontWeight: 600 }}>Return:</span> {booking?.dropoffdate} {booking?.dropofftime}</div>
@@ -565,8 +564,7 @@ const RentalAgreement = () => {
               </div>
 
               {/* Rates & Fees */}
-              <div className="mb-4">
-                <div style={{ fontSize: "11px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>Rates & Fees</div>
+              <div data-pdf-section className="mb-4">
                 <table style={{ width: "100%", fontSize: "10.5px", borderCollapse: "collapse" }}>
                   <thead>
                     <tr style={{ borderBottom: "1.5px solid #999" }}>
@@ -607,8 +605,7 @@ const RentalAgreement = () => {
 
               {/* Payment Details */}
               {payments && payments.length > 0 && (
-                <div className="mb-4">
-                  <div style={{ fontSize: "11px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>Payment Details</div>
+                <div data-pdf-section className="mb-4">
                   <table style={{ width: "100%", fontSize: "10.5px", borderCollapse: "collapse" }}>
                     <thead>
                       <tr style={{ borderBottom: "1.5px solid #999" }}>
@@ -637,8 +634,7 @@ const RentalAgreement = () => {
 
               {/* Additional Drivers */}
               {allAdditionalDrivers.length > 0 && (
-                <div className="mb-4">
-                  <div style={{ fontSize: "11px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>Additional Driver(s)</div>
+                <div data-pdf-section className="mb-4">
                   {allAdditionalDrivers.map((driver, idx) => (
                     <div key={idx} className="grid grid-cols-4 gap-x-4" style={{ fontSize: "10.5px", marginBottom: "2px" }}>
                       <div><span style={{ fontWeight: 600 }}>Name:</span> {driver.firstname} {driver.lastname}</div>
@@ -651,8 +647,7 @@ const RentalAgreement = () => {
               )}
 
               {/* Terms & Conditions */}
-              <div className="mb-4">
-                <div style={{ fontSize: "11px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>Terms & Conditions</div>
+              <div data-pdf-section className="mb-4">
                 <div style={{ fontSize: "8.5px", lineHeight: "1.35", color: "#333", columnCount: 2, columnGap: "20px" }}>
                   <p style={{ fontWeight: 600, marginBottom: "3px" }}>
                     SUBJECT TO FOLLOWING TERMS AND CONDITIONS
@@ -746,9 +741,7 @@ const RentalAgreement = () => {
               </div>
 
               {/* Vehicle Photos */}
-              <div className="mb-4">
-                <div style={{ fontSize: "11px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>
-                  Vehicle Condition Photos
+              <div data-pdf-section className="mb-4">
                 </div>
                   {alreadySigned ? (
                     <>
