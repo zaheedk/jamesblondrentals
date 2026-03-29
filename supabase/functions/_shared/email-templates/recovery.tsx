@@ -24,20 +24,22 @@ export const RecoveryEmail = ({
 }: RecoveryEmailProps) => (
   <Html lang="en" dir="ltr">
     <Head />
-    <Preview>Reset your password for {siteName}</Preview>
+    <Preview>Reset your password – James Blond Car Rentals</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Heading style={h1}>Reset your password</Heading>
+        <Heading style={h1}>Reset Your Password</Heading>
         <Text style={text}>
-          We received a request to reset your password for {siteName}. Click
-          the button below to choose a new password.
+          We received a request to reset your password for your James Blond Car Rentals account. Click the button below to choose a new password.
         </Text>
         <Button style={button} href={confirmationUrl}>
           Reset Password
         </Button>
+        <Text style={text}>This link will expire in 24 hours for security reasons.</Text>
         <Text style={footer}>
-          If you didn't request a password reset, you can safely ignore this
-          email. Your password will not be changed.
+          If you didn't request a password reset, you can safely ignore this email. Your password will not be changed.
+        </Text>
+        <Text style={footer}>
+          James Blond Car Rentals · 0800 525 663 · info@jamesblond.co.nz
         </Text>
       </Container>
     </Body>
@@ -46,26 +48,27 @@ export const RecoveryEmail = ({
 
 export default RecoveryEmail
 
-const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif' }
-const container = { padding: '20px 25px' }
+const main = { backgroundColor: '#ffffff', fontFamily: "'Segoe UI', Arial, sans-serif" }
+const container = { padding: '30px 25px' }
 const h1 = {
-  fontSize: '22px',
+  fontSize: '24px',
   fontWeight: 'bold' as const,
-  color: '#000000',
+  color: '#002244',
   margin: '0 0 20px',
 }
 const text = {
-  fontSize: '14px',
-  color: '#55575d',
-  lineHeight: '1.5',
-  margin: '0 0 25px',
+  fontSize: '15px',
+  color: '#334155',
+  lineHeight: '1.6',
+  margin: '0 0 20px',
 }
 const button = {
-  backgroundColor: '#000000',
+  backgroundColor: '#0a7a3b',
   color: '#ffffff',
-  fontSize: '14px',
+  fontSize: '15px',
+  fontWeight: 'bold' as const,
   borderRadius: '8px',
-  padding: '12px 20px',
+  padding: '14px 28px',
   textDecoration: 'none',
 }
-const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }
+const footer = { fontSize: '12px', color: '#94a3b8', margin: '20px 0 0' }
