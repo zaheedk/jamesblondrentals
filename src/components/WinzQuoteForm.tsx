@@ -51,26 +51,26 @@ const WinzQuoteForm = () => {
     setIsSubmitting(true);
 
     try {
-      const idempotencyKey = `winz-${Date.now()}-${values.winzClientNumber}`;
+      const html = `
+        <h2>New WINZ Quote Request</h2>
+        <p><strong>Name:</strong> ${values.firstName} ${values.lastName}</p>
+        <p><strong>Email:</strong> ${values.email}</p>
+        <p><strong>Phone:</strong> ${values.phone}</p>
+        <p><strong>WINZ Client Number:</strong> ${values.winzClientNumber}</p>
+        <p><strong>Vehicle Type:</strong> ${values.vehicleType}</p>
+        <p><strong>Pickup Date:</strong> ${values.pickupDate}</p>
+        <p><strong>Return Date:</strong> ${values.returnDate}</p>
+        <p><strong>Pickup Location:</strong> ${values.pickupLocation}</p>
+        <p><strong>Return Location:</strong> ${values.returnLocation}</p>
+        ${values.additionalRequirements ? `<p><strong>Additional Requirements:</strong> ${values.additionalRequirements}</p>` : ''}
+      `;
 
-      const { error } = await supabase.functions.invoke('send-transactional-email', {
+      const { error } = await supabase.functions.invoke('send-email-resend', {
         body: {
-          templateName: 'winz-quote-notification',
-          recipientEmail: 'info@jamesblond.co.nz',
-          idempotencyKey,
-          templateData: {
-            firstName: values.firstName,
-            lastName: values.lastName,
-            email: values.email,
-            phone: values.phone,
-            winzClientNumber: values.winzClientNumber,
-            vehicleType: values.vehicleType,
-            pickupDate: values.pickupDate,
-            returnDate: values.returnDate,
-            pickupLocation: values.pickupLocation,
-            returnLocation: values.returnLocation,
-            additionalRequirements: values.additionalRequirements,
-          },
+          to: 'info@jamesblond.co.nz',
+          subject: `WINZ Quote Request: ${values.firstName} ${values.lastName}`,
+          html,
+          replyTo: values.email,
         }
       });
 
