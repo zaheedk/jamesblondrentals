@@ -970,9 +970,15 @@ const RentalAgreement = () => {
                       {/* Show existing photos (uploaded previously) */}
                       {existingPhotos.length > 0 && (
                         <div className="grid grid-cols-3 md:grid-cols-4 gap-2 mb-3">
-                          {existingPhotos.map((photo, idx) => (
-                            <div key={idx} className="aspect-square overflow-hidden border" style={{ borderRadius: "4px" }}>
+                          {existingPhotos.filter(p => !hiddenPhotos.includes(p.name)).map((photo, idx) => (
+                            <div key={idx} className="relative aspect-square overflow-hidden border group" style={{ borderRadius: "4px" }}>
                               <img src={photo.url} alt={`Vehicle photo ${idx + 1}`} className="w-full h-full object-cover" />
+                              <button
+                                onClick={() => confirmDeletePhoto(photo, 'existing')}
+                                className="absolute top-1 right-1 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </button>
                             </div>
                           ))}
                         </div>
@@ -1048,10 +1054,10 @@ const RentalAgreement = () => {
                             <div key={idx} className="relative aspect-square overflow-hidden border group" style={{ borderRadius: "4px" }}>
                               <img src={photo.url} alt={`Vehicle photo ${idx + 1}`} className="w-full h-full object-cover" />
                               <button
-                                onClick={() => removePhoto(photo)}
-                                className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                                onClick={() => confirmDeletePhoto(photo, 'uploaded')}
+                                className="absolute top-1 right-1 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
                               >
-                                <X className="h-3 w-3" />
+                                <Trash2 className="h-3 w-3" />
                               </button>
                             </div>
                           ))}
