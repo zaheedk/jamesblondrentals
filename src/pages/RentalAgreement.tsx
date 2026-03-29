@@ -475,110 +475,116 @@ const RentalAgreement = () => {
           )}
 
           {!loading && bookingData && (
-            <div className="bg-white shadow-sm border rounded-lg" id="rental-agreement">
-              <div className="p-8 md:p-12 space-y-8 text-[13px] leading-relaxed text-foreground">
+            <div className="bg-white shadow-none border-0" id="rental-agreement" style={{ fontFamily: "'Segoe UI', Arial, Helvetica, sans-serif", color: "#1a1a1a" }}>
+              <div className="px-8 md:px-10 py-6 md:py-8" style={{ fontSize: "11px", lineHeight: "1.45" }}>
 
               {/* Header */}
-              <div className="flex justify-between items-start border-b-2 border-primary pb-4">
-                <div>
-                  <h1 className="text-2xl font-bold text-primary tracking-tight">James Blond</h1>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {booking?.pickuplocationname || booking?.pickuplocation}
-                  </p>
-                  <p className="text-xs text-muted-foreground">Tel: 0800 525 663</p>
-                  <p className="text-xs text-muted-foreground">Email: info@jamesblond.co.nz</p>
-                  <p className="text-xs text-muted-foreground">GST: 140-174-963</p>
+              <div className="flex justify-between items-start pb-3 mb-4" style={{ borderBottom: "3px solid #0d6b3d" }}>
+                <div className="flex items-center gap-3">
+                  <img 
+                    src="/lovable-uploads/900107e8-dbcb-44ce-96a9-0588959abf24.png" 
+                    alt="James Blond Rentals" 
+                    style={{ height: "50px", width: "auto" }}
+                  />
+                  <div>
+                    <div style={{ fontSize: "10px", color: "#555" }}>
+                      {booking?.pickuplocationname || booking?.pickuplocation}
+                    </div>
+                    <div style={{ fontSize: "10px", color: "#555" }}>Tel: 0800 525 663 | info@jamesblond.co.nz</div>
+                    <div style={{ fontSize: "10px", color: "#555" }}>GST: 140-174-963</div>
+                  </div>
                 </div>
                 <div className="text-right">
-                  <div className="flex items-center gap-2 justify-end">
-                    <FileText className="h-5 w-5 text-primary" />
-                    <span className="text-lg font-bold text-foreground">Rental Agreement</span>
+                  <div style={{ fontSize: "16px", fontWeight: "700", color: "#0d6b3d", letterSpacing: "-0.3px" }}>RENTAL AGREEMENT</div>
+                  <div style={{ fontSize: "13px", fontWeight: "600", color: "#333", marginTop: "2px" }}>
+                    #{booking?.reservationdocumentno || booking?.reservationno || booking?.reservationref || reservationRef}
                   </div>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Ref: #{booking?.reservationdocumentno || booking?.reservationno || booking?.reservationref || reservationRef}
-                  </p>
                 </div>
               </div>
 
-              {/* Hirer Details */}
-              <div>
-                <h2 className="text-base font-bold text-primary mb-3 border-b pb-1">Hirer's Details</h2>
-                <div className="grid grid-cols-2 gap-x-8 gap-y-2">
-                  <div><span className="font-semibold">Name:</span> {customer?.firstname} {customer?.lastname}</div>
-                  <div><span className="font-semibold">DOB:</span> {customer?.dateofbirth}</div>
-                  <div><span className="font-semibold">Licence No:</span> {customer?.licenseno}</div>
-                  <div><span className="font-semibold">Issued In:</span> {customer?.licenseissued || customer?.country}</div>
-                  <div><span className="font-semibold">Expiry:</span> {customer?.licenseexpires}</div>
-                  <div><span className="font-semibold">Phone:</span> {customer?.phone || customer?.mobile}</div>
-                  <div className="col-span-2"><span className="font-semibold">Address:</span> {[customer?.address, customer?.city, customer?.state, customer?.postcode].filter(Boolean).join(", ")}</div>
-                  <div className="col-span-2"><span className="font-semibold">Email:</span> {customer?.email}</div>
+              {/* Hirer Details + Vehicle Details side by side */}
+              <div className="grid grid-cols-2 gap-6 mb-4">
+                <div>
+                  <div style={{ fontSize: "11px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>Hirer's Details</div>
+                  <table style={{ width: "100%", fontSize: "10.5px" }}>
+                    <tbody>
+                      <tr><td style={{ fontWeight: 600, padding: "1px 4px 1px 0", width: "80px", verticalAlign: "top" }}>Name:</td><td style={{ padding: "1px 0" }}>{customer?.firstname} {customer?.lastname}</td></tr>
+                      <tr><td style={{ fontWeight: 600, padding: "1px 4px 1px 0", verticalAlign: "top" }}>DOB:</td><td style={{ padding: "1px 0" }}>{customer?.dateofbirth}</td></tr>
+                      <tr><td style={{ fontWeight: 600, padding: "1px 4px 1px 0", verticalAlign: "top" }}>Licence No:</td><td style={{ padding: "1px 0" }}>{customer?.licenseno}</td></tr>
+                      <tr><td style={{ fontWeight: 600, padding: "1px 4px 1px 0", verticalAlign: "top" }}>Issued In:</td><td style={{ padding: "1px 0" }}>{customer?.licenseissued || customer?.country}</td></tr>
+                      <tr><td style={{ fontWeight: 600, padding: "1px 4px 1px 0", verticalAlign: "top" }}>Expiry:</td><td style={{ padding: "1px 0" }}>{customer?.licenseexpires}</td></tr>
+                      <tr><td style={{ fontWeight: 600, padding: "1px 4px 1px 0", verticalAlign: "top" }}>Phone:</td><td style={{ padding: "1px 0" }}>{customer?.phone || customer?.mobile}</td></tr>
+                      <tr><td style={{ fontWeight: 600, padding: "1px 4px 1px 0", verticalAlign: "top" }}>Address:</td><td style={{ padding: "1px 0" }}>{[customer?.address, customer?.city, customer?.state, customer?.postcode].filter(Boolean).join(", ")}</td></tr>
+                      <tr><td style={{ fontWeight: 600, padding: "1px 4px 1px 0", verticalAlign: "top" }}>Email:</td><td style={{ padding: "1px 0" }}>{customer?.email}</td></tr>
+                    </tbody>
+                  </table>
                 </div>
-              </div>
-
-              {/* Vehicle Details */}
-              <div>
-                <h2 className="text-base font-bold text-primary mb-3 border-b pb-1">Vehicle Details</h2>
-                <div className="grid grid-cols-2 gap-x-8 gap-y-2">
-                  <div><span className="font-semibold">Category:</span> {booking?.vehiclecategory}</div>
-                  <div><span className="font-semibold">Description:</span> {booking?.vehicledescription1}</div>
-                  <div><span className="font-semibold">Licence Plate:</span> {vehicleRego || "N/A"}</div>
-                  <div><span className="font-semibold">Fuel Type:</span> {booking?.fueltype || "N/A"}</div>
-                  <div><span className="font-semibold">Kms Out:</span> {kmsOut || "N/A"}</div>
-                  <div><span className="font-semibold">Kms In:</span> {kmsIn || "N/A"}</div>
-                  <div><span className="font-semibold">Fuel Out:</span> {fuelOut || "N/A"}</div>
-                  <div><span className="font-semibold">Fuel In:</span> {fuelIn || "N/A"}</div>
+                <div>
+                  <div style={{ fontSize: "11px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>Vehicle Details</div>
+                  <table style={{ width: "100%", fontSize: "10.5px" }}>
+                    <tbody>
+                      <tr><td style={{ fontWeight: 600, padding: "1px 4px 1px 0", width: "80px", verticalAlign: "top" }}>Category:</td><td style={{ padding: "1px 0" }}>{booking?.vehiclecategory}</td></tr>
+                      <tr><td style={{ fontWeight: 600, padding: "1px 4px 1px 0", verticalAlign: "top" }}>Description:</td><td style={{ padding: "1px 0" }}>{booking?.vehicledescription1}</td></tr>
+                      <tr><td style={{ fontWeight: 600, padding: "1px 4px 1px 0", verticalAlign: "top" }}>Licence Plate:</td><td style={{ padding: "1px 0" }}>{vehicleRego || "N/A"}</td></tr>
+                      <tr><td style={{ fontWeight: 600, padding: "1px 4px 1px 0", verticalAlign: "top" }}>Fuel Type:</td><td style={{ padding: "1px 0" }}>{booking?.fueltype || "N/A"}</td></tr>
+                      <tr><td style={{ fontWeight: 600, padding: "1px 4px 1px 0", verticalAlign: "top" }}>Kms Out:</td><td style={{ padding: "1px 0" }}>{kmsOut || "N/A"}</td></tr>
+                      <tr><td style={{ fontWeight: 600, padding: "1px 4px 1px 0", verticalAlign: "top" }}>Kms In:</td><td style={{ padding: "1px 0" }}>{kmsIn || "N/A"}</td></tr>
+                      <tr><td style={{ fontWeight: 600, padding: "1px 4px 1px 0", verticalAlign: "top" }}>Fuel Out:</td><td style={{ padding: "1px 0" }}>{fuelOut || "N/A"}</td></tr>
+                      <tr><td style={{ fontWeight: 600, padding: "1px 4px 1px 0", verticalAlign: "top" }}>Fuel In:</td><td style={{ padding: "1px 0" }}>{fuelIn || "N/A"}</td></tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
 
               {/* Rental Details */}
-              <div>
-                <h2 className="text-base font-bold text-primary mb-3 border-b pb-1">Rental Details</h2>
-                <div className="grid grid-cols-2 gap-x-8 gap-y-2">
-                  <div><span className="font-semibold">Pickup:</span> {booking?.pickupdate} {booking?.pickuptime}</div>
-                  <div><span className="font-semibold">Pickup Location:</span> {booking?.pickuplocationname || booking?.pickuplocation}</div>
-                  <div><span className="font-semibold">Return:</span> {booking?.dropoffdate} {booking?.dropofftime}</div>
-                  <div><span className="font-semibold">Return Location:</span> {booking?.dropofflocationname || booking?.dropofflocation}</div>
-                  <div><span className="font-semibold">Days:</span> {booking?.numberofdays}</div>
-                  <div><span className="font-semibold">Daily Rate:</span> ${Number(booking?.dailyrate || 0).toFixed(2)}</div>
+              <div className="mb-4">
+                <div style={{ fontSize: "11px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>Rental Details</div>
+                <div className="grid grid-cols-3 gap-x-6" style={{ fontSize: "10.5px" }}>
+                  <div><span style={{ fontWeight: 600 }}>Pickup:</span> {booking?.pickupdate} {booking?.pickuptime}</div>
+                  <div><span style={{ fontWeight: 600 }}>Return:</span> {booking?.dropoffdate} {booking?.dropofftime}</div>
+                  <div><span style={{ fontWeight: 600 }}>Days:</span> {booking?.numberofdays}</div>
+                  <div><span style={{ fontWeight: 600 }}>Pickup Location:</span> {booking?.pickuplocationname || booking?.pickuplocation}</div>
+                  <div><span style={{ fontWeight: 600 }}>Return Location:</span> {booking?.dropofflocationname || booking?.dropofflocation}</div>
+                  <div><span style={{ fontWeight: 600 }}>Daily Rate:</span> ${Number(booking?.dailyrate || 0).toFixed(2)}</div>
                 </div>
               </div>
 
               {/* Rates & Fees */}
-              <div>
-                <h2 className="text-base font-bold text-primary mb-3 border-b pb-1">Rates & Fees</h2>
-                <table className="w-full">
+              <div className="mb-4">
+                <div style={{ fontSize: "11px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>Rates & Fees</div>
+                <table style={{ width: "100%", fontSize: "10.5px", borderCollapse: "collapse" }}>
                   <thead>
-                    <tr className="border-b-2 border-muted">
-                      <th className="text-left py-1.5 font-semibold">Item</th>
-                      <th className="text-right py-1.5 font-semibold">Amount</th>
+                    <tr style={{ borderBottom: "1.5px solid #999" }}>
+                      <th style={{ textAlign: "left", padding: "3px 0", fontWeight: 600 }}>Item</th>
+                      <th style={{ textAlign: "right", padding: "3px 0", fontWeight: 600 }}>Amount</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr className="border-b border-muted">
-                      <td className="py-1.5">Vehicle Rental ({rentalDays} days × ${dailyRate.toFixed(2)})</td>
-                      <td className="text-right py-1.5">${rentalAmount.toFixed(2)}</td>
+                    <tr style={{ borderBottom: "1px solid #e5e5e5" }}>
+                      <td style={{ padding: "2px 0" }}>Vehicle Rental ({rentalDays} days × ${dailyRate.toFixed(2)})</td>
+                      <td style={{ textAlign: "right", padding: "2px 0" }}>${rentalAmount.toFixed(2)}</td>
                     </tr>
                     {booking?.insuranceoption && (
-                      <tr className="border-b border-muted">
-                        <td className="py-1.5">{booking.insuranceoption}</td>
-                        <td className="text-right py-1.5">${Number(booking?.insuranceamount || 0).toFixed(2)}</td>
+                      <tr style={{ borderBottom: "1px solid #e5e5e5" }}>
+                        <td style={{ padding: "2px 0" }}>{booking.insuranceoption}</td>
+                        <td style={{ textAlign: "right", padding: "2px 0" }}>${Number(booking?.insuranceamount || 0).toFixed(2)}</td>
                       </tr>
                     )}
                     {extras?.map((extra, idx) => (
-                      <tr key={idx} className="border-b border-muted">
-                        <td className="py-1.5">{extra.name}</td>
-                        <td className="text-right py-1.5">${Number(extra.fees || 0).toFixed(2)}</td>
+                      <tr key={idx} style={{ borderBottom: "1px solid #e5e5e5" }}>
+                        <td style={{ padding: "2px 0" }}>{extra.name}</td>
+                        <td style={{ textAlign: "right", padding: "2px 0" }}>${Number(extra.fees || 0).toFixed(2)}</td>
                       </tr>
                     ))}
                     {booking?.mandatoryfees?.map((fee, idx) => (
-                      <tr key={idx} className="border-b border-muted">
-                        <td className="py-1.5">{fee.name || "Mandatory Fee"}</td>
-                        <td className="text-right py-1.5">${Number(fee.totalfeeamount || fee.amount || 0).toFixed(2)}</td>
+                      <tr key={idx} style={{ borderBottom: "1px solid #e5e5e5" }}>
+                        <td style={{ padding: "2px 0" }}>{fee.name || "Mandatory Fee"}</td>
+                        <td style={{ textAlign: "right", padding: "2px 0" }}>${Number(fee.totalfeeamount || fee.amount || 0).toFixed(2)}</td>
                       </tr>
                     ))}
-                    <tr className="font-bold border-t-2 border-foreground">
-                      <td className="py-1.5">Total</td>
-                      <td className="text-right py-1.5">${Number(booking?.totalcost || 0).toFixed(2)}</td>
+                    <tr style={{ borderTop: "2px solid #333" }}>
+                      <td style={{ padding: "3px 0", fontWeight: 700 }}>Total</td>
+                      <td style={{ textAlign: "right", padding: "3px 0", fontWeight: 700 }}>${Number(booking?.totalcost || 0).toFixed(2)}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -586,29 +592,29 @@ const RentalAgreement = () => {
 
               {/* Payment Details */}
               {payments && payments.length > 0 && (
-                <div>
-                  <h2 className="text-base font-bold text-primary mb-3 border-b pb-1">Payment Details</h2>
-                  <table className="w-full">
+                <div className="mb-4">
+                  <div style={{ fontSize: "11px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>Payment Details</div>
+                  <table style={{ width: "100%", fontSize: "10.5px", borderCollapse: "collapse" }}>
                     <thead>
-                      <tr className="border-b-2 border-muted">
-                        <th className="text-left py-1.5 font-semibold">Date</th>
-                        <th className="text-left py-1.5 font-semibold">Method</th>
-                        <th className="text-left py-1.5 font-semibold">Details</th>
-                        <th className="text-right py-1.5 font-semibold">Amount</th>
+                      <tr style={{ borderBottom: "1.5px solid #999" }}>
+                        <th style={{ textAlign: "left", padding: "3px 0", fontWeight: 600 }}>Date</th>
+                        <th style={{ textAlign: "left", padding: "3px 0", fontWeight: 600 }}>Method</th>
+                        <th style={{ textAlign: "left", padding: "3px 0", fontWeight: 600 }}>Details</th>
+                        <th style={{ textAlign: "right", padding: "3px 0", fontWeight: 600 }}>Amount</th>
                       </tr>
                     </thead>
                     <tbody>
                       {payments.map((payment, idx) => (
-                        <tr key={idx} className="border-b border-muted">
-                          <td className="py-1.5">{payment.paymentdate}</td>
-                          <td className="py-1.5">{payment.paymenttype || payment.paymentmethod || ""}</td>
-                          <td className="py-1.5">{payment.paysource || payment.paymentdetails || ""}</td>
-                          <td className="text-right py-1.5">${Number(payment.paidamount || 0).toFixed(2)}</td>
+                        <tr key={idx} style={{ borderBottom: "1px solid #e5e5e5" }}>
+                          <td style={{ padding: "2px 0" }}>{payment.paymentdate}</td>
+                          <td style={{ padding: "2px 0" }}>{payment.paymenttype || payment.paymentmethod || ""}</td>
+                          <td style={{ padding: "2px 0" }}>{payment.paysource || payment.paymentdetails || ""}</td>
+                          <td style={{ textAlign: "right", padding: "2px 0" }}>${Number(payment.paidamount || 0).toFixed(2)}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
-                  <div className="mt-2 text-right font-bold">
+                  <div style={{ textAlign: "right", fontWeight: 700, marginTop: "3px", fontSize: "11px" }}>
                     Balance Due: ${Number(booking?.balancedue || 0).toFixed(2)}
                   </div>
                 </div>
@@ -616,140 +622,139 @@ const RentalAgreement = () => {
 
               {/* Additional Drivers */}
               {allAdditionalDrivers.length > 0 && (
-                <div>
-                  <h2 className="text-base font-bold text-primary mb-3 border-b pb-1">Additional Driver(s)</h2>
-                    {allAdditionalDrivers.map((driver, idx) => (
-                      <div key={idx} className="grid grid-cols-2 gap-x-8 gap-y-2 mb-3">
-                        <div><span className="font-semibold">Name:</span> {driver.firstname} {driver.lastname}</div>
-                        <div><span className="font-semibold">DOB:</span> {driver.dateofbirth}</div>
-                        <div><span className="font-semibold">Licence No:</span> {driver.licenseno}</div>
-                        <div><span className="font-semibold">Expiry:</span> {driver.licenseexpires}</div>
-                      </div>
-                    ))}
+                <div className="mb-4">
+                  <div style={{ fontSize: "11px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>Additional Driver(s)</div>
+                  {allAdditionalDrivers.map((driver, idx) => (
+                    <div key={idx} className="grid grid-cols-4 gap-x-4" style={{ fontSize: "10.5px", marginBottom: "2px" }}>
+                      <div><span style={{ fontWeight: 600 }}>Name:</span> {driver.firstname} {driver.lastname}</div>
+                      <div><span style={{ fontWeight: 600 }}>DOB:</span> {driver.dateofbirth}</div>
+                      <div><span style={{ fontWeight: 600 }}>Licence:</span> {driver.licenseno}</div>
+                      <div><span style={{ fontWeight: 600 }}>Expiry:</span> {driver.licenseexpires}</div>
+                    </div>
+                  ))}
                 </div>
               )}
 
               {/* Terms & Conditions */}
-              <div>
-                <h2 className="text-base font-bold text-primary mb-3 border-b pb-1">Terms & Conditions</h2>
-                  <div className="text-[11px] leading-snug space-y-2 text-foreground">
-                    <p className="font-semibold">
-                      SUBJECT TO FOLLOWING TERMS AND CONDITIONS
-                    </p>
-                    <p>
-                      Subject to the terms & conditions contained on the front and reverse hereof of which the hirer(s) acknowledges that they are aware, the hirer agrees to rent the above vehicle and elects to pay all amounts payable under this agreement by the method of payment of which details are given on this document. By signing this contract, you hereby agree to these terms and authorise Kanthawala Ltd charging your credit card for the rental, the bond and any additional costs incurred.
-                    </p>
+              <div className="mb-4">
+                <div style={{ fontSize: "11px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>Terms & Conditions</div>
+                <div style={{ fontSize: "8.5px", lineHeight: "1.35", color: "#333", columnCount: 2, columnGap: "20px" }}>
+                  <p style={{ fontWeight: 600, marginBottom: "3px" }}>
+                    SUBJECT TO FOLLOWING TERMS AND CONDITIONS
+                  </p>
+                  <p style={{ marginBottom: "3px" }}>
+                    Subject to the terms & conditions contained on the front and reverse hereof of which the hirer(s) acknowledges that they are aware, the hirer agrees to rent the above vehicle and elects to pay all amounts payable under this agreement by the method of payment of which details are given on this document. By signing this contract, you hereby agree to these terms and authorise Kanthawala Ltd charging your credit card for the rental, the bond and any additional costs incurred.
+                  </p>
 
-                    <p><strong>1. ACCIDENTS</strong></p>
-                    <p>Any accident must be reported within twenty four(24) hours and must be accompanied by a police report. Should the hirer(s) fail to comply with any conditions of this contract, all losses and damages suffered by the owner arising out of such failure shall be borne by and paid for by the hirer(s).</p>
+                  <p style={{ marginBottom: "1px" }}><strong>1. ACCIDENTS</strong></p>
+                  <p style={{ marginBottom: "3px" }}>Any accident must be reported within twenty four(24) hours and must be accompanied by a police report. Should the hirer(s) fail to comply with any conditions of this contract, all losses and damages suffered by the owner arising out of such failure shall be borne by and paid for by the hirer(s).</p>
 
-                    <p><strong>2. TRAFFIC INFRINGEMENTS</strong></p>
-                    <p>The Hirer(s) accept responsibility for all traffic violations infringements, including parking, speeding and lane violations and impound fees incurred during the rental. A $35 administration fee will apply for any fines received.</p>
+                  <p style={{ marginBottom: "1px" }}><strong>2. TRAFFIC INFRINGEMENTS</strong></p>
+                  <p style={{ marginBottom: "3px" }}>The Hirer(s) accept responsibility for all traffic violations infringements, including parking, speeding and lane violations and impound fees incurred during the rental. A $35 administration fee will apply for any fines received.</p>
 
-                    <p><strong>3. HIRER(S) RESPONSIBILITY</strong></p>
-                    <p>Maintaining water and oil levels is the hirer(s) responsibility. Any approved cost incurred will be reimbursed upon production of a receipt. Should any malfunction of the vehicle occur, any warning light or any sign of overheating, you must stop the vehicle immediately and contact James Blond or you will be held liable and loss of bond may occur.</p>
-                    <p>Vehicles are provided with a full tank of fuel, and must be returned with full tank of fuel. If not, hirer is liable for Fuel cost plus $50.00 fee.</p>
-                    <p>Vehicles are provided in a clean and tidy manner and should be returned in a similar state otherwise a cleaning fee of $200.00 will apply.</p>
-                    <p>The hirer accepts that SMOKING and/or transporting ANIMALS in the vehicle is strictly PROHIBITED. Doing so will incur a strict $200.00 Fine.</p>
+                  <p style={{ marginBottom: "1px" }}><strong>3. HIRER(S) RESPONSIBILITY</strong></p>
+                  <p style={{ marginBottom: "2px" }}>Maintaining water and oil levels is the hirer(s) responsibility. Any approved cost incurred will be reimbursed upon production of a receipt. Should any malfunction of the vehicle occur, any warning light or any sign of overheating, you must stop the vehicle immediately and contact James Blond or you will be held liable and loss of bond may occur.</p>
+                  <p style={{ marginBottom: "2px" }}>Vehicles are provided with a full tank of fuel, and must be returned with full tank of fuel. If not, hirer is liable for Fuel cost plus $50.00 fee.</p>
+                  <p style={{ marginBottom: "2px" }}>Vehicles are provided in a clean and tidy manner and should be returned in a similar state otherwise a cleaning fee of $200.00 will apply.</p>
+                  <p style={{ marginBottom: "3px" }}>The hirer accepts that SMOKING and/or transporting ANIMALS in the vehicle is strictly PROHIBITED. Doing so will incur a strict $200.00 Fine.</p>
 
-                    <p><strong>4. LATE RETURNS</strong></p>
-                    <p>Will be charged for at the rate at $20.00 per hour for up to 3 hours late, after which full 24 hours rental will be charged, including the insurance fee. A non-compliance fee of $200 will be charged if returned late without prior approval of James Blond Rentals.</p>
+                  <p style={{ marginBottom: "1px" }}><strong>4. LATE RETURNS</strong></p>
+                  <p style={{ marginBottom: "3px" }}>Will be charged for at the rate at $20.00 per hour for up to 3 hours late, after which full 24 hours rental will be charged, including the insurance fee. A non-compliance fee of $200 will be charged if returned late without prior approval of James Blond Rentals.</p>
 
-                    <p><strong>5. PERSONS WHO MAY DRIVE VEHICLE</strong></p>
-                    <p>The vehicle may be driven during the period of hire only by the persons described in this agreement and only if such person holds a current driver's license appropriate for the vehicle at the time when they are driving the vehicle. Non-compliance will result in a $200 fine.</p>
+                  <p style={{ marginBottom: "1px" }}><strong>5. PERSONS WHO MAY DRIVE VEHICLE</strong></p>
+                  <p style={{ marginBottom: "3px" }}>The vehicle may be driven during the period of hire only by the persons described in this agreement and only if such person holds a current driver's license appropriate for the vehicle at the time when they are driving the vehicle. Non-compliance will result in a $200 fine.</p>
 
-                    <p><strong>6. PAYMENTS BY HIRER</strong></p>
-                    <p>The hirer shall pay to the owner as payment for the hire of the vehicle, accessories, insurance upgrade options, and any extra charges incurred for the period of hire the sum as specified in this agreement. In addition the hirer shall pay to the owner on termination of the hiring a distance charge at the rate referred to in this agreement. The total distance that the hirer may run the vehicle during the period of hire shall not exceed the number of kilometres specified in this agreement. The hirer shall also pay for fuel (but not oil) used in the vehicle during the period of hire.</p>
+                  <p style={{ marginBottom: "1px" }}><strong>6. PAYMENTS BY HIRER</strong></p>
+                  <p style={{ marginBottom: "3px" }}>The hirer shall pay to the owner as payment for the hire of the vehicle, accessories, insurance upgrade options, and any extra charges incurred for the period of hire the sum as specified in this agreement. In addition the hirer shall pay to the owner on termination of the hiring a distance charge at the rate referred to in this agreement. The total distance that the hirer may run the vehicle during the period of hire shall not exceed the number of kilometres specified in this agreement. The hirer shall also pay for fuel (but not oil) used in the vehicle during the period of hire.</p>
 
-                    <p><strong>7. INSURANCE</strong></p>
-                    <p>The hirer shall ensure that all reasonable care is taken in handling and parking the vehicle, and that it is left securely locked when not in use. The insurance excess will be determined by the insurance option taken by the customer prior to checkout.</p>
+                  <p style={{ marginBottom: "1px" }}><strong>7. INSURANCE</strong></p>
+                  <p style={{ marginBottom: "3px" }}>The hirer shall ensure that all reasonable care is taken in handling and parking the vehicle, and that it is left securely locked when not in use. The insurance excess will be determined by the insurance option taken by the customer prior to checkout.</p>
 
-                    <p><strong>8. INDEMNITY</strong></p>
-                    <p>Subject to the exclusions set out below, the hirer and any driver authorised to drive the vehicle is:</p>
-                    <p className="pl-4">(a) fully indemnified in respect of any liability he/she might have to the owner in respect of loss or of damage to the vehicle and any consequential loss of revenue or other expenses of the owner including towing and salvage costs associated with the recovery of the vehicle and its accessories and spare parts.</p>
-                    <p className="pl-4">(b) indemnified to the extent of $NZ250,000 in respect of any liability he/she might have for damage to any property (including injury to any animal) belonging to any other 3rd party person and arising out of the use of the vehicle.</p>
+                  <p style={{ marginBottom: "1px" }}><strong>8. INDEMNITY</strong></p>
+                  <p style={{ marginBottom: "2px" }}>Subject to the exclusions set out below, the hirer and any driver authorised to drive the vehicle is:</p>
+                  <p style={{ marginBottom: "2px", paddingLeft: "8px" }}>(a) fully indemnified in respect of any liability he/she might have to the owner in respect of loss or of damage to the vehicle and any consequential loss of revenue or other expenses of the owner including towing and salvage costs associated with the recovery of the vehicle and its accessories and spare parts.</p>
+                  <p style={{ marginBottom: "3px", paddingLeft: "8px" }}>(b) indemnified to the extent of $NZ250,000 in respect of any liability he/she might have for damage to any property (including injury to any animal) belonging to any other 3rd party person and arising out of the use of the vehicle.</p>
 
-                    <p><strong>9. EXCLUSIONS</strong></p>
-                    <p>The indemnities referred to above shall not apply where the damage, injury or loss arises when:</p>
-                    <p className="pl-4">(a) The driver of the vehicle is under the influence of alcohol, or any drug which affects his/her ability to drive the vehicle;</p>
-                    <p className="pl-4">(b) The vehicle is in an unsafe or un-roadworthy condition that arose during the course of the hire and that caused or contributed to the damage or loss, and the hirer or the driver was aware or ought to have been aware of the unsafe or un-roadworthy condition of the vehicle;</p>
-                    <p className="pl-4">(c) The vehicle is operated in any race, speed test, rally or contest;</p>
-                    <p className="pl-4">(d) Any damage caused to the vehicle above the height of the windscreen or third party damage to property caused by the vehicle above this height is excluded from our cover and will be the responsibility of the hirer;</p>
-                    <p className="pl-4">(e) The vehicle is driven by any person who at the time when he/she drives the vehicle is disqualified from holding or has never held a driver's license appropriate for that vehicle;</p>
-                    <p className="pl-4">(f) The vehicle is damaged due to driver abuse or negligence, or is wilfully or recklessly damaged by the hirer or any other person named in this agreement, or driving the vehicle under the authority of the hirer, or is lost as a result of the wilful or reckless behaviour of the hirer or any such person; This includes but is not limited to burnt out clutch, overloading, incorrect fuel etc;</p>
-                    <p className="pl-4">(g) The vehicle is operated on any of the following roads: Skipper's Canyon Queenstown; Ball Hut Access Mt Cook; Crown Range Queenstown; unsealed section of SH1 far north beyond Waitiki Landing; all beaches and off-road unsealed areas;</p>
-                    <p className="pl-4">(h) The vehicle is operated outside the term of hire or any agreed extension of that term.</p>
-                    <p className="pl-4">(i) Any insurance claim received by any other party after the termination of the hire where the hirer has not advised the company will be deemed to be a claim against the hirer.</p>
-                    <p>It is agreed between the owner and hirer that Section 11 of the Insurance Law Reform Act 1977 shall apply with respect to the above exclusions as if this clause constituted a contract of insurance.</p>
+                  <p style={{ marginBottom: "1px" }}><strong>9. EXCLUSIONS</strong></p>
+                  <p style={{ marginBottom: "2px" }}>The indemnities referred to above shall not apply where the damage, injury or loss arises when:</p>
+                  <p style={{ marginBottom: "1px", paddingLeft: "8px" }}>(a) The driver of the vehicle is under the influence of alcohol, or any drug which affects his/her ability to drive the vehicle;</p>
+                  <p style={{ marginBottom: "1px", paddingLeft: "8px" }}>(b) The vehicle is in an unsafe or un-roadworthy condition that arose during the course of the hire and that caused or contributed to the damage or loss, and the hirer or the driver was aware or ought to have been aware of the unsafe or un-roadworthy condition of the vehicle;</p>
+                  <p style={{ marginBottom: "1px", paddingLeft: "8px" }}>(c) The vehicle is operated in any race, speed test, rally or contest;</p>
+                  <p style={{ marginBottom: "1px", paddingLeft: "8px" }}>(d) Any damage caused to the vehicle above the height of the windscreen or third party damage to property caused by the vehicle above this height is excluded from our cover and will be the responsibility of the hirer;</p>
+                  <p style={{ marginBottom: "1px", paddingLeft: "8px" }}>(e) The vehicle is driven by any person who at the time when he/she drives the vehicle is disqualified from holding or has never held a driver's license appropriate for that vehicle;</p>
+                  <p style={{ marginBottom: "1px", paddingLeft: "8px" }}>(f) The vehicle is damaged due to driver abuse or negligence, or is wilfully or recklessly damaged by the hirer or any other person named in this agreement, or driving the vehicle under the authority of the hirer, or is lost as a result of the wilful or reckless behaviour of the hirer or any such person; This includes but is not limited to burnt out clutch, overloading, incorrect fuel etc;</p>
+                  <p style={{ marginBottom: "1px", paddingLeft: "8px" }}>(g) The vehicle is operated on any of the following roads: Skipper's Canyon Queenstown; Ball Hut Access Mt Cook; Crown Range Queenstown; unsealed section of SH1 far north beyond Waitiki Landing; all beaches and off-road unsealed areas;</p>
+                  <p style={{ marginBottom: "1px", paddingLeft: "8px" }}>(h) The vehicle is operated outside the term of hire or any agreed extension of that term.</p>
+                  <p style={{ marginBottom: "3px", paddingLeft: "8px" }}>(i) Any insurance claim received by any other party after the termination of the hire where the hirer has not advised the company will be deemed to be a claim against the hirer.</p>
+                  <p style={{ marginBottom: "3px" }}>It is agreed between the owner and hirer that Section 11 of the Insurance Law Reform Act 1977 shall apply with respect to the above exclusions as if this clause constituted a contract of insurance.</p>
 
-                    <p><strong>10. OWNERS OBLIGATIONS</strong></p>
-                    <p>The owner shall supply the vehicle in a safe & roadworthy condition & shall be responsible for all ordinary costs of running the vehicle during the term of the hire except to the extent that by the terms of this agreement those costs are payable by the hirer.</p>
+                  <p style={{ marginBottom: "1px" }}><strong>10. OWNERS OBLIGATIONS</strong></p>
+                  <p style={{ marginBottom: "3px" }}>The owner shall supply the vehicle in a safe & roadworthy condition & shall be responsible for all ordinary costs of running the vehicle during the term of the hire except to the extent that by the terms of this agreement those costs are payable by the hirer.</p>
 
-                    <p><strong>11. MECHANICAL REPAIRS & ACCIDENTS</strong></p>
-                    <p>If the vehicle is damaged or requires repair or salvage, because of an accident or breakdown, the hirer shall advise the owner of the full circumstances by telephone or email as soon as possible but no later than 24 hours after the accident.</p>
+                  <p style={{ marginBottom: "1px" }}><strong>11. MECHANICAL REPAIRS & ACCIDENTS</strong></p>
+                  <p style={{ marginBottom: "3px" }}>If the vehicle is damaged or requires repair or salvage, because of an accident or breakdown, the hirer shall advise the owner of the full circumstances by telephone or email as soon as possible but no later than 24 hours after the accident.</p>
 
-                    <p><strong>12. REPAIRS/SALVAGE</strong></p>
-                    <p>The hirer shall not arrange or undertake any repairs or salvage without the authority of the owner except to the extent to the extent that the repairs or salvage are necessary to prevent further damage to the vehicle or to other property.</p>
+                  <p style={{ marginBottom: "1px" }}><strong>12. REPAIRS/SALVAGE</strong></p>
+                  <p style={{ marginBottom: "3px" }}>The hirer shall not arrange or undertake any repairs or salvage without the authority of the owner except to the extent to the extent that the repairs or salvage are necessary to prevent further damage to the vehicle or to other property.</p>
 
-                    <p><strong>13. TAMPERING</strong></p>
-                    <p>The hirer shall ensure that no person shall interfere with the distance recorder or speedometer or, except in an emergency, any part of the engine, transmission, braking, electrical or suspension systems of the vehicle.</p>
+                  <p style={{ marginBottom: "1px" }}><strong>13. TAMPERING</strong></p>
+                  <p style={{ marginBottom: "3px" }}>The hirer shall ensure that no person shall interfere with the distance recorder or speedometer or, except in an emergency, any part of the engine, transmission, braking, electrical or suspension systems of the vehicle.</p>
 
-                    <p><strong>14. PUNCTURES, TYRE DAMAGE, GLASS, LENSES & HEADLIGHT DAMAGE</strong></p>
-                    <p>Are at the hirer's expense unless they have upgraded to an insurance option providing extra cover for this.</p>
+                  <p style={{ marginBottom: "1px" }}><strong>14. PUNCTURES, TYRE DAMAGE, GLASS, LENSES & HEADLIGHT DAMAGE</strong></p>
+                  <p style={{ marginBottom: "3px" }}>Are at the hirer's expense unless they have upgraded to an insurance option providing extra cover for this.</p>
 
-                    <p><strong>15. USE OF THE VEHICLE</strong></p>
-                    <p>The hirer shall not:</p>
-                    <p className="pl-4">(a) use or permit the vehicle to be used for the carriage of passengers for hire or reward unless the vehicle is hired with the knowledge of the owner for use in passenger service licensed under part VII of the Transport Act 1962 or exempted from licensing under that Act.</p>
-                    <p className="pl-4">(b) sublet or hire the vehicle to any other person nor permit the vehicle to be operated outside his/her authority;</p>
-                    <p className="pl-4">(c) operate the vehicle, or permit it to be operated or driven.</p>
+                  <p style={{ marginBottom: "1px" }}><strong>15. USE OF THE VEHICLE</strong></p>
+                  <p style={{ marginBottom: "2px" }}>The hirer shall not:</p>
+                  <p style={{ marginBottom: "1px", paddingLeft: "8px" }}>(a) use or permit the vehicle to be used for the carriage of passengers for hire or reward unless the vehicle is hired with the knowledge of the owner for use in passenger service licensed under part VII of the Transport Act 1962 or exempted from licensing under that Act.</p>
+                  <p style={{ marginBottom: "1px", paddingLeft: "8px" }}>(b) sublet or hire the vehicle to any other person nor permit the vehicle to be operated outside his/her authority;</p>
+                  <p style={{ marginBottom: "3px", paddingLeft: "8px" }}>(c) operate the vehicle, or permit it to be operated or driven.</p>
 
-                    <p><strong>16. RETURN OF THE VEHICLE</strong></p>
-                    <p className="pl-4">(a) The hirer shall, at or before the expiry of the term of hire, deliver the vehicle to the owner's place of business or the owner's agent at the agent's place of business, or obtain the owner's consent to the continuation of hire.</p>
-                    <p className="pl-4">(b) Where a vehicle remains overdue and no contact has been made by the hirer and outstanding rental payments are due, James Blond Ltd will consider the vehicle as stolen and will take appropriate measures to recover their vehicle passing all associated costs to the hirer.</p>
+                  <p style={{ marginBottom: "1px" }}><strong>16. RETURN OF THE VEHICLE</strong></p>
+                  <p style={{ marginBottom: "1px", paddingLeft: "8px" }}>(a) The hirer shall, at or before the expiry of the term of hire, deliver the vehicle to the owner's place of business or the owner's agent at the agent's place of business, or obtain the owner's consent to the continuation of hire.</p>
+                  <p style={{ marginBottom: "3px", paddingLeft: "8px" }}>(b) Where a vehicle remains overdue and no contact has been made by the hirer and outstanding rental payments are due, James Blond Ltd will consider the vehicle as stolen and will take appropriate measures to recover their vehicle passing all associated costs to the hirer.</p>
 
-                    <p><strong>17. IMMEDIATE RETURN OF VEHICLE WHERE DEFAULT OR DAMAGE</strong></p>
-                    <p>The owner shall have the right to terminate the hiring and take immediate possession of the vehicle if the hirer fails to comply with any of the terms of this agreement or if the vehicle is damaged. The termination of the hiring under the authority of this clause shall be without prejudice to the other rights of the owner and the rights of the hirer under this agreement or otherwise.</p>
+                  <p style={{ marginBottom: "1px" }}><strong>17. IMMEDIATE RETURN OF VEHICLE WHERE DEFAULT OR DAMAGE</strong></p>
+                  <p style={{ marginBottom: "3px" }}>The owner shall have the right to terminate the hiring and take immediate possession of the vehicle if the hirer fails to comply with any of the terms of this agreement or if the vehicle is damaged. The termination of the hiring under the authority of this clause shall be without prejudice to the other rights of the owner and the rights of the hirer under this agreement or otherwise.</p>
 
-                    <p><strong>18. CANCELLATION FEES</strong></p>
-                    <p>Under any circumstances, a minimum Cancellation fee of $50.00 will apply. A cancellation fee of 1 days hireage at the total daily rate will be incurred if the rental is cancelled 24-72 hours prior to pick up, and a fee of either $150 or 50% of the total rental whichever is the greater will be incurred in the event of cancellation within 24 hrs or if you fail to collect the car.</p>
+                  <p style={{ marginBottom: "1px" }}><strong>18. CANCELLATION FEES</strong></p>
+                  <p style={{ marginBottom: "3px" }}>Under any circumstances, a minimum Cancellation fee of $50.00 will apply. A cancellation fee of 1 days hireage at the total daily rate will be incurred if the rental is cancelled 24-72 hours prior to pick up, and a fee of either $150 or 50% of the total rental whichever is the greater will be incurred in the event of cancellation within 24 hrs or if you fail to collect the car.</p>
 
-                    <p><strong>19. DAMAGE REPAIRS/REMEDIATION</strong></p>
-                    <p>The owner will arrange for any repairs at his discretion with a repair agent/provider of his choosing.</p>
+                  <p style={{ marginBottom: "1px" }}><strong>19. DAMAGE REPAIRS/REMEDIATION</strong></p>
+                  <p style={{ marginBottom: "3px" }}>The owner will arrange for any repairs at his discretion with a repair agent/provider of his choosing.</p>
 
-                    <hr className="my-3 border-muted" />
-
-                    <p className="font-semibold text-foreground">NOTE TO THE HIRER</p>
-                    <p>The owner must give you at least one copy of this agreement. A copy must be kept in the vehicle throughout the term of the hire and produced on demand by any Police Officer, Traffic Officer or any other authorised employee of the Land Safety Transport Authority. Vehicle may be fitted and monitored with GPS Tracking Technology.</p>
+                  <div style={{ borderTop: "1px solid #999", marginTop: "4px", paddingTop: "4px" }}>
+                    <p style={{ fontWeight: 600, marginBottom: "2px" }}>NOTE TO THE HIRER</p>
+                    <p style={{ marginBottom: "2px" }}>The owner must give you at least one copy of this agreement. A copy must be kept in the vehicle throughout the term of the hire and produced on demand by any Police Officer, Traffic Officer or any other authorised employee of the Land Safety Transport Authority. Vehicle may be fitted and monitored with GPS Tracking Technology.</p>
                     <p>Please note that unless prior credit terms have been agreed and approved by James Blond Ltd, then your account is required to remain in credit at all times. When you return our vehicle, any shortfall is payable immediately upon return of the vehicle. Should you be unable to pay we will send the matter for immediate collection, holding you liable for all other costs that may be incurred in the pursuit of your debt. This may include, but is not limited to, additional collection agents' fees, legal costs and any court costs that we may incur in the pursuit of outstanding rental.</p>
                   </div>
+                </div>
               </div>
 
               {/* Vehicle Photos */}
-              <div>
-                <h2 className="text-base font-bold text-primary mb-3 border-b pb-1 flex items-center gap-2">
-                  <Camera className="h-4 w-4" />
+              <div className="mb-4">
+                <div style={{ fontSize: "11px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>
                   Vehicle Condition Photos
-                </h2>
+                </div>
                   {alreadySigned ? (
                     <>
                       {existingPhotos.length > 0 ? (
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
                           {existingPhotos.map((photo, idx) => (
-                            <div key={idx} className="relative aspect-square rounded-md overflow-hidden border">
+                            <div key={idx} className="aspect-square overflow-hidden border" style={{ borderRadius: "4px" }}>
                               <img src={photo.url} alt={`Vehicle photo ${idx + 1}`} className="w-full h-full object-cover" />
                             </div>
                           ))}
                         </div>
                       ) : (
-                        <p className="text-sm text-muted-foreground">No vehicle photos were captured for this agreement.</p>
+                        <p style={{ fontSize: "10px", color: "#888" }}>No vehicle photos were captured for this agreement.</p>
                       )}
                     </>
                   ) : (
                     <>
-                      <p className="text-sm text-muted-foreground mb-4">
+                      <p style={{ fontSize: "10px", color: "#666", marginBottom: "8px" }}>
                         Take photos of the vehicle condition before driving away. Capture all angles including any existing damage.
                       </p>
-                      <div className="flex gap-2 mb-4">
+                      <div className="flex gap-2 mb-3">
                         <input
                           ref={photoInputRef}
                           type="file"
@@ -761,6 +766,7 @@ const RentalAgreement = () => {
                         />
                         <Button
                           variant="outline"
+                          size="sm"
                           onClick={() => photoInputRef.current?.click()}
                           disabled={uploadingPhotos}
                         >
@@ -769,6 +775,7 @@ const RentalAgreement = () => {
                         </Button>
                         <Button
                           variant="outline"
+                          size="sm"
                           onClick={() => {
                             if (photoInputRef.current) {
                               photoInputRef.current.removeAttribute("capture");
@@ -783,9 +790,9 @@ const RentalAgreement = () => {
                         </Button>
                       </div>
                       {vehiclePhotos.length > 0 && (
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
                           {vehiclePhotos.map((photo, idx) => (
-                            <div key={idx} className="relative aspect-square rounded-md overflow-hidden border group">
+                            <div key={idx} className="relative aspect-square overflow-hidden border group" style={{ borderRadius: "4px" }}>
                               <img src={photo.url} alt={`Vehicle photo ${idx + 1}`} className="w-full h-full object-cover" />
                               <button
                                 onClick={() => removePhoto(photo)}
@@ -803,47 +810,47 @@ const RentalAgreement = () => {
 
               {/* Signatures */}
               <div>
-                <h2 className="text-base font-bold text-primary mb-3 border-b pb-1">Signatures</h2>
-                <div className="space-y-6">
+                <div style={{ fontSize: "11px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>Signatures</div>
+                <div className="space-y-4">
                   {alreadySigned ? (
                     <>
-                      <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-md">
-                        <ShieldCheck className="h-5 w-5 text-green-600" />
+                      <div className="flex items-center gap-2 p-2" style={{ background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: "4px", fontSize: "11px" }}>
+                        <ShieldCheck className="h-4 w-4 text-green-600" />
                         <div>
-                          <p className="font-medium text-green-800">This agreement has been signed</p>
+                          <p style={{ fontWeight: 600, color: "#166534" }}>This agreement has been signed</p>
                           {signedAt && (
-                            <p className="text-xs text-green-600">
+                            <p style={{ fontSize: "10px", color: "#16a34a" }}>
                               Signed on: {new Date(signedAt).toLocaleString("en-NZ")}
                             </p>
                           )}
                         </div>
                       </div>
 
-                      {/* Show existing hirer signature */}
-                      <div>
-                        <Label className="font-medium mb-2 block">
-                          Signature of Hirer — {customer?.firstname} {customer?.lastname}
-                        </Label>
-                        {existingSignature && (
-                          <div className="border rounded-md bg-white p-2">
-                            <img src={existingSignature} alt="Hirer signature" className="max-h-32" />
+                      <div className="grid grid-cols-2 gap-6">
+                        <div>
+                          <p style={{ fontSize: "10px", fontWeight: 600, marginBottom: "4px" }}>
+                            Signature of Hirer — {customer?.firstname} {customer?.lastname}
+                          </p>
+                          {existingSignature && (
+                            <div style={{ border: "1px solid #ddd", borderRadius: "4px", padding: "4px", background: "#fff" }}>
+                              <img src={existingSignature} alt="Hirer signature" style={{ maxHeight: "80px" }} />
+                            </div>
+                          )}
+                        </div>
+
+                        {existingAdditionalSig && (
+                          <div>
+                            <p style={{ fontSize: "10px", fontWeight: 600, marginBottom: "4px" }}>
+                              Signature of Additional Driver
+                            </p>
+                            <div style={{ border: "1px solid #ddd", borderRadius: "4px", padding: "4px", background: "#fff" }}>
+                              <img src={existingAdditionalSig} alt="Additional driver signature" style={{ maxHeight: "80px" }} />
+                            </div>
                           </div>
                         )}
                       </div>
 
-                      {/* Show existing additional driver signature */}
-                      {existingAdditionalSig && (
-                        <div>
-                          <Label className="font-medium mb-2 block">
-                            Signature of Additional Driver
-                          </Label>
-                          <div className="border rounded-md bg-white p-2">
-                            <img src={existingAdditionalSig} alt="Additional driver signature" className="max-h-32" />
-                          </div>
-                        </div>
-                      )}
-
-                      <div className="flex justify-center gap-3 flex-wrap">
+                      <div className="flex justify-center gap-3 flex-wrap" data-html2canvas-ignore="true">
                         <Button
                           variant="outline"
                           size="lg"
@@ -874,13 +881,13 @@ const RentalAgreement = () => {
                     </>
                   ) : (
                     <>
-                      <p className="text-sm text-muted-foreground italic">
+                      <p style={{ fontSize: "10px", color: "#666", fontStyle: "italic" }}>
                         I accept the terms and conditions of this rental agreement. You should not sign this unless you are sure you understand its effect.
                       </p>
 
                       {/* Hirer Signature */}
                       <div>
-                        <Label className="font-medium mb-2 block">
+                        <Label className="font-medium mb-2 block" style={{ fontSize: "11px" }}>
                           Signature of Hirer — {customer?.firstname} {customer?.lastname}
                         </Label>
                         <div className="border rounded-md bg-white">
@@ -906,7 +913,7 @@ const RentalAgreement = () => {
                       {/* Additional Driver Signature */}
                       {allAdditionalDrivers.length > 0 && (
                         <div>
-                          <Label className="font-medium mb-2 block">
+                          <Label className="font-medium mb-2 block" style={{ fontSize: "11px" }}>
                             Signature of Additional Driver — {allAdditionalDrivers[0]?.firstname} {allAdditionalDrivers[0]?.lastname}
                           </Label>
                           <div className="border rounded-md bg-white">
@@ -930,7 +937,7 @@ const RentalAgreement = () => {
                         </div>
                       )}
 
-                      <hr className="border-muted" />
+                      <hr style={{ border: "none", borderTop: "1px solid #ddd" }} />
 
                       {/* Save Button */}
                       <div className="flex justify-center">
