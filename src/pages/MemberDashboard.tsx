@@ -11,11 +11,13 @@ import { useUserRole } from '@/hooks/use-user-role';
 
 export default function MemberDashboard() {
   const { user, signOut } = useAuth();
-  const { isAdmin, isOfficeAdmin } = useUserRole();
+  const { isAdmin, isOfficeAdmin, isLoading: isRoleLoading } = useUserRole();
 
   if (!user) {
     return null;
   }
+
+  console.log('MemberDashboard role state:', { isAdmin, isOfficeAdmin, isRoleLoading });
 
   return (
     <div className="container mx-auto px-4 py-8">
