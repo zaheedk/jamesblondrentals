@@ -62,36 +62,19 @@ const AdminBookings = () => {
       ? `${booking.customer_first_name} ${booking.customer_last_name || ''}`.trim()
       : 'Customer';
 
-    const html = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #1a1a1a;">James Blond Car Rentals - Rental Agreement</h2>
-        <p>Dear ${customerName},</p>
-        <p>Please click the link below to review and sign your rental agreement:</p>
-        <p style="margin: 24px 0;">
-          <a href="${agreementUrl}" 
-             style="background-color: #f59e0b; color: #1a1a1a; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
-            Sign Rental Agreement
-          </a>
-        </p>
-        <p style="font-size: 13px; color: #666;">
-          Reservation Reference: ${resRef}<br/>
-          Booking Reference: ${booking.booking_reference || 'N/A'}
-        </p>
-        <p style="font-size: 12px; color: #999; margin-top: 24px;">
-          If the button doesn't work, copy and paste this link into your browser:<br/>
-          <a href="${agreementUrl}">${agreementUrl}</a>
-        </p>
-        <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
-        <p style="font-size: 12px; color: #999;">James Blond Car Rentals | www.jamesblond.co.nz</p>
-      </div>
-    `;
+    const idempotencyKey = `agreement-link-${resRef}-${Date.now()}`;
 
     try {
-      const { data, error } = await supabase.functions.invoke('send-postmark-email', {
+      const { data, error } = await supabase.functions.invoke('send-transactional-email', {
         body: {
-          to: email,
-          subject: `James Blond Car Rentals - Sign Your Rental Agreement (${resRef})`,
-          html,
+          templateName: 'rental-agreement-link',
+          recipientEmail: email,
+          idempotencyKey,
+          templateData: {
+            customerName,
+            reservationRef: resRef,
+            agreementUrl,
+          },
         },
       });
 
