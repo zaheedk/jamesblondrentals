@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import { Loader2, Search, FileText, CheckCircle, Download, ShieldCheck, Camera, X, ImageIcon, Send } from "lucide-react";
+import { Loader2, Search, FileText, CheckCircle, Download, ShieldCheck, Camera, X, ImageIcon, Send, Upload } from "lucide-react";
 import type { RCMBookingInfoResponse } from "@/lib/api/rcm-api-types";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
@@ -44,9 +44,10 @@ const RentalAgreement = () => {
   const hirerSigRef = useRef<SignatureCanvas>(null);
   const additionalDriverSigRef = useRef<SignatureCanvas>(null);
   const photoInputRef = useRef<HTMLInputElement>(null);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
   const [vehiclePhotos, setVehiclePhotos] = useState<{ url: string; name: string }[]>([]);
+  const [pendingPhotos, setPendingPhotos] = useState<{ file: File; previewUrl: string }[]>([]);
   const [uploadingPhotos, setUploadingPhotos] = useState(false);
-  const [, setContinuousCapture] = useState(false); // kept for compatibility
   const [existingPhotos, setExistingPhotos] = useState<{ url: string; name: string }[]>([]);
   const [resending, setResending] = useState(false);
 
@@ -304,38 +305,63 @@ const RentalAgreement = () => {
   };
 
 
-  const handlePhotoCapture = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  // Queue photos locally without uploading
+  const handlePhotoCapture = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
-    if (!files || !reservationRef.trim()) return;
+    if (!files) return;
+
+    const newPending: { file: File; previewUrl: string }[] = [];
+    for (const file of Array.from(files)) {
+      newPending.push({ file, previewUrl: URL.createObjectURL(file) });
+    }
+    setPendingPhotos(prev => [...prev, ...newPending]);
+    toast.success(`${newPending.length} photo(s) added — take more or tap "Finish & Upload All"`);
+    if (photoInputRef.current) photoInputRef.current.value = "";
+    if (galleryInputRef.current) galleryInputRef.current.value = "";
+  };
+
+  // Upload all pending photos at once
+  const handleUploadAllPhotos = async () => {
+    if (!pendingPhotos.length || !reservationRef.trim()) return;
 
     setUploadingPhotos(true);
     try {
-      const newPhotos: { url: string; name: string }[] = [];
-      for (const file of Array.from(files)) {
-        const fileName = `${Date.now()}-${file.name}`;
+      const uploaded: { url: string; name: string }[] = [];
+      for (const pending of pendingPhotos) {
+        const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}-${pending.file.name}`;
         const filePath = `${reservationRef.trim()}/${fileName}`;
         const { error } = await supabase.storage
           .from("vehicle-photos")
-          .upload(filePath, file);
+          .upload(filePath, pending.file);
 
         if (!error) {
           const { data: urlData } = supabase.storage
             .from("vehicle-photos")
             .getPublicUrl(filePath);
-          newPhotos.push({ url: urlData.publicUrl, name: fileName });
+          uploaded.push({ url: urlData.publicUrl, name: fileName });
         } else {
           console.error("Error uploading photo:", error);
         }
       }
-      setVehiclePhotos(prev => [...prev, ...newPhotos]);
-      toast.success(`${newPhotos.length} photo(s) uploaded — tap "Next Photo" to continue`);
+      setVehiclePhotos(prev => [...prev, ...uploaded]);
+      // Revoke object URLs
+      pendingPhotos.forEach(p => URL.revokeObjectURL(p.previewUrl));
+      setPendingPhotos([]);
+      toast.success(`${uploaded.length} photo(s) uploaded successfully!`);
     } catch (error) {
       console.error("Error uploading photos:", error);
       toast.error("Failed to upload photos");
     } finally {
       setUploadingPhotos(false);
-      if (photoInputRef.current) photoInputRef.current.value = "";
     }
+  };
+
+  const removePendingPhoto = (index: number) => {
+    setPendingPhotos(prev => {
+      const removed = prev[index];
+      URL.revokeObjectURL(removed.previewUrl);
+      return prev.filter((_, i) => i !== index);
+    });
   };
 
   const removePhoto = async (photo: { url: string; name: string }) => {
@@ -862,6 +888,7 @@ const RentalAgreement = () => {
                       <p style={{ fontSize: "10px", color: "#666", marginBottom: "8px" }}>
                         Take photos of the vehicle condition before driving away. Capture all angles including any existing damage.
                       </p>
+                      {/* Camera input (single shot) */}
                       <input
                         ref={photoInputRef}
                         type="file"
@@ -870,46 +897,71 @@ const RentalAgreement = () => {
                         onChange={handlePhotoCapture}
                         className="hidden"
                       />
+                      {/* Gallery input (multi-select) */}
+                      <input
+                        ref={galleryInputRef}
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={handlePhotoCapture}
+                        className="hidden"
+                      />
                       <div className="flex flex-wrap gap-2 mb-3">
-                        {vehiclePhotos.length > 0 ? (
-                          <Button
-                            size="lg"
-                            onClick={() => photoInputRef.current?.click()}
-                            disabled={uploadingPhotos}
-                            className="flex-1 min-h-[48px] text-base"
-                            style={{ backgroundColor: "#0d6b3d", color: "#fff" }}
-                          >
-                            <Camera className="h-5 w-5 mr-2" />
-                            {uploadingPhotos ? "Saving..." : `📸 Next Photo (${vehiclePhotos.length} taken)`}
-                          </Button>
-                        ) : (
-                          <Button
-                            variant="outline"
-                            size="lg"
-                            onClick={() => photoInputRef.current?.click()}
-                            disabled={uploadingPhotos}
-                            className="flex-1 min-h-[48px] text-base"
-                          >
-                            <Camera className="h-5 w-5 mr-2" />
-                            {uploadingPhotos ? "Saving..." : "Take First Photo"}
-                          </Button>
-                        )}
                         <Button
                           variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            if (photoInputRef.current) {
-                              photoInputRef.current.removeAttribute("capture");
-                              photoInputRef.current.click();
-                              setTimeout(() => photoInputRef.current?.setAttribute("capture", "environment"), 100);
-                            }
-                          }}
+                          size="lg"
+                          onClick={() => photoInputRef.current?.click()}
                           disabled={uploadingPhotos}
+                          className="flex-1 min-h-[48px] text-base"
                         >
-                          <ImageIcon className="h-4 w-4 mr-2" />
-                          Gallery
+                          <Camera className="h-5 w-5 mr-2" />
+                          📸 Take Photo {(pendingPhotos.length + vehiclePhotos.length) > 0 && `(${pendingPhotos.length + vehiclePhotos.length})`}
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="lg"
+                          onClick={() => galleryInputRef.current?.click()}
+                          disabled={uploadingPhotos}
+                          className="flex-1 min-h-[48px] text-base"
+                        >
+                          <ImageIcon className="h-5 w-5 mr-2" />
+                          Select from Gallery
                         </Button>
                       </div>
+
+                      {/* Pending (not yet uploaded) photos */}
+                      {pendingPhotos.length > 0 && (
+                        <>
+                          <p style={{ fontSize: "10px", color: "#666", marginBottom: "4px" }}>
+                            {pendingPhotos.length} photo(s) ready to upload:
+                          </p>
+                          <div className="grid grid-cols-3 md:grid-cols-4 gap-2 mb-3">
+                            {pendingPhotos.map((photo, idx) => (
+                              <div key={idx} className="relative aspect-square overflow-hidden border group" style={{ borderRadius: "4px" }}>
+                                <img src={photo.previewUrl} alt={`Pending photo ${idx + 1}`} className="w-full h-full object-cover" />
+                                <button
+                                  onClick={() => removePendingPhoto(idx)}
+                                  className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                                >
+                                  <X className="h-3 w-3" />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                          <Button
+                            size="lg"
+                            onClick={handleUploadAllPhotos}
+                            disabled={uploadingPhotos}
+                            className="w-full min-h-[48px] text-base mb-3"
+                            style={{ backgroundColor: "#0d6b3d", color: "#fff" }}
+                          >
+                            <Upload className="h-5 w-5 mr-2" />
+                            {uploadingPhotos ? "Uploading..." : `Finish & Upload All (${pendingPhotos.length})`}
+                          </Button>
+                        </>
+                      )}
+
+                      {/* Already uploaded photos */}
                       {vehiclePhotos.length > 0 && (
                         <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
                           {vehiclePhotos.map((photo, idx) => (
