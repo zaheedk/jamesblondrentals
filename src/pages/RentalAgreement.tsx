@@ -535,22 +535,7 @@ const RentalAgreement = () => {
       setExistingSignature(hirerSignature);
       setExistingAdditionalSig(additionalDriverSignature);
       setSignedAt(new Date().toISOString());
-      toast.success("Rental agreement saved successfully!");
-
-      // Generate PDF and upload to storage
-      toast.info("Generating PDF...");
-      const pdfBlob = await generatePdf();
-      if (!pdfBlob) {
-        throw new Error("Failed to generate signed PDF");
-      }
-
-      toast.success("PDF generated");
-
-      // Send email with inline base64 PDF attachment
-      const customerEmail = customer?.email;
-      if (customerEmail) {
-        await sendAgreementEmail(customerEmail, customer, booking, pdfBlob);
-      }
+      toast.success("Rental agreement saved successfully! You can now add photos and email the agreement.");
     } catch (error) {
       console.error("Error saving rental agreement:", error);
       toast.error("Failed to save rental agreement");
@@ -875,25 +860,21 @@ const RentalAgreement = () => {
                 <div style={{ fontSize: "11px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>
                   Vehicle Condition Photos
                 </div>
-                  {alreadySigned ? (
                     <>
-                      {existingPhotos.length > 0 ? (
-                        <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
+                      <p style={{ fontSize: "10px", color: "#666", marginBottom: "8px" }}>
+                        Take photos of the vehicle condition. Capture all angles including any existing damage.
+                      </p>
+
+                      {/* Show existing photos (uploaded previously) */}
+                      {existingPhotos.length > 0 && (
+                        <div className="grid grid-cols-3 md:grid-cols-4 gap-2 mb-3">
                           {existingPhotos.map((photo, idx) => (
                             <div key={idx} className="aspect-square overflow-hidden border" style={{ borderRadius: "4px" }}>
                               <img src={photo.url} alt={`Vehicle photo ${idx + 1}`} className="w-full h-full object-cover" />
                             </div>
                           ))}
                         </div>
-                      ) : (
-                        <p style={{ fontSize: "10px", color: "#888" }}>No vehicle photos were captured for this agreement.</p>
                       )}
-                    </>
-                  ) : (
-                    <>
-                      <p style={{ fontSize: "10px", color: "#666", marginBottom: "8px" }}>
-                        Take photos of the vehicle condition before driving away. Capture all angles including any existing damage.
-                      </p>
                       {/* Gallery input (multi-select) */}
                       <input
                         ref={galleryInputRef}
@@ -975,7 +956,6 @@ const RentalAgreement = () => {
                         </div>
                       )}
                     </>
-                  )}
               </div>
 
               {/* Signatures */}
@@ -1043,9 +1023,10 @@ const RentalAgreement = () => {
                           size="lg"
                           onClick={handleResendEmail}
                           disabled={resending}
+                          style={{ backgroundColor: "#0d6b3d", color: "#fff" }}
                         >
                           {resending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Send className="h-4 w-4 mr-2" />}
-                          {resending ? "Sending..." : "Resend Agreement Email"}
+                          {resending ? "Sending..." : "Email Agreement to Customer"}
                         </Button>
                       </div>
                     </>
@@ -1110,12 +1091,25 @@ const RentalAgreement = () => {
                       <hr style={{ border: "none", borderTop: "1px solid #ddd" }} />
 
                       {/* Save Button */}
-                      <div className="flex justify-center">
+                      <div className="flex flex-col items-center gap-3">
                         {saved ? (
-                          <div className="flex items-center gap-2 text-primary">
-                            <CheckCircle className="h-5 w-5" />
-                            <span className="font-medium">Agreement Saved Successfully</span>
-                          </div>
+                          <>
+                            <div className="flex items-center gap-2 text-primary">
+                              <CheckCircle className="h-5 w-5" />
+                              <span className="font-medium">Agreement Saved Successfully</span>
+                            </div>
+                            <p style={{ fontSize: "10px", color: "#666" }}>You can now add vehicle photos above and email the agreement to the customer.</p>
+                            <Button
+                              size="lg"
+                              onClick={handleResendEmail}
+                              disabled={resending}
+                              style={{ backgroundColor: "#0d6b3d", color: "#fff" }}
+                              className="px-12"
+                            >
+                              {resending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Send className="h-4 w-4 mr-2" />}
+                              {resending ? "Sending..." : "Email Agreement to Customer"}
+                            </Button>
+                          </>
                         ) : (
                           <Button
                             size="lg"
