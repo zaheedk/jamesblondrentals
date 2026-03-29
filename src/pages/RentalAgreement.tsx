@@ -166,58 +166,84 @@ const RentalAgreement = () => {
       const ignoreEls = element.querySelectorAll("[data-html2canvas-ignore]");
       ignoreEls.forEach(el => (el as HTMLElement).style.display = "none");
 
-      // Render entire agreement as one canvas
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        backgroundColor: "#ffffff",
-        allowTaint: true,
-      });
-
-      // Restore hidden elements
-      ignoreEls.forEach(el => (el as HTMLElement).style.display = "");
-      // Restore original image sources
-      originalSrcs.forEach(({ img, src }) => { img.src = src; });
-
       const A4_WIDTH_MM = 210;
       const A4_HEIGHT_MM = 297;
       const MARGIN_MM = 10;
       const CONTENT_WIDTH_MM = A4_WIDTH_MM - MARGIN_MM * 2;
       const CONTENT_HEIGHT_MM = A4_HEIGHT_MM - MARGIN_MM * 2;
+      const SECTION_GAP_MM = 3;
 
       const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-      const imgData = canvas.toDataURL("image/jpeg", 0.92);
 
-      // Calculate how tall the content is in mm
-      const scaleFactor = CONTENT_WIDTH_MM / (canvas.width / 2);
-      const totalHeightMM = (canvas.height / 2) * scaleFactor;
+      // Get all sections marked with data-pdf-section
+      const sections = Array.from(element.querySelectorAll("[data-pdf-section]")) as HTMLElement[];
 
-      // Slice the single canvas image across multiple pages
-      let position = 0; // mm offset into the image
-      let pageNum = 0;
+      let currentY = MARGIN_MM;
 
-      while (position < totalHeightMM) {
-        if (pageNum > 0) pdf.addPage();
+      for (const section of sections) {
+        const canvas = await html2canvas(section, {
+          scale: 2,
+          useCORS: true,
+          logging: false,
+          backgroundColor: "#ffffff",
+          allowTaint: true,
+        });
 
-        // We place the full image at an offset so only the current page slice is visible
-        pdf.addImage(
-          imgData,
-          "JPEG",
-          MARGIN_MM,
-          MARGIN_MM - position,
-          CONTENT_WIDTH_MM,
-          totalHeightMM
-        );
+        const widthPx = canvas.width / 2;
+        const heightPx = canvas.height / 2;
+        const scaleFactor = CONTENT_WIDTH_MM / widthPx;
+        const heightMM = heightPx * scaleFactor;
 
-        // Add white rectangles to mask overflow above and below content area
-        pdf.setFillColor(255, 255, 255);
-        pdf.rect(0, 0, A4_WIDTH_MM, MARGIN_MM, "F"); // top margin mask
-        pdf.rect(0, A4_HEIGHT_MM - MARGIN_MM, A4_WIDTH_MM, MARGIN_MM, "F"); // bottom margin mask
+        const remainingSpace = A4_HEIGHT_MM - MARGIN_MM - currentY;
 
-        position += CONTENT_HEIGHT_MM;
-        pageNum++;
+        // If section doesn't fit on current page, start a new page
+        if (heightMM > remainingSpace && currentY > MARGIN_MM) {
+          pdf.addPage();
+          currentY = MARGIN_MM;
+        }
+
+        const imgData = canvas.toDataURL("image/jpeg", 0.92);
+
+        // If section is taller than a single page, slice it across pages
+        if (heightMM > CONTENT_HEIGHT_MM) {
+          let sliceOffset = 0;
+          while (sliceOffset < heightMM) {
+            if (sliceOffset > 0) {
+              pdf.addPage();
+              currentY = MARGIN_MM;
+            }
+            const sliceHeight = Math.min(CONTENT_HEIGHT_MM, heightMM - sliceOffset);
+
+            // Place full image offset so only the current slice shows
+            pdf.addImage(
+              imgData,
+              "JPEG",
+              MARGIN_MM,
+              currentY - sliceOffset,
+              CONTENT_WIDTH_MM,
+              heightMM
+            );
+
+            // Mask top and bottom margins
+            pdf.setFillColor(255, 255, 255);
+            pdf.rect(0, 0, A4_WIDTH_MM, currentY, "F");
+            pdf.rect(0, currentY + sliceHeight, A4_WIDTH_MM, A4_HEIGHT_MM - (currentY + sliceHeight), "F");
+
+            sliceOffset += sliceHeight;
+            currentY = MARGIN_MM + sliceHeight;
+          }
+        } else {
+          pdf.addImage(imgData, "JPEG", MARGIN_MM, currentY, CONTENT_WIDTH_MM, heightMM);
+          currentY += heightMM;
+        }
+
+        currentY += SECTION_GAP_MM;
       }
+
+      // Restore hidden elements
+      ignoreEls.forEach(el => (el as HTMLElement).style.display = "");
+      // Restore original image sources
+      originalSrcs.forEach(({ img, src }) => { img.src = src; });
 
       return pdf.output("blob");
     } catch (error) {
