@@ -126,62 +126,77 @@ const RentalAgreement = () => {
     }
   };
 
+  const convertImagesToDataUrls = async (container: HTMLElement) => {
+    const images = container.querySelectorAll("img");
+    const originalSrcs: { img: HTMLImageElement; src: string }[] = [];
+    await Promise.all(
+      Array.from(images).map(async (img) => {
+        if (img.src && img.src.startsWith("http")) {
+          try {
+            const response = await fetch(img.src);
+            const blob = await response.blob();
+            const dataUrl = await new Promise<string>((resolve) => {
+              const reader = new FileReader();
+              reader.onloadend = () => resolve(reader.result as string);
+              reader.readAsDataURL(blob);
+            });
+            originalSrcs.push({ img, src: img.src });
+            img.src = dataUrl;
+          } catch (e) {
+            console.warn("Could not convert image to data URL:", e);
+          }
+        }
+      })
+    );
+    return originalSrcs;
+  };
+
   const generatePdf = async (): Promise<Blob | null> => {
     const element = document.getElementById("rental-agreement");
     if (!element) return null;
 
     try {
-      // Convert all remote images to data URLs to avoid CORS issues with html2canvas
-      const images = element.querySelectorAll("img");
-      const originalSrcs: { img: HTMLImageElement; src: string }[] = [];
-      
-      await Promise.all(
-        Array.from(images).map(async (img) => {
-          if (img.src && img.src.startsWith("http")) {
-            try {
-              const response = await fetch(img.src);
-              const blob = await response.blob();
-              const dataUrl = await new Promise<string>((resolve) => {
-                const reader = new FileReader();
-                reader.onloadend = () => resolve(reader.result as string);
-                reader.readAsDataURL(blob);
-              });
-              originalSrcs.push({ img, src: img.src });
-              img.src = dataUrl;
-            } catch (e) {
-              console.warn("Could not convert image to data URL:", e);
-            }
-          }
-        })
-      );
+      const originalSrcs = await convertImagesToDataUrls(element);
 
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        backgroundColor: "#ffffff",
-        allowTaint: false,
-      });
+      const A4_WIDTH_MM = 210;
+      const A4_HEIGHT_MM = 297;
+      const MARGIN_MM = 10;
+      const CONTENT_WIDTH_MM = A4_WIDTH_MM - MARGIN_MM * 2;
+      const CONTENT_HEIGHT_MM = A4_HEIGHT_MM - MARGIN_MM * 2;
+      const SECTION_GAP_MM = 2;
+
+      const sections = Array.from(
+        element.querySelectorAll("[data-pdf-section]")
+      ) as HTMLElement[];
+
+      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+      let currentY = MARGIN_MM;
+
+      for (const section of sections) {
+        const canvas = await html2canvas(section, {
+          scale: 2,
+          useCORS: true,
+          logging: false,
+          backgroundColor: "#ffffff",
+          allowTaint: false,
+        });
+
+        const scaleFactor = CONTENT_WIDTH_MM / (canvas.width / 2);
+        const heightMM = (canvas.height / 2) * scaleFactor;
+        const remainingSpace = A4_HEIGHT_MM - MARGIN_MM - currentY;
+
+        if (heightMM > remainingSpace && currentY > MARGIN_MM) {
+          pdf.addPage();
+          currentY = MARGIN_MM;
+        }
+
+        const imgData = canvas.toDataURL("image/jpeg", 0.95);
+        pdf.addImage(imgData, "JPEG", MARGIN_MM, currentY, CONTENT_WIDTH_MM, heightMM);
+        currentY += heightMM + SECTION_GAP_MM;
+      }
 
       // Restore original sources
       originalSrcs.forEach(({ img, src }) => { img.src = src; });
-
-      const imgData = canvas.toDataURL("image/jpeg", 0.95);
-      const pdf = new jsPDF("p", "mm", "a4");
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-      const imgWidth = canvas.width;
-      const imgHeight = canvas.height;
-      const ratio = pdfWidth / imgWidth;
-      const totalPdfHeight = imgHeight * ratio;
-      let position = 0;
-
-      // Add pages as needed
-      while (position < totalPdfHeight) {
-        if (position > 0) pdf.addPage();
-        pdf.addImage(imgData, "JPEG", 0, -position, pdfWidth, totalPdfHeight);
-        position += pdfHeight;
-      }
 
       return pdf.output("blob");
     } catch (error) {
@@ -479,7 +494,7 @@ const RentalAgreement = () => {
               <div className="px-8 md:px-10 py-6 md:py-8" style={{ fontSize: "11px", lineHeight: "1.45" }}>
 
               {/* Header */}
-              <div className="flex justify-between items-start pb-3 mb-4" style={{ borderBottom: "3px solid #0d6b3d" }}>
+              <div data-pdf-section className="flex justify-between items-start pb-3 mb-4" style={{ borderBottom: "3px solid #0d6b3d" }}>
                 <div className="flex items-center gap-3">
                   <img 
                     src="/lovable-uploads/900107e8-dbcb-44ce-96a9-0588959abf24.png" 
@@ -503,7 +518,7 @@ const RentalAgreement = () => {
               </div>
 
               {/* Hirer Details + Vehicle Details side by side */}
-              <div className="grid grid-cols-2 gap-6 mb-4">
+              <div data-pdf-section className="grid grid-cols-2 gap-6 mb-4">
                 <div>
                   <div style={{ fontSize: "11px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>Hirer's Details</div>
                   <table style={{ width: "100%", fontSize: "10.5px" }}>
@@ -537,8 +552,7 @@ const RentalAgreement = () => {
               </div>
 
               {/* Rental Details */}
-              <div className="mb-4">
-                <div style={{ fontSize: "11px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>Rental Details</div>
+              <div data-pdf-section className="mb-4">
                 <div className="grid grid-cols-3 gap-x-6" style={{ fontSize: "10.5px" }}>
                   <div><span style={{ fontWeight: 600 }}>Pickup:</span> {booking?.pickupdate} {booking?.pickuptime}</div>
                   <div><span style={{ fontWeight: 600 }}>Return:</span> {booking?.dropoffdate} {booking?.dropofftime}</div>
@@ -550,8 +564,7 @@ const RentalAgreement = () => {
               </div>
 
               {/* Rates & Fees */}
-              <div className="mb-4">
-                <div style={{ fontSize: "11px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>Rates & Fees</div>
+              <div data-pdf-section className="mb-4">
                 <table style={{ width: "100%", fontSize: "10.5px", borderCollapse: "collapse" }}>
                   <thead>
                     <tr style={{ borderBottom: "1.5px solid #999" }}>
@@ -592,8 +605,7 @@ const RentalAgreement = () => {
 
               {/* Payment Details */}
               {payments && payments.length > 0 && (
-                <div className="mb-4">
-                  <div style={{ fontSize: "11px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>Payment Details</div>
+                <div data-pdf-section className="mb-4">
                   <table style={{ width: "100%", fontSize: "10.5px", borderCollapse: "collapse" }}>
                     <thead>
                       <tr style={{ borderBottom: "1.5px solid #999" }}>
@@ -622,8 +634,7 @@ const RentalAgreement = () => {
 
               {/* Additional Drivers */}
               {allAdditionalDrivers.length > 0 && (
-                <div className="mb-4">
-                  <div style={{ fontSize: "11px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>Additional Driver(s)</div>
+                <div data-pdf-section className="mb-4">
                   {allAdditionalDrivers.map((driver, idx) => (
                     <div key={idx} className="grid grid-cols-4 gap-x-4" style={{ fontSize: "10.5px", marginBottom: "2px" }}>
                       <div><span style={{ fontWeight: 600 }}>Name:</span> {driver.firstname} {driver.lastname}</div>
@@ -636,8 +647,7 @@ const RentalAgreement = () => {
               )}
 
               {/* Terms & Conditions */}
-              <div className="mb-4">
-                <div style={{ fontSize: "11px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>Terms & Conditions</div>
+              <div data-pdf-section className="mb-4">
                 <div style={{ fontSize: "8.5px", lineHeight: "1.35", color: "#333", columnCount: 2, columnGap: "20px" }}>
                   <p style={{ fontWeight: 600, marginBottom: "3px" }}>
                     SUBJECT TO FOLLOWING TERMS AND CONDITIONS
@@ -731,9 +741,7 @@ const RentalAgreement = () => {
               </div>
 
               {/* Vehicle Photos */}
-              <div className="mb-4">
-                <div style={{ fontSize: "11px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>
-                  Vehicle Condition Photos
+              <div data-pdf-section className="mb-4">
                 </div>
                   {alreadySigned ? (
                     <>
@@ -809,7 +817,7 @@ const RentalAgreement = () => {
               </div>
 
               {/* Signatures */}
-              <div>
+              <div data-pdf-section>
                 <div style={{ fontSize: "11px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>Signatures</div>
                 <div className="space-y-4">
                   {alreadySigned ? (
