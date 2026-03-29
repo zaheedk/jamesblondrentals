@@ -98,7 +98,7 @@ const RentalAgreement = () => {
         }
       }
 
-      const response = await rcmApi.getBookingInfo(reservationRef.trim());
+      const response = await rcmApi.getBookingInfoByReference(reservationRef.trim());
       if (response.status === "OK" && response.results) {
         console.log("RCM API full response:", JSON.stringify(response.results, null, 2));
         console.log("bookinginfo[0] keys:", Object.keys(response.results.bookinginfo?.[0] || {}));
@@ -484,7 +484,7 @@ const RentalAgreement = () => {
           {!loading && !bookingData && (
             <Card>
               <CardContent className="py-12 text-center text-muted-foreground">
-                <p>No reservation reference provided. Please use a valid rental agreement link.</p>
+                <p>{reservationRef ? "Unable to load this rental agreement. Please check the reservation reference." : "No reservation reference provided. Please use a valid rental agreement link."}</p>
               </CardContent>
             </Card>
           )}
