@@ -39,7 +39,7 @@ export default function LoginForm() {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from || '/member-dashboard';
-  const { signIn } = useAuth();
+  const { signIn, signInWithProvider } = useAuth();
   const { toast } = useToast();
   
   const [isSubmitting, setIsSubmitting] = useState(false);
