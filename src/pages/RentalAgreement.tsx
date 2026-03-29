@@ -10,7 +10,17 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import { Loader2, Search, FileText, CheckCircle, Download, ShieldCheck, Camera, X, ImageIcon, Send, Upload } from "lucide-react";
+import { Loader2, Search, FileText, CheckCircle, Download, ShieldCheck, Camera, X, ImageIcon, Send, Upload, Trash2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import VehicleCamera from "@/components/VehicleCamera";
 import type { RCMBookingInfoResponse } from "@/lib/api/rcm-api-types";
 import html2canvas from "html2canvas";
@@ -52,6 +62,8 @@ const RentalAgreement = () => {
   const [existingPhotos, setExistingPhotos] = useState<{ url: string; name: string }[]>([]);
   const [resending, setResending] = useState(false);
   const [cameraOpen, setCameraOpen] = useState(false);
+  const [hiddenPhotos, setHiddenPhotos] = useState<string[]>([]);
+  const [photoToDelete, setPhotoToDelete] = useState<{ url: string; name: string; source: 'existing' | 'uploaded' } | null>(null);
 
   useEffect(() => {
     if (searchParams.get("ref")) {
@@ -449,11 +461,21 @@ const RentalAgreement = () => {
     });
   };
 
-  const removePhoto = async (photo: { url: string; name: string }) => {
-    const filePath = `${reservationRef.trim()}/${photo.name}`;
-    await supabase.storage.from("vehicle-photos").remove([filePath]);
-    setVehiclePhotos(prev => prev.filter(p => p.name !== photo.name));
-    setExistingPhotos(prev => prev.filter(p => p.name !== photo.name));
+  const confirmDeletePhoto = (photo: { url: string; name: string }, source: 'existing' | 'uploaded') => {
+    setPhotoToDelete({ ...photo, source });
+  };
+
+  const handleDeletePhoto = () => {
+    if (!photoToDelete) return;
+    // Soft delete - just hide the photo, don't remove from storage
+    setHiddenPhotos(prev => [...prev, photoToDelete.name]);
+    if (photoToDelete.source === 'uploaded') {
+      setVehiclePhotos(prev => prev.filter(p => p.name !== photoToDelete.name));
+    } else {
+      setExistingPhotos(prev => prev.filter(p => p.name !== photoToDelete.name));
+    }
+    setPhotoToDelete(null);
+    toast.success("Photo hidden from agreement");
   };
 
   const blobToBase64 = (blob: Blob): Promise<string> => {
