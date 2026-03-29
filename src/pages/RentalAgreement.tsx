@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { Loader2, Search, FileText, CheckCircle, Download, ShieldCheck, Camera, X, ImageIcon, Send, Upload } from "lucide-react";
+import VehicleCamera from "@/components/VehicleCamera";
 import type { RCMBookingInfoResponse } from "@/lib/api/rcm-api-types";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
@@ -50,6 +51,7 @@ const RentalAgreement = () => {
   const [uploadingPhotos, setUploadingPhotos] = useState(false);
   const [existingPhotos, setExistingPhotos] = useState<{ url: string; name: string }[]>([]);
   const [resending, setResending] = useState(false);
+  const [cameraOpen, setCameraOpen] = useState(false);
 
   useEffect(() => {
     if (searchParams.get("ref")) {
@@ -315,9 +317,13 @@ const RentalAgreement = () => {
       newPending.push({ file, previewUrl: URL.createObjectURL(file) });
     }
     setPendingPhotos(prev => [...prev, ...newPending]);
-    toast.success(`${newPending.length} photo(s) added — take more or tap "Finish & Upload All"`);
+    toast.success(`${newPending.length} photo(s) added`);
     if (photoInputRef.current) photoInputRef.current.value = "";
     if (galleryInputRef.current) galleryInputRef.current.value = "";
+  };
+
+  const handleCameraCapture = (file: File, previewUrl: string) => {
+    setPendingPhotos(prev => [...prev, { file, previewUrl }]);
   };
 
   // Upload all pending photos at once
@@ -888,15 +894,6 @@ const RentalAgreement = () => {
                       <p style={{ fontSize: "10px", color: "#666", marginBottom: "8px" }}>
                         Take photos of the vehicle condition before driving away. Capture all angles including any existing damage.
                       </p>
-                      {/* Camera input (single shot) */}
-                      <input
-                        ref={photoInputRef}
-                        type="file"
-                        accept="image/*"
-                        capture="environment"
-                        onChange={handlePhotoCapture}
-                        className="hidden"
-                      />
                       {/* Gallery input (multi-select) */}
                       <input
                         ref={galleryInputRef}
@@ -910,12 +907,12 @@ const RentalAgreement = () => {
                         <Button
                           variant="outline"
                           size="lg"
-                          onClick={() => photoInputRef.current?.click()}
+                          onClick={() => setCameraOpen(true)}
                           disabled={uploadingPhotos}
                           className="flex-1 min-h-[48px] text-base"
                         >
                           <Camera className="h-5 w-5 mr-2" />
-                          📸 Take Photo {(pendingPhotos.length + vehiclePhotos.length) > 0 && `(${pendingPhotos.length + vehiclePhotos.length})`}
+                          📸 Take Photos {(pendingPhotos.length + vehiclePhotos.length) > 0 && `(${pendingPhotos.length + vehiclePhotos.length})`}
                         </Button>
                         <Button
                           variant="outline"
