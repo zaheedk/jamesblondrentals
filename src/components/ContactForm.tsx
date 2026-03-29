@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { brandedEmailHtml } from '@/lib/email-template';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -56,14 +57,13 @@ const ContactForm = () => {
     setIsSubmitting(true);
 
     try {
-      const html = `
-        <h2>New Contact Form Submission</h2>
+      const html = brandedEmailHtml('New Contact Form Submission', `
         <p><strong>Name:</strong> ${values.name}</p>
         <p><strong>Email:</strong> ${values.email}</p>
         <p><strong>Phone:</strong> ${values.phone}</p>
         <p><strong>Message:</strong></p>
         <p>${values.message}</p>
-      `;
+      `);
 
       const { error } = await supabase.functions.invoke('send-email-resend', {
         body: {

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { brandedEmailHtml } from '@/lib/email-template';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -51,8 +52,7 @@ const WinzQuoteForm = () => {
     setIsSubmitting(true);
 
     try {
-      const html = `
-        <h2>New WINZ Quote Request</h2>
+      const html = brandedEmailHtml('New WINZ Quote Request', `
         <p><strong>Name:</strong> ${values.firstName} ${values.lastName}</p>
         <p><strong>Email:</strong> ${values.email}</p>
         <p><strong>Phone:</strong> ${values.phone}</p>
@@ -63,7 +63,7 @@ const WinzQuoteForm = () => {
         <p><strong>Pickup Location:</strong> ${values.pickupLocation}</p>
         <p><strong>Return Location:</strong> ${values.returnLocation}</p>
         ${values.additionalRequirements ? `<p><strong>Additional Requirements:</strong> ${values.additionalRequirements}</p>` : ''}
-      `;
+      `);
 
       const { error } = await supabase.functions.invoke('send-email-resend', {
         body: {
