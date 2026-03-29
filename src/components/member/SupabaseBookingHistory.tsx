@@ -119,7 +119,7 @@ const SupabaseBookingHistory = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">My Bookings</h2>
+        <h2 className="text-2xl font-bold">My Bookings ({filteredBookings.length})</h2>
         <div className="flex items-center space-x-2">
           <Input
             placeholder="Search bookings..."
