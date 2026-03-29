@@ -268,6 +268,25 @@ const CustomerDetails = () => {
           console.error('Exception saving booking to database:', dbError);
           // Don't block the user from continuing
         }
+
+        // Auto-create user account for booking (test phase: zaheedk emails only)
+        try {
+          if (formData.email) {
+            supabase.functions.invoke('create-booking-account', {
+              body: {
+                email: formData.email,
+                firstName: formData.firstName,
+                lastName: formData.lastName,
+              },
+            }).then(res => {
+              console.log('Auto account creation result:', res.data);
+            }).catch(err => {
+              console.error('Auto account creation error:', err);
+            });
+          }
+        } catch (accountError) {
+          console.error('Exception in auto account creation:', accountError);
+        }
         
         toast.success("Booking created successfully", {
           description: response.confirmationNumber 
