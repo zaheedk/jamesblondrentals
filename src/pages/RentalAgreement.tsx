@@ -158,27 +158,69 @@ const RentalAgreement = () => {
     const element = document.getElementById("rental-agreement");
     if (!element) return null;
 
-    try {
-      // Pre-convert all images to data URLs to avoid CORS issues
-      const originalSrcs = await convertImagesToDataUrls(element);
+    const ignoreEls = Array.from(element.querySelectorAll("[data-html2canvas-ignore]")) as HTMLElement[];
+    let originalSrcs: { img: HTMLImageElement; src: string }[] = [];
 
-      // Hide elements that should not appear in PDF
-      const ignoreEls = element.querySelectorAll("[data-html2canvas-ignore]");
-      ignoreEls.forEach(el => (el as HTMLElement).style.display = "none");
+    try {
+      originalSrcs = await convertImagesToDataUrls(element);
+      ignoreEls.forEach((el) => {
+        el.dataset.originalDisplay = el.style.display;
+        el.style.display = "none";
+      });
 
       const A4_WIDTH_MM = 210;
       const A4_HEIGHT_MM = 297;
-      const MARGIN_MM = 10;
-      const CONTENT_WIDTH_MM = A4_WIDTH_MM - MARGIN_MM * 2;
-      const CONTENT_HEIGHT_MM = A4_HEIGHT_MM - MARGIN_MM * 2;
-      const SECTION_GAP_MM = 3;
+      const SIDE_MARGIN_MM = 10;
+      const TOP_MARGIN_MM = 10;
+      const BOTTOM_MARGIN_MM = 10;
+      const CONTENT_WIDTH_MM = A4_WIDTH_MM - SIDE_MARGIN_MM * 2;
+      const CONTENT_HEIGHT_MM = A4_HEIGHT_MM - TOP_MARGIN_MM - BOTTOM_MARGIN_MM;
+      const SECTION_GAP_MM = 2;
 
       const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-
-      // Get all sections marked with data-pdf-section
       const sections = Array.from(element.querySelectorAll("[data-pdf-section]")) as HTMLElement[];
 
-      let currentY = MARGIN_MM;
+      let currentY = TOP_MARGIN_MM;
+
+      const addCanvasSlice = (
+        sourceCanvas: HTMLCanvasElement,
+        sliceStartPx: number,
+        sliceHeightPx: number,
+        yMM: number,
+      ) => {
+        const sliceCanvas = document.createElement("canvas");
+        sliceCanvas.width = sourceCanvas.width;
+        sliceCanvas.height = Math.max(1, Math.floor(sliceHeightPx));
+
+        const ctx = sliceCanvas.getContext("2d");
+        if (!ctx) throw new Error("Unable to prepare PDF page slice");
+
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, sliceCanvas.width, sliceCanvas.height);
+        ctx.drawImage(
+          sourceCanvas,
+          0,
+          sliceStartPx,
+          sourceCanvas.width,
+          sliceCanvas.height,
+          0,
+          0,
+          sourceCanvas.width,
+          sliceCanvas.height,
+        );
+
+        const sliceHeightMM = (sliceCanvas.height / sliceCanvas.width) * CONTENT_WIDTH_MM;
+        pdf.addImage(
+          sliceCanvas.toDataURL("image/jpeg", 0.95),
+          "JPEG",
+          SIDE_MARGIN_MM,
+          yMM,
+          CONTENT_WIDTH_MM,
+          sliceHeightMM,
+        );
+
+        return sliceHeightMM;
+      };
 
       for (const section of sections) {
         const canvas = await html2canvas(section, {
@@ -189,66 +231,75 @@ const RentalAgreement = () => {
           allowTaint: true,
         });
 
-        const widthPx = canvas.width / 2;
-        const heightPx = canvas.height / 2;
-        const scaleFactor = CONTENT_WIDTH_MM / widthPx;
-        const heightMM = heightPx * scaleFactor;
+        const sectionHeightMM = (canvas.height / canvas.width) * CONTENT_WIDTH_MM;
+        const allowSplit = section.dataset.pdfSplittable === "true";
+        const remainingSpaceMM = A4_HEIGHT_MM - BOTTOM_MARGIN_MM - currentY;
 
-        const remainingSpace = A4_HEIGHT_MM - MARGIN_MM - currentY;
+        if (sectionHeightMM <= remainingSpaceMM) {
+          pdf.addImage(
+            canvas.toDataURL("image/jpeg", 0.95),
+            "JPEG",
+            SIDE_MARGIN_MM,
+            currentY,
+            CONTENT_WIDTH_MM,
+            sectionHeightMM,
+          );
+          currentY += sectionHeightMM + SECTION_GAP_MM;
+          continue;
+        }
 
-        // If section doesn't fit on current page, start a new page
-        if (heightMM > remainingSpace && currentY > MARGIN_MM) {
+        if (!allowSplit) {
           pdf.addPage();
-          currentY = MARGIN_MM;
+          currentY = TOP_MARGIN_MM;
+          pdf.addImage(
+            canvas.toDataURL("image/jpeg", 0.95),
+            "JPEG",
+            SIDE_MARGIN_MM,
+            currentY,
+            CONTENT_WIDTH_MM,
+            sectionHeightMM,
+          );
+          currentY += sectionHeightMM + SECTION_GAP_MM;
+          continue;
         }
 
-        const imgData = canvas.toDataURL("image/jpeg", 0.92);
+        const pxPerMM = canvas.height / sectionHeightMM;
+        let consumedPx = 0;
 
-        // If section is taller than a single page, slice it across pages
-        if (heightMM > CONTENT_HEIGHT_MM) {
-          let sliceOffset = 0;
-          while (sliceOffset < heightMM) {
-            if (sliceOffset > 0) {
-              pdf.addPage();
-              currentY = MARGIN_MM;
-            }
-            const sliceHeight = Math.min(CONTENT_HEIGHT_MM, heightMM - sliceOffset);
-
-            // Place full image offset so only the current slice shows
-            pdf.addImage(
-              imgData,
-              "JPEG",
-              MARGIN_MM,
-              currentY - sliceOffset,
-              CONTENT_WIDTH_MM,
-              heightMM
-            );
-
-            // Mask top and bottom margins
-            pdf.setFillColor(255, 255, 255);
-            pdf.rect(0, 0, A4_WIDTH_MM, currentY, "F");
-            pdf.rect(0, currentY + sliceHeight, A4_WIDTH_MM, A4_HEIGHT_MM - (currentY + sliceHeight), "F");
-
-            sliceOffset += sliceHeight;
-            currentY = MARGIN_MM + sliceHeight;
+        while (consumedPx < canvas.height - 1) {
+          const availableMM = A4_HEIGHT_MM - BOTTOM_MARGIN_MM - currentY;
+          if (availableMM <= 1) {
+            pdf.addPage();
+            currentY = TOP_MARGIN_MM;
+            continue;
           }
-        } else {
-          pdf.addImage(imgData, "JPEG", MARGIN_MM, currentY, CONTENT_WIDTH_MM, heightMM);
-          currentY += heightMM;
+
+          const sliceHeightPx = Math.min(canvas.height - consumedPx, Math.floor(availableMM * pxPerMM));
+          if (sliceHeightPx <= 0) break;
+
+          const renderedHeightMM = addCanvasSlice(canvas, consumedPx, sliceHeightPx, currentY);
+          consumedPx += sliceHeightPx;
+          currentY += renderedHeightMM + SECTION_GAP_MM;
+
+          if (consumedPx < canvas.height - 1) {
+            pdf.addPage();
+            currentY = TOP_MARGIN_MM;
+          }
         }
-
-        currentY += SECTION_GAP_MM;
       }
-
-      // Restore hidden elements
-      ignoreEls.forEach(el => (el as HTMLElement).style.display = "");
-      // Restore original image sources
-      originalSrcs.forEach(({ img, src }) => { img.src = src; });
 
       return pdf.output("blob");
     } catch (error) {
       console.error("Error generating PDF:", error);
       return null;
+    } finally {
+      ignoreEls.forEach((el) => {
+        el.style.display = el.dataset.originalDisplay || "";
+        delete el.dataset.originalDisplay;
+      });
+      originalSrcs.forEach(({ img, src }) => {
+        img.src = src;
+      });
     }
   };
 
@@ -599,7 +650,7 @@ const RentalAgreement = () => {
               </div>
 
               {/* Rental Details */}
-              <div data-pdf-section className="mb-4">
+              <div data-pdf-section data-pdf-splittable="true" className="mb-4">
                 <div className="grid grid-cols-3 gap-x-6" style={{ fontSize: "10.5px" }}>
                   <div><span style={{ fontWeight: 600 }}>Pickup:</span> {booking?.pickupdate} {booking?.pickuptime}</div>
                   <div><span style={{ fontWeight: 600 }}>Return:</span> {booking?.dropoffdate} {booking?.dropofftime}</div>
