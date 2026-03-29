@@ -10,7 +10,17 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import { Loader2, Search, FileText, CheckCircle, Download, ShieldCheck, Camera, X, ImageIcon, Send, Upload } from "lucide-react";
+import { Loader2, Search, FileText, CheckCircle, Download, ShieldCheck, Camera, X, ImageIcon, Send, Upload, Trash2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import VehicleCamera from "@/components/VehicleCamera";
 import type { RCMBookingInfoResponse } from "@/lib/api/rcm-api-types";
 import html2canvas from "html2canvas";
@@ -52,6 +62,8 @@ const RentalAgreement = () => {
   const [existingPhotos, setExistingPhotos] = useState<{ url: string; name: string }[]>([]);
   const [resending, setResending] = useState(false);
   const [cameraOpen, setCameraOpen] = useState(false);
+  const [hiddenPhotos, setHiddenPhotos] = useState<string[]>([]);
+  const [photoToDelete, setPhotoToDelete] = useState<{ url: string; name: string; source: 'existing' | 'uploaded' } | null>(null);
 
   useEffect(() => {
     if (searchParams.get("ref")) {
@@ -449,11 +461,21 @@ const RentalAgreement = () => {
     });
   };
 
-  const removePhoto = async (photo: { url: string; name: string }) => {
-    const filePath = `${reservationRef.trim()}/${photo.name}`;
-    await supabase.storage.from("vehicle-photos").remove([filePath]);
-    setVehiclePhotos(prev => prev.filter(p => p.name !== photo.name));
-    setExistingPhotos(prev => prev.filter(p => p.name !== photo.name));
+  const confirmDeletePhoto = (photo: { url: string; name: string }, source: 'existing' | 'uploaded') => {
+    setPhotoToDelete({ ...photo, source });
+  };
+
+  const handleDeletePhoto = () => {
+    if (!photoToDelete) return;
+    // Soft delete - just hide the photo, don't remove from storage
+    setHiddenPhotos(prev => [...prev, photoToDelete.name]);
+    if (photoToDelete.source === 'uploaded') {
+      setVehiclePhotos(prev => prev.filter(p => p.name !== photoToDelete.name));
+    } else {
+      setExistingPhotos(prev => prev.filter(p => p.name !== photoToDelete.name));
+    }
+    setPhotoToDelete(null);
+    toast.success("Photo hidden from agreement");
   };
 
   const blobToBase64 = (blob: Blob): Promise<string> => {
@@ -948,9 +970,15 @@ const RentalAgreement = () => {
                       {/* Show existing photos (uploaded previously) */}
                       {existingPhotos.length > 0 && (
                         <div className="grid grid-cols-3 md:grid-cols-4 gap-2 mb-3">
-                          {existingPhotos.map((photo, idx) => (
-                            <div key={idx} className="aspect-square overflow-hidden border" style={{ borderRadius: "4px" }}>
+                          {existingPhotos.filter(p => !hiddenPhotos.includes(p.name)).map((photo, idx) => (
+                            <div key={idx} className="relative aspect-square overflow-hidden border group" style={{ borderRadius: "4px" }}>
                               <img src={photo.url} alt={`Vehicle photo ${idx + 1}`} className="w-full h-full object-cover" />
+                              <button
+                                onClick={() => confirmDeletePhoto(photo, 'existing')}
+                                className="absolute top-1 right-1 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </button>
                             </div>
                           ))}
                         </div>
@@ -1026,10 +1054,10 @@ const RentalAgreement = () => {
                             <div key={idx} className="relative aspect-square overflow-hidden border group" style={{ borderRadius: "4px" }}>
                               <img src={photo.url} alt={`Vehicle photo ${idx + 1}`} className="w-full h-full object-cover" />
                               <button
-                                onClick={() => removePhoto(photo)}
-                                className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                                onClick={() => confirmDeletePhoto(photo, 'uploaded')}
+                                className="absolute top-1 right-1 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
                               >
-                                <X className="h-3 w-3" />
+                                <Trash2 className="h-3 w-3" />
                               </button>
                             </div>
                           ))}
@@ -1225,6 +1253,22 @@ const RentalAgreement = () => {
           photoCount={pendingPhotos.length + vehiclePhotos.length}
         />
       )}
+      <AlertDialog open={!!photoToDelete} onOpenChange={(open) => { if (!open) setPhotoToDelete(null); }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Hide this photo?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This photo will be hidden from the agreement but will remain in storage and can be restored later.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeletePhoto} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Hide Photo
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 };
