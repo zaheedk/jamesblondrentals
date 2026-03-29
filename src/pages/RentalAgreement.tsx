@@ -46,6 +46,7 @@ const RentalAgreement = () => {
   const photoInputRef = useRef<HTMLInputElement>(null);
   const [vehiclePhotos, setVehiclePhotos] = useState<{ url: string; name: string }[]>([]);
   const [uploadingPhotos, setUploadingPhotos] = useState(false);
+  const [continuousCapture, setContinuousCapture] = useState(false);
   const [existingPhotos, setExistingPhotos] = useState<{ url: string; name: string }[]>([]);
   const [resending, setResending] = useState(false);
 
@@ -133,12 +134,34 @@ const RentalAgreement = () => {
       Array.from(images).map(async (img) => {
         if (img.src && img.src.startsWith("http")) {
           try {
-            const response = await fetch(img.src);
-            const blob = await response.blob();
-            const dataUrl = await new Promise<string>((resolve) => {
-              const reader = new FileReader();
-              reader.onloadend = () => resolve(reader.result as string);
-              reader.readAsDataURL(blob);
+            // Use a proxy approach: create a canvas to convert the image
+            const imgEl = new Image();
+            imgEl.crossOrigin = "anonymous";
+            const dataUrl = await new Promise<string>((resolve, reject) => {
+              imgEl.onload = () => {
+                try {
+                  const canvas = document.createElement("canvas");
+                  canvas.width = imgEl.naturalWidth;
+                  canvas.height = imgEl.naturalHeight;
+                  const ctx = canvas.getContext("2d");
+                  ctx?.drawImage(imgEl, 0, 0);
+                  resolve(canvas.toDataURL("image/jpeg", 0.9));
+                } catch (canvasErr) {
+                  reject(canvasErr);
+                }
+              };
+              imgEl.onerror = () => {
+                // Fallback: try fetch with no-cors
+                fetch(img.src, { mode: "cors" })
+                  .then(r => r.blob())
+                  .then(blob => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result as string);
+                    reader.readAsDataURL(blob);
+                  })
+                  .catch(reject);
+              };
+              imgEl.src = img.src;
             });
             originalSrcs.push({ img, src: img.src });
             img.src = dataUrl;
@@ -237,6 +260,12 @@ const RentalAgreement = () => {
     } finally {
       setUploadingPhotos(false);
       if (photoInputRef.current) photoInputRef.current.value = "";
+      // Auto-reopen camera for continuous capture
+      if (continuousCapture && photoInputRef.current?.hasAttribute("capture")) {
+        setTimeout(() => {
+          photoInputRef.current?.click();
+        }, 500);
+      }
     }
   };
 
@@ -764,29 +793,43 @@ const RentalAgreement = () => {
                       <p style={{ fontSize: "10px", color: "#666", marginBottom: "8px" }}>
                         Take photos of the vehicle condition before driving away. Capture all angles including any existing damage.
                       </p>
-                      <div className="flex gap-2 mb-3">
+                      <div className="flex flex-wrap gap-2 mb-3">
                         <input
                           ref={photoInputRef}
                           type="file"
                           accept="image/*"
                           capture="environment"
-                          multiple
                           onChange={handlePhotoCapture}
                           className="hidden"
                         />
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => photoInputRef.current?.click()}
-                          disabled={uploadingPhotos}
-                        >
-                          <Camera className="h-4 w-4 mr-2" />
-                          {uploadingPhotos ? "Uploading..." : "Take Photo"}
-                        </Button>
+                        {continuousCapture ? (
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => setContinuousCapture(false)}
+                          >
+                            <X className="h-4 w-4 mr-2" />
+                            Stop Capturing ({vehiclePhotos.length} taken)
+                          </Button>
+                        ) : (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setContinuousCapture(true);
+                              photoInputRef.current?.click();
+                            }}
+                            disabled={uploadingPhotos}
+                          >
+                            <Camera className="h-4 w-4 mr-2" />
+                            {uploadingPhotos ? "Uploading..." : "Take Photos"}
+                          </Button>
+                        )}
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => {
+                            setContinuousCapture(false);
                             if (photoInputRef.current) {
                               photoInputRef.current.removeAttribute("capture");
                               photoInputRef.current.click();
