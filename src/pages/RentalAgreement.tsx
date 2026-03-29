@@ -67,17 +67,23 @@ const RentalAgreement = () => {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    // Check if current user is admin
+    // Check if current user is admin using the security definer function
     const checkAdmin = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
-        const { data } = await supabase
-          .from("user_roles")
-          .select("role")
-          .eq("user_id", session.user.id)
-          .eq("role", "admin")
-          .maybeSingle();
-        setIsAdmin(!!data);
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        console.log("Admin check - session user:", session?.user?.email);
+        if (session?.user) {
+          // Use the is_admin_user() function which is a security definer
+          const { data, error } = await supabase.rpc("is_admin_user");
+          console.log("Admin check - is_admin_user result:", data, "error:", error);
+          setIsAdmin(data === true);
+        } else {
+          console.log("Admin check - no session found");
+          setIsAdmin(false);
+        }
+      } catch (err) {
+        console.error("Admin check error:", err);
+        setIsAdmin(false);
       }
     };
     checkAdmin();
