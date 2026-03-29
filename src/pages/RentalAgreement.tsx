@@ -494,7 +494,7 @@ const RentalAgreement = () => {
               <div className="px-8 md:px-10 py-6 md:py-8" style={{ fontSize: "11px", lineHeight: "1.45" }}>
 
               {/* Header */}
-              <div className="flex justify-between items-start pb-3 mb-4" style={{ borderBottom: "3px solid #0d6b3d" }}>
+              <div data-pdf-section className="flex justify-between items-start pb-3 mb-4" style={{ borderBottom: "3px solid #0d6b3d" }}>
                 <div className="flex items-center gap-3">
                   <img 
                     src="/lovable-uploads/900107e8-dbcb-44ce-96a9-0588959abf24.png" 
