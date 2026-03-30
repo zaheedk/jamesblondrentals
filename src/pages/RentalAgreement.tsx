@@ -756,7 +756,7 @@ const RentalAgreement = () => {
           )}
 
           {!loading && bookingData && (
-            <div className="bg-white shadow-none border-0" id="rental-agreement" style={{ fontFamily: "'Segoe UI', Arial, Helvetica, sans-serif", color: "#1a1a1a" }}>
+            <div className="bg-white shadow-none border-0" id="rental-agreement" style={{ fontFamily: "Helvetica, Arial, sans-serif", color: "#1a1a1a" }}>
               <div className="px-6 md:px-7 py-5 md:py-6" style={{ fontSize: "10.5px", lineHeight: "1.38" }}>
 
               {/* Header */}
@@ -789,31 +789,45 @@ const RentalAgreement = () => {
                   <tr>
                     <td style={{ width: "50%", verticalAlign: "top", paddingRight: "14px" }}>
                       <div style={{ fontSize: "10.5px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>Hirer's Details</div>
-                      <table style={{ width: "100%", fontSize: "10px", lineHeight: "1.3", borderCollapse: "collapse" }}>
+                      <table style={{ width: "100%", fontSize: "10px", lineHeight: "1.5", borderCollapse: "collapse" }}>
                         <tbody>
-                          <tr><td style={{ fontWeight: 600, padding: "2px 8px 2px 0", width: "86px", verticalAlign: "top" }}>Name:</td><td style={{ padding: "2px 0" }}>{customer?.firstname} {customer?.lastname}</td></tr>
-                          <tr><td style={{ fontWeight: 600, padding: "2px 8px 2px 0", verticalAlign: "top" }}>DOB:</td><td style={{ padding: "2px 0" }}>{customer?.dateofbirth}</td></tr>
-                          <tr><td style={{ fontWeight: 600, padding: "2px 8px 2px 0", verticalAlign: "top" }}>Licence No:</td><td style={{ padding: "2px 0" }}>{customer?.licenseno}</td></tr>
-                          <tr><td style={{ fontWeight: 600, padding: "2px 8px 2px 0", verticalAlign: "top" }}>Issued In:</td><td style={{ padding: "2px 0" }}>{customer?.licenseissued || customer?.country}</td></tr>
-                          <tr><td style={{ fontWeight: 600, padding: "2px 8px 2px 0", verticalAlign: "top" }}>Expiry:</td><td style={{ padding: "2px 0" }}>{customer?.licenseexpires}</td></tr>
-                          <tr><td style={{ fontWeight: 600, padding: "2px 8px 2px 0", verticalAlign: "top" }}>Phone:</td><td style={{ padding: "2px 0" }}>{customer?.phone || customer?.mobile}</td></tr>
-                          <tr><td style={{ fontWeight: 600, padding: "2px 8px 2px 0", verticalAlign: "top" }}>Address:</td><td style={{ padding: "2px 0" }}>{[customer?.address, customer?.city, customer?.state, customer?.postcode].filter(Boolean).join(", ")}</td></tr>
-                          <tr><td style={{ fontWeight: 600, padding: "2px 8px 2px 0", verticalAlign: "top" }}>Email:</td><td style={{ padding: "2px 0" }}>{customer?.email}</td></tr>
+                          {[
+                            ["Name:", `${customer?.firstname || ""} ${customer?.lastname || ""}`],
+                            ["DOB:", customer?.dateofbirth],
+                            ["Licence No:", customer?.licenseno],
+                            ["Issued In:", customer?.licenseissued || customer?.country],
+                            ["Expiry:", customer?.licenseexpires],
+                            ["Phone:", customer?.phone || customer?.mobile],
+                            ["Address:", [customer?.address, customer?.city, customer?.state, customer?.postcode].filter(Boolean).join(", ")],
+                            ["Email:", customer?.email],
+                          ].map(([label, value], i) => (
+                            <tr key={i}>
+                              <td style={{ fontWeight: 700, padding: "2.5px 12px 2.5px 0", width: "95px", verticalAlign: "top", whiteSpace: "nowrap", color: "#222" }}>{label}</td>
+                              <td style={{ padding: "2.5px 0", color: "#333" }}>{value || "N/A"}</td>
+                            </tr>
+                          ))}
                         </tbody>
                       </table>
                     </td>
                     <td style={{ width: "50%", verticalAlign: "top", paddingLeft: "14px" }}>
                       <div style={{ fontSize: "10.5px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>Vehicle Details</div>
-                      <table style={{ width: "100%", fontSize: "10px", lineHeight: "1.3", borderCollapse: "collapse" }}>
+                      <table style={{ width: "100%", fontSize: "10px", lineHeight: "1.5", borderCollapse: "collapse" }}>
                         <tbody>
-                          <tr><td style={{ fontWeight: 600, padding: "2px 8px 2px 0", width: "86px", verticalAlign: "top" }}>Category:</td><td style={{ padding: "2px 0" }}>{booking?.vehiclecategory}</td></tr>
-                          <tr><td style={{ fontWeight: 600, padding: "2px 8px 2px 0", verticalAlign: "top" }}>Description:</td><td style={{ padding: "2px 0" }}>{booking?.vehicledescription1}</td></tr>
-                          <tr><td style={{ fontWeight: 600, padding: "2px 8px 2px 0", verticalAlign: "top" }}>Licence Plate:</td><td style={{ padding: "2px 0" }}>{vehicleRego || "N/A"}</td></tr>
-                          <tr><td style={{ fontWeight: 600, padding: "2px 8px 2px 0", verticalAlign: "top" }}>Fuel Type:</td><td style={{ padding: "2px 0" }}>{booking?.fueltype || "N/A"}</td></tr>
-                          <tr><td style={{ fontWeight: 600, padding: "2px 8px 2px 0", verticalAlign: "top" }}>Kms Out:</td><td style={{ padding: "2px 0" }}>{kmsOut || "N/A"}</td></tr>
-                          <tr><td style={{ fontWeight: 600, padding: "2px 8px 2px 0", verticalAlign: "top" }}>Kms In:</td><td style={{ padding: "2px 0" }}>{kmsIn || "N/A"}</td></tr>
-                          <tr><td style={{ fontWeight: 600, padding: "2px 8px 2px 0", verticalAlign: "top" }}>Fuel Out:</td><td style={{ padding: "2px 0" }}>{fuelOut || "N/A"}</td></tr>
-                          <tr><td style={{ fontWeight: 600, padding: "2px 8px 2px 0", verticalAlign: "top" }}>Fuel In:</td><td style={{ padding: "2px 0" }}>{fuelIn || "N/A"}</td></tr>
+                          {[
+                            ["Category:", booking?.vehiclecategory],
+                            ["Description:", booking?.vehicledescription1],
+                            ["Licence Plate:", vehicleRego || "N/A"],
+                            ["Fuel Type:", booking?.fueltype || "N/A"],
+                            ["Kms Out:", kmsOut || "N/A"],
+                            ["Kms In:", kmsIn || "N/A"],
+                            ["Fuel Out:", fuelOut || "N/A"],
+                            ["Fuel In:", fuelIn || "N/A"],
+                          ].map(([label, value], i) => (
+                            <tr key={i}>
+                              <td style={{ fontWeight: 700, padding: "2.5px 12px 2.5px 0", width: "95px", verticalAlign: "top", whiteSpace: "nowrap", color: "#222" }}>{label}</td>
+                              <td style={{ padding: "2.5px 0", color: "#333" }}>{value || "N/A"}</td>
+                            </tr>
+                          ))}
                         </tbody>
                       </table>
                     </td>
