@@ -156,13 +156,15 @@ const RentalAgreement = () => {
   };
 
   const convertImagesToDataUrls = async (container: HTMLElement) => {
-    const images = container.querySelectorAll("img");
+    const images = Array.from(container.querySelectorAll("img")).filter(
+      (img): img is HTMLImageElement => !img.closest("[data-html2canvas-ignore]")
+    );
     const originalSrcs: { img: HTMLImageElement; src: string }[] = [];
+
     await Promise.all(
-      Array.from(images).map(async (img) => {
+      images.map(async (img) => {
         if (img.src && (img.src.startsWith("http://") || img.src.startsWith("https://"))) {
           try {
-            // Fetch the image as a blob to avoid CORS canvas tainting
             const response = await fetch(img.src, { mode: "cors" });
             const blob = await response.blob();
             const dataUrl = await new Promise<string>((resolve, reject) => {
@@ -179,6 +181,7 @@ const RentalAgreement = () => {
         }
       })
     );
+
     return originalSrcs;
   };
 
@@ -187,6 +190,9 @@ const RentalAgreement = () => {
     if (!element) return null;
 
     const ignoreEls = Array.from(element.querySelectorAll("[data-html2canvas-ignore]")) as HTMLElement[];
+    const sections = (Array.from(element.querySelectorAll("[data-pdf-section]")) as HTMLElement[]).filter(
+      (section) => !section.closest("[data-html2canvas-ignore]")
+    );
     let originalSrcs: { img: HTMLImageElement; src: string }[] = [];
 
     try {
@@ -198,16 +204,14 @@ const RentalAgreement = () => {
 
       const A4_WIDTH_MM = 210;
       const A4_HEIGHT_MM = 297;
-      const SIDE_MARGIN_MM = 10;
-      const TOP_MARGIN_MM = 10;
-      const BOTTOM_MARGIN_MM = 10;
+      const SIDE_MARGIN_MM = 8;
+      const TOP_MARGIN_MM = 8;
+      const BOTTOM_MARGIN_MM = 8;
       const CONTENT_WIDTH_MM = A4_WIDTH_MM - SIDE_MARGIN_MM * 2;
       const CONTENT_HEIGHT_MM = A4_HEIGHT_MM - TOP_MARGIN_MM - BOTTOM_MARGIN_MM;
-      const SECTION_GAP_MM = 2;
+      const SECTION_GAP_MM = 1.25;
 
       const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-      const sections = Array.from(element.querySelectorAll("[data-pdf-section]")) as HTMLElement[];
-
       let currentY = TOP_MARGIN_MM;
 
       const addCanvasSlice = (
@@ -218,7 +222,7 @@ const RentalAgreement = () => {
       ) => {
         const sliceCanvas = document.createElement("canvas");
         sliceCanvas.width = sourceCanvas.width;
-        sliceCanvas.height = Math.max(1, Math.floor(sliceHeightPx));
+        sliceCanvas.height = Math.max(1, Math.ceil(sliceHeightPx));
 
         const ctx = sliceCanvas.getContext("2d");
         if (!ctx) throw new Error("Unable to prepare PDF page slice");
@@ -252,7 +256,7 @@ const RentalAgreement = () => {
 
       for (const section of sections) {
         const canvas = await html2canvas(section, {
-          scale: 2,
+          scale: 2.25,
           useCORS: true,
           logging: false,
           backgroundColor: "#ffffff",
@@ -260,7 +264,7 @@ const RentalAgreement = () => {
         });
 
         const sectionHeightMM = (canvas.height / canvas.width) * CONTENT_WIDTH_MM;
-        const allowSplit = section.dataset.pdfSplittable === "true";
+        const shouldSplit = section.dataset.pdfSplittable === "true" || sectionHeightMM > CONTENT_HEIGHT_MM;
         const remainingSpaceMM = A4_HEIGHT_MM - BOTTOM_MARGIN_MM - currentY;
 
         if (sectionHeightMM <= remainingSpaceMM) {
@@ -276,7 +280,7 @@ const RentalAgreement = () => {
           continue;
         }
 
-        if (!allowSplit) {
+        if (!shouldSplit) {
           pdf.addPage();
           currentY = TOP_MARGIN_MM;
           pdf.addImage(
@@ -302,8 +306,10 @@ const RentalAgreement = () => {
             continue;
           }
 
-          const sliceHeightPx = Math.min(canvas.height - consumedPx, Math.floor(availableMM * pxPerMM));
-          if (sliceHeightPx <= 0) break;
+          const sliceHeightPx = Math.min(
+            canvas.height - consumedPx,
+            Math.max(1, Math.floor(availableMM * pxPerMM))
+          );
 
           const renderedHeightMM = addCanvasSlice(canvas, consumedPx, sliceHeightPx, currentY);
           consumedPx += sliceHeightPx;
@@ -330,7 +336,6 @@ const RentalAgreement = () => {
       });
     }
   };
-
 
   // Load existing photos from storage for a given reservation ref
   const loadExistingPhotos = async (ref: string) => {
@@ -752,113 +757,141 @@ const RentalAgreement = () => {
 
           {!loading && bookingData && (
             <div className="bg-white shadow-none border-0" id="rental-agreement" style={{ fontFamily: "'Segoe UI', Arial, Helvetica, sans-serif", color: "#1a1a1a" }}>
-              <div className="px-8 md:px-10 py-6 md:py-8" style={{ fontSize: "11px", lineHeight: "1.45" }}>
+              <div className="px-6 md:px-7 py-5 md:py-6" style={{ fontSize: "10.5px", lineHeight: "1.38" }}>
 
               {/* Header */}
-              <div data-pdf-section className="flex justify-between items-start pb-3 mb-4" style={{ borderBottom: "3px solid #0d6b3d" }}>
+              <div data-pdf-section className="flex justify-between items-start gap-6 pb-2.5 mb-3" style={{ borderBottom: "3px solid #0d6b3d" }}>
                 <div className="flex items-center gap-3">
-                  <img 
-                    src="/lovable-uploads/900107e8-dbcb-44ce-96a9-0588959abf24.png" 
-                    alt="James Blond Rentals" 
-                    style={{ height: "50px", width: "auto" }}
+                  <img
+                    src="/lovable-uploads/900107e8-dbcb-44ce-96a9-0588959abf24.png"
+                    alt="James Blond Rentals"
+                    style={{ height: "44px", width: "auto" }}
                   />
                   <div>
-                    <div style={{ fontSize: "10px", color: "#555" }}>
+                    <div style={{ fontSize: "9.5px", color: "#555" }}>
                       {booking?.pickuplocationname || booking?.pickuplocation}
                     </div>
-                    <div style={{ fontSize: "10px", color: "#555" }}>Tel: 0800 525 663 | info@jamesblond.co.nz</div>
-                    <div style={{ fontSize: "10px", color: "#555" }}>GST: 140-174-963</div>
+                    <div style={{ fontSize: "9.5px", color: "#555" }}>Tel: 0800 525 663 | info@jamesblond.co.nz</div>
+                    <div style={{ fontSize: "9.5px", color: "#555" }}>GST: 140-174-963</div>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div style={{ fontSize: "16px", fontWeight: "700", color: "#0d6b3d", letterSpacing: "-0.3px" }}>RENTAL AGREEMENT</div>
-                  <div style={{ fontSize: "13px", fontWeight: "600", color: "#333", marginTop: "2px" }}>
+                  <div style={{ fontSize: "15px", fontWeight: "700", color: "#0d6b3d", letterSpacing: "-0.2px", lineHeight: "1.1" }}>RENTAL AGREEMENT</div>
+                  <div style={{ fontSize: "12.5px", fontWeight: "600", color: "#333", marginTop: "2px" }}>
                     #{booking?.reservationdocumentno || booking?.reservationno || booking?.reservationref || reservationRef}
                   </div>
                 </div>
               </div>
 
-              {/* Hirer Details + Vehicle Details side by side */}
-              <div data-pdf-section className="grid grid-cols-2 gap-6 mb-4">
-                <div>
-                  <div style={{ fontSize: "11px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>Hirer's Details</div>
-                  <table style={{ width: "100%", fontSize: "10.5px" }}>
-                    <tbody>
-                      <tr><td style={{ fontWeight: 600, padding: "1px 4px 1px 0", width: "80px", verticalAlign: "top" }}>Name:</td><td style={{ padding: "1px 0" }}>{customer?.firstname} {customer?.lastname}</td></tr>
-                      <tr><td style={{ fontWeight: 600, padding: "1px 4px 1px 0", verticalAlign: "top" }}>DOB:</td><td style={{ padding: "1px 0" }}>{customer?.dateofbirth}</td></tr>
-                      <tr><td style={{ fontWeight: 600, padding: "1px 4px 1px 0", verticalAlign: "top" }}>Licence No:</td><td style={{ padding: "1px 0" }}>{customer?.licenseno}</td></tr>
-                      <tr><td style={{ fontWeight: 600, padding: "1px 4px 1px 0", verticalAlign: "top" }}>Issued In:</td><td style={{ padding: "1px 0" }}>{customer?.licenseissued || customer?.country}</td></tr>
-                      <tr><td style={{ fontWeight: 600, padding: "1px 4px 1px 0", verticalAlign: "top" }}>Expiry:</td><td style={{ padding: "1px 0" }}>{customer?.licenseexpires}</td></tr>
-                      <tr><td style={{ fontWeight: 600, padding: "1px 4px 1px 0", verticalAlign: "top" }}>Phone:</td><td style={{ padding: "1px 0" }}>{customer?.phone || customer?.mobile}</td></tr>
-                      <tr><td style={{ fontWeight: 600, padding: "1px 4px 1px 0", verticalAlign: "top" }}>Address:</td><td style={{ padding: "1px 0" }}>{[customer?.address, customer?.city, customer?.state, customer?.postcode].filter(Boolean).join(", ")}</td></tr>
-                      <tr><td style={{ fontWeight: 600, padding: "1px 4px 1px 0", verticalAlign: "top" }}>Email:</td><td style={{ padding: "1px 0" }}>{customer?.email}</td></tr>
-                    </tbody>
-                  </table>
-                </div>
-                <div>
-                  <div style={{ fontSize: "11px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>Vehicle Details</div>
-                  <table style={{ width: "100%", fontSize: "10.5px" }}>
-                    <tbody>
-                      <tr><td style={{ fontWeight: 600, padding: "1px 4px 1px 0", width: "80px", verticalAlign: "top" }}>Category:</td><td style={{ padding: "1px 0" }}>{booking?.vehiclecategory}</td></tr>
-                      <tr><td style={{ fontWeight: 600, padding: "1px 4px 1px 0", verticalAlign: "top" }}>Description:</td><td style={{ padding: "1px 0" }}>{booking?.vehicledescription1}</td></tr>
-                      <tr><td style={{ fontWeight: 600, padding: "1px 4px 1px 0", verticalAlign: "top" }}>Licence Plate:</td><td style={{ padding: "1px 0" }}>{vehicleRego || "N/A"}</td></tr>
-                      <tr><td style={{ fontWeight: 600, padding: "1px 4px 1px 0", verticalAlign: "top" }}>Fuel Type:</td><td style={{ padding: "1px 0" }}>{booking?.fueltype || "N/A"}</td></tr>
-                      <tr><td style={{ fontWeight: 600, padding: "1px 4px 1px 0", verticalAlign: "top" }}>Kms Out:</td><td style={{ padding: "1px 0" }}>{kmsOut || "N/A"}</td></tr>
-                      <tr><td style={{ fontWeight: 600, padding: "1px 4px 1px 0", verticalAlign: "top" }}>Kms In:</td><td style={{ padding: "1px 0" }}>{kmsIn || "N/A"}</td></tr>
-                      <tr><td style={{ fontWeight: 600, padding: "1px 4px 1px 0", verticalAlign: "top" }}>Fuel Out:</td><td style={{ padding: "1px 0" }}>{fuelOut || "N/A"}</td></tr>
-                      <tr><td style={{ fontWeight: 600, padding: "1px 4px 1px 0", verticalAlign: "top" }}>Fuel In:</td><td style={{ padding: "1px 0" }}>{fuelIn || "N/A"}</td></tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+              {/* Hirer Details + Vehicle Details */}
+              <table data-pdf-section style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed", marginBottom: "12px" }}>
+                <tbody>
+                  <tr>
+                    <td style={{ width: "50%", verticalAlign: "top", paddingRight: "14px" }}>
+                      <div style={{ fontSize: "10.5px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>Hirer's Details</div>
+                      <table style={{ width: "100%", fontSize: "10px", lineHeight: "1.3", borderCollapse: "collapse" }}>
+                        <tbody>
+                          <tr><td style={{ fontWeight: 600, padding: "2px 8px 2px 0", width: "86px", verticalAlign: "top" }}>Name:</td><td style={{ padding: "2px 0" }}>{customer?.firstname} {customer?.lastname}</td></tr>
+                          <tr><td style={{ fontWeight: 600, padding: "2px 8px 2px 0", verticalAlign: "top" }}>DOB:</td><td style={{ padding: "2px 0" }}>{customer?.dateofbirth}</td></tr>
+                          <tr><td style={{ fontWeight: 600, padding: "2px 8px 2px 0", verticalAlign: "top" }}>Licence No:</td><td style={{ padding: "2px 0" }}>{customer?.licenseno}</td></tr>
+                          <tr><td style={{ fontWeight: 600, padding: "2px 8px 2px 0", verticalAlign: "top" }}>Issued In:</td><td style={{ padding: "2px 0" }}>{customer?.licenseissued || customer?.country}</td></tr>
+                          <tr><td style={{ fontWeight: 600, padding: "2px 8px 2px 0", verticalAlign: "top" }}>Expiry:</td><td style={{ padding: "2px 0" }}>{customer?.licenseexpires}</td></tr>
+                          <tr><td style={{ fontWeight: 600, padding: "2px 8px 2px 0", verticalAlign: "top" }}>Phone:</td><td style={{ padding: "2px 0" }}>{customer?.phone || customer?.mobile}</td></tr>
+                          <tr><td style={{ fontWeight: 600, padding: "2px 8px 2px 0", verticalAlign: "top" }}>Address:</td><td style={{ padding: "2px 0" }}>{[customer?.address, customer?.city, customer?.state, customer?.postcode].filter(Boolean).join(", ")}</td></tr>
+                          <tr><td style={{ fontWeight: 600, padding: "2px 8px 2px 0", verticalAlign: "top" }}>Email:</td><td style={{ padding: "2px 0" }}>{customer?.email}</td></tr>
+                        </tbody>
+                      </table>
+                    </td>
+                    <td style={{ width: "50%", verticalAlign: "top", paddingLeft: "14px" }}>
+                      <div style={{ fontSize: "10.5px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>Vehicle Details</div>
+                      <table style={{ width: "100%", fontSize: "10px", lineHeight: "1.3", borderCollapse: "collapse" }}>
+                        <tbody>
+                          <tr><td style={{ fontWeight: 600, padding: "2px 8px 2px 0", width: "86px", verticalAlign: "top" }}>Category:</td><td style={{ padding: "2px 0" }}>{booking?.vehiclecategory}</td></tr>
+                          <tr><td style={{ fontWeight: 600, padding: "2px 8px 2px 0", verticalAlign: "top" }}>Description:</td><td style={{ padding: "2px 0" }}>{booking?.vehicledescription1}</td></tr>
+                          <tr><td style={{ fontWeight: 600, padding: "2px 8px 2px 0", verticalAlign: "top" }}>Licence Plate:</td><td style={{ padding: "2px 0" }}>{vehicleRego || "N/A"}</td></tr>
+                          <tr><td style={{ fontWeight: 600, padding: "2px 8px 2px 0", verticalAlign: "top" }}>Fuel Type:</td><td style={{ padding: "2px 0" }}>{booking?.fueltype || "N/A"}</td></tr>
+                          <tr><td style={{ fontWeight: 600, padding: "2px 8px 2px 0", verticalAlign: "top" }}>Kms Out:</td><td style={{ padding: "2px 0" }}>{kmsOut || "N/A"}</td></tr>
+                          <tr><td style={{ fontWeight: 600, padding: "2px 8px 2px 0", verticalAlign: "top" }}>Kms In:</td><td style={{ padding: "2px 0" }}>{kmsIn || "N/A"}</td></tr>
+                          <tr><td style={{ fontWeight: 600, padding: "2px 8px 2px 0", verticalAlign: "top" }}>Fuel Out:</td><td style={{ padding: "2px 0" }}>{fuelOut || "N/A"}</td></tr>
+                          <tr><td style={{ fontWeight: 600, padding: "2px 8px 2px 0", verticalAlign: "top" }}>Fuel In:</td><td style={{ padding: "2px 0" }}>{fuelIn || "N/A"}</td></tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
 
               {/* Rental Details */}
-              <div data-pdf-section data-pdf-splittable="true" className="mb-4">
-                <div className="grid grid-cols-3 gap-x-6" style={{ fontSize: "10.5px" }}>
-                  <div><span style={{ fontWeight: 600 }}>Pickup:</span> {booking?.pickupdate} {booking?.pickuptime}</div>
-                  <div><span style={{ fontWeight: 600 }}>Return:</span> {booking?.dropoffdate} {booking?.dropofftime}</div>
-                  <div><span style={{ fontWeight: 600 }}>Days:</span> {booking?.numberofdays}</div>
-                  <div><span style={{ fontWeight: 600 }}>Pickup Location:</span> {booking?.pickuplocationname || booking?.pickuplocation}</div>
-                  <div><span style={{ fontWeight: 600 }}>Return Location:</span> {booking?.dropofflocationname || booking?.dropofflocation}</div>
-                  <div><span style={{ fontWeight: 600 }}>Daily Rate:</span> ${Number(booking?.dailyrate || 0).toFixed(2)}</div>
-                </div>
+              <div data-pdf-section className="mb-3">
+                <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed", fontSize: "10px" }}>
+                  <tbody>
+                    <tr>
+                      <td style={{ width: "33.33%", padding: "2px 12px 2px 0", verticalAlign: "top" }}>
+                        <div style={{ fontWeight: 600 }}>Pickup</div>
+                        <div>{booking?.pickupdate} {booking?.pickuptime}</div>
+                      </td>
+                      <td style={{ width: "33.33%", padding: "2px 12px 2px 0", verticalAlign: "top" }}>
+                        <div style={{ fontWeight: 600 }}>Return</div>
+                        <div>{booking?.dropoffdate} {booking?.dropofftime}</div>
+                      </td>
+                      <td style={{ width: "33.33%", padding: "2px 0", verticalAlign: "top" }}>
+                        <div style={{ fontWeight: 600 }}>Days</div>
+                        <div>{booking?.numberofdays}</div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ padding: "4px 12px 0 0", verticalAlign: "top" }}>
+                        <div style={{ fontWeight: 600 }}>Pickup Location</div>
+                        <div>{booking?.pickuplocationname || booking?.pickuplocation}</div>
+                      </td>
+                      <td style={{ padding: "4px 12px 0 0", verticalAlign: "top" }}>
+                        <div style={{ fontWeight: 600 }}>Return Location</div>
+                        <div>{booking?.dropofflocationname || booking?.dropofflocation}</div>
+                      </td>
+                      <td style={{ padding: "4px 0 0", verticalAlign: "top" }}>
+                        <div style={{ fontWeight: 600 }}>Daily Rate</div>
+                        <div>${Number(booking?.dailyrate || 0).toFixed(2)}</div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
 
               {/* Rates & Fees */}
-              <div data-pdf-section className="mb-4">
-                <table style={{ width: "100%", fontSize: "10.5px", borderCollapse: "collapse" }}>
+              <div data-pdf-section className="mb-3">
+                <table style={{ width: "100%", fontSize: "10px", borderCollapse: "collapse", tableLayout: "fixed" }}>
                   <thead>
                     <tr style={{ borderBottom: "1.5px solid #999" }}>
                       <th style={{ textAlign: "left", padding: "3px 0", fontWeight: 600 }}>Item</th>
-                      <th style={{ textAlign: "right", padding: "3px 0", fontWeight: 600 }}>Amount</th>
+                      <th style={{ textAlign: "right", padding: "3px 0", fontWeight: 600, width: "120px" }}>Amount</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr style={{ borderBottom: "1px solid #e5e5e5" }}>
-                      <td style={{ padding: "2px 0" }}>Vehicle Rental ({rentalDays} days × ${dailyRate.toFixed(2)})</td>
-                      <td style={{ textAlign: "right", padding: "2px 0" }}>${rentalAmount.toFixed(2)}</td>
+                      <td style={{ padding: "3px 0" }}>Vehicle Rental ({rentalDays} days × ${dailyRate.toFixed(2)})</td>
+                      <td style={{ textAlign: "right", padding: "3px 0" }}>${rentalAmount.toFixed(2)}</td>
                     </tr>
                     {booking?.insuranceoption && (
                       <tr style={{ borderBottom: "1px solid #e5e5e5" }}>
-                        <td style={{ padding: "2px 0" }}>{booking.insuranceoption}</td>
-                        <td style={{ textAlign: "right", padding: "2px 0" }}>${Number(booking?.insuranceamount || 0).toFixed(2)}</td>
+                        <td style={{ padding: "3px 0" }}>{booking.insuranceoption}</td>
+                        <td style={{ textAlign: "right", padding: "3px 0" }}>${Number(booking?.insuranceamount || 0).toFixed(2)}</td>
                       </tr>
                     )}
                     {extras?.map((extra, idx) => (
                       <tr key={idx} style={{ borderBottom: "1px solid #e5e5e5" }}>
-                        <td style={{ padding: "2px 0" }}>{extra.name}</td>
-                        <td style={{ textAlign: "right", padding: "2px 0" }}>${Number(extra.fees || 0).toFixed(2)}</td>
+                        <td style={{ padding: "3px 0" }}>{extra.name}</td>
+                        <td style={{ textAlign: "right", padding: "3px 0" }}>${Number(extra.fees || 0).toFixed(2)}</td>
                       </tr>
                     ))}
                     {booking?.mandatoryfees?.map((fee, idx) => (
                       <tr key={idx} style={{ borderBottom: "1px solid #e5e5e5" }}>
-                        <td style={{ padding: "2px 0" }}>{fee.name || "Mandatory Fee"}</td>
-                        <td style={{ textAlign: "right", padding: "2px 0" }}>${Number(fee.totalfeeamount || fee.amount || 0).toFixed(2)}</td>
+                        <td style={{ padding: "3px 0" }}>{fee.name || "Mandatory Fee"}</td>
+                        <td style={{ textAlign: "right", padding: "3px 0" }}>${Number(fee.totalfeeamount || fee.amount || 0).toFixed(2)}</td>
                       </tr>
                     ))}
                     <tr style={{ borderTop: "2px solid #333" }}>
-                      <td style={{ padding: "3px 0", fontWeight: 700 }}>Total</td>
-                      <td style={{ textAlign: "right", padding: "3px 0", fontWeight: 700 }}>${Number(booking?.totalcost || 0).toFixed(2)}</td>
+                      <td style={{ padding: "4px 0", fontWeight: 700 }}>Total</td>
+                      <td style={{ textAlign: "right", padding: "4px 0", fontWeight: 700 }}>${Number(booking?.totalcost || 0).toFixed(2)}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -908,8 +941,8 @@ const RentalAgreement = () => {
               )}
 
               {/* Terms & Conditions */}
-              <div data-pdf-section className="mb-4">
-                <div style={{ fontSize: "8.5px", lineHeight: "1.35", color: "#333", columnCount: 2, columnGap: "20px" }}>
+              <div data-pdf-section data-pdf-splittable="true" className="mb-3">
+                <div style={{ fontSize: "8.4px", lineHeight: "1.45", color: "#333" }}>
                   <p style={{ fontWeight: 600, marginBottom: "3px" }}>
                     SUBJECT TO FOLLOWING TERMS AND CONDITIONS
                   </p>
@@ -1002,7 +1035,7 @@ const RentalAgreement = () => {
               </div>
 
               {/* Vehicle Photos */}
-              <div data-pdf-section className="mb-4">
+              <div className="mb-4" data-html2canvas-ignore="true">
                 <div style={{ fontSize: "11px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>
                   Vehicle Condition Photos
                 </div>
