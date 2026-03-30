@@ -141,7 +141,10 @@ const RentalAgreement = () => {
           setKmsIn(String(booking.kmsin || ""));
           setFuelOut(booking.fuelout || "");
           setFuelIn(booking.fuelin || "");
-          setVehicleRego(booking.vehicle_registrationnumber || booking.vehiclerego || "");
+          const resolvedRego = booking.vehicle_registrationnumber || booking.vehiclerego || "";
+          setVehicleRego(resolvedRego);
+          // Backward compatibility: older uploads were saved under /{rego}/... (without reservation folder)
+          await loadExistingPhotos(reservationRef.trim(), resolvedRego);
         }
         toast.success("Booking data loaded");
       } else {
@@ -338,42 +341,56 @@ const RentalAgreement = () => {
   };
 
   // Load existing photos from storage for a given reservation ref
-  const loadExistingPhotos = async (ref: string) => {
-    const { data: folders } = await supabase.storage
-      .from("vehicle-photos")
-      .list(ref, { limit: 100 });
-    
-    if (!folders || folders.length === 0) return;
+  const loadExistingPhotos = async (ref: string, regoHint?: string) => {
+    const photoMap = new Map<string, { url: string; name: string }>();
 
-    const allPhotos: { url: string; name: string }[] = [];
-
-    for (const item of folders) {
-      // Check if item is a folder (has no metadata/id typically) by listing inside it
-      const { data: subFiles } = await supabase.storage
+    const addPhoto = (path: string, name: string) => {
+      const { data: urlData } = supabase.storage
         .from("vehicle-photos")
-        .list(`${ref}/${item.name}`, { limit: 100 });
-      
-      if (subFiles && subFiles.length > 0) {
-        // It's a folder (rego subfolder)
-        for (const f of subFiles) {
-          if (f.name === '.emptyFolderPlaceholder') continue;
-          const { data: urlData } = supabase.storage
-            .from("vehicle-photos")
-            .getPublicUrl(`${ref}/${item.name}/${f.name}`);
-          allPhotos.push({ url: urlData.publicUrl, name: `${item.name}/${f.name}` });
-        }
-      } else if (item.id) {
-        // It's a file directly in the ref folder (legacy)
-        const { data: urlData } = supabase.storage
+        .getPublicUrl(path);
+      photoMap.set(name, { url: urlData.publicUrl, name });
+    };
+
+    // Current structure: /{reservationRef}/{rego}/{file}
+    if (ref.trim()) {
+      const { data: folders } = await supabase.storage
+        .from("vehicle-photos")
+        .list(ref, { limit: 100 });
+
+      for (const item of folders || []) {
+        if (!item?.name || item.name === ".emptyFolderPlaceholder") continue;
+
+        const { data: subFiles } = await supabase.storage
           .from("vehicle-photos")
-          .getPublicUrl(`${ref}/${item.name}`);
-        allPhotos.push({ url: urlData.publicUrl, name: item.name });
+          .list(`${ref}/${item.name}`, { limit: 100 });
+
+        if (subFiles && subFiles.length > 0) {
+          for (const f of subFiles) {
+            if (!f?.name || f.name === ".emptyFolderPlaceholder") continue;
+            addPhoto(`${ref}/${item.name}/${f.name}`, `${item.name}/${f.name}`);
+          }
+        } else if (item.id) {
+          // Older structure variant: /{reservationRef}/{file}
+          addPhoto(`${ref}/${item.name}`, item.name);
+        }
       }
     }
-    
-    if (allPhotos.length > 0) {
-      setExistingPhotos(allPhotos);
+
+    // Backward compatibility: oldest structure /{rego}/{file}
+    const cleanRego = (regoHint || "").trim();
+    if (cleanRego) {
+      const { data: regoFiles } = await supabase.storage
+        .from("vehicle-photos")
+        .list(cleanRego, { limit: 100 });
+
+      for (const file of regoFiles || []) {
+        if (!file?.name || file.name === ".emptyFolderPlaceholder") continue;
+        const key = `${cleanRego}/${file.name}`;
+        addPhoto(key, key);
+      }
     }
+
+    setExistingPhotos(Array.from(photoMap.values()));
   };
 
   // Add date/time stamp overlay to a photo file using canvas
