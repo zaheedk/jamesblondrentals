@@ -55,7 +55,7 @@ serve(async (req) => {
       data: {
         full_name: `${firstName || ""} ${lastName || ""}`.trim(),
       },
-      redirectTo: `${Deno.env.get("SITE_URL") || "https://jamesblondrentals.lovable.app"}/reset-password`,
+      redirectTo: `${Deno.env.get("SITE_URL") || "https://www.jamesblond.co.nz"}/reset-password`,
     });
 
     if (error) {
