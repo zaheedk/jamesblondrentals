@@ -502,16 +502,36 @@ const RentalAgreement = () => {
     toast.success("Photo deleted successfully");
   };
 
-  const blobToBase64 = (blob: Blob): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64 = (reader.result as string).split(",")[1];
-        resolve(base64);
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
+  const uploadPdfForEmail = async (pdfBlob: Blob, agreementRef: string) => {
+    const safeRef = (agreementRef || reservationRef || "rental-agreement")
+      .replace(/[^a-zA-Z0-9-_]/g, "-")
+      .replace(/-+/g, "-");
+    const fileName = `Rental-Agreement-${agreementRef}.pdf`;
+    const filePath = `${safeRef}/${Date.now()}-${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("signed-agreements")
+      .upload(filePath, pdfBlob, {
+        contentType: "application/pdf",
+        upsert: false,
+      });
+
+    if (uploadError) {
+      throw new Error(`Failed to upload PDF: ${uploadError.message}`);
+    }
+
+    const { data: publicUrlData } = supabase.storage
+      .from("signed-agreements")
+      .getPublicUrl(filePath);
+
+    if (!publicUrlData?.publicUrl) {
+      throw new Error("Failed to generate PDF download link");
+    }
+
+    return {
+      fileName,
+      publicUrl: publicUrlData.publicUrl,
+    };
   };
 
   const sendAgreementEmail = async (
@@ -524,9 +544,9 @@ const RentalAgreement = () => {
     const vehicleName = bookingItem?.vehiclecategory || "Vehicle";
     const pickupDate = bookingItem?.pickupdate || "";
     const dropoffDate = bookingItem?.dropoffdate || "";
-    const pdfBase64 = await blobToBase64(pdfBlob);
+    const { fileName, publicUrl } = await uploadPdfForEmail(pdfBlob, agreementRef);
 
-    console.log("Sending email with PDF attachment, base64 length:", pdfBase64.length);
+    console.log("Sending email with hosted PDF attachment:", publicUrl);
 
     const { data, error: emailError } = await supabase.functions.invoke('send-postmark-email', {
       body: {
@@ -574,10 +594,10 @@ const RentalAgreement = () => {
             <p style="color: #999; font-size: 11px;">James Blond Rentals | GST: 140-174-963</p>
           </div>
         `,
-        attachments: [
+        remoteAttachments: [
           {
-            Name: `Rental-Agreement-${agreementRef}.pdf`,
-            Content: pdfBase64,
+            Name: fileName,
+            Url: publicUrl,
             ContentType: "application/pdf"
           }
         ],
