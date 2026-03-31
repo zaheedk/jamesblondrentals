@@ -49,24 +49,26 @@ const AdminRentalAgreements = () => {
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Fetch Booking Details</CardTitle>
+              <CardTitle className="text-xl">Fetch Booking Details</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex gap-3">
+              <div className="flex flex-col gap-4">
                 <Input
                   placeholder="Reservation number..."
                   value={reservationRef}
                   onChange={(e) => setReservationRef(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleFetch()}
+                  className="h-14 text-lg px-4"
                 />
                 <Input
                   placeholder="Last name..."
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleFetch()}
+                  className="h-14 text-lg px-4"
                 />
-                <Button onClick={handleFetch} disabled={loading}>
-                  {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Search className="h-4 w-4 mr-2" />}
+                <Button onClick={handleFetch} disabled={loading} size="lg" className="h-14 text-lg w-full">
+                  {loading ? <Loader2 className="h-5 w-5 animate-spin mr-2" /> : <Search className="h-5 w-5 mr-2" />}
                   Fetch
                 </Button>
               </div>
