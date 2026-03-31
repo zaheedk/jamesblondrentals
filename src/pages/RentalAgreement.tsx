@@ -832,7 +832,7 @@ const RentalAgreement = () => {
                     </td>
                     <td style={{ width: "50%", verticalAlign: "top", paddingLeft: "14px" }}>
                       <div style={{ fontSize: "10.5px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>Vehicle Details</div>
-                      <table style={{ width: "100%", fontSize: "10px", lineHeight: "1.5", borderCollapse: "collapse" }}>
+                      <table style={{ width: "100%", fontSize: "10px", lineHeight: "1.5", borderCollapse: "collapse", textDecoration: "none" }}>
                         <tbody>
                           {[
                             ["Category:", booking?.vehiclecategory],
@@ -845,8 +845,8 @@ const RentalAgreement = () => {
                             ["Fuel In:", fuelIn || "N/A"],
                           ].map(([label, value], i) => (
                             <tr key={i}>
-                              <td style={{ fontWeight: 700, padding: "2.5px 12px 2.5px 0", width: "95px", verticalAlign: "top", whiteSpace: "nowrap", color: "#222" }}>{label}</td>
-                              <td style={{ padding: "2.5px 0", color: "#333" }}>{value || "N/A"}</td>
+                              <td style={{ fontWeight: 700, padding: "2.5px 12px 2.5px 0", width: "95px", verticalAlign: "top", whiteSpace: "nowrap", color: "#222", textDecoration: "none" }}>{label}</td>
+                              <td style={{ padding: "2.5px 0", color: "#333", textDecoration: "none" }}>{value || "N/A"}</td>
                             </tr>
                           ))}
                         </tbody>
