@@ -1,15 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
-import { CalendarIcon, ClockIcon, MapPinIcon, CarIcon, CreditCardIcon, UserIcon } from 'lucide-react';
+import { CalendarIcon, ClockIcon, MapPinIcon, CarIcon, CreditCardIcon, Loader2 } from 'lucide-react';
 import { useBookings, type Booking } from '@/hooks/use-bookings';
+import { rcmApi } from '@/lib/api/rcm-api';
 import { toast } from 'sonner';
 
 const SupabaseBookingHistory = () => {
   const { data: bookings, isLoading, error } = useBookings();
   const [searchQuery, setSearchQuery] = useState('');
+  const [rcmStatuses, setRcmStatuses] = useState<Record<string, { status: string; loading: boolean }>>({});
+
+  // Fetch RCM status for bookings that have a reservation_reference
+  useEffect(() => {
+    if (!bookings || bookings.length === 0) return;
+
+    const bookingsWithRef = bookings.filter(b => b.reservation_reference);
+    if (bookingsWithRef.length === 0) return;
+
+    bookingsWithRef.forEach(async (booking) => {
+      const ref = booking.reservation_reference!;
+      // Skip if already fetched
+      if (rcmStatuses[ref] && !rcmStatuses[ref].loading) return;
+
+      setRcmStatuses(prev => ({ ...prev, [ref]: { status: '', loading: true } }));
+
+      try {
+        const response = await rcmApi.getBookingInfoByReference(ref);
+        const bookingInfo = response?.results?.bookinginfo?.[0] as Record<string, any> | undefined;
+        const rcmStatus = bookingInfo?.status || bookingInfo?.bookingstatus || bookingInfo?.reservationstatus || '';
+        setRcmStatuses(prev => ({ ...prev, [ref]: { status: rcmStatus, loading: false } }));
+      } catch (err) {
+        console.error('Failed to fetch RCM status for', ref, err);
+        setRcmStatuses(prev => ({ ...prev, [ref]: { status: '', loading: false } }));
+      }
+    });
+  }, [bookings]);
 
   if (error) {
     console.error('Error fetching bookings:', error);
@@ -17,42 +45,40 @@ const SupabaseBookingHistory = () => {
   }
 
   const filteredBookings = bookings?.filter((booking) =>
-    booking.booking_reference?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    booking.reservation_reference?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     booking.vehicle_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    booking.pickup_location_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    booking.customer_email?.toLowerCase().includes(searchQuery.toLowerCase())
+    booking.pickup_location_name?.toLowerCase().includes(searchQuery.toLowerCase())
   ) || [];
 
   const getStatusBadge = (status?: string) => {
     if (!status) return <Badge variant="secondary">Unknown</Badge>;
     
-    const statusConfig = {
-      pending: { variant: 'secondary' as const, label: 'Pending' },
-      confirmed: { variant: 'default' as const, label: 'Confirmed' },
-      active: { variant: 'default' as const, label: 'Active' },
-      completed: { variant: 'outline' as const, label: 'Completed' },
-      cancelled: { variant: 'destructive' as const, label: 'Cancelled' },
+    const lower = status.toLowerCase();
+    const statusConfig: Record<string, { variant: 'secondary' | 'default' | 'outline' | 'destructive', label: string }> = {
+      pending: { variant: 'secondary', label: 'Pending' },
+      confirmed: { variant: 'default', label: 'Confirmed' },
+      active: { variant: 'default', label: 'Active' },
+      completed: { variant: 'outline', label: 'Completed' },
+      cancelled: { variant: 'destructive', label: 'Cancelled' },
+      'checked out': { variant: 'default', label: 'Checked Out' },
+      'checked in': { variant: 'outline', label: 'Checked In' },
     };
 
-    const config = statusConfig[status as keyof typeof statusConfig] || 
-                  { variant: 'secondary' as const, label: status };
-
+    const config = statusConfig[lower] || { variant: 'secondary' as const, label: status };
     return <Badge variant={config.variant}>{config.label}</Badge>;
   };
 
   const getPaymentStatusBadge = (status?: string) => {
-    if (!status) return <Badge variant="secondary">Unknown</Badge>;
+    if (!status) return null;
     
-    const statusConfig = {
-      pending: { variant: 'secondary' as const, label: 'Pending' },
-      paid: { variant: 'default' as const, label: 'Paid' },
-      failed: { variant: 'destructive' as const, label: 'Failed' },
-      refunded: { variant: 'outline' as const, label: 'Refunded' },
+    const statusConfig: Record<string, { variant: 'secondary' | 'default' | 'outline' | 'destructive', label: string }> = {
+      pending: { variant: 'secondary', label: 'Payment Pending' },
+      paid: { variant: 'default', label: 'Paid' },
+      failed: { variant: 'destructive', label: 'Payment Failed' },
+      refunded: { variant: 'outline', label: 'Refunded' },
     };
 
-    const config = statusConfig[status as keyof typeof statusConfig] || 
-                  { variant: 'secondary' as const, label: status };
-
+    const config = statusConfig[status] || { variant: 'secondary' as const, label: status };
     return <Badge variant={config.variant}>{config.label}</Badge>;
   };
 
@@ -140,108 +166,93 @@ const SupabaseBookingHistory = () => {
         </Card>
       ) : (
         <div className="space-y-4">
-          {filteredBookings.map((booking) => (
-            <Card key={booking.id} className="overflow-hidden">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg font-semibold">
-                    {booking.vehicle_name || 'Vehicle Rental'}
-                  </CardTitle>
-                  <div className="flex items-center space-x-2">
-                    {getStatusBadge(booking.booking_status)}
-                    {getPaymentStatusBadge(booking.payment_status)}
+          {filteredBookings.map((booking) => {
+            const ref = booking.reservation_reference;
+            const rcmData = ref ? rcmStatuses[ref] : null;
+            const displayStatus = rcmData?.status || booking.booking_status;
+
+            return (
+              <Card key={booking.id} className="overflow-hidden">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg font-semibold">
+                      {booking.vehicle_name || 'Vehicle Rental'}
+                    </CardTitle>
+                    <div className="flex items-center space-x-2">
+                      {rcmData?.loading ? (
+                        <Badge variant="secondary" className="flex items-center gap-1">
+                          <Loader2 className="h-3 w-3 animate-spin" />
+                          Checking...
+                        </Badge>
+                      ) : (
+                        getStatusBadge(displayStatus)
+                      )}
+                      {getPaymentStatusBadge(booking.payment_status)}
+                    </div>
                   </div>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  Booking Reference: {booking.booking_reference || 'N/A'}
-                  {booking.reservation_reference && (
-                    <span className="ml-3">RCM Ref: {booking.reservation_reference}</span>
+                  <p className="text-sm text-muted-foreground">
+                    Booking Reference: {booking.reservation_reference || booking.booking_reference || 'N/A'}
+                  </p>
+                </CardHeader>
+                
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Dates & Times */}
+                    <div className="space-y-2">
+                      <div className="flex items-center space-x-2 text-sm">
+                        <CalendarIcon className="h-4 w-4 text-muted-foreground" />
+                        <span className="font-medium">Pickup:</span>
+                        <span>{formatDateTime(booking.pickup_date, booking.pickup_time)}</span>
+                      </div>
+                      <div className="flex items-center space-x-2 text-sm">
+                        <CalendarIcon className="h-4 w-4 text-muted-foreground" />
+                        <span className="font-medium">Dropoff:</span>
+                        <span>{formatDateTime(booking.dropoff_date, booking.dropoff_time)}</span>
+                      </div>
+                      <div className="flex items-center space-x-2 text-sm">
+                        <ClockIcon className="h-4 w-4 text-muted-foreground" />
+                        <span className="font-medium">Duration:</span>
+                        <span>{booking.total_days} day{booking.total_days !== 1 ? 's' : ''}</span>
+                      </div>
+                    </div>
+
+                    {/* Locations & Pricing */}
+                    <div className="space-y-2">
+                      <div className="flex items-center space-x-2 text-sm">
+                        <MapPinIcon className="h-4 w-4 text-muted-foreground" />
+                        <span className="font-medium">Pickup:</span>
+                        <span>{booking.pickup_location_name || 'N/A'}</span>
+                      </div>
+                      <div className="flex items-center space-x-2 text-sm">
+                        <MapPinIcon className="h-4 w-4 text-muted-foreground" />
+                        <span className="font-medium">Dropoff:</span>
+                        <span>{booking.dropoff_location_name || 'N/A'}</span>
+                      </div>
+                      <div className="flex items-center space-x-2 text-sm">
+                        <CreditCardIcon className="h-4 w-4 text-muted-foreground" />
+                        <span className="font-medium">Total:</span>
+                        <span className="font-semibold">{formatCurrency(booking.total_amount)}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Special Requirements */}
+                  {booking.special_requirements && (
+                    <div className="border-t pt-3">
+                      <p className="text-sm">
+                        <span className="font-medium">Special Requirements:</span> {booking.special_requirements}
+                      </p>
+                    </div>
                   )}
-                </p>
-              </CardHeader>
-              
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {/* Dates & Times */}
-                  <div className="space-y-2">
-                    <div className="flex items-center space-x-2 text-sm">
-                      <CalendarIcon className="h-4 w-4 text-muted-foreground" />
-                      <span className="font-medium">Pickup:</span>
-                      <span>{formatDateTime(booking.pickup_date, booking.pickup_time)}</span>
-                    </div>
-                    <div className="flex items-center space-x-2 text-sm">
-                      <CalendarIcon className="h-4 w-4 text-muted-foreground" />
-                      <span className="font-medium">Dropoff:</span>
-                      <span>{formatDateTime(booking.dropoff_date, booking.dropoff_time)}</span>
-                    </div>
-                    <div className="flex items-center space-x-2 text-sm">
-                      <ClockIcon className="h-4 w-4 text-muted-foreground" />
-                      <span className="font-medium">Duration:</span>
-                      <span>{booking.total_days} day{booking.total_days !== 1 ? 's' : ''}</span>
-                    </div>
-                  </div>
 
-                  {/* Locations */}
-                  <div className="space-y-2">
-                    <div className="flex items-center space-x-2 text-sm">
-                      <MapPinIcon className="h-4 w-4 text-muted-foreground" />
-                      <span className="font-medium">Pickup:</span>
-                      <span>{booking.pickup_location_name || 'N/A'}</span>
-                    </div>
-                    <div className="flex items-center space-x-2 text-sm">
-                      <MapPinIcon className="h-4 w-4 text-muted-foreground" />
-                      <span className="font-medium">Dropoff:</span>
-                      <span>{booking.dropoff_location_name || 'N/A'}</span>
-                    </div>
+                  {/* Booking Date */}
+                  <div className="border-t pt-3 text-xs text-muted-foreground">
+                    Booked on {formatDate(booking.created_at)}
                   </div>
-
-                  {/* Vehicle & Pricing */}
-                  <div className="space-y-2">
-                    <div className="flex items-center space-x-2 text-sm">
-                      <CarIcon className="h-4 w-4 text-muted-foreground" />
-                      <span className="font-medium">Vehicle:</span>
-                      <span>{booking.vehicle_category || 'N/A'}</span>
-                    </div>
-                    <div className="flex items-center space-x-2 text-sm">
-                      <CreditCardIcon className="h-4 w-4 text-muted-foreground" />
-                      <span className="font-medium">Total:</span>
-                      <span className="font-semibold">{formatCurrency(booking.total_amount)}</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Customer Info */}
-                {(booking.customer_first_name || booking.customer_email) && (
-                  <div className="border-t pt-3">
-                    <div className="flex items-center space-x-2 text-sm">
-                      <UserIcon className="h-4 w-4 text-muted-foreground" />
-                      <span className="font-medium">Customer:</span>
-                      <span>
-                        {booking.customer_first_name && booking.customer_last_name 
-                          ? `${booking.customer_first_name} ${booking.customer_last_name}`
-                          : booking.customer_email
-                        }
-                      </span>
-                    </div>
-                  </div>
-                )}
-
-                {/* Special Requirements */}
-                {booking.special_requirements && (
-                  <div className="border-t pt-3">
-                    <p className="text-sm">
-                      <span className="font-medium">Special Requirements:</span> {booking.special_requirements}
-                    </p>
-                  </div>
-                )}
-
-                {/* Booking Date */}
-                <div className="border-t pt-3 text-xs text-muted-foreground">
-                  Booked on {formatDate(booking.created_at)}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
       )}
     </div>
