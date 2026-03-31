@@ -773,8 +773,8 @@ const RentalAgreement = () => {
           )}
 
           {!loading && bookingData && (
-            <div className="bg-white shadow-none border-0" id="rental-agreement" style={{ fontFamily: "Helvetica, Arial, sans-serif", color: "#1a1a1a" }}>
-              <div className="px-6 md:px-7 py-5 md:py-6" style={{ fontSize: "10.5px", lineHeight: "1.38" }}>
+            <div className="bg-white shadow-none border-0" id="rental-agreement" style={{ fontFamily: "Helvetica, Arial, sans-serif", color: "#1a1a1a", textDecoration: "none" }}>
+              <div className="px-6 md:px-7 py-5 md:py-6" style={{ fontSize: "10.5px", lineHeight: "1.38", textDecoration: "none" }}>
 
               {/* Header */}
               <div data-pdf-section className="flex justify-between items-start gap-6 pb-2.5 mb-3" style={{ borderBottom: "3px solid #0d6b3d" }}>
