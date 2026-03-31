@@ -4,7 +4,9 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Settings, BookOpen, TrendingUp, MessageSquare, Calendar, Users, Car, UserCircle, FileText } from 'lucide-react';
+import { Settings, BookOpen, TrendingUp, MessageSquare, Calendar, Users, Car, UserCircle, FileText, AlertTriangle } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useState } from 'react';
 import SupabaseBookingHistory from '@/components/member/SupabaseBookingHistory';
 import ProfileForm from '@/components/member/ProfileForm';
 import { useUserRole } from '@/hooks/use-user-role';
@@ -12,6 +14,32 @@ import { useUserRole } from '@/hooks/use-user-role';
 export default function MemberDashboard() {
   const { user, signOut } = useAuth();
   const { isAdmin, isOfficeAdmin, isLoading: isRoleLoading } = useUserRole();
+  const [savoLoading, setSavoLoading] = useState(false);
+
+  const handleReportAccident = async () => {
+    if (!user?.email) return;
+    setSavoLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('sync-to-savo', {
+        body: {
+          email: user.email,
+          fullName: user.user_metadata?.full_name || user.email,
+          regoNumber: '',
+        },
+      });
+      if (error) throw error;
+      if (data?.login_url) {
+        window.open(data.login_url, '_blank', 'noopener,noreferrer');
+      } else {
+        window.open('https://savo.co.nz', '_blank', 'noopener,noreferrer');
+      }
+    } catch (err) {
+      console.error('Savo login error:', err);
+      window.open('https://savo.co.nz', '_blank', 'noopener,noreferrer');
+    } finally {
+      setSavoLoading(false);
+    }
+  };
 
   if (!user) {
     return null;
@@ -127,6 +155,28 @@ export default function MemberDashboard() {
           <ProfileForm />
         </TabsContent>
       </Tabs>
+
+      {/* Report an Accident - Savo Integration */}
+      <div className="mt-8">
+        <Card>
+          <CardContent className="flex items-center justify-between p-6">
+            <div className="flex items-center gap-3">
+              <AlertTriangle className="w-5 h-5 text-orange-500" />
+              <div>
+                <p className="font-semibold">Had an accident?</p>
+                <p className="text-sm text-muted-foreground">Report it quickly through our accident reporting tool</p>
+              </div>
+            </div>
+            <Button
+              onClick={handleReportAccident}
+              disabled={savoLoading}
+              className="bg-orange-500 hover:bg-orange-600 text-white"
+            >
+              {savoLoading ? 'Opening...' : 'Report an Accident'}
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

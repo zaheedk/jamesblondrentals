@@ -337,6 +337,26 @@ const CustomerDetails = () => {
         } catch (accountError) {
           console.error('Exception in auto account creation:', accountError);
         }
+
+        // Sync to Savo (Accident Reporter) - create account and get login URL
+        try {
+          if (formData.email) {
+            const fullName = `${formData.firstName || ''} ${formData.lastName || ''}`.trim();
+            supabase.functions.invoke('sync-to-savo', {
+              body: {
+                email: formData.email,
+                fullName,
+                regoNumber: '',
+              },
+            }).then(res => {
+              console.log('Savo sync result:', res.data);
+            }).catch(err => {
+              console.error('Savo sync error:', err);
+            });
+          }
+        } catch (savoError) {
+          console.error('Exception in Savo sync:', savoError);
+        }
         
         toast.success("Booking created successfully", {
           description: response.confirmationNumber 
