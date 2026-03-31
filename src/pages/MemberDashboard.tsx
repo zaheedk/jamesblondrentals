@@ -14,6 +14,32 @@ import { useUserRole } from '@/hooks/use-user-role';
 export default function MemberDashboard() {
   const { user, signOut } = useAuth();
   const { isAdmin, isOfficeAdmin, isLoading: isRoleLoading } = useUserRole();
+  const [savoLoading, setSavoLoading] = useState(false);
+
+  const handleReportAccident = async () => {
+    if (!user?.email) return;
+    setSavoLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('sync-to-savo', {
+        body: {
+          email: user.email,
+          fullName: user.user_metadata?.full_name || user.email,
+          regoNumber: '',
+        },
+      });
+      if (error) throw error;
+      if (data?.login_url) {
+        window.open(data.login_url, '_blank', 'noopener,noreferrer');
+      } else {
+        window.open('https://savo.co.nz', '_blank', 'noopener,noreferrer');
+      }
+    } catch (err) {
+      console.error('Savo login error:', err);
+      window.open('https://savo.co.nz', '_blank', 'noopener,noreferrer');
+    } finally {
+      setSavoLoading(false);
+    }
+  };
 
   if (!user) {
     return null;
