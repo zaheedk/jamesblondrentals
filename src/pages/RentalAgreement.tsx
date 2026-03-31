@@ -638,6 +638,58 @@ const RentalAgreement = () => {
         pdf.line(rightColX, sigY + 22, rightColX + 60, sigY + 22);
       }
 
+      // ─── VEHICLE CONDITION PHOTOS ───
+      const allPhotos = [
+        ...existingPhotos.filter(p => !hiddenPhotos.includes(p.name)),
+        ...vehiclePhotos.filter(p => !hiddenPhotos.includes(p.name)),
+      ];
+
+      if (allPhotos.length > 0) {
+        pdf.addPage();
+        Y = MT;
+
+        pdf.setFont("helvetica", "bold");
+        pdf.setFontSize(8);
+        pdf.setTextColor("#0d6b3d");
+        pdf.text("VEHICLE CONDITION PHOTOS", ML, Y);
+        Y += 1;
+        drawLine(Y, ML, PW - MR, "#cccccc", 0.3);
+        Y += 4;
+
+        const photoW = (CW - 6) / 3; // 3 columns with 3mm gaps
+        const photoH = photoW * 0.75; // 4:3 aspect ratio
+        let col = 0;
+
+        for (const photo of allPhotos) {
+          try {
+            const dataUrl = await loadImageAsDataUrl(photo.url);
+            if (!dataUrl) continue;
+
+            if (Y + photoH + 2 > PH - MB) {
+              pdf.addPage();
+              Y = MT;
+              col = 0;
+            }
+
+            const x = ML + col * (photoW + 3);
+            pdf.addImage(dataUrl, "JPEG", x, Y, photoW, photoH);
+
+            col++;
+            if (col >= 3) {
+              col = 0;
+              Y += photoH + 3;
+            }
+          } catch (err) {
+            console.warn("Failed to add photo to PDF:", photo.name, err);
+          }
+        }
+
+        // Move Y past the last row if we didn't complete it
+        if (col > 0) {
+          Y += photoH + 3;
+        }
+      }
+
       return pdf.output("blob");
     } catch (error) {
       console.error("Error generating PDF:", error);
