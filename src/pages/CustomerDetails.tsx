@@ -346,7 +346,7 @@ const CustomerDetails = () => {
               body: {
                 email: formData.email,
                 fullName,
-                regoNumber: bookingData?.vehicleRego || '',
+                regoNumber: '',
               },
             }).then(res => {
               console.log('Savo sync result:', res.data);
