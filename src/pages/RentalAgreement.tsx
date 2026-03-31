@@ -198,6 +198,12 @@ const RentalAgreement = () => {
     );
     let originalSrcs: { img: HTMLImageElement; src: string }[] = [];
 
+    // Force remove any text-decoration on all elements inside the agreement for clean PDF
+    const allElements = Array.from(element.querySelectorAll("*")) as HTMLElement[];
+    allElements.forEach((el) => {
+      el.style.textDecoration = "none";
+    });
+
     try {
       originalSrcs = await convertImagesToDataUrls(element);
       ignoreEls.forEach((el) => {
