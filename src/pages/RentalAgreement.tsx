@@ -198,6 +198,12 @@ const RentalAgreement = () => {
     );
     let originalSrcs: { img: HTMLImageElement; src: string }[] = [];
 
+    // Force remove any text-decoration on all elements inside the agreement for clean PDF
+    const allElements = Array.from(element.querySelectorAll("*")) as HTMLElement[];
+    allElements.forEach((el) => {
+      el.style.textDecoration = "none";
+    });
+
     try {
       originalSrcs = await convertImagesToDataUrls(element);
       ignoreEls.forEach((el) => {
@@ -773,28 +779,32 @@ const RentalAgreement = () => {
           )}
 
           {!loading && bookingData && (
-            <div className="bg-white shadow-none border-0" id="rental-agreement" style={{ fontFamily: "Helvetica, Arial, sans-serif", color: "#1a1a1a" }}>
-              <div className="px-6 md:px-7 py-5 md:py-6" style={{ fontSize: "10.5px", lineHeight: "1.38" }}>
+            <div className="bg-white shadow-none border-0" id="rental-agreement" style={{ fontFamily: "Helvetica, Arial, sans-serif", color: "#1a1a1a", textDecoration: "none" }}>
+              <div className="px-6 md:px-7 py-5 md:py-6" style={{ fontSize: "10.5px", lineHeight: "1.38", textDecoration: "none" }}>
 
               {/* Header */}
-              <div data-pdf-section className="flex justify-between items-start gap-6 pb-2.5 mb-3" style={{ borderBottom: "3px solid #0d6b3d" }}>
+              <div data-pdf-section className="flex justify-between items-start gap-6 pb-2.5 mb-3" style={{ borderBottom: "3px solid #0d6b3d", textDecoration: "none" }}>
                 <div className="flex items-center gap-3">
                   <img
                     src="/lovable-uploads/900107e8-dbcb-44ce-96a9-0588959abf24.png"
                     alt="James Blond Rentals"
                     style={{ height: "44px", width: "auto" }}
                   />
-                  <div>
-                    <div style={{ fontSize: "9.5px", color: "#555" }}>
+                  <div style={{ textDecoration: "none" }}>
+                    <div style={{ fontSize: "9.5px", color: "#555", textDecoration: "none" }}>
                       {booking?.pickuplocationname || booking?.pickuplocation}
                     </div>
-                    <div style={{ fontSize: "9.5px", color: "#555" }}>Tel: 0800 525 663 | info@jamesblond.co.nz</div>
-                    <div style={{ fontSize: "9.5px", color: "#555" }}>GST: 140-174-963</div>
+                    <div style={{ fontSize: "9.5px", color: "#555", textDecoration: "none" }}>
+                      <span style={{ textDecoration: "none" }}>Tel: 0800 525 663</span>
+                      <span style={{ textDecoration: "none" }}> | </span>
+                      <span style={{ textDecoration: "none" }}>info@jamesblond.co.nz</span>
+                    </div>
+                    <div style={{ fontSize: "9.5px", color: "#555", textDecoration: "none" }}>GST: 140-174-963</div>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div style={{ fontSize: "15px", fontWeight: "700", color: "#0d6b3d", letterSpacing: "-0.2px", lineHeight: "1.1" }}>RENTAL AGREEMENT</div>
-                  <div style={{ fontSize: "12.5px", fontWeight: "600", color: "#333", marginTop: "2px" }}>
+                  <div style={{ fontSize: "15px", fontWeight: "700", color: "#0d6b3d", letterSpacing: "-0.2px", lineHeight: "1.1", textDecoration: "none" }}>RENTAL AGREEMENT</div>
+                  <div style={{ fontSize: "12.5px", fontWeight: "600", color: "#333", marginTop: "2px", textDecoration: "none" }}>
                     #{booking?.reservationdocumentno || booking?.reservationno || booking?.reservationref || reservationRef}
                   </div>
                 </div>
@@ -806,7 +816,7 @@ const RentalAgreement = () => {
                   <tr>
                     <td style={{ width: "50%", verticalAlign: "top", paddingRight: "14px" }}>
                       <div style={{ fontSize: "10.5px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>Hirer's Details</div>
-                      <table style={{ width: "100%", fontSize: "10px", lineHeight: "1.5", borderCollapse: "collapse" }}>
+                      <table style={{ width: "100%", fontSize: "10px", lineHeight: "1.5", borderCollapse: "collapse", textDecoration: "none" }}>
                         <tbody>
                           {[
                             ["Name:", `${customer?.firstname || ""} ${customer?.lastname || ""}`],
@@ -819,8 +829,8 @@ const RentalAgreement = () => {
                             ["Email:", customer?.email],
                           ].map(([label, value], i) => (
                             <tr key={i}>
-                              <td style={{ fontWeight: 700, padding: "2.5px 12px 2.5px 0", width: "95px", verticalAlign: "top", whiteSpace: "nowrap", color: "#222" }}>{label}</td>
-                              <td style={{ padding: "2.5px 0", color: "#333" }}>{value || "N/A"}</td>
+                              <td style={{ fontWeight: 700, padding: "2.5px 12px 2.5px 0", width: "95px", verticalAlign: "top", whiteSpace: "nowrap", color: "#222", textDecoration: "none" }}>{label}</td>
+                              <td style={{ padding: "2.5px 0", color: "#333", textDecoration: "none", wordBreak: "break-word" }}>{value || "N/A"}</td>
                             </tr>
                           ))}
                         </tbody>
@@ -828,7 +838,7 @@ const RentalAgreement = () => {
                     </td>
                     <td style={{ width: "50%", verticalAlign: "top", paddingLeft: "14px" }}>
                       <div style={{ fontSize: "10.5px", fontWeight: "700", color: "#0d6b3d", textTransform: "uppercase", marginBottom: "4px", borderBottom: "1px solid #ccc", paddingBottom: "2px" }}>Vehicle Details</div>
-                      <table style={{ width: "100%", fontSize: "10px", lineHeight: "1.5", borderCollapse: "collapse" }}>
+                      <table style={{ width: "100%", fontSize: "10px", lineHeight: "1.5", borderCollapse: "collapse", textDecoration: "none" }}>
                         <tbody>
                           {[
                             ["Category:", booking?.vehiclecategory],
@@ -841,8 +851,8 @@ const RentalAgreement = () => {
                             ["Fuel In:", fuelIn || "N/A"],
                           ].map(([label, value], i) => (
                             <tr key={i}>
-                              <td style={{ fontWeight: 700, padding: "2.5px 12px 2.5px 0", width: "95px", verticalAlign: "top", whiteSpace: "nowrap", color: "#222" }}>{label}</td>
-                              <td style={{ padding: "2.5px 0", color: "#333" }}>{value || "N/A"}</td>
+                              <td style={{ fontWeight: 700, padding: "2.5px 12px 2.5px 0", width: "95px", verticalAlign: "top", whiteSpace: "nowrap", color: "#222", textDecoration: "none" }}>{label}</td>
+                              <td style={{ padding: "2.5px 0", color: "#333", textDecoration: "none" }}>{value || "N/A"}</td>
                             </tr>
                           ))}
                         </tbody>
@@ -854,34 +864,34 @@ const RentalAgreement = () => {
 
               {/* Rental Details */}
               <div data-pdf-section className="mb-3">
-                <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed", fontSize: "10px" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "10px", textDecoration: "none" }}>
                   <tbody>
                     <tr>
-                      <td style={{ width: "33.33%", padding: "2px 12px 2px 0", verticalAlign: "top" }}>
-                        <div style={{ fontWeight: 600 }}>Pickup</div>
-                        <div>{booking?.pickupdate} {booking?.pickuptime}</div>
+                      <td style={{ width: "38%", padding: "3px 12px 3px 0", verticalAlign: "top", textDecoration: "none" }}>
+                        <div style={{ fontWeight: 700, textDecoration: "none" }}>Pickup</div>
+                        <div style={{ textDecoration: "none" }}>{booking?.pickupdate} {booking?.pickuptime}</div>
                       </td>
-                      <td style={{ width: "33.33%", padding: "2px 12px 2px 0", verticalAlign: "top" }}>
-                        <div style={{ fontWeight: 600 }}>Return</div>
-                        <div>{booking?.dropoffdate} {booking?.dropofftime}</div>
+                      <td style={{ width: "38%", padding: "3px 12px 3px 0", verticalAlign: "top", textDecoration: "none" }}>
+                        <div style={{ fontWeight: 700, textDecoration: "none" }}>Return</div>
+                        <div style={{ textDecoration: "none" }}>{booking?.dropoffdate} {booking?.dropofftime}</div>
                       </td>
-                      <td style={{ width: "33.33%", padding: "2px 0", verticalAlign: "top" }}>
-                        <div style={{ fontWeight: 600 }}>Days</div>
-                        <div>{booking?.numberofdays}</div>
+                      <td style={{ width: "24%", padding: "3px 0", verticalAlign: "top", textDecoration: "none" }}>
+                        <div style={{ fontWeight: 700, textDecoration: "none" }}>Days</div>
+                        <div style={{ textDecoration: "none" }}>{booking?.numberofdays}</div>
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ padding: "4px 12px 0 0", verticalAlign: "top" }}>
-                        <div style={{ fontWeight: 600 }}>Pickup Location</div>
-                        <div>{booking?.pickuplocationname || booking?.pickuplocation}</div>
+                      <td style={{ padding: "5px 12px 3px 0", verticalAlign: "top", textDecoration: "none" }}>
+                        <div style={{ fontWeight: 700, textDecoration: "none" }}>Pickup Location</div>
+                        <div style={{ textDecoration: "none", wordBreak: "break-word" }}>{booking?.pickuplocationname || booking?.pickuplocation || "N/A"}</div>
                       </td>
-                      <td style={{ padding: "4px 12px 0 0", verticalAlign: "top" }}>
-                        <div style={{ fontWeight: 600 }}>Return Location</div>
-                        <div>{booking?.dropofflocationname || booking?.dropofflocation}</div>
+                      <td style={{ padding: "5px 12px 3px 0", verticalAlign: "top", textDecoration: "none" }}>
+                        <div style={{ fontWeight: 700, textDecoration: "none" }}>Return Location</div>
+                        <div style={{ textDecoration: "none", wordBreak: "break-word" }}>{booking?.dropofflocationname || booking?.dropofflocation || "N/A"}</div>
                       </td>
-                      <td style={{ padding: "4px 0 0", verticalAlign: "top" }}>
-                        <div style={{ fontWeight: 600 }}>Daily Rate</div>
-                        <div>${Number(booking?.dailyrate || 0).toFixed(2)}</div>
+                      <td style={{ padding: "5px 0 3px", verticalAlign: "top", textDecoration: "none" }}>
+                        <div style={{ fontWeight: 700, textDecoration: "none" }}>Daily Rate</div>
+                        <div style={{ textDecoration: "none" }}>${Number(dailyRate || booking?.dailyrate || 0).toFixed(2)}</div>
                       </td>
                     </tr>
                   </tbody>
