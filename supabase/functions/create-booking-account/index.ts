@@ -108,9 +108,12 @@ serve(async (req) => {
     );
 
     if (userExists) {
-      console.log(`User ${email} already exists, skipping`);
+      const existingUser = existingUsers?.users?.find(
+        (u) => u.email?.toLowerCase() === emailLower
+      );
+      console.log(`User ${email} already exists, userId: ${existingUser?.id}`);
       return new Response(
-        JSON.stringify({ skipped: true, message: "User already exists" }),
+        JSON.stringify({ skipped: true, message: "User already exists", userId: existingUser?.id }),
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }

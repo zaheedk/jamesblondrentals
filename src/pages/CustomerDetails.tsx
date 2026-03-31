@@ -328,8 +328,27 @@ const CustomerDetails = () => {
                 firstName: formData.firstName,
                 lastName: formData.lastName,
               },
-            }).then(res => {
+            }).then(async (res) => {
               console.log('Auto account creation result:', res.data);
+              // Link booking to the created/existing user account
+              const returnedUserId = res.data?.userId;
+              const bookingRef = response.bookingReference || response.results?.bookingref;
+              const reservationRef = response.reservationRef || response.results?.reservationref;
+              if (returnedUserId && (bookingRef || reservationRef)) {
+                const filter = bookingRef
+                  ? `booking_reference.eq.${bookingRef}`
+                  : `reservation_reference.eq.${reservationRef}`;
+                const { error: updateError } = await supabase
+                  .from('bookings')
+                  .update({ user_id: returnedUserId })
+                  .or(filter)
+                  .is('user_id', null);
+                if (updateError) {
+                  console.error('Error linking booking to user:', updateError);
+                } else {
+                  console.log(`Booking linked to user ${returnedUserId}`);
+                }
+              }
             }).catch(err => {
               console.error('Auto account creation error:', err);
             });
