@@ -777,24 +777,28 @@ const RentalAgreement = () => {
               <div className="px-6 md:px-7 py-5 md:py-6" style={{ fontSize: "10.5px", lineHeight: "1.38", textDecoration: "none" }}>
 
               {/* Header */}
-              <div data-pdf-section className="flex justify-between items-start gap-6 pb-2.5 mb-3" style={{ borderBottom: "3px solid #0d6b3d" }}>
+              <div data-pdf-section className="flex justify-between items-start gap-6 pb-2.5 mb-3" style={{ borderBottom: "3px solid #0d6b3d", textDecoration: "none" }}>
                 <div className="flex items-center gap-3">
                   <img
                     src="/lovable-uploads/900107e8-dbcb-44ce-96a9-0588959abf24.png"
                     alt="James Blond Rentals"
                     style={{ height: "44px", width: "auto" }}
                   />
-                  <div>
-                    <div style={{ fontSize: "9.5px", color: "#555" }}>
+                  <div style={{ textDecoration: "none" }}>
+                    <div style={{ fontSize: "9.5px", color: "#555", textDecoration: "none" }}>
                       {booking?.pickuplocationname || booking?.pickuplocation}
                     </div>
-                    <div style={{ fontSize: "9.5px", color: "#555" }}>Tel: 0800 525 663 | info@jamesblond.co.nz</div>
-                    <div style={{ fontSize: "9.5px", color: "#555" }}>GST: 140-174-963</div>
+                    <div style={{ fontSize: "9.5px", color: "#555", textDecoration: "none" }}>
+                      <span style={{ textDecoration: "none" }}>Tel: 0800 525 663</span>
+                      <span style={{ textDecoration: "none" }}> | </span>
+                      <span style={{ textDecoration: "none" }}>info@jamesblond.co.nz</span>
+                    </div>
+                    <div style={{ fontSize: "9.5px", color: "#555", textDecoration: "none" }}>GST: 140-174-963</div>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div style={{ fontSize: "15px", fontWeight: "700", color: "#0d6b3d", letterSpacing: "-0.2px", lineHeight: "1.1" }}>RENTAL AGREEMENT</div>
-                  <div style={{ fontSize: "12.5px", fontWeight: "600", color: "#333", marginTop: "2px" }}>
+                  <div style={{ fontSize: "15px", fontWeight: "700", color: "#0d6b3d", letterSpacing: "-0.2px", lineHeight: "1.1", textDecoration: "none" }}>RENTAL AGREEMENT</div>
+                  <div style={{ fontSize: "12.5px", fontWeight: "600", color: "#333", marginTop: "2px", textDecoration: "none" }}>
                     #{booking?.reservationdocumentno || booking?.reservationno || booking?.reservationref || reservationRef}
                   </div>
                 </div>
