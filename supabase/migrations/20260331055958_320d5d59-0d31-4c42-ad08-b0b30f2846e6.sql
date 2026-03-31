@@ -1,0 +1,1 @@
+UPDATE bookings SET user_id = 'c483d9f0-9969-486c-8c1c-bc557e21115a' WHERE id = '31128e8c-7308-4a20-9304-6f534ca34e65' AND user_id IS NULL;
