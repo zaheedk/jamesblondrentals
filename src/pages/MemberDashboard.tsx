@@ -155,6 +155,28 @@ export default function MemberDashboard() {
           <ProfileForm />
         </TabsContent>
       </Tabs>
+
+      {/* Report an Accident - Savo Integration */}
+      <div className="mt-8">
+        <Card>
+          <CardContent className="flex items-center justify-between p-6">
+            <div className="flex items-center gap-3">
+              <AlertTriangle className="w-5 h-5 text-orange-500" />
+              <div>
+                <p className="font-semibold">Had an accident?</p>
+                <p className="text-sm text-muted-foreground">Report it quickly through our accident reporting tool</p>
+              </div>
+            </div>
+            <Button
+              onClick={handleReportAccident}
+              disabled={savoLoading}
+              className="bg-orange-500 hover:bg-orange-600 text-white"
+            >
+              {savoLoading ? 'Opening...' : 'Report an Accident'}
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
