@@ -858,34 +858,34 @@ const RentalAgreement = () => {
 
               {/* Rental Details */}
               <div data-pdf-section className="mb-3">
-                <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed", fontSize: "10px" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "10px", textDecoration: "none" }}>
                   <tbody>
                     <tr>
-                      <td style={{ width: "33.33%", padding: "2px 12px 2px 0", verticalAlign: "top" }}>
-                        <div style={{ fontWeight: 600 }}>Pickup</div>
-                        <div>{booking?.pickupdate} {booking?.pickuptime}</div>
+                      <td style={{ width: "38%", padding: "3px 12px 3px 0", verticalAlign: "top", textDecoration: "none" }}>
+                        <div style={{ fontWeight: 700, textDecoration: "none" }}>Pickup</div>
+                        <div style={{ textDecoration: "none" }}>{booking?.pickupdate} {booking?.pickuptime}</div>
                       </td>
-                      <td style={{ width: "33.33%", padding: "2px 12px 2px 0", verticalAlign: "top" }}>
-                        <div style={{ fontWeight: 600 }}>Return</div>
-                        <div>{booking?.dropoffdate} {booking?.dropofftime}</div>
+                      <td style={{ width: "38%", padding: "3px 12px 3px 0", verticalAlign: "top", textDecoration: "none" }}>
+                        <div style={{ fontWeight: 700, textDecoration: "none" }}>Return</div>
+                        <div style={{ textDecoration: "none" }}>{booking?.dropoffdate} {booking?.dropofftime}</div>
                       </td>
-                      <td style={{ width: "33.33%", padding: "2px 0", verticalAlign: "top" }}>
-                        <div style={{ fontWeight: 600 }}>Days</div>
-                        <div>{booking?.numberofdays}</div>
+                      <td style={{ width: "24%", padding: "3px 0", verticalAlign: "top", textDecoration: "none" }}>
+                        <div style={{ fontWeight: 700, textDecoration: "none" }}>Days</div>
+                        <div style={{ textDecoration: "none" }}>{booking?.numberofdays}</div>
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ padding: "4px 12px 0 0", verticalAlign: "top" }}>
-                        <div style={{ fontWeight: 600 }}>Pickup Location</div>
-                        <div>{booking?.pickuplocationname || booking?.pickuplocation}</div>
+                      <td style={{ padding: "5px 12px 3px 0", verticalAlign: "top", textDecoration: "none" }}>
+                        <div style={{ fontWeight: 700, textDecoration: "none" }}>Pickup Location</div>
+                        <div style={{ textDecoration: "none", wordBreak: "break-word" }}>{booking?.pickuplocationname || booking?.pickuplocation || "N/A"}</div>
                       </td>
-                      <td style={{ padding: "4px 12px 0 0", verticalAlign: "top" }}>
-                        <div style={{ fontWeight: 600 }}>Return Location</div>
-                        <div>{booking?.dropofflocationname || booking?.dropofflocation}</div>
+                      <td style={{ padding: "5px 12px 3px 0", verticalAlign: "top", textDecoration: "none" }}>
+                        <div style={{ fontWeight: 700, textDecoration: "none" }}>Return Location</div>
+                        <div style={{ textDecoration: "none", wordBreak: "break-word" }}>{booking?.dropofflocationname || booking?.dropofflocation || "N/A"}</div>
                       </td>
-                      <td style={{ padding: "4px 0 0", verticalAlign: "top" }}>
-                        <div style={{ fontWeight: 600 }}>Daily Rate</div>
-                        <div>${Number(booking?.dailyrate || 0).toFixed(2)}</div>
+                      <td style={{ padding: "5px 0 3px", verticalAlign: "top", textDecoration: "none" }}>
+                        <div style={{ fontWeight: 700, textDecoration: "none" }}>Daily Rate</div>
+                        <div style={{ textDecoration: "none" }}>${Number(dailyRate || booking?.dailyrate || 0).toFixed(2)}</div>
                       </td>
                     </tr>
                   </tbody>
