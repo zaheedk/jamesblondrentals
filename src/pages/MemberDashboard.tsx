@@ -89,7 +89,7 @@ export default function MemberDashboard() {
             </CardHeader>
             <CardContent>
               <div className="grid md:grid-cols-3 gap-4">
-                <Link to="/admin/rental-agreements">
+                <Link to="/admin/ra">
                   <Button variant="outline" className="w-full justify-start" size="lg">
                     <FileText className="w-4 h-4 mr-2" />
                     Rental Agreements
