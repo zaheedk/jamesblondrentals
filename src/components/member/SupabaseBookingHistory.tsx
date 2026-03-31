@@ -29,8 +29,8 @@ const SupabaseBookingHistory = () => {
 
       try {
         const response = await rcmApi.getBookingInfoByReference(ref);
-        const bookingInfo = response?.results?.bookinginfo?.[0];
-        const rcmStatus = bookingInfo?.status || bookingInfo?.bookingstatus || '';
+        const bookingInfo = response?.results?.bookinginfo?.[0] as Record<string, any> | undefined;
+        const rcmStatus = bookingInfo?.status || bookingInfo?.bookingstatus || bookingInfo?.reservationstatus || '';
         setRcmStatuses(prev => ({ ...prev, [ref]: { status: rcmStatus, loading: false } }));
       } catch (err) {
         console.error('Failed to fetch RCM status for', ref, err);
