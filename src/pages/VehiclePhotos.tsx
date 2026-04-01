@@ -14,43 +14,47 @@ import VehicleCamera from "@/components/VehicleCamera";
 
 const addTimestampToPhoto = (file: File): Promise<File> => {
   return new Promise((resolve) => {
-    const img = new Image();
-    const url = URL.createObjectURL(file);
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) { resolve(file); return; }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) { console.warn("No canvas context"); resolve(file); return; }
 
-      ctx.drawImage(img, 0, 0);
+        ctx.drawImage(img, 0, 0);
 
-      const now = new Date();
-      const stamp = now.toLocaleString("en-NZ", {
-        day: "2-digit", month: "2-digit", year: "numeric",
-        hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false,
-      });
+        const now = new Date();
+        const stamp = now.toLocaleString("en-NZ", {
+          day: "2-digit", month: "2-digit", year: "numeric",
+          hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false,
+        });
 
-      const fontSize = Math.max(16, Math.floor(img.width / 40));
-      ctx.font = `bold ${fontSize}px Arial`;
-      const textWidth = ctx.measureText(stamp).width;
-      const padding = 8;
-      const x = img.width - textWidth - padding * 2;
-      const y = img.height - padding * 2;
+        const fontSize = Math.max(20, Math.floor(img.width / 30));
+        ctx.font = `bold ${fontSize}px Arial`;
+        const textWidth = ctx.measureText(stamp).width;
+        const padding = 12;
+        const x = img.width - textWidth - padding * 2;
+        const y = img.height - padding * 2;
 
-      ctx.fillStyle = "rgba(0,0,0,0.5)";
-      ctx.fillRect(x - padding, y - fontSize - padding, textWidth + padding * 2, fontSize + padding * 2);
-      ctx.fillStyle = "#ffffff";
-      ctx.fillText(stamp, x, y);
+        ctx.fillStyle = "rgba(0,0,0,0.6)";
+        ctx.fillRect(x - padding, y - fontSize - padding, textWidth + padding * 2, fontSize + padding * 2);
+        ctx.fillStyle = "#ffffff";
+        ctx.fillText(stamp, x, y);
 
-      canvas.toBlob((blob) => {
-        URL.revokeObjectURL(url);
-        if (!blob) { resolve(file); return; }
-        resolve(new File([blob], file.name, { type: "image/jpeg" }));
-      }, "image/jpeg", 0.85);
+        canvas.toBlob((blob) => {
+          if (!blob) { console.warn("Canvas toBlob failed"); resolve(file); return; }
+          console.log("Timestamp added to photo successfully");
+          resolve(new File([blob], file.name, { type: "image/jpeg" }));
+        }, "image/jpeg", 0.85);
+      };
+      img.onerror = () => { console.warn("Image load error for timestamp"); resolve(file); };
+      img.src = e.target?.result as string;
     };
-    img.onerror = () => { URL.revokeObjectURL(url); resolve(file); };
-    img.src = url;
+    reader.onerror = () => { console.warn("FileReader error"); resolve(file); };
+    reader.readAsDataURL(file);
   });
 };
 
