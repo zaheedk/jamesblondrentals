@@ -13,49 +13,111 @@ import { toast } from "sonner";
 import { Camera, Upload, X, Loader2, ImageIcon } from "lucide-react";
 import VehicleCamera from "@/components/VehicleCamera";
 
+const getExifOrientation = (buffer: ArrayBuffer): number => {
+  const view = new DataView(buffer);
+  if (view.getUint16(0, false) !== 0xFFD8) return 1; // not JPEG
+  let offset = 2;
+  while (offset < view.byteLength - 2) {
+    const marker = view.getUint16(offset, false);
+    offset += 2;
+    if (marker === 0xFFE1) {
+      const length = view.getUint16(offset, false);
+      const exifOffset = offset + 2;
+      if (view.getUint32(exifOffset, false) !== 0x45786966) return 1; // not "Exif"
+      const tiffOffset = exifOffset + 6;
+      const littleEndian = view.getUint16(tiffOffset, false) === 0x4949;
+      const ifdOffset = tiffOffset + view.getUint32(tiffOffset + 4, littleEndian);
+      const entries = view.getUint16(ifdOffset, littleEndian);
+      for (let i = 0; i < entries; i++) {
+        const entryOffset = ifdOffset + 2 + i * 12;
+        if (entryOffset + 12 > view.byteLength) break;
+        if (view.getUint16(entryOffset, littleEndian) === 0x0112) {
+          return view.getUint16(entryOffset + 8, littleEndian);
+        }
+      }
+      return 1;
+    } else if ((marker & 0xFF00) !== 0xFF00) {
+      return 1;
+    } else {
+      offset += view.getUint16(offset, false);
+    }
+  }
+  return 1;
+};
+
 const addTimestampToPhoto = (file: File, rego?: string): Promise<File> => {
   return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement("canvas");
-        canvas.width = img.width;
-        canvas.height = img.height;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) { console.warn("No canvas context"); resolve(file); return; }
+    const arrayReader = new FileReader();
+    arrayReader.onload = (arrEvt) => {
+      const orientation = getExifOrientation(arrEvt.target?.result as ArrayBuffer);
 
-        ctx.drawImage(img, 0, 0);
+      const urlReader = new FileReader();
+      urlReader.onload = (urlEvt) => {
+        const img = new Image();
+        img.onload = () => {
+          let width = img.width;
+          let height = img.height;
 
-        const now = new Date();
-        const stamp = now.toLocaleString("en-NZ", {
-          day: "2-digit", month: "2-digit", year: "numeric",
-          hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false,
-        });
-        const label = rego ? `${stamp}  |  ${rego}` : stamp;
+          // Swap dimensions for 90°/270° rotations
+          const needsSwap = orientation >= 5 && orientation <= 8;
+          const canvasW = needsSwap ? height : width;
+          const canvasH = needsSwap ? width : height;
 
-        const fontSize = Math.max(20, Math.floor(img.width / 30));
-        ctx.font = `bold ${fontSize}px Arial`;
-        const textWidth = ctx.measureText(label).width;
-        const padding = 12;
-        const x = img.width - textWidth - padding * 2;
-        const y = img.height - padding * 2;
+          const canvas = document.createElement("canvas");
+          canvas.width = canvasW;
+          canvas.height = canvasH;
+          const ctx = canvas.getContext("2d");
+          if (!ctx) { console.warn("No canvas context"); resolve(file); return; }
 
-        ctx.fillStyle = "rgba(0,0,0,0.6)";
-        ctx.fillRect(x - padding, y - fontSize - padding, textWidth + padding * 2, fontSize + padding * 2);
-        ctx.fillStyle = "#ffffff";
-        ctx.fillText(label, x, y);
+          // Apply EXIF orientation transform
+          switch (orientation) {
+            case 2: ctx.transform(-1, 0, 0, 1, canvasW, 0); break;
+            case 3: ctx.transform(-1, 0, 0, -1, canvasW, canvasH); break;
+            case 4: ctx.transform(1, 0, 0, -1, 0, canvasH); break;
+            case 5: ctx.transform(0, 1, 1, 0, 0, 0); break;
+            case 6: ctx.transform(0, 1, -1, 0, canvasH, 0); break;
+            case 7: ctx.transform(0, -1, -1, 0, canvasH, canvasW); break;
+            case 8: ctx.transform(0, -1, 1, 0, 0, canvasW); break;
+            default: break;
+          }
 
-        canvas.toBlob((blob) => {
-          if (!blob) { console.warn("Canvas toBlob failed"); resolve(file); return; }
-          resolve(new File([blob], file.name, { type: "image/jpeg" }));
-        }, "image/jpeg", 0.85);
+          ctx.drawImage(img, 0, 0);
+
+          // Reset transform for stamp overlay
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+          const now = new Date();
+          const stamp = now.toLocaleString("en-NZ", {
+            day: "2-digit", month: "2-digit", year: "numeric",
+            hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false,
+          });
+          const label = rego ? `${stamp}  |  ${rego}` : stamp;
+
+          const fontSize = Math.max(20, Math.floor(canvasW / 30));
+          ctx.font = `bold ${fontSize}px Arial`;
+          const textWidth = ctx.measureText(label).width;
+          const padding = 12;
+          const x = canvasW - textWidth - padding * 2;
+          const y = canvasH - padding * 2;
+
+          ctx.fillStyle = "rgba(0,0,0,0.6)";
+          ctx.fillRect(x - padding, y - fontSize - padding, textWidth + padding * 2, fontSize + padding * 2);
+          ctx.fillStyle = "#ffffff";
+          ctx.fillText(label, x, y);
+
+          canvas.toBlob((blob) => {
+            if (!blob) { console.warn("Canvas toBlob failed"); resolve(file); return; }
+            resolve(new File([blob], file.name, { type: "image/jpeg" }));
+          }, "image/jpeg", 0.85);
+        };
+        img.onerror = () => { resolve(file); };
+        img.src = urlEvt.target?.result as string;
       };
-      img.onerror = () => { resolve(file); };
-      img.src = e.target?.result as string;
+      urlReader.onerror = () => { resolve(file); };
+      urlReader.readAsDataURL(file);
     };
-    reader.onerror = () => { resolve(file); };
-    reader.readAsDataURL(file);
+    arrayReader.onerror = () => { resolve(file); };
+    arrayReader.readAsArrayBuffer(file.slice(0, 65536)); // Only need first 64KB for EXIF
   });
 };
 
