@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import { Camera, Upload, X, Loader2, ImageIcon } from "lucide-react";
 import VehicleCamera from "@/components/VehicleCamera";
 
-const addTimestampToPhoto = (file: File): Promise<File> => {
+const addTimestampToPhoto = (file: File, rego?: string): Promise<File> => {
   return new Promise((resolve) => {
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -32,10 +32,11 @@ const addTimestampToPhoto = (file: File): Promise<File> => {
           day: "2-digit", month: "2-digit", year: "numeric",
           hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false,
         });
+        const label = rego ? `${stamp}  |  ${rego}` : stamp;
 
         const fontSize = Math.max(20, Math.floor(img.width / 30));
         ctx.font = `bold ${fontSize}px Arial`;
-        const textWidth = ctx.measureText(stamp).width;
+        const textWidth = ctx.measureText(label).width;
         const padding = 12;
         const x = img.width - textWidth - padding * 2;
         const y = img.height - padding * 2;
@@ -43,18 +44,17 @@ const addTimestampToPhoto = (file: File): Promise<File> => {
         ctx.fillStyle = "rgba(0,0,0,0.6)";
         ctx.fillRect(x - padding, y - fontSize - padding, textWidth + padding * 2, fontSize + padding * 2);
         ctx.fillStyle = "#ffffff";
-        ctx.fillText(stamp, x, y);
+        ctx.fillText(label, x, y);
 
         canvas.toBlob((blob) => {
           if (!blob) { console.warn("Canvas toBlob failed"); resolve(file); return; }
-          console.log("Timestamp added to photo successfully");
           resolve(new File([blob], file.name, { type: "image/jpeg" }));
         }, "image/jpeg", 0.85);
       };
-      img.onerror = () => { console.warn("Image load error for timestamp"); resolve(file); };
+      img.onerror = () => { resolve(file); };
       img.src = e.target?.result as string;
     };
-    reader.onerror = () => { console.warn("FileReader error"); resolve(file); };
+    reader.onerror = () => { resolve(file); };
     reader.readAsDataURL(file);
   });
 };
