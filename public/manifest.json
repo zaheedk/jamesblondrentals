@@ -1,0 +1,21 @@
+{
+  "name": "JB Vehicle Photos",
+  "short_name": "JB Photos",
+  "description": "James Blond Vehicle Inspection Photos",
+  "start_url": "/photos",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1a1a2e",
+  "icons": [
+    {
+      "src": "/lovable-uploads/ee23bb91-cc75-4cf1-a745-f44e4a4bbb12.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/lovable-uploads/ee23bb91-cc75-4cf1-a745-f44e4a4bbb12.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
