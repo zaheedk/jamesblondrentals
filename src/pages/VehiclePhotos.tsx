@@ -210,13 +210,14 @@ const VehiclePhotos = () => {
         />
       )}
 
-      <div className="container mx-auto px-4 py-8 max-w-2xl">
-        <h1 className="text-2xl font-bold mb-6">Vehicle Inspection Photos</h1>
+      <div className="min-h-[calc(100vh-4rem)] flex items-start justify-center px-4 py-8">
+        <div className="w-full max-w-md">
+          <h1 className="text-2xl font-bold mb-6 text-center">Vehicle Inspection Photos</h1>
 
         {!photoMode ? (
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Enter Reservation No</CardTitle>
+              <CardTitle className="text-lg">Enter Details</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
@@ -228,6 +229,16 @@ const VehiclePhotos = () => {
                   placeholder="e.g. 29823"
                   inputMode="numeric"
                   className="h-14 text-lg"
+                />
+              </div>
+              <div>
+                <Label htmlFor="vehicleRego">Vehicle Registration</Label>
+                <Input
+                  id="vehicleRego"
+                  value={vehicleRego}
+                  onChange={e => setVehicleRego(e.target.value.toUpperCase())}
+                  placeholder="e.g. ABC123"
+                  className="h-14 text-lg uppercase"
                   onKeyDown={e => e.key === "Enter" && handleStart()}
                 />
               </div>
