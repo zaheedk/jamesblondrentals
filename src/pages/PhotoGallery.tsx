@@ -135,7 +135,17 @@ const PhotoGallery = () => {
       </Helmet>
 
       <div className="container mx-auto px-4 py-8 max-w-6xl">
-        <h1 className="text-2xl font-bold mb-6">Vehicle Photo Gallery</h1>
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-2xl font-bold">Vehicle Photo Gallery</h1>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={async () => { await signOut(); navigate("/login"); }}
+          >
+            <LogOut className="h-4 w-4 mr-1" />
+            Logout
+          </Button>
+        </div>
 
         <div className="flex gap-2 mb-6">
           <Input
