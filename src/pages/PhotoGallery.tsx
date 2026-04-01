@@ -6,8 +6,29 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Navigate, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Loader2, Search, ImageIcon, ChevronLeft, ChevronRight, LogOut } from "lucide-react";
+
+type PhotoItem = { url: string; name: string; folder: string };
+type BatchGroup = {
+  reservationNo: string;
+  rego: string;
+  batchId: string;
+  batchLabel: string;
+  photos: PhotoItem[];
+};
+
+const formatBatchDate = (batchId: string): string => {
+  const match = batchId.match(/batch-(\d+)/);
+  if (!match) return batchId;
+  const date = new Date(Number(match[1]));
+  if (isNaN(date.getTime())) return batchId;
+  return date.toLocaleString("en-NZ", {
+    day: "2-digit", month: "2-digit", year: "numeric",
+    hour: "2-digit", minute: "2-digit", hour12: true,
+  });
+};
 
 const PhotoGallery = () => {
   const { user, loading: authLoading, signOut } = useAuth();
@@ -15,10 +36,12 @@ const PhotoGallery = () => {
   const { isOfficeAdmin, isLoading: roleLoading } = useUserRole();
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [photos, setPhotos] = useState<{ url: string; name: string; folder: string }[]>([]);
+  const [batches, setBatches] = useState<BatchGroup[]>([]);
+  const [flatPhotos, setFlatPhotos] = useState<PhotoItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
   const [viewingIndex, setViewingIndex] = useState<number | null>(null);
+  const [searchMode, setSearchMode] = useState<"reservation" | "rego">("reservation");
 
   if (authLoading || roleLoading) {
     return (
@@ -37,78 +60,127 @@ const PhotoGallery = () => {
     );
   }
 
+  const normalize = (s: string) => s.replace(/[\s\-_]/g, "").toUpperCase();
+
+  const collectFiles = async (folder: string): Promise<PhotoItem[]> => {
+    const results: PhotoItem[] = [];
+    const { data: files } = await supabase.storage.from("vehicle-photos").list(folder, { limit: 200 });
+    if (!files) return results;
+    for (const file of files) {
+      if (file.id) {
+        const path = `${folder}/${file.name}`;
+        const { data: urlData } = supabase.storage.from("vehicle-photos").getPublicUrl(path);
+        results.push({ url: urlData.publicUrl, name: file.name, folder });
+      }
+    }
+    return results;
+  };
+
   const searchPhotos = async () => {
     const term = searchTerm.trim().replace(/[\s\-]/g, "").toUpperCase();
     if (!term) return;
 
     setLoading(true);
     setSearched(true);
-    const results: { url: string; name: string; folder: string }[] = [];
+    setBatches([]);
+    setFlatPhotos([]);
 
     try {
-      const { data: topLevel } = await supabase.storage
-        .from("vehicle-photos")
-        .list("", { limit: 1000 });
+      const { data: topLevel } = await supabase.storage.from("vehicle-photos").list("", { limit: 1000 });
+      if (!topLevel) { setLoading(false); return; }
 
-      if (!topLevel) { setPhotos([]); setLoading(false); return; }
+      // Check if term matches a top-level folder (reservation number)
+      const directMatch = topLevel.find(item => !item.id && normalize(item.name).includes(term));
 
-      const matchingFolders: string[] = [];
-      const normalize = (s: string) => s.replace(/[\s\-_]/g, "").toUpperCase();
+      if (directMatch) {
+        // Reservation number search — show all photos flat
+        setSearchMode("reservation");
+        const allPhotos: PhotoItem[] = [];
 
-      for (const item of topLevel) {
-        if (!item.id && normalize(item.name).includes(term)) {
-          matchingFolders.push(item.name);
-        }
-      }
-
-      // If no direct folder match, search inside all folders for rego subfolder
-      if (matchingFolders.length === 0) {
-        for (const item of topLevel) {
-          if (item.id) continue;
-          const { data: subItems } = await supabase.storage
-            .from("vehicle-photos")
-            .list(item.name, { limit: 100 });
-          if (!subItems) continue;
+        const { data: subItems } = await supabase.storage.from("vehicle-photos").list(directMatch.name, { limit: 200 });
+        if (subItems) {
           for (const sub of subItems) {
-            if (!sub.id && normalize(sub.name).includes(term)) {
-              matchingFolders.push(`${item.name}/${sub.name}`);
-            }
-          }
-        }
-      }
-
-      // Load photos from matching folders
-      for (const folder of matchingFolders) {
-        const { data: files } = await supabase.storage
-          .from("vehicle-photos")
-          .list(folder, { limit: 200 });
-        if (!files) continue;
-
-        for (const file of files) {
-          if (file.id) {
-            const path = `${folder}/${file.name}`;
-            const { data: urlData } = supabase.storage.from("vehicle-photos").getPublicUrl(path);
-            results.push({ url: urlData.publicUrl, name: file.name, folder });
-          } else {
-            // One more level deep
-            const subPath = `${folder}/${file.name}`;
-            const { data: subFiles } = await supabase.storage
-              .from("vehicle-photos")
-              .list(subPath, { limit: 200 });
-            if (subFiles) {
-              for (const sf of subFiles) {
-                if (sf.id) {
-                  const path = `${subPath}/${sf.name}`;
-                  const { data: urlData } = supabase.storage.from("vehicle-photos").getPublicUrl(path);
-                  results.push({ url: urlData.publicUrl, name: sf.name, folder: subPath });
+            if (sub.id) {
+              // Legacy: file directly under reservation folder
+              const path = `${directMatch.name}/${sub.name}`;
+              const { data: urlData } = supabase.storage.from("vehicle-photos").getPublicUrl(path);
+              allPhotos.push({ url: urlData.publicUrl, name: sub.name, folder: directMatch.name });
+            } else {
+              // Rego subfolder or batch subfolder
+              const regoPath = `${directMatch.name}/${sub.name}`;
+              const { data: regoItems } = await supabase.storage.from("vehicle-photos").list(regoPath, { limit: 200 });
+              if (regoItems) {
+                for (const ri of regoItems) {
+                  if (ri.id) {
+                    const path = `${regoPath}/${ri.name}`;
+                    const { data: urlData } = supabase.storage.from("vehicle-photos").getPublicUrl(path);
+                    allPhotos.push({ url: urlData.publicUrl, name: ri.name, folder: regoPath });
+                  } else {
+                    // Batch subfolder
+                    const batchPhotos = await collectFiles(`${regoPath}/${ri.name}`);
+                    allPhotos.push(...batchPhotos);
+                  }
                 }
               }
             }
           }
         }
-      }
+        setFlatPhotos(allPhotos);
+      } else {
+        // Rego search — find rego subfolders inside all reservation folders, group by batch
+        setSearchMode("rego");
+        const batchGroups: BatchGroup[] = [];
 
-      setPhotos(results);
+        for (const resFolder of topLevel) {
+          if (resFolder.id) continue;
+          const { data: subItems } = await supabase.storage.from("vehicle-photos").list(resFolder.name, { limit: 100 });
+          if (!subItems) continue;
+
+          for (const sub of subItems) {
+            if (sub.id) continue;
+            if (!normalize(sub.name).includes(term)) continue;
+
+            // Found matching rego subfolder — list batch folders inside
+            const regoPath = `${resFolder.name}/${sub.name}`;
+            const { data: batchFolders } = await supabase.storage.from("vehicle-photos").list(regoPath, { limit: 100 });
+            if (!batchFolders) continue;
+
+            // Check for files directly in rego folder (legacy) and batch subfolders
+            const legacyPhotos: PhotoItem[] = [];
+            for (const bf of batchFolders) {
+              if (bf.id) {
+                // File directly in rego folder
+                const path = `${regoPath}/${bf.name}`;
+                const { data: urlData } = supabase.storage.from("vehicle-photos").getPublicUrl(path);
+                legacyPhotos.push({ url: urlData.publicUrl, name: bf.name, folder: regoPath });
+              } else {
+                // Batch subfolder
+                const batchPhotos = await collectFiles(`${regoPath}/${bf.name}`);
+                if (batchPhotos.length > 0) {
+                  batchGroups.push({
+                    reservationNo: resFolder.name,
+                    rego: sub.name,
+                    batchId: bf.name,
+                    batchLabel: formatBatchDate(bf.name),
+                    photos: batchPhotos,
+                  });
+                }
+              }
+            }
+            if (legacyPhotos.length > 0) {
+              batchGroups.push({
+                reservationNo: resFolder.name,
+                rego: sub.name,
+                batchId: "legacy",
+                batchLabel: "Earlier uploads",
+                photos: legacyPhotos,
+              });
+            }
+          }
+        }
+
+        setBatches(batchGroups);
+      }
     } catch (err) {
       console.error("Search error:", err);
     } finally {
@@ -120,11 +192,23 @@ const PhotoGallery = () => {
     if (e.key === "Enter") searchPhotos();
   };
 
+  // Build a flat list for lightbox navigation
+  const allPhotosFlat = searchMode === "reservation"
+    ? flatPhotos
+    : batches.flatMap(b => b.photos);
+
   const navigatePhoto = (direction: number) => {
     if (viewingIndex === null) return;
     const next = viewingIndex + direction;
-    if (next >= 0 && next < photos.length) setViewingIndex(next);
+    if (next >= 0 && next < allPhotosFlat.length) setViewingIndex(next);
   };
+
+  const openLightbox = (photo: PhotoItem) => {
+    const idx = allPhotosFlat.findIndex(p => p.url === photo.url);
+    setViewingIndex(idx >= 0 ? idx : 0);
+  };
+
+  const totalCount = searchMode === "reservation" ? flatPhotos.length : batches.reduce((s, b) => s + b.photos.length, 0);
 
   return (
     <>
@@ -166,30 +250,64 @@ const PhotoGallery = () => {
           </div>
         )}
 
-        {!loading && searched && photos.length === 0 && (
+        {!loading && searched && totalCount === 0 && (
           <div className="text-center py-20 text-muted-foreground">
             <ImageIcon className="h-12 w-12 mx-auto mb-3 opacity-50" />
             <p>No photos found for "{searchTerm}"</p>
           </div>
         )}
 
-        {!loading && photos.length > 0 && (
+        {/* Reservation search — flat grid */}
+        {!loading && searchMode === "reservation" && flatPhotos.length > 0 && (
           <>
-            <p className="text-sm text-muted-foreground mb-4">{photos.length} photo(s) found</p>
+            <p className="text-sm text-muted-foreground mb-4">{flatPhotos.length} photo(s) found</p>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-              {photos.map((photo, i) => (
+              {flatPhotos.map((photo, i) => (
                 <div
                   key={i}
                   className="relative aspect-square rounded-lg overflow-hidden cursor-pointer border border-border hover:ring-2 hover:ring-primary transition-all"
-                  onClick={() => setViewingIndex(i)}
+                  onClick={() => openLightbox(photo)}
                 >
-                  <img
-                    src={photo.url}
-                    alt={photo.name}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                  />
+                  <img src={photo.url} alt={photo.name} className="w-full h-full object-cover" loading="lazy" />
                 </div>
+              ))}
+            </div>
+          </>
+        )}
+
+        {/* Rego search — grouped by batch */}
+        {!loading && searchMode === "rego" && batches.length > 0 && (
+          <>
+            <p className="text-sm text-muted-foreground mb-4">
+              {totalCount} photo(s) in {batches.length} batch(es)
+            </p>
+            <div className="space-y-6">
+              {batches.map((batch, bi) => (
+                <Card key={bi}>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base flex flex-wrap items-center gap-x-4 gap-y-1">
+                      <span>Reservation: <span className="font-bold">{batch.reservationNo}</span></span>
+                      <span className="text-muted-foreground">|</span>
+                      <span>Rego: <span className="font-bold">{batch.rego}</span></span>
+                      <span className="text-muted-foreground">|</span>
+                      <span className="text-sm text-muted-foreground">{batch.batchLabel}</span>
+                      <span className="ml-auto text-sm text-muted-foreground">{batch.photos.length} photo(s)</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                      {batch.photos.map((photo, pi) => (
+                        <div
+                          key={pi}
+                          className="relative aspect-square rounded-lg overflow-hidden cursor-pointer border border-border hover:ring-2 hover:ring-primary transition-all"
+                          onClick={() => openLightbox(photo)}
+                        >
+                          <img src={photo.url} alt={photo.name} className="w-full h-full object-cover" loading="lazy" />
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
               ))}
             </div>
           </>
@@ -198,7 +316,7 @@ const PhotoGallery = () => {
         {/* Lightbox */}
         <Dialog open={viewingIndex !== null} onOpenChange={() => setViewingIndex(null)}>
           <DialogContent className="max-w-[95vw] max-h-[95vh] p-2 bg-black/95 border-none">
-            {viewingIndex !== null && photos[viewingIndex] && (
+            {viewingIndex !== null && allPhotosFlat[viewingIndex] && (
               <div className="relative flex items-center justify-center">
                 {viewingIndex > 0 && (
                   <button
@@ -209,11 +327,11 @@ const PhotoGallery = () => {
                   </button>
                 )}
                 <img
-                  src={photos[viewingIndex].url}
-                  alt={photos[viewingIndex].name}
+                  src={allPhotosFlat[viewingIndex].url}
+                  alt={allPhotosFlat[viewingIndex].name}
                   className="w-full h-full object-contain max-h-[85vh]"
                 />
-                {viewingIndex < photos.length - 1 && (
+                {viewingIndex < allPhotosFlat.length - 1 && (
                   <button
                     onClick={() => navigatePhoto(1)}
                     className="absolute right-2 z-10 p-2 rounded-full bg-white/20 hover:bg-white/40 text-white"
@@ -222,7 +340,7 @@ const PhotoGallery = () => {
                   </button>
                 )}
                 <p className="absolute bottom-2 left-1/2 -translate-x-1/2 text-white/70 text-xs">
-                  {viewingIndex + 1} / {photos.length} — {photos[viewingIndex].folder}
+                  {viewingIndex + 1} / {allPhotosFlat.length} — {allPhotosFlat[viewingIndex].folder}
                 </p>
               </div>
             )}
