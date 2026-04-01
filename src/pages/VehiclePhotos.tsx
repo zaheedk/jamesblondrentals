@@ -253,9 +253,17 @@ const VehiclePhotos = () => {
             <Card>
               <CardContent className="pt-6">
                 <div className="flex items-center justify-between">
-                  <div className="text-sm">
-                    <span className="text-muted-foreground">Reservation No:</span>{" "}
-                    <span className="font-medium">{reservationRef}</span>
+                  <div className="text-sm space-y-1">
+                    <div>
+                      <span className="text-muted-foreground">Reservation No:</span>{" "}
+                      <span className="font-medium">{reservationRef}</span>
+                    </div>
+                    {vehicleRego && (
+                      <div>
+                        <span className="text-muted-foreground">Rego:</span>{" "}
+                        <span className="font-medium">{vehicleRego}</span>
+                      </div>
+                    )}
                   </div>
                   <Button variant="link" className="p-0 h-auto text-sm" onClick={() => { setPhotoMode(false); setPendingPhotos([]); setUploadedPhotos([]); setExistingPhotos([]); }}>
                     Change
