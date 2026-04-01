@@ -307,7 +307,7 @@ const VehiclePhotos = () => {
                 <CardContent>
                   <div className="grid grid-cols-3 gap-2">
                     {allPhotos.map((photo, i) => (
-                      <div key={i} className="relative aspect-square">
+                      <div key={i} className="relative aspect-square cursor-pointer" onClick={() => setViewingPhoto(photo.url)}>
                         <img src={photo.url} alt={photo.name} className="w-full h-full object-cover rounded-md" />
                       </div>
                     ))}
@@ -315,6 +315,19 @@ const VehiclePhotos = () => {
                 </CardContent>
               </Card>
             )}
+
+            {/* Photo Lightbox */}
+            <Dialog open={!!viewingPhoto} onOpenChange={() => setViewingPhoto(null)}>
+              <DialogContent className="max-w-[95vw] max-h-[95vh] p-2 bg-black/95 border-none">
+                {viewingPhoto && (
+                  <img
+                    src={viewingPhoto}
+                    alt="Full size"
+                    className="w-full h-full object-contain max-h-[90vh]"
+                  />
+                )}
+              </DialogContent>
+            </Dialog>
           </div>
         )}
       </div>
