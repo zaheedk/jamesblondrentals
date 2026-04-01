@@ -122,7 +122,7 @@ const VehiclePhotos = () => {
 
   const handleStart = async () => {
     if (!reservationRef.trim()) {
-      toast.error("Please enter a reservation reference");
+      toast.error("Please enter a reservation number");
       return;
     }
     setLoadingPhotos(true);
