@@ -23,7 +23,12 @@ const VehicleCamera = ({ onPhotoCaptured, onClose, photoCount }: VehicleCameraPr
     }
     try {
       const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: facing, width: { ideal: 1920 }, height: { ideal: 1080 } },
+        video: {
+          facingMode: facing,
+          width: { ideal: 1920 },
+          height: { ideal: 1080 },
+          zoom: { ideal: 2 },
+        } as MediaTrackConstraints,
         audio: false,
       });
       setStream(mediaStream);
