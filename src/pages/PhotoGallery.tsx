@@ -83,27 +83,69 @@ const PhotoGallery = () => {
 
       for (const resFolder of topLevel) {
         if (resFolder.id) continue; // skip files
-        const { data: subItems } = await supabase.storage.from("vehicle-photos").list(resFolder.name, { limit: 100 });
+        const { data: subItems } = await supabase.storage.from("vehicle-photos").list(resFolder.name, { limit: 200 });
         if (!subItems) continue;
 
-        for (const sub of subItems) {
-          if (sub.id) continue; // skip files at this level
-          // sub could be a rego folder
-          const regoPath = `${resFolder.name}/${sub.name}`;
-          const { data: batchFolders } = await supabase.storage.from("vehicle-photos").list(regoPath, { limit: 100 });
-          if (!batchFolders) continue;
+        // Check if this folder has files directly (legacy flat structure)
+        const hasDirectFiles = subItems.some(item => item.id);
+        const hasSubFolders = subItems.some(item => !item.id);
 
-          for (const bf of batchFolders) {
-            if (bf.id) continue; // skip loose files
-            if (bf.name.startsWith("batch-")) {
+        if (hasDirectFiles) {
+          // Legacy flat upload: files directly in {reservationNo}/
+          const oldestFile = subItems.filter(f => f.id).sort((a, b) => 
+            new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime()
+          )[0];
+          const sortKey = oldestFile?.created_at ? new Date(oldestFile.created_at).getTime() : 0;
+          discovered.push({
+            reservationNo: resFolder.name,
+            rego: "",
+            batchId: "legacy-flat",
+            batchLabel: "Earlier uploads",
+            sortKey,
+            photos: [], // lazy load
+          });
+        }
+
+        if (hasSubFolders) {
+          for (const sub of subItems) {
+            if (sub.id) continue; // skip files at this level
+            const regoPath = `${resFolder.name}/${sub.name}`;
+            const { data: regoItems } = await supabase.storage.from("vehicle-photos").list(regoPath, { limit: 200 });
+            if (!regoItems) continue;
+
+            // Check if rego folder has direct files (legacy with rego but no batch)
+            const regoHasFiles = regoItems.some(item => item.id);
+            const regoHasBatches = regoItems.some(item => !item.id && item.name.startsWith("batch-"));
+
+            if (regoHasFiles) {
+              const oldestFile = regoItems.filter(f => f.id).sort((a, b) =>
+                new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime()
+              )[0];
+              const sortKey = oldestFile?.created_at ? new Date(oldestFile.created_at).getTime() : 0;
               discovered.push({
                 reservationNo: resFolder.name,
                 rego: sub.name,
-                batchId: bf.name,
-                batchLabel: formatBatchDate(bf.name),
-                sortKey: getBatchSortKey(bf.name),
-                photos: [], // lazy load
+                batchId: "legacy-rego",
+                batchLabel: "Earlier uploads",
+                sortKey,
+                photos: [],
               });
+            }
+
+            if (regoHasBatches) {
+              for (const bf of regoItems) {
+                if (bf.id) continue;
+                if (bf.name.startsWith("batch-")) {
+                  discovered.push({
+                    reservationNo: resFolder.name,
+                    rego: sub.name,
+                    batchId: bf.name,
+                    batchLabel: formatBatchDate(bf.name),
+                    sortKey: getBatchSortKey(bf.name),
+                    photos: [],
+                  });
+                }
+              }
             }
           }
         }
