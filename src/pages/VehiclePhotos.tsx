@@ -156,14 +156,9 @@ const VehiclePhotos = () => {
   const handleUpload = async () => {
     if (!pendingPhotos.length || !reservationRef) return;
 
-    const rego = vehicleRego.trim() || "unknown-rego";
-    setUploading(true);
-    try {
-      const uploaded: { url: string; name: string }[] = [];
-      for (const pending of pendingPhotos) {
-        const stampedFile = await addTimestampToPhoto(pending.file);
+      const stampedFile = await addTimestampToPhoto(pending.file);
         const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`;
-        const filePath = `${reservationRef}/${rego}/${fileName}`;
+        const filePath = `${reservationRef.trim()}/${fileName}`;
         const { error } = await supabase.storage
           .from("vehicle-photos")
           .upload(filePath, stampedFile);
