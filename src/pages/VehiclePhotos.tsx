@@ -122,7 +122,7 @@ const VehiclePhotos = () => {
 
   const handleStart = async () => {
     if (!reservationRef.trim()) {
-      toast.error("Please enter a reservation reference");
+      toast.error("Please enter a reservation number");
       return;
     }
     setLoadingPhotos(true);
@@ -209,16 +209,17 @@ const VehiclePhotos = () => {
         {!photoMode ? (
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Enter Reservation Reference</CardTitle>
+              <CardTitle className="text-lg">Enter Reservation No</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="resRef">Reservation Reference</Label>
+                <Label htmlFor="resRef">Reservation No</Label>
                 <Input
                   id="resRef"
                   value={reservationRef}
                   onChange={e => setReservationRef(e.target.value)}
-                  placeholder="e.g. 2198511041608E"
+                  placeholder="e.g. 29823"
+                  inputMode="numeric"
                   className="h-14 text-lg"
                   onKeyDown={e => e.key === "Enter" && handleStart()}
                 />
@@ -235,7 +236,7 @@ const VehiclePhotos = () => {
               <CardContent className="pt-6">
                 <div className="flex items-center justify-between">
                   <div className="text-sm">
-                    <span className="text-muted-foreground">Reference:</span>{" "}
+                    <span className="text-muted-foreground">Reservation No:</span>{" "}
                     <span className="font-medium">{reservationRef}</span>
                   </div>
                   <Button variant="link" className="p-0 h-auto text-sm" onClick={() => { setPhotoMode(false); setPendingPhotos([]); setUploadedPhotos([]); setExistingPhotos([]); }}>
