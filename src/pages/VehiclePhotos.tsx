@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import { Camera, Upload, X, Loader2, ImageIcon } from "lucide-react";
 import VehicleCamera from "@/components/VehicleCamera";
 
-const addTimestampToPhoto = (file: File): Promise<File> => {
+const addTimestampToPhoto = (file: File, rego?: string): Promise<File> => {
   return new Promise((resolve) => {
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -32,10 +32,11 @@ const addTimestampToPhoto = (file: File): Promise<File> => {
           day: "2-digit", month: "2-digit", year: "numeric",
           hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false,
         });
+        const label = rego ? `${stamp}  |  ${rego}` : stamp;
 
         const fontSize = Math.max(20, Math.floor(img.width / 30));
         ctx.font = `bold ${fontSize}px Arial`;
-        const textWidth = ctx.measureText(stamp).width;
+        const textWidth = ctx.measureText(label).width;
         const padding = 12;
         const x = img.width - textWidth - padding * 2;
         const y = img.height - padding * 2;
@@ -43,18 +44,17 @@ const addTimestampToPhoto = (file: File): Promise<File> => {
         ctx.fillStyle = "rgba(0,0,0,0.6)";
         ctx.fillRect(x - padding, y - fontSize - padding, textWidth + padding * 2, fontSize + padding * 2);
         ctx.fillStyle = "#ffffff";
-        ctx.fillText(stamp, x, y);
+        ctx.fillText(label, x, y);
 
         canvas.toBlob((blob) => {
           if (!blob) { console.warn("Canvas toBlob failed"); resolve(file); return; }
-          console.log("Timestamp added to photo successfully");
           resolve(new File([blob], file.name, { type: "image/jpeg" }));
         }, "image/jpeg", 0.85);
       };
-      img.onerror = () => { console.warn("Image load error for timestamp"); resolve(file); };
+      img.onerror = () => { resolve(file); };
       img.src = e.target?.result as string;
     };
-    reader.onerror = () => { console.warn("FileReader error"); resolve(file); };
+    reader.onerror = () => { resolve(file); };
     reader.readAsDataURL(file);
   });
 };
@@ -64,6 +64,7 @@ const VehiclePhotos = () => {
   const { isOfficeAdmin, isLoading: roleLoading } = useUserRole();
 
   const [reservationRef, setReservationRef] = useState("");
+  const [vehicleRego, setVehicleRego] = useState("");
   const [photoMode, setPhotoMode] = useState(false);
 
   const [cameraOpen, setCameraOpen] = useState(false);
@@ -166,7 +167,7 @@ const VehiclePhotos = () => {
     try {
       const uploaded: { url: string; name: string }[] = [];
       for (const pending of pendingPhotos) {
-        const stampedFile = await addTimestampToPhoto(pending.file);
+        const stampedFile = await addTimestampToPhoto(pending.file, vehicleRego.trim() || undefined);
         const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`;
         const filePath = `${reservationRef.trim()}/${fileName}`;
         const { error } = await supabase.storage
@@ -209,13 +210,14 @@ const VehiclePhotos = () => {
         />
       )}
 
-      <div className="container mx-auto px-4 py-8 max-w-2xl">
-        <h1 className="text-2xl font-bold mb-6">Vehicle Inspection Photos</h1>
+      <div className="min-h-[calc(100vh-4rem)] flex items-start justify-center px-4 py-8">
+        <div className="w-full max-w-md">
+          <h1 className="text-2xl font-bold mb-6 text-center">Vehicle Inspection Photos</h1>
 
         {!photoMode ? (
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Enter Reservation No</CardTitle>
+              <CardTitle className="text-lg">Enter Details</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
@@ -227,6 +229,16 @@ const VehiclePhotos = () => {
                   placeholder="e.g. 29823"
                   inputMode="numeric"
                   className="h-14 text-lg"
+                />
+              </div>
+              <div>
+                <Label htmlFor="vehicleRego">Vehicle Registration</Label>
+                <Input
+                  id="vehicleRego"
+                  value={vehicleRego}
+                  onChange={e => setVehicleRego(e.target.value.toUpperCase())}
+                  placeholder="e.g. ABC123"
+                  className="h-14 text-lg uppercase"
                   onKeyDown={e => e.key === "Enter" && handleStart()}
                 />
               </div>
@@ -241,9 +253,17 @@ const VehiclePhotos = () => {
             <Card>
               <CardContent className="pt-6">
                 <div className="flex items-center justify-between">
-                  <div className="text-sm">
-                    <span className="text-muted-foreground">Reservation No:</span>{" "}
-                    <span className="font-medium">{reservationRef}</span>
+                  <div className="text-sm space-y-1">
+                    <div>
+                      <span className="text-muted-foreground">Reservation No:</span>{" "}
+                      <span className="font-medium">{reservationRef}</span>
+                    </div>
+                    {vehicleRego && (
+                      <div>
+                        <span className="text-muted-foreground">Rego:</span>{" "}
+                        <span className="font-medium">{vehicleRego}</span>
+                      </div>
+                    )}
                   </div>
                   <Button variant="link" className="p-0 h-auto text-sm" onClick={() => { setPhotoMode(false); setPendingPhotos([]); setUploadedPhotos([]); setExistingPhotos([]); }}>
                     Change
@@ -330,6 +350,7 @@ const VehiclePhotos = () => {
             </Dialog>
           </div>
         )}
+        </div>
       </div>
     </>
   );
