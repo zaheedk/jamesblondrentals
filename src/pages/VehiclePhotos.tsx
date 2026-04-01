@@ -213,12 +213,13 @@ const VehiclePhotos = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="resRef">Reservation Reference</Label>
+                <Label htmlFor="resRef">Reservation No</Label>
                 <Input
                   id="resRef"
                   value={reservationRef}
                   onChange={e => setReservationRef(e.target.value)}
-                  placeholder="e.g. 2198511041608E"
+                  placeholder="e.g. 29823"
+                  inputMode="numeric"
                   className="h-14 text-lg"
                   onKeyDown={e => e.key === "Enter" && handleStart()}
                 />
