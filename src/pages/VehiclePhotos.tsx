@@ -138,17 +138,17 @@ const VehiclePhotos = () => {
     setLoading(true);
     try {
       const response = await rcmApi.getBookingInfo(reservationNo.trim(), lastName.trim());
-      const booking = response?.results;
+      const info = response?.results?.bookinginfo?.[0];
 
-      if (!booking) {
+      if (!info) {
         toast.error("Booking not found");
         return;
       }
 
-      const rego = booking.vehicle_registrationnumber || "";
-      const desc = booking.vehicledescription1 || booking.vehiclecategory || "";
-      const name = `${booking.firstname || ""} ${booking.lastname || ""}`.trim();
-      const ref = booking.reservationref || "";
+      const rego = (info as any).vehicle_registrationnumber || (info as any).vehiclerego || "";
+      const desc = info.vehicledescription1 || info.vehiclecategory || "";
+      const name = `${info.firstname || ""} ${info.lastname || ""}`.trim();
+      const ref = info.reservationref || "";
 
       setVehicleRego(rego);
       setVehicleDesc(desc);

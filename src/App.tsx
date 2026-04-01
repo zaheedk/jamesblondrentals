@@ -132,6 +132,7 @@ import WellingtonMinibusHireCBD from "./pages/WellingtonMinibusHireCBD";
 import FuelCalculator from "./pages/FuelCalculator";
 import BuyUsedVehicles from "./pages/BuyUsedVehicles";
 import Unsubscribe from "./pages/Unsubscribe";
+import VehiclePhotos from "./pages/VehiclePhotos";
 
 const queryClient = new QueryClient();
 
