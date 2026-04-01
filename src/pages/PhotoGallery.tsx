@@ -64,13 +64,13 @@ const PhotoGallery = () => {
       // If no direct folder match, search inside all folders for rego subfolder
       if (matchingFolders.length === 0) {
         for (const item of topLevel) {
-          if (item.id) continue; // skip files
+          if (item.id) continue;
           const { data: subItems } = await supabase.storage
             .from("vehicle-photos")
             .list(item.name, { limit: 100 });
           if (!subItems) continue;
           for (const sub of subItems) {
-            if (!sub.id && sub.name.toUpperCase().includes(term)) {
+            if (!sub.id && normalize(sub.name).includes(term)) {
               matchingFolders.push(`${item.name}/${sub.name}`);
             }
           }
