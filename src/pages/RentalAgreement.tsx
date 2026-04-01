@@ -698,7 +698,7 @@ const RentalAgreement = () => {
   };
 
   // Load existing photos from storage for a given reservation ref
-  const loadExistingPhotos = async (ref: string, regoHint?: string) => {
+  const loadExistingPhotos = async (ref: string, regoHint?: string, reservationNo?: string | number) => {
     const photoMap = new Map<string, { url: string; name: string }>();
 
     const addPhoto = (path: string, name: string) => {
@@ -708,28 +708,39 @@ const RentalAgreement = () => {
       photoMap.set(name, { url: urlData.publicUrl, name });
     };
 
-    // Current structure: /{reservationRef}/{rego}/{file}
-    if (ref.trim()) {
-      const { data: folders } = await supabase.storage
+    const listAndAdd = async (prefix: string) => {
+      const { data: items } = await supabase.storage
         .from("vehicle-photos")
-        .list(ref, { limit: 100 });
+        .list(prefix, { limit: 100 });
 
-      for (const item of folders || []) {
+      for (const item of items || []) {
         if (!item?.name || item.name === ".emptyFolderPlaceholder") continue;
 
         const { data: subFiles } = await supabase.storage
           .from("vehicle-photos")
-          .list(`${ref}/${item.name}`, { limit: 100 });
+          .list(`${prefix}/${item.name}`, { limit: 100 });
 
         if (subFiles && subFiles.length > 0) {
           for (const f of subFiles) {
             if (!f?.name || f.name === ".emptyFolderPlaceholder") continue;
-            addPhoto(`${ref}/${item.name}/${f.name}`, `${item.name}/${f.name}`);
+            addPhoto(`${prefix}/${item.name}/${f.name}`, `${item.name}/${f.name}`);
           }
         } else if (item.id) {
-          // Older structure variant: /{reservationRef}/{file}
-          addPhoto(`${ref}/${item.name}`, item.name);
+          addPhoto(`${prefix}/${item.name}`, item.name);
         }
+      }
+    };
+
+    // Search by reservationRef (e.g. 2198511041608E)
+    if (ref.trim()) {
+      await listAndAdd(ref.trim());
+    }
+
+    // Search by reservationNo (e.g. 30379) — used by /photos page
+    if (reservationNo) {
+      const noStr = String(reservationNo).trim();
+      if (noStr && noStr !== ref.trim()) {
+        await listAndAdd(noStr);
       }
     }
 
