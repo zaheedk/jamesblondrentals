@@ -142,8 +142,9 @@ const RentalAgreement = () => {
           setFuelIn(booking.fuelin || "");
           const resolvedRego = booking.vehicle_registrationnumber || booking.vehiclerego || "";
           setVehicleRego(resolvedRego);
-          // Backward compatibility: older uploads were saved under /{rego}/... (without reservation folder)
-          await loadExistingPhotos(reservationRef.trim(), resolvedRego);
+          const resNo = booking.reservationno;
+          // Reload with all lookup keys: ref, rego (legacy), and reservationNo (/photos page)
+          await loadExistingPhotos(reservationRef.trim(), resolvedRego, resNo);
         }
         toast.success("Booking data loaded");
       } else {
