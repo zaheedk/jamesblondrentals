@@ -10,7 +10,8 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Loader2, Search, ImageIcon, ChevronLeft, ChevronRight, LogOut } from "lucide-react";
 
 const PhotoGallery = () => {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, signOut } = useAuth();
+  const navigate = useNavigate();
   const { isOfficeAdmin, isLoading: roleLoading } = useUserRole();
 
   const [searchTerm, setSearchTerm] = useState("");
