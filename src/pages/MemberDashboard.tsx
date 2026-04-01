@@ -147,6 +147,12 @@ export default function MemberDashboard() {
                     Vehicle Photos
                   </Button>
                 </Link>
+                <Link to="/photo-gallery">
+                  <Button variant="outline" className="w-full justify-start" size="lg">
+                    <ImageIcon className="w-4 h-4 mr-2" />
+                    Photo Gallery
+                  </Button>
+                </Link>
               </div>
             </CardContent>
           </Card>
