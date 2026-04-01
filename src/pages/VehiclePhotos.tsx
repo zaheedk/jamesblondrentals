@@ -166,10 +166,14 @@ const VehiclePhotos = () => {
     setUploading(true);
     try {
       const uploaded: { url: string; name: string }[] = [];
+      const batchId = `batch-${Date.now()}`;
+      const rego = vehicleRego.trim() || "no-rego";
+      const basePath = `${reservationRef.trim()}/${rego}/${batchId}`;
+
       for (const pending of pendingPhotos) {
         const stampedFile = await addTimestampToPhoto(pending.file, vehicleRego.trim() || undefined);
         const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`;
-        const filePath = `${reservationRef.trim()}/${fileName}`;
+        const filePath = `${basePath}/${fileName}`;
         const { error } = await supabase.storage
           .from("vehicle-photos")
           .upload(filePath, stampedFile);
