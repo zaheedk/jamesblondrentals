@@ -154,9 +154,13 @@ const VehiclePhotos = () => {
   };
 
   const handleUpload = async () => {
-    if (!pendingPhotos.length || !reservationRef) return;
+    if (!pendingPhotos.length || !reservationRef.trim()) return;
 
-      const stampedFile = await addTimestampToPhoto(pending.file);
+    setUploading(true);
+    try {
+      const uploaded: { url: string; name: string }[] = [];
+      for (const pending of pendingPhotos) {
+        const stampedFile = await addTimestampToPhoto(pending.file);
         const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`;
         const filePath = `${reservationRef.trim()}/${fileName}`;
         const { error } = await supabase.storage
@@ -165,7 +169,7 @@ const VehiclePhotos = () => {
 
         if (!error) {
           const { data: urlData } = supabase.storage.from("vehicle-photos").getPublicUrl(filePath);
-          uploaded.push({ url: urlData.publicUrl, name: `${rego}/${fileName}` });
+          uploaded.push({ url: urlData.publicUrl, name: fileName });
         } else {
           console.error("Upload error:", error);
         }
@@ -202,55 +206,41 @@ const VehiclePhotos = () => {
       <div className="container mx-auto px-4 py-8 max-w-2xl">
         <h1 className="text-2xl font-bold mb-6">Vehicle Inspection Photos</h1>
 
-        {/* Search Section */}
-        {!bookingLoaded ? (
+        {!photoMode ? (
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Find Booking</CardTitle>
+              <CardTitle className="text-lg">Enter Reservation Reference</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="resNo">Reservation Number</Label>
+                <Label htmlFor="resRef">Reservation Reference</Label>
                 <Input
-                  id="resNo"
-                  value={reservationNo}
-                  onChange={e => setReservationNo(e.target.value)}
-                  placeholder="e.g. 29823"
+                  id="resRef"
+                  value={reservationRef}
+                  onChange={e => setReservationRef(e.target.value)}
+                  placeholder="e.g. 2198511041608E"
                   className="h-14 text-lg"
-                  onKeyDown={e => e.key === "Enter" && handleSearch()}
+                  onKeyDown={e => e.key === "Enter" && handleStart()}
                 />
               </div>
-              <div>
-                <Label htmlFor="lastName">Customer Last Name (optional)</Label>
-                <Input
-                  id="lastName"
-                  value={lastName}
-                  onChange={e => setLastName(e.target.value)}
-                  placeholder="Last name"
-                  className="h-14 text-lg"
-                  onKeyDown={e => e.key === "Enter" && handleSearch()}
-                />
-              </div>
-              <Button onClick={handleSearch} disabled={loading} className="w-full h-14 text-lg">
-                {loading ? <Loader2 className="h-5 w-5 animate-spin mr-2" /> : <Search className="h-5 w-5 mr-2" />}
-                Search
+              <Button onClick={handleStart} disabled={loadingPhotos} className="w-full h-14 text-lg">
+                {loadingPhotos ? <Loader2 className="h-5 w-5 animate-spin mr-2" /> : <Camera className="h-5 w-5 mr-2" />}
+                Continue
               </Button>
             </CardContent>
           </Card>
         ) : (
           <div className="space-y-6">
-            {/* Booking Info */}
             <Card>
               <CardContent className="pt-6">
-                <div className="grid grid-cols-2 gap-3 text-sm">
-                  <div><span className="text-muted-foreground">Customer:</span> <span className="font-medium">{customerName}</span></div>
-                  <div><span className="text-muted-foreground">Vehicle:</span> <span className="font-medium">{vehicleDesc}</span></div>
-                  <div><span className="text-muted-foreground">Rego:</span> <span className="font-medium">{vehicleRego || "N/A"}</span></div>
-                  <div>
-                    <Button variant="link" className="p-0 h-auto text-sm" onClick={() => { setBookingLoaded(false); setPendingPhotos([]); setUploadedPhotos([]); setExistingPhotos([]); }}>
-                      Change booking
-                    </Button>
+                <div className="flex items-center justify-between">
+                  <div className="text-sm">
+                    <span className="text-muted-foreground">Reference:</span>{" "}
+                    <span className="font-medium">{reservationRef}</span>
                   </div>
+                  <Button variant="link" className="p-0 h-auto text-sm" onClick={() => { setPhotoMode(false); setPendingPhotos([]); setUploadedPhotos([]); setExistingPhotos([]); }}>
+                    Change
+                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -301,7 +291,7 @@ const VehiclePhotos = () => {
               </Card>
             )}
 
-            {/* All Photos (existing + newly uploaded) */}
+            {/* All Photos */}
             {allPhotos.length > 0 && (
               <Card>
                 <CardHeader>
