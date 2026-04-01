@@ -1194,7 +1194,12 @@ const RentalAgreement = () => {
                           {[
                             ["Category:", booking?.vehiclecategory],
                             ["Description:", booking?.vehicledescription1],
+                            ["Licence Plate:", vehicleRego || "N/A"],
                             ["Fuel Type:", booking?.fueltype || "N/A"],
+                            ["Kms Out:", kmsOut || "N/A"],
+                            ["Kms In:", kmsIn || "N/A"],
+                            ["Fuel Out:", fuelOut || "N/A"],
+                            ["Fuel In:", fuelIn || "N/A"],
                           ].map(([label, value], i) => (
                             <tr key={i}>
                               <td style={{ fontWeight: 700, padding: "2.5px 12px 2.5px 0", width: "95px", verticalAlign: "top", whiteSpace: "nowrap", color: "#222", textDecoration: "none" }}>{label}</td>
