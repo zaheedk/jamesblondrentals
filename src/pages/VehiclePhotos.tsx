@@ -1,7 +1,6 @@
 import { useState, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
-import { rcmApi } from "@/lib/api/rcm-api";
 import { useUserRole } from "@/hooks/use-user-role";
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
@@ -10,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Camera, Upload, X, Loader2, Search, ImageIcon, Trash2 } from "lucide-react";
+import { Camera, Upload, X, Loader2, ImageIcon } from "lucide-react";
 import VehicleCamera from "@/components/VehicleCamera";
 
 const addTimestampToPhoto = (file: File): Promise<File> => {
