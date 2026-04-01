@@ -132,6 +132,7 @@ import WellingtonMinibusHireCBD from "./pages/WellingtonMinibusHireCBD";
 import FuelCalculator from "./pages/FuelCalculator";
 import BuyUsedVehicles from "./pages/BuyUsedVehicles";
 import Unsubscribe from "./pages/Unsubscribe";
+import VehiclePhotos from "./pages/VehiclePhotos";
 
 const queryClient = new QueryClient();
 
@@ -319,6 +320,7 @@ const App = () => {
                 <Route path="/buy-used-vehicles" element={<BuyUsedVehicles />} />
                 
                 <Route path="/jumbo-taxi-launch" element={<JumboTaxiLaunch />} />
+                <Route path="/photos" element={<VehiclePhotos />} />
                 <Route path="/unsubscribe" element={<Unsubscribe />} />
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="*" element={<NotFound />} />
