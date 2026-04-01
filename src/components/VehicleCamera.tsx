@@ -160,7 +160,7 @@ const VehicleCamera = ({ onPhotoCaptured, onClose, photoCount }: VehicleCameraPr
       const file = new File([blob], `photo-${Date.now()}.jpg`, { type: "image/jpeg" });
       const previewUrl = URL.createObjectURL(blob);
       onPhotoCaptured(file, previewUrl);
-    }, "image/jpeg", 0.85);
+    }, "image/jpeg", 0.95);
   };
 
   const handleClose = () => {
