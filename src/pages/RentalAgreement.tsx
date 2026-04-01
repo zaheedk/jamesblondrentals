@@ -1217,6 +1217,7 @@ const RentalAgreement = () => {
                     onChange={(e) => setVehicleRego(e.target.value)}
                     placeholder="Enter vehicle registration..."
                     className="h-14 text-lg px-4"
+                    readOnly={!!vehicleRego}
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -1227,6 +1228,7 @@ const RentalAgreement = () => {
                       onChange={(e) => setKmsOut(e.target.value)}
                       placeholder="Kms out..."
                       className="h-14 text-lg px-4"
+                      readOnly={!!kmsOut}
                     />
                   </div>
                   <div>
