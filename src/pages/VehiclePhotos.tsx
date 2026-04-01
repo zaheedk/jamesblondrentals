@@ -64,6 +64,7 @@ const VehiclePhotos = () => {
   const { isOfficeAdmin, isLoading: roleLoading } = useUserRole();
 
   const [reservationRef, setReservationRef] = useState("");
+  const [vehicleRego, setVehicleRego] = useState("");
   const [photoMode, setPhotoMode] = useState(false);
 
   const [cameraOpen, setCameraOpen] = useState(false);
