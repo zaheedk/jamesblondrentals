@@ -72,6 +72,12 @@ const PhotoGallery = () => {
     return results;
   };
 
+  const getBatchFolder = (batch: BatchGroup): string => {
+    if (batch.batchId === "legacy-flat") return batch.reservationNo;
+    if (batch.batchId === "legacy-rego") return `${batch.reservationNo}/${batch.rego}`;
+    return `${batch.reservationNo}/${batch.rego}/${batch.batchId}`;
+  };
+
   // Scan all folders to discover batches on mount
   const scanAllBatches = useCallback(async () => {
     setInitialLoading(true);
