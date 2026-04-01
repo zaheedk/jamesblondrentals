@@ -1213,61 +1213,6 @@ const RentalAgreement = () => {
                 </tbody>
               </table>
 
-              {/* Editable Vehicle Fields - large inputs for tablet */}
-              <div data-html2canvas-ignore="true" className="grid grid-cols-1 gap-4 my-6 px-1">
-                <div>
-                  <Label className="text-sm font-semibold mb-1 block" style={{ color: "#222" }}>Licence Plate / Rego</Label>
-                  <Input
-                    value={vehicleRego}
-                    onChange={(e) => setVehicleRego(e.target.value)}
-                    placeholder="Enter vehicle registration..."
-                    className="h-14 text-lg px-4"
-                    readOnly={!!vehicleRego}
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label className="text-sm font-semibold mb-1 block" style={{ color: "#222" }}>Kms Out</Label>
-                    <Input
-                      value={kmsOut}
-                      onChange={(e) => setKmsOut(e.target.value)}
-                      placeholder="Kms out..."
-                      className="h-14 text-lg px-4"
-                      readOnly={!!kmsOut}
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-sm font-semibold mb-1 block" style={{ color: "#222" }}>Kms In</Label>
-                    <Input
-                      value={kmsIn}
-                      onChange={(e) => setKmsIn(e.target.value)}
-                      placeholder="Kms in..."
-                      className="h-14 text-lg px-4"
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label className="text-sm font-semibold mb-1 block" style={{ color: "#222" }}>Fuel Out</Label>
-                    <Input
-                      value={fuelOut}
-                      onChange={(e) => setFuelOut(e.target.value)}
-                      placeholder="Fuel out..."
-                      className="h-14 text-lg px-4"
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-sm font-semibold mb-1 block" style={{ color: "#222" }}>Fuel In</Label>
-                    <Input
-                      value={fuelIn}
-                      onChange={(e) => setFuelIn(e.target.value)}
-                      placeholder="Fuel in..."
-                      className="h-14 text-lg px-4"
-                    />
-                  </div>
-                </div>
-              </div>
-
               {/* Rental Details */}
               <div data-pdf-section className="mb-3">
                 <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "10px", textDecoration: "none" }}>
