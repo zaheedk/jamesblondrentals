@@ -108,7 +108,7 @@ const addTimestampToPhoto = (file: File, rego?: string): Promise<File> => {
           canvas.toBlob((blob) => {
             if (!blob) { console.warn("Canvas toBlob failed"); resolve(file); return; }
             resolve(new File([blob], file.name, { type: "image/jpeg" }));
-          }, "image/jpeg", 0.85);
+          }, "image/jpeg", 0.95);
         };
         img.onerror = () => { resolve(file); };
         img.src = urlEvt.target?.result as string;
