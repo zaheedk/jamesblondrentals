@@ -58,20 +58,15 @@ const VehiclePhotos = () => {
   const { user, loading: authLoading } = useAuth();
   const { isOfficeAdmin, isLoading: roleLoading } = useUserRole();
 
-  const [reservationNo, setReservationNo] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [bookingLoaded, setBookingLoaded] = useState(false);
-  const [vehicleRego, setVehicleRego] = useState("");
-  const [vehicleDesc, setVehicleDesc] = useState("");
   const [reservationRef, setReservationRef] = useState("");
-  const [customerName, setCustomerName] = useState("");
+  const [photoMode, setPhotoMode] = useState(false);
 
   const [cameraOpen, setCameraOpen] = useState(false);
   const [pendingPhotos, setPendingPhotos] = useState<{ file: File; previewUrl: string }[]>([]);
   const [uploadedPhotos, setUploadedPhotos] = useState<{ url: string; name: string }[]>([]);
   const [existingPhotos, setExistingPhotos] = useState<{ url: string; name: string }[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [loadingPhotos, setLoadingPhotos] = useState(false);
   const galleryInputRef = useRef<HTMLInputElement>(null);
 
   if (authLoading || roleLoading) {
@@ -91,7 +86,7 @@ const VehiclePhotos = () => {
     );
   }
 
-  const loadExistingPhotos = async (ref: string, rego: string) => {
+  const loadExistingPhotos = async (ref: string) => {
     const photos: { url: string; name: string }[] = [];
 
     const tryList = async (prefix: string) => {
@@ -105,7 +100,6 @@ const VehiclePhotos = () => {
           const { data: urlData } = supabase.storage.from("vehicle-photos").getPublicUrl(path);
           photos.push({ url: urlData.publicUrl, name: item.name });
         } else {
-          // subfolder
           const { data: subFiles } = await supabase.storage
             .from("vehicle-photos")
             .list(`${prefix}/${item.name}`, { limit: 100 });
@@ -122,47 +116,19 @@ const VehiclePhotos = () => {
       }
     };
 
-    if (ref) await tryList(ref);
-    if (rego) await tryList(rego);
-
+    await tryList(ref);
     setExistingPhotos(photos);
   };
 
-  const handleSearch = async () => {
-    if (!reservationNo.trim()) {
-      toast.error("Please enter a reservation number");
+  const handleStart = async () => {
+    if (!reservationRef.trim()) {
+      toast.error("Please enter a reservation reference");
       return;
     }
-
-    setLoading(true);
-    try {
-      const response = await rcmApi.getBookingInfo(reservationNo.trim(), lastName.trim());
-      const info = response?.results?.bookinginfo?.[0];
-
-      if (!info) {
-        toast.error("Booking not found");
-        return;
-      }
-
-      const rego = (info as any).vehicle_registrationnumber || (info as any).vehiclerego || "";
-      const desc = info.vehicledescription1 || info.vehiclecategory || "";
-      const name = `${(info as any).firstname || ""} ${(info as any).lastname || ""}`.trim();
-      const ref = info.reservationref || "";
-
-      setVehicleRego(rego);
-      setVehicleDesc(desc);
-      setCustomerName(name);
-      setReservationRef(ref);
-      setBookingLoaded(true);
-
-      await loadExistingPhotos(ref, rego);
-      toast.success("Booking loaded");
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to load booking");
-    } finally {
-      setLoading(false);
-    }
+    setLoadingPhotos(true);
+    await loadExistingPhotos(reservationRef.trim());
+    setPhotoMode(true);
+    setLoadingPhotos(false);
   };
 
   const handleCameraCapture = (file: File, previewUrl: string) => {
