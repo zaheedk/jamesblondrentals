@@ -38,7 +38,7 @@ const PhotoGallery = () => {
   }
 
   const searchPhotos = async () => {
-    const term = searchTerm.trim().toUpperCase();
+    const term = searchTerm.trim().replace(/[\s\-]/g, "").toUpperCase();
     if (!term) return;
 
     setLoading(true);
@@ -46,19 +46,17 @@ const PhotoGallery = () => {
     const results: { url: string; name: string; folder: string }[] = [];
 
     try {
-      // Strategy: list top-level folders, find matches by reservation ref or rego
       const { data: topLevel } = await supabase.storage
         .from("vehicle-photos")
         .list("", { limit: 1000 });
 
       if (!topLevel) { setPhotos([]); setLoading(false); return; }
 
-      // Check direct match (reservation number as folder)
       const matchingFolders: string[] = [];
+      const normalize = (s: string) => s.replace(/[\s\-_]/g, "").toUpperCase();
 
       for (const item of topLevel) {
-        // Match folder name against search term (reservation ref)
-        if (!item.id && item.name.toUpperCase().includes(term)) {
+        if (!item.id && normalize(item.name).includes(term)) {
           matchingFolders.push(item.name);
         }
       }
@@ -66,13 +64,13 @@ const PhotoGallery = () => {
       // If no direct folder match, search inside all folders for rego subfolder
       if (matchingFolders.length === 0) {
         for (const item of topLevel) {
-          if (item.id) continue; // skip files
+          if (item.id) continue;
           const { data: subItems } = await supabase.storage
             .from("vehicle-photos")
             .list(item.name, { limit: 100 });
           if (!subItems) continue;
           for (const sub of subItems) {
-            if (!sub.id && sub.name.toUpperCase().includes(term)) {
+            if (!sub.id && normalize(sub.name).includes(term)) {
               matchingFolders.push(`${item.name}/${sub.name}`);
             }
           }
