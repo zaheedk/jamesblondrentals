@@ -133,6 +133,7 @@ import FuelCalculator from "./pages/FuelCalculator";
 import BuyUsedVehicles from "./pages/BuyUsedVehicles";
 import Unsubscribe from "./pages/Unsubscribe";
 import VehiclePhotos from "./pages/VehiclePhotos";
+import PhotoGallery from "./pages/PhotoGallery";
 
 const queryClient = new QueryClient();
 
@@ -321,6 +322,11 @@ const App = () => {
                 
                 <Route path="/jumbo-taxi-launch" element={<JumboTaxiLaunch />} />
                 <Route path="/photos" element={<VehiclePhotos />} />
+                <Route path="/photo-gallery" element={
+                  <ProtectedRoute>
+                    <PhotoGallery />
+                  </ProtectedRoute>
+                } />
                 <Route path="/unsubscribe" element={<Unsubscribe />} />
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="*" element={<NotFound />} />
