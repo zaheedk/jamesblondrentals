@@ -147,7 +147,7 @@ const VehiclePhotos = () => {
 
       const rego = (info as any).vehicle_registrationnumber || (info as any).vehiclerego || "";
       const desc = info.vehicledescription1 || info.vehiclecategory || "";
-      const name = `${info.firstname || ""} ${info.lastname || ""}`.trim();
+      const name = `${(info as any).firstname || ""} ${(info as any).lastname || ""}`.trim();
       const ref = info.reservationref || "";
 
       setVehicleRego(rego);
