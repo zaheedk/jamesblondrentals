@@ -209,7 +209,7 @@ const VehiclePhotos = () => {
         {!photoMode ? (
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Enter Reservation Reference</CardTitle>
+              <CardTitle className="text-lg">Enter Reservation No</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
