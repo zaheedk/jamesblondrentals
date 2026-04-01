@@ -1,7 +1,6 @@
 import { useState, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
-import { rcmApi } from "@/lib/api/rcm-api";
 import { useUserRole } from "@/hooks/use-user-role";
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
@@ -10,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Camera, Upload, X, Loader2, Search, ImageIcon, Trash2 } from "lucide-react";
+import { Camera, Upload, X, Loader2, ImageIcon } from "lucide-react";
 import VehicleCamera from "@/components/VehicleCamera";
 
 const addTimestampToPhoto = (file: File): Promise<File> => {
@@ -59,20 +58,15 @@ const VehiclePhotos = () => {
   const { user, loading: authLoading } = useAuth();
   const { isOfficeAdmin, isLoading: roleLoading } = useUserRole();
 
-  const [reservationNo, setReservationNo] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [bookingLoaded, setBookingLoaded] = useState(false);
-  const [vehicleRego, setVehicleRego] = useState("");
-  const [vehicleDesc, setVehicleDesc] = useState("");
   const [reservationRef, setReservationRef] = useState("");
-  const [customerName, setCustomerName] = useState("");
+  const [photoMode, setPhotoMode] = useState(false);
 
   const [cameraOpen, setCameraOpen] = useState(false);
   const [pendingPhotos, setPendingPhotos] = useState<{ file: File; previewUrl: string }[]>([]);
   const [uploadedPhotos, setUploadedPhotos] = useState<{ url: string; name: string }[]>([]);
   const [existingPhotos, setExistingPhotos] = useState<{ url: string; name: string }[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [loadingPhotos, setLoadingPhotos] = useState(false);
   const galleryInputRef = useRef<HTMLInputElement>(null);
 
   if (authLoading || roleLoading) {
@@ -92,7 +86,7 @@ const VehiclePhotos = () => {
     );
   }
 
-  const loadExistingPhotos = async (ref: string, rego: string) => {
+  const loadExistingPhotos = async (ref: string) => {
     const photos: { url: string; name: string }[] = [];
 
     const tryList = async (prefix: string) => {
@@ -106,7 +100,6 @@ const VehiclePhotos = () => {
           const { data: urlData } = supabase.storage.from("vehicle-photos").getPublicUrl(path);
           photos.push({ url: urlData.publicUrl, name: item.name });
         } else {
-          // subfolder
           const { data: subFiles } = await supabase.storage
             .from("vehicle-photos")
             .list(`${prefix}/${item.name}`, { limit: 100 });
@@ -123,47 +116,19 @@ const VehiclePhotos = () => {
       }
     };
 
-    if (ref) await tryList(ref);
-    if (rego) await tryList(rego);
-
+    await tryList(ref);
     setExistingPhotos(photos);
   };
 
-  const handleSearch = async () => {
-    if (!reservationNo.trim()) {
-      toast.error("Please enter a reservation number");
+  const handleStart = async () => {
+    if (!reservationRef.trim()) {
+      toast.error("Please enter a reservation reference");
       return;
     }
-
-    setLoading(true);
-    try {
-      const response = await rcmApi.getBookingInfo(reservationNo.trim(), lastName.trim());
-      const info = response?.results?.bookinginfo?.[0];
-
-      if (!info) {
-        toast.error("Booking not found");
-        return;
-      }
-
-      const rego = (info as any).vehicle_registrationnumber || (info as any).vehiclerego || "";
-      const desc = info.vehicledescription1 || info.vehiclecategory || "";
-      const name = `${(info as any).firstname || ""} ${(info as any).lastname || ""}`.trim();
-      const ref = info.reservationref || "";
-
-      setVehicleRego(rego);
-      setVehicleDesc(desc);
-      setCustomerName(name);
-      setReservationRef(ref);
-      setBookingLoaded(true);
-
-      await loadExistingPhotos(ref, rego);
-      toast.success("Booking loaded");
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to load booking");
-    } finally {
-      setLoading(false);
-    }
+    setLoadingPhotos(true);
+    await loadExistingPhotos(reservationRef.trim());
+    setPhotoMode(true);
+    setLoadingPhotos(false);
   };
 
   const handleCameraCapture = (file: File, previewUrl: string) => {
@@ -189,23 +154,22 @@ const VehiclePhotos = () => {
   };
 
   const handleUpload = async () => {
-    if (!pendingPhotos.length || !reservationRef) return;
+    if (!pendingPhotos.length || !reservationRef.trim()) return;
 
-    const rego = vehicleRego.trim() || "unknown-rego";
     setUploading(true);
     try {
       const uploaded: { url: string; name: string }[] = [];
       for (const pending of pendingPhotos) {
         const stampedFile = await addTimestampToPhoto(pending.file);
         const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`;
-        const filePath = `${reservationRef}/${rego}/${fileName}`;
+        const filePath = `${reservationRef.trim()}/${fileName}`;
         const { error } = await supabase.storage
           .from("vehicle-photos")
           .upload(filePath, stampedFile);
 
         if (!error) {
           const { data: urlData } = supabase.storage.from("vehicle-photos").getPublicUrl(filePath);
-          uploaded.push({ url: urlData.publicUrl, name: `${rego}/${fileName}` });
+          uploaded.push({ url: urlData.publicUrl, name: fileName });
         } else {
           console.error("Upload error:", error);
         }
@@ -242,55 +206,41 @@ const VehiclePhotos = () => {
       <div className="container mx-auto px-4 py-8 max-w-2xl">
         <h1 className="text-2xl font-bold mb-6">Vehicle Inspection Photos</h1>
 
-        {/* Search Section */}
-        {!bookingLoaded ? (
+        {!photoMode ? (
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Find Booking</CardTitle>
+              <CardTitle className="text-lg">Enter Reservation Reference</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="resNo">Reservation Number</Label>
+                <Label htmlFor="resRef">Reservation Reference</Label>
                 <Input
-                  id="resNo"
-                  value={reservationNo}
-                  onChange={e => setReservationNo(e.target.value)}
-                  placeholder="e.g. 29823"
+                  id="resRef"
+                  value={reservationRef}
+                  onChange={e => setReservationRef(e.target.value)}
+                  placeholder="e.g. 2198511041608E"
                   className="h-14 text-lg"
-                  onKeyDown={e => e.key === "Enter" && handleSearch()}
+                  onKeyDown={e => e.key === "Enter" && handleStart()}
                 />
               </div>
-              <div>
-                <Label htmlFor="lastName">Customer Last Name (optional)</Label>
-                <Input
-                  id="lastName"
-                  value={lastName}
-                  onChange={e => setLastName(e.target.value)}
-                  placeholder="Last name"
-                  className="h-14 text-lg"
-                  onKeyDown={e => e.key === "Enter" && handleSearch()}
-                />
-              </div>
-              <Button onClick={handleSearch} disabled={loading} className="w-full h-14 text-lg">
-                {loading ? <Loader2 className="h-5 w-5 animate-spin mr-2" /> : <Search className="h-5 w-5 mr-2" />}
-                Search
+              <Button onClick={handleStart} disabled={loadingPhotos} className="w-full h-14 text-lg">
+                {loadingPhotos ? <Loader2 className="h-5 w-5 animate-spin mr-2" /> : <Camera className="h-5 w-5 mr-2" />}
+                Continue
               </Button>
             </CardContent>
           </Card>
         ) : (
           <div className="space-y-6">
-            {/* Booking Info */}
             <Card>
               <CardContent className="pt-6">
-                <div className="grid grid-cols-2 gap-3 text-sm">
-                  <div><span className="text-muted-foreground">Customer:</span> <span className="font-medium">{customerName}</span></div>
-                  <div><span className="text-muted-foreground">Vehicle:</span> <span className="font-medium">{vehicleDesc}</span></div>
-                  <div><span className="text-muted-foreground">Rego:</span> <span className="font-medium">{vehicleRego || "N/A"}</span></div>
-                  <div>
-                    <Button variant="link" className="p-0 h-auto text-sm" onClick={() => { setBookingLoaded(false); setPendingPhotos([]); setUploadedPhotos([]); setExistingPhotos([]); }}>
-                      Change booking
-                    </Button>
+                <div className="flex items-center justify-between">
+                  <div className="text-sm">
+                    <span className="text-muted-foreground">Reference:</span>{" "}
+                    <span className="font-medium">{reservationRef}</span>
                   </div>
+                  <Button variant="link" className="p-0 h-auto text-sm" onClick={() => { setPhotoMode(false); setPendingPhotos([]); setUploadedPhotos([]); setExistingPhotos([]); }}>
+                    Change
+                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -341,7 +291,7 @@ const VehiclePhotos = () => {
               </Card>
             )}
 
-            {/* All Photos (existing + newly uploaded) */}
+            {/* All Photos */}
             {allPhotos.length > 0 && (
               <Card>
                 <CardHeader>
