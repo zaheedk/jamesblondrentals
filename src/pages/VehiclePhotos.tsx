@@ -72,6 +72,7 @@ const VehiclePhotos = () => {
   const [existingPhotos, setExistingPhotos] = useState<{ url: string; name: string }[]>([]);
   const [uploading, setUploading] = useState(false);
   const [loadingPhotos, setLoadingPhotos] = useState(false);
+  const [viewingPhoto, setViewingPhoto] = useState<string | null>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
 
   if (authLoading || roleLoading) {
