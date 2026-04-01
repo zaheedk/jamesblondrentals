@@ -350,6 +350,7 @@ const VehiclePhotos = () => {
             </Dialog>
           </div>
         )}
+        </div>
       </div>
     </>
   );
