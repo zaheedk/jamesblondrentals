@@ -208,13 +208,13 @@ const PhotoGallery = () => {
   useEffect(() => {
     if (searchMode !== "recent") return;
     const loadNewBatches = async () => {
-      const toLoad = allBatches.slice(0, visibleCount).filter(b => b.photos.length === 0 && b.batchId !== "legacy");
+      const toLoad = allBatches.slice(0, visibleCount).filter(b => b.photos.length === 0);
       if (toLoad.length === 0) return;
 
       const loaded = await Promise.all(
         toLoad.map(async (batch) => ({
           ...batch,
-          photos: await collectFiles(`${batch.reservationNo}/${batch.rego}/${batch.batchId}`),
+          photos: await collectFiles(getBatchFolder(batch)),
         }))
       );
 
