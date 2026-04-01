@@ -100,6 +100,12 @@ export default function MemberDashboard() {
                     Customers
                   </Button>
                 </Link>
+                <Link to="/photos">
+                  <Button variant="outline" className="w-full justify-start" size="lg">
+                    <Camera className="w-4 h-4 mr-2" />
+                    Vehicle Photos
+                  </Button>
+                </Link>
               </div>
             </CardContent>
           </Card>
