@@ -167,7 +167,7 @@ const PhotoGallery = () => {
       const loaded = await Promise.all(
         firstPage.map(async (batch) => ({
           ...batch,
-          photos: await collectFiles(`${batch.reservationNo}/${batch.rego}/${batch.batchId}`),
+          photos: await collectFiles(getBatchFolder(batch)),
         }))
       );
       setAllBatches(prev => {
