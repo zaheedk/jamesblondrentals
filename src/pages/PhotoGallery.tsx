@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
 import { useUserRole } from "@/hooks/use-user-role";
@@ -16,8 +16,11 @@ type BatchGroup = {
   rego: string;
   batchId: string;
   batchLabel: string;
+  sortKey: number;
   photos: PhotoItem[];
 };
+
+const BATCH_PAGE_SIZE = 5;
 
 const formatBatchDate = (batchId: string): string => {
   const match = batchId.match(/batch-(\d+)/);
@@ -28,6 +31,11 @@ const formatBatchDate = (batchId: string): string => {
     day: "2-digit", month: "2-digit", year: "numeric",
     hour: "2-digit", minute: "2-digit", hour12: true,
   });
+};
+
+const getBatchSortKey = (batchId: string): number => {
+  const match = batchId.match(/batch-(\d+)/);
+  return match ? Number(match[1]) : 0;
 };
 
 const PhotoGallery = () => {
@@ -41,7 +49,283 @@ const PhotoGallery = () => {
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
   const [viewingIndex, setViewingIndex] = useState<number | null>(null);
-  const [searchMode, setSearchMode] = useState<"reservation" | "rego">("reservation");
+  const [searchMode, setSearchMode] = useState<"reservation" | "rego" | "recent">("recent");
+
+  // All discovered batches (for recent feed & infinite scroll)
+  const [allBatches, setAllBatches] = useState<BatchGroup[]>([]);
+  const [visibleCount, setVisibleCount] = useState(BATCH_PAGE_SIZE);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [scanComplete, setScanComplete] = useState(false);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+
+  const collectFiles = async (folder: string): Promise<PhotoItem[]> => {
+    const results: PhotoItem[] = [];
+    const { data: files } = await supabase.storage.from("vehicle-photos").list(folder, { limit: 200 });
+    if (!files) return results;
+    for (const file of files) {
+      if (file.id) {
+        const path = `${folder}/${file.name}`;
+        const { data: urlData } = supabase.storage.from("vehicle-photos").getPublicUrl(path);
+        results.push({ url: urlData.publicUrl, name: file.name, folder });
+      }
+    }
+    return results;
+  };
+
+  // Scan all folders to discover batches on mount
+  const scanAllBatches = useCallback(async () => {
+    setInitialLoading(true);
+    try {
+      const { data: topLevel } = await supabase.storage.from("vehicle-photos").list("", { limit: 1000 });
+      if (!topLevel) { setInitialLoading(false); setScanComplete(true); return; }
+
+      const discovered: BatchGroup[] = [];
+
+      for (const resFolder of topLevel) {
+        if (resFolder.id) continue; // skip files
+        const { data: subItems } = await supabase.storage.from("vehicle-photos").list(resFolder.name, { limit: 100 });
+        if (!subItems) continue;
+
+        for (const sub of subItems) {
+          if (sub.id) continue; // skip files at this level
+          // sub could be a rego folder
+          const regoPath = `${resFolder.name}/${sub.name}`;
+          const { data: batchFolders } = await supabase.storage.from("vehicle-photos").list(regoPath, { limit: 100 });
+          if (!batchFolders) continue;
+
+          for (const bf of batchFolders) {
+            if (bf.id) continue; // skip loose files
+            if (bf.name.startsWith("batch-")) {
+              discovered.push({
+                reservationNo: resFolder.name,
+                rego: sub.name,
+                batchId: bf.name,
+                batchLabel: formatBatchDate(bf.name),
+                sortKey: getBatchSortKey(bf.name),
+                photos: [], // lazy load
+              });
+            }
+          }
+        }
+      }
+
+      // Sort newest first
+      discovered.sort((a, b) => b.sortKey - a.sortKey);
+      setAllBatches(discovered);
+      setScanComplete(true);
+
+      // Load photos for the first page of batches
+      const firstPage = discovered.slice(0, BATCH_PAGE_SIZE);
+      const loaded = await Promise.all(
+        firstPage.map(async (batch) => ({
+          ...batch,
+          photos: await collectFiles(`${batch.reservationNo}/${batch.rego}/${batch.batchId}`),
+        }))
+      );
+      setAllBatches(prev => {
+        const updated = [...prev];
+        loaded.forEach((lb, i) => { updated[i] = lb; });
+        return updated;
+      });
+    } catch (err) {
+      console.error("Scan error:", err);
+    } finally {
+      setInitialLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    scanAllBatches();
+  }, [scanAllBatches]);
+
+  // Infinite scroll observer
+  useEffect(() => {
+    if (searchMode !== "recent") return;
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && visibleCount < allBatches.length) {
+          setVisibleCount(prev => Math.min(prev + BATCH_PAGE_SIZE, allBatches.length));
+        }
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [searchMode, visibleCount, allBatches.length]);
+
+  // Load photos for newly visible batches
+  useEffect(() => {
+    if (searchMode !== "recent") return;
+    const loadNewBatches = async () => {
+      const toLoad = allBatches.slice(0, visibleCount).filter(b => b.photos.length === 0 && b.batchId !== "legacy");
+      if (toLoad.length === 0) return;
+
+      const loaded = await Promise.all(
+        toLoad.map(async (batch) => ({
+          ...batch,
+          photos: await collectFiles(`${batch.reservationNo}/${batch.rego}/${batch.batchId}`),
+        }))
+      );
+
+      setAllBatches(prev => {
+        const updated = [...prev];
+        for (const lb of loaded) {
+          const idx = updated.findIndex(b => b.batchId === lb.batchId && b.reservationNo === lb.reservationNo && b.rego === lb.rego);
+          if (idx >= 0) updated[idx] = lb;
+        }
+        return updated;
+      });
+    };
+    loadNewBatches();
+  }, [visibleCount, searchMode]);
+
+  const normalize = (s: string) => s.replace(/[\s\-_]/g, "").toUpperCase();
+
+  const searchPhotos = async () => {
+    const term = searchTerm.trim().replace(/[\s\-]/g, "").toUpperCase();
+    if (!term) {
+      // Clear search, go back to recent feed
+      setSearchMode("recent");
+      setSearched(false);
+      setBatches([]);
+      setFlatPhotos([]);
+      return;
+    }
+
+    setLoading(true);
+    setSearched(true);
+    setBatches([]);
+    setFlatPhotos([]);
+
+    try {
+      const { data: topLevel } = await supabase.storage.from("vehicle-photos").list("", { limit: 1000 });
+      if (!topLevel) { setLoading(false); return; }
+
+      const directMatch = topLevel.find(item => !item.id && normalize(item.name).includes(term));
+
+      if (directMatch) {
+        setSearchMode("reservation");
+        const allPhotos: PhotoItem[] = [];
+        const { data: subItems } = await supabase.storage.from("vehicle-photos").list(directMatch.name, { limit: 200 });
+        if (subItems) {
+          for (const sub of subItems) {
+            if (sub.id) {
+              const path = `${directMatch.name}/${sub.name}`;
+              const { data: urlData } = supabase.storage.from("vehicle-photos").getPublicUrl(path);
+              allPhotos.push({ url: urlData.publicUrl, name: sub.name, folder: directMatch.name });
+            } else {
+              const regoPath = `${directMatch.name}/${sub.name}`;
+              const { data: regoItems } = await supabase.storage.from("vehicle-photos").list(regoPath, { limit: 200 });
+              if (regoItems) {
+                for (const ri of regoItems) {
+                  if (ri.id) {
+                    const path = `${regoPath}/${ri.name}`;
+                    const { data: urlData } = supabase.storage.from("vehicle-photos").getPublicUrl(path);
+                    allPhotos.push({ url: urlData.publicUrl, name: ri.name, folder: regoPath });
+                  } else {
+                    const batchPhotos = await collectFiles(`${regoPath}/${ri.name}`);
+                    allPhotos.push(...batchPhotos);
+                  }
+                }
+              }
+            }
+          }
+        }
+        setFlatPhotos(allPhotos);
+      } else {
+        setSearchMode("rego");
+        const batchGroups: BatchGroup[] = [];
+
+        for (const resFolder of topLevel) {
+          if (resFolder.id) continue;
+          const { data: subItems } = await supabase.storage.from("vehicle-photos").list(resFolder.name, { limit: 100 });
+          if (!subItems) continue;
+
+          for (const sub of subItems) {
+            if (sub.id) continue;
+            if (!normalize(sub.name).includes(term)) continue;
+
+            const regoPath = `${resFolder.name}/${sub.name}`;
+            const { data: batchFolders } = await supabase.storage.from("vehicle-photos").list(regoPath, { limit: 100 });
+            if (!batchFolders) continue;
+
+            const legacyPhotos: PhotoItem[] = [];
+            for (const bf of batchFolders) {
+              if (bf.id) {
+                const path = `${regoPath}/${bf.name}`;
+                const { data: urlData } = supabase.storage.from("vehicle-photos").getPublicUrl(path);
+                legacyPhotos.push({ url: urlData.publicUrl, name: bf.name, folder: regoPath });
+              } else {
+                const batchPhotos = await collectFiles(`${regoPath}/${bf.name}`);
+                if (batchPhotos.length > 0) {
+                  batchGroups.push({
+                    reservationNo: resFolder.name,
+                    rego: sub.name,
+                    batchId: bf.name,
+                    batchLabel: formatBatchDate(bf.name),
+                    sortKey: getBatchSortKey(bf.name),
+                    photos: batchPhotos,
+                  });
+                }
+              }
+            }
+            if (legacyPhotos.length > 0) {
+              batchGroups.push({
+                reservationNo: resFolder.name,
+                rego: sub.name,
+                batchId: "legacy",
+                batchLabel: "Earlier uploads",
+                sortKey: 0,
+                photos: legacyPhotos,
+              });
+            }
+          }
+        }
+
+        batchGroups.sort((a, b) => b.sortKey - a.sortKey);
+        setBatches(batchGroups);
+      }
+    } catch (err) {
+      console.error("Search error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") searchPhotos();
+  };
+
+  const handleClearSearch = () => {
+    setSearchTerm("");
+    setSearchMode("recent");
+    setSearched(false);
+    setBatches([]);
+    setFlatPhotos([]);
+  };
+
+  // Determine which batches to show
+  const displayBatches = searchMode === "rego" ? batches : searchMode === "recent" ? allBatches.slice(0, visibleCount) : [];
+
+  const allPhotosFlat = searchMode === "reservation"
+    ? flatPhotos
+    : displayBatches.flatMap(b => b.photos);
+
+  const navigatePhoto = (direction: number) => {
+    if (viewingIndex === null) return;
+    const next = viewingIndex + direction;
+    if (next >= 0 && next < allPhotosFlat.length) setViewingIndex(next);
+  };
+
+  const openLightbox = (photo: PhotoItem) => {
+    const idx = allPhotosFlat.findIndex(p => p.url === photo.url);
+    setViewingIndex(idx >= 0 ? idx : 0);
+  };
+
+  const totalCount = searchMode === "reservation" ? flatPhotos.length : displayBatches.reduce((s, b) => s + b.photos.length, 0);
 
   if (authLoading || roleLoading) {
     return (
@@ -59,156 +343,6 @@ const PhotoGallery = () => {
       </div>
     );
   }
-
-  const normalize = (s: string) => s.replace(/[\s\-_]/g, "").toUpperCase();
-
-  const collectFiles = async (folder: string): Promise<PhotoItem[]> => {
-    const results: PhotoItem[] = [];
-    const { data: files } = await supabase.storage.from("vehicle-photos").list(folder, { limit: 200 });
-    if (!files) return results;
-    for (const file of files) {
-      if (file.id) {
-        const path = `${folder}/${file.name}`;
-        const { data: urlData } = supabase.storage.from("vehicle-photos").getPublicUrl(path);
-        results.push({ url: urlData.publicUrl, name: file.name, folder });
-      }
-    }
-    return results;
-  };
-
-  const searchPhotos = async () => {
-    const term = searchTerm.trim().replace(/[\s\-]/g, "").toUpperCase();
-    if (!term) return;
-
-    setLoading(true);
-    setSearched(true);
-    setBatches([]);
-    setFlatPhotos([]);
-
-    try {
-      const { data: topLevel } = await supabase.storage.from("vehicle-photos").list("", { limit: 1000 });
-      if (!topLevel) { setLoading(false); return; }
-
-      // Check if term matches a top-level folder (reservation number)
-      const directMatch = topLevel.find(item => !item.id && normalize(item.name).includes(term));
-
-      if (directMatch) {
-        // Reservation number search — show all photos flat
-        setSearchMode("reservation");
-        const allPhotos: PhotoItem[] = [];
-
-        const { data: subItems } = await supabase.storage.from("vehicle-photos").list(directMatch.name, { limit: 200 });
-        if (subItems) {
-          for (const sub of subItems) {
-            if (sub.id) {
-              // Legacy: file directly under reservation folder
-              const path = `${directMatch.name}/${sub.name}`;
-              const { data: urlData } = supabase.storage.from("vehicle-photos").getPublicUrl(path);
-              allPhotos.push({ url: urlData.publicUrl, name: sub.name, folder: directMatch.name });
-            } else {
-              // Rego subfolder or batch subfolder
-              const regoPath = `${directMatch.name}/${sub.name}`;
-              const { data: regoItems } = await supabase.storage.from("vehicle-photos").list(regoPath, { limit: 200 });
-              if (regoItems) {
-                for (const ri of regoItems) {
-                  if (ri.id) {
-                    const path = `${regoPath}/${ri.name}`;
-                    const { data: urlData } = supabase.storage.from("vehicle-photos").getPublicUrl(path);
-                    allPhotos.push({ url: urlData.publicUrl, name: ri.name, folder: regoPath });
-                  } else {
-                    // Batch subfolder
-                    const batchPhotos = await collectFiles(`${regoPath}/${ri.name}`);
-                    allPhotos.push(...batchPhotos);
-                  }
-                }
-              }
-            }
-          }
-        }
-        setFlatPhotos(allPhotos);
-      } else {
-        // Rego search — find rego subfolders inside all reservation folders, group by batch
-        setSearchMode("rego");
-        const batchGroups: BatchGroup[] = [];
-
-        for (const resFolder of topLevel) {
-          if (resFolder.id) continue;
-          const { data: subItems } = await supabase.storage.from("vehicle-photos").list(resFolder.name, { limit: 100 });
-          if (!subItems) continue;
-
-          for (const sub of subItems) {
-            if (sub.id) continue;
-            if (!normalize(sub.name).includes(term)) continue;
-
-            // Found matching rego subfolder — list batch folders inside
-            const regoPath = `${resFolder.name}/${sub.name}`;
-            const { data: batchFolders } = await supabase.storage.from("vehicle-photos").list(regoPath, { limit: 100 });
-            if (!batchFolders) continue;
-
-            // Check for files directly in rego folder (legacy) and batch subfolders
-            const legacyPhotos: PhotoItem[] = [];
-            for (const bf of batchFolders) {
-              if (bf.id) {
-                // File directly in rego folder
-                const path = `${regoPath}/${bf.name}`;
-                const { data: urlData } = supabase.storage.from("vehicle-photos").getPublicUrl(path);
-                legacyPhotos.push({ url: urlData.publicUrl, name: bf.name, folder: regoPath });
-              } else {
-                // Batch subfolder
-                const batchPhotos = await collectFiles(`${regoPath}/${bf.name}`);
-                if (batchPhotos.length > 0) {
-                  batchGroups.push({
-                    reservationNo: resFolder.name,
-                    rego: sub.name,
-                    batchId: bf.name,
-                    batchLabel: formatBatchDate(bf.name),
-                    photos: batchPhotos,
-                  });
-                }
-              }
-            }
-            if (legacyPhotos.length > 0) {
-              batchGroups.push({
-                reservationNo: resFolder.name,
-                rego: sub.name,
-                batchId: "legacy",
-                batchLabel: "Earlier uploads",
-                photos: legacyPhotos,
-              });
-            }
-          }
-        }
-
-        setBatches(batchGroups);
-      }
-    } catch (err) {
-      console.error("Search error:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") searchPhotos();
-  };
-
-  // Build a flat list for lightbox navigation
-  const allPhotosFlat = searchMode === "reservation"
-    ? flatPhotos
-    : batches.flatMap(b => b.photos);
-
-  const navigatePhoto = (direction: number) => {
-    if (viewingIndex === null) return;
-    const next = viewingIndex + direction;
-    if (next >= 0 && next < allPhotosFlat.length) setViewingIndex(next);
-  };
-
-  const openLightbox = (photo: PhotoItem) => {
-    const idx = allPhotosFlat.findIndex(p => p.url === photo.url);
-    setViewingIndex(idx >= 0 ? idx : 0);
-  };
-
-  const totalCount = searchMode === "reservation" ? flatPhotos.length : batches.reduce((s, b) => s + b.photos.length, 0);
 
   return (
     <>
@@ -241,12 +375,19 @@ const PhotoGallery = () => {
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4 mr-1" />}
             Search
           </Button>
+          {searched && (
+            <Button variant="ghost" size="sm" onClick={handleClearSearch}>
+              Clear
+            </Button>
+          )}
         </div>
 
-        {loading && (
+        {(loading || initialLoading) && (
           <div className="flex items-center justify-center py-20">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <span className="ml-2 text-muted-foreground">Searching...</span>
+            <span className="ml-2 text-muted-foreground">
+              {initialLoading ? "Loading recent uploads..." : "Searching..."}
+            </span>
           </div>
         )}
 
@@ -275,15 +416,16 @@ const PhotoGallery = () => {
           </>
         )}
 
-        {/* Rego search — grouped by batch */}
-        {!loading && searchMode === "rego" && batches.length > 0 && (
+        {/* Batch view (recent feed or rego search) */}
+        {!loading && !initialLoading && (searchMode === "rego" || searchMode === "recent") && displayBatches.length > 0 && (
           <>
             <p className="text-sm text-muted-foreground mb-4">
-              {totalCount} photo(s) in {batches.length} batch(es)
+              {searchMode === "recent" ? "Recent uploads" : `${totalCount} photo(s) in ${displayBatches.length} batch(es)`}
+              {searchMode === "recent" && scanComplete && ` — ${allBatches.length} batch(es) total`}
             </p>
             <div className="space-y-6">
-              {batches.map((batch, bi) => (
-                <Card key={bi}>
+              {displayBatches.map((batch, bi) => (
+                <Card key={`${batch.reservationNo}-${batch.rego}-${batch.batchId}`}>
                   <CardHeader className="pb-3">
                     <CardTitle className="text-base flex flex-wrap items-center gap-x-4 gap-y-1">
                       <span>Reservation: <span className="font-bold">{batch.reservationNo}</span></span>
@@ -295,22 +437,44 @@ const PhotoGallery = () => {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-                      {batch.photos.map((photo, pi) => (
-                        <div
-                          key={pi}
-                          className="relative aspect-square rounded-lg overflow-hidden cursor-pointer border border-border hover:ring-2 hover:ring-primary transition-all"
-                          onClick={() => openLightbox(photo)}
-                        >
-                          <img src={photo.url} alt={photo.name} className="w-full h-full object-cover" loading="lazy" />
-                        </div>
-                      ))}
-                    </div>
+                    {batch.photos.length === 0 ? (
+                      <div className="flex items-center justify-center py-4">
+                        <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                        <span className="ml-2 text-sm text-muted-foreground">Loading photos...</span>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                        {batch.photos.map((photo, pi) => (
+                          <div
+                            key={pi}
+                            className="relative aspect-square rounded-lg overflow-hidden cursor-pointer border border-border hover:ring-2 hover:ring-primary transition-all"
+                            onClick={() => openLightbox(photo)}
+                          >
+                            <img src={photo.url} alt={photo.name} className="w-full h-full object-cover" loading="lazy" />
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               ))}
             </div>
+
+            {/* Infinite scroll sentinel */}
+            {searchMode === "recent" && visibleCount < allBatches.length && (
+              <div ref={sentinelRef} className="flex items-center justify-center py-8">
+                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                <span className="ml-2 text-sm text-muted-foreground">Loading more...</span>
+              </div>
+            )}
           </>
+        )}
+
+        {!loading && !initialLoading && searchMode === "recent" && allBatches.length === 0 && scanComplete && (
+          <div className="text-center py-20 text-muted-foreground">
+            <ImageIcon className="h-12 w-12 mx-auto mb-3 opacity-50" />
+            <p>No photo batches found. Upload photos from the Vehicle Photos page.</p>
+          </div>
         )}
 
         {/* Lightbox */}
