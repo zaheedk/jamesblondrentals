@@ -3,14 +3,15 @@ import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
 import { useUserRole } from "@/hooks/use-user-role";
 import { useAuth } from "@/contexts/AuthContext";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Loader2, Search, ImageIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import { Loader2, Search, ImageIcon, ChevronLeft, ChevronRight, LogOut } from "lucide-react";
 
 const PhotoGallery = () => {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, signOut } = useAuth();
+  const navigate = useNavigate();
   const { isOfficeAdmin, isLoading: roleLoading } = useUserRole();
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -134,7 +135,17 @@ const PhotoGallery = () => {
       </Helmet>
 
       <div className="container mx-auto px-4 py-8 max-w-6xl">
-        <h1 className="text-2xl font-bold mb-6">Vehicle Photo Gallery</h1>
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-2xl font-bold">Vehicle Photo Gallery</h1>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={async () => { await signOut(); navigate("/login"); }}
+          >
+            <LogOut className="h-4 w-4 mr-1" />
+            Logout
+          </Button>
+        </div>
 
         <div className="flex gap-2 mb-6">
           <Input

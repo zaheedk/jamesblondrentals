@@ -6,7 +6,7 @@ import Footer from './Footer';
 import ChatWidget from '@/components/chat/ChatWidget';
 import { ResourcePreloader } from '@/components/ResourcePreloader';
 
-const CHROMELESS_ROUTES = ['/admin/rental-agreement', '/photos'];
+const CHROMELESS_ROUTES = ['/admin/rental-agreement', '/photos', '/photo-gallery'];
 
 const AppLayout = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
