@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
 import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
 import { useUserRole } from "@/hooks/use-user-role";
@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Camera, Upload, X, Loader2, ImageIcon } from "lucide-react";
 import VehicleCamera from "@/components/VehicleCamera";
@@ -71,6 +72,7 @@ const VehiclePhotos = () => {
   const [existingPhotos, setExistingPhotos] = useState<{ url: string; name: string }[]>([]);
   const [uploading, setUploading] = useState(false);
   const [loadingPhotos, setLoadingPhotos] = useState(false);
+  const [viewingPhoto, setViewingPhoto] = useState<string | null>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
 
   if (authLoading || roleLoading) {
@@ -305,7 +307,7 @@ const VehiclePhotos = () => {
                 <CardContent>
                   <div className="grid grid-cols-3 gap-2">
                     {allPhotos.map((photo, i) => (
-                      <div key={i} className="relative aspect-square">
+                      <div key={i} className="relative aspect-square cursor-pointer" onClick={() => setViewingPhoto(photo.url)}>
                         <img src={photo.url} alt={photo.name} className="w-full h-full object-cover rounded-md" />
                       </div>
                     ))}
@@ -313,6 +315,19 @@ const VehiclePhotos = () => {
                 </CardContent>
               </Card>
             )}
+
+            {/* Photo Lightbox */}
+            <Dialog open={!!viewingPhoto} onOpenChange={() => setViewingPhoto(null)}>
+              <DialogContent className="max-w-[95vw] max-h-[95vh] p-2 bg-black/95 border-none">
+                {viewingPhoto && (
+                  <img
+                    src={viewingPhoto}
+                    alt="Full size"
+                    className="w-full h-full object-contain max-h-[90vh]"
+                  />
+                )}
+              </DialogContent>
+            </Dialog>
           </div>
         )}
       </div>
