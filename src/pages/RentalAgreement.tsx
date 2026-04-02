@@ -173,28 +173,48 @@ const RentalAgreement = () => {
         });
       }
 
-      // Compress via canvas for PDF photos
-      return new Promise((resolve) => {
-        const img = new Image();
-        img.onload = () => {
-          const MAX_DIM = 800; // max width or height in pixels
-          let w = img.width;
-          let h = img.height;
-          if (w > MAX_DIM || h > MAX_DIM) {
-            const scale = MAX_DIM / Math.max(w, h);
-            w = Math.round(w * scale);
-            h = Math.round(h * scale);
-          }
-          const canvas = document.createElement("canvas");
-          canvas.width = w;
-          canvas.height = h;
-          const ctx = canvas.getContext("2d");
-          ctx?.drawImage(img, 0, 0, w, h);
-          resolve(canvas.toDataURL("image/jpeg", 0.6));
-        };
-        img.onerror = () => resolve(null);
-        img.src = URL.createObjectURL(blob);
-      });
+      // Compress via canvas for PDF photos, respecting EXIF orientation
+      try {
+        const bitmap = await createImageBitmap(blob, { imageOrientation: "from-image" });
+        const MAX_DIM = 800;
+        let w = bitmap.width;
+        let h = bitmap.height;
+        if (w > MAX_DIM || h > MAX_DIM) {
+          const scale = MAX_DIM / Math.max(w, h);
+          w = Math.round(w * scale);
+          h = Math.round(h * scale);
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext("2d");
+        ctx?.drawImage(bitmap, 0, 0, w, h);
+        bitmap.close();
+        return canvas.toDataURL("image/jpeg", 0.6);
+      } catch {
+        // Fallback for browsers without createImageBitmap orientation support
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.onload = () => {
+            const MAX_DIM = 800;
+            let w = img.width;
+            let h = img.height;
+            if (w > MAX_DIM || h > MAX_DIM) {
+              const scale = MAX_DIM / Math.max(w, h);
+              w = Math.round(w * scale);
+              h = Math.round(h * scale);
+            }
+            const canvas = document.createElement("canvas");
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext("2d");
+            ctx?.drawImage(img, 0, 0, w, h);
+            resolve(canvas.toDataURL("image/jpeg", 0.6));
+          };
+          img.onerror = () => resolve(null);
+          img.src = URL.createObjectURL(blob);
+        });
+      }
     } catch {
       return null;
     }
@@ -1508,7 +1528,7 @@ const RentalAgreement = () => {
                         <div className="grid grid-cols-3 md:grid-cols-4 gap-2 mb-3">
                           {existingPhotos.filter(p => !hiddenPhotos.includes(p.name)).map((photo, idx) => (
                             <div key={idx} className="relative aspect-square overflow-hidden border group" style={{ borderRadius: "4px" }}>
-                              <img src={photo.url} alt={`Vehicle photo ${idx + 1}`} className="w-full h-full object-cover" />
+                              <img src={photo.url} alt={`Vehicle photo ${idx + 1}`} className="w-full h-full object-cover" style={{ imageOrientation: "from-image" }} />
                               {isAdmin && (
                                 <button
                                   onClick={() => confirmDeletePhoto(photo, 'existing')}
@@ -1562,7 +1582,7 @@ const RentalAgreement = () => {
                           <div className="grid grid-cols-3 md:grid-cols-4 gap-2 mb-3">
                             {pendingPhotos.map((photo, idx) => (
                               <div key={idx} className="relative aspect-square overflow-hidden border group" style={{ borderRadius: "4px" }}>
-                                <img src={photo.previewUrl} alt={`Pending photo ${idx + 1}`} className="w-full h-full object-cover" />
+                                <img src={photo.previewUrl} alt={`Pending photo ${idx + 1}`} className="w-full h-full object-cover" style={{ imageOrientation: "from-image" }} />
                                 <button
                                   onClick={() => removePendingPhoto(idx)}
                                   className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
@@ -1590,7 +1610,7 @@ const RentalAgreement = () => {
                         <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
                           {vehiclePhotos.map((photo, idx) => (
                             <div key={idx} className="relative aspect-square overflow-hidden border group" style={{ borderRadius: "4px" }}>
-                              <img src={photo.url} alt={`Vehicle photo ${idx + 1}`} className="w-full h-full object-cover" />
+                              <img src={photo.url} alt={`Vehicle photo ${idx + 1}`} className="w-full h-full object-cover" style={{ imageOrientation: "from-image" }} />
                               {isAdmin && (
                                 <button
                                   onClick={() => confirmDeletePhoto(photo, 'uploaded')}
