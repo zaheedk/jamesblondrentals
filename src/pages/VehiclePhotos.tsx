@@ -174,6 +174,7 @@ const VehiclePhotos = () => {
     <>
       <Helmet>
         <title>Vehicle Photos | James Blond</title>
+        <link rel="manifest" href="/manifest.json" />
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
