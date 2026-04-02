@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import SignatureCanvas from "react-signature-canvas";
 import { Helmet } from "react-helmet-async";
 import { rcmApi } from "@/lib/api/rcm-api";
@@ -35,6 +35,7 @@ const parseMoneyValue = (value: unknown) => {
 };
 
 const RentalAgreement = () => {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [reservationRef, setReservationRef] = useState(searchParams.get("ref") || "");
   const [loading, setLoading] = useState(false);
@@ -1754,6 +1755,11 @@ const RentalAgreement = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      <div className="container mx-auto px-4 py-6 text-center">
+        <Button variant="outline" onClick={() => navigate('/ra')} className="w-full max-w-md">
+          ← Back to Rental Agreements
+        </Button>
+      </div>
     </>
   );
 };
