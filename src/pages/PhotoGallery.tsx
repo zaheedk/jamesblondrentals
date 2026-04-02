@@ -569,9 +569,9 @@ const PhotoGallery = () => {
         )}
 
         {/* Lightbox */}
-        <Dialog open={viewingIndex !== null} onOpenChange={() => setViewingIndex(null)}>
+        <Dialog open={viewingIndex !== null} onOpenChange={() => { setViewingIndex(null); setActiveBatchPhotos([]); }}>
           <DialogContent className="max-w-[95vw] max-h-[95vh] p-2 bg-black/95 border-none">
-            {viewingIndex !== null && allPhotosFlat[viewingIndex] && (
+            {viewingIndex !== null && activeBatchPhotos[viewingIndex] && (
               <div className="relative flex items-center justify-center">
                 {viewingIndex > 0 && (
                   <button
@@ -582,11 +582,11 @@ const PhotoGallery = () => {
                   </button>
                 )}
                 <img
-                  src={allPhotosFlat[viewingIndex].url}
-                  alt={allPhotosFlat[viewingIndex].name}
+                  src={activeBatchPhotos[viewingIndex].url}
+                  alt={activeBatchPhotos[viewingIndex].name}
                   className="w-full h-full object-contain max-h-[85vh]"
                 />
-                {viewingIndex < allPhotosFlat.length - 1 && (
+                {viewingIndex < activeBatchPhotos.length - 1 && (
                   <button
                     onClick={() => navigatePhoto(1)}
                     className="absolute right-2 z-10 p-2 rounded-full bg-white/20 hover:bg-white/40 text-white"
@@ -595,7 +595,7 @@ const PhotoGallery = () => {
                   </button>
                 )}
                 <p className="absolute bottom-2 left-1/2 -translate-x-1/2 text-white/70 text-xs">
-                  {viewingIndex + 1} / {allPhotosFlat.length} — {allPhotosFlat[viewingIndex].folder}
+                  {viewingIndex + 1} / {activeBatchPhotos.length} — {activeBatchPhotos[viewingIndex].folder}
                 </p>
               </div>
             )}
