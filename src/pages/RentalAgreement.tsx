@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import SignatureCanvas from "react-signature-canvas";
 import { Helmet } from "react-helmet-async";
 import { rcmApi } from "@/lib/api/rcm-api";
