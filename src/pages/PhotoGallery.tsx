@@ -18,6 +18,7 @@ type BatchGroup = {
   batchLabel: string;
   sortKey: number;
   photos: PhotoItem[];
+  isHydrated?: boolean;
 };
 
 const BATCH_PAGE_SIZE = 5;
@@ -55,27 +56,46 @@ const PhotoGallery = () => {
   const [allBatches, setAllBatches] = useState<BatchGroup[]>([]);
   const [visibleCount, setVisibleCount] = useState(BATCH_PAGE_SIZE);
   const [initialLoading, setInitialLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [scanComplete, setScanComplete] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
   const collectFiles = async (folder: string): Promise<PhotoItem[]> => {
-    const results: PhotoItem[] = [];
-    const { data: files } = await supabase.storage.from("vehicle-photos").list(folder, { limit: 200 });
-    if (!files) return results;
-    for (const file of files) {
-      if (file.id) {
-        const path = `${folder}/${file.name}`;
-        const { data: urlData } = supabase.storage.from("vehicle-photos").getPublicUrl(path);
-        results.push({ url: urlData.publicUrl, name: file.name, folder });
+    try {
+      const results: PhotoItem[] = [];
+      const { data: files, error } = await supabase.storage.from("vehicle-photos").list(folder, { limit: 200 });
+      if (error || !files) {
+        if (error) console.error("Failed to list files for folder:", folder, error);
+        return results;
       }
+
+      for (const file of files) {
+        if (file.id) {
+          const path = `${folder}/${file.name}`;
+          const { data: urlData } = supabase.storage.from("vehicle-photos").getPublicUrl(path);
+          results.push({ url: urlData.publicUrl, name: file.name, folder });
+        }
+      }
+
+      return results;
+    } catch (error) {
+      console.error("Failed to collect files for folder:", folder, error);
+      return [];
     }
-    return results;
   };
 
   const getBatchFolder = (batch: BatchGroup): string => {
     if (batch.batchId === "legacy-flat") return batch.reservationNo;
     if (batch.batchId === "legacy-rego") return `${batch.reservationNo}/${batch.rego}`;
     return `${batch.reservationNo}/${batch.rego}/${batch.batchId}`;
+  };
+
+  const getBatchKey = (batch: Pick<BatchGroup, "reservationNo" | "rego" | "batchId">) =>
+    `${batch.reservationNo}::${batch.rego}::${batch.batchId}`;
+
+  const mergeLoadedBatches = (existing: BatchGroup[], loaded: BatchGroup[]) => {
+    const loadedMap = new Map(loaded.map((batch) => [getBatchKey(batch), batch]));
+    return existing.map((batch) => loadedMap.get(getBatchKey(batch)) ?? batch);
   };
 
   // Scan all folders to discover batches on mount
@@ -108,7 +128,8 @@ const PhotoGallery = () => {
             batchId: "legacy-flat",
             batchLabel: "Earlier uploads",
             sortKey,
-            photos: [], // lazy load
+            photos: [],
+            isHydrated: false,
           });
         }
 
@@ -135,6 +156,7 @@ const PhotoGallery = () => {
                 batchLabel: "Earlier uploads",
                 sortKey,
                 photos: [],
+                isHydrated: false,
               });
             }
 
@@ -149,6 +171,7 @@ const PhotoGallery = () => {
                     batchLabel: formatBatchDate(bf.name),
                     sortKey: getBatchSortKey(bf.name),
                     photos: [],
+                    isHydrated: false,
                   });
                 }
               }
@@ -160,21 +183,8 @@ const PhotoGallery = () => {
       // Sort newest first
       discovered.sort((a, b) => b.sortKey - a.sortKey);
       setAllBatches(discovered);
+      setVisibleCount(BATCH_PAGE_SIZE);
       setScanComplete(true);
-
-      // Load photos for the first page of batches
-      const firstPage = discovered.slice(0, BATCH_PAGE_SIZE);
-      const loaded = await Promise.all(
-        firstPage.map(async (batch) => ({
-          ...batch,
-          photos: await collectFiles(getBatchFolder(batch)),
-        }))
-      );
-      setAllBatches(prev => {
-        const updated = [...prev];
-        loaded.forEach((lb, i) => { updated[i] = lb; });
-        return updated;
-      });
     } catch (err) {
       console.error("Scan error:", err);
     } finally {
@@ -194,41 +204,59 @@ const PhotoGallery = () => {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && visibleCount < allBatches.length) {
+        if (entries[0].isIntersecting && !initialLoading && !loadingMore && visibleCount < allBatches.length) {
+          setLoadingMore(true);
           setVisibleCount(prev => Math.min(prev + BATCH_PAGE_SIZE, allBatches.length));
         }
       },
-      { threshold: 0.1 }
+      { rootMargin: "300px 0px", threshold: 0 }
     );
     observer.observe(sentinel);
     return () => observer.disconnect();
-  }, [searchMode, visibleCount, allBatches.length]);
+  }, [searchMode, visibleCount, allBatches.length, initialLoading, loadingMore]);
 
   // Load photos for newly visible batches
   useEffect(() => {
-    if (searchMode !== "recent") return;
-    const loadNewBatches = async () => {
-      const toLoad = allBatches.slice(0, visibleCount).filter(b => b.photos.length === 0);
-      if (toLoad.length === 0) return;
+    if (searchMode !== "recent" || initialLoading) return;
 
-      const loaded = await Promise.all(
+    let cancelled = false;
+
+    const loadNewBatches = async () => {
+      const toLoad = allBatches.slice(0, visibleCount).filter((batch) => !batch.isHydrated);
+      if (toLoad.length === 0) {
+        setLoadingMore(false);
+        return;
+      }
+
+      const results = await Promise.allSettled(
         toLoad.map(async (batch) => ({
           ...batch,
           photos: await collectFiles(getBatchFolder(batch)),
+          isHydrated: true,
         }))
       );
 
-      setAllBatches(prev => {
-        const updated = [...prev];
-        for (const lb of loaded) {
-          const idx = updated.findIndex(b => b.batchId === lb.batchId && b.reservationNo === lb.reservationNo && b.rego === lb.rego);
-          if (idx >= 0) updated[idx] = lb;
-        }
-        return updated;
+      if (cancelled) return;
+
+      const loaded = results.flatMap((result) => {
+        if (result.status === "fulfilled") return [result.value];
+        console.error("Failed to load batch photos:", result.reason);
+        return [];
       });
+
+      if (loaded.length > 0) {
+        setAllBatches((prev) => mergeLoadedBatches(prev, loaded));
+      }
+
+      setLoadingMore(false);
     };
+
     loadNewBatches();
-  }, [visibleCount, searchMode]);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [allBatches, visibleCount, searchMode, initialLoading]);
 
   const normalize = (s: string) => s.replace(/[\s\-_]/g, "").toUpperCase();
 
@@ -237,6 +265,7 @@ const PhotoGallery = () => {
     if (!term) {
       // Clear search, go back to recent feed
       setSearchMode("recent");
+      setVisibleCount(BATCH_PAGE_SIZE);
       setSearched(false);
       setBatches([]);
       setFlatPhotos([]);
@@ -316,6 +345,7 @@ const PhotoGallery = () => {
                     batchLabel: formatBatchDate(bf.name),
                     sortKey: getBatchSortKey(bf.name),
                     photos: batchPhotos,
+                  isHydrated: true,
                   });
                 }
               }
@@ -328,6 +358,7 @@ const PhotoGallery = () => {
                 batchLabel: "Earlier uploads",
                 sortKey: 0,
                 photos: legacyPhotos,
+                isHydrated: true,
               });
             }
           }
@@ -350,6 +381,7 @@ const PhotoGallery = () => {
   const handleClearSearch = () => {
     setSearchTerm("");
     setSearchMode("recent");
+    setVisibleCount(BATCH_PAGE_SIZE);
     setSearched(false);
     setBatches([]);
     setFlatPhotos([]);
@@ -486,10 +518,16 @@ const PhotoGallery = () => {
                   </CardHeader>
                   <CardContent>
                     {batch.photos.length === 0 ? (
-                      <div className="flex items-center justify-center py-4">
-                        <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-                        <span className="ml-2 text-sm text-muted-foreground">Loading photos...</span>
-                      </div>
+                      batch.isHydrated ? (
+                        <div className="py-4 text-sm text-muted-foreground text-center">
+                          No photos available in this batch.
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-center py-4">
+                          <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                          <span className="ml-2 text-sm text-muted-foreground">Loading photos...</span>
+                        </div>
+                      )
                     ) : (
                       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                         {batch.photos.map((photo, pi) => (
@@ -511,8 +549,14 @@ const PhotoGallery = () => {
             {/* Infinite scroll sentinel */}
             {searchMode === "recent" && visibleCount < allBatches.length && (
               <div ref={sentinelRef} className="flex items-center justify-center py-8">
-                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-                <span className="ml-2 text-sm text-muted-foreground">Loading more...</span>
+                {loadingMore ? (
+                  <>
+                    <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                    <span className="ml-2 text-sm text-muted-foreground">Loading more...</span>
+                  </>
+                ) : (
+                  <span className="text-sm text-muted-foreground">Scroll to load more batches</span>
+                )}
               </div>
             )}
           </>
