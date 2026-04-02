@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
 import { useUserRole } from "@/hooks/use-user-role";
@@ -12,114 +12,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Camera, Upload, X, Loader2, ImageIcon } from "lucide-react";
 import VehicleCamera from "@/components/VehicleCamera";
-
-const getExifOrientation = (buffer: ArrayBuffer): number => {
-  const view = new DataView(buffer);
-  if (view.getUint16(0, false) !== 0xFFD8) return 1; // not JPEG
-  let offset = 2;
-  while (offset < view.byteLength - 2) {
-    const marker = view.getUint16(offset, false);
-    offset += 2;
-    if (marker === 0xFFE1) {
-      const length = view.getUint16(offset, false);
-      const exifOffset = offset + 2;
-      if (view.getUint32(exifOffset, false) !== 0x45786966) return 1; // not "Exif"
-      const tiffOffset = exifOffset + 6;
-      const littleEndian = view.getUint16(tiffOffset, false) === 0x4949;
-      const ifdOffset = tiffOffset + view.getUint32(tiffOffset + 4, littleEndian);
-      const entries = view.getUint16(ifdOffset, littleEndian);
-      for (let i = 0; i < entries; i++) {
-        const entryOffset = ifdOffset + 2 + i * 12;
-        if (entryOffset + 12 > view.byteLength) break;
-        if (view.getUint16(entryOffset, littleEndian) === 0x0112) {
-          return view.getUint16(entryOffset + 8, littleEndian);
-        }
-      }
-      return 1;
-    } else if ((marker & 0xFF00) !== 0xFF00) {
-      return 1;
-    } else {
-      offset += view.getUint16(offset, false);
-    }
-  }
-  return 1;
-};
-
-const addTimestampToPhoto = (file: File, rego?: string): Promise<File> => {
-  return new Promise((resolve) => {
-    const arrayReader = new FileReader();
-    arrayReader.onload = (arrEvt) => {
-      const orientation = getExifOrientation(arrEvt.target?.result as ArrayBuffer);
-
-      const urlReader = new FileReader();
-      urlReader.onload = (urlEvt) => {
-        const img = new Image();
-        img.onload = () => {
-          let width = img.width;
-          let height = img.height;
-
-          // Swap dimensions for 90°/270° rotations
-          const needsSwap = orientation >= 5 && orientation <= 8;
-          const canvasW = needsSwap ? height : width;
-          const canvasH = needsSwap ? width : height;
-
-          const canvas = document.createElement("canvas");
-          canvas.width = canvasW;
-          canvas.height = canvasH;
-          const ctx = canvas.getContext("2d");
-          if (!ctx) { console.warn("No canvas context"); resolve(file); return; }
-
-          // Apply EXIF orientation transform
-          switch (orientation) {
-            case 2: ctx.transform(-1, 0, 0, 1, canvasW, 0); break;
-            case 3: ctx.transform(-1, 0, 0, -1, canvasW, canvasH); break;
-            case 4: ctx.transform(1, 0, 0, -1, 0, canvasH); break;
-            case 5: ctx.transform(0, 1, 1, 0, 0, 0); break;
-            case 6: ctx.transform(0, 1, -1, 0, canvasH, 0); break;
-            case 7: ctx.transform(0, -1, -1, 0, canvasH, canvasW); break;
-            case 8: ctx.transform(0, -1, 1, 0, 0, canvasW); break;
-            default: break;
-          }
-
-          ctx.drawImage(img, 0, 0);
-
-          // Reset transform for stamp overlay
-          ctx.setTransform(1, 0, 0, 1, 0, 0);
-
-          const now = new Date();
-          const stamp = now.toLocaleString("en-NZ", {
-            day: "2-digit", month: "2-digit", year: "numeric",
-            hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false,
-          });
-          const label = rego ? `${stamp}  |  ${rego}` : stamp;
-
-          const fontSize = Math.max(20, Math.floor(canvasW / 30));
-          ctx.font = `bold ${fontSize}px Arial`;
-          const textWidth = ctx.measureText(label).width;
-          const padding = 12;
-          const x = canvasW - textWidth - padding * 2;
-          const y = canvasH - padding * 2;
-
-          ctx.fillStyle = "rgba(0,0,0,0.6)";
-          ctx.fillRect(x - padding, y - fontSize - padding, textWidth + padding * 2, fontSize + padding * 2);
-          ctx.fillStyle = "#ffffff";
-          ctx.fillText(label, x, y);
-
-          canvas.toBlob((blob) => {
-            if (!blob) { console.warn("Canvas toBlob failed"); resolve(file); return; }
-            resolve(new File([blob], file.name, { type: "image/jpeg" }));
-          }, "image/jpeg", 0.95);
-        };
-        img.onerror = () => { resolve(file); };
-        img.src = urlEvt.target?.result as string;
-      };
-      urlReader.onerror = () => { resolve(file); };
-      urlReader.readAsDataURL(file);
-    };
-    arrayReader.onerror = () => { resolve(file); };
-    arrayReader.readAsArrayBuffer(file.slice(0, 65536)); // Only need first 64KB for EXIF
-  });
-};
+import { addTimestampToPhoto, normalizeImageFile } from "@/lib/vehicle-photo-utils";
 
 const VehiclePhotos = () => {
   const { user, loading: authLoading } = useAuth();
@@ -137,6 +30,7 @@ const VehiclePhotos = () => {
   const [loadingPhotos, setLoadingPhotos] = useState(false);
   const [viewingPhoto, setViewingPhoto] = useState<string | null>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
+  const canStart = reservationRef.trim() !== "" && vehicleRego.trim() !== "";
 
   if (authLoading || roleLoading) {
     return (
@@ -190,8 +84,8 @@ const VehiclePhotos = () => {
   };
 
   const handleStart = async () => {
-    if (!reservationRef.trim()) {
-      toast.error("Please enter a reservation number");
+    if (!reservationRef.trim() || !vehicleRego.trim()) {
+      toast.error("Please enter both reservation number and vehicle registration");
       return;
     }
     setLoadingPhotos(true);
@@ -204,15 +98,27 @@ const VehiclePhotos = () => {
     setPendingPhotos(prev => [...prev, { file, previewUrl }]);
   };
 
-  const handleGallerySelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files) return;
-    const newPending: { file: File; previewUrl: string }[] = [];
-    for (const file of Array.from(files)) {
-      newPending.push({ file, previewUrl: URL.createObjectURL(file) });
-    }
-    setPendingPhotos(prev => [...prev, ...newPending]);
+  const handleGallerySelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []);
     if (galleryInputRef.current) galleryInputRef.current.value = "";
+    if (!files.length) return;
+
+    try {
+      const normalizedPending = await Promise.all(
+        files.map(async (file) => {
+          const normalizedFile = await normalizeImageFile(file);
+          return {
+            file: normalizedFile,
+            previewUrl: URL.createObjectURL(normalizedFile),
+          };
+        }),
+      );
+
+      setPendingPhotos(prev => [...prev, ...normalizedPending]);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to process selected photos");
+    }
   };
 
   const removePending = (index: number) => {
@@ -223,7 +129,10 @@ const VehiclePhotos = () => {
   };
 
   const handleUpload = async () => {
-    if (!pendingPhotos.length || !reservationRef.trim()) return;
+    if (!pendingPhotos.length || !reservationRef.trim() || !vehicleRego.trim()) {
+      toast.error("Reservation number and rego are required");
+      return;
+    }
 
     setUploading(true);
     try {
@@ -293,6 +202,7 @@ const VehiclePhotos = () => {
                   value={reservationRef}
                   onChange={e => setReservationRef(e.target.value)}
                   placeholder="e.g. 29823"
+                  required
                   inputMode="numeric"
                   className="h-14 text-lg"
                 />
@@ -304,11 +214,12 @@ const VehiclePhotos = () => {
                   value={vehicleRego}
                   onChange={e => setVehicleRego(e.target.value.toUpperCase())}
                   placeholder="e.g. ABC123"
+                  required
                   className="h-14 text-lg uppercase"
                   onKeyDown={e => e.key === "Enter" && handleStart()}
                 />
               </div>
-              <Button onClick={handleStart} disabled={loadingPhotos} className="w-full h-14 text-lg">
+              <Button onClick={handleStart} disabled={loadingPhotos || !canStart} className="w-full h-14 text-lg">
                 {loadingPhotos ? <Loader2 className="h-5 w-5 animate-spin mr-2" /> : <Camera className="h-5 w-5 mr-2" />}
                 Continue
               </Button>
@@ -366,7 +277,7 @@ const VehiclePhotos = () => {
                   <div className="grid grid-cols-3 gap-2 mb-4">
                     {pendingPhotos.map((p, i) => (
                       <div key={i} className="relative aspect-square">
-                        <img src={p.previewUrl} alt={`Pending ${i + 1}`} className="w-full h-full object-cover rounded-md" />
+                        <img src={p.previewUrl} alt={`Pending ${i + 1}`} className="w-full h-full object-cover rounded-md" style={{ imageOrientation: "from-image" }} />
                         <button
                           onClick={() => removePending(i)}
                           className="absolute top-1 right-1 bg-black/60 text-white rounded-full p-1"
@@ -394,7 +305,7 @@ const VehiclePhotos = () => {
                   <div className="grid grid-cols-3 gap-2">
                     {allPhotos.map((photo, i) => (
                       <div key={i} className="relative aspect-square cursor-pointer" onClick={() => setViewingPhoto(photo.url)}>
-                        <img src={photo.url} alt={photo.name} className="w-full h-full object-cover rounded-md" />
+                         <img src={photo.url} alt={photo.name} className="w-full h-full object-cover rounded-md" style={{ imageOrientation: "from-image" }} />
                       </div>
                     ))}
                   </div>
@@ -410,6 +321,7 @@ const VehiclePhotos = () => {
                     src={viewingPhoto}
                     alt="Full size"
                     className="w-full h-full object-contain max-h-[90vh]"
+                      style={{ imageOrientation: "from-image" }}
                   />
                 )}
               </DialogContent>
