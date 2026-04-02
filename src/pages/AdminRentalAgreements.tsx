@@ -41,6 +41,8 @@ const AdminRentalAgreements = () => {
     <>
       <Helmet>
         <title>Rental Agreements | Admin | James Blond</title>
+        <link rel="manifest" href="/manifest-ra.json" />
+        <meta name="apple-mobile-web-app-title" content="JB RA" />
       </Helmet>
 
       <div className="min-h-screen bg-muted/30 py-8 px-4">
