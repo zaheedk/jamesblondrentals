@@ -162,7 +162,7 @@ const VehicleCamera = ({ onPhotoCaptured, onClose, photoCount }: VehicleCameraPr
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
       ctx.save();
-      if (orientationAngle === 90 || orientationAngle === -270) {
+      if (orientationAngle === 90) {
         ctx.translate(vh, 0);
         ctx.rotate(Math.PI / 2);
       } else {
