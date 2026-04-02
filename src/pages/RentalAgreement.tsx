@@ -753,17 +753,36 @@ const RentalAgreement = () => {
       for (const item of items || []) {
         if (!item?.name || item.name === ".emptyFolderPlaceholder") continue;
 
+        // If it's a file at this level, add it directly
+        if (item.id) {
+          addPhoto(`${prefix}/${item.name}`, item.name);
+          continue;
+        }
+
+        // It's a folder — list its contents
         const { data: subFiles } = await supabase.storage
           .from("vehicle-photos")
           .list(`${prefix}/${item.name}`, { limit: 100 });
 
-        if (subFiles && subFiles.length > 0) {
-          for (const f of subFiles) {
-            if (!f?.name || f.name === ".emptyFolderPlaceholder") continue;
+        for (const f of subFiles || []) {
+          if (!f?.name || f.name === ".emptyFolderPlaceholder") continue;
+
+          if (f.id) {
+            // It's a file at level 2 (e.g. {ref}/{rego}/{file})
             addPhoto(`${prefix}/${item.name}/${f.name}`, `${item.name}/${f.name}`);
+          } else {
+            // It's a folder at level 2 (e.g. {ref}/{rego}/{batchId}) — list level 3
+            const { data: batchFiles } = await supabase.storage
+              .from("vehicle-photos")
+              .list(`${prefix}/${item.name}/${f.name}`, { limit: 100 });
+
+            for (const bf of batchFiles || []) {
+              if (!bf?.name || bf.name === ".emptyFolderPlaceholder") continue;
+              if (bf.id) {
+                addPhoto(`${prefix}/${item.name}/${f.name}/${bf.name}`, `${item.name}/${f.name}/${bf.name}`);
+              }
+            }
           }
-        } else if (item.id) {
-          addPhoto(`${prefix}/${item.name}`, item.name);
         }
       }
     };
