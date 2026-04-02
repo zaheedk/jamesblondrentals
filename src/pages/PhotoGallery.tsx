@@ -50,6 +50,7 @@ const PhotoGallery = () => {
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
   const [viewingIndex, setViewingIndex] = useState<number | null>(null);
+  const [activeBatchPhotos, setActiveBatchPhotos] = useState<PhotoItem[]>([]);
   const [searchMode, setSearchMode] = useState<"reservation" | "rego" | "recent">("recent");
 
   // All discovered batches (for recent feed & infinite scroll)
