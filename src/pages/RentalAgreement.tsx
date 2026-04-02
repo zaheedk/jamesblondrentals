@@ -1755,6 +1755,11 @@ const RentalAgreement = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      <div className="container mx-auto px-4 py-6 text-center">
+        <Button variant="outline" onClick={() => navigate('/ra')} className="w-full max-w-md">
+          ← Back to Rental Agreements
+        </Button>
+      </div>
     </>
   );
 };
