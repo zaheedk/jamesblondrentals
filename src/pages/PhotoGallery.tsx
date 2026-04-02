@@ -391,18 +391,15 @@ const PhotoGallery = () => {
   // Determine which batches to show
   const displayBatches = searchMode === "rego" ? batches : searchMode === "recent" ? allBatches.slice(0, visibleCount) : [];
 
-  const allPhotosFlat = searchMode === "reservation"
-    ? flatPhotos
-    : displayBatches.flatMap(b => b.photos);
-
   const navigatePhoto = (direction: number) => {
     if (viewingIndex === null) return;
     const next = viewingIndex + direction;
-    if (next >= 0 && next < allPhotosFlat.length) setViewingIndex(next);
+    if (next >= 0 && next < activeBatchPhotos.length) setViewingIndex(next);
   };
 
-  const openLightbox = (photo: PhotoItem) => {
-    const idx = allPhotosFlat.findIndex(p => p.url === photo.url);
+  const openLightbox = (photo: PhotoItem, batchPhotos: PhotoItem[]) => {
+    setActiveBatchPhotos(batchPhotos);
+    const idx = batchPhotos.findIndex(p => p.url === photo.url);
     setViewingIndex(idx >= 0 ? idx : 0);
   };
 
