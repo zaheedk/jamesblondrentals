@@ -207,11 +207,11 @@ const VehicleCamera = ({ onPhotoCaptured, onClose, photoCount }: VehicleCameraPr
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-black flex flex-col">
+    <div className="fixed inset-0 z-50 bg-black flex flex-col h-[100dvh] w-screen overflow-hidden">
       {flash && <div className="absolute inset-0 z-50 bg-white pointer-events-none" />}
 
       {/* Top bar */}
-      <div className="flex items-center justify-between p-3 bg-black/80 text-white z-10">
+      <div className="shrink-0 flex items-center justify-between px-3 py-2 bg-black/80 text-white z-10">
         <Button variant="ghost" size="icon" onClick={handleClose} className="text-white hover:bg-white/20">
           <X className="h-6 w-6" />
         </Button>
@@ -225,7 +225,7 @@ const VehicleCamera = ({ onPhotoCaptured, onClose, photoCount }: VehicleCameraPr
 
       {/* Video feed with pinch-to-zoom */}
       <div
-        className="flex-1 relative overflow-hidden"
+        className="flex-1 min-h-0 relative overflow-hidden"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -235,7 +235,7 @@ const VehicleCamera = ({ onPhotoCaptured, onClose, photoCount }: VehicleCameraPr
           autoPlay
           playsInline
           muted
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-contain"
         />
 
         {/* Zoom level indicator */}
@@ -246,56 +246,56 @@ const VehicleCamera = ({ onPhotoCaptured, onClose, photoCount }: VehicleCameraPr
         )}
       </div>
 
-      {/* Zoom slider */}
-      {supportsZoom && (
-        <div className="flex items-center gap-3 px-6 py-2 bg-black/80">
-          <button
-            onClick={() => handleZoomStep(-1)}
-            className="text-white/80 active:text-white p-1"
-            aria-label="Zoom out"
+      {/* Bottom controls - compact in landscape */}
+      <div className="shrink-0 bg-black/85 pb-[max(env(safe-area-inset-bottom),8px)] landscape:max-h-[22dvh] landscape:py-1">
+        {/* Zoom slider */}
+        {supportsZoom && (
+          <div className="flex items-center gap-3 px-6 py-1">
+            <button
+              onClick={() => handleZoomStep(-1)}
+              className="text-white/80 active:text-white p-1"
+              aria-label="Zoom out"
+            >
+              <ZoomOut className="h-5 w-5 landscape:h-4 landscape:w-4" />
+            </button>
+            <input
+              type="range"
+              min={minZoom}
+              max={maxZoom}
+              step={(maxZoom - minZoom) / 100 || 0.1}
+              value={zoom}
+              onChange={handleSliderChange}
+              className="flex-1 h-1 appearance-none bg-white/30 rounded-full outline-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-lg"
+            />
+            <button
+              onClick={() => handleZoomStep(1)}
+              className="text-white/80 active:text-white p-1"
+              aria-label="Zoom in"
+            >
+              <ZoomIn className="h-5 w-5 landscape:h-4 landscape:w-4" />
+            </button>
+          </div>
+        )}
+
+        {/* Capture & Done row */}
+        <div className="flex items-center justify-center gap-6 px-4 py-2 landscape:py-1">
+          <Button
+            onClick={handleClose}
+            variant="default"
+            size="sm"
+            className="min-w-[120px] text-sm font-semibold landscape:min-w-[100px]"
           >
-            <ZoomOut className="h-5 w-5" />
-          </button>
-          <input
-            type="range"
-            min={minZoom}
-            max={maxZoom}
-            step={(maxZoom - minZoom) / 100 || 0.1}
-            value={zoom}
-            onChange={handleSliderChange}
-            className="flex-1 h-1 appearance-none bg-white/30 rounded-full outline-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-lg"
-          />
+            Done ({photoCount})
+          </Button>
           <button
-            onClick={() => handleZoomStep(1)}
-            className="text-white/80 active:text-white p-1"
-            aria-label="Zoom in"
+            onClick={capturePhoto}
+            className="w-16 h-16 landscape:w-12 landscape:h-12 rounded-full border-4 border-white flex items-center justify-center active:scale-90 transition-transform"
+            aria-label="Take photo"
           >
-            <ZoomIn className="h-5 w-5" />
+            <div className="w-12 h-12 landscape:w-9 landscape:h-9 rounded-full bg-white" />
           </button>
+          <div className="min-w-[120px] landscape:min-w-[100px]" /> {/* spacer for centering */}
         </div>
-      )}
-
-      {/* Capture button */}
-      <div className="flex items-center justify-center p-6 bg-black/80">
-        <button
-          onClick={capturePhoto}
-          className="w-20 h-20 rounded-full border-4 border-white flex items-center justify-center active:scale-90 transition-transform"
-          aria-label="Take photo"
-        >
-          <div className="w-16 h-16 rounded-full bg-white" />
-        </button>
-      </div>
-
-      {/* Done button */}
-      <div className="p-3 bg-black/80 flex justify-center">
-        <Button
-          onClick={handleClose}
-          variant="default"
-          size="lg"
-          className="min-w-[200px] text-base font-semibold"
-        >
-          Done ({photoCount} photos)
-        </Button>
       </div>
 
       <canvas ref={canvasRef} className="hidden" />
