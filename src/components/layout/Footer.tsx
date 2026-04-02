@@ -40,7 +40,7 @@ const Footer = () => {
               Premium car rental service providing quality vehicles for your travel needs.
             </p>
             <div className="flex space-x-4">
-              <a href="https://www.facebook.com/jamesblond.auckland" className="text-gray-300 hover:text-white transition-colors">
+              <a href="https://www.facebook.com/jamesblondrentals" className="text-gray-300 hover:text-white transition-colors">
                 <Facebook size={20} />
               </a>
               <a href="https://twitter.com" className="text-gray-300 hover:text-white transition-colors">

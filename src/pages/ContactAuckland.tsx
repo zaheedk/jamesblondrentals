@@ -47,7 +47,7 @@ const ContactAuckland = () => {
                 <div>
                   <p className="font-medium">Facebook:</p>
                   <a 
-                    href="https://www.facebook.com/jamesblond.auckland" 
+                    href="https://www.facebook.com/jamesblondrentals" 
                     target="_blank" 
                     rel="noopener noreferrer" 
                     className="hover:text-primary"
