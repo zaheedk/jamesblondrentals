@@ -684,13 +684,22 @@ const RentalAgreement = () => {
         drawLine(Y, ML, PW - MR, "#cccccc", 0.3);
         Y += 4;
 
+        // Add link to view photos online
+        const resNo = bookingData?.bookinginfo?.[0]?.reservationno;
+        const photoGalleryUrl = `https://www.jamesblond.co.nz/photo-gallery?search=${resNo || reservationRef}`;
+        pdf.setFont("helvetica", "normal");
+        pdf.setFontSize(7);
+        pdf.setTextColor("#0066cc");
+        pdf.textWithLink("View all photos online →", ML, Y, { url: photoGalleryUrl });
+        Y += 5;
+
         const photoW = (CW - 6) / 3; // 3 columns with 3mm gaps
         const photoH = photoW * 0.75; // 4:3 aspect ratio
         let col = 0;
 
         for (const photo of allPhotos) {
           try {
-            const dataUrl = await loadImageAsDataUrl(photo.url);
+            const dataUrl = await loadImageAsDataUrl(photo.url, true);
             if (!dataUrl) continue;
 
             if (Y + photoH + 2 > PH - MB) {
