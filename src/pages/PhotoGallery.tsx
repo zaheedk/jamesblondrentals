@@ -405,6 +405,7 @@ const PhotoGallery = () => {
 
   const totalCount = searchMode === "reservation" ? flatPhotos.length : displayBatches.reduce((s, b) => s + b.photos.length, 0);
 
+
   if (authLoading || roleLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
