@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Loader2, Search, ImageIcon, ChevronLeft, ChevronRight, LogOut } from "lucide-react";
+import { Loader2, Search, ImageIcon, ChevronLeft, ChevronRight, LogOut, RotateCw } from "lucide-react";
 
 type PhotoItem = { url: string; name: string; folder: string };
 type BatchGroup = {
@@ -397,6 +397,18 @@ const PhotoGallery = () => {
     if (next >= 0 && next < activeBatchPhotos.length) setViewingIndex(next);
   };
 
+  // Per-photo rotation state: keyed by photo URL, value is degrees (0, 90, 180, 270)
+  const [photoRotations, setPhotoRotations] = useState<Record<string, number>>({});
+
+  const rotateCurrentPhoto = () => {
+    if (viewingIndex === null || !activeBatchPhotos[viewingIndex]) return;
+    const url = activeBatchPhotos[viewingIndex].url;
+    setPhotoRotations(prev => ({
+      ...prev,
+      [url]: ((prev[url] || 0) + 90) % 360,
+    }));
+  };
+
   const openLightbox = (photo: PhotoItem, batchPhotos: PhotoItem[]) => {
     setActiveBatchPhotos(batchPhotos);
     const idx = batchPhotos.findIndex(p => p.url === photo.url);
@@ -571,34 +583,46 @@ const PhotoGallery = () => {
         {/* Lightbox */}
         <Dialog open={viewingIndex !== null} onOpenChange={() => { setViewingIndex(null); setActiveBatchPhotos([]); }}>
           <DialogContent className="max-w-[95vw] max-h-[95vh] p-2 bg-black/95 border-none">
-            {viewingIndex !== null && activeBatchPhotos[viewingIndex] && (
-              <div className="relative flex items-center justify-center">
-                {viewingIndex > 0 && (
+            {viewingIndex !== null && activeBatchPhotos[viewingIndex] && (() => {
+              const currentPhoto = activeBatchPhotos[viewingIndex];
+              const rotation = photoRotations[currentPhoto.url] || 0;
+              return (
+                <div className="relative flex items-center justify-center">
+                  {viewingIndex > 0 && (
+                    <button
+                      onClick={() => navigatePhoto(-1)}
+                      className="absolute left-2 z-10 p-2 rounded-full bg-white/20 hover:bg-white/40 text-white"
+                    >
+                      <ChevronLeft className="h-6 w-6" />
+                    </button>
+                  )}
+                  <img
+                    src={currentPhoto.url}
+                    alt={currentPhoto.name}
+                    className="w-full h-full object-contain max-h-[85vh] transition-transform duration-300"
+                    style={{ transform: `rotate(${rotation}deg)` }}
+                  />
+                  {viewingIndex < activeBatchPhotos.length - 1 && (
+                    <button
+                      onClick={() => navigatePhoto(1)}
+                      className="absolute right-2 z-10 p-2 rounded-full bg-white/20 hover:bg-white/40 text-white"
+                    >
+                      <ChevronRight className="h-6 w-6" />
+                    </button>
+                  )}
                   <button
-                    onClick={() => navigatePhoto(-1)}
-                    className="absolute left-2 z-10 p-2 rounded-full bg-white/20 hover:bg-white/40 text-white"
+                    onClick={rotateCurrentPhoto}
+                    className="absolute top-2 right-2 z-10 p-2 rounded-full bg-white/20 hover:bg-white/40 text-white"
+                    title="Rotate photo"
                   >
-                    <ChevronLeft className="h-6 w-6" />
+                    <RotateCw className="h-5 w-5" />
                   </button>
-                )}
-                <img
-                  src={activeBatchPhotos[viewingIndex].url}
-                  alt={activeBatchPhotos[viewingIndex].name}
-                  className="w-full h-full object-contain max-h-[85vh]"
-                />
-                {viewingIndex < activeBatchPhotos.length - 1 && (
-                  <button
-                    onClick={() => navigatePhoto(1)}
-                    className="absolute right-2 z-10 p-2 rounded-full bg-white/20 hover:bg-white/40 text-white"
-                  >
-                    <ChevronRight className="h-6 w-6" />
-                  </button>
-                )}
-                <p className="absolute bottom-2 left-1/2 -translate-x-1/2 text-white/70 text-xs">
-                  {viewingIndex + 1} / {activeBatchPhotos.length} — {activeBatchPhotos[viewingIndex].folder}
-                </p>
-              </div>
-            )}
+                  <p className="absolute bottom-2 left-1/2 -translate-x-1/2 text-white/70 text-xs">
+                    {viewingIndex + 1} / {activeBatchPhotos.length} — {currentPhoto.folder}
+                  </p>
+                </div>
+              );
+            })()}
           </DialogContent>
         </Dialog>
       </div>
