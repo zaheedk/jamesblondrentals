@@ -1508,7 +1508,7 @@ const RentalAgreement = () => {
                         <div className="grid grid-cols-3 md:grid-cols-4 gap-2 mb-3">
                           {existingPhotos.filter(p => !hiddenPhotos.includes(p.name)).map((photo, idx) => (
                             <div key={idx} className="relative aspect-square overflow-hidden border group" style={{ borderRadius: "4px" }}>
-                              <img src={photo.url} alt={`Vehicle photo ${idx + 1}`} className="w-full h-full object-cover" />
+                              <img src={photo.url} alt={`Vehicle photo ${idx + 1}`} className="w-full h-full object-cover" style={{ imageOrientation: "from-image" }} />
                               {isAdmin && (
                                 <button
                                   onClick={() => confirmDeletePhoto(photo, 'existing')}
