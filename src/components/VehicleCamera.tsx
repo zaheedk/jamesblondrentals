@@ -146,11 +146,38 @@ const VehicleCamera = ({ onPhotoCaptured, onClose, photoCount }: VehicleCameraPr
     const canvas = canvasRef.current;
     if (!video || !canvas) return;
 
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    ctx.drawImage(video, 0, 0);
+    const vw = video.videoWidth;
+    const vh = video.videoHeight;
+
+    // Detect if the device is in landscape but sensor gives portrait pixels
+    const orientationAngle =
+      (screen.orientation?.angle ?? (window as any).orientation ?? 0) as number;
+    const isLandscape = orientationAngle === 90 || orientationAngle === -90 || orientationAngle === 270;
+    const sensorIsPortrait = vh > vw;
+    const needsRotation = isLandscape && sensorIsPortrait;
+
+    if (needsRotation) {
+      canvas.width = vh;
+      canvas.height = vw;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+      ctx.save();
+      if (orientationAngle === 90) {
+        ctx.translate(vh, 0);
+        ctx.rotate(Math.PI / 2);
+      } else {
+        ctx.translate(0, vw);
+        ctx.rotate(-Math.PI / 2);
+      }
+      ctx.drawImage(video, 0, 0);
+      ctx.restore();
+    } else {
+      canvas.width = vw;
+      canvas.height = vh;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+      ctx.drawImage(video, 0, 0);
+    }
 
     setFlash(true);
     setTimeout(() => setFlash(false), 150);
