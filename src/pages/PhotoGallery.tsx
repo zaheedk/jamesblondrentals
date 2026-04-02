@@ -50,6 +50,7 @@ const PhotoGallery = () => {
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
   const [viewingIndex, setViewingIndex] = useState<number | null>(null);
+  const [activeBatchPhotos, setActiveBatchPhotos] = useState<PhotoItem[]>([]);
   const [searchMode, setSearchMode] = useState<"reservation" | "rego" | "recent">("recent");
 
   // All discovered batches (for recent feed & infinite scroll)
@@ -390,22 +391,20 @@ const PhotoGallery = () => {
   // Determine which batches to show
   const displayBatches = searchMode === "rego" ? batches : searchMode === "recent" ? allBatches.slice(0, visibleCount) : [];
 
-  const allPhotosFlat = searchMode === "reservation"
-    ? flatPhotos
-    : displayBatches.flatMap(b => b.photos);
-
   const navigatePhoto = (direction: number) => {
     if (viewingIndex === null) return;
     const next = viewingIndex + direction;
-    if (next >= 0 && next < allPhotosFlat.length) setViewingIndex(next);
+    if (next >= 0 && next < activeBatchPhotos.length) setViewingIndex(next);
   };
 
-  const openLightbox = (photo: PhotoItem) => {
-    const idx = allPhotosFlat.findIndex(p => p.url === photo.url);
+  const openLightbox = (photo: PhotoItem, batchPhotos: PhotoItem[]) => {
+    setActiveBatchPhotos(batchPhotos);
+    const idx = batchPhotos.findIndex(p => p.url === photo.url);
     setViewingIndex(idx >= 0 ? idx : 0);
   };
 
   const totalCount = searchMode === "reservation" ? flatPhotos.length : displayBatches.reduce((s, b) => s + b.photos.length, 0);
+
 
   if (authLoading || roleLoading) {
     return (
@@ -487,7 +486,7 @@ const PhotoGallery = () => {
                 <div
                   key={i}
                   className="relative aspect-square rounded-lg overflow-hidden cursor-pointer border border-border hover:ring-2 hover:ring-primary transition-all"
-                  onClick={() => openLightbox(photo)}
+                  onClick={() => openLightbox(photo, flatPhotos)}
                 >
                   <img src={photo.url} alt={photo.name} className="w-full h-full object-cover" loading="lazy" />
                 </div>
@@ -534,7 +533,7 @@ const PhotoGallery = () => {
                           <div
                             key={pi}
                             className="relative aspect-square rounded-lg overflow-hidden cursor-pointer border border-border hover:ring-2 hover:ring-primary transition-all"
-                            onClick={() => openLightbox(photo)}
+                            onClick={() => openLightbox(photo, batch.photos)}
                           >
                             <img src={photo.url} alt={photo.name} className="w-full h-full object-cover" loading="lazy" />
                           </div>
@@ -570,9 +569,9 @@ const PhotoGallery = () => {
         )}
 
         {/* Lightbox */}
-        <Dialog open={viewingIndex !== null} onOpenChange={() => setViewingIndex(null)}>
+        <Dialog open={viewingIndex !== null} onOpenChange={() => { setViewingIndex(null); setActiveBatchPhotos([]); }}>
           <DialogContent className="max-w-[95vw] max-h-[95vh] p-2 bg-black/95 border-none">
-            {viewingIndex !== null && allPhotosFlat[viewingIndex] && (
+            {viewingIndex !== null && activeBatchPhotos[viewingIndex] && (
               <div className="relative flex items-center justify-center">
                 {viewingIndex > 0 && (
                   <button
@@ -583,11 +582,11 @@ const PhotoGallery = () => {
                   </button>
                 )}
                 <img
-                  src={allPhotosFlat[viewingIndex].url}
-                  alt={allPhotosFlat[viewingIndex].name}
+                  src={activeBatchPhotos[viewingIndex].url}
+                  alt={activeBatchPhotos[viewingIndex].name}
                   className="w-full h-full object-contain max-h-[85vh]"
                 />
-                {viewingIndex < allPhotosFlat.length - 1 && (
+                {viewingIndex < activeBatchPhotos.length - 1 && (
                   <button
                     onClick={() => navigatePhoto(1)}
                     className="absolute right-2 z-10 p-2 rounded-full bg-white/20 hover:bg-white/40 text-white"
@@ -596,7 +595,7 @@ const PhotoGallery = () => {
                   </button>
                 )}
                 <p className="absolute bottom-2 left-1/2 -translate-x-1/2 text-white/70 text-xs">
-                  {viewingIndex + 1} / {allPhotosFlat.length} — {allPhotosFlat[viewingIndex].folder}
+                  {viewingIndex + 1} / {activeBatchPhotos.length} — {activeBatchPhotos[viewingIndex].folder}
                 </p>
               </div>
             )}
