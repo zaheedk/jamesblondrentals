@@ -533,7 +533,7 @@ const PhotoGallery = () => {
                           <div
                             key={pi}
                             className="relative aspect-square rounded-lg overflow-hidden cursor-pointer border border-border hover:ring-2 hover:ring-primary transition-all"
-                            onClick={() => openLightbox(photo)}
+                            onClick={() => openLightbox(photo, batch.photos)}
                           >
                             <img src={photo.url} alt={photo.name} className="w-full h-full object-cover" loading="lazy" />
                           </div>
