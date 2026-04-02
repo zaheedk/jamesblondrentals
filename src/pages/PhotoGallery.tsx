@@ -397,6 +397,18 @@ const PhotoGallery = () => {
     if (next >= 0 && next < activeBatchPhotos.length) setViewingIndex(next);
   };
 
+  // Per-photo rotation state: keyed by photo URL, value is degrees (0, 90, 180, 270)
+  const [photoRotations, setPhotoRotations] = useState<Record<string, number>>({});
+
+  const rotateCurrentPhoto = () => {
+    if (viewingIndex === null || !activeBatchPhotos[viewingIndex]) return;
+    const url = activeBatchPhotos[viewingIndex].url;
+    setPhotoRotations(prev => ({
+      ...prev,
+      [url]: ((prev[url] || 0) + 90) % 360,
+    }));
+  };
+
   const openLightbox = (photo: PhotoItem, batchPhotos: PhotoItem[]) => {
     setActiveBatchPhotos(batchPhotos);
     const idx = batchPhotos.findIndex(p => p.url === photo.url);
