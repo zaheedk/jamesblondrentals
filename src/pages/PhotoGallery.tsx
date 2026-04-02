@@ -391,22 +391,35 @@ const PhotoGallery = () => {
   // Determine which batches to show
   const displayBatches = searchMode === "rego" ? batches : searchMode === "recent" ? allBatches.slice(0, visibleCount) : [];
 
+  // Per-photo rotation state: keyed by photo URL, value is degrees (0, 90, 180, 270)
+  const [photoRotations, setPhotoRotations] = useState<Record<string, number>>({});
+  // Track the last rotation applied so new photos inherit it
+  const [currentRotation, setCurrentRotation] = useState(0);
+
   const navigatePhoto = (direction: number) => {
     if (viewingIndex === null) return;
     const next = viewingIndex + direction;
-    if (next >= 0 && next < activeBatchPhotos.length) setViewingIndex(next);
+    if (next >= 0 && next < activeBatchPhotos.length) {
+      const nextUrl = activeBatchPhotos[next].url;
+      // If the next photo hasn't been explicitly rotated, apply the current rotation
+      if (!(nextUrl in photoRotations)) {
+        setPhotoRotations(prev => ({ ...prev, [nextUrl]: currentRotation }));
+      } else {
+        setCurrentRotation(photoRotations[nextUrl]);
+      }
+      setViewingIndex(next);
+    }
   };
-
-  // Per-photo rotation state: keyed by photo URL, value is degrees (0, 90, 180, 270)
-  const [photoRotations, setPhotoRotations] = useState<Record<string, number>>({});
 
   const rotateCurrentPhoto = () => {
     if (viewingIndex === null || !activeBatchPhotos[viewingIndex]) return;
     const url = activeBatchPhotos[viewingIndex].url;
+    const newRotation = ((photoRotations[url] || 0) + 90) % 360;
     setPhotoRotations(prev => ({
       ...prev,
-      [url]: ((prev[url] || 0) + 90) % 360,
+      [url]: newRotation,
     }));
+    setCurrentRotation(newRotation);
   };
 
   const openLightbox = (photo: PhotoItem, batchPhotos: PhotoItem[]) => {
