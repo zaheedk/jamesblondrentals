@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Loader2, Search, ImageIcon, ChevronLeft, ChevronRight, LogOut } from "lucide-react";
+import { Loader2, Search, ImageIcon, ChevronLeft, ChevronRight, LogOut, RotateCw } from "lucide-react";
 
 type PhotoItem = { url: string; name: string; folder: string };
 type BatchGroup = {
