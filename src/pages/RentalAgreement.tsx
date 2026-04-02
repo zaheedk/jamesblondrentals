@@ -35,6 +35,7 @@ const parseMoneyValue = (value: unknown) => {
 };
 
 const RentalAgreement = () => {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [reservationRef, setReservationRef] = useState(searchParams.get("ref") || "");
   const [loading, setLoading] = useState(false);
