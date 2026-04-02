@@ -150,9 +150,13 @@ const VehicleCamera = ({ onPhotoCaptured, onClose, photoCount }: VehicleCameraPr
     const vh = video.videoHeight;
 
     // Detect if the device is in landscape but sensor gives portrait pixels
+    // Use multiple detection methods for maximum Android compatibility
+    const matchMediaLandscape = window.matchMedia?.("(orientation: landscape)")?.matches ?? false;
     const orientationAngle =
       (screen.orientation?.angle ?? (window as any).orientation ?? 0) as number;
-    const isLandscape = orientationAngle === 90 || orientationAngle === -90 || orientationAngle === 270;
+    const angleIsLandscape = orientationAngle === 90 || orientationAngle === -90 || orientationAngle === 270;
+    const windowIsLandscape = window.innerWidth > window.innerHeight;
+    const isLandscape = matchMediaLandscape || angleIsLandscape || windowIsLandscape;
     const sensorIsPortrait = vh > vw;
     const needsRotation = isLandscape && sensorIsPortrait;
 
