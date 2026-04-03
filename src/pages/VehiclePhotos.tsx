@@ -37,6 +37,9 @@ const VehiclePhotos = () => {
   const [uploading, setUploading] = useState(false);
   const [loadingPhotos, setLoadingPhotos] = useState(false);
   const [viewingPhoto, setViewingPhoto] = useState<string | null>(null);
+  const [offlinePhotos, setOfflinePhotos] = useState<OfflinePhoto[]>([]);
+  const [syncing, setSyncing] = useState(false);
+  const [totalOfflineCount, setTotalOfflineCount] = useState(0);
   const galleryInputRef = useRef<HTMLInputElement>(null);
   const canStart = reservationRef.trim() !== "" && vehicleRego.trim() !== "";
 
