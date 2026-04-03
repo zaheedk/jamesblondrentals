@@ -43,6 +43,22 @@ const VehiclePhotos = () => {
   const galleryInputRef = useRef<HTMLInputElement>(null);
   const canStart = reservationRef.trim() !== "" && vehicleRego.trim() !== "";
 
+  const loadOfflinePhotos = useCallback(async (ref?: string) => {
+    try {
+      const photos = await getPendingPhotos(ref);
+      setOfflinePhotos(photos);
+      const count = await getAllPendingCount();
+      setTotalOfflineCount(count);
+    } catch (err) {
+      console.error("Failed to load offline photos:", err);
+    }
+  }, []);
+
+  // Load total offline count on mount
+  useEffect(() => {
+    getAllPendingCount().then(setTotalOfflineCount).catch(() => {});
+  }, []);
+
   if (authLoading || roleLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -93,22 +109,6 @@ const VehiclePhotos = () => {
     await tryList(ref);
     setExistingPhotos(photos);
   };
-
-  const loadOfflinePhotos = useCallback(async (ref?: string) => {
-    try {
-      const photos = await getPendingPhotos(ref);
-      setOfflinePhotos(photos);
-      const count = await getAllPendingCount();
-      setTotalOfflineCount(count);
-    } catch (err) {
-      console.error("Failed to load offline photos:", err);
-    }
-  }, []);
-
-  // Load total offline count on mount
-  useEffect(() => {
-    getAllPendingCount().then(setTotalOfflineCount).catch(() => {});
-  }, []);
 
   const handleStart = async () => {
     if (!reservationRef.trim() || !vehicleRego.trim()) {
