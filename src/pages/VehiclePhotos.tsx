@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
 import { useUserRole } from "@/hooks/use-user-role";
@@ -10,9 +10,17 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Camera, Upload, X, Loader2, ImageIcon } from "lucide-react";
+import { Camera, Upload, X, Loader2, ImageIcon, RefreshCw, WifiOff, AlertTriangle } from "lucide-react";
 import VehicleCamera from "@/components/VehicleCamera";
 import { addTimestampToPhoto, normalizeImageFile } from "@/lib/vehicle-photo-utils";
+import {
+  savePhotoOffline,
+  getPendingPhotos,
+  removePhoto,
+  updatePhotoStatus,
+  getAllPendingCount,
+  type OfflinePhoto,
+} from "@/lib/offline-photo-store";
 
 const VehiclePhotos = () => {
   const { user, loading: authLoading } = useAuth();
