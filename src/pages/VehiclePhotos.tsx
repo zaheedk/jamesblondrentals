@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
 import { useUserRole } from "@/hooks/use-user-role";
@@ -10,9 +10,17 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Camera, Upload, X, Loader2, ImageIcon } from "lucide-react";
+import { Camera, Upload, X, Loader2, ImageIcon, RefreshCw, WifiOff, AlertTriangle } from "lucide-react";
 import VehicleCamera from "@/components/VehicleCamera";
 import { addTimestampToPhoto, normalizeImageFile } from "@/lib/vehicle-photo-utils";
+import {
+  savePhotoOffline,
+  getPendingPhotos,
+  removePhoto,
+  updatePhotoStatus,
+  getAllPendingCount,
+  type OfflinePhoto,
+} from "@/lib/offline-photo-store";
 
 const VehiclePhotos = () => {
   const { user, loading: authLoading } = useAuth();
@@ -29,8 +37,27 @@ const VehiclePhotos = () => {
   const [uploading, setUploading] = useState(false);
   const [loadingPhotos, setLoadingPhotos] = useState(false);
   const [viewingPhoto, setViewingPhoto] = useState<string | null>(null);
+  const [offlinePhotos, setOfflinePhotos] = useState<OfflinePhoto[]>([]);
+  const [syncing, setSyncing] = useState(false);
+  const [totalOfflineCount, setTotalOfflineCount] = useState(0);
   const galleryInputRef = useRef<HTMLInputElement>(null);
   const canStart = reservationRef.trim() !== "" && vehicleRego.trim() !== "";
+
+  const loadOfflinePhotos = useCallback(async (ref?: string) => {
+    try {
+      const photos = await getPendingPhotos(ref);
+      setOfflinePhotos(photos);
+      const count = await getAllPendingCount();
+      setTotalOfflineCount(count);
+    } catch (err) {
+      console.error("Failed to load offline photos:", err);
+    }
+  }, []);
+
+  // Load total offline count on mount
+  useEffect(() => {
+    getAllPendingCount().then(setTotalOfflineCount).catch(() => {});
+  }, []);
 
   if (authLoading || roleLoading) {
     return (
@@ -90,6 +117,7 @@ const VehiclePhotos = () => {
     }
     setLoadingPhotos(true);
     await loadExistingPhotos(reservationRef.trim());
+    await loadOfflinePhotos(reservationRef.trim());
     setPhotoMode(true);
     setLoadingPhotos(false);
   };
@@ -128,6 +156,36 @@ const VehiclePhotos = () => {
     });
   };
 
+  const uploadSinglePhoto = async (
+    stampedFile: File,
+    basePath: string,
+    originalBlob: Blob,
+    ref: string,
+    rego: string,
+  ): Promise<{ url: string; name: string } | null> => {
+    const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`;
+    const filePath = `${basePath}/${fileName}`;
+
+    const { error } = await supabase.storage
+      .from("vehicle-photos")
+      .upload(filePath, stampedFile);
+
+    if (!error) {
+      const { data: urlData } = supabase.storage.from("vehicle-photos").getPublicUrl(filePath);
+      return { url: urlData.publicUrl, name: fileName };
+    }
+
+    // Upload failed — save offline
+    console.error("Upload error, saving offline:", error);
+    await savePhotoOffline({
+      reservationRef: ref,
+      vehicleRego: rego,
+      fileName,
+      blob: originalBlob,
+    });
+    return null;
+  };
+
   const handleUpload = async () => {
     if (!pendingPhotos.length || !reservationRef.trim() || !vehicleRego.trim()) {
       toast.error("Reservation number and rego are required");
@@ -137,35 +195,118 @@ const VehiclePhotos = () => {
     setUploading(true);
     try {
       const uploaded: { url: string; name: string }[] = [];
+      let savedOffline = 0;
       const batchId = `batch-${Date.now()}`;
+      const ref = reservationRef.trim();
       const rego = vehicleRego.trim() || "no-rego";
-      const basePath = `${reservationRef.trim()}/${rego}/${batchId}`;
+      const basePath = `${ref}/${rego}/${batchId}`;
 
       for (const pending of pendingPhotos) {
         const stampedFile = await addTimestampToPhoto(pending.file, vehicleRego.trim() || undefined);
-        const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`;
-        const filePath = `${basePath}/${fileName}`;
+        const result = await uploadSinglePhoto(stampedFile, basePath, pending.file, ref, rego);
+        if (result) {
+          uploaded.push(result);
+        } else {
+          savedOffline++;
+        }
+      }
+
+      setUploadedPhotos(prev => [...prev, ...uploaded]);
+      pendingPhotos.forEach(p => URL.revokeObjectURL(p.previewUrl));
+      setPendingPhotos([]);
+
+      if (uploaded.length > 0 && savedOffline === 0) {
+        toast.success(`${uploaded.length} photo(s) uploaded!`);
+      } else if (uploaded.length > 0 && savedOffline > 0) {
+        toast.success(`${uploaded.length} uploaded, ${savedOffline} saved offline for later sync`);
+      } else {
+        toast.warning(`${savedOffline} photo(s) saved offline — sync when you have a connection`, {
+          icon: <WifiOff className="h-4 w-4" />,
+        });
+      }
+
+      await loadOfflinePhotos(ref);
+    } catch (err) {
+      console.error(err);
+      // On total failure, save all pending photos offline
+      const ref = reservationRef.trim();
+      const rego = vehicleRego.trim() || "no-rego";
+      let saved = 0;
+      for (const pending of pendingPhotos) {
+        try {
+          await savePhotoOffline({
+            reservationRef: ref,
+            vehicleRego: rego,
+            fileName: `${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`,
+            blob: pending.file,
+          });
+          saved++;
+        } catch {
+          /* ignore */
+        }
+      }
+      pendingPhotos.forEach(p => URL.revokeObjectURL(p.previewUrl));
+      setPendingPhotos([]);
+      toast.warning(`Network error — ${saved} photo(s) saved offline`, {
+        icon: <WifiOff className="h-4 w-4" />,
+      });
+      await loadOfflinePhotos(ref);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleSync = async () => {
+    if (!offlinePhotos.length) return;
+    setSyncing(true);
+
+    let synced = 0;
+    let failed = 0;
+
+    for (const photo of offlinePhotos) {
+      try {
+        await updatePhotoStatus(photo.id, "uploading");
+
+        const file = new File([photo.blob], photo.fileName, { type: "image/jpeg" });
+        const stampedFile = await addTimestampToPhoto(file, photo.vehicleRego || undefined);
+        const batchId = `batch-${Date.now()}`;
+        const basePath = `${photo.reservationRef}/${photo.vehicleRego || "no-rego"}/${batchId}`;
+        const filePath = `${basePath}/${photo.fileName}`;
+
         const { error } = await supabase.storage
           .from("vehicle-photos")
           .upload(filePath, stampedFile);
 
         if (!error) {
+          await removePhoto(photo.id);
           const { data: urlData } = supabase.storage.from("vehicle-photos").getPublicUrl(filePath);
-          uploaded.push({ url: urlData.publicUrl, name: fileName });
+          setUploadedPhotos(prev => [...prev, { url: urlData.publicUrl, name: photo.fileName }]);
+          synced++;
         } else {
-          console.error("Upload error:", error);
+          await updatePhotoStatus(photo.id, "failed", error.message);
+          failed++;
         }
+      } catch (err) {
+        await updatePhotoStatus(photo.id, "failed", String(err));
+        failed++;
       }
-      setUploadedPhotos(prev => [...prev, ...uploaded]);
-      pendingPhotos.forEach(p => URL.revokeObjectURL(p.previewUrl));
-      setPendingPhotos([]);
-      toast.success(`${uploaded.length} photo(s) uploaded!`);
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to upload photos");
-    } finally {
-      setUploading(false);
     }
+
+    if (synced > 0 && failed === 0) {
+      toast.success(`${synced} photo(s) synced successfully!`);
+    } else if (synced > 0) {
+      toast.success(`${synced} synced, ${failed} still pending`);
+    } else {
+      toast.error("Sync failed — please check your connection");
+    }
+
+    await loadOfflinePhotos(reservationRef.trim());
+    setSyncing(false);
+  };
+
+  const removeOfflinePhoto = async (id: string) => {
+    await removePhoto(id);
+    await loadOfflinePhotos(reservationRef.trim());
   };
 
   const allPhotos = [...existingPhotos, ...uploadedPhotos];
@@ -191,41 +332,58 @@ const VehiclePhotos = () => {
           <h1 className="text-2xl font-bold mb-6 text-center">Vehicle Inspection Photos</h1>
 
         {!photoMode ? (
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Enter Details</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <Label htmlFor="resRef">Reservation No</Label>
-                <Input
-                  id="resRef"
-                  value={reservationRef}
-                  onChange={e => setReservationRef(e.target.value)}
-                  placeholder="e.g. 29823"
-                  required
-                  inputMode="numeric"
-                  className="h-14 text-lg"
-                />
-              </div>
-              <div>
-                <Label htmlFor="vehicleRego">Vehicle Registration</Label>
-                <Input
-                  id="vehicleRego"
-                  value={vehicleRego}
-                  onChange={e => setVehicleRego(e.target.value.toUpperCase())}
-                  placeholder="e.g. ABC123"
-                  required
-                  className="h-14 text-lg uppercase"
-                  onKeyDown={e => e.key === "Enter" && handleStart()}
-                />
-              </div>
-              <Button onClick={handleStart} disabled={loadingPhotos || !canStart} className="w-full h-14 text-lg">
-                {loadingPhotos ? <Loader2 className="h-5 w-5 animate-spin mr-2" /> : <Camera className="h-5 w-5 mr-2" />}
-                Continue
-              </Button>
-            </CardContent>
-          </Card>
+          <div className="space-y-4">
+            {totalOfflineCount > 0 && (
+              <Card className="border-amber-500/50 bg-amber-50 dark:bg-amber-950/20">
+                <CardContent className="pt-4 pb-4">
+                  <div className="flex items-center gap-2 text-amber-700 dark:text-amber-400">
+                    <WifiOff className="h-4 w-4 flex-shrink-0" />
+                    <span className="text-sm font-medium">
+                      {totalOfflineCount} photo{totalOfflineCount !== 1 ? "s" : ""} waiting to sync
+                    </span>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Enter the reservation details and tap sync to upload
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Enter Details</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label htmlFor="resRef">Reservation No</Label>
+                  <Input
+                    id="resRef"
+                    value={reservationRef}
+                    onChange={e => setReservationRef(e.target.value)}
+                    placeholder="e.g. 29823"
+                    required
+                    inputMode="numeric"
+                    className="h-14 text-lg"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="vehicleRego">Vehicle Registration</Label>
+                  <Input
+                    id="vehicleRego"
+                    value={vehicleRego}
+                    onChange={e => setVehicleRego(e.target.value.toUpperCase())}
+                    placeholder="e.g. ABC123"
+                    required
+                    className="h-14 text-lg uppercase"
+                    onKeyDown={e => e.key === "Enter" && handleStart()}
+                  />
+                </div>
+                <Button onClick={handleStart} disabled={loadingPhotos || !canStart} className="w-full h-14 text-lg">
+                  {loadingPhotos ? <Loader2 className="h-5 w-5 animate-spin mr-2" /> : <Camera className="h-5 w-5 mr-2" />}
+                  Continue
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
         ) : (
           <div className="space-y-6">
             <Card>
@@ -243,7 +401,7 @@ const VehiclePhotos = () => {
                       </div>
                     )}
                   </div>
-                  <Button variant="link" className="p-0 h-auto text-sm" onClick={() => { setPhotoMode(false); setPendingPhotos([]); setUploadedPhotos([]); setExistingPhotos([]); }}>
+                  <Button variant="link" className="p-0 h-auto text-sm" onClick={() => { setPhotoMode(false); setPendingPhotos([]); setUploadedPhotos([]); setExistingPhotos([]); setOfflinePhotos([]); }}>
                     Change
                   </Button>
                 </div>
@@ -291,6 +449,56 @@ const VehiclePhotos = () => {
                   <Button onClick={handleUpload} disabled={uploading} className="w-full h-12 text-base">
                     {uploading ? <Loader2 className="h-5 w-5 animate-spin mr-2" /> : <Upload className="h-5 w-5 mr-2" />}
                     Upload {pendingPhotos.length} Photo{pendingPhotos.length !== 1 ? "s" : ""}
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Offline / Pending Sync Photos */}
+            {offlinePhotos.length > 0 && (
+              <Card className="border-amber-500/50">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-base flex items-center gap-2">
+                      <AlertTriangle className="h-4 w-4 text-amber-500" />
+                      Saved Offline ({offlinePhotos.length})
+                    </CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-3 gap-2 mb-4">
+                    {offlinePhotos.map((photo) => {
+                      const previewUrl = URL.createObjectURL(photo.blob);
+                      return (
+                        <div key={photo.id} className="relative aspect-square">
+                          <img
+                            src={previewUrl}
+                            alt={photo.fileName}
+                            className="w-full h-full object-cover rounded-md opacity-75"
+                            style={{ imageOrientation: "from-image" }}
+                            onLoad={() => URL.revokeObjectURL(previewUrl)}
+                          />
+                          <div className="absolute top-1 left-1">
+                            <WifiOff className="h-3 w-3 text-amber-500 drop-shadow-md" />
+                          </div>
+                          <button
+                            onClick={() => removeOfflinePhoto(photo.id)}
+                            className="absolute top-1 right-1 bg-black/60 text-white rounded-full p-1"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                          {photo.status === "failed" && (
+                            <div className="absolute bottom-1 left-1 right-1 bg-red-600/80 text-white text-[10px] px-1 rounded text-center">
+                              Failed
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <Button onClick={handleSync} disabled={syncing} variant="outline" className="w-full h-12 text-base border-amber-500 text-amber-700 hover:bg-amber-50">
+                    {syncing ? <Loader2 className="h-5 w-5 animate-spin mr-2" /> : <RefreshCw className="h-5 w-5 mr-2" />}
+                    Sync {offlinePhotos.length} Photo{offlinePhotos.length !== 1 ? "s" : ""}
                   </Button>
                 </CardContent>
               </Card>
