@@ -163,8 +163,8 @@ const AdminInfringements = () => {
 
       toast.success("Infringement details extracted successfully");
       
-      // Auto-match booking
-      autoMatchBooking(extracted);
+      // Auto-match booking (don't await - let it run after extraction completes)
+      setTimeout(() => autoMatchBooking(extracted), 100);
     } catch (err) {
       console.error("Extraction error:", err);
       toast.error(
