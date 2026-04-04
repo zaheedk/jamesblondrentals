@@ -46,6 +46,7 @@ import AdminCustomers from "./pages/AdminCustomers";
 import RentalAgreement from "./pages/RentalAgreement";
 import AdminRentalAgreements from "./pages/AdminRentalAgreements";
 import AdminBookingImport from "./pages/AdminBookingImport";
+import AdminInfringements from "./pages/AdminInfringements";
 
 import Fleet from "./pages/Fleet";
 import FleetCars from "./pages/FleetCars";
