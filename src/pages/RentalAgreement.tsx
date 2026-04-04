@@ -110,9 +110,9 @@ const RentalAgreement = () => {
     try {
       // Check if agreement already exists in Supabase
       const { data: existingAgreements } = await supabase
-        .from("rental_agreements" as any)
+        .from("bookings")
         .select("*")
-        .eq("reservation_ref", reservationRef.trim())
+        .eq("reservation_reference", reservationRef.trim())
         .not("hirer_signature", "is", null);
 
       if (existingAgreements && (existingAgreements as any[]).length > 0) {
