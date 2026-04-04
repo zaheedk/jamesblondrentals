@@ -75,6 +75,12 @@ interface BookingMatch {
   vehicleRego: string;
 }
 
+const normalizeReservationNumber = (value: string) =>
+  value
+    .trim()
+    .replace(/^#?[A-Z]+-/, "")
+    .replace(/^#/, "");
+
 const COMPANY_NAME = "Kanthawala Ltd";
 const COMPANY_ADDRESS = "4004 Great North Road\nGlen Eden\nAuckland";
 const DECLARANT_NAME = "Marcelo Furlaneto Faleiro";
@@ -217,7 +223,9 @@ const AdminInfringements = () => {
         }
 
         setBookingMatch({
-          reservationNo: b.booking_reference || b.reservation_reference || "",
+          reservationNo: normalizeReservationNumber(
+            b.reservation_reference || b.booking_reference || ""
+          ),
           driverName: `${b.customer_first_name || ""} ${b.customer_last_name || ""}`.trim(),
           driverAddress: customerData
             ? [customerData.address, customerData.suburb, customerData.city, customerData.postcode, customerData.country].filter(Boolean).join(", ")
@@ -258,19 +266,54 @@ const AdminInfringements = () => {
         return storedRego === rego || bookingDataRego === rego;
       });
 
-      const reservationRefs = Array.from(
+      const matchedAgreements = [...(directAgreementMatches || []), ...jsonAgreementMatches] as Record<string, any>[];
+
+      const agreementReservationNumbers = Array.from(
         new Set(
-          [...(directAgreementMatches || []), ...jsonAgreementMatches]
-            .map((agreement: Record<string, any>) => agreement.reservation_ref)
+          matchedAgreements.flatMap((agreement) => {
+            const bookingInfos = Array.isArray(agreement.booking_data?.bookinginfo)
+              ? agreement.booking_data.bookinginfo
+              : [];
+
+            return bookingInfos
+              .flatMap((info: Record<string, any>) => [
+                String(info?.reservationno || "").trim(),
+                normalizeReservationNumber(String(info?.reservationdocumentno || "")),
+              ])
+              .filter(Boolean);
+          })
+        )
+      );
+
+      const agreementLongReferences = Array.from(
+        new Set(
+          matchedAgreements
+            .flatMap((agreement) => {
+              const bookingInfos = Array.isArray(agreement.booking_data?.bookinginfo)
+                ? agreement.booking_data.bookinginfo
+                : [];
+
+              return [
+                String(agreement.reservation_ref || "").trim(),
+                ...bookingInfos.map((info: Record<string, any>) => String(info?.reservationref || "").trim()),
+              ];
+            })
             .filter(Boolean)
         )
       );
 
-      if (reservationRefs.length > 0) {
+      if (agreementReservationNumbers.length > 0 || agreementLongReferences.length > 0) {
         let bookingsQuery = supabase
           .from("bookings")
           .select(bookingColumns)
-          .in("reservation_reference", reservationRefs);
+          .or([
+            agreementReservationNumbers.length > 0
+              ? `reservation_reference.in.(${agreementReservationNumbers.map((value) => `"${value}"`).join(",")})`
+              : null,
+            agreementLongReferences.length > 0
+              ? `booking_reference.in.(${agreementLongReferences.map((value) => `"${value}"`).join(",")})`
+              : null,
+          ].filter(Boolean).join(","));
 
         if (offenceDateISO) {
           bookingsQuery = bookingsQuery
@@ -283,7 +326,8 @@ const AdminInfringements = () => {
         const matchedBookingRows = (matchedBookings || []) as Record<string, any>[];
         if (matchedBookingRows.length > 0) {
           const exactRefBooking = matchedBookingRows.find((booking) =>
-            reservationRefs.includes(String(booking.reservation_reference || ""))
+            agreementReservationNumbers.includes(String(booking.reservation_reference || "").trim()) ||
+            agreementLongReferences.includes(String(booking.booking_reference || "").trim())
           );
           if (exactRefBooking) {
             await applyBookingMatch(exactRefBooking);
@@ -378,7 +422,9 @@ const AdminInfringements = () => {
           }
 
           setBookingMatch({
-            reservationNo: b.booking_reference || b.reservation_reference || manualReservationNo,
+            reservationNo: normalizeReservationNumber(
+              b.reservation_reference || b.booking_reference || manualReservationNo
+            ),
             driverName: `${b.customer_first_name || ""} ${b.customer_last_name || ""}`.trim(),
             driverAddress: customerData ? [customerData.address, customerData.suburb, customerData.city, customerData.postcode, customerData.country].filter(Boolean).join(", ") : b.customer_address || "",
             driverDOB: customerData?.dob || "",
