@@ -162,6 +162,9 @@ const AdminInfringements = () => {
       }
 
       toast.success("Infringement details extracted successfully");
+      
+      // Auto-match booking
+      autoMatchBooking(extracted);
     } catch (err) {
       console.error("Extraction error:", err);
       toast.error(
@@ -172,25 +175,99 @@ const AdminInfringements = () => {
     }
   };
 
-  const searchBookingByRego = async () => {
-    if (!extractedData?.vehicle_registration) {
-      toast.error("No vehicle registration to search with");
-      return;
-    }
+  const autoMatchBooking = useCallback(async (data: ExtractedData) => {
     setIsSearching(true);
     try {
-      // Try to find in Supabase bookings first by date range
-      // Then fall back to manual entry
-      toast.info(
-        "Auto-matching by vehicle rego requires production RCM API. Please enter reservation number manually below."
-      );
+      const rego = data.vehicle_registration?.trim().toUpperCase();
+      if (!rego) {
+        toast.error("No vehicle registration extracted");
+        return;
+      }
+
+      // Parse offence date from dd/MM/yyyy to yyyy-MM-dd
+      let offenceDateISO = "";
+      if (data.offence_date) {
+        const parts = data.offence_date.split("/");
+        if (parts.length === 3) {
+          offenceDateISO = `${parts[2]}-${parts[1]}-${parts[0]}`;
+        }
+      }
+
+      // Step 1: Find reservation refs matching this rego from rental_agreements
+      const { data: agreements } = await supabase
+        .from("rental_agreements")
+        .select("reservation_ref, vehicle_rego")
+        .ilike("vehicle_rego", rego);
+
+      if (agreements && agreements.length > 0) {
+        // Get the long reservation refs
+        const reservationRefs = agreements.map((a) => a.reservation_ref);
+
+        // Step 2: Find bookings matching these refs AND overlapping offence date
+        let query = supabase
+          .from("bookings")
+          .select("*")
+          .in("reservation_reference", reservationRefs);
+
+        if (offenceDateISO) {
+          query = query.lte("pickup_date", offenceDateISO).gte("dropoff_date", offenceDateISO);
+        }
+
+        const { data: matchedBookings } = await query.limit(1);
+
+        if (matchedBookings && matchedBookings.length > 0) {
+          const b = matchedBookings[0];
+          // Also try customers table for more details
+          let customerData: Record<string, any> | null = null;
+          if (b.customer_email) {
+            const { data: customers } = await supabase
+              .from("customers")
+              .select("*")
+              .eq("email", b.customer_email)
+              .limit(1);
+            customerData = customers?.[0] || null;
+          }
+
+          setBookingMatch({
+            reservationNo: b.reservation_reference || b.booking_reference || "",
+            driverName: `${b.customer_first_name || ""} ${b.customer_last_name || ""}`.trim(),
+            driverAddress: customerData
+              ? [customerData.address, customerData.suburb, customerData.city, customerData.postcode, customerData.country].filter(Boolean).join(", ")
+              : b.customer_address || "",
+            driverDOB: customerData?.dob || "",
+            driverLicenceNo: customerData?.license_number || b.customer_license_number || "",
+            licenceIssuedIn: customerData?.license_country || "New Zealand",
+            driverEmail: b.customer_email || customerData?.email || "",
+            vehicleRego: rego,
+          });
+          toast.success("Booking auto-matched from database!");
+          return;
+        }
+      }
+
+      // Step 3: Fallback - search all bookings by date overlap only
+      if (offenceDateISO) {
+        const { data: dateBookings } = await supabase
+          .from("bookings")
+          .select("*")
+          .lte("pickup_date", offenceDateISO)
+          .gte("dropoff_date", offenceDateISO);
+
+        if (dateBookings && dateBookings.length > 0) {
+          toast.info(`Found ${dateBookings.length} booking(s) for that date but none matched rego ${rego}. Please select manually or enter reservation number below.`);
+        } else {
+          toast.warning("No bookings found for this vehicle/date. Use manual search below.");
+        }
+      } else {
+        toast.warning("Could not parse offence date. Use manual search below.");
+      }
     } catch (err) {
-      console.error("Search error:", err);
-      toast.error("Failed to search for booking");
+      console.error("Auto-match error:", err);
+      toast.error("Auto-match failed. Use manual search below.");
     } finally {
       setIsSearching(false);
     }
-  };
+  }, []);
 
   const searchByReservationNo = async () => {
     if (!manualReservationNo.trim()) {
@@ -208,19 +285,10 @@ const AdminInfringements = () => {
         );
         const info = response?.results?.bookinginfo?.[0] as Record<string, any> | undefined;
         if (info) {
-          const drivers = info.additionaldrivers || info.extradrivers || [];
           const mainDriver = {
             firstName: info.firstname || info.customer_firstname || "",
             lastName: info.lastname || info.customer_lastname || "",
-            address: [
-              info.address || info.customer_address || "",
-              info.suburb || info.customer_suburb || "",
-              info.city || info.customer_city || "",
-              info.postcode || info.customer_postcode || "",
-              info.country || info.customer_country || "",
-            ]
-              .filter(Boolean)
-              .join(", "),
+            address: [info.address || info.customer_address || "", info.suburb || info.customer_suburb || "", info.city || info.customer_city || "", info.postcode || info.customer_postcode || "", info.country || info.customer_country || ""].filter(Boolean).join(", "),
             dob: info.dob || info.dateofbirth || info.customer_dob || "",
             licenceNo: info.licensenumber || info.drivinglicenseno || info.customer_license || "",
             licenceCountry: info.licensecountry || info.drivinglicensecountry || "New Zealand",
@@ -250,38 +318,21 @@ const AdminInfringements = () => {
         const { data: bookings } = await supabase
           .from("bookings")
           .select("*")
-          .or(
-            `reservation_reference.eq.${manualReservationNo.trim()},booking_reference.eq.${manualReservationNo.trim()}`
-          )
+          .or(`reservation_reference.eq.${manualReservationNo.trim()},booking_reference.eq.${manualReservationNo.trim()}`)
           .limit(1);
 
         if (bookings && bookings.length > 0) {
           const b = bookings[0];
-          // Also try customers table
           let customerData: Record<string, any> | null = null;
           if (b.customer_email) {
-            const { data: customers } = await supabase
-              .from("customers")
-              .select("*")
-              .eq("email", b.customer_email)
-              .limit(1);
+            const { data: customers } = await supabase.from("customers").select("*").eq("email", b.customer_email).limit(1);
             customerData = customers?.[0] || null;
           }
 
           setBookingMatch({
             reservationNo: b.reservation_reference || b.booking_reference || manualReservationNo,
             driverName: `${b.customer_first_name || ""} ${b.customer_last_name || ""}`.trim(),
-            driverAddress: customerData
-              ? [
-                  customerData.address,
-                  customerData.suburb,
-                  customerData.city,
-                  customerData.postcode,
-                  customerData.country,
-                ]
-                  .filter(Boolean)
-                  .join(", ")
-              : b.customer_address || "",
+            driverAddress: customerData ? [customerData.address, customerData.suburb, customerData.city, customerData.postcode, customerData.country].filter(Boolean).join(", ") : b.customer_address || "",
             driverDOB: customerData?.dob || "",
             driverLicenceNo: customerData?.license_number || b.customer_license_number || "",
             licenceIssuedIn: customerData?.license_country || "New Zealand",
@@ -487,8 +538,15 @@ const AdminInfringements = () => {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
-              <Search className="h-5 w-5" />
+              {isSearching ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : bookingMatch ? (
+                <CheckCircle2 className="h-5 w-5 text-primary" />
+              ) : (
+                <Search className="h-5 w-5" />
+              )}
               Step 3: Match Rental Booking
+              {isSearching && <span className="text-sm font-normal text-muted-foreground ml-2">Auto-matching...</span>}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -499,36 +557,37 @@ const AdminInfringements = () => {
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3">
-              <div className="flex-1">
-                <Label>Reservation Number</Label>
-                <Input
-                  value={manualReservationNo}
-                  onChange={(e) => setManualReservationNo(e.target.value)}
-                  placeholder="e.g. 28016"
-                />
-              </div>
-              <div className="flex-1">
-                <Label>Last Name (optional)</Label>
-                <Input
-                  value={manualLastName}
-                  onChange={(e) => setManualLastName(e.target.value)}
-                  placeholder="For RCM API search"
-                />
-              </div>
-              <Button
-                onClick={searchByReservationNo}
-                disabled={isSearching || !manualReservationNo.trim()}
-                className="self-end shrink-0"
-              >
-                {isSearching ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                  <Search className="mr-2 h-4 w-4" />
-                )}
-                Search
-              </Button>
-            </div>
+            {!bookingMatch && !isSearching && (
+              <>
+                <p className="text-sm text-muted-foreground">Auto-match didn't find a result. Search manually:</p>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <div className="flex-1">
+                    <Label>Reservation Number</Label>
+                    <Input
+                      value={manualReservationNo}
+                      onChange={(e) => setManualReservationNo(e.target.value)}
+                      placeholder="e.g. 28016"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <Label>Last Name (optional)</Label>
+                    <Input
+                      value={manualLastName}
+                      onChange={(e) => setManualLastName(e.target.value)}
+                      placeholder="For RCM API search"
+                    />
+                  </div>
+                  <Button
+                    onClick={searchByReservationNo}
+                    disabled={isSearching || !manualReservationNo.trim()}
+                    className="self-end shrink-0"
+                  >
+                    <Search className="mr-2 h-4 w-4" />
+                    Search
+                  </Button>
+                </div>
+              </>
+            )}
 
             {bookingMatch && (
               <div className="border rounded-md p-4 space-y-3 bg-accent/50">
