@@ -292,15 +292,15 @@ const AdminInfringements = () => {
       };
 
       const { data: directAgreementMatches } = await supabase
-        .from("rental_agreements")
-        .select("reservation_ref, vehicle_rego, booking_data")
+        .from("bookings")
+        .select("booking_reference, vehicle_rego, booking_data")
         .ilike("vehicle_rego", `%${rego}%`)
         .limit(20);
 
       const { data: agreementsForJsonSearch } = await supabase
-        .from("rental_agreements")
-        .select("reservation_ref, vehicle_rego, booking_data")
-        .not("reservation_ref", "is", null)
+        .from("bookings")
+        .select("booking_reference, vehicle_rego, booking_data")
+        .not("booking_reference", "is", null)
         .order("created_at", { ascending: false })
         .limit(500);
 
