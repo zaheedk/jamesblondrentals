@@ -266,29 +266,49 @@ const AdminInfringements = () => {
       };
 
       const applyBookingMatch = async (b: Record<string, any>, matchedRego = rego) => {
+        // Try to get customer info from booking_data JSONB first
+        const bookingInfoArr = Array.isArray(b.booking_data?.bookinginfo) ? b.booking_data.bookinginfo : [];
+        const bookingInfo = bookingInfoArr[0] as Record<string, any> | undefined;
+        const customerInfoArr = Array.isArray(b.booking_data?.customerinfo) ? b.booking_data.customerinfo : [];
+        const customerInfo = customerInfoArr[0] as Record<string, any> | undefined;
+
+        const firstName = b.customer_first_name || customerInfo?.firstname || bookingInfo?.firstname || "";
+        const lastName = b.customer_last_name || customerInfo?.lastname || bookingInfo?.lastname || "";
+
+        // If we have no customer name from DB at all, try RCM API with the long ref
+        if (!firstName && !lastName && b.booking_reference) {
+          const rcmMatched = await applyRcmMatch(b.booking_reference, matchedRego);
+          if (rcmMatched) return;
+        }
+
         let customerData: Record<string, any> | null = null;
-        if (b.customer_email) {
+        const email = b.customer_email || customerInfo?.email || bookingInfo?.email || "";
+        if (email) {
           const { data: customers } = await supabase
             .from("customers")
             .select("*")
-            .eq("email", b.customer_email)
+            .eq("email", email)
             .limit(1);
           customerData = customers?.[0] || null;
         }
+
+        const driverAddress = customerData
+          ? [customerData.address, customerData.suburb, customerData.city, customerData.postcode, customerData.country].filter(Boolean).join(", ")
+          : customerInfo
+            ? [customerInfo.address, customerInfo.city, customerInfo.postcode, customerInfo.country].filter(Boolean).join(", ")
+            : b.customer_address || "";
 
         setBookingMatch({
           reservationNo: normalizeReservationNumber(
             b.reservation_reference || b.booking_reference || ""
           ),
-          driverName: `${b.customer_first_name || ""} ${b.customer_last_name || ""}`.trim(),
-          driverAddress: customerData
-            ? [customerData.address, customerData.suburb, customerData.city, customerData.postcode, customerData.country].filter(Boolean).join(", ")
-            : b.customer_address || "",
-          driverDOB: customerData?.dob || "",
-          driverLicenceNo: customerData?.license_number || b.customer_license_number || "",
-          licenceIssuedIn: customerData?.license_country || "New Zealand",
-          driverEmail: b.customer_email || customerData?.email || "",
-          vehicleRego: matchedRego,
+          driverName: `${firstName} ${lastName}`.trim(),
+          driverAddress,
+          driverDOB: customerData?.dob || customerInfo?.dateofbirth || "",
+          driverLicenceNo: customerData?.license_number || customerInfo?.licenseno || b.customer_license_number || "",
+          licenceIssuedIn: customerData?.license_country || customerInfo?.licenseissued || "New Zealand",
+          driverEmail: email || customerData?.email || "",
+          vehicleRego: b.vehicle_rego || bookingInfo?.vehicle_registrationnumber || matchedRego,
         });
         toast.success("Booking auto-matched from database!");
       };
