@@ -241,7 +241,7 @@ const AdminInfringements = () => {
 
       const { data: directAgreementMatches } = await supabase
         .from("rental_agreements")
-        .select("reservation_ref, vehicle_rego")
+        .select("reservation_ref, vehicle_rego, booking_data")
         .ilike("vehicle_rego", `%${rego}%`)
         .limit(20);
 
@@ -285,35 +285,11 @@ const AdminInfringements = () => {
         )
       );
 
-      const agreementLongReferences = Array.from(
-        new Set(
-          matchedAgreements
-            .flatMap((agreement) => {
-              const bookingInfos = Array.isArray(agreement.booking_data?.bookinginfo)
-                ? agreement.booking_data.bookinginfo
-                : [];
-
-              return [
-                String(agreement.reservation_ref || "").trim(),
-                ...bookingInfos.map((info: Record<string, any>) => String(info?.reservationref || "").trim()),
-              ];
-            })
-            .filter(Boolean)
-        )
-      );
-
-      if (agreementReservationNumbers.length > 0 || agreementLongReferences.length > 0) {
+      if (agreementReservationNumbers.length > 0) {
         let bookingsQuery = supabase
           .from("bookings")
           .select(bookingColumns)
-          .or([
-            agreementReservationNumbers.length > 0
-              ? `reservation_reference.in.(${agreementReservationNumbers.map((value) => `"${value}"`).join(",")})`
-              : null,
-            agreementLongReferences.length > 0
-              ? `booking_reference.in.(${agreementLongReferences.map((value) => `"${value}"`).join(",")})`
-              : null,
-          ].filter(Boolean).join(","));
+          .in("reservation_reference", agreementReservationNumbers);
 
         if (offenceDateISO) {
           bookingsQuery = bookingsQuery
@@ -326,8 +302,7 @@ const AdminInfringements = () => {
         const matchedBookingRows = (matchedBookings || []) as Record<string, any>[];
         if (matchedBookingRows.length > 0) {
           const exactRefBooking = matchedBookingRows.find((booking) =>
-            agreementReservationNumbers.includes(String(booking.reservation_reference || "").trim()) ||
-            agreementLongReferences.includes(String(booking.booking_reference || "").trim())
+            agreementReservationNumbers.includes(String(booking.reservation_reference || "").trim())
           );
           if (exactRefBooking) {
             await applyBookingMatch(exactRefBooking);
