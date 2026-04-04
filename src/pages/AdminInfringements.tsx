@@ -209,6 +209,8 @@ const AdminInfringements = () => {
         "customer_email",
         "customer_address",
         "customer_license_number",
+        "booking_data",
+        "vehicle_rego",
       ].join(",");
 
       const applyRcmMatch = async (reservationRef: string, matchedRego = rego) => {
