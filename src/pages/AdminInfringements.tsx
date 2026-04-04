@@ -538,8 +538,15 @@ const AdminInfringements = () => {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
-              <Search className="h-5 w-5" />
+              {isSearching ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : bookingMatch ? (
+                <CheckCircle2 className="h-5 w-5 text-primary" />
+              ) : (
+                <Search className="h-5 w-5" />
+              )}
               Step 3: Match Rental Booking
+              {isSearching && <span className="text-sm font-normal text-muted-foreground ml-2">Auto-matching...</span>}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -550,34 +557,33 @@ const AdminInfringements = () => {
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3">
-              <div className="flex-1">
-                <Label>Reservation Number</Label>
-                <Input
-                  value={manualReservationNo}
-                  onChange={(e) => setManualReservationNo(e.target.value)}
-                  placeholder="e.g. 28016"
-                />
-              </div>
-              <div className="flex-1">
-                <Label>Last Name (optional)</Label>
-                <Input
-                  value={manualLastName}
-                  onChange={(e) => setManualLastName(e.target.value)}
-                  placeholder="For RCM API search"
-                />
-              </div>
-              <Button
-                onClick={searchByReservationNo}
-                disabled={isSearching || !manualReservationNo.trim()}
-                className="self-end shrink-0"
-              >
-                {isSearching ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                  <Search className="mr-2 h-4 w-4" />
-                )}
-                Search
+            {!bookingMatch && !isSearching && (
+              <>
+                <p className="text-sm text-muted-foreground">Auto-match didn't find a result. Search manually:</p>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <div className="flex-1">
+                    <Label>Reservation Number</Label>
+                    <Input
+                      value={manualReservationNo}
+                      onChange={(e) => setManualReservationNo(e.target.value)}
+                      placeholder="e.g. 28016"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <Label>Last Name (optional)</Label>
+                    <Input
+                      value={manualLastName}
+                      onChange={(e) => setManualLastName(e.target.value)}
+                      placeholder="For RCM API search"
+                    />
+                  </div>
+                  <Button
+                    onClick={searchByReservationNo}
+                    disabled={isSearching || !manualReservationNo.trim()}
+                    className="self-end shrink-0"
+                  >
+                    <Search className="mr-2 h-4 w-4" />
+                    Search
               </Button>
             </div>
 
