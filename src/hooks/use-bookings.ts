@@ -7,8 +7,6 @@ export type Booking = Database['public']['Tables']['bookings']['Row'];
 
 export function useBookings() {
   const { user } = useAuth();
-  // Admin status is now determined by RLS policy using is_admin_user() function
-  // which checks the user_roles table instead of hardcoded email
 
   return useQuery({
     queryKey: ['bookings', user?.id],
@@ -17,19 +15,33 @@ export function useBookings() {
         throw new Error('User not authenticated');
       }
 
-      // RLS policy handles admin vs regular user access automatically
-      // Admins see all bookings, users see only their own
-      const { data, error } = await supabase
-        .from('bookings')
-        .select('*')
-        .order('pickup_date', { ascending: false });
+      // Fetch all bookings using pagination to bypass the 1000 row limit
+      const allBookings: Booking[] = [];
+      const pageSize = 1000;
+      let from = 0;
+      let hasMore = true;
 
-      if (error) {
-        console.error('Error fetching bookings:', error);
-        throw error;
+      while (hasMore) {
+        const { data, error } = await supabase
+          .from('bookings')
+          .select('*')
+          .order('pickup_date', { ascending: false })
+          .range(from, from + pageSize - 1);
+
+        if (error) {
+          console.error('Error fetching bookings:', error);
+          throw error;
+        }
+
+        if (data) {
+          allBookings.push(...data);
+        }
+
+        hasMore = data?.length === pageSize;
+        from += pageSize;
       }
 
-      return data || [];
+      return allBookings;
     },
     enabled: !!user?.id,
   });
