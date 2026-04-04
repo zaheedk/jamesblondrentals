@@ -584,8 +584,10 @@ const AdminInfringements = () => {
                   >
                     <Search className="mr-2 h-4 w-4" />
                     Search
-              </Button>
-            </div>
+                  </Button>
+                </div>
+              </>
+            )}
 
             {bookingMatch && (
               <div className="border rounded-md p-4 space-y-3 bg-accent/50">
