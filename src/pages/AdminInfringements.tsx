@@ -377,7 +377,7 @@ const AdminInfringements = () => {
           }
 
           setBookingMatch({
-            reservationNo: b.reservation_reference || b.booking_reference || manualReservationNo,
+            reservationNo: b.booking_reference || b.reservation_reference || manualReservationNo,
             driverName: `${b.customer_first_name || ""} ${b.customer_last_name || ""}`.trim(),
             driverAddress: customerData ? [customerData.address, customerData.suburb, customerData.city, customerData.postcode, customerData.country].filter(Boolean).join(", ") : b.customer_address || "",
             driverDOB: customerData?.dob || "",
