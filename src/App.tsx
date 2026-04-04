@@ -227,6 +227,11 @@ const App = () => {
             <ProtectedRoute>
               <AdminBookingImport />
             </ProtectedRoute>
+           } />
+          <Route path="/admin/infringements" element={
+            <ProtectedRoute>
+              <AdminInfringements />
+            </ProtectedRoute>
           } />
                 
                 {/* Auth routes */}
