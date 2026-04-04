@@ -1127,19 +1127,21 @@ const RentalAgreement = () => {
       const booking = bookingData.bookinginfo?.[0];
       const agreementRef = booking?.reservationdocumentno || booking?.reservationno || reservationRef;
 
-      const { error } = await supabase.from("rental_agreements" as any).insert({
-        reservation_ref: reservationRef,
-        booking_data: bookingData as any,
-        hirer_signature: hirerSignature,
-        additional_driver_signature: additionalDriverSignature,
-        signed_at: new Date().toISOString(),
-        signed_by_name: customer ? `${customer.firstname} ${customer.lastname}` : "",
-        kms_out: kmsOut,
-        kms_in: kmsIn,
-        fuel_out: fuelOut,
-        fuel_in: fuelIn,
-        vehicle_rego: vehicleRego,
-      });
+      const { error } = await supabase
+        .from("bookings")
+        .update({
+          booking_data: bookingData as any,
+          hirer_signature: hirerSignature,
+          additional_driver_signature: additionalDriverSignature,
+          signed_at: new Date().toISOString(),
+          signed_by_name: customer ? `${customer.firstname} ${customer.lastname}` : "",
+          kms_out: kmsOut,
+          kms_in: kmsIn,
+          fuel_out: fuelOut,
+          fuel_in: fuelIn,
+          vehicle_rego: vehicleRego,
+        })
+        .eq("reservation_reference", reservationRef);
 
       if (error) throw error;
       setSaved(true);

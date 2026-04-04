@@ -34,11 +34,11 @@ const AdminBookings = () => {
   useEffect(() => {
     const fetchSignedAgreements = async () => {
       const { data } = await supabase
-        .from("rental_agreements" as any)
-        .select("reservation_ref")
+        .from("bookings")
+        .select("reservation_reference")
         .not("hirer_signature", "is", null);
       if (data) {
-        setSignedAgreements(new Set((data as any[]).map((d: any) => d.reservation_ref)));
+        setSignedAgreements(new Set(data.map((d) => d.reservation_reference).filter(Boolean) as string[]));
       }
     };
     fetchSignedAgreements();
