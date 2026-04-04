@@ -69,47 +69,53 @@ export default function MemberDashboard() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid md:grid-cols-5 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                 <Link to="/admin/blog">
-                  <Button variant="outline" className="w-full justify-start" size="lg">
-                    <BookOpen className="w-4 h-4 mr-2" />
-                    Blog Management
+                  <Button variant="outline" className="w-full justify-start text-xs sm:text-sm" size="lg">
+                    <BookOpen className="w-4 h-4 mr-2 shrink-0" />
+                    <span className="truncate">Blog Management</span>
                   </Button>
                 </Link>
                 <Link to="/admin/vehicle-rates">
-                  <Button variant="outline" className="w-full justify-start" size="lg">
-                    <TrendingUp className="w-4 h-4 mr-2" />
-                    Price Scraping
+                  <Button variant="outline" className="w-full justify-start text-xs sm:text-sm" size="lg">
+                    <TrendingUp className="w-4 h-4 mr-2 shrink-0" />
+                    <span className="truncate">Price Scraping</span>
                   </Button>
                 </Link>
                 <Link to="/admin/feedback">
-                  <Button variant="outline" className="w-full justify-start" size="lg">
-                    <MessageSquare className="w-4 h-4 mr-2" />
-                    Customer Feedback
+                  <Button variant="outline" className="w-full justify-start text-xs sm:text-sm" size="lg">
+                    <MessageSquare className="w-4 h-4 mr-2 shrink-0" />
+                    <span className="truncate">Customer Feedback</span>
                   </Button>
                 </Link>
                 <Link to="/admin/bookings">
-                  <Button variant="outline" className="w-full justify-start" size="lg">
-                    <Calendar className="w-4 h-4 mr-2" />
-                    All Bookings
+                  <Button variant="outline" className="w-full justify-start text-xs sm:text-sm" size="lg">
+                    <Calendar className="w-4 h-4 mr-2 shrink-0" />
+                    <span className="truncate">All Bookings</span>
                   </Button>
                 </Link>
                 <Link to="/admin/customers">
-                  <Button variant="outline" className="w-full justify-start" size="lg">
-                    <Users className="w-4 h-4 mr-2" />
-                    Customers
+                  <Button variant="outline" className="w-full justify-start text-xs sm:text-sm" size="lg">
+                    <Users className="w-4 h-4 mr-2 shrink-0" />
+                    <span className="truncate">Customers</span>
+                  </Button>
+                </Link>
+                <Link to="/admin/import-bookings">
+                  <Button variant="outline" className="w-full justify-start text-xs sm:text-sm" size="lg">
+                    <Upload className="w-4 h-4 mr-2 shrink-0" />
+                    <span className="truncate">Import Bookings</span>
                   </Button>
                 </Link>
                 <Link to="/photos">
-                  <Button variant="outline" className="w-full justify-start" size="lg">
-                    <Camera className="w-4 h-4 mr-2" />
-                    Vehicle Photos
+                  <Button variant="outline" className="w-full justify-start text-xs sm:text-sm" size="lg">
+                    <Camera className="w-4 h-4 mr-2 shrink-0" />
+                    <span className="truncate">Vehicle Photos</span>
                   </Button>
                 </Link>
                 <Link to="/photo-gallery">
-                  <Button variant="outline" className="w-full justify-start" size="lg">
-                    <ImageIcon className="w-4 h-4 mr-2" />
-                    Photo Gallery
+                  <Button variant="outline" className="w-full justify-start text-xs sm:text-sm" size="lg">
+                    <ImageIcon className="w-4 h-4 mr-2 shrink-0" />
+                    <span className="truncate">Photo Gallery</span>
                   </Button>
                 </Link>
               </div>
