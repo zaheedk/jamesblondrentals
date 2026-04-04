@@ -183,7 +183,7 @@ const AdminBookingImport = () => {
         .filter(Boolean);
 
       records.push({
-        reservation_reference: r["Res"]?.trim() || null,
+        reservation_reference: r["Res"]?.trim().replace(/^#/, "") || null,
         booking_reference: r["RcmRefNo"]?.trim() || null,
         booking_status: status,
         vehicle_category: r["Category"]?.trim() || null,
