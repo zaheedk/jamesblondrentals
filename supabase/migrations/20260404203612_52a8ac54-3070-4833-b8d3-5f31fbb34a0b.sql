@@ -1,0 +1,1 @@
+UPDATE bookings SET reservation_reference = LTRIM(reservation_reference, '#') WHERE reservation_reference LIKE '#%';
