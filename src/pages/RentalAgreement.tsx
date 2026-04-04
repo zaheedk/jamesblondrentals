@@ -1127,21 +1127,52 @@ const RentalAgreement = () => {
       const booking = bookingData.bookinginfo?.[0];
       const agreementRef = booking?.reservationdocumentno || booking?.reservationno || reservationRef;
 
-      const { error } = await supabase
+      // Try to update existing booking first
+      const signatureData = {
+        booking_data: bookingData as any,
+        hirer_signature: hirerSignature,
+        additional_driver_signature: additionalDriverSignature,
+        signed_at: new Date().toISOString(),
+        signed_by_name: customer ? `${customer.firstname} ${customer.lastname}` : "",
+        kms_out: kmsOut,
+        kms_in: kmsIn,
+        fuel_out: fuelOut,
+        fuel_in: fuelIn,
+        vehicle_rego: vehicleRego,
+      };
+
+      const { data: updated, error: updateError } = await supabase
         .from("bookings")
-        .update({
-          booking_data: bookingData as any,
-          hirer_signature: hirerSignature,
-          additional_driver_signature: additionalDriverSignature,
-          signed_at: new Date().toISOString(),
-          signed_by_name: customer ? `${customer.firstname} ${customer.lastname}` : "",
-          kms_out: kmsOut,
-          kms_in: kmsIn,
-          fuel_out: fuelOut,
-          fuel_in: fuelIn,
-          vehicle_rego: vehicleRego,
-        })
-        .eq("reservation_reference", reservationRef);
+        .update(signatureData)
+        .eq("reservation_reference", reservationRef)
+        .select("id");
+
+      if (updateError) throw updateError;
+
+      // If no existing booking was found, insert a new record
+      if (!updated || updated.length === 0) {
+        const bookingInfo = bookingData.bookinginfo?.[0];
+        const { error: insertError } = await supabase
+          .from("bookings")
+          .insert({
+            ...signatureData,
+            reservation_reference: reservationRef,
+            booking_reference: bookingInfo?.reservationno || null,
+            customer_first_name: customer?.firstname || null,
+            customer_last_name: customer?.lastname || null,
+            customer_email: customer?.email || null,
+            customer_phone: customer?.mobile || customer?.phone || null,
+            pickup_date: bookingInfo?.pickupdate || new Date().toISOString().split("T")[0],
+            dropoff_date: bookingInfo?.dropoffdate || new Date().toISOString().split("T")[0],
+            pickup_time: bookingInfo?.pickuptime || "09:00",
+            dropoff_time: bookingInfo?.dropofftime || "09:00",
+            total_days: parseInt(bookingInfo?.numberofdays) || 1,
+            vehicle_name: bookingInfo?.vehiclecategoryname || null,
+            booking_status: "confirmed",
+          });
+
+        if (insertError) throw insertError;
+      }
 
       if (error) throw error;
       setSaved(true);
