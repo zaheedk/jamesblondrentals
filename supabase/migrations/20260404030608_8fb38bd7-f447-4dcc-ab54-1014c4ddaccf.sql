@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS "Temp allow anon bulk insert" ON public.bookings;
