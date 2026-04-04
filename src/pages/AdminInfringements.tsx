@@ -528,8 +528,8 @@ const AdminInfringements = () => {
             </div>
 
             {bookingMatch && (
-              <div className="border rounded-md p-4 space-y-3 bg-green-50 dark:bg-green-950/20">
-                <div className="flex items-center gap-2 text-green-700 dark:text-green-400">
+              <div className="border rounded-md p-4 space-y-3 bg-accent/50">
+                <div className="flex items-center gap-2 text-primary">
                   <CheckCircle2 className="h-4 w-4" />
                   <span className="font-semibold">Booking Found</span>
                 </div>
