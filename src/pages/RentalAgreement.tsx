@@ -1157,7 +1157,7 @@ const RentalAgreement = () => {
           .insert({
             ...signatureData,
             reservation_reference: reservationRef,
-            booking_reference: bookingInfo?.reservationno || null,
+            booking_reference: String(bookingInfo?.reservationno || ""),
             customer_first_name: customer?.firstname || null,
             customer_last_name: customer?.lastname || null,
             customer_email: customer?.email || null,
@@ -1166,15 +1166,13 @@ const RentalAgreement = () => {
             dropoff_date: bookingInfo?.dropoffdate || new Date().toISOString().split("T")[0],
             pickup_time: bookingInfo?.pickuptime || "09:00",
             dropoff_time: bookingInfo?.dropofftime || "09:00",
-            total_days: parseInt(bookingInfo?.numberofdays) || 1,
-            vehicle_name: bookingInfo?.vehiclecategoryname || null,
+            total_days: parseInt(String(bookingInfo?.numberofdays)) || 1,
+            vehicle_name: bookingInfo?.vehiclecategory || null,
             booking_status: "confirmed",
           });
 
         if (insertError) throw insertError;
       }
-
-      if (error) throw error;
       setSaved(true);
       setAlreadySigned(true);
       setExistingSignature(hirerSignature);
