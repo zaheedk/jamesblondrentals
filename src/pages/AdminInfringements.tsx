@@ -280,9 +280,10 @@ const AdminInfringements = () => {
 
         const { data: matchedBookings } = await bookingsQuery.limit(5);
 
-        if (matchedBookings && matchedBookings.length > 0) {
-          const exactRefBooking = matchedBookings.find((booking) =>
-            reservationRefs.includes(booking.reservation_reference || "")
+        const matchedBookingRows = (matchedBookings || []) as Record<string, any>[];
+        if (matchedBookingRows.length > 0) {
+          const exactRefBooking = matchedBookingRows.find((booking) =>
+            reservationRefs.includes(String(booking.reservation_reference || ""))
           );
           if (exactRefBooking) {
             await applyBookingMatch(exactRefBooking);
