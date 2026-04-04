@@ -119,7 +119,7 @@ const AdminInfringements = () => {
     canvas.height = viewport.height;
     const ctx = canvas.getContext("2d")!;
     
-    await page.render({ canvasContext: ctx, viewport }).promise;
+    await page.render({ canvasContext: ctx, viewport, canvas } as any).promise;
     
     // Convert to base64 JPEG
     const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
