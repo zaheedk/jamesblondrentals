@@ -184,7 +184,6 @@ const AdminInfringements = () => {
         return;
       }
 
-      // Parse offence date from dd/MM/yyyy to yyyy-MM-dd
       let offenceDateISO = "";
       if (data.offence_date) {
         const parts = data.offence_date.split("/");
@@ -193,68 +192,117 @@ const AdminInfringements = () => {
         }
       }
 
-      // Step 1: Find reservation refs matching this rego from rental_agreements
-      const { data: agreements } = await supabase
+      const bookingColumns = [
+        "id",
+        "booking_reference",
+        "reservation_reference",
+        "pickup_date",
+        "dropoff_date",
+        "customer_first_name",
+        "customer_last_name",
+        "customer_email",
+        "customer_address",
+        "customer_license_number",
+      ].join(",");
+
+      const applyBookingMatch = async (b: Record<string, any>, matchedRego = rego) => {
+        let customerData: Record<string, any> | null = null;
+        if (b.customer_email) {
+          const { data: customers } = await supabase
+            .from("customers")
+            .select("*")
+            .eq("email", b.customer_email)
+            .limit(1);
+          customerData = customers?.[0] || null;
+        }
+
+        setBookingMatch({
+          reservationNo: b.booking_reference || b.reservation_reference || "",
+          driverName: `${b.customer_first_name || ""} ${b.customer_last_name || ""}`.trim(),
+          driverAddress: customerData
+            ? [customerData.address, customerData.suburb, customerData.city, customerData.postcode, customerData.country].filter(Boolean).join(", ")
+            : b.customer_address || "",
+          driverDOB: customerData?.dob || "",
+          driverLicenceNo: customerData?.license_number || b.customer_license_number || "",
+          licenceIssuedIn: customerData?.license_country || "New Zealand",
+          driverEmail: b.customer_email || customerData?.email || "",
+          vehicleRego: matchedRego,
+        });
+        toast.success("Booking auto-matched from database!");
+      };
+
+      const { data: directAgreementMatches } = await supabase
         .from("rental_agreements")
         .select("reservation_ref, vehicle_rego")
-        .ilike("vehicle_rego", rego);
+        .ilike("vehicle_rego", `%${rego}%`)
+        .limit(20);
 
-      if (agreements && agreements.length > 0) {
-        // Get the long reservation refs
-        const reservationRefs = agreements.map((a) => a.reservation_ref);
+      const { data: agreementsForJsonSearch } = await supabase
+        .from("rental_agreements")
+        .select("reservation_ref, vehicle_rego, booking_data")
+        .not("reservation_ref", "is", null)
+        .order("created_at", { ascending: false })
+        .limit(500);
 
-        // Step 2: Find bookings matching these refs AND overlapping offence date
-        let query = supabase
+      const jsonAgreementMatches = (agreementsForJsonSearch || []).filter((agreement: Record<string, any>) => {
+        const storedRego = String(agreement.vehicle_rego || "").trim().toUpperCase();
+        const bookingInfo = Array.isArray(agreement.booking_data?.bookinginfo)
+          ? agreement.booking_data.bookinginfo[0]
+          : null;
+        const bookingDataRego = String(
+          bookingInfo?.vehicle_registrationnumber || bookingInfo?.vehiclerego || ""
+        )
+          .trim()
+          .toUpperCase();
+
+        return storedRego === rego || bookingDataRego === rego;
+      });
+
+      const reservationRefs = Array.from(
+        new Set(
+          [...(directAgreementMatches || []), ...jsonAgreementMatches]
+            .map((agreement: Record<string, any>) => agreement.reservation_ref)
+            .filter(Boolean)
+        )
+      );
+
+      if (reservationRefs.length > 0) {
+        let bookingsQuery = supabase
           .from("bookings")
-          .select("*")
+          .select(bookingColumns)
           .in("reservation_reference", reservationRefs);
 
         if (offenceDateISO) {
-          query = query.lte("pickup_date", offenceDateISO).gte("dropoff_date", offenceDateISO);
+          bookingsQuery = bookingsQuery
+            .lte("pickup_date", offenceDateISO)
+            .gte("dropoff_date", offenceDateISO);
         }
 
-        const { data: matchedBookings } = await query.limit(1);
+        const { data: matchedBookings } = await bookingsQuery.limit(5);
 
-        if (matchedBookings && matchedBookings.length > 0) {
-          const b = matchedBookings[0];
-          // Also try customers table for more details
-          let customerData: Record<string, any> | null = null;
-          if (b.customer_email) {
-            const { data: customers } = await supabase
-              .from("customers")
-              .select("*")
-              .eq("email", b.customer_email)
-              .limit(1);
-            customerData = customers?.[0] || null;
+        const matchedBookingRows = (matchedBookings || []) as Record<string, any>[];
+        if (matchedBookingRows.length > 0) {
+          const exactRefBooking = matchedBookingRows.find((booking) =>
+            reservationRefs.includes(String(booking.reservation_reference || ""))
+          );
+          if (exactRefBooking) {
+            await applyBookingMatch(exactRefBooking);
+            return;
           }
-
-          setBookingMatch({
-            reservationNo: b.reservation_reference || b.booking_reference || "",
-            driverName: `${b.customer_first_name || ""} ${b.customer_last_name || ""}`.trim(),
-            driverAddress: customerData
-              ? [customerData.address, customerData.suburb, customerData.city, customerData.postcode, customerData.country].filter(Boolean).join(", ")
-              : b.customer_address || "",
-            driverDOB: customerData?.dob || "",
-            driverLicenceNo: customerData?.license_number || b.customer_license_number || "",
-            licenceIssuedIn: customerData?.license_country || "New Zealand",
-            driverEmail: b.customer_email || customerData?.email || "",
-            vehicleRego: rego,
-          });
-          toast.success("Booking auto-matched from database!");
-          return;
         }
       }
 
-      // Step 3: Fallback - search all bookings by date overlap only
       if (offenceDateISO) {
         const { data: dateBookings } = await supabase
           .from("bookings")
-          .select("*")
+          .select(bookingColumns)
           .lte("pickup_date", offenceDateISO)
-          .gte("dropoff_date", offenceDateISO);
+          .gte("dropoff_date", offenceDateISO)
+          .order("pickup_date", { ascending: false })
+          .limit(50);
 
         if (dateBookings && dateBookings.length > 0) {
-          toast.info(`Found ${dateBookings.length} booking(s) for that date but none matched rego ${rego}. Please select manually or enter reservation number below.`);
+          toast.info(`Found ${dateBookings.length} booking(s) for that date, but none linked cleanly to rego ${rego}. Please confirm the reservation number below.`);
         } else {
           toast.warning("No bookings found for this vehicle/date. Use manual search below.");
         }
@@ -330,7 +378,7 @@ const AdminInfringements = () => {
           }
 
           setBookingMatch({
-            reservationNo: b.reservation_reference || b.booking_reference || manualReservationNo,
+            reservationNo: b.booking_reference || b.reservation_reference || manualReservationNo,
             driverName: `${b.customer_first_name || ""} ${b.customer_last_name || ""}`.trim(),
             driverAddress: customerData ? [customerData.address, customerData.suburb, customerData.city, customerData.postcode, customerData.country].filter(Boolean).join(", ") : b.customer_address || "",
             driverDOB: customerData?.dob || "",
