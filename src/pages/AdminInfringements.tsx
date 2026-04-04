@@ -372,7 +372,7 @@ const AdminInfringements = () => {
                 : [];
 
               return [
-                String(agreement.reservation_ref || "").trim(),
+                String(agreement.booking_reference || "").trim(),
                 ...bookingInfos.map((info: Record<string, any>) => String(info?.reservationref || "").trim()),
               ];
             })
