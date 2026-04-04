@@ -162,6 +162,9 @@ const AdminInfringements = () => {
       }
 
       toast.success("Infringement details extracted successfully");
+      
+      // Auto-match booking
+      autoMatchBooking(extracted);
     } catch (err) {
       console.error("Extraction error:", err);
       toast.error(
