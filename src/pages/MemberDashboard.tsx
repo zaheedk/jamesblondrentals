@@ -106,6 +106,12 @@ export default function MemberDashboard() {
                     <span className="truncate">Import Bookings</span>
                   </Button>
                 </Link>
+                <Link to="/admin/infringements">
+                  <Button variant="outline" className="w-full justify-start text-xs sm:text-sm" size="lg">
+                    <AlertTriangle className="w-4 h-4 mr-2 shrink-0" />
+                    <span className="truncate">Infringements</span>
+                  </Button>
+                </Link>
                 <Link to="/photos">
                   <Button variant="outline" className="w-full justify-start text-xs sm:text-sm" size="lg">
                     <Camera className="w-4 h-4 mr-2 shrink-0" />
