@@ -106,9 +106,12 @@ export type Database = {
       }
       bookings: {
         Row: {
+          additional_driver_signature: string | null
+          booking_data: Json | null
           booking_reference: string | null
           booking_status: string | null
           created_at: string
+          created_by: string | null
           customer_address: string | null
           customer_age: number | null
           customer_email: string | null
@@ -122,9 +125,17 @@ export type Database = {
           dropoff_location_name: string | null
           dropoff_time: string
           extras_total: number | null
+          fuel_in: string | null
+          fuel_out: string | null
+          hirer_signature: string | null
           id: string
+          import_data: Json | null
+          import_file_name: string | null
+          import_row_count: number | null
           insurance_options: Json | null
           insurance_total: number | null
+          kms_in: string | null
+          kms_out: string | null
           notes: string | null
           payment_intent_id: string | null
           payment_method: string | null
@@ -133,23 +144,31 @@ export type Database = {
           pickup_location_id: string | null
           pickup_location_name: string | null
           pickup_time: string
+          processed_at: string | null
           reservation_reference: string | null
           selected_extras: Json | null
+          signed_at: string | null
+          signed_by_name: string | null
           special_requirements: string | null
           total_amount: number | null
           total_days: number
           updated_at: string
+          uploaded_at: string | null
           user_id: string | null
           vehicle_category: string | null
           vehicle_id: string | null
           vehicle_name: string | null
+          vehicle_rego: string | null
           vehicle_total: number | null
           vehicle_type: string | null
         }
         Insert: {
+          additional_driver_signature?: string | null
+          booking_data?: Json | null
           booking_reference?: string | null
           booking_status?: string | null
           created_at?: string
+          created_by?: string | null
           customer_address?: string | null
           customer_age?: number | null
           customer_email?: string | null
@@ -163,9 +182,17 @@ export type Database = {
           dropoff_location_name?: string | null
           dropoff_time: string
           extras_total?: number | null
+          fuel_in?: string | null
+          fuel_out?: string | null
+          hirer_signature?: string | null
           id?: string
+          import_data?: Json | null
+          import_file_name?: string | null
+          import_row_count?: number | null
           insurance_options?: Json | null
           insurance_total?: number | null
+          kms_in?: string | null
+          kms_out?: string | null
           notes?: string | null
           payment_intent_id?: string | null
           payment_method?: string | null
@@ -174,23 +201,31 @@ export type Database = {
           pickup_location_id?: string | null
           pickup_location_name?: string | null
           pickup_time: string
+          processed_at?: string | null
           reservation_reference?: string | null
           selected_extras?: Json | null
+          signed_at?: string | null
+          signed_by_name?: string | null
           special_requirements?: string | null
           total_amount?: number | null
           total_days: number
           updated_at?: string
+          uploaded_at?: string | null
           user_id?: string | null
           vehicle_category?: string | null
           vehicle_id?: string | null
           vehicle_name?: string | null
+          vehicle_rego?: string | null
           vehicle_total?: number | null
           vehicle_type?: string | null
         }
         Update: {
+          additional_driver_signature?: string | null
+          booking_data?: Json | null
           booking_reference?: string | null
           booking_status?: string | null
           created_at?: string
+          created_by?: string | null
           customer_address?: string | null
           customer_age?: number | null
           customer_email?: string | null
@@ -204,9 +239,17 @@ export type Database = {
           dropoff_location_name?: string | null
           dropoff_time?: string
           extras_total?: number | null
+          fuel_in?: string | null
+          fuel_out?: string | null
+          hirer_signature?: string | null
           id?: string
+          import_data?: Json | null
+          import_file_name?: string | null
+          import_row_count?: number | null
           insurance_options?: Json | null
           insurance_total?: number | null
+          kms_in?: string | null
+          kms_out?: string | null
           notes?: string | null
           payment_intent_id?: string | null
           payment_method?: string | null
@@ -215,16 +258,21 @@ export type Database = {
           pickup_location_id?: string | null
           pickup_location_name?: string | null
           pickup_time?: string
+          processed_at?: string | null
           reservation_reference?: string | null
           selected_extras?: Json | null
+          signed_at?: string | null
+          signed_by_name?: string | null
           special_requirements?: string | null
           total_amount?: number | null
           total_days?: number
           updated_at?: string
+          uploaded_at?: string | null
           user_id?: string | null
           vehicle_category?: string | null
           vehicle_id?: string | null
           vehicle_name?: string | null
+          vehicle_rego?: string | null
           vehicle_total?: number | null
           vehicle_type?: string | null
         }
@@ -380,129 +428,6 @@ export type Database = {
           id?: string
           provider?: string | null
           updated_at?: string | null
-        }
-        Relationships: []
-      }
-      rental_agreements: {
-        Row: {
-          additional_driver_signature: string | null
-          booking_data: Json
-          created_at: string
-          created_by: string | null
-          fuel_in: string | null
-          fuel_out: string | null
-          hirer_signature: string | null
-          id: string
-          kms_in: string | null
-          kms_out: string | null
-          notes: string | null
-          reservation_ref: string
-          signed_at: string | null
-          signed_by_name: string | null
-          updated_at: string
-          vehicle_rego: string | null
-        }
-        Insert: {
-          additional_driver_signature?: string | null
-          booking_data?: Json
-          created_at?: string
-          created_by?: string | null
-          fuel_in?: string | null
-          fuel_out?: string | null
-          hirer_signature?: string | null
-          id?: string
-          kms_in?: string | null
-          kms_out?: string | null
-          notes?: string | null
-          reservation_ref: string
-          signed_at?: string | null
-          signed_by_name?: string | null
-          updated_at?: string
-          vehicle_rego?: string | null
-        }
-        Update: {
-          additional_driver_signature?: string | null
-          booking_data?: Json
-          created_at?: string
-          created_by?: string | null
-          fuel_in?: string | null
-          fuel_out?: string | null
-          hirer_signature?: string | null
-          id?: string
-          kms_in?: string | null
-          kms_out?: string | null
-          notes?: string | null
-          reservation_ref?: string
-          signed_at?: string | null
-          signed_by_name?: string | null
-          updated_at?: string
-          vehicle_rego?: string | null
-        }
-        Relationships: []
-      }
-      uploaded_bookings: {
-        Row: {
-          booking_reference: string | null
-          booking_status: string | null
-          created_at: string
-          customer_email: string | null
-          customer_name: string | null
-          data: Json
-          dropoff_date: string | null
-          dropoff_location: string | null
-          file_name: string
-          id: string
-          pickup_date: string | null
-          pickup_location: string | null
-          processed_at: string | null
-          row_count: number | null
-          total_amount: number | null
-          updated_at: string
-          uploaded_at: string
-          vehicle_category: string | null
-          vehicle_type: string | null
-        }
-        Insert: {
-          booking_reference?: string | null
-          booking_status?: string | null
-          created_at?: string
-          customer_email?: string | null
-          customer_name?: string | null
-          data: Json
-          dropoff_date?: string | null
-          dropoff_location?: string | null
-          file_name: string
-          id?: string
-          pickup_date?: string | null
-          pickup_location?: string | null
-          processed_at?: string | null
-          row_count?: number | null
-          total_amount?: number | null
-          updated_at?: string
-          uploaded_at?: string
-          vehicle_category?: string | null
-          vehicle_type?: string | null
-        }
-        Update: {
-          booking_reference?: string | null
-          booking_status?: string | null
-          created_at?: string
-          customer_email?: string | null
-          customer_name?: string | null
-          data?: Json
-          dropoff_date?: string | null
-          dropoff_location?: string | null
-          file_name?: string
-          id?: string
-          pickup_date?: string | null
-          pickup_location?: string | null
-          processed_at?: string | null
-          row_count?: number | null
-          total_amount?: number | null
-          updated_at?: string
-          uploaded_at?: string
-          vehicle_category?: string | null
-          vehicle_type?: string | null
         }
         Relationships: []
       }
