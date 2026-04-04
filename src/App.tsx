@@ -45,6 +45,7 @@ import AdminBookings from "./pages/AdminBookings";
 import AdminCustomers from "./pages/AdminCustomers";
 import RentalAgreement from "./pages/RentalAgreement";
 import AdminRentalAgreements from "./pages/AdminRentalAgreements";
+import AdminBookingImport from "./pages/AdminBookingImport";
 
 import Fleet from "./pages/Fleet";
 import FleetCars from "./pages/FleetCars";
@@ -219,6 +220,11 @@ const App = () => {
           <Route path="/ra" element={
             <ProtectedRoute>
               <AdminRentalAgreements />
+            </ProtectedRoute>
+           } />
+          <Route path="/admin/import-bookings" element={
+            <ProtectedRoute>
+              <AdminBookingImport />
             </ProtectedRoute>
           } />
                 
