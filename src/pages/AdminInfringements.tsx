@@ -211,6 +211,58 @@ const AdminInfringements = () => {
         "customer_license_number",
       ].join(",");
 
+      const applyRcmMatch = async (reservationRef: string, matchedRego = rego) => {
+        const response = await rcmApi.request<any>("POST", "bookinginfo", {
+          method: "bookinginfo",
+          reservationref: reservationRef,
+        });
+
+        const bookingInfo = response?.results?.bookinginfo?.[0] as Record<string, any> | undefined;
+        const customerInfo = response?.results?.customerinfo?.[0] as Record<string, any> | undefined;
+
+        if (!bookingInfo && !customerInfo) {
+          return false;
+        }
+
+        setBookingMatch({
+          reservationNo: normalizeReservationNumber(
+            String(
+              bookingInfo?.reservationno ||
+                bookingInfo?.reservationdocumentno ||
+                response?.results?.reservationno ||
+                ""
+            )
+          ),
+          driverName: `${customerInfo?.firstname || bookingInfo?.firstname || ""} ${customerInfo?.lastname || bookingInfo?.lastname || ""}`.trim(),
+          driverAddress: [
+            customerInfo?.address || bookingInfo?.address || "",
+            customerInfo?.city || bookingInfo?.city || "",
+            customerInfo?.postcode || bookingInfo?.postcode || "",
+            customerInfo?.country || bookingInfo?.country || "",
+          ].filter(Boolean).join(", "),
+          driverDOB: String(customerInfo?.dateofbirth || bookingInfo?.dateofbirth || ""),
+          driverLicenceNo: String(
+            customerInfo?.licenseno ||
+              bookingInfo?.licenseno ||
+              bookingInfo?.drivinglicenseno ||
+              ""
+          ),
+          licenceIssuedIn: String(
+            customerInfo?.licenseissued ||
+              bookingInfo?.licensecountry ||
+              bookingInfo?.drivinglicensecountry ||
+              "New Zealand"
+          ),
+          driverEmail: String(customerInfo?.email || bookingInfo?.email || ""),
+          vehicleRego: String(
+            bookingInfo?.vehicle_registrationnumber || bookingInfo?.registrationnumber || matchedRego
+          ),
+        });
+
+        toast.success("Booking auto-matched from rental agreement");
+        return true;
+      };
+
       const applyBookingMatch = async (b: Record<string, any>, matchedRego = rego) => {
         let customerData: Record<string, any> | null = null;
         if (b.customer_email) {
@@ -308,6 +360,30 @@ const AdminInfringements = () => {
             await applyBookingMatch(exactRefBooking);
             return;
           }
+        }
+      }
+
+      const agreementReservationRefs = Array.from(
+        new Set(
+          matchedAgreements
+            .flatMap((agreement) => {
+              const bookingInfos = Array.isArray(agreement.booking_data?.bookinginfo)
+                ? agreement.booking_data.bookinginfo
+                : [];
+
+              return [
+                String(agreement.reservation_ref || "").trim(),
+                ...bookingInfos.map((info: Record<string, any>) => String(info?.reservationref || "").trim()),
+              ];
+            })
+            .filter(Boolean)
+        )
+      );
+
+      for (const reservationRef of agreementReservationRefs) {
+        const matched = await applyRcmMatch(reservationRef, rego);
+        if (matched) {
+          return;
         }
       }
 
