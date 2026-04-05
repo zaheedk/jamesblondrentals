@@ -175,37 +175,36 @@ class RCMApiClient {
     };
     
     try {
-      const apiUrl = this.buildApiUrl();
-      console.log(`Making ${method} request to ${apiUrl} for method ${requestMethod}`);
+      console.log(`Making RCM API request via proxy for method ${requestMethod}`);
       console.log(`Request time: ${requestStartTime.toISOString()}`);
-      console.log(`User agent: ${navigator.userAgent}`);
       
       const requestBody = { method: requestMethod, ...body };
       const headers = this.createHeaders(method, requestBody);
       
+      // Get the signature from generated headers
+      const signature = headers.get('signature') || '';
+      
       // Store request details for diagnostics
       this.lastRequestDetails = {
-        url: apiUrl,
-        method,
-        headers: Object.fromEntries(headers.entries()),
+        url: RCM_PROXY_URL,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: requestBody,
         timestamp: requestStartTime.toISOString()
       };
       
-      // Log complete request details for debugging
-      console.log('Complete request details:', {
-        url: apiUrl,
-        method,
-        headers: Object.fromEntries(headers.entries()),
-        body: requestBody
-      });
-      
       const fetchStartTime = Date.now();
-      const response = await fetch(apiUrl, {
-        method,
-        headers,
-        body: JSON.stringify(requestBody),
-        credentials: 'same-origin',
+      const response = await fetch(RCM_PROXY_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          method: method,
+          apiKey: this.config.apiKey,
+          signature: signature,
+          body: requestBody,
+        }),
       });
       const fetchEndTime = Date.now();
       
