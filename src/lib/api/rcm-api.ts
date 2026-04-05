@@ -19,7 +19,10 @@ import type {
   RCMBookingInfoResponse
 } from './rcm-api-types';
 
-// API Configuration
+// API Configuration - uses Supabase Edge Function proxy to avoid CORS
+const SUPABASE_PROJECT_ID = import.meta.env.VITE_SUPABASE_PROJECT_ID || "jlwvqbrtdzwrcwelyylv";
+const RCM_PROXY_URL = `https://${SUPABASE_PROJECT_ID}.supabase.co/functions/v1/rcm-proxy`;
+
 const DEFAULT_CONFIG: RCMApiConfig = {
   apiKey: import.meta.env.VITE_RCM_API_KEY || "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
   apiSecret: import.meta.env.VITE_RCM_API_SECRET || "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
