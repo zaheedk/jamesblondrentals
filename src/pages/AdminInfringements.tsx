@@ -313,118 +313,68 @@ const AdminInfringements = () => {
         toast.success("Booking auto-matched from database!");
       };
 
-      const { data: directAgreementMatches } = await supabase
+      // Step 1: Search bookings by vehicle_rego
+      const { data: regoMatches } = await supabase
         .from("bookings")
-        .select("booking_reference, vehicle_rego, booking_data")
+        .select(bookingColumns)
         .ilike("vehicle_rego", `%${rego}%`)
-        .limit(20);
+        .order("pickup_date", { ascending: false })
+        .limit(50);
 
-      const { data: agreementsForJsonSearch } = await supabase
+      // Also search booking_data JSONB for rego matches
+      const { data: jsonRegoMatches } = await supabase
         .from("bookings")
-        .select("booking_reference, vehicle_rego, booking_data")
-        .not("booking_reference", "is", null)
-        .order("created_at", { ascending: false })
+        .select(bookingColumns)
+        .not("booking_data", "is", null)
+        .order("pickup_date", { ascending: false })
         .limit(500);
 
-      const jsonAgreementMatches = (agreementsForJsonSearch || []).filter((agreement: Record<string, any>) => {
-        const storedRego = String(agreement.vehicle_rego || "").trim().toUpperCase();
-        const bookingInfo = Array.isArray(agreement.booking_data?.bookinginfo)
-          ? agreement.booking_data.bookinginfo[0]
-          : null;
-        const bookingDataRego = String(
-          bookingInfo?.vehicle_registrationnumber || bookingInfo?.vehiclerego || ""
-        )
-          .trim()
-          .toUpperCase();
-
-        return storedRego === rego || bookingDataRego === rego;
+      const jsonFiltered = (jsonRegoMatches || []).filter((b: Record<string, any>) => {
+        const bookingInfoArr = Array.isArray(b.booking_data?.bookinginfo) ? b.booking_data.bookinginfo : [];
+        return bookingInfoArr.some((info: Record<string, any>) => {
+          const r = String(info?.vehicle_registrationnumber || info?.vehiclerego || "").trim().toUpperCase();
+          return r === rego;
+        });
       });
 
-      const matchedAgreements = [...(directAgreementMatches || []), ...jsonAgreementMatches] as Record<string, any>[];
-
-      const agreementReservationNumbers = Array.from(
-        new Set(
-          matchedAgreements.flatMap((agreement) => {
-            const bookingInfos = Array.isArray(agreement.booking_data?.bookinginfo)
-              ? agreement.booking_data.bookinginfo
-              : [];
-
-            return bookingInfos
-              .flatMap((info: Record<string, any>) => [
-                String(info?.reservationno || "").trim(),
-                normalizeReservationNumber(String(info?.reservationdocumentno || "")),
-              ])
-              .filter(Boolean);
-          })
-        )
+      // Combine and deduplicate by id
+      const allRegoMatches = [...(regoMatches || []), ...jsonFiltered] as Record<string, any>[];
+      const uniqueRegoMatches = Array.from(
+        new Map(allRegoMatches.map((b) => [b.id, b])).values()
       );
 
-      if (agreementReservationNumbers.length > 0) {
-        let bookingsQuery = supabase
-          .from("bookings")
-          .select(bookingColumns)
-          .in("reservation_reference", agreementReservationNumbers);
-
-        if (offenceDateISO) {
-          bookingsQuery = bookingsQuery
-            .lte("pickup_date", offenceDateISO)
-            .gte("dropoff_date", offenceDateISO);
-        }
-
-        const { data: matchedBookings } = await bookingsQuery.limit(5);
-
-        const matchedBookingRows = (matchedBookings || []) as Record<string, any>[];
-        if (matchedBookingRows.length > 0) {
-          const exactRefBooking = matchedBookingRows.find((booking) =>
-            agreementReservationNumbers.includes(String(booking.reservation_reference || "").trim())
-          );
-          if (exactRefBooking) {
-            await applyBookingMatch(exactRefBooking);
-            return;
-          }
-        }
+      if (uniqueRegoMatches.length === 0) {
+        toast.warning(`No bookings found for rego ${rego}. Use manual search below.`);
+        return;
       }
 
-      const agreementReservationRefs = Array.from(
-        new Set(
-          matchedAgreements
-            .flatMap((agreement) => {
-              const bookingInfos = Array.isArray(agreement.booking_data?.bookinginfo)
-                ? agreement.booking_data.bookinginfo
-                : [];
+      // Step 2: Filter by offence date falling between pickup_date and dropoff_date
+      if (offenceDateISO) {
+        const dateMatches = uniqueRegoMatches.filter((b) => {
+          const pickup = String(b.pickup_date || "");
+          const dropoff = String(b.dropoff_date || "");
+          return pickup <= offenceDateISO && dropoff >= offenceDateISO;
+        });
 
-              return [
-                String(agreement.booking_reference || "").trim(),
-                ...bookingInfos.map((info: Record<string, any>) => String(info?.reservationref || "").trim()),
-              ];
-            })
-            .filter(Boolean)
-        )
-      );
-
-      for (const reservationRef of agreementReservationRefs) {
-        const matched = await applyRcmMatch(reservationRef, rego);
-        if (matched) {
+        if (dateMatches.length > 0) {
+          // Use the first (most recent) match
+          await applyBookingMatch(dateMatches[0]);
           return;
         }
-      }
 
-      if (offenceDateISO) {
-        const { data: dateBookings } = await supabase
-          .from("bookings")
-          .select(bookingColumns)
-          .lte("pickup_date", offenceDateISO)
-          .gte("dropoff_date", offenceDateISO)
-          .order("pickup_date", { ascending: false })
-          .limit(50);
-
-        if (dateBookings && dateBookings.length > 0) {
-          toast.info(`Found ${dateBookings.length} booking(s) for that date, but none linked cleanly to rego ${rego}. Please confirm the reservation number below.`);
-        } else {
-          toast.warning("No bookings found for this vehicle/date. Use manual search below.");
+        // No date match — try RCM API fallback for each rego-matched booking
+        for (const b of uniqueRegoMatches) {
+          const ref = b.reservation_reference || b.booking_reference;
+          if (ref) {
+            const matched = await applyRcmMatch(ref, rego);
+            if (matched) return;
+          }
         }
+
+        toast.info(`Found ${uniqueRegoMatches.length} booking(s) for rego ${rego}, but none match the offence date ${data.offence_date}. Please confirm manually.`);
       } else {
-        toast.warning("Could not parse offence date. Use manual search below.");
+        // No offence date parsed — just use the most recent rego match
+        await applyBookingMatch(uniqueRegoMatches[0]);
       }
     } catch (err) {
       console.error("Auto-match error:", err);
