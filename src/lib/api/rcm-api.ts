@@ -19,7 +19,10 @@ import type {
   RCMBookingInfoResponse
 } from './rcm-api-types';
 
-// API Configuration
+// API Configuration - uses Supabase Edge Function proxy to avoid CORS
+const SUPABASE_PROJECT_ID = import.meta.env.VITE_SUPABASE_PROJECT_ID || "jlwvqbrtdzwrcwelyylv";
+const RCM_PROXY_URL = `https://${SUPABASE_PROJECT_ID}.supabase.co/functions/v1/rcm-proxy`;
+
 const DEFAULT_CONFIG: RCMApiConfig = {
   apiKey: import.meta.env.VITE_RCM_API_KEY || "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
   apiSecret: import.meta.env.VITE_RCM_API_SECRET || "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
@@ -172,37 +175,36 @@ class RCMApiClient {
     };
     
     try {
-      const apiUrl = this.buildApiUrl();
-      console.log(`Making ${method} request to ${apiUrl} for method ${requestMethod}`);
+      console.log(`Making RCM API request via proxy for method ${requestMethod}`);
       console.log(`Request time: ${requestStartTime.toISOString()}`);
-      console.log(`User agent: ${navigator.userAgent}`);
       
       const requestBody = { method: requestMethod, ...body };
       const headers = this.createHeaders(method, requestBody);
       
+      // Get the signature from generated headers
+      const signature = headers.get('signature') || '';
+      
       // Store request details for diagnostics
       this.lastRequestDetails = {
-        url: apiUrl,
-        method,
-        headers: Object.fromEntries(headers.entries()),
+        url: RCM_PROXY_URL,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: requestBody,
         timestamp: requestStartTime.toISOString()
       };
       
-      // Log complete request details for debugging
-      console.log('Complete request details:', {
-        url: apiUrl,
-        method,
-        headers: Object.fromEntries(headers.entries()),
-        body: requestBody
-      });
-      
       const fetchStartTime = Date.now();
-      const response = await fetch(apiUrl, {
-        method,
-        headers,
-        body: JSON.stringify(requestBody),
-        credentials: 'same-origin',
+      const response = await fetch(RCM_PROXY_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          method: method,
+          apiKey: this.config.apiKey,
+          signature: signature,
+          body: requestBody,
+        }),
       });
       const fetchEndTime = Date.now();
       
