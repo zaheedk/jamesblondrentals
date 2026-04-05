@@ -23,7 +23,7 @@ import type {
 const DEFAULT_CONFIG: RCMApiConfig = {
   apiKey: import.meta.env.VITE_RCM_API_KEY || "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq",
   apiSecret: import.meta.env.VITE_RCM_API_SECRET || "tsdavpoP51o6AcLIdorqgtFJ0ullAimg",
-  apiUrl: import.meta.env.DEV ? "/api/rcm/booking/v3.2" : "https://apis.rentalcarmanager.com/booking/v3.2"
+  apiUrl: "https://apis.rentalcarmanager.com/booking/v3.2"
 };
 
 class RCMApiClient {
