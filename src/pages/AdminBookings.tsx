@@ -104,7 +104,14 @@ const AdminBookings = () => {
       booking.customer_email?.toLowerCase().includes(searchLower) ||
       booking.vehicle_name?.toLowerCase().includes(searchLower) ||
       booking.vehicle_rego?.toLowerCase().includes(searchLower) ||
-      booking.pickup_location_name?.toLowerCase().includes(searchLower);
+      booking.pickup_location_name?.toLowerCase().includes(searchLower) ||
+      (booking as any).car_id?.toLowerCase().includes(searchLower) ||
+      (booking as any).brand?.toLowerCase().includes(searchLower) ||
+      (booking as any).agency?.toLowerCase().includes(searchLower) ||
+      (booking as any).agent_name?.toLowerCase().includes(searchLower) ||
+      (booking as any).rcm_ref_no?.toLowerCase().includes(searchLower) ||
+      (booking as any).company_name?.toLowerCase().includes(searchLower) ||
+      (booking as any).rcm_customer_id?.toLowerCase().includes(searchLower);
     
     return matchesSearch;
   }) || [];
