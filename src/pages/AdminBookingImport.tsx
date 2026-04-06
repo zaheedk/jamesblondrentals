@@ -364,21 +364,20 @@ const AdminBookingImport = () => {
     setResults(null);
     setErrorMessages([]);
 
-    // Fetch existing refs to detect duplicates
-    let existingRefs = new Set<string>();
+    // Fetch existing records to detect duplicates (map ref -> id)
+    const existingByRef = new Map<string, string>();
     try {
-      // Fetch in pages of 1000
       let page = 0;
       let hasMore = true;
       while (hasMore) {
         const { data } = await supabase
           .from("bookings")
-          .select("reservation_reference,booking_reference")
+          .select("id,reservation_reference,booking_reference")
           .range(page * 1000, (page + 1) * 1000 - 1);
         if (data && data.length > 0) {
           for (const row of data) {
-            if (row.reservation_reference) existingRefs.add(row.reservation_reference);
-            if (row.booking_reference) existingRefs.add(row.booking_reference);
+            if (row.reservation_reference) existingByRef.set(row.reservation_reference, row.id);
+            if (row.booking_reference) existingByRef.set(row.booking_reference, row.id);
           }
           if (data.length < 1000) hasMore = false;
           page++;
@@ -391,35 +390,39 @@ const AdminBookingImport = () => {
     }
 
     let inserted = 0;
+    let updated = 0;
     let errors = 0;
-    let duplicates = 0;
     const errs: string[] = [];
+
+    // Split into new records and updates
+    const toInsert: ParsedBooking[] = [];
+    const toUpdate: { id: string; data: ParsedBooking }[] = [];
+
+    for (const rec of parsed) {
+      const existingId =
+        (rec.reservation_reference && existingByRef.get(rec.reservation_reference)) ||
+        (rec.booking_reference && existingByRef.get(rec.booking_reference));
+      if (existingId) {
+        toUpdate.push({ id: existingId, data: rec });
+      } else {
+        toInsert.push(rec);
+      }
+    }
+
+    const totalOps = toInsert.length + toUpdate.length;
+    let completed = 0;
+
+    // Insert new records in batches
     const BATCH = 50;
-
-    // Filter out duplicates
-    const toInsert = parsed.filter((rec) => {
-      if (rec.reservation_reference && existingRefs.has(rec.reservation_reference)) {
-        duplicates++;
-        return false;
-      }
-      if (rec.booking_reference && existingRefs.has(rec.booking_reference)) {
-        duplicates++;
-        return false;
-      }
-      return true;
-    });
-
     for (let i = 0; i < toInsert.length; i += BATCH) {
       const batch = toInsert.slice(i, i + BATCH);
       const { error } = await supabase.from("bookings").insert(batch as any);
-
       if (error) {
-        // Try one by one
         for (const rec of batch) {
           const { error: singleErr } = await supabase.from("bookings").insert(rec as any);
           if (singleErr) {
             errors++;
-            if (errs.length < 10) errs.push(`${rec.reservation_reference}: ${singleErr.message}`);
+            if (errs.length < 10) errs.push(`Insert ${rec.reservation_reference}: ${singleErr.message}`);
           } else {
             inserted++;
           }
@@ -427,16 +430,38 @@ const AdminBookingImport = () => {
       } else {
         inserted += batch.length;
       }
-
-      setProgress(Math.round(((i + batch.length) / toInsert.length) * 100));
+      completed += batch.length;
+      setProgress(Math.round((completed / totalOps) * 100));
     }
 
-    setResults({ inserted, errors, duplicates });
-    setErrorMessages(errs);
+    // Update existing records one by one
+    for (const { id, data } of toUpdate) {
+      const { reservation_reference, booking_reference, ...updateFields } = data;
+      const updateData: any = { ...updateFields };
+      // Preserve existing references but update all other fields
+      if (reservation_reference) updateData.reservation_reference = reservation_reference;
+      if (booking_reference) updateData.booking_reference = booking_reference;
+      updateData.updated_at = new Date().toISOString();
+
+      const { error } = await supabase.from("bookings").update(updateData).eq("id", id);
+      if (error) {
+        errors++;
+        if (errs.length < 10) errs.push(`Update ${reservation_reference || booking_reference}: ${error.message}`);
+      } else {
+        updated++;
+      }
+      completed++;
+      setProgress(Math.round((completed / totalOps) * 100));
+    }
+
+    setResults({ inserted, errors, duplicates: updated });
     setImporting(false);
 
     if (inserted > 0) {
       toast.success(`Successfully imported ${inserted} bookings`);
+    }
+    if (updated > 0) {
+      toast.info(`Updated ${updated} existing bookings`);
     }
     if (errors > 0) {
       toast.error(`${errors} records failed to import`);
@@ -588,7 +613,7 @@ const AdminBookingImport = () => {
                   )}
                   {results.duplicates > 0 && (
                     <Badge variant="secondary" className="text-sm px-3 py-1">
-                      {results.duplicates} duplicates skipped
+                      {results.duplicates} updated
                     </Badge>
                   )}
                   {results.errors > 0 && (
