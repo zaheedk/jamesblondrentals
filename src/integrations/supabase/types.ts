@@ -107,36 +107,86 @@ export type Database = {
       bookings: {
         Row: {
           additional_driver_signature: string | null
+          agency: string | null
+          agency_branch: string | null
+          agent_collected: number | null
+          agent_commission: number | null
+          agent_email: string | null
+          agent_name: string | null
+          booked_by: string | null
           booking_data: Json | null
           booking_reference: string | null
           booking_status: string | null
+          booking_total: number | null
+          booking_type: string | null
+          brand: string | null
+          car_id: string | null
+          company_name: string | null
+          converted_from: string | null
           created_at: string
           created_by: string | null
           customer_address: string | null
           customer_age: number | null
+          customer_country: string | null
+          customer_dob: string | null
           customer_email: string | null
+          customer_fax: string | null
           customer_first_name: string | null
           customer_last_name: string | null
           customer_license_number: string | null
+          customer_mobile: string | null
           customer_phone: string | null
+          customer_postcode: string | null
+          customer_state: string | null
+          customer_suburb: string | null
           daily_rate: number | null
+          date_booked: string | null
+          date_closed: string | null
           dropoff_date: string
           dropoff_location_id: string | null
           dropoff_location_name: string | null
           dropoff_time: string
+          extra_fee_1: string | null
+          extra_fee_1_value: number | null
+          extra_fee_10: string | null
+          extra_fee_10_value: number | null
+          extra_fee_2: string | null
+          extra_fee_2_value: number | null
+          extra_fee_3: string | null
+          extra_fee_3_value: number | null
+          extra_fee_4: string | null
+          extra_fee_4_value: number | null
+          extra_fee_5: string | null
+          extra_fee_5_value: number | null
+          extra_fee_6: string | null
+          extra_fee_6_value: number | null
+          extra_fee_7: string | null
+          extra_fee_7_value: number | null
+          extra_fee_8: string | null
+          extra_fee_8_value: number | null
+          extra_fee_9: string | null
+          extra_fee_9_value: number | null
           extras_total: number | null
           fuel_in: string | null
           fuel_out: string | null
+          hired_by: string | null
           hirer_signature: string | null
           id: string
           import_data: Json | null
           import_file_name: string | null
           import_row_count: number | null
+          insurance_fee: number | null
           insurance_options: Json | null
           insurance_total: number | null
           kms_in: string | null
           kms_out: string | null
+          license_exp_date: string | null
+          license_issued: string | null
+          local_address: string | null
+          mailing_list: string | null
+          no_travelling: number | null
           notes: string | null
+          occupation: string | null
           payment_intent_id: string | null
           payment_method: string | null
           payment_status: string | null
@@ -145,13 +195,23 @@ export type Database = {
           pickup_location_name: string | null
           pickup_time: string
           processed_at: string | null
+          rcm_customer_id: string | null
+          rcm_ref_no: string | null
+          reference_no: string | null
+          referral_name: string | null
+          referrals: string | null
           reservation_reference: string | null
+          sales_tax: number | null
           selected_extras: Json | null
           signed_at: string | null
           signed_by_name: string | null
+          source: string | null
           special_requirements: string | null
+          state_tax: number | null
           total_amount: number | null
           total_days: number
+          total_extra_inc_insurance: number | null
+          transmission: string | null
           updated_at: string
           uploaded_at: string | null
           user_id: string | null
@@ -161,39 +221,90 @@ export type Database = {
           vehicle_rego: string | null
           vehicle_total: number | null
           vehicle_type: string | null
+          youngest_driver: number | null
         }
         Insert: {
           additional_driver_signature?: string | null
+          agency?: string | null
+          agency_branch?: string | null
+          agent_collected?: number | null
+          agent_commission?: number | null
+          agent_email?: string | null
+          agent_name?: string | null
+          booked_by?: string | null
           booking_data?: Json | null
           booking_reference?: string | null
           booking_status?: string | null
+          booking_total?: number | null
+          booking_type?: string | null
+          brand?: string | null
+          car_id?: string | null
+          company_name?: string | null
+          converted_from?: string | null
           created_at?: string
           created_by?: string | null
           customer_address?: string | null
           customer_age?: number | null
+          customer_country?: string | null
+          customer_dob?: string | null
           customer_email?: string | null
+          customer_fax?: string | null
           customer_first_name?: string | null
           customer_last_name?: string | null
           customer_license_number?: string | null
+          customer_mobile?: string | null
           customer_phone?: string | null
+          customer_postcode?: string | null
+          customer_state?: string | null
+          customer_suburb?: string | null
           daily_rate?: number | null
+          date_booked?: string | null
+          date_closed?: string | null
           dropoff_date: string
           dropoff_location_id?: string | null
           dropoff_location_name?: string | null
           dropoff_time: string
+          extra_fee_1?: string | null
+          extra_fee_1_value?: number | null
+          extra_fee_10?: string | null
+          extra_fee_10_value?: number | null
+          extra_fee_2?: string | null
+          extra_fee_2_value?: number | null
+          extra_fee_3?: string | null
+          extra_fee_3_value?: number | null
+          extra_fee_4?: string | null
+          extra_fee_4_value?: number | null
+          extra_fee_5?: string | null
+          extra_fee_5_value?: number | null
+          extra_fee_6?: string | null
+          extra_fee_6_value?: number | null
+          extra_fee_7?: string | null
+          extra_fee_7_value?: number | null
+          extra_fee_8?: string | null
+          extra_fee_8_value?: number | null
+          extra_fee_9?: string | null
+          extra_fee_9_value?: number | null
           extras_total?: number | null
           fuel_in?: string | null
           fuel_out?: string | null
+          hired_by?: string | null
           hirer_signature?: string | null
           id?: string
           import_data?: Json | null
           import_file_name?: string | null
           import_row_count?: number | null
+          insurance_fee?: number | null
           insurance_options?: Json | null
           insurance_total?: number | null
           kms_in?: string | null
           kms_out?: string | null
+          license_exp_date?: string | null
+          license_issued?: string | null
+          local_address?: string | null
+          mailing_list?: string | null
+          no_travelling?: number | null
           notes?: string | null
+          occupation?: string | null
           payment_intent_id?: string | null
           payment_method?: string | null
           payment_status?: string | null
@@ -202,13 +313,23 @@ export type Database = {
           pickup_location_name?: string | null
           pickup_time: string
           processed_at?: string | null
+          rcm_customer_id?: string | null
+          rcm_ref_no?: string | null
+          reference_no?: string | null
+          referral_name?: string | null
+          referrals?: string | null
           reservation_reference?: string | null
+          sales_tax?: number | null
           selected_extras?: Json | null
           signed_at?: string | null
           signed_by_name?: string | null
+          source?: string | null
           special_requirements?: string | null
+          state_tax?: number | null
           total_amount?: number | null
           total_days: number
+          total_extra_inc_insurance?: number | null
+          transmission?: string | null
           updated_at?: string
           uploaded_at?: string | null
           user_id?: string | null
@@ -218,39 +339,90 @@ export type Database = {
           vehicle_rego?: string | null
           vehicle_total?: number | null
           vehicle_type?: string | null
+          youngest_driver?: number | null
         }
         Update: {
           additional_driver_signature?: string | null
+          agency?: string | null
+          agency_branch?: string | null
+          agent_collected?: number | null
+          agent_commission?: number | null
+          agent_email?: string | null
+          agent_name?: string | null
+          booked_by?: string | null
           booking_data?: Json | null
           booking_reference?: string | null
           booking_status?: string | null
+          booking_total?: number | null
+          booking_type?: string | null
+          brand?: string | null
+          car_id?: string | null
+          company_name?: string | null
+          converted_from?: string | null
           created_at?: string
           created_by?: string | null
           customer_address?: string | null
           customer_age?: number | null
+          customer_country?: string | null
+          customer_dob?: string | null
           customer_email?: string | null
+          customer_fax?: string | null
           customer_first_name?: string | null
           customer_last_name?: string | null
           customer_license_number?: string | null
+          customer_mobile?: string | null
           customer_phone?: string | null
+          customer_postcode?: string | null
+          customer_state?: string | null
+          customer_suburb?: string | null
           daily_rate?: number | null
+          date_booked?: string | null
+          date_closed?: string | null
           dropoff_date?: string
           dropoff_location_id?: string | null
           dropoff_location_name?: string | null
           dropoff_time?: string
+          extra_fee_1?: string | null
+          extra_fee_1_value?: number | null
+          extra_fee_10?: string | null
+          extra_fee_10_value?: number | null
+          extra_fee_2?: string | null
+          extra_fee_2_value?: number | null
+          extra_fee_3?: string | null
+          extra_fee_3_value?: number | null
+          extra_fee_4?: string | null
+          extra_fee_4_value?: number | null
+          extra_fee_5?: string | null
+          extra_fee_5_value?: number | null
+          extra_fee_6?: string | null
+          extra_fee_6_value?: number | null
+          extra_fee_7?: string | null
+          extra_fee_7_value?: number | null
+          extra_fee_8?: string | null
+          extra_fee_8_value?: number | null
+          extra_fee_9?: string | null
+          extra_fee_9_value?: number | null
           extras_total?: number | null
           fuel_in?: string | null
           fuel_out?: string | null
+          hired_by?: string | null
           hirer_signature?: string | null
           id?: string
           import_data?: Json | null
           import_file_name?: string | null
           import_row_count?: number | null
+          insurance_fee?: number | null
           insurance_options?: Json | null
           insurance_total?: number | null
           kms_in?: string | null
           kms_out?: string | null
+          license_exp_date?: string | null
+          license_issued?: string | null
+          local_address?: string | null
+          mailing_list?: string | null
+          no_travelling?: number | null
           notes?: string | null
+          occupation?: string | null
           payment_intent_id?: string | null
           payment_method?: string | null
           payment_status?: string | null
@@ -259,13 +431,23 @@ export type Database = {
           pickup_location_name?: string | null
           pickup_time?: string
           processed_at?: string | null
+          rcm_customer_id?: string | null
+          rcm_ref_no?: string | null
+          reference_no?: string | null
+          referral_name?: string | null
+          referrals?: string | null
           reservation_reference?: string | null
+          sales_tax?: number | null
           selected_extras?: Json | null
           signed_at?: string | null
           signed_by_name?: string | null
+          source?: string | null
           special_requirements?: string | null
+          state_tax?: number | null
           total_amount?: number | null
           total_days?: number
+          total_extra_inc_insurance?: number | null
+          transmission?: string | null
           updated_at?: string
           uploaded_at?: string | null
           user_id?: string | null
@@ -275,6 +457,7 @@ export type Database = {
           vehicle_rego?: string | null
           vehicle_total?: number | null
           vehicle_type?: string | null
+          youngest_driver?: number | null
         }
         Relationships: []
       }
