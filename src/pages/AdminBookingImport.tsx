@@ -156,7 +156,89 @@ function mapStatus(s: string): string {
   return lower || "confirmed";
 }
 
-// ... keep existing code (parseCSV and makeUniqueHeaders functions)
+function parseCSV(text: string): string[][] {
+  const rows: string[][] = [];
+  let current: string[] = [];
+  let field = "";
+  let inQuotes = false;
+
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (inQuotes) {
+      if (ch === '"') {
+        if (i + 1 < text.length && text[i + 1] === '"') {
+          field += '"';
+          i++;
+        } else {
+          inQuotes = false;
+        }
+      } else {
+        field += ch;
+      }
+    } else {
+      if (ch === '"') {
+        inQuotes = true;
+      } else if (ch === ",") {
+        current.push(field);
+        field = "";
+      } else if (ch === "\n" || ch === "\r") {
+        if (ch === "\r" && i + 1 < text.length && text[i + 1] === "\n") i++;
+        current.push(field);
+        field = "";
+        if (current.some((c) => c.trim())) rows.push(current);
+        current = [];
+      } else {
+        field += ch;
+      }
+    }
+  }
+  current.push(field);
+  if (current.some((c) => c.trim())) rows.push(current);
+  return rows;
+}
+
+function makeUniqueHeaders(raw: string[]): string[] {
+  const seen: Record<string, number> = {};
+  return raw.map((h) => {
+    const key = h.trim();
+    if (key in seen) {
+      seen[key]++;
+      return `${key}_${seen[key]}`;
+    }
+    seen[key] = 0;
+    return key;
+  });
+}
+
+const AdminBookingImport = () => {
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [file, setFile] = useState<File | null>(null);
+  const [parsed, setParsed] = useState<ParsedBooking[]>([]);
+  const [skipped, setSkipped] = useState(0);
+  const [importing, setImporting] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [results, setResults] = useState<{ inserted: number; errors: number; duplicates: number } | null>(null);
+  const [errorMessages, setErrorMessages] = useState<string[]>([]);
+
+  const handleFileSelect = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    setFile(f);
+    setParsed([]);
+    setResults(null);
+    setErrorMessages([]);
+
+    const text = await f.text();
+    const rows = parseCSV(text);
+    if (rows.length < 2) {
+      toast.error("CSV file appears empty");
+      return;
+    }
+
+    const headers = makeUniqueHeaders(rows[0]);
+    const dataRows = rows.slice(1);
+    const records: ParsedBooking[] = [];
+    let skipCount = 0;
 
     for (const row of dataRows) {
       const r: Record<string, string> = {};
