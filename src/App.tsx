@@ -36,17 +36,17 @@ import MemberDashboard from "./pages/MemberDashboard";
 // Blog Pages
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
-import AdminBlog from "./pages/AdminBlog";
-import AdminBlogEditor from "./pages/AdminBlogEditor";
-import AdminBlogImport from "./pages/AdminBlogImport";
-import AdminVehicleRates from "./pages/AdminVehicleRates";
-import AdminFeedback from "./pages/AdminFeedback";
-import AdminBookings from "./pages/AdminBookings";
-import AdminCustomers from "./pages/AdminCustomers";
-import RentalAgreement from "./pages/RentalAgreement";
-import AdminRentalAgreements from "./pages/AdminRentalAgreements";
-import AdminBookingImport from "./pages/AdminBookingImport";
-import AdminInfringements from "./pages/AdminInfringements";
+const AdminBlog = lazy(() => import("./pages/AdminBlog"));
+const AdminBlogEditor = lazy(() => import("./pages/AdminBlogEditor"));
+const AdminBlogImport = lazy(() => import("./pages/AdminBlogImport"));
+const AdminVehicleRates = lazy(() => import("./pages/AdminVehicleRates"));
+const AdminFeedback = lazy(() => import("./pages/AdminFeedback"));
+const AdminBookings = lazy(() => import("./pages/AdminBookings"));
+const AdminCustomers = lazy(() => import("./pages/AdminCustomers"));
+const RentalAgreement = lazy(() => import("./pages/RentalAgreement"));
+const AdminRentalAgreements = lazy(() => import("./pages/AdminRentalAgreements"));
+const AdminBookingImport = lazy(() => import("./pages/AdminBookingImport"));
+const AdminInfringements = lazy(() => import("./pages/AdminInfringements"));
 
 import Fleet from "./pages/Fleet";
 import FleetCars from "./pages/FleetCars";
