@@ -98,10 +98,12 @@ const AdminBookings = () => {
     const searchLower = searchQuery.toLowerCase();
     const matchesSearch = 
       booking.booking_reference?.toLowerCase().includes(searchLower) ||
+      booking.reservation_reference?.toLowerCase().includes(searchLower) ||
       booking.customer_first_name?.toLowerCase().includes(searchLower) ||
       booking.customer_last_name?.toLowerCase().includes(searchLower) ||
       booking.customer_email?.toLowerCase().includes(searchLower) ||
       booking.vehicle_name?.toLowerCase().includes(searchLower) ||
+      booking.vehicle_rego?.toLowerCase().includes(searchLower) ||
       booking.pickup_location_name?.toLowerCase().includes(searchLower);
     
     return matchesSearch;
