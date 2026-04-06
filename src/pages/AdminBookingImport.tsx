@@ -455,26 +455,13 @@ const AdminBookingImport = () => {
     }
 
     setResults({ inserted, errors, duplicates: updated });
-    setErrorMessages(errs);
-            errors++;
-            if (errs.length < 10) errs.push(`${rec.reservation_reference}: ${singleErr.message}`);
-          } else {
-            inserted++;
-          }
-        }
-      } else {
-        inserted += batch.length;
-      }
-
-      setProgress(Math.round(((i + batch.length) / toInsert.length) * 100));
-    }
-
-    setResults({ inserted, errors, duplicates });
-    setErrorMessages(errs);
     setImporting(false);
 
     if (inserted > 0) {
       toast.success(`Successfully imported ${inserted} bookings`);
+    }
+    if (updated > 0) {
+      toast.info(`Updated ${updated} existing bookings`);
     }
     if (errors > 0) {
       toast.error(`${errors} records failed to import`);
