@@ -613,7 +613,7 @@ const AdminBookingImport = () => {
                   )}
                   {results.duplicates > 0 && (
                     <Badge variant="secondary" className="text-sm px-3 py-1">
-                      {results.duplicates} duplicates skipped
+                      {results.duplicates} updated
                     </Badge>
                   )}
                   {results.errors > 0 && (
