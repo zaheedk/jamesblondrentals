@@ -191,6 +191,35 @@ serve(async (req) => {
 
     console.log(`Branded invite email sent to ${email} via Resend, id: ${resendData.id}`);
 
+    // Sync to Savo (accident reporter) - fire and forget
+    try {
+      const CROSS_APP_SECRET = Deno.env.get("CROSS_APP_SECRET");
+      if (CROSS_APP_SECRET) {
+        const savoRes = await fetch(
+          "https://kmapvntjwhhtfgvjzsof.supabase.co/functions/v1/create-external-user",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-cross-app-secret": CROSS_APP_SECRET,
+            },
+            body: JSON.stringify({
+              email,
+              password: crypto.randomUUID(),
+              full_name: fullName,
+              rego_number: "",
+            }),
+          }
+        );
+        const savoData = await savoRes.json();
+        console.log(`Savo sync for ${email}:`, savoRes.ok ? "success" : "failed", savoData);
+      } else {
+        console.warn("CROSS_APP_SECRET not set, skipping Savo sync");
+      }
+    } catch (savoErr) {
+      console.error("Savo sync error (non-fatal):", savoErr);
+    }
+
     return new Response(
       JSON.stringify({ success: true, userId: data.user?.id, emailId: resendData.id }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
