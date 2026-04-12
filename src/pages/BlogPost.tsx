@@ -1154,8 +1154,8 @@ const BlogPost = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <Helmet>
-        <title>{`${displayPost.title} | James Blond Rentals Blog`}</title>
-        <meta name="description" content={displayPost.excerpt?.substring(0, 160) || `Read ${displayPost.title} on the James Blond Rentals blog.`} />
+        <title>{`${article.title} | James Blond Rentals Blog`}</title>
+        <meta name="description" content={article.excerpt?.substring(0, 160) || article.meta_description || `Read ${article.title} on the James Blond Rentals blog.`} />
       </Helmet>
       {/* Back to Blog Button */}
       <Button variant="ghost" asChild className="mb-8">
