@@ -1,5 +1,6 @@
 
 import React from "react";
+import PageSEO from '@/components/PageSEO';
 
 const faqData = [
   {
@@ -397,6 +398,7 @@ const faqData = [
 
 const FAQ = () => (
   <div className="container mx-auto px-4 py-16">
+    <PageSEO title="Frequently Asked Questions – James Blond Rentals NZ" description="Find answers to common questions about hiring vehicles from James Blond Rentals including age requirements, licence needs, insurance and pickup procedures." canonical="/faq" />
     <h1 className="text-3xl font-bold mb-8">Frequently Asked Questions</h1>
     <div className="divide-y divide-gray-200 max-w-2xl mx-auto">
       {faqData.map((faq, idx) => (
