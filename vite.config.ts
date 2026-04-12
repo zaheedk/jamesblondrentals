@@ -2,10 +2,34 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
+import fs from "fs";
 import { componentTagger } from "lovable-tagger";
 import type { IncomingMessage } from 'http';
 import { ServerResponse } from 'http';
 import type { ConfigEnv, UserConfig, ProxyOptions } from 'vite';
+import { sitemapRoutes } from './src/sitemap-routes';
+
+function sitemapPlugin() {
+  return {
+    name: 'generate-sitemap',
+    buildStart() {
+      const SITE_URL = 'https://jamesblond.co.nz';
+      const today = new Date().toISOString().split('T')[0];
+      const urls = sitemapRoutes.map(route => `  <url>
+    <loc>${SITE_URL}${route.path}</loc>
+    <lastmod>${today}</lastmod>
+    <priority>${route.priority.toFixed(1)}</priority>
+    <changefreq>${route.changefreq}</changefreq>
+  </url>`).join('\n');
+      const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls}
+</urlset>\n`;
+      fs.writeFileSync(path.resolve(__dirname, 'public/sitemap.xml'), sitemap, 'utf-8');
+      console.log(`✅ Sitemap generated with ${sitemapRoutes.length} URLs`);
+    }
+  };
+}
 
 export default defineConfig(({ mode }: ConfigEnv): UserConfig => ({
   server: {
@@ -98,6 +122,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => ({
   },
   plugins: [
     react(),
+    sitemapPlugin(),
     mode === 'development' && componentTagger(),
   ].filter(Boolean),
   resolve: {

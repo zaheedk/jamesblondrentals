@@ -1,566 +1,597 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- Main Pages -->
   <url>
     <loc>https://jamesblond.co.nz/</loc>
+    <lastmod>2026-04-12</lastmod>
     <priority>1.0</priority>
     <changefreq>weekly</changefreq>
   </url>
   <url>
     <loc>https://jamesblond.co.nz/about</loc>
+    <lastmod>2026-04-12</lastmod>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://jamesblond.co.nz/contact</loc>
+    <lastmod>2026-04-12</lastmod>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
   </url>
   <url>
+    <loc>https://jamesblond.co.nz/vehicles</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.9</priority>
+    <changefreq>daily</changefreq>
+  </url>
+  <url>
     <loc>https://jamesblond.co.nz/faq</loc>
+    <lastmod>2026-04-12</lastmod>
     <priority>0.7</priority>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://jamesblond.co.nz/terms</loc>
+    <lastmod>2026-04-12</lastmod>
     <priority>0.5</priority>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://jamesblond.co.nz/privacy</loc>
+    <lastmod>2026-04-12</lastmod>
     <priority>0.5</priority>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://jamesblond.co.nz/price-guide</loc>
+    <lastmod>2026-04-12</lastmod>
     <priority>0.9</priority>
     <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://jamesblond.co.nz/vehicles</loc>
-    <priority>0.9</priority>
-    <changefreq>daily</changefreq>
+    <loc>https://jamesblond.co.nz/blog</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>weekly</changefreq>
   </url>
-
-  <!-- Auth Pages -->
   <url>
     <loc>https://jamesblond.co.nz/login</loc>
+    <lastmod>2026-04-12</lastmod>
     <priority>0.6</priority>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://jamesblond.co.nz/register</loc>
+    <lastmod>2026-04-12</lastmod>
     <priority>0.6</priority>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://jamesblond.co.nz/forgot-password</loc>
+    <lastmod>2026-04-12</lastmod>
     <priority>0.4</priority>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://jamesblond.co.nz/reset-password</loc>
+    <lastmod>2026-04-12</lastmod>
     <priority>0.4</priority>
     <changefreq>monthly</changefreq>
   </url>
-
-  <!-- Member Pages -->
-  <url>
-    <loc>https://jamesblond.co.nz/member-dashboard</loc>
-    <priority>0.7</priority>
-    <changefreq>weekly</changefreq>
-  </url>
-
-  <!-- Location-specific Rental Pages -->
-  <url>
-    <loc>https://jamesblond.co.nz/auckland-truck-rentals-hire</loc>
-    <priority>0.9</priority>
-    <changefreq>weekly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/west-auckland-truck-rentals-hire</loc>
-    <priority>0.9</priority>
-    <changefreq>weekly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/wellington-truck-rentals-hire</loc>
-    <priority>0.9</priority>
-    <changefreq>weekly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/van-hire-wellington</loc>
-    <priority>0.9</priority>
-    <changefreq>weekly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/west-auckland-cargo-van-rentals-hire</loc>
-    <priority>0.9</priority>
-    <changefreq>weekly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/auckland-airport-cargo-van-rentals-hire</loc>
-    <priority>0.9</priority>
-    <changefreq>weekly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/south-auckland-cargo-van-rentals-hire</loc>
-    <priority>0.9</priority>
-    <changefreq>weekly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/central-auckland-cargo-van-rentals-hire</loc>
-    <priority>0.9</priority>
-    <changefreq>weekly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/auckland-airport-minibus-rentals-hire</loc>
-    <priority>0.9</priority>
-    <changefreq>weekly</changefreq>
-  </url>
-  
-  <!-- Location Pages -->
-  <url>
-    <loc>https://jamesblond.co.nz/contact/auckland</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/contact/wellington</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/contact/christchurch</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/car-rental-wellington-new-zealand</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/car-rental-auckland-airport-new-zealand</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  
-  <!-- Airport Pages -->
-  <url>
-    <loc>https://jamesblond.co.nz/airport</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/airport/shuttle</loc>
-    <priority>0.6</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/airport/directions</loc>
-    <priority>0.6</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/airport/auckland</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/airport/christchurch</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/airport/wellington</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  
-  <!-- Special Pages -->
-  <url>
-    <loc>https://jamesblond.co.nz/hot-deals</loc>
-    <priority>0.8</priority>
-    <changefreq>weekly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/hot-deals/mobil-fuel-discount</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/hot-deals/midweek-truck-van-discount</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/hot-deals/courier-operator-deals</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/people-mover</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/winz-quotes</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/blog</loc>
-    <priority>0.7</priority>
-    <changefreq>weekly</changefreq>
-  </url>
-  
-  <!-- Fleet Pages -->
-  <url>
-    <loc>https://jamesblond.co.nz/fleet</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/cars</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/vans</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/cargo-vans</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/utes</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/trucks</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/minibus</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/trailers</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/accessories</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/furniture-truck</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  
-  <!-- Cars Detail Pages -->
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/cars/premium-seven-seat-suv</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/cars/premium-2wd-suv</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/cars/premium-compact-suv</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/cars/premium-awd-suv</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/cars/premium-economy</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/cars/premium-midsize</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/cars/premium-economy-wagon</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  
-  <!-- Vans Detail Pages -->
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/vans/premium-van</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/vans/standard-van</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/vans/standard-rear-seat-van</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/vans/jumbo-van</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  
-  <!-- Utes Detail Pages -->
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/utes/single-cab-ute-petrol</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/utes/single-cab-ute-diesel</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/utes/premium-double-cab-ute</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  
-  <!-- Trucks Detail Pages -->
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/trucks/2-tonne-box-9m3</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/trucks/2-tonne-box-12m3</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/trucks/2-tonne-box-12m3-tail</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/trucks/2-tonne-tipper</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/trucks/2-tonne-box-16m3</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/trucks/3-tonne-box-18m3</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/trucks/3-tonne-box-19m3</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  
-  <!-- Minibuses Detail Pages -->
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/minibuses/12-seat-minibus</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/minibuses/10-seat-minibus</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/minibuses/premium-12-seat-minibus</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  
-  <!-- Trailers Detail Pages -->
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/trailers/cage-trailer</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/trailers/luggage-trailer</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/trailers/car-transporter</loc>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  
-  <!-- Accessories Detail Pages -->
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/accessories/child-seat</loc>
-    <priority>0.6</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/accessories/booster-seat</loc>
-    <priority>0.6</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/accessories/pallet-jack</loc>
-    <priority>0.6</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/accessories/straps-ratchet</loc>
-    <priority>0.6</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/accessories/hand-trolley</loc>
-    <priority>0.6</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/accessories/large-hand-trolley</loc>
-    <priority>0.6</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  
-  <!-- Booking Process Pages -->
   <url>
     <loc>https://jamesblond.co.nz/booking</loc>
+    <lastmod>2026-04-12</lastmod>
     <priority>0.8</priority>
     <changefreq>weekly</changefreq>
   </url>
   <url>
     <loc>https://jamesblond.co.nz/insurance-and-extras</loc>
+    <lastmod>2026-04-12</lastmod>
     <priority>0.7</priority>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://jamesblond.co.nz/customer-details</loc>
+    <lastmod>2026-04-12</lastmod>
     <priority>0.7</priority>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://jamesblond.co.nz/payment-options</loc>
+    <lastmod>2026-04-12</lastmod>
     <priority>0.7</priority>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://jamesblond.co.nz/payment</loc>
+    <lastmod>2026-04-12</lastmod>
     <priority>0.6</priority>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://jamesblond.co.nz/payment-success</loc>
+    <lastmod>2026-04-12</lastmod>
     <priority>0.6</priority>
     <changefreq>monthly</changefreq>
   </url>
-
-  <!-- Vehicle Detail Pages -->
   <url>
-    <loc>https://jamesblond.co.nz/vehicle-detail</loc>
-    <priority>0.7</priority>
-    <changefreq>weekly</changefreq>
+    <loc>https://jamesblond.co.nz/fleet</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
   </url>
   <url>
-    <loc>https://jamesblond.co.nz/van-detail</loc>
-    <priority>0.7</priority>
-    <changefreq>weekly</changefreq>
+    <loc>https://jamesblond.co.nz/fleet/cars</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
   </url>
-
-  <!-- Additional Fleet Pages -->
   <url>
-    <loc>https://jamesblond.co.nz/fleet/furniture-truck</loc>
+    <loc>https://jamesblond.co.nz/fleet/vans</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/cargo-vans</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/utes</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/trucks</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/minibus</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/trailers</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/accessories</loc>
+    <lastmod>2026-04-12</lastmod>
     <priority>0.7</priority>
     <changefreq>monthly</changefreq>
   </url>
-
-  <!-- Single Cab Ute Diesel -->
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/cars/premium-seven-seat-suv</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/cars/premium-2wd-suv</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/cars/premium-compact-suv</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/cars/premium-awd-suv</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/cars/premium-economy</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/cars/premium-midsize</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/cars/premium-economy-wagon</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/vans/premium-van</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/vans/standard-van</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/vans/standard-rear-seat-van</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/vans/jumbo-van</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/utes/single-cab-ute-petrol</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
   <url>
     <loc>https://jamesblond.co.nz/fleet/utes/single-cab-ute-diesel</loc>
+    <lastmod>2026-04-12</lastmod>
     <priority>0.7</priority>
     <changefreq>monthly</changefreq>
   </url>
-
-  <!-- Two Tonne Box Truck Details -->
   <url>
-    <loc>https://jamesblond.co.nz/fleet/trucks/2-tonne-box-truck</loc>
+    <loc>https://jamesblond.co.nz/fleet/utes/premium-double-cab-ute</loc>
+    <lastmod>2026-04-12</lastmod>
     <priority>0.7</priority>
     <changefreq>monthly</changefreq>
   </url>
-
-  <!-- Additional Location-specific Pages -->
   <url>
-    <loc>https://jamesblond.co.nz/wellington-minibus-hire</loc>
-    <priority>0.8</priority>
+    <loc>https://jamesblond.co.nz/fleet/trucks/2-tonne-box-9m3</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/trucks/2-tonne-box-12m3</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/trucks/2-tonne-box-12m3-tail</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/trucks/2-tonne-tipper</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/trucks/2-tonne-box-16m3</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/trucks/3-tonne-box-18m3</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/trucks/3-tonne-box-19m3</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/minibus/12-seat-minibus</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/minibus/10-seat-minibus</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/minibus/premium-12-seat-minibus</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/trailers/cage-trailer</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/trailers/luggage-trailer</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/trailers/car-transporter</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/accessories/child-seat</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.6</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/accessories/booster-seat</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.6</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/accessories/pallet-jack</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.6</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/accessories/straps-ratchet</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.6</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/accessories/hand-trolley</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.6</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fleet/accessories/large-hand-trolley</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.6</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/auckland-truck-rentals-hire</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.9</priority>
     <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/west-auckland-truck-rentals-hire</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.9</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/truck-hire-wellington</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.9</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/truck-hire-christchurch</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.9</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/van-hire-wellington</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.9</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/west-auckland-cargo-van-rentals-hire</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.9</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/auckland-airport-cargo-van-rentals-hire</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.9</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/south-auckland-cargo-van-rentals-hire</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.9</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/central-auckland-cargo-van-rentals-hire</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.9</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/auckland-airport-minibus-rentals-hire</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.9</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/auckland-airport-car-rentals</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.9</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/car-rental-wellington-new-zealand</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/car-rental-auckland-airport-new-zealand</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://jamesblond.co.nz/12-seater-van-hire-auckland</loc>
+    <lastmod>2026-04-12</lastmod>
     <priority>0.8</priority>
     <changefreq>weekly</changefreq>
   </url>
   <url>
     <loc>https://jamesblond.co.nz/wellington-10-12-seat-van-minibus-rental</loc>
+    <lastmod>2026-04-12</lastmod>
     <priority>0.8</priority>
     <changefreq>weekly</changefreq>
   </url>
-
-  <!-- Special Launch Pages -->
   <url>
-    <loc>https://jamesblond.co.nz/jumbo-taxi-launch</loc>
-    <priority>0.6</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-
-  <!-- Admin Pages (restricted access) -->
-  <url>
-    <loc>https://jamesblond.co.nz/admin/blog</loc>
-    <priority>0.3</priority>
-    <changefreq>monthly</changefreq>
+    <loc>https://jamesblond.co.nz/wellington-minibus-hire</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://jamesblond.co.nz/admin/blog/new</loc>
-    <priority>0.3</priority>
-    <changefreq>monthly</changefreq>
+    <loc>https://jamesblond.co.nz/minibus-hire-wellington</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://jamesblond.co.nz/admin/vehicle-rates</loc>
-    <priority>0.3</priority>
-    <changefreq>monthly</changefreq>
+    <loc>https://jamesblond.co.nz/wellington-minibus-hire-cbd</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://jamesblond.co.nz/admin/feedback</loc>
-    <priority>0.3</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-
-  <!-- Additional Minibus Routes that were missing -->
-  <url>
-    <loc>https://jamesblond.co.nz/fleet/minibus/10-seat-minibus</loc>
+    <loc>https://jamesblond.co.nz/contact/auckland</loc>
+    <lastmod>2026-04-12</lastmod>
     <priority>0.7</priority>
     <changefreq>monthly</changefreq>
   </url>
-
+  <url>
+    <loc>https://jamesblond.co.nz/contact/auckland-airport</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/contact/wellington</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/contact/christchurch</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/contact/christchurch-central</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/airport</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/airport/shuttle</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.6</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/airport/directions</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.6</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/airport/auckland</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/airport/christchurch</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/airport/wellington</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/hot-deals</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/hot-deals/mobil-fuel-discount</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/hot-deals/midweek-truck-van-discount</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/hot-deals/courier-operator-deals</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/people-mover</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/winz-quotes</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/jumbo-taxi-launch</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.6</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/fuel-calculator</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://jamesblond.co.nz/buy-used-vehicles</loc>
+    <lastmod>2026-04-12</lastmod>
+    <priority>0.7</priority>
+    <changefreq>weekly</changefreq>
+  </url>
 </urlset>
