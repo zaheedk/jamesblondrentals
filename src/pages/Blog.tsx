@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Calendar } from 'lucide-react';
@@ -52,6 +53,10 @@ const Blog = () => {
 
   return (
     <div className="container mx-auto px-4 py-16">
+      <Helmet>
+        <title>Blog – Vehicle Rental Tips & News | James Blond Rentals</title>
+        <meta name="description" content="Read the latest tips, guides and news from James Blond Rentals. Moving advice, rental car reviews and travel insights for New Zealand." />
+      </Helmet>
       {/* Hero Section */}
       <div className="text-center mb-16">
         <h1 className="text-4xl font-bold mb-4">James Blond Blog</h1>

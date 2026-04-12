@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -1152,6 +1153,10 @@ const BlogPost = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <Helmet>
+        <title>{`${displayPost.title} | James Blond Rentals Blog`}</title>
+        <meta name="description" content={displayPost.excerpt?.substring(0, 160) || `Read ${displayPost.title} on the James Blond Rentals blog.`} />
+      </Helmet>
       {/* Back to Blog Button */}
       <Button variant="ghost" asChild className="mb-8">
         <Link to="/blog">
