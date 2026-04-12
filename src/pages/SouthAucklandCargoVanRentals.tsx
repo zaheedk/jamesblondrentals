@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Package, ShieldCheck, Truck, Map, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -10,6 +11,10 @@ import { Link } from 'react-router-dom';
 const SouthAucklandCargoVanRentals = () => {
   return (
     <div className="container mx-auto px-4 py-8">
+      <Helmet>
+        <title>South Auckland Cargo Van Rentals & Hire | James Blond Rentals</title>
+        <meta name="description" content="Affordable cargo van hire in South Auckland. Perfect for deliveries, small moves and business needs. Book online with James Blond Rentals." />
+      </Helmet>
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-6 mb-8">
         <div className="grid md:grid-cols-2 gap-6 items-center">

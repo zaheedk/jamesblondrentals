@@ -1,9 +1,14 @@
 import React from 'react';
 import { MapIcon } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
 import FuelStationsMapChristchurch from '../components/FuelStationsMapChristchurch';
 
 const AirportChristchurch = () => (
   <div className="container mx-auto px-4 py-8 space-y-6">
+    <Helmet>
+      <title>Christchurch Airport Car Rental | James Blond Rentals</title>
+      <meta name="description" content="Rent a car at Christchurch Airport with James Blond Rentals. Free shuttle service, affordable rates and a wide range of vehicles." />
+    </Helmet>
     <section className="mb-8">
       <div className="text-center bg-secondary p-4 rounded-lg mb-6">
         <p className="text-lg font-bold">
