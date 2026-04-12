@@ -122,6 +122,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => ({
   },
   plugins: [
     react(),
+    sitemapPlugin(),
     mode === 'development' && componentTagger(),
   ].filter(Boolean),
   resolve: {
