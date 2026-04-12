@@ -78,15 +78,7 @@ serve(async (req) => {
       );
     }
 
-    // Only process emails starting with "zaheedk" (testing phase)
     const emailLower = email.toLowerCase();
-    if (!emailLower.startsWith("zaheedk")) {
-      console.log(`Skipping account creation for ${email} - not in test group`);
-      return new Response(
-        JSON.stringify({ skipped: true, message: "Email not in test group" }),
-        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -162,34 +154,40 @@ serve(async (req) => {
     const activateUrl = linkData?.properties?.action_link || `${SITE_URL}/reset-password`;
     console.log(`Recovery link generated for ${email}`);
 
-    // Send branded email via Resend
-    const emailHtml = buildInviteEmailHtml(activateUrl);
+    // Only send welcome/invite email to test group (zaheedk*)
+    let emailId: string | null = null;
+    if (emailLower.startsWith("zaheedk")) {
+      const emailHtml = buildInviteEmailHtml(activateUrl);
 
-    const resendRes = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${resendApiKey}`,
-      },
-      body: JSON.stringify({
-        from: "James Blond Rentals <info@jamesblond.co.nz>",
-        to: [email],
-        subject: "Activate Your James Blond Rentals Account",
-        html: emailHtml,
-      }),
-    });
+      const resendRes = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${resendApiKey}`,
+        },
+        body: JSON.stringify({
+          from: "James Blond Rentals <info@jamesblond.co.nz>",
+          to: [email],
+          subject: "Activate Your James Blond Rentals Account",
+          html: emailHtml,
+        }),
+      });
 
-    const resendData = await resendRes.json();
+      const resendData = await resendRes.json();
 
-    if (!resendRes.ok) {
-      console.error("Resend API error:", resendData);
-      return new Response(
-        JSON.stringify({ error: "Account created but failed to send email", details: resendData }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      if (!resendRes.ok) {
+        console.error("Resend API error:", resendData);
+        return new Response(
+          JSON.stringify({ error: "Account created but failed to send email", details: resendData }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      emailId = resendData.id;
+      console.log(`Branded invite email sent to ${email} via Resend, id: ${emailId}`);
+    } else {
+      console.log(`Skipping welcome email for ${email} - not in test group`);
     }
-
-    console.log(`Branded invite email sent to ${email} via Resend, id: ${resendData.id}`);
 
     // Sync to Savo (accident reporter) - fire and forget
     try {
@@ -221,7 +219,7 @@ serve(async (req) => {
     }
 
     return new Response(
-      JSON.stringify({ success: true, userId: data.user?.id, emailId: resendData.id }),
+      JSON.stringify({ success: true, userId: data.user?.id, emailId }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
