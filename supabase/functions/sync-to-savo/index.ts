@@ -48,8 +48,8 @@ serve(async (req) => {
         body: JSON.stringify({
           email,
           password,
-          full_name: fullName || "",
-          rego_number: regoNumber || "",
+          full_name: fullName || "Customer",
+          rego_number: regoNumber || "TBC",
         }),
       }
     );

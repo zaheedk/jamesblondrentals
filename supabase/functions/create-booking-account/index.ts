@@ -204,8 +204,8 @@ serve(async (req) => {
             body: JSON.stringify({
               email,
               password: crypto.randomUUID(),
-              full_name: fullName,
-              rego_number: "",
+              full_name: fullName || "Customer",
+              rego_number: "TBC",
             }),
           }
         );
