@@ -219,7 +219,7 @@ serve(async (req) => {
     }
 
     return new Response(
-      JSON.stringify({ success: true, userId: data.user?.id, emailId: resendData.id }),
+      JSON.stringify({ success: true, userId: data.user?.id, emailId }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
