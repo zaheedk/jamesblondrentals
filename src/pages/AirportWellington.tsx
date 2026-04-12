@@ -1,9 +1,11 @@
 import React from 'react';
 import { MapIcon } from 'lucide-react';
 import FuelStationsMapWellington from '../components/FuelStationsMapWellington';
+import PageSEO from '@/components/PageSEO';
 
 const AirportWellington = () => (
   <div className="container mx-auto px-4 py-8 space-y-6">
+    <PageSEO title="Wellington Airport Car Rental | James Blond Rentals" description="Convenient vehicle rental at Wellington Airport. Cars, vans, trucks and minibuses available with easy pickup and drop-off." canonical="/airport/wellington" />
     <section className="mb-8">
       <div className="text-center bg-secondary p-4 rounded-lg mb-6">
         <p className="text-lg font-bold">
