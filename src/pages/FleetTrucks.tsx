@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import PageSEO from '@/components/PageSEO';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
@@ -91,6 +92,7 @@ const trucks = [
 
 const FleetTrucks = () => (
   <div className="container mx-auto px-4 py-10">
+    <PageSEO title="Truck Hire NZ – 2 & 3 Tonne Trucks | James Blond" description="Hire trucks from 2-tonne to 3-tonne box trucks, tail-lift trucks and tippers. Perfect for moving house or business deliveries." canonical="/fleet/trucks" />
     {/* Hero Section with Image */}
     <div className="grid md:grid-cols-5 gap-8 mb-12 items-center">
       <div className="md:col-span-3">

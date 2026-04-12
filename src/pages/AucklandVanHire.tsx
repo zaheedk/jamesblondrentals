@@ -6,6 +6,8 @@ import { MapPin, Users, Shield, Clock, Phone, Star } from 'lucide-react';
 import vanImage from '@/assets/12-seater-van-auckland-sky-tower.jpg';
 import vanInteriorImage from '@/assets/12-seater-van-interior-auckland.jpg';
 import fleetImage from '@/assets/auckland-van-fleet-sky-tower.jpg';
+import PageSEO from '@/components/PageSEO';
+
 
 const AucklandVanHire = () => {
   useEffect(() => {
@@ -57,6 +59,7 @@ const AucklandVanHire = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <PageSEO title="12-Seater Van Hire Auckland | James Blond Rentals" description="Rent a 12-seater van in Auckland for group travel, sports teams and events. Comfortable and easy to drive." canonical="/12-seater-van-hire-auckland" />
       {/* Breadcrumb */}
       <div className="bg-muted/50 py-4">
         <div className="container mx-auto px-4">

@@ -9,10 +9,13 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Card, CardContent } from "@/components/ui/card";
+import PageSEO from '@/components/PageSEO';
+
 
 const StandardRearSeatVanDetail = () => {
   return (
     <div className="container mx-auto px-4 py-12">
+      <PageSEO title="Standard Rear Seat Van Hire | James Blond Rentals" description="Hire a van with rear seating – carry passengers and cargo in one versatile vehicle. Great for tradespeople." canonical="/fleet/vans/standard-rear-seat-van" />
       <div className="mb-8">
         <Link to="/fleet/vans" className="text-primary hover:underline">&larr; Back to Vans</Link>
       </div>

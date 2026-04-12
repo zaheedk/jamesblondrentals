@@ -2,9 +2,11 @@ import React from 'react';
 import { MapIcon, Navigation } from 'lucide-react';
 import FuelStationsMap from '../components/FuelStationsMap';
 import { Button } from '@/components/ui/button';
+import PageSEO from '@/components/PageSEO';
 
 const AirportAuckland = () => (
   <div className="container mx-auto px-4 py-8 space-y-6">
+    <PageSEO title="Auckland Airport Car Rental | James Blond Rentals" description="Rent cars, vans, trucks and minibuses at Auckland Airport. Free shuttle from both domestic and international terminals." canonical="/airport/auckland" />
     <section className="mb-8">
       <div className="text-center bg-secondary p-4 rounded-lg mb-6">
         <p className="text-lg font-bold">

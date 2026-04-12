@@ -25,6 +25,8 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Mail } from 'lucide-react';
+import PageSEO from '@/components/PageSEO';
+
 
 const formSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -66,6 +68,7 @@ export default function ForgotPassword() {
 
   return (
     <div className="container mx-auto px-4 py-12">
+      <PageSEO title="Forgot Password – James Blond Rentals" description="Reset your James Blond Rentals account password. Enter your email to receive a secure password reset link." canonical="/forgot-password" />
       <Card className="w-full max-w-md mx-auto">
         <CardHeader>
           <CardTitle className="text-2xl">Reset Password</CardTitle>

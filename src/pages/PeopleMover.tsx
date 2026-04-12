@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import PageSEO from '@/components/PageSEO';
+
 
 const seo = {
   title: "People Mover Rentals: 8, 10, 12 Seaters | James Blond",
@@ -80,6 +82,7 @@ export default function PeopleMover() {
 
   return (
     <div>
+      <PageSEO title="People Mover Rental NZ | James Blond Rentals" description="Rent people movers and multi-seat vehicles in New Zealand. Perfect for family trips, group travel and events." canonical="/people-mover" />
       <header className="bg-gradient-to-b from-primary/10 to-background">
         <div className="container mx-auto px-4 py-12 md:py-16">
           <div className="max-w-3xl">

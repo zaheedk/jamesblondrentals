@@ -3,10 +3,13 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
+import PageSEO from '@/components/PageSEO';
+
 
 const PremiumMidsizeDetail = () => {
   return (
     <div className="container mx-auto px-4 py-10">
+      <PageSEO title="Premium Midsize Car Hire | James Blond Rentals" description="Hire a comfortable midsize car with ample boot space. Great balance of economy and comfort for longer journeys." canonical="/fleet/cars/premium-midsize" />
       <div className="mb-6">
         <h1 className="text-3xl font-bold mb-2">Premium Midsize – Toyota Corolla Hatch 2.0L</h1>
         <div className="flex gap-2">

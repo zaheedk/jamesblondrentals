@@ -1,8 +1,11 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import PageSEO from '@/components/PageSEO';
+
 
 const Terms = () => {
   return (
     <div className="container mx-auto px-4 py-10">
+      <PageSEO title="Terms & Conditions – James Blond Rentals NZ" description="Read the full terms and conditions for hiring vehicles from James Blond Rentals including liability, insurance, fuel policy and damage procedures." canonical="/terms" />
       <h1 className="text-3xl font-bold mb-6">Terms & Conditions</h1>
       <p className="mb-8 text-gray-700">
         Subject to the terms & conditions contained on the front and reverse hereof of which the hirer(s) acknowledges that they are aware, 

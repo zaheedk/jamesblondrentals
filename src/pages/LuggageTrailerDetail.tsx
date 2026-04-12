@@ -8,10 +8,13 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import PageSEO from '@/components/PageSEO';
+
 
 const LuggageTrailerDetail = () => {
   return (
     <div className="container mx-auto px-4 py-10">
+      <PageSEO title="Luggage Trailer Hire | James Blond Rentals" description="Hire a luggage trailer for extra cargo space on road trips, airport transfers and group travel." canonical="/fleet/trailers/luggage-trailer" />
       <div className="mb-6">
         <Link to="/fleet/trailers">
           <Button variant="ghost" className="pl-0">

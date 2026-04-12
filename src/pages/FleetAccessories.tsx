@@ -2,6 +2,8 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import PageSEO from '@/components/PageSEO';
+
 
 const accessories = [
   {
@@ -45,6 +47,7 @@ const accessories = [
 const FleetAccessories = () => {
   return (
     <div className="container mx-auto px-4 py-8">
+      <PageSEO title="Rental Accessories – Child Seats, Trolleys & More | James Blond" description="Add accessories to your rental including child seats, booster seats, pallet jacks, hand trolleys and ratchet straps." canonical="/fleet/accessories" />
       <div className="text-center mb-12">
         <h2 className="text-3xl font-bold mb-4">Smart Add-Ons</h2>
         <p className="text-xl text-gray-600">

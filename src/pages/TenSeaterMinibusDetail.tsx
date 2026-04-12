@@ -6,6 +6,8 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ArrowLeft, Calendar, Fuel, MapPin, Car, AirVent, Bluetooth, Anchor } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import PageSEO from '@/components/PageSEO';
+
 
 const TenSeaterMinibusDetail = () => {
   // Vehicle specifications
@@ -46,6 +48,7 @@ const TenSeaterMinibusDetail = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <PageSEO title="10-Seat Minibus Hire | James Blond Rentals" description="Hire a 10-seat minibus for medium-sized groups. Comfortable, easy to drive and perfect for day trips and events." canonical="/fleet/minibus/10-seat-minibus" />
       <div className="mb-6">
         <Link to="/fleet/minibus" className="inline-flex items-center text-primary hover:underline">
           <ArrowLeft className="h-4 w-4 mr-2" />

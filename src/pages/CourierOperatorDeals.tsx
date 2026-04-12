@@ -2,10 +2,13 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Truck, Shield, Clock, Users, CheckCircle, Calendar, DollarSign } from "lucide-react";
+import PageSEO from '@/components/PageSEO';
+
 
 const CourierOperatorDeals = () => {
   return (
     <div className="min-h-screen bg-background">
+      <PageSEO title="Courier & Operator Deals | James Blond Rentals" description="Special rental deals for courier operators and businesses. Long-term van and truck hire at discounted rates across NZ." canonical="/hot-deals/courier-operator-deals" />
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-primary/10 to-primary/5 py-16">
         <div className="container mx-auto px-4">

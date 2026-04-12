@@ -9,10 +9,13 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Card, CardContent } from "@/components/ui/card";
+import PageSEO from '@/components/PageSEO';
+
 
 const TwoTonneBox16m3Detail = () => {
   return (
     <div className="container mx-auto px-4 py-12">
+      <PageSEO title="2-Tonne Box Truck 16m³ Hire | James Blond Rentals" description="Hire a large 2-tonne 16m³ box truck for house moves and big deliveries. Maximum cargo space on a car licence." canonical="/fleet/trucks/2-tonne-box-16m3" />
       <div className="mb-8">
         <Link to="/fleet/trucks" className="text-primary hover:underline">&larr; Back to Trucks</Link>
       </div>

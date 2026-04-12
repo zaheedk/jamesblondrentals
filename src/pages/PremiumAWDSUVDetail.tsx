@@ -3,10 +3,13 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
+import PageSEO from '@/components/PageSEO';
+
 
 const PremiumAWDSUVDetail = () => {
   return (
     <div className="container mx-auto px-4 py-10">
+      <PageSEO title="Premium AWD SUV Hire | James Blond Rentals" description="Hire a premium all-wheel-drive SUV for confident driving in all conditions. Ideal for adventure and winter travel." canonical="/fleet/cars/premium-awd-suv" />
       <div className="mb-6">
         <h1 className="text-3xl font-bold mb-2">Premium AWD SUV – Toyota Highlander 3.5L V6</h1>
         <div className="flex gap-2">

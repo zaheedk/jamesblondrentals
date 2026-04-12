@@ -2,10 +2,13 @@ import React from 'react';
 import { MapPin, Phone, Mail, Facebook } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import ContactForm from '@/components/ContactForm';
+import PageSEO from '@/components/PageSEO';
+
 
 const ContactAucklandAirport = () => {
   return (
     <div className="container mx-auto px-4 py-12">
+      <PageSEO title="Contact Auckland Airport – James Blond Rentals" description="Contact our Auckland Airport branch for vehicle pickup and drop-off. Get directions, phone number and opening hours." canonical="/contact/auckland-airport" />
       <h1 className="text-4xl font-bold mb-8 text-center">Auckland Airport Branch</h1>
       
       <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-12">

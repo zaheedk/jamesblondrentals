@@ -8,10 +8,13 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import PageSEO from '@/components/PageSEO';
+
 
 const CarTransporterTrailerDetail = () => {
   return (
     <div className="container mx-auto px-4 py-10">
+      <PageSEO title="Car Transporter Trailer Hire | James Blond Rentals" description="Rent a car transporter trailer to safely move vehicles between locations. Suitable for cars and small vehicles." canonical="/fleet/trailers/car-transporter" />
       <div className="mb-6">
         <Link to="/fleet/trailers">
           <Button variant="ghost" className="pl-0">

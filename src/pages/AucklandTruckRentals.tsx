@@ -9,10 +9,13 @@ import { Link } from 'react-router-dom';
 import truckOpenDoors from '@/assets/truck-open-doors-loading-boxes.jpg';
 import familyUnpacking from '@/assets/family-unpacking-moving-truck.jpg';
 import coupleMoving from '@/assets/couple-moving-boxes-truck.jpg';
+import PageSEO from '@/components/PageSEO';
+
 
 const AucklandTruckRentals = () => {
   return (
     <div className="container mx-auto px-4 py-8">
+      <PageSEO title="Truck Hire Auckland | James Blond Rentals" description="Rent trucks in Auckland for house moves, business deliveries and construction. 2-tonne and 3-tonne trucks available daily." canonical="/auckland-truck-rentals-hire" />
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-6 mb-8">
         <div className="grid md:grid-cols-2 gap-6 items-center">

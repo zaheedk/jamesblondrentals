@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import PageSEO from '@/components/PageSEO';
+
 
 const TwoTonneTipperDetail = () => {
   const specs = [
@@ -39,6 +41,7 @@ const TwoTonneTipperDetail = () => {
 
   return (
     <div className="container mx-auto px-4 py-10">
+      <PageSEO title="2-Tonne Tipper Truck Hire | James Blond Rentals" description="Rent a 2-tonne tipper truck for landscaping, rubbish removal and construction. Easy hydraulic tipping mechanism." canonical="/fleet/trucks/2-tonne-tipper" />
       <div className="mb-6">
         <Link to="/fleet/trucks">
           <Button variant="outline" size="sm" className="mb-4">

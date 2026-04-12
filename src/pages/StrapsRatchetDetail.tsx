@@ -7,10 +7,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import PageSEO from '@/components/PageSEO';
+
 
 const StrapsRatchetDetail = () => {
   return (
     <div className="container mx-auto px-4 py-10">
+      <PageSEO title="Ratchet Straps Hire | James Blond Rentals" description="Hire ratchet straps for securing cargo in trucks, vans and trailers. Heavy-duty load restraint available." canonical="/fleet/accessories/straps-ratchet" />
       <div className="mb-6">
         <Link to="/fleet/accessories">
           <Button variant="ghost" className="pl-0">

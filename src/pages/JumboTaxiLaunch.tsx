@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Car, Users, Shield, Clock } from "lucide-react";
+import PageSEO from '@/components/PageSEO';
+
 
 const JumboTaxiLaunch = () => {
   const seo = {
@@ -78,6 +80,7 @@ const JumboTaxiLaunch = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <PageSEO title="Jumbo Taxi Launch | James Blond Rentals" description="Introducing our Jumbo Taxi service. Large-capacity vehicle transport for groups, events and airport transfers across NZ." canonical="/jumbo-taxi-launch" />
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-primary to-primary/90 text-white py-16">
         <div className="container mx-auto px-4">

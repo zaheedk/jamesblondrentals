@@ -5,6 +5,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import SearchForm from '@/components/home/SearchForm';
 import { Link } from 'react-router-dom';
+import PageSEO from '@/components/PageSEO';
+
 
 const WellingtonMinibusRentals = () => {
   useEffect(() => {
@@ -19,6 +21,7 @@ const WellingtonMinibusRentals = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <PageSEO title="Minibus Rentals Wellington | James Blond Rentals" description="Affordable minibus hire in Wellington. 10-seat and 12-seat options for groups, events and family travel." canonical="/minibus-hire-wellington" />
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-6 mb-8">
         <div className="text-center mb-6">

@@ -7,6 +7,8 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ArrowLeft, Calendar, Fuel, MapPin, Car, AirVent, Bluetooth, Anchor, Users, Shield, Clock, Phone } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import PageSEO from '@/components/PageSEO';
+
 
 const Premium12SeatMinibusDetail = () => {
   useEffect(() => {
@@ -79,6 +81,7 @@ const Premium12SeatMinibusDetail = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <PageSEO title="Premium 12-Seat Minibus Hire | James Blond Rentals" description="Rent a premium 12-seat minibus with enhanced comfort and features. Ideal for executive group transport and VIP events." canonical="/fleet/minibus/premium-12-seat-minibus" />
       {/* Breadcrumb Navigation */}
       <div className="mb-6">
         <nav className="flex items-center space-x-2 text-sm text-muted-foreground mb-4">

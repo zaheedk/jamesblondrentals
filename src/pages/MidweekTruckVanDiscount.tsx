@@ -3,10 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { CheckCircle, Truck, Calendar, Percent, Phone, Mail } from "lucide-react";
+import PageSEO from '@/components/PageSEO';
+
 
 const MidweekTruckVanDiscount = () => {
   return (
     <div className="min-h-screen bg-background">
+      <PageSEO title="Midweek Truck & Van Discount | James Blond Rentals" description="Save with our midweek truck and van rental discounts. Get competitive rates on commercial vehicle hire Monday to Thursday." canonical="/hot-deals/midweek-truck-van-discount" />
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-primary/10 to-primary/5 py-16">
         <div className="container mx-auto px-4">

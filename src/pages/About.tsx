@@ -2,11 +2,14 @@
 import React from 'react';
 import { Globe, Users, Award, Star } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
+import PageSEO from '@/components/PageSEO';
+
 
 const About = () => {
 
   return (
   <div className="container mx-auto px-4 py-12 space-y-16">
+      <PageSEO title="About Us – James Blond Car & Truck Rental NZ" description="Learn about James Blond Rentals, established in 2004 with 100,000+ satisfied customers. Premium car, van, truck and minibus hire across Auckland, Wellington and Christchurch." canonical="/about" />
     {/* Hero Section */}
     <section className="text-center max-w-4xl mx-auto">
       <h1 className="text-4xl font-bold mb-6">About James Blond Car and Truck Rental</h1>

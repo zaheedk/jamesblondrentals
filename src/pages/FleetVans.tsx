@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { useEffect } from "react";
+import PageSEO from '@/components/PageSEO';
+
 
 const vans = [
   {
@@ -76,6 +78,7 @@ const FleetVans = () => {
 
   return (
     <div className="container mx-auto px-4 py-10">
+      <PageSEO title="Van Hire NZ – Standard, Premium & Jumbo Vans | James Blond" description="Hire vans in Auckland, Wellington and Christchurch. Standard, premium and jumbo vans for moving, deliveries and more." canonical="/fleet/vans" />
       <div className="text-center mb-12">
         <h1 className="text-3xl font-bold mb-4">Reliable and Affordable cargo vans for every move</h1>
         <p className="text-lg text-gray-700">

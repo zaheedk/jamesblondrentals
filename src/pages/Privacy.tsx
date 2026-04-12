@@ -1,9 +1,12 @@
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import PageSEO from '@/components/PageSEO';
+
 
 const Privacy = () => {
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <PageSEO title="Privacy Policy – James Blond Rentals NZ" description="Read our privacy policy to understand how James Blond Rentals collects, uses and protects your personal information." canonical="/privacy" />
       <h1 className="text-3xl font-bold mb-6">Security & Privacy Policy</h1>
       
       <div className="space-y-6">
