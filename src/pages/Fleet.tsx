@@ -1,5 +1,6 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import { Truck, Car, CarFront, Bus, Caravan, Forklift, Package } from "lucide-react";
 
 const fleetLinks = [
@@ -47,6 +48,10 @@ const Fleet = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <Helmet>
+        <title>Our Rental Fleet – Cars, Vans, Trucks & More | James Blond Rentals</title>
+        <meta name="description" content="Explore the full James Blond Rentals fleet. Cars, vans, cargo vans, utes, trucks, minibuses and trailers available across Auckland, Wellington and Christchurch." />
+      </Helmet>
       {isRootFleetRoute ? (
         <>
           <div className="max-w-4xl mx-auto mb-12">

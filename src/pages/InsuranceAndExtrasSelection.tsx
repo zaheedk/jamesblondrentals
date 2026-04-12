@@ -14,6 +14,7 @@ import { differenceInDays, parseISO } from 'date-fns';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ChevronDown } from 'lucide-react';
 import ExitIntentPopup from '@/components/ExitIntentPopup';
+import { Helmet } from 'react-helmet-async';
 
 const InsuranceAndExtrasSelection = () => {
   const navigate = useNavigate();
@@ -377,6 +378,10 @@ const InsuranceAndExtrasSelection = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Insurance & Extras | James Blond Rentals</title>
+        <meta name="description" content="Select insurance cover and optional extras for your James Blond vehicle rental. Choose from excess reduction, GPS, child seats and more." />
+      </Helmet>
       <BookingSteps currentStep={3} />
       <div className="container mx-auto px-4 py-8">
         <ExitIntentPopup />
