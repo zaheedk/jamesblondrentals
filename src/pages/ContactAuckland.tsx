@@ -2,10 +2,13 @@ import React from 'react';
 import { MapPin, Phone, Mail, Facebook } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import ContactForm from '@/components/ContactForm';
+import PageSEO from '@/components/PageSEO';
+
 
 const ContactAuckland = () => {
   return (
     <div className="container mx-auto px-4 py-12">
+      <PageSEO title="Contact Auckland – James Blond Rentals" description="Contact our Auckland branch for car, van and truck rentals. Find our address, phone number, opening hours and directions." canonical="/contact/auckland" />
       <h1 className="text-4xl font-bold mb-8 text-center">Auckland - Glen Eden Branch</h1>
       
       <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-12">

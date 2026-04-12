@@ -3,10 +3,13 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Truck, Package, Shield, MapPin, Clock, Users, Wrench } from 'lucide-react';
+import PageSEO from '@/components/PageSEO';
+
 
 const FleetCargoVans = () => {
   return (
     <div className="container mx-auto px-4 py-8">
+      <PageSEO title="Cargo Van Hire NZ | James Blond Rentals" description="Rent cargo vans for commercial deliveries, courier work and business logistics across Auckland, Wellington and Christchurch." canonical="/fleet/cargo-vans" />
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-8 mb-12">
         <div className="max-w-4xl mx-auto text-center">

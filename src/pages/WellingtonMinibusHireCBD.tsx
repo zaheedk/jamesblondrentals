@@ -8,6 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Badge } from '@/components/ui/badge';
 import SearchForm from '@/components/home/SearchForm';
+import PageSEO from '@/components/PageSEO';
+
 
 const WellingtonMinibusHireCBD = () => {
   useEffect(() => {
@@ -16,6 +18,7 @@ const WellingtonMinibusHireCBD = () => {
   
   return (
     <div className="container mx-auto px-4 py-8">
+      <PageSEO title="Minibus Hire Wellington CBD | James Blond Rentals" description="Convenient minibus hire from our Wellington CBD location. Walk-in pickup for 10 and 12-seat minibuses." canonical="/wellington-minibus-hire-cbd" />
       {/* Hero Section */}
       <section className="bg-primary/5 rounded-lg p-6 mb-12">
         <div className="flex flex-col items-center">

@@ -7,10 +7,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import PageSEO from '@/components/PageSEO';
+
 
 const HandTrolleyDetail = () => {
   return (
     <div className="container mx-auto px-4 py-10">
+      <PageSEO title="Hand Trolley Hire | James Blond Rentals" description="Add a hand trolley to your rental for easy moving of boxes and heavy items. Compact and versatile." canonical="/fleet/accessories/hand-trolley" />
       <div className="mb-6">
         <Link to="/fleet/accessories">
           <Button variant="ghost" className="pl-0">

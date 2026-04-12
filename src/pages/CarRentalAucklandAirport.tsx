@@ -5,10 +5,13 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import SearchForm from '@/components/home/SearchForm';
+import PageSEO from '@/components/PageSEO';
+
 
 const CarRentalAucklandAirport = () => {
   return (
     <div className="container mx-auto px-4 py-8">
+      <PageSEO title="Car Rental Auckland Airport NZ | James Blond Rentals" description="Rent a car at Auckland Airport with free shuttle from both terminals. Economy to premium vehicles available." canonical="/car-rental-auckland-airport-new-zealand" />
       {/* Hero Section */}
       <section className="bg-primary/5 rounded-lg p-6 mb-12">
         <div className="flex flex-col items-center">

@@ -2,10 +2,13 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Fuel, Truck, Calendar, Percent, ArrowRight } from "lucide-react";
+import PageSEO from '@/components/PageSEO';
+
 
 const HotDeals = () => {
   return (
     <div className="min-h-screen bg-background">
+      <PageSEO title="Hot Deals – Exclusive Rental Offers | James Blond Rentals" description="Save on your next vehicle rental with James Blond's exclusive hot deals. Fuel discounts, midweek specials and courier operator deals." canonical="/hot-deals" />
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-primary/10 to-primary/5 py-16">
         <div className="container mx-auto px-4">

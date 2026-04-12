@@ -9,10 +9,13 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Card, CardContent } from "@/components/ui/card";
+import PageSEO from '@/components/PageSEO';
+
 
 const PremiumVanDetail = () => {
   return (
     <div className="container mx-auto px-4 py-12">
+      <PageSEO title="Premium Van Hire | James Blond Rentals" description="Rent a premium cargo van for business deliveries, courier work or moving. Spacious, reliable and well-maintained." canonical="/fleet/vans/premium-van" />
       <div className="mb-8">
         <Link to="/fleet/vans" className="text-primary hover:underline">&larr; Back to Vans</Link>
       </div>

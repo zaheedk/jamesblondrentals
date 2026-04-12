@@ -5,10 +5,13 @@ import { ArrowLeft, Fuel, Car, Route } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import PageSEO from '@/components/PageSEO';
+
 
 const PremiumDoubleCabUteDetail = () => {
   return (
     <div className="container mx-auto px-4 py-10">
+      <PageSEO title="Premium Double Cab Ute Hire | James Blond Rentals" description="Rent a double cab ute with rear seating and tray. Perfect for crews, tradespeople and outdoor adventures." canonical="/fleet/utes/premium-double-cab-ute" />
       <div className="mb-6">
         <Link to="/fleet/utes">
           <Button variant="ghost" className="pl-0">

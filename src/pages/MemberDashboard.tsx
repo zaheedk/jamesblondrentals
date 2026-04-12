@@ -10,6 +10,8 @@ import { useState } from 'react';
 import SupabaseBookingHistory from '@/components/member/SupabaseBookingHistory';
 import ProfileForm from '@/components/member/ProfileForm';
 import { useUserRole } from '@/hooks/use-user-role';
+import PageSEO from '@/components/PageSEO';
+
 
 export default function MemberDashboard() {
   const { user, signOut } = useAuth();
@@ -49,6 +51,7 @@ export default function MemberDashboard() {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <PageSEO title="My Dashboard – James Blond Rentals" description="View your bookings, rental history and manage your James Blond Rentals account from your personal dashboard." canonical="/member-dashboard" noindex />
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold">Member Dashboard</h1>

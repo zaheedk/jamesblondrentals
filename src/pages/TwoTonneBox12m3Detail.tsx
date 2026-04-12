@@ -3,10 +3,13 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
+import PageSEO from '@/components/PageSEO';
+
 
 const TwoTonneBox12m3Detail = () => {
   return (
     <div className="container mx-auto px-4 py-10">
+      <PageSEO title="2-Tonne Box Truck 12m³ Hire | James Blond Rentals" description="Rent a 2-tonne 12m³ box truck for medium moves and deliveries. Easy to drive with a car licence." canonical="/fleet/trucks/2-tonne-box-12m3" />
       <div className="mb-6">
         <h1 className="text-3xl font-bold mb-2">Spacious & Efficient – 2 Tonne Box Truck (12m³) Rental</h1>
         <div className="flex gap-2">

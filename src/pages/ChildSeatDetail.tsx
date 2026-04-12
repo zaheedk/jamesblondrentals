@@ -7,10 +7,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import PageSEO from '@/components/PageSEO';
+
 
 const ChildSeatDetail = () => {
   return (
     <div className="container mx-auto px-4 py-10">
+      <PageSEO title="Child Seat Hire | James Blond Rentals" description="Add a child seat to your vehicle rental for safe family travel. Compliant with NZ safety standards." canonical="/fleet/accessories/child-seat" />
       <div className="mb-6">
         <Link to="/fleet/accessories">
           <Button variant="ghost" className="pl-0">

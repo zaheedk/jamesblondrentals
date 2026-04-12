@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { LazyImage } from "@/components/LazyImage";
+import PageSEO from '@/components/PageSEO';
+
 
 const ThreeTonneBox19m3Detail = () => {
   const specs = [
@@ -41,6 +43,7 @@ const ThreeTonneBox19m3Detail = () => {
 
   return (
     <div className="container mx-auto px-4 py-10">
+      <PageSEO title="3-Tonne Box Truck 19m³ Hire | James Blond Rentals" description="Hire our largest box truck – 3-tonne 19m³ for maximum cargo capacity. Ideal for large house moves and business logistics." canonical="/fleet/trucks/3-tonne-box-19m3" />
       <div className="mb-6">
         <Link to="/fleet/trucks">
           <Button variant="outline" size="sm" className="mb-4">

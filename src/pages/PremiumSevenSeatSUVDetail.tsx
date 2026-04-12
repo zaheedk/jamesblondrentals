@@ -3,10 +3,13 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
+import PageSEO from '@/components/PageSEO';
+
 
 const PremiumSevenSeatSUVDetail = () => {
   return (
     <div className="container mx-auto px-4 py-10">
+      <PageSEO title="Premium 7-Seat SUV Hire | James Blond Rentals" description="Rent a premium 7-seat SUV perfect for family road trips and group travel. Spacious, powerful and well-equipped." canonical="/fleet/cars/premium-seven-seat-suv" />
       <div className="mb-6">
         <h1 className="text-3xl font-bold mb-2">Premium 7-Seat SUV – Kia Sorento 2.2L Diesel</h1>
         <div className="flex gap-2">

@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { LazyImage } from "@/components/LazyImage";
+import PageSEO from '@/components/PageSEO';
+
 
 const ThreeTonneBoxTailLiftDetail = () => {
   const specs = [
@@ -42,6 +44,7 @@ const ThreeTonneBoxTailLiftDetail = () => {
 
   return (
     <div className="container mx-auto px-4 py-10">
+      <PageSEO title="3-Tonne Box Truck 18m³ with Tail Lift | James Blond" description="Rent a 3-tonne 18m³ truck with tail lift for large commercial moves and heavy freight. Professional-grade capacity." canonical="/fleet/trucks/3-tonne-box-18m3" />
       <div className="mb-6">
         <Link to="/fleet/trucks">
           <Button variant="outline" size="sm" className="mb-4">

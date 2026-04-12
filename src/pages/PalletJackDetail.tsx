@@ -7,10 +7,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import PageSEO from '@/components/PageSEO';
+
 
 const PalletJackDetail = () => {
   return (
     <div className="container mx-auto px-4 py-10">
+      <PageSEO title="Pallet Jack Hire | James Blond Rentals" description="Add a pallet jack to your truck rental for easy loading and unloading of palletised goods." canonical="/fleet/accessories/pallet-jack" />
       <div className="mb-6">
         <Link to="/fleet/accessories">
           <Button variant="ghost" className="pl-0">

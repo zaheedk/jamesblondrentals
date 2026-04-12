@@ -1,6 +1,9 @@
+import PageSEO from '@/components/PageSEO';
+
 export default function BuyUsedVehicles() {
   return (
     <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
+      <PageSEO title="Buy Used Vehicles – Ex-Rental Cars & Trucks | James Blond" description="Purchase quality ex-rental vehicles from James Blond Rentals. Well-maintained cars, vans and trucks at competitive prices." canonical="/buy-used-vehicles" />
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold text-foreground mb-8 text-center">
           We Buy Used Vehicles for Our Fleet

@@ -2,6 +2,8 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 import { CalendarIcon, MapPinIcon, PhoneIcon, PlaneIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import PageSEO from '@/components/PageSEO';
+
 
 const airportLinks = [
   { name: "Auckland Airport", path: "/airport/auckland" },
@@ -15,6 +17,7 @@ const Airport = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <PageSEO title="Airport Car Rental – James Blond Rentals NZ" description="Convenient airport car, van and truck rental services at Auckland, Wellington and Christchurch airports. Free shuttle service available." canonical="/airport" />
       {isRootPath ? (
         <div className="max-w-4xl mx-auto space-y-8">
           <div className="text-center space-y-4">

@@ -17,6 +17,8 @@ import { useRcmApi } from "@/hooks/use-rcm-api";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent } from "@/components/ui/card";
+import PageSEO from '@/components/PageSEO';
+
 
 const DEPOSIT_AMOUNT = 50;
 
@@ -466,6 +468,7 @@ const PaymentOptions = () => {
   if (!bookingDetails) {
     return (
       <div className="container mx-auto px-4 py-16 text-center">
+      <PageSEO title="Payment Options – James Blond Rentals" description="Choose your preferred payment method to complete your James Blond Rentals vehicle booking." canonical="/payment-options" noindex />
         <div className="flex flex-col items-center py-8">
           <div className="w-12 h-12 border-4 border-t-blue-500 border-blue-200 rounded-full animate-spin mb-4"></div>
           <p className="text-lg">Loading booking details...</p>

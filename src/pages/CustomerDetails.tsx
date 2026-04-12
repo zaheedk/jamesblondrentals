@@ -28,6 +28,8 @@ import BookingRentalAccordion from '@/components/booking/BookingRentalAccordion'
 import ExitIntentPopup from "@/components/ExitIntentPopup";
 import DebugApiResponse from '@/components/diagnostics/DebugApiResponse';
 import BookingSteps from '@/components/booking/BookingSteps';
+import PageSEO from '@/components/PageSEO';
+
 
 const formSchema = z.object({
   firstName: z.string().min(2, {
@@ -449,6 +451,7 @@ const CustomerDetails = () => {
 
   return (
     <div>
+      <PageSEO title="Customer Details – Complete Your Booking | James Blond" description="Enter your details to complete your vehicle rental booking with James Blond Rentals." canonical="/customer-details" noindex />
       <BookingSteps currentStep={4} />
       <div className="container mx-auto px-4 py-8">
         <ExitIntentPopup />

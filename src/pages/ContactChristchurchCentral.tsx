@@ -3,10 +3,13 @@ import React from 'react';
 import { MapPin, Phone, Mail, Facebook, Clock } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import ContactForm from '@/components/ContactForm';
+import PageSEO from '@/components/PageSEO';
+
 
 const ContactChristchurchCentral = () => {
   return (
     <div className="container mx-auto px-4 py-12">
+      <PageSEO title="Contact Christchurch Central – James Blond Rentals" description="Contact our Christchurch Central branch for convenient city vehicle hire. Address, phone and opening hours available." canonical="/contact/christchurch-central" />
       <h1 className="text-4xl font-bold mb-8 text-center">Christchurch Central Branch</h1>
       
       <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">

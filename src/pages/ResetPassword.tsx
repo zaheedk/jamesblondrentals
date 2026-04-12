@@ -25,6 +25,8 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Lock, EyeOff, Eye } from 'lucide-react';
+import PageSEO from '@/components/PageSEO';
+
 
 const formSchema = z.object({
   password: z.string().min(8, 'Password must be at least 8 characters'),
@@ -91,6 +93,7 @@ export default function ResetPassword() {
   
   return (
     <div className="container mx-auto px-4 py-12">
+      <PageSEO title="Reset Password – James Blond Rentals" description="Set a new password for your James Blond Rentals account using your secure reset link." canonical="/reset-password" noindex />
       <Card className="w-full max-w-md mx-auto">
         <CardHeader>
           <CardTitle className="text-2xl">Set New Password</CardTitle>

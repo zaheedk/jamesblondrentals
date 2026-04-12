@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Bluetooth, AirVent, Anchor } from "lucide-react";
+import PageSEO from '@/components/PageSEO';
+
 
 const minibuses = [
   {
@@ -80,6 +82,7 @@ const FleetMinibuses = () => {
 
   return (
   <div className="container mx-auto px-4 py-10">
+      <PageSEO title="Minibus Hire NZ – 10 & 12 Seat | James Blond Rentals" description="Rent 10-seat and 12-seat minibuses for group travel, sports teams, events and family trips across New Zealand." canonical="/fleet/minibus" />
     <div className="text-center mb-12">
       <h1 className="text-3xl font-bold mb-4">Spacious Minibuses – Travel Together with Ease</h1>
       <p className="text-lg text-gray-700">

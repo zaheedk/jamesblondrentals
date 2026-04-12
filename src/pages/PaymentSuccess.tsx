@@ -14,6 +14,8 @@ import PaymentSummary from "@/components/payment/PaymentSummary";
 import BookingExperienceSurvey from "@/components/feedback/BookingExperienceSurvey";
 import { useCreateBooking, updateBookingPaymentStatus } from "@/hooks/use-bookings";
 import { useAuth } from "@/contexts/AuthContext";
+import PageSEO from '@/components/PageSEO';
+
 
 interface BookingDetails {
   vehicleName: string;
@@ -868,6 +870,7 @@ const PaymentSuccess = () => {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
+      <PageSEO title="Booking Confirmed – James Blond Rentals" description="Your vehicle rental booking has been confirmed. Check your email for booking details and pickup instructions." canonical="/payment-success" noindex />
         <div className="w-12 h-12 border-4 border-t-blue-500 border-blue-200 rounded-full animate-spin"></div>
       </div>
     );

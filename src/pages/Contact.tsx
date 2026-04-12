@@ -9,6 +9,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Mail, Phone, User, MessageSquare, Send } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import PageSEO from '@/components/PageSEO';
+
 
 // Define form schema with Zod
 const formSchema = z.object({
@@ -67,6 +69,7 @@ const Contact = () => {
 
   return (
     <div className="container mx-auto py-12 px-4">
+      <PageSEO title="Contact Us – James Blond Rentals NZ" description="Get in touch with James Blond Rentals. Find phone numbers, email and office locations for Auckland, Wellington and Christchurch branches." canonical="/contact" />
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl md:text-4xl font-bold mb-6">Contact Us</h1>
         

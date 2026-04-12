@@ -6,6 +6,8 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ArrowLeft, Calendar, Fuel, MapPin, Car, AirVent, Bluetooth, Anchor } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import PageSEO from '@/components/PageSEO';
+
 
 const TwelveSeaterMinibusDetail = () => {
   // Vehicle specifications
@@ -46,6 +48,7 @@ const TwelveSeaterMinibusDetail = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <PageSEO title="12-Seat Minibus Hire | James Blond Rentals" description="Rent a 12-seat minibus for group travel, sports teams, weddings and events. Available in Auckland, Wellington and Christchurch." canonical="/fleet/minibus/12-seat-minibus" />
       <div className="mb-6">
         <Link to="/fleet/minibus" className="inline-flex items-center text-primary hover:underline">
           <ArrowLeft className="h-4 w-4 mr-2" />

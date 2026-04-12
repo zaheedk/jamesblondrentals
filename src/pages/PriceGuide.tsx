@@ -8,6 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
+import PageSEO from '@/components/PageSEO';
+
 
 interface VehiclePricing {
   name: string;
@@ -39,6 +41,7 @@ const PriceGuide = () => {
 
   return (
     <div className="container mx-auto py-8 px-4">
+      <PageSEO title="Price Guide – Vehicle Rental Rates | James Blond Rentals" description="View our competitive rental rates for cars, vans, trucks, utes, minibuses and trailers. Hourly, daily and weekly pricing available." canonical="/price-guide" />
       <div className="max-w-5xl mx-auto">
         <h1 className="text-3xl font-bold mb-6">Vehicle & Trailer Price Guide</h1>
         <p className="text-gray-600 mb-6">

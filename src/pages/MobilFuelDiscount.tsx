@@ -5,10 +5,13 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ArrowLeft, Fuel, Percent, MapPin, CreditCard } from "lucide-react";
+import PageSEO from '@/components/PageSEO';
+
 
 const MobilFuelDiscount = () => {
   return (
     <div className="container mx-auto px-4 py-10">
+      <PageSEO title="Mobil Fuel Discount – Save on Fuel | James Blond Rentals" description="Get exclusive Mobil fuel discounts when you rent with James Blond Rentals. Save on every fill-up during your rental period." canonical="/hot-deals/mobil-fuel-discount" />
       <div className="mb-6">
         <Link to="/" className="inline-flex items-center text-primary hover:underline">
           <ArrowLeft className="h-4 w-4 mr-2" />

@@ -5,10 +5,13 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import PageSEO from '@/components/PageSEO';
+
 
 const SingleCabUteDieselDetail = () => {
   return (
     <div className="container mx-auto px-4 py-10">
+      <PageSEO title="Single Cab Ute Hire (Diesel) | James Blond Rentals" description="Hire a diesel single cab ute for heavy-duty trade and construction work. Powerful and fuel-efficient." canonical="/fleet/utes/single-cab-ute-diesel" />
       <div className="mb-6">
         <Link to="/fleet/utes">
           <Button variant="ghost" className="pl-0">

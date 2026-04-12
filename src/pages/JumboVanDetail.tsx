@@ -9,10 +9,13 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Card, CardContent } from "@/components/ui/card";
+import PageSEO from '@/components/PageSEO';
+
 
 const JumboVanDetail = () => {
   return (
     <div className="container mx-auto px-4 py-12">
+      <PageSEO title="Jumbo Van Hire – Extra Large Cargo Van | James Blond" description="Rent a jumbo van for maximum cargo capacity. Ideal for large deliveries, furniture moves and commercial logistics." canonical="/fleet/vans/jumbo-van" />
       <div className="mb-8">
         <Link to="/fleet/vans" className="text-primary hover:underline">&larr; Back to Vans</Link>
       </div>

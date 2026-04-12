@@ -8,10 +8,13 @@ import SearchForm from '@/components/home/SearchForm';
 import { Link } from 'react-router-dom';
 import familyUnloadingTruck from '@/assets/family-unloading-removal-truck.jpg';
 import familyUnpacking from '@/assets/family-unpacking-moving-truck.jpg';
+import PageSEO from '@/components/PageSEO';
+
 
 const WestAucklandTruckRentals = () => {
   return (
     <div className="container mx-auto px-4 py-8">
+      <PageSEO title="Truck Hire West Auckland | James Blond Rentals" description="Rent trucks in West Auckland including Henderson, New Lynn and Waitakere. Convenient pickup for moving and deliveries." canonical="/west-auckland-truck-rentals-hire" />
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-6 mb-8">
         <div className="grid md:grid-cols-2 gap-6 items-center">

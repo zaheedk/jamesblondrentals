@@ -3,10 +3,13 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
+import PageSEO from '@/components/PageSEO';
+
 
 const TwoTonneBoxTailLiftDetail = () => {
   return (
     <div className="container mx-auto px-4 py-10">
+      <PageSEO title="2-Tonne Box Truck with Tail Lift Hire | James Blond" description="Hire a 2-tonne truck with hydraulic tail lift for easy loading of heavy items. Perfect for furniture and appliance moves." canonical="/fleet/trucks/2-tonne-box-12m3-tail" />
       <div className="mb-6">
         <h1 className="text-3xl font-bold mb-2">Effortless Loading – 2 Tonne Box Truck (12m³) + Tail Lift Rental</h1>
         <div className="flex gap-2">

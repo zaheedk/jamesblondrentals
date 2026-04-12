@@ -3,10 +3,13 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
+import PageSEO from '@/components/PageSEO';
+
 
 const Premium2WDSUVDetail = () => {
   return (
     <div className="container mx-auto px-4 py-10">
+      <PageSEO title="Premium 2WD SUV Hire | James Blond Rentals" description="Hire a premium 2WD SUV for comfortable city and highway driving. Ideal for couples and small families." canonical="/fleet/cars/premium-2wd-suv" />
       <div className="mb-6">
         <h1 className="text-3xl font-bold mb-2">Premium 5-Seat SUV – Kia Sportage 2.0L</h1>
         <div className="flex gap-2">

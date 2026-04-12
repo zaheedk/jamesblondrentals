@@ -3,10 +3,13 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
+import PageSEO from '@/components/PageSEO';
+
 
 const PremiumEconomyDetail = () => {
   return (
     <div className="container mx-auto px-4 py-10">
+      <PageSEO title="Premium Economy Car Hire | James Blond Rentals" description="Rent an affordable economy car with excellent fuel efficiency. Perfect for budget-conscious city and commuter driving." canonical="/fleet/cars/premium-economy" />
       <div className="mb-6">
         <h1 className="text-3xl font-bold mb-2">Premium Economy – Suzuki Swift 1.3L</h1>
         <div className="flex gap-2">
