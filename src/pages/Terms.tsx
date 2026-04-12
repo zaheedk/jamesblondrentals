@@ -205,8 +205,21 @@ const Terms = () => {
           </AccordionContent>
         </AccordionItem>
 
+        <AccordionItem value="accident-reporting">
+          <AccordionTrigger>20. Accident Reporting & Account Creation</AccordionTrigger>
+          <AccordionContent>
+            <ul className="list-disc pl-6 space-y-2">
+              <li>By completing a booking with James Blond Rentals, you acknowledge and agree that an account will be automatically created for you on <strong>savo.co.nz</strong>, our accident reporting platform.</li>
+              <li>This account is used to facilitate the reporting and management of any vehicle incidents or accidents that may occur during your rental period.</li>
+              <li>Your name and email address will be shared with Savo for the purpose of account creation and accident reporting.</li>
+              <li>You may access your Savo account at any time via the Member Dashboard on our website to report or view any incidents.</li>
+              <li>This account remains active for the duration of your relationship with James Blond Rentals and may be used for any subsequent rentals.</li>
+            </ul>
+          </AccordionContent>
+        </AccordionItem>
+
         <AccordionItem value="midweek-discount">
-          <AccordionTrigger>20. Midweek 25% Discount</AccordionTrigger>
+          <AccordionTrigger>21. Midweek 25% Discount</AccordionTrigger>
           <AccordionContent>
             <ul className="list-disc pl-6 space-y-2">
               <li>The 25% Midweek Discount applies <strong>only to bookings made online</strong> through our website.</li>
