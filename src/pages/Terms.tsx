@@ -213,7 +213,7 @@ const Terms = () => {
               <li>This account is used to facilitate the reporting and management of any vehicle incidents or accidents that may occur during your rental period.</li>
               <li>Your name and email address will be shared with Savo for the purpose of account creation and accident reporting.</li>
               <li>You may access your Savo account at any time via the Member Dashboard on our website to report or view any incidents.</li>
-              <li>This account remains active for the duration of your relationship with James Blond Rentals and may be used for any subsequent rentals.</li>
+              <li>This account remains active until you request deletion. You can also use Savo for personal vehicle record keeping.</li>
             </ul>
           </AccordionContent>
         </AccordionItem>
