@@ -78,15 +78,7 @@ serve(async (req) => {
       );
     }
 
-    // Only process emails starting with "zaheedk" (testing phase)
     const emailLower = email.toLowerCase();
-    if (!emailLower.startsWith("zaheedk")) {
-      console.log(`Skipping account creation for ${email} - not in test group`);
-      return new Response(
-        JSON.stringify({ skipped: true, message: "Email not in test group" }),
-        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
