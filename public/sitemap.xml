@@ -55,64 +55,10 @@
     <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://jamesblond.co.nz/login</loc>
-    <lastmod>2026-04-12</lastmod>
-    <priority>0.6</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/register</loc>
-    <lastmod>2026-04-12</lastmod>
-    <priority>0.6</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/forgot-password</loc>
-    <lastmod>2026-04-12</lastmod>
-    <priority>0.4</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/reset-password</loc>
-    <lastmod>2026-04-12</lastmod>
-    <priority>0.4</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
     <loc>https://jamesblond.co.nz/booking</loc>
     <lastmod>2026-04-12</lastmod>
     <priority>0.8</priority>
     <changefreq>weekly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/insurance-and-extras</loc>
-    <lastmod>2026-04-12</lastmod>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/customer-details</loc>
-    <lastmod>2026-04-12</lastmod>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/payment-options</loc>
-    <lastmod>2026-04-12</lastmod>
-    <priority>0.7</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/payment</loc>
-    <lastmod>2026-04-12</lastmod>
-    <priority>0.6</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://jamesblond.co.nz/payment-success</loc>
-    <lastmod>2026-04-12</lastmod>
-    <priority>0.6</priority>
-    <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://jamesblond.co.nz/fleet</loc>

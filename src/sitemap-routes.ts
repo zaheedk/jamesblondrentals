@@ -28,19 +28,11 @@ export const sitemapRoutes: SitemapRoute[] = [
   { path: '/price-guide', priority: 0.9, changefreq: 'weekly' },
   { path: '/blog', priority: 0.7, changefreq: 'weekly' },
 
-  // Auth Pages
-  { path: '/login', priority: 0.6, changefreq: 'monthly' },
-  { path: '/register', priority: 0.6, changefreq: 'monthly' },
-  { path: '/forgot-password', priority: 0.4, changefreq: 'monthly' },
-  { path: '/reset-password', priority: 0.4, changefreq: 'monthly' },
+  // Auth Pages (noindex but kept for completeness - excluded from sitemap)
+  // Login, Register, ForgotPassword, ResetPassword are noindexed via PageSEO
 
-  // Booking Process Pages
+  // Booking Process Pages (only booking entry point is indexed)
   { path: '/booking', priority: 0.8, changefreq: 'weekly' },
-  { path: '/insurance-and-extras', priority: 0.7, changefreq: 'monthly' },
-  { path: '/customer-details', priority: 0.7, changefreq: 'monthly' },
-  { path: '/payment-options', priority: 0.7, changefreq: 'monthly' },
-  { path: '/payment', priority: 0.6, changefreq: 'monthly' },
-  { path: '/payment-success', priority: 0.6, changefreq: 'monthly' },
 
   // Fleet Pages
   { path: '/fleet', priority: 0.8, changefreq: 'monthly' },
