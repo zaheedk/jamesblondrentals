@@ -78,6 +78,7 @@ const PaymentSuccess = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [rentalDuration, setRentalDuration] = useState<number>(0);
   const [imageError, setImageError] = useState<boolean>(false);
+  const savoSyncedRef = useRef(false);
   const [showSurvey, setShowSurvey] = useState<boolean>(false);
 
   const handleImageError = () => {
