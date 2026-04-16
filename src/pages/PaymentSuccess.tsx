@@ -14,6 +14,7 @@ import PaymentSummary from "@/components/payment/PaymentSummary";
 import BookingExperienceSurvey from "@/components/feedback/BookingExperienceSurvey";
 import { useCreateBooking, updateBookingPaymentStatus } from "@/hooks/use-bookings";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import PageSEO from '@/components/PageSEO';
 
 
