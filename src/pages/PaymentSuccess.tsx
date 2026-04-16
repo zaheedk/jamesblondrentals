@@ -825,7 +825,7 @@ const PaymentSuccess = () => {
         });
       }
     }
-  }, [paymentStatus]);
+  }, [paymentStatus, bookingDetails]);
 
   const calculateRentalDuration = (pickupDate: string, dropoffDate: string) => {
     try {
