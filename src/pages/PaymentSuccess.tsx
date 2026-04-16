@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Car } from "lucide-react";
@@ -14,6 +14,7 @@ import PaymentSummary from "@/components/payment/PaymentSummary";
 import BookingExperienceSurvey from "@/components/feedback/BookingExperienceSurvey";
 import { useCreateBooking, updateBookingPaymentStatus } from "@/hooks/use-bookings";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import PageSEO from '@/components/PageSEO';
 
 
@@ -77,6 +78,7 @@ const PaymentSuccess = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [rentalDuration, setRentalDuration] = useState<number>(0);
   const [imageError, setImageError] = useState<boolean>(false);
+  const savoSyncedRef = useRef(false);
   const [showSurvey, setShowSurvey] = useState<boolean>(false);
 
   const handleImageError = () => {
@@ -805,8 +807,27 @@ const PaymentSuccess = () => {
       } catch (err) {
         console.error('Failed to fire GA/Ads tags on payment success:', err);
       }
+
+      // Sync customer to Savo after successful payment (only once)
+      if (bookingDetails?.customerEmail && !savoSyncedRef.current) {
+        savoSyncedRef.current = true;
+        const fullName = `${bookingDetails.customerFirstName || ''} ${bookingDetails.customerLastName || ''}`.trim();
+        supabase.functions.invoke('sync-to-savo', {
+          body: {
+            email: bookingDetails.customerEmail,
+            fullName: fullName || 'Customer',
+            regoNumber: '',
+          },
+        }).then(res => {
+          if (res.error) {
+            console.error('Savo sync error (non-fatal):', res.error);
+          } else {
+            console.log('Savo sync after payment success:', res.data);
+          }
+        });
+      }
     }
-  }, [paymentStatus]);
+  }, [paymentStatus, bookingDetails]);
 
   const calculateRentalDuration = (pickupDate: string, dropoffDate: string) => {
     try {

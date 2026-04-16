@@ -326,20 +326,13 @@ const CustomerDetails = () => {
         if (formData.email) {
           const fullName = `${formData.firstName || ''} ${formData.lastName || ''}`.trim();
           
-          // Run both in parallel but await them before navigating
-          const [accountRes, savoRes] = await Promise.allSettled([
+          // Create user account (Savo sync happens after payment on PaymentSuccess page)
+          const [accountRes] = await Promise.allSettled([
             supabase.functions.invoke('create-booking-account', {
               body: {
                 email: formData.email,
                 firstName: formData.firstName,
                 lastName: formData.lastName,
-              },
-            }),
-            supabase.functions.invoke('sync-to-savo', {
-              body: {
-                email: formData.email,
-                fullName,
-                regoNumber: '',
               },
             }),
           ]);
@@ -369,11 +362,7 @@ const CustomerDetails = () => {
             console.error('Auto account creation error:', accountRes.reason);
           }
 
-          if (savoRes.status === 'fulfilled') {
-            console.log('Savo sync result:', savoRes.value?.data);
-          } else {
-            console.error('Savo sync error:', savoRes.reason);
-          }
+          // Savo sync now happens after payment on PaymentSuccess page
         }
         
         toast.success("Booking created successfully", {

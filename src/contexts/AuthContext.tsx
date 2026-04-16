@@ -207,18 +207,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       console.log('Signup successful');
 
-      // Sync new user to Savo (fire and forget)
-      try {
-        supabase.functions.invoke('sync-to-savo', {
-          body: { email, fullName: '', regoNumber: '' },
-        }).then(res => {
-          console.log('Savo sync result:', res.data);
-        }).catch(err => {
-          console.error('Savo sync error (non-fatal):', err);
-        });
-      } catch (e) {
-        console.error('Savo sync dispatch error:', e);
-      }
+      // Note: Savo sync now only happens after successful payment (PaymentSuccess page)
 
       console.log('Signup process completed successfully');
       return { 
