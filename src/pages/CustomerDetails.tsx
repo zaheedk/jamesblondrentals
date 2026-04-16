@@ -362,11 +362,7 @@ const CustomerDetails = () => {
             console.error('Auto account creation error:', accountRes.reason);
           }
 
-          if (savoRes.status === 'fulfilled') {
-            console.log('Savo sync result:', savoRes.value?.data);
-          } else {
-            console.error('Savo sync error:', savoRes.reason);
-          }
+          // Savo sync now happens after payment on PaymentSuccess page
         }
         
         toast.success("Booking created successfully", {

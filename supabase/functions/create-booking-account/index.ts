@@ -189,34 +189,7 @@ serve(async (req) => {
       console.log(`Skipping welcome email for ${email} - not in test group`);
     }
 
-    // Sync to Savo (accident reporter) - fire and forget
-    try {
-      const CROSS_APP_SECRET = Deno.env.get("CROSS_APP_SECRET");
-      if (CROSS_APP_SECRET) {
-        const savoRes = await fetch(
-          "https://kmapvntjwhhtfgvjzsof.supabase.co/functions/v1/create-external-user",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "x-cross-app-secret": CROSS_APP_SECRET,
-            },
-            body: JSON.stringify({
-              email,
-              password: crypto.randomUUID(),
-              full_name: fullName || "Customer",
-              rego_number: "TBC",
-            }),
-          }
-        );
-        const savoData = await savoRes.json();
-        console.log(`Savo sync for ${email}:`, savoRes.ok ? "success" : "failed", savoData);
-      } else {
-        console.warn("CROSS_APP_SECRET not set, skipping Savo sync");
-      }
-    } catch (savoErr) {
-      console.error("Savo sync error (non-fatal):", savoErr);
-    }
+    // Note: Savo sync is now triggered only after successful payment (PaymentSuccess page)
 
     return new Response(
       JSON.stringify({ success: true, userId: data.user?.id, emailId }),
