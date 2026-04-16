@@ -806,6 +806,24 @@ const PaymentSuccess = () => {
       } catch (err) {
         console.error('Failed to fire GA/Ads tags on payment success:', err);
       }
+
+      // Sync customer to Savo after successful payment
+      if (bookingDetails?.customerEmail) {
+        const fullName = `${bookingDetails.customerFirstName || ''} ${bookingDetails.customerLastName || ''}`.trim();
+        supabase.functions.invoke('sync-to-savo', {
+          body: {
+            email: bookingDetails.customerEmail,
+            fullName: fullName || 'Customer',
+            regoNumber: '',
+          },
+        }).then(res => {
+          if (res.error) {
+            console.error('Savo sync error (non-fatal):', res.error);
+          } else {
+            console.log('Savo sync after payment success:', res.data);
+          }
+        });
+      }
     }
   }, [paymentStatus]);
 
