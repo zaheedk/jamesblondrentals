@@ -808,8 +808,9 @@ const PaymentSuccess = () => {
         console.error('Failed to fire GA/Ads tags on payment success:', err);
       }
 
-      // Sync customer to Savo after successful payment
-      if (bookingDetails?.customerEmail) {
+      // Sync customer to Savo after successful payment (only once)
+      if (bookingDetails?.customerEmail && !savoSyncedRef.current) {
+        savoSyncedRef.current = true;
         const fullName = `${bookingDetails.customerFirstName || ''} ${bookingDetails.customerLastName || ''}`.trim();
         supabase.functions.invoke('sync-to-savo', {
           body: {
