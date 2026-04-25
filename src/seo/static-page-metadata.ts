@@ -1,4 +1,4 @@
-import { sitemapRoutes } from '@/sitemap-routes';
+import { sitemapRoutes, type SitemapRoute } from '../sitemap-routes';
 
 export interface StaticPageMetadata {
   path: string;
@@ -137,7 +137,7 @@ const overrides: Record<string, Partial<Omit<StaticPageMetadata, 'path'>>> = {
   },
 };
 
-export const staticPageMetadata: StaticPageMetadata[] = sitemapRoutes.map(route => ({
+export const staticPageMetadata: StaticPageMetadata[] = sitemapRoutes.map((route: SitemapRoute) => ({
   ...makeDefaultMetadata(route.path),
   ...overrides[route.path],
   path: route.path,
