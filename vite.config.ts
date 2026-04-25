@@ -8,12 +8,43 @@ import type { IncomingMessage } from 'http';
 import { ServerResponse } from 'http';
 import type { ConfigEnv, UserConfig, ProxyOptions } from 'vite';
 import { sitemapRoutes } from './src/sitemap-routes';
+import { staticPageMetadata } from './src/seo/static-page-metadata';
+
+const SITE_URL = 'https://jamesblond.co.nz';
+
+const escapeHtml = (value: string) =>
+  value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+
+const upsertHeadTag = (html: string, selector: RegExp, replacement: string) =>
+  selector.test(html) ? html.replace(selector, replacement) : html.replace('</head>', `    ${replacement}\n  </head>`);
+
+const injectStaticSeo = (html: string, pathname: string) => {
+  const metadata = staticPageMetadata.find(route => route.path === pathname);
+  if (!metadata) return html;
+
+  const title = escapeHtml(metadata.title);
+  const description = escapeHtml(metadata.description);
+  const canonical = `${SITE_URL}${metadata.path}`;
+  const heading = escapeHtml(metadata.heading);
+  const body = escapeHtml(metadata.body);
+
+  let output = html;
+  output = upsertHeadTag(output, /<title>.*?<\/title>/s, `<title>${title}</title>`);
+  output = upsertHeadTag(output, /<meta name="description" content=".*?"\s*\/>/s, `<meta name="description" content="${description}" />`);
+  output = upsertHeadTag(output, /<link rel="canonical" href=".*?"\s*\/>/s, `<link rel="canonical" href="${canonical}" />`);
+  output = output.replace('<div id="root"></div>', `<div id="root"><main class="seo-prerender" aria-label="${heading}"><h1>${heading}</h1><p>${body}</p></main></div>`);
+  return output;
+};
 
 function sitemapPlugin() {
   return {
     name: 'generate-sitemap',
     buildStart() {
-      const SITE_URL = 'https://jamesblond.co.nz';
       const today = new Date().toISOString().split('T')[0];
       const urls = sitemapRoutes.map(route => `  <url>
     <loc>${SITE_URL}${route.path}</loc>
@@ -28,6 +59,18 @@ ${urls}
       fs.writeFileSync(path.resolve(__dirname, 'public/sitemap.xml'), sitemap, 'utf-8');
       console.log(`✅ Sitemap generated with ${sitemapRoutes.length} URLs`);
     }
+  };
+}
+
+function devStaticSeoPlugin() {
+  return {
+    name: 'dev-static-seo-html',
+    transformIndexHtml: {
+      order: 'pre' as const,
+      handler(html: string, ctx: { path?: string }) {
+        return injectStaticSeo(html, ctx.path || '/');
+      },
+    },
   };
 }
 
@@ -123,6 +166,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => ({
   plugins: [
     react(),
     sitemapPlugin(),
+    devStaticSeoPlugin(),
     mode === 'development' && componentTagger(),
   ].filter(Boolean),
   resolve: {
