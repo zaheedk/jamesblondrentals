@@ -6,7 +6,7 @@ import fs from "fs";
 import { componentTagger } from "lovable-tagger";
 import type { IncomingMessage } from 'http';
 import { ServerResponse } from 'http';
-import type { ConfigEnv, UserConfig, ProxyOptions } from 'vite';
+import type { ConfigEnv, UserConfig, ViteDevServer } from 'vite';
 import { sitemapRoutes } from './src/sitemap-routes';
 import { staticPageMetadata } from './src/seo/static-page-metadata';
 
@@ -65,11 +65,23 @@ ${urls}
 function devStaticSeoPlugin() {
   return {
     name: 'dev-static-seo-html',
-    transformIndexHtml: {
-      order: 'pre' as const,
-      handler(html: string, ctx: { path?: string }) {
-        return injectStaticSeo(html, ctx.path || '/');
-      },
+    configureServer(server: ViteDevServer) {
+      server.middlewares.use(async (req, res, next) => {
+        const pathname = new URL(req.url || '/', 'http://localhost').pathname;
+        const acceptsHtml = req.headers.accept?.includes('text/html');
+        const hasStaticSeo = staticPageMetadata.some(route => route.path === pathname);
+
+        if (!acceptsHtml || !hasStaticSeo) {
+          next();
+          return;
+        }
+
+        const template = fs.readFileSync(path.resolve(__dirname, 'index.html'), 'utf-8');
+        const transformed = await server.transformIndexHtml(pathname, injectStaticSeo(template, pathname));
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'text/html');
+        res.end(transformed);
+      });
     },
   };
 }
