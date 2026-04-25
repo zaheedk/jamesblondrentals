@@ -86,6 +86,28 @@ function devStaticSeoPlugin() {
   };
 }
 
+function staticSeoBuildPlugin() {
+  return {
+    name: 'build-static-seo-html',
+    closeBundle() {
+      const distDir = path.resolve(__dirname, 'dist');
+      const appHtmlPath = path.join(distDir, 'index.html');
+
+      if (!fs.existsSync(appHtmlPath)) return;
+
+      const appHtml = fs.readFileSync(appHtmlPath, 'utf-8');
+
+      for (const metadata of staticPageMetadata) {
+        const routeDir = metadata.path === '/' ? distDir : path.join(distDir, metadata.path.replace(/^\//, ''));
+        fs.mkdirSync(routeDir, { recursive: true });
+        fs.writeFileSync(path.join(routeDir, 'index.html'), injectStaticSeo(appHtml, metadata.path), 'utf-8');
+      }
+
+      console.log(`✅ Static SEO HTML generated for ${staticPageMetadata.length} public routes`);
+    },
+  };
+}
+
 export default defineConfig(({ mode }: ConfigEnv): UserConfig => ({
   server: {
     host: "::",
@@ -179,6 +201,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => ({
     react(),
     sitemapPlugin(),
     devStaticSeoPlugin(),
+    staticSeoBuildPlugin(),
     mode === 'development' && componentTagger(),
   ].filter(Boolean),
   resolve: {
