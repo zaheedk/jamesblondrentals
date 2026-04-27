@@ -39,7 +39,7 @@ const makeDefaultMetadata = (path: string): StaticPageMetadata => {
   const category = inferCategory(path);
   return {
     path,
-    title: path === '/' ? `${SITE_NAME} | Car, Van & Truck Hire NZ` : `${heading} | ${SITE_NAME}`,
+    title: path === '/' ? 'Low Cost Car, Van & Truck Hire New Zealand' : `${heading} | ${SITE_NAME}`,
     description: `Book ${category} with James Blond Rentals across Auckland, Wellington and Christchurch. Reliable vehicles, simple online booking and local support.`,
     heading,
     body: `${heading} from James Blond Rentals. Compare vehicles, check rental options and book online for Auckland, Wellington and Christchurch locations.`,

@@ -56,7 +56,7 @@ const Index = () => {
   return (
     <div>
       <Helmet>
-        <title>Car, Van & Truck Hire in Auckland & Wellington | James Blond Rentals</title>
+        <title>Low Cost Car, Van & Truck Hire New Zealand</title>
         <meta name="description" content="Affordable car, van and truck hire in Auckland, Wellington and Christchurch. Book online with James Blond Rentals – no hidden fees, just trusted service." />
       </Helmet>
       
