@@ -137,6 +137,7 @@ import BuyUsedVehicles from "./pages/BuyUsedVehicles";
 import Unsubscribe from "./pages/Unsubscribe";
 import VehiclePhotos from "./pages/VehiclePhotos";
 import PhotoGallery from "./pages/PhotoGallery";
+import Win from "./pages/Win";
 
 const queryClient = new QueryClient();
 
