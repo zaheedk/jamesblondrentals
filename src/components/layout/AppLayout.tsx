@@ -6,6 +6,7 @@ import Footer from './Footer';
 import ChatWidget from '@/components/chat/ChatWidget';
 import { ResourcePreloader } from '@/components/ResourcePreloader';
 import PromoBanner from './PromoBanner';
+import EarlyWeekBanner from './EarlyWeekBanner';
 
 const CHROMELESS_ROUTES = ['/admin/rental-agreement', '/photos', '/photo-gallery', '/ra'];
 
@@ -21,6 +22,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
     <div className="min-h-screen bg-background">
       <ResourcePreloader />
       <PromoBanner />
+      <EarlyWeekBanner />
       <Navbar />
       <main className="flex-1">
         {children}
