@@ -750,7 +750,7 @@ const Vehicles = () => {
             </div>
           ) : filteredVehicles.length === 0 ? (
             <div className="text-center py-12">
-              <h3 className="text-xl font-semibold mb-2">No vehicles match your criteria</h3>
+              <h2 className="text-xl font-semibold mb-2">No vehicles match your criteria</h2>
               <p className="text-gray-600">Try adjusting your filters to find more options</p>
             </div>
           ) : (
