@@ -172,6 +172,7 @@ const App = () => {
                 <Route path="/payment-success" element={<PaymentSuccess />} />
                 <Route path="/terms" element={<Terms />} />
                 <Route path="/privacy" element={<Privacy />} />
+                <Route path="/win" element={<Win />} />
                 
                 {/* Blog routes */}
                 <Route path="/blog" element={<Blog />} />

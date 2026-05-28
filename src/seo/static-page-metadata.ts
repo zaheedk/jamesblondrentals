@@ -135,6 +135,12 @@ const overrides: Record<string, Partial<Omit<StaticPageMetadata, 'path'>>> = {
     title: 'Minibus Hire Wellington CBD | James Blond Rentals',
     description: 'Convenient minibus hire from our Wellington CBD location. Walk-in pickup for 10 and 12-seat minibuses.',
   },
+  '/win': {
+    title: 'Win Up to $200 Back on Your Rental | James Blond Rentals',
+    description: 'Every month 5 lucky James Blond Rentals customers win up to $200 back on their rental. Hire a car, van, ute or truck in Auckland, Wellington or Christchurch to be automatically entered.',
+    heading: 'Win up to $200 back on your rental',
+    body: 'Every month James Blond Rentals draws 5 lucky winners who each receive up to $200 back from their rental amount. Hire a car, van, ute, minibus or truck in Auckland, Wellington or Christchurch to be automatically entered.',
+  },
 };
 
 export const staticPageMetadata: StaticPageMetadata[] = sitemapRoutes.map((route: SitemapRoute) => ({
