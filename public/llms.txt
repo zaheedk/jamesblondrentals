@@ -1,0 +1,53 @@
+# James Blond Rentals
+
+> Affordable car, van, truck and minibus hire across Auckland, Wellington and Christchurch, New Zealand. Operating since 2004.
+
+James Blond Rentals provides low-cost vehicle rentals for personal, group and commercial use. Fleet includes economy and premium cars, SUVs, cargo vans, jumbo vans, utes, 2–4 tonne trucks (box, tipper, tail-lift) and 10–12 seat minibuses. Pick-up locations at Auckland Airport, Wellington and Christchurch.
+
+## Pages
+
+- [Home](/): Low cost car, van and truck hire across New Zealand.
+- [About](/about): Company history, locations and service overview.
+- [Contact](/contact): Phone, email and branch addresses.
+- [Vehicles](/vehicles): Browse the full fleet with live availability and pricing.
+- [Booking](/booking): Start a rental booking.
+- [Price Guide](/price-guide): Daily and weekly rental rates by vehicle class.
+- [FAQ](/faq): Common questions about hire terms, insurance and pickup.
+- [Blog](/blog): Travel tips, NZ road guides and rental advice.
+- [Win $200 Back](/win): Monthly giveaway — 5 customers win up to $200 off their rental each month.
+- [Hot Deals](/hot-deals): Current discounts and promotions.
+- [Mobil Fuel Discount](/hot-deals/mobil-fuel-discount): Fuel savings for rental customers.
+- [Midweek Truck & Van Discount](/hot-deals/midweek-truck-van-discount): 25% off Mon–Thu hires on trucks and jumbo vans.
+- [Courier Operator Deals](/hot-deals/courier-operator-deals): Long-term rates for courier drivers.
+
+## Fleet
+
+- [All Fleet](/fleet): Overview of every vehicle category.
+- [Cars](/fleet/cars): Economy, midsize, wagons and SUVs.
+- [Vans](/fleet/vans): Standard, premium and rear-seat vans.
+- [Cargo Vans](/fleet/cargo-vans): Commercial cargo and jumbo vans.
+- [Utes](/fleet/utes): Single and double-cab utes, petrol and diesel.
+- [Trucks](/fleet/trucks): 2–4 tonne box, tipper and tail-lift trucks.
+- [Minibus](/fleet/minibus): 10–12 seat people movers.
+- [Trailers](/fleet/trailers): Box and car trailers.
+- [Accessories](/fleet/accessories): GPS, child seats and extras.
+
+## Locations
+
+- [Auckland Airport Car Rentals](/car-rental-auckland-airport-new-zealand)
+- [Auckland Airport Minibus Rentals](/auckland-airport-minibus-rentals-hire)
+- [Auckland Airport Cargo Van Rentals](/auckland-airport-cargo-van-rentals-hire)
+- [Wellington Car Rentals](/car-rental-wellington-new-zealand)
+- [Wellington Truck Hire](/truck-hire-wellington)
+- [Wellington Van Hire](/van-hire-wellington)
+- [Christchurch Truck Hire](/truck-hire-christchurch)
+- [Auckland Truck Rentals](/auckland-truck-rentals-hire)
+- [West Auckland Truck Rentals](/west-auckland-truck-rentals-hire)
+- [West Auckland Cargo Van Rentals](/west-auckland-cargo-van-rentals-hire)
+- [South Auckland Cargo Van Rentals](/south-auckland-cargo-van-rentals-hire)
+- [Central Auckland Cargo Van Rentals](/central-auckland-cargo-van-rentals-hire)
+
+## Optional
+
+- [Terms](/terms): Rental terms and conditions.
+- [Privacy](/privacy): Privacy policy.
