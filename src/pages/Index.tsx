@@ -92,7 +92,7 @@ const Index = () => {
                   loading="lazy"
                 />
                 <div className="p-6">
-                  <h4 className="text-foreground mb-4">Perfect Vehicle Match</h4>
+                  <h3 className="text-foreground mb-4">Perfect Vehicle Match</h3>
                   <p>
                     Whether you're seeking an affordable rental or a luxurous driving experience, James Blond Rentals ensures 
                     you'll find the perfect vehicle for your needs.
@@ -107,7 +107,7 @@ const Index = () => {
                   loading="lazy"
                 />
                 <div className="p-6">
-                  <h4 className="text-foreground mb-4">Convenient Locations</h4>
+                  <h3 className="text-foreground mb-4">Convenient Locations</h3>
                   <p>
                     With convenient locations, including service from both domestic and international terminals at Auckland Airport, 
                     the company provides seamless access to top-quality rental options.
@@ -268,14 +268,14 @@ const Index = () => {
           <div className="max-w-4xl mx-auto space-y-8">
             <div className="grid md:grid-cols-2 gap-8">
               <div className="card-elegant p-6">
-                <h4 className="text-foreground mb-4">Trusted Experience</h4>
+                <h3 className="text-foreground mb-4">Trusted Experience</h3>
                 <p className="text-muted-foreground">
                   James Blond Rentals is a well trusted name when it comes to car rental or truck rental company in Auckland. 
                   We understand the importance of convenience when it comes to renting a vehicle.
                 </p>
               </div>
               <div className="card-elegant p-6">
-                <h4 className="text-foreground mb-4">Easy Online Booking</h4>
+                <h3 className="text-foreground mb-4">Easy Online Booking</h3>
                 <p className="text-muted-foreground">
                   Our online booking platform allows you to reserve your desired vehicle from the comfort of your own home, 
                   saving you time and eliminating the need for in-person visits.
@@ -291,7 +291,7 @@ const Index = () => {
               <div className="card-elegant bg-gradient-to-r from-primary/5 to-primary/10 p-8 max-w-3xl mx-auto border-primary/20">
                 <div className="flex items-center justify-center gap-3 mb-3">
                   <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
-                  <h4 className="text-2xl font-bold text-primary">James Blond Guarantee</h4>
+                  <h3 className="text-2xl font-bold text-primary">James Blond Guarantee</h3>
                 </div>
                 <p className="text-lg font-medium text-primary/90">
                   No hidden costs. No surprise taxes. Transparent Rental policy.
