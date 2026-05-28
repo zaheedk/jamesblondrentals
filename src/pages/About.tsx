@@ -24,28 +24,28 @@ const About = () => {
       <Card>
         <CardContent className="p-6 text-center">
           <Award className="w-12 h-12 mx-auto mb-4 text-primary" />
-          <h3 className="text-2xl font-bold mb-2">Since 2004</h3>
+          <h2 className="text-2xl font-bold mb-2">Since 2004</h2>
           <p className="text-gray-600">Years of Excellence</p>
         </CardContent>
       </Card>
       <Card>
         <CardContent className="p-6 text-center">
           <Users className="w-12 h-12 mx-auto mb-4 text-primary" />
-          <h3 className="text-2xl font-bold mb-2">100,000+</h3>
+          <h2 className="text-2xl font-bold mb-2">100,000+</h2>
           <p className="text-gray-600">Satisfied Customers</p>
         </CardContent>
       </Card>
       <Card>
         <CardContent className="p-6 text-center">
           <Star className="w-12 h-12 mx-auto mb-4 text-primary" />
-          <h3 className="text-2xl font-bold mb-2">Premium</h3>
+          <h2 className="text-2xl font-bold mb-2">Premium</h2>
           <p className="text-gray-600">Vehicle Selection</p>
         </CardContent>
       </Card>
       <Card>
         <CardContent className="p-6 text-center">
           <Globe className="w-12 h-12 mx-auto mb-4 text-primary" />
-          <h3 className="text-2xl font-bold mb-2">3</h3>
+          <h2 className="text-2xl font-bold mb-2">3</h2>
           <p className="text-gray-600">NZ Locations</p>
         </CardContent>
       </Card>
