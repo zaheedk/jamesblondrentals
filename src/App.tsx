@@ -137,6 +137,7 @@ import BuyUsedVehicles from "./pages/BuyUsedVehicles";
 import Unsubscribe from "./pages/Unsubscribe";
 import VehiclePhotos from "./pages/VehiclePhotos";
 import PhotoGallery from "./pages/PhotoGallery";
+import Win from "./pages/Win";
 
 const queryClient = new QueryClient();
 
@@ -171,6 +172,7 @@ const App = () => {
                 <Route path="/payment-success" element={<PaymentSuccess />} />
                 <Route path="/terms" element={<Terms />} />
                 <Route path="/privacy" element={<Privacy />} />
+                <Route path="/win" element={<Win />} />
                 
                 {/* Blog routes */}
                 <Route path="/blog" element={<Blog />} />
