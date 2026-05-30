@@ -80,7 +80,7 @@ const Blog = () => {
                 )}
               </CardHeader>
               <CardContent className="p-6">
-                <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
+                <div className="flex items-center gap-4 text-sm text-gray-700 mb-3">
                   <span className="bg-primary/10 text-primary px-2 py-1 rounded text-xs font-medium">
                     {article.category}
                   </span>

@@ -997,7 +997,7 @@ const PaymentSuccess = () => {
             )}
             
             <div className="flex items-center gap-2 mb-6">
-              <Car className="h-6 w-6 text-gray-500" />
+              <Car className="h-6 w-6 text-gray-700" />
               <h2 className="text-2xl font-semibold">{bookingDetails.vehicleName}</h2>
             </div>
 

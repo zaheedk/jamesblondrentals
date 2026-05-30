@@ -77,7 +77,7 @@ const ExitIntentPopup: React.FC<ExitIntentPopupProps> = ({ isEnabled = true }) =
           >
             Continue Booking
           </Button>
-          <p className="text-xs text-gray-500 text-center">
+          <p className="text-xs text-gray-700 text-center">
             Don't let this great deal slip away!
           </p>
         </div>

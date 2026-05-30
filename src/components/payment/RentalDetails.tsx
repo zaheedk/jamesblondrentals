@@ -81,11 +81,11 @@ const RentalDetails = ({
               </div>
               <div className="flex items-center gap-4">
                 <div className="flex items-center">
-                  <Calendar className="h-4 w-4 text-gray-500 mr-1" />
+                  <Calendar className="h-4 w-4 text-gray-700 mr-1" />
                   <p className="text-sm text-gray-600">{formattedPickupDate}</p>
                 </div>
                 <div className="flex items-center">
-                  <Clock className="h-4 w-4 text-gray-500 mr-1" />
+                  <Clock className="h-4 w-4 text-gray-700 mr-1" />
                   <p className="text-sm text-gray-600">{pickupTime}</p>
                 </div>
               </div>
@@ -101,11 +101,11 @@ const RentalDetails = ({
               </div>
               <div className="flex items-center gap-4">
                 <div className="flex items-center">
-                  <Calendar className="h-4 w-4 text-gray-500 mr-1" />
+                  <Calendar className="h-4 w-4 text-gray-700 mr-1" />
                   <p className="text-sm text-gray-600">{formattedDropoffDate}</p>
                 </div>
                 <div className="flex items-center">
-                  <Clock className="h-4 w-4 text-gray-500 mr-1" />
+                  <Clock className="h-4 w-4 text-gray-700 mr-1" />
                   <p className="text-sm text-gray-600">{dropoffTime}</p>
                 </div>
               </div>

@@ -247,7 +247,7 @@ const Payment = () => {
             <div className="flex flex-col items-center py-8">
               <div className="w-12 h-12 border-4 border-t-blue-500 border-blue-200 rounded-full animate-spin mb-4"></div>
               <p className="text-lg">Processing your payment...</p>
-              <p className="text-sm text-gray-500 mt-2">Please wait while we confirm your payment status.</p>
+              <p className="text-sm text-gray-700 mt-2">Please wait while we confirm your payment status.</p>
             </div>
           ) : (
             <div className="text-center py-8">

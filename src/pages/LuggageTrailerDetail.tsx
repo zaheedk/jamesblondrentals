@@ -103,7 +103,7 @@ const LuggageTrailerDetail = () => {
           
           <Card className="p-6">
             <h2 className="text-2xl font-bold mb-4">Frequently Asked Questions</h2>
-            <p className="text-sm text-gray-500 mb-4">You need to know about Luggage Trailer rentals service</p>
+            <p className="text-sm text-gray-700 mb-4">You need to know about Luggage Trailer rentals service</p>
             
             <div className="space-y-4">
               <div>

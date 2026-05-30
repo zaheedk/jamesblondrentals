@@ -96,7 +96,7 @@ export const LazyImage = ({
       
       {!isLoaded && shouldShowImage && (
         <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
-          <div className="text-gray-400 text-sm">Loading...</div>
+          <div className="text-gray-600 text-sm">Loading...</div>
         </div>
       )}
     </div>
