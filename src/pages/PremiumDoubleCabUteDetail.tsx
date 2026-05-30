@@ -36,7 +36,7 @@ const PremiumDoubleCabUteDetail = () => {
               <div className="mb-2">
                 <Fuel size={24} />
               </div>
-              <h3 className="text-sm font-medium text-gray-500">Fuel Type</h3>
+              <h3 className="text-sm font-medium text-gray-700">Fuel Type</h3>
               <p className="font-bold">Petrol</p>
             </Card>
             
@@ -44,7 +44,7 @@ const PremiumDoubleCabUteDetail = () => {
               <div className="mb-2">
                 <Car size={24} />
               </div>
-              <h3 className="text-sm font-medium text-gray-500">Transmission</h3>
+              <h3 className="text-sm font-medium text-gray-700">Transmission</h3>
               <p className="font-bold">Automatic Transmission</p>
             </Card>
             
@@ -52,7 +52,7 @@ const PremiumDoubleCabUteDetail = () => {
               <div className="mb-2">
                 <Route size={24} />
               </div>
-              <h3 className="text-sm font-medium text-gray-500">Mileage Charges</h3>
+              <h3 className="text-sm font-medium text-gray-700">Mileage Charges</h3>
               <p className="font-bold">Unlimited Kilometres</p>
             </Card>
           </div>
@@ -104,7 +104,7 @@ const PremiumDoubleCabUteDetail = () => {
           
           <Card className="p-6">
             <h2 className="text-2xl font-bold mb-4">Frequently Asked Questions</h2>
-            <p className="text-sm text-gray-500 mb-4">You need to know about Premium Double Cab UTE Rentals</p>
+            <p className="text-sm text-gray-700 mb-4">You need to know about Premium Double Cab UTE Rentals</p>
             
             <div className="space-y-4">
               <div>

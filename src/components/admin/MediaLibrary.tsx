@@ -183,9 +183,9 @@ const MediaLibrary: React.FC<MediaLibraryProps> = ({
           
           <TabsContent value="upload" className="mt-4">
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-              <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+              <Upload className="mx-auto h-12 w-12 text-gray-600 mb-4" />
               <h3 className="text-lg font-medium mb-2">Upload Files</h3>
-              <p className="text-gray-500 mb-4">
+              <p className="text-gray-700 mb-4">
                 Select files to upload to your media library
               </p>
               <Input
@@ -197,7 +197,7 @@ const MediaLibrary: React.FC<MediaLibraryProps> = ({
                 className="max-w-sm mx-auto"
               />
               {uploading && (
-                <p className="text-sm text-gray-500 mt-2">Uploading...</p>
+                <p className="text-sm text-gray-700 mt-2">Uploading...</p>
               )}
             </div>
           </TabsContent>
@@ -205,7 +205,7 @@ const MediaLibrary: React.FC<MediaLibraryProps> = ({
           <TabsContent value="library" className="mt-4 h-full">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <Search className="h-4 w-4 text-gray-400" />
+                <Search className="h-4 w-4 text-gray-600" />
                 <Input
                   placeholder="Search files..."
                   value={searchTerm}
@@ -236,7 +236,7 @@ const MediaLibrary: React.FC<MediaLibraryProps> = ({
               {loading ? (
                 <div className="text-center py-8">Loading...</div>
               ) : filteredFiles.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-8 text-gray-700">
                   No files found
                 </div>
               ) : viewMode === 'grid' ? (
@@ -323,7 +323,7 @@ const MediaLibrary: React.FC<MediaLibraryProps> = ({
                             )}
                             <div>
                               <p className="font-medium">{file.name}</p>
-                              <p className="text-sm text-gray-500">
+                              <p className="text-sm text-gray-700">
                                 {formatFileSize(file.metadata?.size || 0)} • {new Date(file.updated_at).toLocaleDateString()}
                               </p>
                             </div>
@@ -362,7 +362,7 @@ const MediaLibrary: React.FC<MediaLibraryProps> = ({
             
             {multiple && selectedFiles.length > 0 && (
               <div className="flex items-center justify-between mt-4 pt-4 border-t">
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-700">
                   {selectedFiles.length} file(s) selected
                 </p>
                 <Button

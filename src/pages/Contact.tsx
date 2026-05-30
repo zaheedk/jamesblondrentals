@@ -127,7 +127,7 @@ const Contact = () => {
                       <FormLabel>Full Name</FormLabel>
                       <FormControl>
                         <div className="relative">
-                          <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
+                          <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 h-4 w-4" />
                           <Input className="pl-10" placeholder="Your name" {...field} />
                         </div>
                       </FormControl>
@@ -144,7 +144,7 @@ const Contact = () => {
                       <FormLabel>Email</FormLabel>
                       <FormControl>
                         <div className="relative">
-                          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
+                          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 h-4 w-4" />
                           <Input className="pl-10" type="email" placeholder="Your email" {...field} />
                         </div>
                       </FormControl>
@@ -161,7 +161,7 @@ const Contact = () => {
                       <FormLabel>Phone</FormLabel>
                       <FormControl>
                         <div className="relative">
-                          <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
+                          <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 h-4 w-4" />
                           <Input className="pl-10" placeholder="Your phone number" {...field} />
                         </div>
                       </FormControl>

@@ -36,7 +36,7 @@ const SingleCabUteDieselDetail = () => {
               <div className="mb-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-fuel"><line x1="3" x2="15" y1="22" y2="22"/><line x1="4" x2="14" y1="9" y2="9"/><path d="M14 22V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v18"/><path d="M14 13h2a2 2 0 0 1 2 2v2a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V9.83a2 2 0 0 0-.59-1.42L18 5"/></svg>
               </div>
-              <h3 className="text-sm font-medium text-gray-500">Fuel Type</h3>
+              <h3 className="text-sm font-medium text-gray-700">Fuel Type</h3>
               <p className="font-bold">Diesel</p>
             </Card>
             
@@ -44,7 +44,7 @@ const SingleCabUteDieselDetail = () => {
               <div className="mb-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-car"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9L18 10H6l-2.5 1.1C2.7 11.3 2 12.1 2 13v3c0 .6.4 1 1 1h2"/><path d="M14 17H9"/><path d="M5 17a2 2 0 1 0 4 0c0-1.1-.9-2-2-2s-2 .9-2 2Z"/><path d="M15 17a2 2 0 1 0 4 0c0-1.1-.9-2-2-2s-2 .9-2 2Z"/><path d="m5 10 2-5h9l2 5"/></svg>
               </div>
-              <h3 className="text-sm font-medium text-gray-500">Transmission</h3>
+              <h3 className="text-sm font-medium text-gray-700">Transmission</h3>
               <p className="font-bold">Automatic Transmission</p>
             </Card>
             
@@ -52,7 +52,7 @@ const SingleCabUteDieselDetail = () => {
               <div className="mb-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-down-right"><path d="M7 7l10 10"/><polyline points="17 7 17 17 7 17"/></svg>
               </div>
-              <h3 className="text-sm font-medium text-gray-500">Mileage Charges</h3>
+              <h3 className="text-sm font-medium text-gray-700">Mileage Charges</h3>
               <p className="font-bold">25c per km</p>
               <p className="text-sm">(first 100 kilometres free)</p>
             </Card>
@@ -84,7 +84,7 @@ const SingleCabUteDieselDetail = () => {
           
           <Card className="p-6">
             <h2 className="text-2xl font-bold mb-4">Frequently Asked Questions</h2>
-            <p className="text-sm text-gray-500 mb-4">You need to know about Single Cab UTE (Diesel) Rentals</p>
+            <p className="text-sm text-gray-700 mb-4">You need to know about Single Cab UTE (Diesel) Rentals</p>
             
             <div className="space-y-4">
               <div>

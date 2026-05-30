@@ -157,9 +157,9 @@ const ExtrasSelection = ({
                   }}
                 />
               ) : (
-                <div className="text-gray-500 text-xs text-center">No Image</div>
+                <div className="text-gray-700 text-xs text-center">No Image</div>
               )}
-              <div className="hidden text-gray-500 text-xs text-center">No Image</div>
+              <div className="hidden text-gray-700 text-xs text-center">No Image</div>
             </div>
           )}
           
@@ -256,9 +256,9 @@ const ExtrasSelection = ({
                   }}
                 />
               ) : (
-                <div className="text-gray-500 text-xs text-center">No Image</div>
+                <div className="text-gray-700 text-xs text-center">No Image</div>
               )}
-              <div className="hidden text-gray-500 text-xs text-center">No Image</div>
+              <div className="hidden text-gray-700 text-xs text-center">No Image</div>
             </div>
           )}
           

@@ -324,14 +324,14 @@ const VehicleDetail = () => {
                     
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                       <div className="flex flex-col p-3 bg-gray-50 rounded-lg">
-                        <span className="text-sm text-gray-500">Year</span>
+                        <span className="text-sm text-gray-700">Year</span>
                         <div className="flex items-center mt-1">
                           <Calendar className="h-4 w-4 text-primary mr-2" />
                           <span className="font-medium">{vehicle.year}</span>
                         </div>
                       </div>
                       <div className="flex flex-col p-3 bg-gray-50 rounded-lg">
-                        <span className="text-sm text-gray-500">Type</span>
+                        <span className="text-sm text-gray-700">Type</span>
                         <div className="flex items-center mt-1">
                           <Badge variant="outline" className="capitalize">
                             {vehicle.type}
@@ -339,28 +339,28 @@ const VehicleDetail = () => {
                         </div>
                       </div>
                       <div className="flex flex-col p-3 bg-gray-50 rounded-lg">
-                        <span className="text-sm text-gray-500">Seats</span>
+                        <span className="text-sm text-gray-700">Seats</span>
                         <div className="flex items-center mt-1">
                           <Users className="h-4 w-4 text-primary mr-2" />
                           <span className="font-medium">{vehicle.seats} seats</span>
                         </div>
                       </div>
                       <div className="flex flex-col p-3 bg-gray-50 rounded-lg">
-                        <span className="text-sm text-gray-500">Transmission</span>
+                        <span className="text-sm text-gray-700">Transmission</span>
                         <div className="flex items-center mt-1">
                           <Gauge className="h-4 w-4 text-primary mr-2" />
                           <span className="font-medium capitalize">{vehicle.transmission}</span>
                         </div>
                       </div>
                       <div className="flex flex-col p-3 bg-gray-50 rounded-lg">
-                        <span className="text-sm text-gray-500">Fuel Type</span>
+                        <span className="text-sm text-gray-700">Fuel Type</span>
                         <div className="flex items-center mt-1">
                           <Fuel className="h-4 w-4 text-primary mr-2" />
                           <span className="font-medium capitalize">{vehicle.fuelType}</span>
                         </div>
                       </div>
                       <div className="flex flex-col p-3 bg-gray-50 rounded-lg">
-                        <span className="text-sm text-gray-500">Fuel Efficiency</span>
+                        <span className="text-sm text-gray-700">Fuel Efficiency</span>
                         <div className="flex items-center mt-1">
                           <span className="font-medium">{vehicle.fuelEfficiency}</span>
                         </div>
@@ -422,7 +422,7 @@ const VehicleDetail = () => {
                     <span className="text-gray-600">Rental rate</span>
                     <div>
                       <span className="font-semibold text-xl text-primary">${vehicle.price}</span>
-                      <span className="text-sm text-gray-500">/{vehicle.priceUnit}</span>
+                      <span className="text-sm text-gray-700">/{vehicle.priceUnit}</span>
                     </div>
                   </div>
                   <div className="flex justify-between items-center">

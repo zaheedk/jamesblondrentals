@@ -108,7 +108,7 @@ const BookingExperienceSurvey = ({ isOpen, onClose, bookingReference, customerNa
       <div className="bg-slate-800 rounded-lg p-8 max-w-md w-full relative text-white">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-white"
+          className="absolute top-4 right-4 text-gray-600 hover:text-white"
         >
           <X className="h-6 w-6" />
         </button>
@@ -138,7 +138,7 @@ const BookingExperienceSurvey = ({ isOpen, onClose, bookingReference, customerNa
               ))}
             </div>
 
-            <div className="flex justify-between text-sm text-gray-400 mb-8">
+            <div className="flex justify-between text-sm text-gray-600 mb-8">
               <span>Very Difficult</span>
               <span>Very Easy</span>
             </div>

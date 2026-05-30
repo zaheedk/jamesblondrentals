@@ -114,9 +114,9 @@ export default function BookingHistory({ userEmail }: BookingHistoryProps) {
       <Card>
         <CardContent className="pt-6">
           <div className="text-center py-8">
-            <CalendarCheck className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+            <CalendarCheck className="mx-auto h-12 w-12 text-gray-600 mb-4" />
             <h3 className="text-lg font-medium">Unable to load booking history</h3>
-            <p className="text-sm text-gray-500 mt-2">{error}</p>
+            <p className="text-sm text-gray-700 mt-2">{error}</p>
           </div>
         </CardContent>
       </Card>
@@ -128,9 +128,9 @@ export default function BookingHistory({ userEmail }: BookingHistoryProps) {
       <Card>
         <CardContent className="pt-6">
           <div className="text-center py-8">
-            <CalendarCheck className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+            <CalendarCheck className="mx-auto h-12 w-12 text-gray-600 mb-4" />
             <h3 className="text-lg font-medium">No bookings found</h3>
-            <p className="text-sm text-gray-500 mt-2">
+            <p className="text-sm text-gray-700 mt-2">
               No bookings were found for your email address. When you make a booking, it will appear here.
             </p>
           </div>
@@ -179,7 +179,7 @@ export default function BookingHistory({ userEmail }: BookingHistoryProps) {
         <h2 className="text-xl font-semibold">Your Booking History ({bookings.length})</h2>
         
         <div className="relative w-full sm:w-64">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-600" />
           <Input
             placeholder="Search bookings..."
             value={searchQuery}
@@ -193,9 +193,9 @@ export default function BookingHistory({ userEmail }: BookingHistoryProps) {
         <Card>
           <CardContent className="pt-6">
             <div className="text-center py-8">
-              <Search className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+              <Search className="mx-auto h-12 w-12 text-gray-600 mb-4" />
               <h3 className="text-lg font-medium">No bookings match your search</h3>
-              <p className="text-sm text-gray-500 mt-2">
+              <p className="text-sm text-gray-700 mt-2">
                 Try adjusting your search terms or clear the search to see all bookings.
               </p>
             </div>
@@ -218,12 +218,12 @@ export default function BookingHistory({ userEmail }: BookingHistoryProps) {
             <CardContent className="pt-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <h4 className="text-sm font-medium text-gray-500">Pickup</h4>
+                  <h4 className="text-sm font-medium text-gray-700">Pickup</h4>
                   <p className="font-medium">{formatDateTime(booking.pickupdate, booking.pickuptime)}</p>
                   <p className="text-sm">{booking.pickuplocation || 'N/A'}</p>
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-gray-500">Return</h4>
+                  <h4 className="text-sm font-medium text-gray-700">Return</h4>
                   <p className="font-medium">{formatDateTime(booking.returndate, booking.returntime)}</p>
                   <p className="text-sm">{booking.returnlocation || 'N/A'}</p>
                 </div>
@@ -231,7 +231,7 @@ export default function BookingHistory({ userEmail }: BookingHistoryProps) {
               
               {(booking.customername || booking.customerphone) && (
                 <div className="mt-4 pt-4 border-t">
-                  <h4 className="text-sm font-medium text-gray-500 mb-2">Customer Details</h4>
+                  <h4 className="text-sm font-medium text-gray-700 mb-2">Customer Details</h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
                     {booking.customername && (
                       <p><span className="font-medium">Name:</span> {booking.customername}</p>

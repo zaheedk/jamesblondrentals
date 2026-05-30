@@ -226,7 +226,7 @@ const Navbar = () => {
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
                       <div className="w-48 p-2">
-                        <div className="px-4 py-2 text-xs text-gray-500 border-b mb-1">
+                        <div className="px-4 py-2 text-xs text-gray-700 border-b mb-1">
                           {user.email}
                         </div>
                         <Link 
@@ -353,7 +353,7 @@ const Navbar = () => {
                   </AccordionTrigger>
                   <AccordionContent>
                     <div className="pl-4 space-y-2">
-                      <div className="text-xs text-gray-500 py-1">
+                      <div className="text-xs text-gray-700 py-1">
                         {user.email}
                       </div>
                       <Link 
