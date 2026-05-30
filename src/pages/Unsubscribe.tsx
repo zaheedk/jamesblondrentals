@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle, XCircle, Loader2, MailX } from 'lucide-react';
+import PageSEO from '@/components/PageSEO';
 
 type Status = 'loading' | 'valid' | 'already_unsubscribed' | 'invalid' | 'success' | 'error';
 
@@ -67,6 +68,11 @@ const Unsubscribe = () => {
 
   return (
     <div className="container mx-auto py-20 px-4 flex items-center justify-center min-h-[60vh]">
+      <PageSEO
+        title="Email Unsubscribe | James Blond Rentals"
+        description="Manage your James Blond Rentals email subscription preferences and unsubscribe from marketing communications."
+        noindex
+      />
       <Card className="max-w-md w-full">
         <CardHeader className="text-center">
           <CardTitle className="text-xl">Email Preferences</CardTitle>

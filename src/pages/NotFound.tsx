@@ -2,6 +2,7 @@ import { useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
 import { TriangleAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import PageSEO from "@/components/PageSEO";
 
 const NotFound = () => {
   const location = useLocation();
@@ -15,6 +16,11 @@ const NotFound = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
+      <PageSEO
+        title="Page Not Found | James Blond Rentals"
+        description="The page you're looking for doesn't exist. Browse our cars, vans, utes, trucks and minibuses for hire across New Zealand."
+        noindex
+      />
       <div className="max-w-md mx-auto text-center p-8">
         <div className="flex items-center justify-center gap-3 mb-6">
           <TriangleAlert className="h-6 w-6 text-destructive" />
