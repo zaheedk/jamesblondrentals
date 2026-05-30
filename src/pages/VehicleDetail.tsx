@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { CheckCircle, ChevronLeft, ChevronRight, MapPin, Users, Gauge, Fuel, Calendar } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import PageSEO from "@/components/PageSEO";
 import { Vehicle } from "@/lib/types";
 import { useRcmApi } from "@/hooks/use-rcm-api";
 
@@ -250,6 +251,11 @@ const VehicleDetail = () => {
   
   return (
     <div className="flex flex-col min-h-screen">
+      <PageSEO
+        title={`${vehicle.year} ${vehicle.make} ${vehicle.model} Hire | James Blond Rentals`.slice(0, 60)}
+        description={`Hire the ${vehicle.year} ${vehicle.make} ${vehicle.model} from James Blond Rentals — ${vehicle.seats}-seat ${vehicle.transmission} ${vehicle.type}. Book online for Auckland, Wellington or Christchurch.`.slice(0, 160)}
+        noindex
+      />
       <Navbar />
       <main className="flex-grow">
         <div className="container mx-auto px-4 py-8">

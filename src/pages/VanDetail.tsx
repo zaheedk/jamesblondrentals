@@ -2,6 +2,7 @@
 import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import PageSEO from "@/components/PageSEO";
 
 const vans = {
   "hiace-petrol": {
@@ -142,6 +143,11 @@ const VanDetail = () => {
 
   return (
     <div className="container mx-auto px-4 py-10 max-w-5xl">
+      <PageSEO
+        title={`${van.title} | James Blond Rentals`.slice(0, 60)}
+        description={van.description.slice(0, 160)}
+        canonical={`/fleet/vans/${vanId}`}
+      />
       <div className="mb-4">
         <Link to="/fleet/vans" className="text-primary hover:underline inline-flex items-center">
           <ArrowRight className="mr-1 h-4 w-4 rotate-180" /> Back to Vans & Utes
