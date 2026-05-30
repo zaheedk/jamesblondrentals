@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import PageSEO from "@/components/PageSEO";
+import JsonLd from "@/components/JsonLd";
 
 const vans = {
   "hiace-petrol": {
@@ -147,6 +148,17 @@ const VanDetail = () => {
         title={`${van.title} | James Blond Rentals`.slice(0, 60)}
         description={van.description.slice(0, 160)}
         canonical={`/fleet/vans/${vanId}`}
+      />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: van.title,
+          image: `https://jamesblond.co.nz${van.img}`,
+          description: van.description,
+          brand: { "@type": "Brand", name: "James Blond Rentals" },
+          category: "Vehicle Rental",
+        }}
       />
       <div className="mb-4">
         <Link to="/fleet/vans" className="text-primary hover:underline inline-flex items-center">

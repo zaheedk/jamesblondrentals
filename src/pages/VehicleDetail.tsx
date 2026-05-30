@@ -9,6 +9,7 @@ import { CheckCircle, ChevronLeft, ChevronRight, MapPin, Users, Gauge, Fuel, Cal
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import PageSEO from "@/components/PageSEO";
+import JsonLd from "@/components/JsonLd";
 import { Vehicle } from "@/lib/types";
 import { useRcmApi } from "@/hooks/use-rcm-api";
 
@@ -255,6 +256,24 @@ const VehicleDetail = () => {
         title={`${vehicle.year} ${vehicle.make} ${vehicle.model} Hire | James Blond Rentals`.slice(0, 60)}
         description={`Hire the ${vehicle.year} ${vehicle.make} ${vehicle.model} from James Blond Rentals — ${vehicle.seats}-seat ${vehicle.transmission} ${vehicle.type}. Book online for Auckland, Wellington or Christchurch.`.slice(0, 160)}
         noindex
+      />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: `${vehicle.year} ${vehicle.make} ${vehicle.model}`,
+          image: vehicle.images?.[0],
+          description: `${vehicle.seats}-seat ${vehicle.transmission} ${vehicle.type} (${vehicle.fuelType}) available for hire from James Blond Rentals.`,
+          brand: { "@type": "Brand", name: vehicle.make },
+          offers: {
+            "@type": "Offer",
+            priceCurrency: "NZD",
+            price: vehicle.price,
+            availability: vehicle.available
+              ? "https://schema.org/InStock"
+              : "https://schema.org/OutOfStock",
+          },
+        }}
       />
       <Navbar />
       <main className="flex-grow">
