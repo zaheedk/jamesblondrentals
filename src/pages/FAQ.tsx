@@ -1,6 +1,7 @@
 
 import React from "react";
 import PageSEO from '@/components/PageSEO';
+import JsonLd from '@/components/JsonLd';
 
 const faqData = [
   {
@@ -399,6 +400,32 @@ const faqData = [
 const FAQ = () => (
   <div className="container mx-auto px-4 py-16">
     <PageSEO title="Frequently Asked Questions – James Blond Rentals NZ" description="Find answers to common questions about hiring vehicles from James Blond Rentals including age requirements, licence needs, insurance and pickup procedures." canonical="/faq" />
+    <JsonLd
+      data={{
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: [
+          { q: "What do I need to hire a vehicle?", a: "A full driver's licence (overseas and international licences accepted if in English, or with an approved translation) and a valid credit or debit card. Minimum age is 21 for most vehicles, 25 for larger vehicles." },
+          { q: "What are your hours?", a: "Auckland and Wellington branches are open Monday to Sunday, 8:00 am to 5:00 pm. Last return is 15 minutes before closing." },
+          { q: "Can I use my overseas licence?", a: "Yes, provided the licence is in English or accompanied by an acceptable translation or IDP. All drivers must comply with NZTA requirements." },
+          { q: "Is there a security bond or deposit?", a: "Yes, a bond is required. The amount varies by vehicle and insurance option and can be held on a credit card or paid by debit card." },
+          { q: "Is there a mileage limit?", a: "Cars and standard vans come with unlimited mileage. Commercial vehicles such as trucks and trailers have a per-kilometre mileage charge." },
+          { q: "Can I return after hours?", a: "No, after-hours pickup and drop-off are not offered. All vehicles must be collected and returned during business hours." },
+          { q: "Do I need to refuel before returning?", a: "Yes, vehicles must be refuelled to the same level as supplied or refuelling charges may apply." },
+          { q: "Can I add extra drivers?", a: "Yes, at no extra cost. Additional drivers must meet age and licensing conditions and be registered at pick-up." },
+          { q: "What is your cancellation policy?", a: "Contact us as soon as possible to cancel or change a booking. Cancellations less than 24 hours in advance may incur charges." },
+          { q: "What about insurance?", a: "All hires include standard insurance with an excess starting at $2,000. Optional excess reduction is available during booking." },
+          { q: "Do you provide one-way hires?", a: "Yes. Select pickup and drop-off locations on the booking page to see applicable one-way fees." },
+          { q: "Do I need a special licence to rent a truck or van?", a: "No, a full NZ or overseas driver's licence is all you need to hire and drive our trucks and vans." },
+          { q: "Are Road User Charges (RUCs) included?", a: "Yes, all RUCs are included in pricing — the price you see is the price you pay." },
+          { q: "How do I book a vehicle?", a: "Book online via jamesblond.co.nz or call 0800 525 663." },
+        ].map(({ q, a }) => ({
+          "@type": "Question",
+          name: q,
+          acceptedAnswer: { "@type": "Answer", text: a },
+        })),
+      }}
+    />
     <h1 className="text-3xl font-bold mb-8">Frequently Asked Questions</h1>
     <div className="divide-y divide-gray-200 max-w-2xl mx-auto">
       {faqData.map((faq, idx) => (

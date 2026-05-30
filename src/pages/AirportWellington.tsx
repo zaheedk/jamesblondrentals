@@ -2,10 +2,31 @@ import React from 'react';
 import { MapIcon } from 'lucide-react';
 import FuelStationsMapWellington from '../components/FuelStationsMapWellington';
 import PageSEO from '@/components/PageSEO';
+import JsonLd from '@/components/JsonLd';
 
 const AirportWellington = () => (
   <div className="container mx-auto px-4 py-8 space-y-6">
     <PageSEO title="Wellington Airport Car Rental | James Blond Rentals" description="Convenient vehicle rental at Wellington Airport. Cars, vans, trucks and minibuses available with easy pickup and drop-off." canonical="/airport/wellington" />
+    <JsonLd
+      data={{
+        "@context": "https://schema.org",
+        "@type": "AutoRental",
+        name: "James Blond Rentals — Wellington Airport",
+        image: "https://jamesblond.co.nz/lovable-uploads/cccdce30-4e44-423f-8a01-6db19d07e8fd.png",
+        url: "https://jamesblond.co.nz/airport/wellington",
+        telephone: "+64-800-525-663",
+        email: "wellington@jamesblond.co.nz",
+        priceRange: "$$",
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: "19 Shelly Bay Road, Miramar",
+          addressLocality: "Wellington",
+          postalCode: "6022",
+          addressCountry: "NZ",
+        },
+        openingHours: "Mo-Su 08:00-17:00",
+      }}
+    />
     <section className="mb-8">
       <div className="text-center bg-secondary p-4 rounded-lg mb-6">
         <p className="text-lg font-bold">
