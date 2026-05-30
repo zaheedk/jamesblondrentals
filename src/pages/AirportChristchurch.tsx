@@ -2,6 +2,7 @@ import React from 'react';
 import { MapIcon } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import FuelStationsMapChristchurch from '../components/FuelStationsMapChristchurch';
+import JsonLd from '@/components/JsonLd';
 
 const AirportChristchurch = () => (
   <div className="container mx-auto px-4 py-8 space-y-6">
@@ -9,6 +10,24 @@ const AirportChristchurch = () => (
       <title>Christchurch Airport Car Rental | James Blond Rentals</title>
       <meta name="description" content="Rent a car at Christchurch Airport with James Blond Rentals. Free shuttle service, affordable rates and a wide range of vehicles." />
     </Helmet>
+    <JsonLd
+      data={{
+        "@context": "https://schema.org",
+        "@type": "AutoRental",
+        name: "James Blond Rentals — Christchurch Airport",
+        url: "https://jamesblond.co.nz/airport/christchurch",
+        telephone: "+64-800-525-663",
+        email: "info@jamesblond.co.nz",
+        priceRange: "$$",
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: "17/25 Logistics Drive, Harewood",
+          addressLocality: "Christchurch",
+          postalCode: "8544",
+          addressCountry: "NZ",
+        },
+      }}
+    />
     <section className="mb-8">
       <div className="text-center bg-secondary p-4 rounded-lg mb-6">
         <p className="text-lg font-bold">

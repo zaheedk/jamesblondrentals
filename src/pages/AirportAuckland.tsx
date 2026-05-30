@@ -3,10 +3,32 @@ import { MapIcon, Navigation } from 'lucide-react';
 import FuelStationsMap from '../components/FuelStationsMap';
 import { Button } from '@/components/ui/button';
 import PageSEO from '@/components/PageSEO';
+import JsonLd from '@/components/JsonLd';
 
 const AirportAuckland = () => (
   <div className="container mx-auto px-4 py-8 space-y-6">
     <PageSEO title="Auckland Airport Car Rental | James Blond Rentals" description="Rent cars, vans, trucks and minibuses at Auckland Airport. Free shuttle from both domestic and international terminals." canonical="/airport/auckland" />
+    <JsonLd
+      data={{
+        "@context": "https://schema.org",
+        "@type": "AutoRental",
+        name: "James Blond Rentals — Auckland Airport",
+        image: "https://jamesblond.co.nz/lovable-uploads/6a274083-edb0-4ac2-8e40-4ac3703a8660.png",
+        url: "https://jamesblond.co.nz/airport/auckland",
+        telephone: "+64-800-525-663",
+        email: "info@jamesblond.co.nz",
+        priceRange: "$$",
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: "5/203 Kirkbride Road",
+          addressLocality: "Mangere",
+          addressRegion: "Auckland",
+          postalCode: "2022",
+          addressCountry: "NZ",
+        },
+        openingHours: "Mo-Su 08:00-17:00",
+      }}
+    />
     <section className="mb-8">
       <div className="text-center bg-secondary p-4 rounded-lg mb-6">
         <p className="text-lg font-bold">
