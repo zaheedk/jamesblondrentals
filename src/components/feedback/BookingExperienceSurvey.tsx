@@ -183,7 +183,7 @@ const BookingExperienceSurvey = ({ isOpen, onClose, bookingReference, customerNa
               <Button
                 onClick={() => setCurrentStep(1)}
                 variant="outline"
-                className="flex-1 border-gray-400 text-gray-300 hover:bg-slate-700"
+                className="flex-1 border-gray-600 text-gray-300 hover:bg-slate-700"
               >
                 Back
               </Button>
