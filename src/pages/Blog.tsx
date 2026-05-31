@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Calendar } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface BlogArticle {
@@ -68,35 +68,28 @@ const Blog = () => {
       {/* Blog Posts Grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
         {articles.map((article) => (
-          <Link key={article.id} to={`/blog/${article.slug}`} className="block">
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
-              <CardHeader className="p-0">
-                {article.image_url && (
-                  <img 
-                    src={article.image_url} 
+          <Link key={article.id} to={`/blog/${article.slug}`} className="group block">
+            <Card className="overflow-hidden bg-card border border-border/60 rounded-xl shadow-none hover:shadow-md transition-shadow h-full flex flex-col">
+              {article.image_url && (
+                <div className="overflow-hidden">
+                  <img
+                    src={article.image_url}
                     alt={article.title}
-                    className="w-full h-48 object-cover rounded-t-lg"
+                    className="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                )}
-              </CardHeader>
-              <CardContent className="p-6">
-                <div className="flex items-center gap-4 text-sm text-gray-700 mb-3">
-                  <span className="bg-primary/10 text-primary px-2 py-1 rounded text-xs font-medium">
-                    {article.category}
-                  </span>
-                  <div className="flex items-center gap-1">
-                    <Calendar className="h-4 w-4" />
-                    {new Date(article.created_at).toLocaleDateString()}
-                  </div>
                 </div>
-                
-                <CardTitle className="mb-3 line-clamp-2">
+              )}
+              <CardContent className="p-6 flex flex-col flex-1">
+                <h3 className="text-xl font-bold text-foreground mb-3 line-clamp-2 group-hover:text-primary transition-colors">
                   {article.title}
-                </CardTitle>
-                
-                <CardDescription className="line-clamp-3">
+                </h3>
+                <p className="text-muted-foreground text-sm leading-relaxed line-clamp-3 mb-5">
                   {article.excerpt}
-                </CardDescription>
+                </p>
+                <span className="mt-auto inline-flex items-center gap-1.5 text-primary font-semibold text-sm">
+                  Read More
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </span>
               </CardContent>
             </Card>
           </Link>
