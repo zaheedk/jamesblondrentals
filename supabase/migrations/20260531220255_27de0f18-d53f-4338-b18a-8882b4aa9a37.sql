@@ -1,0 +1,1 @@
+UPDATE public.blog_articles SET image_url = '/blog/hamilton-cargo-van.jpg' WHERE id = 'f4e90d23-ed9b-4892-8f68-24756e45ec2c';
