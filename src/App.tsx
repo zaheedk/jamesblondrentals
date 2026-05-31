@@ -25,6 +25,7 @@ import ContactAucklandAirport from "./pages/ContactAucklandAirport";
 import ContactWellington from "./pages/ContactWellington";
 import ContactChristchurch from "./pages/ContactChristchurch";
 import ContactChristchurchCentral from "./pages/ContactChristchurchCentral";
+import ContactHamilton from "./pages/ContactHamilton";
 
 // Auth Pages
 import Login from "./pages/Login";
