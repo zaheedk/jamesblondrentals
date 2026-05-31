@@ -348,6 +348,9 @@ const Navbar = () => {
                     <Link to="/contact/christchurch-central" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
                       Christchurch Central
                     </Link>
+                    <Link to="/contact/hamilton" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
+                      Hamilton
+                    </Link>
                   </div>
                 </AccordionContent>
               </AccordionItem>
