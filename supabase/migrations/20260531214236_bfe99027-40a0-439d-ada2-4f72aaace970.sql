@@ -1,0 +1,72 @@
+
+INSERT INTO public.blog_articles (title, slug, excerpt, content, author, category, read_time, published, page_title, meta_title, meta_description, image_url) VALUES
+(
+  'James Blond Opens New Branch in Hamilton',
+  'james-blond-opens-new-branch-hamilton',
+  'We''re excited to announce the opening of our brand new James Blond branch in Frankton, Hamilton — bringing affordable car, van and truck rentals to the Waikato.',
+  '<h2>Hamilton, we''ve arrived!</h2><p>We''re thrilled to announce that <strong>James Blond Rentals</strong> has officially opened a brand new branch at <strong>17 Bandon Street, Frankton, Hamilton 3204</strong>. After years of helping Kiwis move, travel and work across Auckland, Wellington and Christchurch, we''re bringing our trusted, no-nonsense rental service to the heart of the Waikato.</p><h3>Why Hamilton?</h3><p>Hamilton is one of New Zealand''s fastest-growing cities — and locals have told us they want more choice when it comes to renting cars, vans and trucks at fair prices. Our new Frankton location puts us right where you need us: minutes from the CBD, close to the Expressway, and easy to reach from anywhere in the Waikato.</p><h3>What we offer</h3><ul><li><strong>Cars</strong> — economy through to premium SUVs for weekends away, business trips or replacement vehicles.</li><li><strong>Vans</strong> — cargo vans and people movers for tradies, deliveries and group travel.</li><li><strong>Trucks</strong> — 2 tonne and 3 tonne box trucks (including tail-lift options) perfect for house moves and commercial jobs.</li><li><strong>Trailers & extras</strong> — luggage trailers, car transporters, trolleys, straps and child seats.</li></ul><h3>Opening offer</h3><p>To celebrate our Hamilton launch, give our friendly team a call on <strong>0800 525 663</strong> or book online at <a href="https://www.jamesblond.co.nz">www.jamesblond.co.nz</a>. After-hours pick-up and drop-off is available on request.</p><p>Welcome to the family, Hamilton — we can''t wait to help you hit the road.</p>',
+  'James Blond Team',
+  'Company News',
+  '3 min read',
+  true,
+  'James Blond Opens New Hamilton Branch | Frankton',
+  'James Blond Opens New Hamilton Branch in Frankton',
+  'James Blond Rentals is now open in Hamilton at 17 Bandon Street, Frankton. Affordable car, van and truck hire for the Waikato. Call 0800 525 663.',
+  'https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?w=800'
+),
+(
+  'Truck Hire in Hamilton: A Complete Guide for House Moves',
+  'truck-hire-hamilton-house-moves-guide',
+  'Moving house in Hamilton? Here''s everything you need to know about renting the right truck — from sizing to tail-lifts, insurance and our best money-saving tips.',
+  '<h2>Planning a house move in Hamilton?</h2><p>Whether you''re relocating from Hillcrest to Rototuna or moving the whole family from Cambridge into the city, renting the right truck makes all the difference. Here''s our complete guide to <strong>truck hire in Hamilton</strong>.</p><h3>1. Pick the right size truck</h3><ul><li><strong>2 Tonne 12m³</strong> — Studio or 1-bedroom flat.</li><li><strong>2 Tonne 16m³</strong> — 2-bedroom home or large apartment.</li><li><strong>3 Tonne 19m³</strong> — 3 to 4-bedroom house. Our most popular mover.</li><li><strong>Tail-lift trucks</strong> — Essential for heavy whiteware, pianos or anyone moving solo.</li></ul><h3>2. Book midweek and save</h3><p>Weekends book out fast in Hamilton — and they cost more. If you can move Monday to Thursday, you''ll often save 20–30% on the daily rate.</p><h3>3. Don''t forget the extras</h3><p>Straps, ratchets, hand trolleys and furniture pads are cheap to add and save your back (and your walls). We include unlimited kilometres on most Hamilton truck hires within the Waikato.</p><h3>4. Drive on a standard licence</h3><p>All our box trucks up to 3 tonne can be driven on a <strong>standard Class 1 NZ driver licence</strong> — no special endorsement needed.</p><h3>Ready to book?</h3><p>Call our Hamilton team on <strong>0800 525 663</strong> or book online at <a href="https://www.jamesblond.co.nz">www.jamesblond.co.nz</a>.</p>',
+  'James Blond Team',
+  'Tips & Guides',
+  '5 min read',
+  true,
+  'Truck Hire Hamilton — Complete House Moving Guide',
+  'Truck Hire Hamilton: Complete House Move Guide',
+  'Everything you need to know about renting a moving truck in Hamilton — sizing, tail-lifts, midweek deals and licence requirements. Book from $99/day.',
+  'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?w=800'
+),
+(
+  'Cheap Van Hire in Hamilton: Cargo Vans for Tradies & Deliveries',
+  'cheap-van-hire-hamilton-cargo-vans',
+  'Need a van in Hamilton for a one-off delivery, a renovation job or a weekend project? Here''s how to get reliable cargo van hire without blowing the budget.',
+  '<h2>Affordable cargo van hire in Hamilton</h2><p>From Te Rapa to Frankton, Hamilton tradies, couriers and DIY renovators all need the same thing: a reliable van at a fair price. Here''s how James Blond keeps van hire in Hamilton simple and cheap.</p><h3>What can you fit in our cargo vans?</h3><ul><li><strong>Standard Van</strong> — 8m³ — Perfect for couriers, tools, small furniture loads.</li><li><strong>Jumbo Van</strong> — 12m³+ — Long-wheelbase for bulky items, gib board, ladders.</li><li><strong>Premium Van</strong> — Newer model, fuel-efficient, easy city driving.</li></ul><h3>Why Hamilton businesses love James Blond</h3><ul><li>No hidden fees — the price you see is the price you pay.</li><li>Unlimited kilometres on most rentals across the Waikato.</li><li>Long-term hire discounts for ongoing projects.</li><li>After-hours pick-up and drop-off available on request.</li></ul><h3>Courier operator deals</h3><p>Running a courier route in Hamilton? Ask us about our <strong>courier operator weekly rates</strong> — built for owner-drivers who need a dependable van without the lease commitment.</p><p>Call <strong>0800 525 663</strong> or visit <a href="https://www.jamesblond.co.nz">www.jamesblond.co.nz</a> to book.</p>',
+  'James Blond Team',
+  'Tips & Guides',
+  '4 min read',
+  true,
+  'Cheap Van Hire Hamilton — Cargo Vans from $79/day',
+  'Cheap Van Hire Hamilton — Cargo Vans & Tradies',
+  'Affordable cargo van hire in Hamilton for tradies, couriers and deliveries. Standard, Jumbo and Premium vans. No hidden fees. Call 0800 525 663.',
+  'https://images.unsplash.com/photo-1606016159991-dfe4f2746ad5?w=800'
+),
+(
+  'Car Rental in Hamilton: Choosing the Right Vehicle for Your Trip',
+  'car-rental-hamilton-choosing-right-vehicle',
+  'From a quick city run to a Coromandel road trip, here''s how to pick the perfect rental car in Hamilton — and how to keep the daily rate low.',
+  '<h2>Car rental made easy in Hamilton</h2><p>Hamilton is the gateway to the Waikato, Coromandel, Raglan and Rotorua — which means a rental car is often the easiest way to explore. Here''s how to choose the right one.</p><h3>Match the car to your trip</h3><ul><li><strong>Economy</strong> — Best for solo travellers and city driving. Cheapest to run.</li><li><strong>Midsize</strong> — Great for couples, business trips and longer drives.</li><li><strong>Wagon or 7-Seat SUV</strong> — Families, gear, ski trips or Coromandel adventures.</li><li><strong>AWD SUV</strong> — Confidence on gravel roads heading to remote tracks and lakes.</li></ul><h3>Top tips to save</h3><ol><li>Book early — Hamilton holiday weekends sell out.</li><li>Pick up midweek if possible.</li><li>Refuel before returning to avoid refuelling fees.</li><li>Bundle a child seat or GPS at booking — cheaper than on the day.</li></ol><h3>Local service that knows the Waikato</h3><p>Our Hamilton team at <strong>17 Bandon Street, Frankton</strong> can recommend routes, fuel stops and the best vehicle for your itinerary. Call <strong>0800 525 663</strong> or book at <a href="https://www.jamesblond.co.nz">www.jamesblond.co.nz</a>.</p>',
+  'James Blond Team',
+  'Tips & Guides',
+  '5 min read',
+  true,
+  'Car Rental Hamilton — Choose the Right Vehicle',
+  'Car Rental Hamilton — Pick the Right Vehicle',
+  'Compare economy, SUV and wagon rentals in Hamilton. Tips for choosing the right car for road trips around the Waikato, Coromandel and Raglan.',
+  'https://images.unsplash.com/photo-1502877338535-766e1452684a?w=800'
+),
+(
+  '10 Things to Do in Hamilton with a Rental Vehicle',
+  '10-things-to-do-hamilton-rental-vehicle',
+  'With a rental car, van or truck from our new Hamilton branch, the Waikato is your playground. Here are 10 trips worth fuelling up for.',
+  '<h2>Make the most of Hamilton with wheels of your own</h2><p>Hamilton is more than a stopover — it''s a launchpad. With a rental from our new branch at <strong>17 Bandon Street, Frankton</strong>, here are 10 trips locals and visitors love.</p><ol><li><strong>Raglan Beach</strong> — 45 mins west. Black sand, surf and great cafes.</li><li><strong>Hobbiton Movie Set</strong> — A short drive to Matamata for Middle-earth magic.</li><li><strong>Waitomo Caves</strong> — Glowworms and adventure caving an hour south.</li><li><strong>Hamilton Gardens</strong> — Free entry, world-class themed gardens in town.</li><li><strong>Mount Maunganui</strong> — Beach day trip just over an hour away.</li><li><strong>Karangahake Gorge</strong> — Old gold-mining trails and tunnel walks.</li><li><strong>Lake Karapiro</strong> — Watersports and lakeside picnics.</li><li><strong>Te Aroha hot pools</strong> — Soak in mineral waters under the mountain.</li><li><strong>Rotorua</strong> — Geothermal wonders, 90 minutes south.</li><li><strong>Coromandel Peninsula</strong> — Cathedral Cove and Hot Water Beach in a weekend.</li></ol><h3>Going further? Hire a van or truck</h3><p>Moving a group, taking the bikes, or hauling gear? Our Hamilton fleet includes cars, people movers, cargo vans and box trucks. Book online at <a href="https://www.jamesblond.co.nz">www.jamesblond.co.nz</a> or call <strong>0800 525 663</strong>.</p>',
+  'James Blond Team',
+  'Travel',
+  '6 min read',
+  true,
+  '10 Things to Do in Hamilton with a Rental Vehicle',
+  '10 Things to Do in Hamilton with a Rental',
+  'Day trips from Hamilton: Raglan, Hobbiton, Waitomo, Coromandel and more. The best Waikato adventures to enjoy with a rental car, van or truck.',
+  'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800'
+);
