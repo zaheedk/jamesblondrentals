@@ -1179,6 +1179,37 @@ const RentalAgreement = () => {
       setExistingAdditionalSig(additionalDriverSignature);
       setSignedAt(new Date().toISOString());
       toast.success("Rental agreement saved successfully! You can now add photos and email the agreement.");
+
+      // Auto-send a copy of the signed agreement to Savo
+      try {
+        const pdfBlob = await generatePdf();
+        if (pdfBlob) {
+          const { fileName, publicUrl } = await uploadPdfForEmail(pdfBlob, agreementRef);
+          await supabase.functions.invoke("send-postmark-email", {
+            body: {
+              to: "jamesblondrentals@hires.savo.co.nz",
+              subject: `Signed Rental Agreement - ${agreementRef}`,
+              html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                  <h2 style="color: #1a365d;">Signed Rental Agreement</h2>
+                  <p>A rental agreement has just been signed and saved. PDF attached.</p>
+                  <p><strong>Agreement Ref:</strong> ${agreementRef}</p>
+                  <p><strong>Customer:</strong> ${customer?.firstname || ""} ${customer?.lastname || ""}</p>
+                  <p><strong>Vehicle:</strong> ${booking?.vehiclecategory || ""} ${vehicleRego ? `(${vehicleRego})` : ""}</p>
+                  <p><strong>Pickup:</strong> ${booking?.pickupdate || ""} ${booking?.pickuptime || ""}</p>
+                  <p><strong>Return:</strong> ${booking?.dropoffdate || ""} ${booking?.dropofftime || ""}</p>
+                </div>
+              `,
+              remoteAttachments: [
+                { Name: fileName, Url: publicUrl, ContentType: "application/pdf" },
+              ],
+            },
+          });
+          console.log("Signed agreement copy sent to Savo");
+        }
+      } catch (savoErr) {
+        console.error("Failed to auto-send signed agreement to Savo:", savoErr);
+      }
     } catch (error) {
       console.error("Error saving rental agreement:", error);
       toast.error("Failed to save rental agreement");
