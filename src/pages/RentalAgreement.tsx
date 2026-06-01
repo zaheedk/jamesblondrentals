@@ -1184,7 +1184,7 @@ const RentalAgreement = () => {
       try {
         const pdfBlob = await generatePdf();
         if (pdfBlob) {
-          const { fileName, publicUrl } = await uploadPdfForEmail(pdfBlob, agreementRef);
+          const { fileName, publicUrl } = await uploadPdfForEmail(pdfBlob, String(agreementRef));
           await supabase.functions.invoke("send-postmark-email", {
             body: {
               to: "jamesblondrentals@hires.savo.co.nz",
