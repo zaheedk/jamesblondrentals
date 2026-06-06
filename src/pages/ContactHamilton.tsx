@@ -1,5 +1,6 @@
 import React from 'react';
-import { MapPin, Phone, Mail, Facebook } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { MapPin, Phone, Mail, Facebook, Truck, Caravan } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import ContactForm from '@/components/ContactForm';
 import PageSEO from '@/components/PageSEO';
