@@ -1,6 +1,6 @@
 import SearchForm from "./SearchForm";
 import { useIsMobile } from "@/hooks/use-mobile";
-import heroImage from "@/assets/hero-lake-taupo-summer.jpg";
+import heroImage from "@/assets/hero-ski-season.jpg";
 
 const Hero = () => {
   const isMobile = useIsMobile();
