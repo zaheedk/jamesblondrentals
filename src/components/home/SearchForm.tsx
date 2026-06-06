@@ -459,10 +459,11 @@ const SearchForm = ({
   };
 
   return (
-    <Card className="shadow-lg border-0">
-      <CardContent className="p-6">
-        <div className="mb-6">
-          <h3 className="text-lg font-semibold text-center">Find Your Vehicle</h3>
+    <Card className="shadow-2xl border border-white/40 bg-white/90 backdrop-blur-xl rounded-3xl overflow-hidden">
+      <CardContent className="p-6 md:p-10">
+        <div className="mb-8 text-center">
+          <h3 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight italic">Find Your Vehicle</h3>
+          <div className="h-1 w-12 bg-yellow-400 mx-auto mt-2 rounded-full"></div>
         </div>
 
         <form onSubmit={handleSearch}>
@@ -492,8 +493,9 @@ const SearchForm = ({
             </div>
 
             {/* Pick-up Date and Time */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+              <div className="space-y-4 bg-slate-50/60 p-4 rounded-2xl border border-slate-100">
+                <div className="space-y-2">
                 <DateSelect
                   id="pickup-date"
                   label="Pick up Date"
@@ -503,9 +505,8 @@ const SearchForm = ({
                   locationId={pickupLocation}
                   locationDetails={locationDetails}
                 />
-              </div>
-
-              <div className="space-y-2">
+                </div>
+                <div className="space-y-2">
                 <TimeSelect
                   id="pickup-time"
                   label="Pick up Time"
@@ -516,6 +517,42 @@ const SearchForm = ({
                   disabled={!pickupLocation || !pickupDate || pickupTimeOptions.length === 0}
                   placeholder={!pickupLocation ? "Select location first" : !pickupDate ? "Select date first" : undefined}
                 />
+                </div>
+              </div>
+
+              <div className="space-y-4 bg-slate-50/60 p-4 rounded-2xl border border-slate-100">
+                <div className="space-y-2">
+                <DateSelect
+                  id="dropoff-date"
+                  label="Drop off Date"
+                  date={dropoffDate}
+                  onDateChange={setDropoffDate}
+                  disableDate={(date) => {
+                    if (!pickupDate) return true;
+                    const dateWithoutTime = new Date(date);
+                    dateWithoutTime.setHours(0, 0, 0, 0);
+                    const pickupWithoutTime = new Date(pickupDate);
+                    pickupWithoutTime.setHours(0, 0, 0, 0);
+                    return dateWithoutTime < pickupWithoutTime;
+                  }}
+                  locationId={sameLocation ? pickupLocation : dropoffLocation}
+                  locationDetails={locationDetails}
+                  allowSameDay={true}
+                  defaultMonth={pickupDate}
+                />
+                </div>
+                <div className="space-y-2">
+                <TimeSelect
+                  id="dropoff-time"
+                  label="Drop off Time"
+                  time={dropoffTime}
+                  onTimeChange={setDropoffTime}
+                  timeOptions={dropoffTimeOptions}
+                  isLoading={isLoadingOfficeHours}
+                  disabled={!dropoffDate || !(sameLocation ? pickupLocation : dropoffLocation) || dropoffTimeOptions.length === 0}
+                  placeholder={!(sameLocation ? pickupLocation : dropoffLocation) ? "Select location first" : !dropoffDate ? "Select date first" : undefined}
+                />
+                </div>
               </div>
             </div>
 
@@ -568,48 +605,6 @@ const SearchForm = ({
               />
             </div>
 
-            {/* Drop-off Date and Time */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <DateSelect
-                  id="dropoff-date"
-                  label="Drop off Date"
-                  date={dropoffDate}
-                  onDateChange={setDropoffDate}
-                  disableDate={(date) => {
-                    // For drop-off date, only disable dates strictly before the pickup date
-                    if (!pickupDate) return true;
-                    
-                    // Compare dates by truncating time part to enable same day selection
-                    const dateWithoutTime = new Date(date);
-                    dateWithoutTime.setHours(0, 0, 0, 0);
-                    
-                    const pickupWithoutTime = new Date(pickupDate);
-                    pickupWithoutTime.setHours(0, 0, 0, 0);
-                    
-                    return dateWithoutTime < pickupWithoutTime;
-                  }}
-                  locationId={sameLocation ? pickupLocation : dropoffLocation}
-                  locationDetails={locationDetails}
-                  allowSameDay={true}
-                  defaultMonth={pickupDate}
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <TimeSelect
-                  id="dropoff-time"
-                  label="Drop off Time"
-                  time={dropoffTime}
-                  onTimeChange={setDropoffTime}
-                  timeOptions={dropoffTimeOptions}
-                  isLoading={isLoadingOfficeHours}
-                  disabled={!dropoffDate || !(sameLocation ? pickupLocation : dropoffLocation) || dropoffTimeOptions.length === 0}
-                  placeholder={!(sameLocation ? pickupLocation : dropoffLocation) ? "Select location first" : !dropoffDate ? "Select date first" : undefined}
-                />
-              </div>
-            </div>
-            
             {/* Age, Category and Promo Code */}
             <div className="grid grid-cols-1 gap-4">
               {/* Age and Category Row for Mobile */}
@@ -659,10 +654,10 @@ const SearchForm = ({
 
             <Button
               type="submit"
-              className="w-full bg-yellow-400 hover:bg-yellow-500 text-black"
+              className="w-full h-auto py-5 bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-bold text-lg rounded-2xl shadow-lg shadow-yellow-400/30 active:scale-[0.98] transition-all focus-visible:ring-4 focus-visible:ring-yellow-400/40"
               disabled={isLoading || !pickupLocation || !pickupDate || !dropoffDate || !pickupTime || !dropoffTime}
             >
-              {isLoading ? "Searching..." : "Search Available Vehicles"}
+              {isLoading ? "Searching..." : "Search Available Vehicles →"}
             </Button>
           </div>
         </form>
