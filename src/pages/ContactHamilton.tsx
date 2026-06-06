@@ -86,6 +86,38 @@ const ContactHamilton = () => {
         </Card>
       </div>
 
+      {/* Hamilton Services */}
+      <div className="max-w-5xl mx-auto mb-12">
+        <div className="grid md:grid-cols-2 gap-6">
+          <Link to="/hamilton-truck-rentals-hire" className="group">
+            <Card className="h-full transition-colors hover:bg-muted/50">
+              <CardContent className="p-6 flex items-center gap-4">
+                <div className="p-3 rounded-full bg-primary/10 text-primary">
+                  <Truck className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="font-semibold group-hover:text-primary transition-colors">Hamilton Truck Rentals</h3>
+                  <p className="text-sm text-gray-600">Moving trucks & commercial hire from $35/hr</p>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+          <Link to="/hamilton-van-hire" className="group">
+            <Card className="h-full transition-colors hover:bg-muted/50">
+              <CardContent className="p-6 flex items-center gap-4">
+                <div className="p-3 rounded-full bg-primary/10 text-primary">
+                  <Caravan className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="font-semibold group-hover:text-primary transition-colors">Hamilton Van Hire</h3>
+                  <p className="text-sm text-gray-600">Cargo vans & 12-seater minibuses from $69/day</p>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+        </div>
+      </div>
+
       {/* Contact Form */}
       <div className="max-w-2xl mx-auto mb-12">
         <ContactForm />
