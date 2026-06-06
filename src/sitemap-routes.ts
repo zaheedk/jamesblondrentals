@@ -98,6 +98,8 @@ export const sitemapRoutes: SitemapRoute[] = [
   { path: '/west-auckland-truck-rentals-hire', priority: 0.9, changefreq: 'weekly' },
   { path: '/truck-hire-wellington', priority: 0.9, changefreq: 'weekly' },
   { path: '/truck-hire-christchurch', priority: 0.9, changefreq: 'weekly' },
+  { path: '/hamilton-truck-rentals-hire', priority: 0.9, changefreq: 'weekly' },
+  { path: '/hamilton-van-hire', priority: 0.9, changefreq: 'weekly' },
   { path: '/van-hire-wellington', priority: 0.9, changefreq: 'weekly' },
   { path: '/west-auckland-cargo-van-rentals-hire', priority: 0.9, changefreq: 'weekly' },
   { path: '/auckland-airport-cargo-van-rentals-hire', priority: 0.9, changefreq: 'weekly' },
