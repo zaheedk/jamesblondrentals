@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Phone, Package } from 'lucide-react';
+import { ArrowRight, Phone, Package, GraduationCap, Truck, MapPin, Quote } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import SearchForm from '@/components/home/SearchForm';
 import PageSEO from '@/components/PageSEO';
@@ -98,48 +98,48 @@ const HamiltonVanHire = () => {
       />
       <JsonLd data={faqJsonLd} />
 
-      {/* Editorial Hero */}
-      <section className="relative overflow-hidden">
-        <div className="container mx-auto px-6 pt-16 pb-12 md:pt-24 md:pb-20">
-          <div className="grid md:grid-cols-12 gap-10 items-end">
-            <div className="md:col-span-7">
-              <p className="text-sm tracking-[0.25em] uppercase text-muted-foreground mb-6">
-                Hamilton · Waikato
-              </p>
-              <h1 className="font-serif text-5xl md:text-7xl leading-[1.02] tracking-tight">
-                Van hire in Hamilton,
-                <span className="italic text-primary"> on your terms.</span>
-              </h1>
-              <p className="mt-8 text-lg md:text-xl text-muted-foreground max-w-xl">
-                Cargo vans for trades and couriers, jumbo vans for the bigger jobs, and a
-                12-seat minibus for the team — booked in a minute, collected from our
-                Hamilton branch.
-              </p>
-              <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
-                <Button asChild size="lg" className="rounded-full px-7">
-                  <a href="#booking">Check availability</a>
-                </Button>
-                <a
-                  href="tel:+6478384955"
-                  className="inline-flex items-center gap-2 text-sm font-medium hover:text-primary"
-                >
-                  <Phone className="h-4 w-4" /> Call our Hamilton branch
-                </a>
-              </div>
+      {/* Split-screen Hero */}
+      <section className="grid md:grid-cols-2 min-h-[80vh]">
+        {/* Left: light panel */}
+        <div className="bg-[hsl(0_0%_92%)] text-[hsl(0_0%_8%)] flex flex-col justify-between p-8 md:p-16">
+          <div className="flex items-center gap-2 text-sm font-semibold">
+            <MapPin className="h-4 w-4 text-primary" />
+            <span>Hamilton · Waikato</span>
+          </div>
+          <div className="max-w-xl">
+            <div className="flex items-center gap-3 mb-4">
+              <Truck className="h-5 w-5" />
+              <span className="text-lg font-semibold">Van Hire</span>
             </div>
-            <div className="md:col-span-5">
-              <div className="relative">
-                <img
-                  src={vanHero}
-                  alt="Cargo van available for Hamilton hire"
-                  className="w-full aspect-[4/5] object-cover"
-                  loading="eager"
-                />
-                <div className="absolute -bottom-6 -left-6 bg-background border border-border px-5 py-3">
-                  <p className="text-xs uppercase tracking-widest text-muted-foreground">From</p>
-                  <p className="font-serif text-2xl">$69 / day</p>
-                </div>
-              </div>
+            <div className="h-px w-full bg-[hsl(0_0%_70%)] mb-10" />
+            <h1 className="font-sans font-extrabold tracking-tight text-4xl md:text-6xl leading-[1.05]">
+              Cargo Vans, Jumbo Vans &amp; 12-Seat Minibuses for Hire in Hamilton
+            </h1>
+            <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
+              <Button asChild size="lg" className="rounded-none px-7">
+                <a href="#booking">Check availability</a>
+              </Button>
+              <a
+                href="tel:+6478384955"
+                className="inline-flex items-center gap-2 text-sm font-semibold hover:text-primary"
+              >
+                <Phone className="h-4 w-4" /> Call our Hamilton branch
+              </a>
+            </div>
+          </div>
+        </div>
+        {/* Right: dark panel */}
+        <div className="bg-[hsl(0_0%_18%)] flex items-center justify-center p-8 md:p-16">
+          <div className="relative w-full max-w-md">
+            <img
+              src={vanHero}
+              alt="Cargo van available for Hamilton hire"
+              className="w-full aspect-square object-cover rounded-3xl shadow-2xl"
+              loading="eager"
+            />
+            <div className="absolute -bottom-5 -left-5 bg-primary text-primary-foreground px-5 py-3 rounded-xl shadow-xl">
+              <p className="text-[10px] uppercase tracking-widest opacity-80">From</p>
+              <p className="font-extrabold text-2xl leading-none">$69 / day</p>
             </div>
           </div>
         </div>
@@ -157,7 +157,7 @@ const HamiltonVanHire = () => {
               key={row.n}
               className={`flex gap-6 py-6 md:py-2 ${i > 0 ? 'md:border-l md:pl-10 border-border' : ''}`}
             >
-              <span className="font-serif text-3xl text-primary leading-none">{row.n}</span>
+              <span className="font-sans font-extrabold text-3xl text-primary leading-none">{row.n}</span>
               <div>
                 <h2 className="text-base font-semibold">{row.t}</h2>
                 <p className="text-sm text-muted-foreground mt-1">{row.d}</p>
@@ -170,8 +170,12 @@ const HamiltonVanHire = () => {
       {/* Zigzag fleet */}
       <section className="container mx-auto px-6 py-20 md:py-28">
         <div className="max-w-2xl mb-16">
-          <p className="text-sm tracking-[0.25em] uppercase text-muted-foreground mb-4">The fleet</p>
-          <h2 className="font-serif text-4xl md:text-5xl leading-tight">
+          <div className="flex items-center gap-3 mb-3">
+            <Truck className="h-5 w-5 text-primary" />
+            <span className="text-base font-semibold">The Fleet</span>
+          </div>
+          <div className="h-px w-full bg-border mb-6" />
+          <h2 className="font-sans font-extrabold tracking-tight text-4xl md:text-5xl leading-[1.05]">
             One van for every Hamilton job.
           </h2>
         </div>
@@ -188,13 +192,13 @@ const HamiltonVanHire = () => {
                 <img
                   src={v.img}
                   alt={`${v.name} for Hamilton hire`}
-                  className="w-full aspect-[4/3] object-cover"
+                  className="w-full aspect-[4/3] object-cover rounded-2xl"
                   loading="lazy"
                 />
               </div>
               <div className="md:col-span-5">
-                <span className="font-serif text-5xl text-primary">{v.no}</span>
-                <h3 className="font-serif text-3xl mt-4">{v.name}</h3>
+                <span className="font-sans font-extrabold text-5xl text-primary">{v.no}</span>
+                <h3 className="font-sans font-extrabold text-3xl mt-4 tracking-tight">{v.name}</h3>
                 <p className="mt-2 text-xs uppercase tracking-widest text-muted-foreground">
                   {v.spec}
                 </p>
@@ -212,21 +216,23 @@ const HamiltonVanHire = () => {
       </section>
 
       {/* Editorial split */}
-      <section className="bg-muted/40">
+      <section className="bg-[hsl(0_0%_92%)] text-[hsl(0_0%_8%)]">
         <div className="container mx-auto px-6 py-20 grid md:grid-cols-2 gap-16 items-center">
           <div>
-            <p className="text-sm tracking-[0.25em] uppercase text-muted-foreground mb-4">
-              Built for the Waikato
-            </p>
-            <h2 className="font-serif text-4xl md:text-5xl leading-tight">
+            <div className="flex items-center gap-3 mb-3">
+              <MapPin className="h-5 w-5 text-primary" />
+              <span className="text-base font-semibold">Built for the Waikato</span>
+            </div>
+            <div className="h-px w-full bg-[hsl(0_0%_70%)] mb-6" />
+            <h2 className="font-sans font-extrabold tracking-tight text-4xl md:text-5xl leading-[1.05]">
               Trades, teams and weekend movers — all welcome.
             </h2>
-            <p className="mt-6 text-lg text-muted-foreground">
+            <p className="mt-6 text-lg text-[hsl(0_0%_30%)]">
               Hamilton’s a city of working vans: tradies criss-crossing Te Rapa, couriers
               hitting The Base, families collecting flat-packs and minibuses heading to
               Hobbiton. Our fleet is sized and priced for all of them.
             </p>
-            <ul className="mt-10 divide-y divide-border border-y border-border">
+            <ul className="mt-10 divide-y divide-[hsl(0_0%_75%)] border-y border-[hsl(0_0%_75%)]">
               {[
                 'Daily and weekly hire for trades and courier work',
                 'Cargo vans for furniture, white-ware and small moves',
@@ -244,22 +250,26 @@ const HamiltonVanHire = () => {
             </ul>
           </div>
           <div className="relative md:order-first">
-            <img
-              src={vanInterior}
-              alt="Cargo van interior — Hamilton van hire"
-              className="w-full aspect-[5/6] object-cover"
-              loading="lazy"
-            />
+            <div className="bg-[hsl(0_0%_18%)] p-6 md:p-10 rounded-2xl">
+              <img
+                src={vanInterior}
+                alt="Cargo van interior — Hamilton van hire"
+                className="w-full aspect-[5/6] object-cover rounded-2xl"
+                loading="lazy"
+              />
+            </div>
           </div>
         </div>
       </section>
 
       {/* Pull quote */}
       <section className="container mx-auto px-6 py-24 md:py-32 text-center max-w-4xl">
-        <p className="text-sm tracking-[0.25em] uppercase text-muted-foreground mb-6">
-          From the counter
-        </p>
-        <blockquote className="font-serif text-3xl md:text-4xl leading-snug">
+        <div className="flex items-center justify-center gap-3 mb-4">
+          <Quote className="h-5 w-5 text-primary" />
+          <span className="text-base font-semibold">From the counter</span>
+        </div>
+        <div className="h-px w-24 mx-auto bg-border mb-8" />
+        <blockquote className="font-sans font-extrabold tracking-tight text-3xl md:text-4xl leading-snug">
           “Clean vans, honest pricing and a real human at the desk. The way Hamilton van
           hire should feel.”
         </blockquote>
@@ -271,16 +281,18 @@ const HamiltonVanHire = () => {
       {/* Use cases / field notes */}
       <section className="container mx-auto px-6 py-20 grid md:grid-cols-12 gap-12">
         <aside className="md:col-span-4">
-          <p className="text-sm tracking-[0.25em] uppercase text-muted-foreground mb-4">
-            Picking a van
-          </p>
-          <h2 className="font-serif text-3xl md:text-4xl leading-tight">
+          <div className="flex items-center gap-3 mb-3">
+            <GraduationCap className="h-5 w-5 text-primary" />
+            <span className="text-base font-semibold">Picking a van</span>
+          </div>
+          <div className="h-px w-full bg-border mb-6" />
+          <h2 className="font-sans font-extrabold tracking-tight text-3xl md:text-4xl leading-[1.05]">
             Match the van to the day.
           </h2>
           <img
             src={vanFleet}
             alt="Hamilton van fleet ready to hire"
-            className="mt-8 w-full aspect-[4/5] object-cover"
+            className="mt-8 w-full aspect-[4/5] object-cover rounded-2xl"
             loading="lazy"
           />
         </aside>
@@ -295,9 +307,9 @@ const HamiltonVanHire = () => {
               key={t}
               className="grid grid-cols-[auto_1fr] gap-6 border-t border-border pt-8 first:border-t-0 first:pt-0"
             >
-              <span className="font-serif text-3xl text-primary leading-none">0{i + 1}</span>
+              <span className="font-sans font-extrabold text-3xl text-primary leading-none">0{i + 1}</span>
               <div>
-                <h3 className="font-serif text-2xl">{t}</h3>
+                <h3 className="font-sans font-extrabold text-2xl tracking-tight">{t}</h3>
                 <p className="mt-2 text-muted-foreground">{d}</p>
               </div>
             </li>
@@ -309,10 +321,12 @@ const HamiltonVanHire = () => {
       <section id="booking" className="border-t border-border scroll-mt-20">
         <div className="container mx-auto px-6 py-20 max-w-5xl">
           <div className="mb-10 text-center">
-            <p className="text-sm tracking-[0.25em] uppercase text-muted-foreground mb-4">
-              Reserve
-            </p>
-            <h2 className="font-serif text-4xl md:text-5xl">Book your Hamilton van</h2>
+            <div className="flex items-center justify-center gap-3 mb-3">
+              <Truck className="h-5 w-5 text-primary" />
+              <span className="text-base font-semibold">Reserve</span>
+            </div>
+            <div className="h-px w-24 mx-auto bg-border mb-6" />
+            <h2 className="font-sans font-extrabold tracking-tight text-4xl md:text-5xl">Book your Hamilton van</h2>
             <p className="mt-4 text-muted-foreground">
               Live availability across our cargo vans, jumbo vans and minibus.
             </p>
@@ -323,14 +337,16 @@ const HamiltonVanHire = () => {
 
       {/* FAQ */}
       <section className="container mx-auto px-6 pb-24">
-        <p className="text-sm tracking-[0.25em] uppercase text-muted-foreground mb-4">
-          Questions
-        </p>
-        <h2 className="font-serif text-4xl md:text-5xl mb-10">Van hire Hamilton FAQ</h2>
+        <div className="flex items-center gap-3 mb-3">
+          <GraduationCap className="h-5 w-5 text-primary" />
+          <span className="text-base font-semibold">Questions</span>
+        </div>
+        <div className="h-px w-full bg-border mb-8" />
+        <h2 className="font-sans font-extrabold tracking-tight text-4xl md:text-5xl mb-10">Van hire Hamilton FAQ</h2>
         <dl className="divide-y divide-border border-y border-border">
           {faqJsonLd.mainEntity.map((q) => (
             <div key={q.name} className="py-6 grid md:grid-cols-3 gap-6">
-              <dt className="font-serif text-xl">{q.name}</dt>
+              <dt className="font-sans font-bold text-xl tracking-tight">{q.name}</dt>
               <dd className="md:col-span-2 text-muted-foreground">{q.acceptedAnswer.text}</dd>
             </div>
           ))}
