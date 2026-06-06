@@ -10,7 +10,7 @@ const Hero = () => {
       {/* Mobile-optimized hero image with responsive srcset */}
       <img
         src={heroImage}
-        alt="Car rental in New Zealand - scenic drive around Lake Taupo during summer"
+        alt="Car rental in New Zealand - scenic mountain drive through snow-capped alpine roads"
         className="hero-image"
         width="1920"
         height="960"
