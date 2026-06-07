@@ -91,7 +91,7 @@ const Index = () => {
               <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
                 <MapPin className="w-6 h-6 text-primary" />
               </div>
-              <div className="text-2xl font-bold text-foreground mb-1">6 Locations</div>
+              <div className="text-2xl font-bold text-foreground mb-1">7 Locations</div>
               <div className="text-sm text-muted-foreground">Across NZ</div>
             </div>
             
