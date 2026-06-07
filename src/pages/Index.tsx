@@ -67,52 +67,60 @@ const Index = () => {
       
       
       {/* Trust Strip */}
-      <section className="section-padding bg-gradient-to-b from-background to-muted/30">
-        <div className="container mx-auto container-padding">
-          <div className="text-center mb-8">
+      <section className="section-padding bg-gradient-to-b from-background to-muted/20">
+        <div className="container mx-auto container-padding max-w-6xl">
+          <div className="text-center mb-12">
             <h2 className="gradient-text text-balance mb-4">Why Kiwis Trust James Blond</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Reliable car, van, truck and minibus hire across New Zealand since 2004.
+              Trusted rental solutions for every journey since 2004.
             </p>
           </div>
-          
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto mb-8">
-            <div className="card-elegant p-6 text-center">
-              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                <CalendarClock className="w-6 h-6 text-primary" />
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {/* Hero stat — 100k customers */}
+            <div className="md:col-span-2 bg-primary rounded-3xl p-10 text-primary-foreground flex flex-col justify-between shadow-2xl shadow-primary/20 hover:-translate-y-1 transition-all duration-300 min-h-[260px]">
+              <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center">
+                <Users className="w-6 h-6 text-primary-foreground/90" />
               </div>
-              <div className="text-2xl font-bold text-foreground mb-1">Since 2004</div>
-              <div className="text-sm text-muted-foreground">20+ years of experience</div>
+              <div className="mt-12">
+                <div className="text-5xl md:text-6xl font-black mb-2 tracking-tight">100,000+</div>
+                <div className="text-primary-foreground/80 text-lg">Happy customers served across New Zealand</div>
+              </div>
             </div>
-            
-            <div className="card-elegant p-6 text-center">
-              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Users className="w-6 h-6 text-primary" />
+
+            {/* Since 2004 */}
+            <div className="bg-muted/40 rounded-3xl p-8 flex flex-col justify-between border border-border/60 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+              <div className="text-primary font-bold text-xs tracking-widest uppercase">Since</div>
+              <div className="mt-8">
+                <div className="text-4xl font-black text-foreground">2004</div>
+                <div className="text-muted-foreground mt-1 italic">20 Years Experience</div>
               </div>
-              <div className="text-2xl font-bold text-foreground mb-1">100,000+</div>
-              <div className="text-sm text-muted-foreground">Happy customers</div>
             </div>
-            
-            <div className="card-elegant p-6 text-center">
-              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                <MapPin className="w-6 h-6 text-primary" />
+
+            {/* 7 Locations */}
+            <div className="bg-muted/40 rounded-3xl p-8 flex flex-col justify-between border border-border/60 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+              <div className="text-primary font-bold text-xs tracking-widest uppercase">Network</div>
+              <div className="mt-8">
+                <div className="text-4xl font-black text-foreground">7</div>
+                <div className="text-muted-foreground mt-1 italic">Locations Across NZ</div>
               </div>
-              <div className="text-2xl font-bold text-foreground mb-1">7 Locations</div>
-              <div className="text-sm text-muted-foreground">Across NZ</div>
             </div>
-            
-            <div className="card-elegant p-6 text-center">
-              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Crown className="w-6 h-6 text-primary" />
+
+            {/* Premium service wide */}
+            <div className="md:col-span-2 bg-primary/10 rounded-3xl p-8 flex items-center justify-between shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 border border-primary/15">
+              <div className="max-w-[70%]">
+                <div className="text-2xl font-bold text-primary">Premium Service</div>
+                <div className="text-primary/70 mt-2">Exceptional support and a modern fleet for every Kiwi journey.</div>
               </div>
-              <div className="text-2xl font-bold text-foreground mb-1">Premium</div>
-              <div className="text-sm text-muted-foreground">Quality fleet</div>
+              <div className="h-20 w-20 bg-background rounded-full flex items-center justify-center shadow-lg shrink-0">
+                <Crown className="w-9 h-9 text-primary" />
+              </div>
             </div>
           </div>
-          
-          <div className="text-center">
-            <Link 
-              to="/about" 
+
+          <div className="text-center mt-10">
+            <Link
+              to="/about"
               className="inline-flex items-center gap-2 text-primary hover:text-primary/80 font-medium transition-colors"
             >
               Learn more about us
