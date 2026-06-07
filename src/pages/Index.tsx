@@ -91,7 +91,7 @@ const Index = () => {
               <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
                 <MapPin className="w-6 h-6 text-primary" />
               </div>
-              <div className="text-2xl font-bold text-foreground mb-1">4 Locations</div>
+              <div className="text-2xl font-bold text-foreground mb-1">6 Locations</div>
               <div className="text-sm text-muted-foreground">Across NZ</div>
             </div>
             
@@ -198,6 +198,36 @@ const Index = () => {
               <p className="text-muted-foreground mb-6">Explore the capital city with our Wellington branch</p>
               <Button variant="outline" asChild>
                 <Link to="/car-rental-wellington-new-zealand">View Details</Link>
+              </Button>
+            </div>
+            <div className="card-feature text-center group">
+              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14,2 14,8 20,8"/><path d="M12 18v-4"/><path d="M8 12v6"/><path d="M16 16v2"/></svg>
+              </div>
+              <h3 className="text-foreground mb-3">Christchurch Airport</h3>
+              <p className="text-muted-foreground mb-6">Pick up your rental right at Christchurch International Airport</p>
+              <Button variant="outline" asChild>
+                <Link to="/airport/christchurch">View Details</Link>
+              </Button>
+            </div>
+            <div className="card-feature text-center group">
+              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+              </div>
+              <h3 className="text-foreground mb-3">Christchurch Central</h3>
+              <p className="text-muted-foreground mb-6">Car, van and truck hire in the heart of Christchurch city</p>
+              <Button variant="outline" asChild>
+                <Link to="/contact/christchurch-central">View Details</Link>
+              </Button>
+            </div>
+            <div className="card-feature text-center group">
+              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+              </div>
+              <h3 className="text-foreground mb-3">Hamilton</h3>
+              <p className="text-muted-foreground mb-6">Affordable van and truck hire serving the Waikato region</p>
+              <Button variant="outline" asChild>
+                <Link to="/contact/hamilton">View Details</Link>
               </Button>
             </div>
             <div className="card-feature text-center group">
