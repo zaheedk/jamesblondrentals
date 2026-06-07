@@ -494,7 +494,7 @@ const SearchForm = ({
 
             {/* Pick-up Date and Time */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-              <div className="space-y-4 bg-slate-50/60 p-4 rounded-2xl border border-slate-100">
+              <div className="space-y-4 bg-sky-50/60 p-4 rounded-2xl border border-sky-100">
                 <div className="space-y-2">
                 <DateSelect
                   id="pickup-date"
@@ -520,7 +520,7 @@ const SearchForm = ({
                 </div>
               </div>
 
-              <div className="space-y-4 bg-slate-50/60 p-4 rounded-2xl border border-slate-100">
+              <div className="space-y-4 bg-sky-50/60 p-4 rounded-2xl border border-sky-100">
                 <div className="space-y-2">
                 <DateSelect
                   id="dropoff-date"
@@ -654,7 +654,7 @@ const SearchForm = ({
 
             <Button
               type="submit"
-              className="w-full h-auto py-5 bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-bold text-lg rounded-2xl shadow-lg shadow-yellow-400/30 active:scale-[0.98] transition-all focus-visible:ring-4 focus-visible:ring-yellow-400/40"
+              className="w-full h-auto py-5 bg-sky-500 hover:bg-sky-600 text-white font-bold text-lg rounded-2xl shadow-lg shadow-sky-500/30 active:scale-[0.98] transition-all focus-visible:ring-4 focus-visible:ring-sky-500/40"
               disabled={isLoading || !pickupLocation || !pickupDate || !dropoffDate || !pickupTime || !dropoffTime}
             >
               {isLoading ? "Searching..." : "Search Available Vehicles →"}
