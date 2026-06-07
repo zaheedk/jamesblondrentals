@@ -463,7 +463,7 @@ const SearchForm = ({
       <CardContent className="p-6 md:p-10">
         <div className="mb-8 text-center">
           <h3 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight italic">Find Your Vehicle</h3>
-          <div className="h-1 w-12 bg-yellow-400 mx-auto mt-2 rounded-full"></div>
+          <div className="h-1 w-12 bg-sky-500 mx-auto mt-2 rounded-full"></div>
         </div>
 
         <form onSubmit={handleSearch}>
