@@ -5,15 +5,8 @@ import FeaturedVehicles from "@/components/home/FeaturedVehicles";
 import CustomerReviews from "@/components/home/CustomerReviews";
 import { format } from "date-fns";
 import { useState, useEffect } from "react";
-import { Truck, ChevronDown, CalendarClock, Users, MapPin, Crown, ArrowRight } from "lucide-react";
+import { ChevronDown, CalendarClock, Users, MapPin, Crown, ArrowRight } from "lucide-react";
 import { Helmet } from "react-helmet-async";
-import truckPromoBanner from "@/assets/truck-promo-banner.jpg";
-import perfectVehicleImage from "@/assets/perfect-vehicle-match-fleet.jpg";
-import convenientLocationImage from "@/assets/convenient-locations-airport.jpg";
-import minivansGroupImage from "@/assets/wellington-12-seat-van-family-group.jpg";
-import familyVehicleImage from "@/assets/auckland-7-seater-suv-family.jpg";
-import ecoFriendlyImage from "@/assets/eco-hybrid-car-nz-landscape.jpg";
-import suvAdventureImage from "@/assets/awd-suv-nz-mountain-adventure.jpg";
 import {
   Accordion,
   AccordionContent,
