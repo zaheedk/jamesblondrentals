@@ -232,21 +232,13 @@ const Index = () => {
             </div>
             <div className="card-feature text-center group">
               <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
               </div>
-              <h3 className="text-foreground mb-3">Specialized Rentals</h3>
-              <p className="text-muted-foreground mb-6">Purpose-built vehicles for every need</p>
-              <div className="flex flex-col gap-2">
-                <Button variant="outline" asChild size="sm">
-                  <Link to="/west-auckland-truck-rentals-hire">West Auckland Trucks</Link>
-                </Button>
-                <Button variant="outline" asChild size="sm">
-                  <Link to="/truck-hire-wellington">Wellington Trucks</Link>
-                </Button>
-                <Button variant="outline" asChild size="sm">
-                  <Link to="/wellington-cargo-van-rentals-hire">Wellington Cargo Vans</Link>
-                </Button>
-              </div>
+              <h3 className="text-foreground mb-3">West Auckland</h3>
+              <p className="text-muted-foreground mb-6">Car, van and truck hire from our West Auckland branch</p>
+              <Button variant="outline" asChild>
+                <Link to="/west-auckland-truck-rentals-hire">View Details</Link>
+              </Button>
             </div>
           </div>
         </div>
