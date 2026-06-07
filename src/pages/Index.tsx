@@ -5,7 +5,7 @@ import FeaturedVehicles from "@/components/home/FeaturedVehicles";
 import CustomerReviews from "@/components/home/CustomerReviews";
 import { format } from "date-fns";
 import { useState, useEffect } from "react";
-import { Truck, ChevronDown } from "lucide-react";
+import { Truck, ChevronDown, CalendarClock, Users, MapPin, Crown, ArrowRight } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import truckPromoBanner from "@/assets/truck-promo-banner.jpg";
 import perfectVehicleImage from "@/assets/perfect-vehicle-match-fleet.jpg";
@@ -67,60 +67,58 @@ const Index = () => {
       <FeaturedVehicles />
       
       
-      {/* About James Blond Section */}
+      {/* Trust Strip */}
       <section className="section-padding bg-gradient-to-b from-background to-muted/30">
         <div className="container mx-auto container-padding">
-          <div className="text-center mb-12">
-            <h2 className="gradient-text text-balance mb-4">About James Blond Rentals</h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-primary to-primary/60 mx-auto rounded-full"></div>
+          <div className="text-center mb-8">
+            <h2 className="gradient-text text-balance mb-4">Why Kiwis Trust James Blond</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Reliable car, van, truck and minibus hire across New Zealand since 2004.
+            </p>
           </div>
-          <div className="max-w-4xl mx-auto space-y-8 text-muted-foreground">
-            <div className="card-elegant p-8 text-center">
-              <p className="text-lg leading-relaxed">
-                James Blond Rentals, established in <span className="font-semibold text-primary">2004</span>, has evolved into one of the leading car rental companies, 
-                known for its commitment to excellence and customer satisfaction. With a client base exceeding <span className="font-semibold text-primary">half a million</span> 
-                satisfied customers, James Blond Rentals offers a diverse and expansive fleet, including premium vehicles 
-                and executive-class options to cater to discerning travellers.
-              </p>
-            </div>
-            <div className="grid md:grid-cols-2 gap-8">
-              <div className="card-elegant overflow-hidden">
-                <img 
-                  src={perfectVehicleImage} 
-                  alt="Diverse fleet of rental vehicles including cars, vans and minibuses at James Blond Rentals Auckland" 
-                  className="w-full h-48 object-cover"
-                  loading="lazy"
-                />
-                <div className="p-6">
-                  <h3 className="text-foreground mb-4">Perfect Vehicle Match</h3>
-                  <p>
-                    Whether you're seeking an affordable rental or a luxurous driving experience, James Blond Rentals ensures 
-                    you'll find the perfect vehicle for your needs.
-                  </p>
-                </div>
+          
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto mb-8">
+            <div className="card-elegant p-6 text-center">
+              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                <CalendarClock className="w-6 h-6 text-primary" />
               </div>
-              <div className="card-elegant overflow-hidden">
-                <img 
-                  src={convenientLocationImage} 
-                  alt="Convenient rental car pickup location at Auckland Airport domestic and international terminals" 
-                  className="w-full h-48 object-cover"
-                  loading="lazy"
-                />
-                <div className="p-6">
-                  <h3 className="text-foreground mb-4">Convenient Locations</h3>
-                  <p>
-                    With convenient locations, including service from both domestic and international terminals at Auckland Airport, 
-                    the company provides seamless access to top-quality rental options.
-                  </p>
-                </div>
+              <div className="text-2xl font-bold text-foreground mb-1">Since 2004</div>
+              <div className="text-sm text-muted-foreground">20+ years of experience</div>
+            </div>
+            
+            <div className="card-elegant p-6 text-center">
+              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Users className="w-6 h-6 text-primary" />
               </div>
+              <div className="text-2xl font-bold text-foreground mb-1">100,000+</div>
+              <div className="text-sm text-muted-foreground">Happy customers</div>
             </div>
-            <div className="text-center">
-              <p className="text-lg font-medium text-foreground">
-                James Blond Rentals is dedicated to delivering the very best in commercial and car rental experiences, 
-                combining global reach with unparalleled quality and service.
-              </p>
+            
+            <div className="card-elegant p-6 text-center">
+              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                <MapPin className="w-6 h-6 text-primary" />
+              </div>
+              <div className="text-2xl font-bold text-foreground mb-1">4 Locations</div>
+              <div className="text-sm text-muted-foreground">Across NZ</div>
             </div>
+            
+            <div className="card-elegant p-6 text-center">
+              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Crown className="w-6 h-6 text-primary" />
+              </div>
+              <div className="text-2xl font-bold text-foreground mb-1">Premium</div>
+              <div className="text-sm text-muted-foreground">Quality fleet</div>
+            </div>
+          </div>
+          
+          <div className="text-center">
+            <Link 
+              to="/about" 
+              className="inline-flex items-center gap-2 text-primary hover:text-primary/80 font-medium transition-colors"
+            >
+              Learn more about us
+              <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
         </div>
       </section>
