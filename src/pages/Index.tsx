@@ -116,136 +116,59 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Our Fleet Section */}
+      {/* Popular Vehicle Types */}
       <section className="section-padding bg-muted/40">
         <div className="container mx-auto container-padding">
-          <div className="text-center mb-12">
-            <h2 className="text-balance mb-4">Our Fleet</h2>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              Looking for the perfect vehicle for your next journey? Our extensive range of car rentals has something for every need. 
-              Whether you're travelling with a large group or need a vehicle for a family outing, we've got you covered.
+          <div className="text-center mb-8">
+            <h2 className="text-balance mb-4">Popular Vehicle Types</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Find the right vehicle for every job — from compact city cars to heavy-duty trucks and group minibuses.
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto mb-12">
-            <div className="card-feature overflow-hidden group">
-              <img 
-                src={minivansGroupImage} 
-                alt="12-seater minibus rental Wellington with family group near Parliament building for group travel" 
-                className="w-full h-48 object-cover"
-                loading="lazy"
-              />
-              <div className="p-6">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors flex-shrink-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.5"/><path d="M2 7h8"/><path d="M2 17h8"/><path d="M22 17h-4"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>
-                  </div>
-                  <h3 className="text-foreground">Minivans for Groups</h3>
-                </div>
-                <p className="text-muted-foreground mb-4">
-                  If you need space for a big group, consider our 10-seater minivan rental or our 12-seater minivan rental options. 
-                  These spacious vehicles are ideal for family trips, group vacations, or even business events where comfort and 
-                  room are essential.
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  <Button variant="outline" asChild size="sm">
-                    <Link to="/fleet/minibus/10-seat-minibus">10-Seater Minivan</Link>
-                  </Button>
-                  <Button variant="outline" asChild size="sm">
-                    <Link to="/fleet/minibus/12-seat-minibus">12-Seater Minivan</Link>
-                  </Button>
-                </div>
-              </div>
-            </div>
-            
-            <div className="card-feature overflow-hidden group">
-              <img 
-                src={familyVehicleImage} 
-                alt="7-seater SUV rental Auckland with Sky Tower view perfect for family car hire New Zealand" 
-                className="w-full h-48 object-cover"
-                loading="lazy"
-              />
-              <div className="p-6">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors flex-shrink-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9L18 10h-1"/><path d="M20 17v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2"/><path d="M7 17h6"/><circle cx="6.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
-                  </div>
-                  <h3 className="text-foreground">Family Vehicles</h3>
-                </div>
-                <p className="text-muted-foreground mb-4">
-                  For smaller groups or families, our 7-seater car hire options are perfect. 
-                  These vehicles offer ample room without compromising on style or efficiency.
-                </p>
-                <Button variant="outline" asChild size="sm">
-                  <Link to="/fleet/cars/premium-seven-seat-suv">7-Seater SUVs</Link>
-                </Button>
-              </div>
-            </div>
-            
-            <div className="card-feature overflow-hidden group">
-              <img 
-                src={ecoFriendlyImage} 
-                alt="Eco-friendly hybrid car rental New Zealand with low emissions for sustainable travel" 
-                className="w-full h-48 object-cover"
-                loading="lazy"
-              />
-              <div className="p-6">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors flex-shrink-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>
-                  </div>
-                  <h3 className="text-foreground">Eco-Friendly Options</h3>
-                </div>
-                <p className="text-muted-foreground mb-4">
-                  Looking to reduce your carbon footprint? We offer hybrid cars for rent, combining fuel efficiency with 
-                  lower emissions. Perfect for eco-conscious drivers.
-                </p>
-                <Button variant="outline" asChild size="sm">
-                  <Link to="/fleet/cars">Hybrid Cars</Link>
-                </Button>
-              </div>
-            </div>
-            
-            <div className="card-feature overflow-hidden group">
-              <img 
-                src={suvAdventureImage} 
-                alt="AWD SUV rental New Zealand mountain adventure driving on alpine roads and scenic terrain" 
-                className="w-full h-48 object-cover"
-                loading="lazy"
-              />
-              <div className="p-6">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors flex-shrink-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/><path d="m10 15 5-3-5-3z"/></svg>
-                  </div>
-                  <h3 className="text-foreground">SUVs & Adventure</h3>
-                </div>
-                <p className="text-muted-foreground mb-4">
-                  Our SUV rentals provide both power and space, perfect for tackling different terrains and ensuring 
-                  a comfortable ride on any adventure.
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  <Button variant="outline" asChild size="sm">
-                    <Link to="/fleet/cars/premium-2wd-suv">2WD SUVs</Link>
-                  </Button>
-                  <Button variant="outline" asChild size="sm">
-                    <Link to="/fleet/cars/premium-awd-suv">AWD SUVs</Link>
-                  </Button>
-                </div>
-              </div>
-            </div>
+          <div className="flex flex-wrap justify-center gap-3 max-w-4xl mx-auto mb-8">
+            <Button variant="outline" size="sm" asChild>
+              <Link to="/fleet/minibus/10-seat-minibus">10-Seater Minibus</Link>
+            </Button>
+            <Button variant="outline" size="sm" asChild>
+              <Link to="/fleet/minibus/12-seat-minibus">12-Seater Minibus</Link>
+            </Button>
+            <Button variant="outline" size="sm" asChild>
+              <Link to="/fleet/cars/premium-seven-seat-suv">7-Seater SUV</Link>
+            </Button>
+            <Button variant="outline" size="sm" asChild>
+              <Link to="/fleet/cars/premium-2wd-suv">2WD SUV</Link>
+            </Button>
+            <Button variant="outline" size="sm" asChild>
+              <Link to="/fleet/cars/premium-awd-suv">AWD SUV</Link>
+            </Button>
+            <Button variant="outline" size="sm" asChild>
+              <Link to="/fleet/cars">Compact Car</Link>
+            </Button>
+            <Button variant="outline" size="sm" asChild>
+              <Link to="/fleet/cars">Hybrid Car</Link>
+            </Button>
+            <Button variant="outline" size="sm" asChild>
+              <Link to="/fleet/trucks">2-Tonne Truck</Link>
+            </Button>
+            <Button variant="outline" size="sm" asChild>
+              <Link to="/fleet/trucks">3-Tonne Truck</Link>
+            </Button>
+            <Button variant="outline" size="sm" asChild>
+              <Link to="/fleet/utes">Hilux Ute</Link>
+            </Button>
+            <Button variant="outline" size="sm" asChild>
+              <Link to="/fleet/trailers">Cage Trailer</Link>
+            </Button>
+            <Button variant="outline" size="sm" asChild>
+              <Link to="/fleet/trailers">Furniture Trailer</Link>
+            </Button>
           </div>
           
           <div className="text-center">
-            <div className="card-elegant p-8 max-w-3xl mx-auto">
-              <p className="text-lg text-muted-foreground mb-6">
-                No matter what your transportation needs are, our diverse fleet of vehicles ensures you'll find the perfect match. 
-                Book your rental today and enjoy a stress-free journey with a vehicle that meets all your requirements.
-              </p>
-              <Button asChild size="lg" className="min-w-48">
-                <Link to="/vehicles">View All Vehicles</Link>
-              </Button>
-            </div>
+            <Button asChild size="lg" className="min-w-48">
+              <Link to="/vehicles">View All Vehicles</Link>
+            </Button>
           </div>
         </div>
       </section>
