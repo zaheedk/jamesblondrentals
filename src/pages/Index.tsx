@@ -18,6 +18,12 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import aucklandAirportImg from "@/assets/locations/auckland-airport.jpg";
+import wellingtonCityImg from "@/assets/locations/wellington-city.jpg";
+import christchurchAirportImg from "@/assets/locations/christchurch-airport.jpg";
+import christchurchCentralImg from "@/assets/locations/christchurch-central.jpg";
+import hamiltonImg from "@/assets/locations/hamilton.jpg";
+import westAucklandImg from "@/assets/locations/west-auckland.jpg";
 
 
 const Index = () => {
