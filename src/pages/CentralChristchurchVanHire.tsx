@@ -85,6 +85,14 @@ const CentralChristchurchVanHire = () => {
           text: 'Cargo van hire from our Moorhouse Avenue branch starts from $79 per day for short hires, with cheaper weekly and monthly rates available.',
         },
       },
+      {
+        '@type': 'Question',
+        name: 'Do you also offer truck and car hire from the same branch?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Yes. We also have moving trucks and passenger cars available for hire from 515 Moorhouse Avenue. Browse our central Christchurch truck hire and car hire pages for details.',
+        },
+      },
     ],
   };
 
@@ -112,6 +120,12 @@ const CentralChristchurchVanHire = () => {
                 Whether it's a one-off furniture run or a five-day courier contract, our
                 Moorhouse Avenue branch keeps a tidy line-up of cargo vans waiting —
                 automatic, easy to drive, and priced honestly.
+              </p>
+              <p className="mt-4 text-sm text-muted-foreground max-w-xl">
+                Also available from this branch:{' '}
+                <Link to="/central-christchurch-truck-hire" className="underline hover:text-primary">truck hire</Link>
+                {' '}and{' '}
+                <Link to="/central-christchurch-car-hire" className="underline hover:text-primary">car hire</Link>.
               </p>
               <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
                 <Button asChild size="lg" className="rounded-full px-7">

@@ -85,6 +85,14 @@ const CentralChristchurchCarHire = () => {
           text: 'Most weekly rates include unlimited kilometres within the South Island. Daily rates include a generous distance allowance — confirm at booking.',
         },
       },
+      {
+        '@type': 'Question',
+        name: 'Do you also offer van and truck hire from the same branch?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Yes. We also have cargo vans and moving trucks available for hire from 515 Moorhouse Avenue. Browse our central Christchurch van hire and truck hire pages for details.',
+        },
+      },
     ],
   };
 
@@ -112,6 +120,12 @@ const CentralChristchurchCarHire = () => {
                 From a weekend run to Akaroa to a fortnight tracing the West Coast, our
                 Moorhouse Avenue branch keeps a quietly excellent line-up of late-model
                 cars and SUVs — booked online, ready to drive.
+              </p>
+              <p className="mt-4 text-sm text-muted-foreground max-w-xl">
+                Also available from this branch:{' '}
+                <Link to="/central-christchurch-van-hire" className="underline hover:text-primary">van hire</Link>
+                {' '}and{' '}
+                <Link to="/central-christchurch-truck-hire" className="underline hover:text-primary">truck hire</Link>.
               </p>
               <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
                 <Button asChild size="lg" className="rounded-full px-7">
