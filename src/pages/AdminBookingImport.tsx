@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from "react";
-import { Helmet } from "react-helmet-async";
+import PageSEO from '@/components/PageSEO';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -470,9 +470,11 @@ const AdminBookingImport = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Import Bookings | Admin | James Blond</title>
-      </Helmet>
+      <PageSEO
+        title="Import Bookings | Admin | James Blond"
+        description="Upload an RCM booking export CSV file to import bookings into the database."
+        noindex
+      />
 
       <div className="min-h-screen bg-muted/30 py-8 px-4">
         <div className="max-w-3xl mx-auto space-y-6">

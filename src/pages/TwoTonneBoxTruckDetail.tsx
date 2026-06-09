@@ -3,15 +3,16 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
+import PageSEO from '@/components/PageSEO';
 
 const TwoTonneBoxTruckDetail = () => {
   return (
     <div className="container mx-auto px-4 py-10">
-      <Helmet>
-        <title>2 Tonne Box Truck (9m³) Rental | James Blond Rentals</title>
-        <meta name="description" content="Hire a reliable 2 tonne box truck with 9m³ capacity. Ideal for small moves and deliveries. Book online with James Blond Rentals." />
-      </Helmet>
+      <PageSEO
+        title="2 Tonne Box Truck (9m³) Rental | James Blond Rentals"
+        description="Hire a reliable 2 tonne box truck with 9m³ capacity. Ideal for small moves and deliveries. Book online with James Blond Rentals."
+        canonical="/fleet/trucks/2-tonne-box-9m3"
+      />
       <div className="mb-6">
         <h1 className="text-3xl font-bold mb-2">Reliable & Spacious – 2 Tonne Box Truck (9m³) Rental</h1>
         <div className="flex gap-2">

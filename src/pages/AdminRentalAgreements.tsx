@@ -40,10 +40,14 @@ const AdminRentalAgreements = () => {
   return (
     <>
       <Helmet>
-        <title>Rental Agreements | Admin | James Blond</title>
         <link rel="manifest" href="/manifest-ra.json" />
         <meta name="apple-mobile-web-app-title" content="JB RA" />
       </Helmet>
+      <PageSEO
+        title="Rental Agreements | Admin | James Blond"
+        description="Manage rental agreements for James Blond Rentals."
+        noindex
+      />
 
       <div className="min-h-screen bg-muted/30 py-8 px-4">
         <div className="max-w-3xl mx-auto space-y-6">

@@ -314,10 +314,13 @@ const VehiclePhotos = () => {
   return (
     <>
       <Helmet>
-        <title>Vehicle Photos | James Blond</title>
         <link rel="manifest" href="/manifest.json" />
-        <meta name="robots" content="noindex, nofollow" />
       </Helmet>
+      <PageSEO
+        title="Vehicle Photos | James Blond"
+        description="Capture and upload vehicle condition photos for James Blond Rentals."
+        noindex
+      />
 
       {cameraOpen && (
         <VehicleCamera

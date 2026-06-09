@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import SignatureCanvas from "react-signature-canvas";
-import { Helmet } from "react-helmet-async";
+import PageSEO from '@/components/PageSEO';
 import { rcmApi } from "@/lib/api/rcm-api";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -1258,9 +1258,11 @@ const RentalAgreement = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Rental Agreement | James Blond</title>
-      </Helmet>
+      <PageSEO
+        title="Rental Agreement | James Blond"
+        description="Review and sign your James Blond vehicle rental agreement."
+        noindex
+      />
 
       <div className="min-h-screen bg-muted/30 py-8 px-4">
         <div className="max-w-4xl mx-auto">
