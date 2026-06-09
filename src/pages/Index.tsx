@@ -6,7 +6,7 @@ import CustomerReviews from "@/components/home/CustomerReviews";
 import { format } from "date-fns";
 import { useState, useEffect } from "react";
 import { ChevronDown, CalendarClock, Users, MapPin, Crown, ArrowRight } from "lucide-react";
-import { Helmet } from "react-helmet-async";
+import PageSEO from '@/components/PageSEO';
 import {
   Accordion,
   AccordionContent,
@@ -54,10 +54,11 @@ const Index = () => {
 
   return (
     <div>
-      <Helmet>
-        <title>Low Cost Car, Van & Truck Hire New Zealand</title>
-        <meta name="description" content="Affordable car, van and truck hire in Auckland, Wellington and Christchurch. Book online with James Blond Rentals – no hidden fees, just trusted service." />
-      </Helmet>
+      <PageSEO
+        title="Low Cost Car, Van & Truck Hire New Zealand"
+        description="Affordable car, van and truck hire in Auckland, Wellington and Christchurch. Book online with James Blond Rentals – no hidden fees, just trusted service."
+        canonical="/"
+      />
       
       <Hero />
       

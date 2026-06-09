@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Helmet } from "react-helmet-async";
+import PageSEO from '@/components/PageSEO';
 import { supabase } from "@/integrations/supabase/client";
 import { useUserRole } from "@/hooks/use-user-role";
 import { useAuth } from "@/contexts/AuthContext";
@@ -450,9 +450,11 @@ const PhotoGallery = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Photo Gallery | James Blond</title>
-      </Helmet>
+      <PageSEO
+        title="Photo Gallery | James Blond"
+        description="Vehicle photo gallery for James Blond Rentals fleet."
+        noindex
+      />
 
       <div className="container mx-auto px-4 py-8 max-w-6xl">
         <div className="flex items-center justify-between mb-6">

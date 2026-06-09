@@ -18,7 +18,7 @@ import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/component
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { getCampaignCode } from "@/lib/utils";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
-import { Helmet } from "react-helmet-async";
+import PageSEO from '@/components/PageSEO';
 import BookingSteps from "@/components/booking/BookingSteps";
 import { parse, format, addDays } from "date-fns";
 
@@ -614,10 +614,11 @@ const Vehicles = () => {
 
   return (
     <main className="flex-grow">
-      <Helmet>
-        <title>Available Rental Vehicles | James Blond Rentals</title>
-        <meta name="description" content="Browse available cars, vans, trucks and utes for hire. Compare prices and book online with James Blond Rentals." />
-      </Helmet>
+      <PageSEO
+        title="Available Rental Vehicles | James Blond Rentals"
+        description="Browse available cars, vans, trucks and utes for hire. Compare prices and book online with James Blond Rentals."
+        canonical="/vehicles"
+      />
       <ExitIntentPopup />
       <BookingSteps currentStep={2} />
       <div className="bg-gray-50">

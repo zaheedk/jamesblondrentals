@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Helmet } from "react-helmet-async";
+import PageSEO from '@/components/PageSEO';
 import { supabase } from "@/integrations/supabase/client";
 import { useUserRole } from "@/hooks/use-user-role";
 import { useAuth } from "@/contexts/AuthContext";
@@ -314,10 +315,13 @@ const VehiclePhotos = () => {
   return (
     <>
       <Helmet>
-        <title>Vehicle Photos | James Blond</title>
         <link rel="manifest" href="/manifest.json" />
-        <meta name="robots" content="noindex, nofollow" />
       </Helmet>
+      <PageSEO
+        title="Vehicle Photos | James Blond"
+        description="Capture and upload vehicle condition photos for James Blond Rentals."
+        noindex
+      />
 
       {cameraOpen && (
         <VehicleCamera

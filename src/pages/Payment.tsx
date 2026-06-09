@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
+import PageSEO from '@/components/PageSEO';
 import { getBookingData, updateBookingData } from "@/lib/booking-session";
 import { updateBookingPaymentStatus } from "@/hooks/use-bookings";
 import { toast } from "sonner";
@@ -235,10 +235,11 @@ const Payment = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <Helmet>
-        <title>Secure Payment | James Blond Rentals</title>
-        <meta name="description" content="Complete your secure payment for your James Blond vehicle rental booking." />
-      </Helmet>
+      <PageSEO
+        title="Secure Payment | James Blond Rentals"
+        description="Complete your secure payment for your James Blond vehicle rental booking."
+        noindex
+      />
       <div className="max-w-4xl mx-auto flex flex-col items-center">
         <h1 className="text-3xl font-bold mb-6">Processing Payment</h1>
         
