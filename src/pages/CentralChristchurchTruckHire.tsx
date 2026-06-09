@@ -102,6 +102,7 @@ const CentralChristchurchTruckHire = () => {
         title="Central Christchurch Truck Hire | From $35/hr | James Blond"
         description="Truck hire in central Christchurch from 515 Moorhouse Avenue. 2-tonne and 3-tonne moving trucks with optional tail lifts. Book online from $35/hour."
         canonical="/central-christchurch-truck-hire"
+        ogImage="https://jamesblond.co.nz/lovable-uploads/b1bd35e2-4d58-4900-86c5-dfe61a852d78.png"
       />
       <JsonLd data={faqJsonLd} />
 

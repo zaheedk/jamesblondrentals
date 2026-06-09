@@ -102,6 +102,7 @@ const CentralChristchurchCarHire = () => {
         title="Central Christchurch Car Hire | From $49/day | James Blond"
         description="Car hire in central Christchurch from 515 Moorhouse Avenue. Economy, midsize, SUV and 7-seater rentals for city trips and South Island road trips."
         canonical="/central-christchurch-car-hire"
+        ogImage="https://jamesblond.co.nz/lovable-uploads/8d8b0a6f-91e1-4f8f-90b3-0a0b21b4d12c.png"
       />
       <JsonLd data={faqJsonLd} />
 

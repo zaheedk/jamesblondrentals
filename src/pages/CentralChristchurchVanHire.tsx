@@ -102,6 +102,7 @@ const CentralChristchurchVanHire = () => {
         title="Central Christchurch Van Hire | Cargo Vans from $79/day | James Blond"
         description="Cargo van hire in central Christchurch from 515 Moorhouse Avenue. Standard, premium and jumbo vans for moves, trades and couriers."
         canonical="/central-christchurch-van-hire"
+        ogImage="https://jamesblond.co.nz/lovable-uploads/2c63bb8e-da27-4b78-87cd-9fbf28e2bf45.png"
       />
       <JsonLd data={faqJsonLd} />
 
