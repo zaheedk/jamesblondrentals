@@ -164,6 +164,15 @@ const Footer = () => {
               <li>
                 <Link to="/hamilton-van-hire" className="text-gray-300 hover:text-white transition-colors text-sm">Hamilton Van Hire</Link>
               </li>
+              <li>
+                <Link to="/central-christchurch-truck-hire" className="text-gray-300 hover:text-white transition-colors text-sm">Christchurch Truck Hire</Link>
+              </li>
+              <li>
+                <Link to="/central-christchurch-van-hire" className="text-gray-300 hover:text-white transition-colors text-sm">Christchurch Van Hire</Link>
+              </li>
+              <li>
+                <Link to="/central-christchurch-car-hire" className="text-gray-300 hover:text-white transition-colors text-sm">Christchurch Car Hire</Link>
+              </li>
             </ul>
           </div>
         </div>
