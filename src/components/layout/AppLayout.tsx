@@ -7,6 +7,7 @@ import ChatWidget from '@/components/chat/ChatWidget';
 import { ResourcePreloader } from '@/components/ResourcePreloader';
 import PromoBanner from './PromoBanner';
 import EarlyWeekBanner from './EarlyWeekBanner';
+import BreadcrumbsJsonLd from '@/components/BreadcrumbsJsonLd';
 
 const CHROMELESS_ROUTES = ['/admin/rental-agreement', '/photos', '/photo-gallery', '/ra'];
 
@@ -15,11 +16,17 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
   const isChromeless = CHROMELESS_ROUTES.some(route => location.pathname.startsWith(route));
 
   if (isChromeless) {
-    return <div className="min-h-screen bg-background">{children}</div>;
+    return (
+      <div className="min-h-screen bg-background">
+        <BreadcrumbsJsonLd />
+        {children}
+      </div>
+    );
   }
 
   return (
     <div className="min-h-screen bg-background">
+      <BreadcrumbsJsonLd />
       <ResourcePreloader />
       <PromoBanner />
       <EarlyWeekBanner />
