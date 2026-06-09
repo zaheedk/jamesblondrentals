@@ -117,6 +117,42 @@
     <!-- Lucky Orange -->
     <script defer src="https://tools.luckyorange.com/core/lo.js?site-id=8582da9b"></script>
     <!-- End Lucky Orange -->
+
+    <!-- Sitewide JSON-LD: Organization + WebSite -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://jamesblond.co.nz/#organization",
+          "name": "James Blond Rentals",
+          "url": "https://jamesblond.co.nz",
+          "logo": "https://jamesblond.co.nz/lovable-uploads/ee23bb91-cc75-4cf1-a745-f44e4a4bbb12.png",
+          "image": "https://jamesblond.co.nz/lovable-uploads/f40953dd-07c7-405f-a446-bbb6de3b2aac.png",
+          "description": "Affordable car, van, truck and minibus hire across Auckland, Wellington and Christchurch.",
+          "telephone": "+64800525663",
+          "email": "info@jamesblond.co.nz",
+          "areaServed": "NZ",
+          "sameAs": [
+            "https://www.facebook.com/jamesblondrentals"
+          ]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://jamesblond.co.nz/#website",
+          "url": "https://jamesblond.co.nz",
+          "name": "James Blond Rentals",
+          "publisher": { "@id": "https://jamesblond.co.nz/#organization" },
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://jamesblond.co.nz/vehicles?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        }
+      ]
+    }
+    </script>
     
   </head>
 
