@@ -85,6 +85,14 @@ const CentralChristchurchTruckHire = () => {
           text: 'Yes. One-way and long-distance moves across Canterbury and the South Island are available on request when booking.',
         },
       },
+      {
+        '@type': 'Question',
+        name: 'Do you also offer van and car hire from the same branch?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Yes. We also have a range of cargo vans and passenger cars available for hire from 515 Moorhouse Avenue. Browse our central Christchurch van hire and car hire pages for details.',
+        },
+      },
     ],
   };
 
@@ -112,6 +120,12 @@ const CentralChristchurchTruckHire = () => {
                 Moving across the city or out to the Plains? Our Moorhouse Avenue branch
                 keeps a quietly excellent fleet of trucks ready to go — booked online,
                 picked up in minutes, priced by the hour.
+              </p>
+              <p className="mt-4 text-sm text-muted-foreground max-w-xl">
+                Also available from this branch:{' '}
+                <Link to="/central-christchurch-van-hire" className="underline hover:text-primary">van hire</Link>
+                {' '}and{' '}
+                <Link to="/central-christchurch-car-hire" className="underline hover:text-primary">car hire</Link>.
               </p>
               <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
                 <Button asChild size="lg" className="rounded-full px-7">
