@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Helmet } from "react-helmet-async";
+import PageSEO from '@/components/PageSEO';
 import { supabase } from "@/integrations/supabase/client";
 import { useUserRole } from "@/hooks/use-user-role";
 import { useAuth } from "@/contexts/AuthContext";
