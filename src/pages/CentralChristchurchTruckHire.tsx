@@ -113,6 +113,12 @@ const CentralChristchurchTruckHire = () => {
                 keeps a quietly excellent fleet of trucks ready to go — booked online,
                 picked up in minutes, priced by the hour.
               </p>
+              <p className="mt-4 text-sm text-muted-foreground max-w-xl">
+                Also available from this branch:{' '}
+                <Link to="/central-christchurch-van-hire" className="underline hover:text-primary">van hire</Link>
+                {' '}and{' '}
+                <Link to="/central-christchurch-car-hire" className="underline hover:text-primary">car hire</Link>.
+              </p>
               <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
                 <Button asChild size="lg" className="rounded-full px-7">
                   <a href="#booking">Check availability</a>
