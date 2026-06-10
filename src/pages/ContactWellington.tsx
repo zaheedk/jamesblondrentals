@@ -4,12 +4,43 @@ import { MapPin, Phone, Mail, Facebook } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import ContactForm from '@/components/ContactForm';
 import PageSEO from '@/components/PageSEO';
+import JsonLd from '@/components/JsonLd';
 
 
 const ContactWellington = () => {
   return (
     <div className="container mx-auto px-4 py-12">
-      <PageSEO title="Contact Wellington – James Blond Rentals" description="Contact our Wellington branch for car, van and truck rentals. Find our address, phone number, opening hours and directions." canonical="/contact/wellington" />
+    <PageSEO title="Contact Wellington – James Blond Rentals" description="Contact our Wellington branch for car, van and truck rentals. Find our address, phone number, opening hours and directions." canonical="/contact/wellington" />
+    <JsonLd
+      data={{
+        "@context": "https://schema.org",
+        "@type": "AutoRental",
+        name: "James Blond Rentals — Wellington",
+        image: "https://jamesblond.co.nz/lovable-uploads/cccdce30-4e44-423f-8a01-6db19d07e8fd.png",
+        url: "https://jamesblond.co.nz/contact/wellington",
+        telephone: "+64800525663",
+        email: "wellington@jamesblond.co.nz",
+        priceRange: "$$",
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: "24 Abel Smith Street",
+          addressLocality: "Te Aro",
+          addressRegion: "Wellington",
+          postalCode: "6011",
+          addressCountry: "NZ",
+        },
+        geo: {
+          "@type": "GeoCoordinates",
+          latitude: "-41.2335",
+          longitude: "174.9044",
+        },
+        openingHours: "Mo-Su 08:00-17:00",
+        areaServed: {
+          "@type": "City",
+          name: "Wellington",
+        },
+      }}
+    />
       <h1 className="text-4xl font-bold mb-8 text-center">Wellington Branch</h1>
       
       <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">

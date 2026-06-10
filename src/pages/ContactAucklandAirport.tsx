@@ -3,12 +3,43 @@ import { MapPin, Phone, Mail, Facebook } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import ContactForm from '@/components/ContactForm';
 import PageSEO from '@/components/PageSEO';
+import JsonLd from '@/components/JsonLd';
 
 
 const ContactAucklandAirport = () => {
   return (
     <div className="container mx-auto px-4 py-12">
-      <PageSEO title="Contact Auckland Airport – James Blond Rentals" description="Contact our Auckland Airport branch for vehicle pickup and drop-off. Get directions, phone number and opening hours." canonical="/contact/auckland-airport" />
+    <PageSEO title="Contact Auckland Airport – James Blond Rentals" description="Contact our Auckland Airport branch for vehicle pickup and drop-off. Get directions, phone number and opening hours." canonical="/contact/auckland-airport" />
+    <JsonLd
+      data={{
+        "@context": "https://schema.org",
+        "@type": "AutoRental",
+        name: "James Blond Rentals — Auckland Airport",
+        image: "https://jamesblond.co.nz/lovable-uploads/6a274083-edb0-4ac2-8e40-4ac3703a8660.png",
+        url: "https://jamesblond.co.nz/contact/auckland-airport",
+        telephone: "+64800525663",
+        email: "info@jamesblond.co.nz",
+        priceRange: "$$",
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: "203 Kirkbride Road",
+          addressLocality: "Mangere",
+          addressRegion: "Auckland",
+          postalCode: "2022",
+          addressCountry: "NZ",
+        },
+        geo: {
+          "@type": "GeoCoordinates",
+          latitude: "-36.9785",
+          longitude: "174.7855",
+        },
+        openingHours: "Mo-Su 08:00-17:00",
+        areaServed: {
+          "@type": "City",
+          name: "Auckland",
+        },
+      }}
+    />
       <h1 className="text-4xl font-bold mb-8 text-center">Auckland Airport Branch</h1>
       
       <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-12">
