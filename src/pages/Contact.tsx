@@ -11,6 +11,7 @@ import { Mail, Phone, User, MessageSquare, Send } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import PageSEO from '@/components/PageSEO';
 import JsonLd from '@/components/JsonLd';
+import { bookingHowTo, pickupHowTo } from '@/seo/howToJsonLd';
 
 
 // Define form schema with Zod

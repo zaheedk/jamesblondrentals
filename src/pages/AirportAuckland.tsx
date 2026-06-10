@@ -4,6 +4,7 @@ import FuelStationsMap from '../components/FuelStationsMap';
 import { Button } from '@/components/ui/button';
 import PageSEO from '@/components/PageSEO';
 import JsonLd from '@/components/JsonLd';
+import { bookingHowTo, pickupHowTo } from '@/seo/howToJsonLd';
 
 const AirportAuckland = () => (
   <div className="container mx-auto px-4 py-8 space-y-6">

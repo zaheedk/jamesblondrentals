@@ -3,6 +3,7 @@ import { MapIcon } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import FuelStationsMapChristchurch from '../components/FuelStationsMapChristchurch';
 import JsonLd from '@/components/JsonLd';
+import { bookingHowTo, pickupHowTo } from '@/seo/howToJsonLd';
 
 const AirportChristchurch = () => (
   <div className="container mx-auto px-4 py-8 space-y-6">

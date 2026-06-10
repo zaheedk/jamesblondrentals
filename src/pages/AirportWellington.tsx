@@ -3,6 +3,7 @@ import { MapIcon } from 'lucide-react';
 import FuelStationsMapWellington from '../components/FuelStationsMapWellington';
 import PageSEO from '@/components/PageSEO';
 import JsonLd from '@/components/JsonLd';
+import { bookingHowTo, pickupHowTo } from '@/seo/howToJsonLd';
 
 const AirportWellington = () => (
   <div className="container mx-auto px-4 py-8 space-y-6">
