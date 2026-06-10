@@ -12,6 +12,7 @@ const ContactWellington = () => {
   return (
     <div className="container mx-auto px-4 py-12">
     <PageSEO title="Contact Wellington – James Blond Rentals" description="Contact our Wellington branch for car, van and truck rentals. Find our address, phone number, opening hours and directions." canonical="/contact/wellington" />
+    <JsonLd data={{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://jamesblond.co.nz/"},{"@type":"ListItem","position":2,"name":"Contact Us","item":"https://jamesblond.co.nz/contact"},{"@type":"ListItem","position":3,"name":"Wellington Branch","item":"https://jamesblond.co.nz/contact/wellington"}]}} />
     <JsonLd
       data={{
         "@context": "https://schema.org",

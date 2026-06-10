@@ -29,7 +29,9 @@ const BreadcrumbsJsonLd = () => {
     pathname.startsWith('/customer-details') ||
     pathname.startsWith('/insurance-and-extras') ||
     pathname.startsWith('/photos') ||
-    pathname.startsWith('/photo-gallery')
+    pathname.startsWith('/photo-gallery') ||
+    pathname.startsWith('/airport/') ||
+    pathname.startsWith('/contact/')
   ) {
     return null;
   }

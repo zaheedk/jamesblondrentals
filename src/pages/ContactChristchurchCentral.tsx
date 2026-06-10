@@ -12,6 +12,7 @@ const ContactChristchurchCentral = () => {
   return (
     <div className="container mx-auto px-4 py-12">
     <PageSEO title="Contact Christchurch Central – James Blond Rentals" description="Contact our Christchurch Central branch for convenient city vehicle hire. Address, phone and opening hours available." canonical="/contact/christchurch-central" />
+    <JsonLd data={{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://jamesblond.co.nz/"},{"@type":"ListItem","position":2,"name":"Contact Us","item":"https://jamesblond.co.nz/contact"},{"@type":"ListItem","position":3,"name":"Christchurch Central Branch","item":"https://jamesblond.co.nz/contact/christchurch-central"}]}} />
     <JsonLd
       data={{
         "@context": "https://schema.org",

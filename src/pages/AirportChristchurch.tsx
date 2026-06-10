@@ -11,6 +11,7 @@ const AirportChristchurch = () => (
       <title>Christchurch Airport Car Rental | James Blond Rentals</title>
       <meta name="description" content="Rent a car at Christchurch Airport with James Blond Rentals. Free shuttle service, affordable rates and a wide range of vehicles." />
     </Helmet>
+    <JsonLd data={{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://jamesblond.co.nz/"},{"@type":"ListItem","position":2,"name":"Airport Car Rental","item":"https://jamesblond.co.nz/airport"},{"@type":"ListItem","position":3,"name":"Christchurch Airport","item":"https://jamesblond.co.nz/airport/christchurch"}]}} />
     <JsonLd
       data={{
         "@context": "https://schema.org",
