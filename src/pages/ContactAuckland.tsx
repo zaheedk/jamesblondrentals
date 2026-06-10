@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import ContactForm from '@/components/ContactForm';
 import PageSEO from '@/components/PageSEO';
 import JsonLd from '@/components/JsonLd';
+import { bookingHowTo, pickupHowTo } from '@/seo/howToJsonLd';
 
 
 const ContactAuckland = () => {
@@ -88,6 +89,8 @@ const ContactAuckland = () => {
         ],
       }}
     />
+    <JsonLd data={bookingHowTo("https://jamesblond.co.nz/contact/auckland")} />
+    <JsonLd data={pickupHowTo({ pageUrl: "https://jamesblond.co.nz/contact/auckland", locationName: "Auckland Glen Eden", address: "4004 Great North Road, Glen Eden, Auckland", isAirport: false })} />
       <h1 className="text-4xl font-bold mb-8 text-center">Auckland - Glen Eden Branch</h1>
       
       <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-12">
