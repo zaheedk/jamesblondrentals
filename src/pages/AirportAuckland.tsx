@@ -38,6 +38,62 @@ const AirportAuckland = () => (
         },
       }}
     />
+    <JsonLd
+      data={{
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: [
+          {
+            "@type": "Question",
+            name: "How do I get to the Auckland Airport rental branch?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "Call 0800 525 663 after collecting your bags. For domestic arrivals, wait at the courtesy shuttle zone outside Door 9. For international arrivals, exit via Door 11 and proceed to the offsite shuttle pickup bay. Our blue and white James Blond shuttle van will collect you and take you to 203 Kirkbride Road, Mangere.",
+            },
+          },
+          {
+            "@type": "Question",
+            name: "What do I need to bring when collecting my rental vehicle?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "You need a full, valid driver's licence (in English or with an approved translation) and a credit or debit card for the bond. Prepaid cards are not accepted.",
+            },
+          },
+          {
+            "@type": "Question",
+            name: "Can I return my rental car after hours at Auckland Airport?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "Yes — early or after-hours returns are available. Return the vehicle to 5/203 Kirkbride Road, Mangere, follow the drop-off signage and contact our shuttle team for a terminal transfer.",
+            },
+          },
+          {
+            "@type": "Question",
+            name: "Is there a shuttle back to the terminal when I drop off?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "Yes. After a quick vehicle check, our shuttle will take you directly to your terminal at no extra charge.",
+            },
+          },
+          {
+            "@type": "Question",
+            name: "What is the minimum age to rent a vehicle at Auckland Airport?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "You must be at least 21 years old. Additional ID may be requested at pickup.",
+            },
+          },
+          {
+            "@type": "Question",
+            name: "Is insurance included in the rental price?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "Basic cover is included, and you can upgrade to Premium or Ultimate cover at checkout for reduced excess and extra protection.",
+            },
+          },
+        ],
+      }}
+    />
     <section className="mb-8">
       <div className="text-center bg-secondary p-4 rounded-lg mb-6">
         <p className="text-lg font-bold">

@@ -36,6 +36,62 @@ const AirportWellington = () => (
         },
       }}
     />
+    <JsonLd
+      data={{
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: [
+          {
+            "@type": "Question",
+            name: "How do I get to the Wellington Airport rental branch?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "Call Windy Depot on 027 837 4372 after collecting your bags. Our complimentary 24/7 shuttle service will pick you up from the terminal and take you to 19 Shelly Bay Road, Miramar.",
+            },
+          },
+          {
+            "@type": "Question",
+            name: "What do I need to bring when collecting my rental vehicle?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "You need a full, valid driver's licence (in English or with an approved translation) and a credit or debit card for the bond. Prepaid cards are not accepted.",
+            },
+          },
+          {
+            "@type": "Question",
+            name: "Can I return my rental car after hours at Wellington Airport?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "Yes — early or after-hours returns are available. Return the vehicle to 19 Shelly Bay Road, Miramar and follow the drop-off signage.",
+            },
+          },
+          {
+            "@type": "Question",
+            name: "Is there a shuttle back to the terminal when I drop off?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "Yes. After a quick vehicle check, our shuttle will take you directly to Wellington Airport terminal at no extra charge.",
+            },
+          },
+          {
+            "@type": "Question",
+            name: "What is the minimum age to rent a vehicle at Wellington Airport?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "You must be at least 21 years old. Additional ID may be requested at pickup.",
+            },
+          },
+          {
+            "@type": "Question",
+            name: "Is insurance included in the rental price?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "Basic cover is included, and you can upgrade to Premium or Ultimate cover at checkout for reduced excess and extra protection.",
+            },
+          },
+        ],
+      }}
+    />
     <section className="mb-8">
       <div className="text-center bg-secondary p-4 rounded-lg mb-6">
         <p className="text-lg font-bold">
