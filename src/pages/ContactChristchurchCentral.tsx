@@ -39,7 +39,55 @@ const ContactChristchurchCentral = () => {
           name: "Christchurch",
         },
       }}
-      />\n      <JsonLd\n        data={{\n          "@context": "https://schema.org",\n          "@type": "FAQPage",\n          mainEntity: [\n            {\n              "@type": "Question",\n              name: "What do I need to bring when collecting my rental vehicle?",\n              acceptedAnswer: {\n                "@type": "Answer",\n                text: "You need a full, valid driver's licence (in English or with an approved translation) and a credit or debit card for the bond. Prepaid cards are not accepted.",\n              },\n            },\n            {\n              "@type": "Question",\n              name: "What is the minimum age to rent a vehicle?",\n              acceptedAnswer: {\n                "@type": "Answer",\n                text: "You must be at least 21 years old to rent a vehicle with James Blond Rentals. Additional ID may be requested at pickup.",\n              },\n            },\n            {\n              "@type": "Question",\n              name: "Can I pick up or drop off my rental outside opening hours?",\n              acceptedAnswer: {\n                "@type": "Answer",\n                text: "Yes — after-hours pick up and drop off are available on request. Contact our Christchurch Central branch on 0800 525 663 to arrange this in advance.",\n              },\n            },\n            {\n              "@type": "Question",\n              name: "Is insurance included in the rental price?",\n              acceptedAnswer: {\n                "@type": "Answer",\n                text: "Basic cover is included, and you can upgrade to Premium or Ultimate cover at checkout for reduced excess and extra protection.",\n              },\n            },\n            {\n              "@type": "Question",\n              name: "Do you require a bond or security deposit?",\n              acceptedAnswer: {\n                "@type": "Answer",\n                text: "Yes, a pre-authorisation hold is placed on your card at pickup. The amount varies by vehicle type and insurance option selected.",\n              },\n            },\n          ],\n        }}\n      />
+    />
+    <JsonLd
+      data={{
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: [
+          {
+            "@type": "Question",
+            name: "What do I need to bring when collecting my rental vehicle?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "You need a full, valid driver's licence (in English or with an approved translation) and a credit or debit card for the bond. Prepaid cards are not accepted.",
+            },
+          },
+          {
+            "@type": "Question",
+            name: "What is the minimum age to rent a vehicle?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "You must be at least 21 years old to rent a vehicle with James Blond Rentals. Additional ID may be requested at pickup.",
+            },
+          },
+          {
+            "@type": "Question",
+            name: "Can I pick up or drop off my rental outside opening hours?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "Yes — after-hours pick up and drop off are available on request. Contact our Christchurch Central branch on 0800 525 663 to arrange this in advance.",
+            },
+          },
+          {
+            "@type": "Question",
+            name: "Is insurance included in the rental price?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "Basic cover is included, and you can upgrade to Premium or Ultimate cover at checkout for reduced excess and extra protection.",
+            },
+          },
+          {
+            "@type": "Question",
+            name: "Do you require a bond or security deposit?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "Yes, a pre-authorisation hold is placed on your card at pickup. The amount varies by vehicle type and insurance option selected.",
+            },
+          },
+        ],
+      }}
+    />
       <h1 className="text-4xl font-bold mb-8 text-center">Christchurch Central Branch</h1>
       
       <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
