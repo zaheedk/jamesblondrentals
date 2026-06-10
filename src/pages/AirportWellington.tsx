@@ -14,7 +14,7 @@ const AirportWellington = () => (
         name: "James Blond Rentals — Wellington Airport",
         image: "https://jamesblond.co.nz/lovable-uploads/cccdce30-4e44-423f-8a01-6db19d07e8fd.png",
         url: "https://jamesblond.co.nz/airport/wellington",
-        telephone: "+64-800-525-663",
+        telephone: "+64800525663",
         email: "wellington@jamesblond.co.nz",
         priceRange: "$$",
         address: {
@@ -24,7 +24,16 @@ const AirportWellington = () => (
           postalCode: "6022",
           addressCountry: "NZ",
         },
+        geo: {
+          "@type": "GeoCoordinates",
+          latitude: "-41.3276",
+          longitude: "174.8056",
+        },
         openingHours: "Mo-Su 08:00-17:00",
+        areaServed: {
+          "@type": "City",
+          name: "Wellington",
+        },
       }}
     />
     <section className="mb-8">

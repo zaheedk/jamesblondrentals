@@ -15,7 +15,7 @@ const AirportAuckland = () => (
         name: "James Blond Rentals — Auckland Airport",
         image: "https://jamesblond.co.nz/lovable-uploads/6a274083-edb0-4ac2-8e40-4ac3703a8660.png",
         url: "https://jamesblond.co.nz/airport/auckland",
-        telephone: "+64-800-525-663",
+        telephone: "+64800525663",
         email: "info@jamesblond.co.nz",
         priceRange: "$$",
         address: {
@@ -26,7 +26,16 @@ const AirportAuckland = () => (
           postalCode: "2022",
           addressCountry: "NZ",
         },
+        geo: {
+          "@type": "GeoCoordinates",
+          latitude: "-36.9785",
+          longitude: "174.7855",
+        },
         openingHours: "Mo-Su 08:00-17:00",
+        areaServed: {
+          "@type": "City",
+          name: "Auckland",
+        },
       }}
     />
     <section className="mb-8">

@@ -15,8 +15,9 @@ const AirportChristchurch = () => (
         "@context": "https://schema.org",
         "@type": "AutoRental",
         name: "James Blond Rentals — Christchurch Airport",
+        image: "https://jamesblond.co.nz/lovable-uploads/f40953dd-07c7-405f-a446-bbb6de3b2aac.png",
         url: "https://jamesblond.co.nz/airport/christchurch",
-        telephone: "+64-800-525-663",
+        telephone: "+64800525663",
         email: "info@jamesblond.co.nz",
         priceRange: "$$",
         address: {
@@ -25,6 +26,16 @@ const AirportChristchurch = () => (
           addressLocality: "Christchurch",
           postalCode: "8544",
           addressCountry: "NZ",
+        },
+        geo: {
+          "@type": "GeoCoordinates",
+          latitude: "-43.4841",
+          longitude: "172.5358",
+        },
+        openingHours: "Mo-Su 08:00-17:00",
+        areaServed: {
+          "@type": "City",
+          name: "Christchurch",
         },
       }}
     />
