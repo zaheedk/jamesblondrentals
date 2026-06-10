@@ -156,6 +156,22 @@ const ThreeTonneBox19m3Detail = () => {
         </TabsContent>
       </Tabs>
 
+      <div className="bg-muted/30 rounded-lg p-6 mb-10">
+        <h2 className="text-xl font-bold mb-3">Truck Hire Locations</h2>
+        <p className="text-gray-700 mb-4">
+          This truck is available across our nationwide branches. Explore our truck hire hub and city pages for local rates and availability.
+        </p>
+        <div className="flex flex-wrap gap-x-4 gap-y-2">
+          <Link to="/truck-hire" className="text-primary hover:underline">Truck Hire NZ</Link>
+          <Link to="/auckland-truck-rentals" className="text-primary hover:underline">Auckland Truck Hire</Link>
+          <Link to="/west-auckland-truck-rentals" className="text-primary hover:underline">West Auckland</Link>
+          <Link to="/wellington-truck-rentals" className="text-primary hover:underline">Wellington Truck Hire</Link>
+          <Link to="/christchurch-truck-rentals" className="text-primary hover:underline">Christchurch Truck Hire</Link>
+          <Link to="/central-christchurch-truck-hire" className="text-primary hover:underline">Central Christchurch</Link>
+          <Link to="/hamilton-truck-rentals" className="text-primary hover:underline">Hamilton Truck Hire</Link>
+        </div>
+      </div>
+
       <div className="bg-primary/5 rounded-lg p-6">
         <h3 className="text-xl font-bold mb-3">Ready to Rent?</h3>
         <p className="mb-4">Contact us today to check availability and book your 3 Tonne Box Truck (19m³) with Tail Lift rental.</p>
