@@ -10,7 +10,37 @@ import JsonLd from '@/components/JsonLd';
 const ContactChristchurch = () => {
   return (
     <div className="container mx-auto px-4 py-12">
-      <PageSEO title="Contact Christchurch – James Blond Rentals" description="Contact our Christchurch branch for car, van and truck rentals. Find our address, phone number, opening hours and directions." canonical="/contact/christchurch" />
+    <PageSEO title="Contact Christchurch – James Blond Rentals" description="Contact our Christchurch branch for car, van and truck rentals. Find our address, phone number, opening hours and directions." canonical="/contact/christchurch" />
+    <JsonLd
+      data={{
+        "@context": "https://schema.org",
+        "@type": "AutoRental",
+        name: "James Blond Rentals — Christchurch",
+        image: "https://jamesblond.co.nz/lovable-uploads/f40953dd-07c7-405f-a446-bbb6de3b2aac.png",
+        url: "https://jamesblond.co.nz/contact/christchurch",
+        telephone: "+64800525663",
+        email: "christchurch@jamesblond.co.nz",
+        priceRange: "$$",
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: "25 Logistics Drive",
+          addressLocality: "Harewood",
+          addressRegion: "Christchurch",
+          postalCode: "8544",
+          addressCountry: "NZ",
+        },
+        geo: {
+          "@type": "GeoCoordinates",
+          latitude: "-43.4841",
+          longitude: "172.5358",
+        },
+        openingHours: "Mo-Su 08:00-17:00",
+        areaServed: {
+          "@type": "City",
+          name: "Christchurch",
+        },
+      }}
+    />
       <h1 className="text-4xl font-bold mb-8 text-center">Christchurch Branch</h1>
       
       <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">

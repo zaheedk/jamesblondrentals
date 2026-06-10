@@ -71,6 +71,36 @@ const Contact = () => {
   return (
     <div className="container mx-auto py-12 px-4">
       <PageSEO title="Contact Us – James Blond Rentals NZ" description="Get in touch with James Blond Rentals. Find phone numbers, email and office locations for Auckland, Wellington and Christchurch branches." canonical="/contact" />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "AutoRental",
+          name: "James Blond Rentals",
+          image: "https://jamesblond.co.nz/lovable-uploads/ee23bb91-cc75-4cf1-a745-f44e4a4bbb12.png",
+          url: "https://jamesblond.co.nz/contact",
+          telephone: "+64800525663",
+          email: "info@jamesblond.co.nz",
+          priceRange: "$$",
+          address: {
+            "@type": "PostalAddress",
+            streetAddress: "4004 Great North Road",
+            addressLocality: "Glen Eden",
+            addressRegion: "Auckland",
+            postalCode: "0602",
+            addressCountry: "NZ",
+          },
+          geo: {
+            "@type": "GeoCoordinates",
+            latitude: "-36.8762",
+            longitude: "174.6639",
+          },
+          openingHours: "Mo-Su 08:00-17:00",
+          areaServed: {
+            "@type": "Country",
+            name: "New Zealand",
+          },
+        }}
+      />
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl md:text-4xl font-bold mb-6">Contact Us</h1>
         
