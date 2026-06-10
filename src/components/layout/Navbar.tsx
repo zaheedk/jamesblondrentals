@@ -64,6 +64,9 @@ const Navbar = () => {
             <Link to="/" className="text-gray-600 hover:text-primary transition-colors font-bold">
               Book
             </Link>
+            <Link to="/truck-hire" className="text-gray-600 hover:text-primary transition-colors font-bold">
+              Truck Hire
+            </Link>
             <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
@@ -387,6 +390,9 @@ const Navbar = () => {
             <div className="flex flex-col space-y-3">
               <Link to="/" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>
                 Book
+              </Link>
+              <Link to="/truck-hire" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>
+                Truck Hire
               </Link>
               <Link to="/price-guide" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>
                 Price Guide
