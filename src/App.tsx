@@ -98,6 +98,7 @@ import HandTrolleyDetail from "./pages/HandTrolleyDetail"; // Import the new Han
 import LargeHandTrolleyDetail from "./pages/LargeHandTrolleyDetail"; // Import the new Large Hand Trolley detail page
 import WestAucklandTruckRentals from "./pages/WestAucklandTruckRentals"; // Import the new West Auckland Truck Rentals page
 import AucklandTruckRentals from "./pages/AucklandTruckRentals"; // Import the new Auckland Truck Rentals page
+import TruckHire from "./pages/TruckHire";
 import WellingtonTruckRentals from "./pages/WellingtonTruckRentals";
 import ChristchurchTruckRentals from "./pages/ChristchurchTruckRentals";
 import HamiltonTruckRentals from "./pages/HamiltonTruckRentals";
@@ -266,6 +267,7 @@ const App = () => {
                 <Route path="/auckland-airport-car-rentals" element={<AucklandAirportCarRentals />} />
                 <Route path="/west-auckland-truck-rentals-hire" element={<WestAucklandTruckRentals />} />
                 <Route path="/auckland-truck-rentals-hire" element={<AucklandTruckRentals />} />
+                <Route path="/truck-hire" element={<TruckHire />} />
                 <Route path="/truck-hire-wellington" element={<WellingtonTruckRentals />} />
                 <Route path="/truck-hire-christchurch" element={<ChristchurchTruckRentals />} />
                 <Route path="/hamilton-truck-rentals-hire" element={<HamiltonTruckRentals />} />
