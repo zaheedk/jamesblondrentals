@@ -96,6 +96,8 @@ const AirportChristchurch = () => (
         ],
       }}
     />
+    <JsonLd data={bookingHowTo("https://jamesblond.co.nz/airport/christchurch")} />
+    <JsonLd data={pickupHowTo({ pageUrl: "https://jamesblond.co.nz/airport/christchurch", locationName: "Christchurch Airport", address: "17/25 Logistics Drive, Harewood, Christchurch", isAirport: true, shuttle: "After collecting your bags, dial 'M1' on the Airport freephone or call 0800 525 663. Wait at Domestic arrivals Door 1 or 2 and take the Airpark shuttle to 17/25 Logistics Drive, Harewood." })} />
     <section className="mb-8">
       <div className="text-center bg-secondary p-4 rounded-lg mb-6">
         <p className="text-lg font-bold">

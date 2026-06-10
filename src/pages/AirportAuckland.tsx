@@ -95,6 +95,8 @@ const AirportAuckland = () => (
         ],
       }}
     />
+    <JsonLd data={bookingHowTo("https://jamesblond.co.nz/airport/auckland")} />
+    <JsonLd data={pickupHowTo({ pageUrl: "https://jamesblond.co.nz/airport/auckland", locationName: "Auckland Airport", address: "5/203 Kirkbride Road, Mangere, Auckland", isAirport: true, shuttle: "After collecting your bags, call 0800 525 663 and our free shuttle will collect you from the Auckland International or Domestic terminal and take you to 5/203 Kirkbride Road, Mangere." })} />
     <section className="mb-8">
       <div className="text-center bg-secondary p-4 rounded-lg mb-6">
         <p className="text-lg font-bold">

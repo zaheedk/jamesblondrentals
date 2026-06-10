@@ -93,6 +93,8 @@ const AirportWellington = () => (
         ],
       }}
     />
+    <JsonLd data={bookingHowTo("https://jamesblond.co.nz/airport/wellington")} />
+    <JsonLd data={pickupHowTo({ pageUrl: "https://jamesblond.co.nz/airport/wellington", locationName: "Wellington Airport", address: "19 Shelly Bay Road, Miramar, Wellington", isAirport: true, shuttle: "After collecting your bags, call Windy Depot on 027 837 4372 and our complimentary 24/7 shuttle will pick you up from the terminal and take you to 19 Shelly Bay Road, Miramar." })} />
     <section className="mb-8">
       <div className="text-center bg-secondary p-4 rounded-lg mb-6">
         <p className="text-lg font-bold">

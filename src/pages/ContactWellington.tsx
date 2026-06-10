@@ -90,6 +90,8 @@ const ContactWellington = () => {
         ],
       }}
     />
+    <JsonLd data={bookingHowTo("https://jamesblond.co.nz/contact/wellington")} />
+    <JsonLd data={pickupHowTo({ pageUrl: "https://jamesblond.co.nz/contact/wellington", locationName: "Wellington", address: "24 Abel Smith Street, Te Aro, Wellington", isAirport: false })} />
       <h1 className="text-4xl font-bold mb-8 text-center">Wellington Branch</h1>
       
       <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">

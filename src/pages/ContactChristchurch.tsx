@@ -90,6 +90,8 @@ const ContactChristchurch = () => {
         ],
       }}
     />
+    <JsonLd data={bookingHowTo("https://jamesblond.co.nz/contact/christchurch")} />
+    <JsonLd data={pickupHowTo({ pageUrl: "https://jamesblond.co.nz/contact/christchurch", locationName: "Christchurch", address: "25 Logistics Drive, Harewood, Christchurch", isAirport: false })} />
       <h1 className="text-4xl font-bold mb-8 text-center">Christchurch Branch</h1>
       
       <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">

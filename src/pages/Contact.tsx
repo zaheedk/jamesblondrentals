@@ -158,6 +158,8 @@ const Contact = () => {
           ],
         }}
       />
+      <JsonLd data={bookingHowTo("https://jamesblond.co.nz/contact")} />
+      <JsonLd data={pickupHowTo({ pageUrl: "https://jamesblond.co.nz/contact", locationName: "James Blond Rentals", address: "4004 Great North Road, Glen Eden, Auckland", isAirport: false })} />
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl md:text-4xl font-bold mb-6">Contact Us</h1>
         
