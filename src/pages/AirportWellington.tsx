@@ -8,6 +8,7 @@ import { bookingHowTo, pickupHowTo } from '@/seo/howToJsonLd';
 const AirportWellington = () => (
   <div className="container mx-auto px-4 py-8 space-y-6">
     <PageSEO title="Wellington Airport Car Rental | James Blond Rentals" description="Convenient vehicle rental at Wellington Airport. Cars, vans, trucks and minibuses available with easy pickup and drop-off." canonical="/airport/wellington" />
+    <JsonLd data={{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://jamesblond.co.nz/"},{"@type":"ListItem","position":2,"name":"Airport Car Rental","item":"https://jamesblond.co.nz/airport"},{"@type":"ListItem","position":3,"name":"Wellington Airport","item":"https://jamesblond.co.nz/airport/wellington"}]}} />
     <JsonLd
       data={{
         "@context": "https://schema.org",
