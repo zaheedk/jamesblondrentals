@@ -4,6 +4,7 @@ import { MapPin, Phone, Mail, Facebook, Truck, Caravan } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import ContactForm from '@/components/ContactForm';
 import PageSEO from '@/components/PageSEO';
+import JsonLd from '@/components/JsonLd';
 
 const ContactHamilton = () => {
   return (

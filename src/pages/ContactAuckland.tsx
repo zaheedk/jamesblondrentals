@@ -9,7 +9,37 @@ import JsonLd from '@/components/JsonLd';
 const ContactAuckland = () => {
   return (
     <div className="container mx-auto px-4 py-12">
-      <PageSEO title="Contact Auckland – James Blond Rentals" description="Contact our Auckland branch for car, van and truck rentals. Find our address, phone number, opening hours and directions." canonical="/contact/auckland" />
+    <PageSEO title="Contact Auckland – James Blond Rentals" description="Contact our Auckland branch for car, van and truck rentals. Find our address, phone number, opening hours and directions." canonical="/contact/auckland" />
+    <JsonLd
+      data={{
+        "@context": "https://schema.org",
+        "@type": "AutoRental",
+        name: "James Blond Rentals — Auckland Glen Eden",
+        image: "https://jamesblond.co.nz/lovable-uploads/6a274083-edb0-4ac2-8e40-4ac3703a8660.png",
+        url: "https://jamesblond.co.nz/contact/auckland",
+        telephone: "+64800525663",
+        email: "info@jamesblond.co.nz",
+        priceRange: "$$",
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: "4004 Great North Road",
+          addressLocality: "Glen Eden",
+          addressRegion: "Auckland",
+          postalCode: "0602",
+          addressCountry: "NZ",
+        },
+        geo: {
+          "@type": "GeoCoordinates",
+          latitude: "-36.8762",
+          longitude: "174.6639",
+        },
+        openingHours: "Mo-Su 08:00-17:00",
+        areaServed: {
+          "@type": "City",
+          name: "Auckland",
+        },
+      }}
+    />
       <h1 className="text-4xl font-bold mb-8 text-center">Auckland - Glen Eden Branch</h1>
       
       <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-12">
