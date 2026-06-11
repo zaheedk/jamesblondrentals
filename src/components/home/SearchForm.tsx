@@ -30,13 +30,20 @@ interface SearchFormProps {
   defaultDropoffLocation?: string;
   defaultCarCategory?: string;
   defaultLocation?: string;
+  /**
+   * Case-insensitive substring matched against RCM vehiclecategorytype.
+   * When provided, once categories load the matching category is preselected,
+   * so the quote search submits with the right `carCategory` (e.g. "Truck").
+   */
+  defaultCategoryName?: string;
 }
 
 const SearchForm = ({ 
   defaultPickupLocation,
   defaultDropoffLocation,
   defaultCarCategory = "0",
-  defaultLocation
+  defaultLocation,
+  defaultCategoryName
 }: SearchFormProps = {}) => {
   const navigate = useNavigate();
   
@@ -66,6 +73,21 @@ const SearchForm = ({
       setCarCategory(defaultCarCategory);
     }
   }, [defaultCarCategory]);
+
+  // Resolve defaultCategoryName -> category id once RCM categories load.
+  // Won't override an explicit defaultCarCategory the user passed.
+  useEffect(() => {
+    if (!defaultCategoryName) return;
+    if (defaultCarCategory && defaultCarCategory !== "0") return;
+    if (!carCategories || carCategories.length === 0) return;
+    const hint = defaultCategoryName.trim().toLowerCase();
+    const match = carCategories.find(c =>
+      String(c.vehiclecategorytype || "").toLowerCase().includes(hint)
+    );
+    if (match) {
+      setCarCategory(String(match.id));
+    }
+  }, [defaultCategoryName, defaultCarCategory, carCategories]);
   const [campaignCode, setCampaignCode] = useState("");
   const [isInitialized, setIsInitialized] = useState(false);
   const [isProcessingDates, setIsProcessingDates] = useState(false);
