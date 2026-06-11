@@ -240,16 +240,16 @@ const ThreeTonneBoxTailLiftDetail = () => {
         </p>
         <div className="flex flex-wrap justify-center gap-3 mb-6">
           <Button asChild className="bg-white text-primary hover:bg-white/90 font-semibold">
-            <Link to="/auckland-truck-rentals">Auckland Truck Hire</Link>
+            <Link to="/auckland-truck-rentals?truck=3-tonne-box-18m3#booking">Auckland Truck Hire</Link>
           </Button>
           <Button asChild className="bg-white text-primary hover:bg-white/90 font-semibold">
-            <Link to="/wellington-truck-rentals">Wellington Truck Hire</Link>
+            <Link to="/wellington-truck-rentals?truck=3-tonne-box-18m3#booking">Wellington Truck Hire</Link>
           </Button>
           <Button asChild className="bg-white text-primary hover:bg-white/90 font-semibold">
-            <Link to="/christchurch-truck-rentals">Christchurch Truck Hire</Link>
+            <Link to="/christchurch-truck-rentals?truck=3-tonne-box-18m3#booking">Christchurch Truck Hire</Link>
           </Button>
           <Button asChild className="bg-white text-primary hover:bg-white/90 font-semibold">
-            <Link to="/hamilton-truck-rentals">Hamilton Truck Hire</Link>
+            <Link to="/hamilton-truck-rentals?truck=3-tonne-box-18m3#booking">Hamilton Truck Hire</Link>
           </Button>
         </div>
         <p className="text-sm opacity-80">

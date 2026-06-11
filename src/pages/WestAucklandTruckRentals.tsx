@@ -4,7 +4,7 @@ import { Truck, Home, Box, Package, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import SearchForm from '@/components/home/SearchForm';
+import TruckQuoteSearchForm from '@/components/home/TruckQuoteSearchForm';
 import { Link } from 'react-router-dom';
 import familyUnloadingTruck from '@/assets/family-unloading-removal-truck.jpg';
 import familyUnpacking from '@/assets/family-unpacking-moving-truck.jpg';
@@ -125,11 +125,11 @@ const WestAucklandTruckRentals = () => {
                   <li>Box: 3100(L) x 1750(W) x 2050(H)</li>
                   <li>Fits apartment and small home contents</li>
                 </ul>
-                <Button asChild variant="outline">
+                <div className="flex flex-wrap gap-2"><Button asChild variant="outline">
                   <Link to="/fleet/trucks/2-tonne-box-12m3" className="flex items-center">
                     View Details <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
-                </Button>
+                </Button><Button asChild><Link to={`?truck=2-tonne-box-12m3#booking`}>Book Now</Link></Button></div>
               </div>
               
               <div>
@@ -145,11 +145,11 @@ const WestAucklandTruckRentals = () => {
                   <li>Max Tail Lift Load: 400kg</li>
                   <li>Great for moving heavy appliances and furniture</li>
                 </ul>
-                <Button asChild variant="outline">
+                <div className="flex flex-wrap gap-2"><Button asChild variant="outline">
                   <Link to="/fleet/trucks/2-tonne-box-12m3-tail" className="flex items-center">
                     View Details <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
-                </Button>
+                </Button><Button asChild><Link to={`?truck=2-tonne-box-12m3-tail#booking`}>Book Now</Link></Button></div>
               </div>
             </div>
           </TabsContent>
@@ -169,11 +169,11 @@ const WestAucklandTruckRentals = () => {
                   <li>Box: 3800(L) x 2000(W) x 2000(H)</li>
                   <li>Spacious interior for full house contents</li>
                 </ul>
-                <Button asChild variant="outline">
+                <div className="flex flex-wrap gap-2"><Button asChild variant="outline">
                   <Link to="/fleet/trucks/2-tonne-box-16m3" className="flex items-center">
                     View Details <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
-                </Button>
+                </Button><Button asChild><Link to={`?truck=2-tonne-box-16m3#booking`}>Book Now</Link></Button></div>
               </div>
               
               <div>
@@ -189,11 +189,11 @@ const WestAucklandTruckRentals = () => {
                   <li>Box: 4800(L) x 2100(W) x 2100(H)</li>
                   <li>Tail lift for easy loading of heavy items</li>
                 </ul>
-                <Button asChild variant="outline">
+                <div className="flex flex-wrap gap-2"><Button asChild variant="outline">
                   <Link to="/fleet/trucks/3-tonne-box-19m3" className="flex items-center">
                     View Details <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
-                </Button>
+                </Button><Button asChild><Link to={`?truck=3-tonne-box-19m3#booking`}>Book Now</Link></Button></div>
               </div>
             </div>
           </TabsContent>
@@ -213,11 +213,11 @@ const WestAucklandTruckRentals = () => {
                   <li>Tray: 3100(L) x 1600(W)</li>
                   <li>Easy unloading with tipper functionality</li>
                 </ul>
-                <Button asChild variant="outline">
+                <div className="flex flex-wrap gap-2"><Button asChild variant="outline">
                   <Link to="/fleet/trucks/2-tonne-tipper" className="flex items-center">
                     View Details <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
-                </Button>
+                </Button><Button asChild><Link to={`?truck=2-tonne-tipper#booking`}>Book Now</Link></Button></div>
               </div>
               
               <div>
@@ -233,11 +233,11 @@ const WestAucklandTruckRentals = () => {
                   <li>Box: 4400(L) x 2100(W) x 2050(H)</li>
                   <li>Hydraulic tail lift for easy loading</li>
                 </ul>
-                <Button asChild variant="outline">
+                <div className="flex flex-wrap gap-2"><Button asChild variant="outline">
                   <Link to="/fleet/trucks/3-tonne-box-18m3" className="flex items-center">
                     View Details <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
-                </Button>
+                </Button><Button asChild><Link to={`?truck=3-tonne-box-18m3#booking`}>Book Now</Link></Button></div>
               </div>
             </div>
           </TabsContent>
@@ -398,7 +398,7 @@ const WestAucklandTruckRentals = () => {
           <p className="text-center mb-6">Check availability and reserve your moving truck today</p>
           
           <div className="max-w-4xl mx-auto">
-            <SearchForm />
+            <TruckQuoteSearchForm />
           </div>
         </div>
       </section>

@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Phone, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import SearchForm from '@/components/home/SearchForm';
+import TruckQuoteSearchForm from '@/components/home/TruckQuoteSearchForm';
 import PageSEO from '@/components/PageSEO';
 import JsonLd from '@/components/JsonLd';
 import truckOpenDoors from '@/assets/truck-open-doors-loading-boxes.jpg';
@@ -204,6 +204,12 @@ const HamiltonTruckRentals = () => {
                 >
                   View details <ArrowRight className="h-4 w-4" />
                 </Link>
+                <Link
+                  to={`?truck=${t.slug.replace('/fleet/trucks/', '')}#booking`}
+                  className="mt-6 ml-6 inline-flex items-center gap-2 text-sm font-medium text-primary border-b border-primary pb-1 hover:opacity-80 transition-opacity"
+                >
+                  Book now <ArrowRight className="h-4 w-4" />
+                </Link>
               </div>
             </article>
           ))}
@@ -314,7 +320,7 @@ const HamiltonTruckRentals = () => {
               Check live availability and lock in a price in under a minute.
             </p>
           </div>
-          <SearchForm />
+          <TruckQuoteSearchForm />
         </div>
       </section>
 
