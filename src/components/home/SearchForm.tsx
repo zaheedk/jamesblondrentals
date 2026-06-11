@@ -73,21 +73,6 @@ const SearchForm = ({
       setCarCategory(defaultCarCategory);
     }
   }, [defaultCarCategory]);
-
-  // Resolve defaultCategoryName -> category id once RCM categories load.
-  // Won't override an explicit defaultCarCategory the user passed.
-  useEffect(() => {
-    if (!defaultCategoryName) return;
-    if (defaultCarCategory && defaultCarCategory !== "0") return;
-    if (!carCategories || carCategories.length === 0) return;
-    const hint = defaultCategoryName.trim().toLowerCase();
-    const match = carCategories.find(c =>
-      String(c.vehiclecategorytype || "").toLowerCase().includes(hint)
-    );
-    if (match) {
-      setCarCategory(String(match.id));
-    }
-  }, [defaultCategoryName, defaultCarCategory, carCategories]);
   const [campaignCode, setCampaignCode] = useState("");
   const [isInitialized, setIsInitialized] = useState(false);
   const [isProcessingDates, setIsProcessingDates] = useState(false);
