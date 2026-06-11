@@ -169,6 +169,40 @@ const ThreeTonneBox19m3Detail = () => {
         </div>
       </div>
 
+      <div className="mt-12 bg-white rounded-lg border p-6">
+        <h2 className="text-2xl font-bold mb-6">Truck Hire by Location — FAQs</h2>
+        <div className="grid gap-6 md:grid-cols-2">
+          <div className="space-y-4">
+            <div>
+              <h3 className="font-bold text-lg">Where can I hire a 3-tonne truck with tail lift in New Zealand?</h3>
+              <p className="text-gray-700">
+                James Blond Rentals offers 3-tonne box trucks with tail lifts in major centres including <Link to="/auckland-truck-rentals" className="text-primary hover:underline">Auckland</Link>, <Link to="/wellington-truck-rentals" className="text-primary hover:underline">Wellington</Link>, <Link to="/christchurch-truck-rentals" className="text-primary hover:underline">Christchurch</Link>, and <Link to="/hamilton-truck-rentals" className="text-primary hover:underline">Hamilton</Link>. Book online or call your nearest branch.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-bold text-lg">Do I need a Class-2 licence to hire a 3-tonne truck in Auckland?</h3>
+              <p className="text-gray-700">
+                Yes, our 3-tonne trucks require a Class-2 (HT) licence to operate legally in Auckland and all other NZ locations. Please ensure your driver holds the correct licence before booking. Visit our <Link to="/auckland-truck-rentals" className="text-primary hover:underline">Auckland truck hire page</Link> for details.
+              </p>
+            </div>
+          </div>
+          <div className="space-y-4">
+            <div>
+              <h3 className="font-bold text-lg">Is a 3-tonne truck suitable for commercial moves in Wellington?</h3>
+              <p className="text-gray-700">
+                Yes, the 3-tonne box truck with tail lift is perfect for commercial relocations, freight transport, and large deliveries in <Link to="/wellington-truck-rentals" className="text-primary hover:underline">Wellington</Link>. The 19m³ capacity and hydraulic tail lift make heavy loading easy.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-bold text-lg">Can I hire a 3-tonne truck for business deliveries in Christchurch?</h3>
+              <p className="text-gray-700">
+                Absolutely. Our 3-tonne trucks are popular with businesses for inventory transport, distribution, and large-scale deliveries in <Link to="/christchurch-truck-rentals" className="text-primary hover:underline">Christchurch</Link> and <Link to="/central-christchurch-truck-hire" className="text-primary hover:underline">central Christchurch</Link>. Book online or call for corporate rates.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="bg-muted/30 rounded-lg p-6 mb-10">
         <h2 className="text-xl font-bold mb-3">Truck Hire Locations</h2>
         <p className="text-gray-700 mb-4">

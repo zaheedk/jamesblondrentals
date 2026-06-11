@@ -178,6 +178,40 @@ const TwoTonneBoxTruckDetail = () => {
         </div>
       </div>
 
+      <div className="mt-12 bg-white rounded-lg border p-6">
+        <h2 className="text-2xl font-bold mb-6">Truck Hire by Location — FAQs</h2>
+        <div className="grid gap-6 md:grid-cols-2">
+          <div className="space-y-4">
+            <div>
+              <h3 className="font-bold text-lg">Where can I hire a 2-tonne box truck in New Zealand?</h3>
+              <p className="text-gray-600">
+                James Blond Rentals offers 2-tonne box trucks across multiple locations including <Link to="/auckland-truck-rentals" className="text-primary hover:underline">Auckland</Link>, <Link to="/west-auckland-truck-rentals" className="text-primary hover:underline">West Auckland</Link>, <Link to="/wellington-truck-rentals" className="text-primary hover:underline">Wellington</Link>, <Link to="/christchurch-truck-rentals" className="text-primary hover:underline">Christchurch</Link>, <Link to="/central-christchurch-truck-hire" className="text-primary hover:underline">Central Christchurch</Link>, and <Link to="/hamilton-truck-rentals" className="text-primary hover:underline">Hamilton</Link>. Book online or call your nearest branch.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-bold text-lg">How much does it cost to hire a truck in Auckland?</h3>
+              <p className="text-gray-600">
+                2-tonne truck hire rates in Auckland depend on rental duration and mileage. Daily rates are competitive with a per-km charge (42c/km for this model). Visit our <Link to="/auckland-truck-rentals" className="text-primary hover:underline">Auckland truck hire page</Link> for current pricing or request a quote.
+              </p>
+            </div>
+          </div>
+          <div className="space-y-4">
+            <div>
+              <h3 className="font-bold text-lg">Can I pick up a truck in Christchurch city centre?</h3>
+              <p className="text-gray-600">
+                Yes, we offer convenient <Link to="/central-christchurch-truck-hire" className="text-primary hover:underline">central Christchurch truck hire</Link> as well as wider <Link to="/christchurch-truck-rentals" className="text-primary hover:underline">Christchurch</Link>. Same-day pickup is often available when you book in advance.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-bold text-lg">Do I need a special licence to hire a truck in Wellington?</h3>
+              <p className="text-gray-600">
+                No — our 2-tonne box trucks can be driven on a standard car licence in Wellington and all other NZ locations. For larger 3-tonne trucks, a Class-2 (HT) licence is required. See our <Link to="/wellington-truck-rentals" className="text-primary hover:underline">Wellington truck hire page</Link> for more details.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="mt-12 bg-primary/5 rounded-lg p-6">
         <h2 className="text-xl font-bold mb-3">Related City Links</h2>
         <p className="text-muted-foreground mb-4">

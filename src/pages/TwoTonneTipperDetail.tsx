@@ -179,6 +179,40 @@ const TwoTonneTipperDetail = () => {
         </div>
       </div>
 
+      <div className="mt-12 bg-white rounded-lg border p-6">
+        <h2 className="text-2xl font-bold mb-6">Truck Hire by Location — FAQs</h2>
+        <div className="grid gap-6 md:grid-cols-2">
+          <div className="space-y-4">
+            <div>
+              <h3 className="font-bold text-lg">Where can I hire a tipper truck in New Zealand?</h3>
+              <p className="text-gray-700">
+                James Blond Rentals offers 2-tonne tipper trucks for construction and landscaping in <Link to="/auckland-truck-rentals" className="text-primary hover:underline">Auckland</Link>, <Link to="/christchurch-truck-rentals" className="text-primary hover:underline">Christchurch</Link>, and <Link to="/hamilton-truck-rentals" className="text-primary hover:underline">Hamilton</Link>. Book online or call your nearest branch.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-bold text-lg">Is a tipper truck good for landscaping projects in Auckland?</h3>
+              <p className="text-gray-700">
+                Yes, our 2-tonne tipper truck is ideal for landscaping in Auckland. The hydraulic tipping mechanism makes unloading soil, mulch, and gravel effortless. Visit our <Link to="/auckland-truck-rentals" className="text-primary hover:underline">Auckland truck hire page</Link> to check availability and rates.
+              </p>
+            </div>
+          </div>
+          <div className="space-y-4">
+            <div>
+              <h3 className="font-bold text-lg">Can I hire a tipper truck for rubbish removal in Christchurch?</h3>
+              <p className="text-gray-700">
+                Absolutely. Our 2-tonne tipper is popular for construction debris and garden waste removal in <Link to="/christchurch-truck-rentals" className="text-primary hover:underline">Christchurch</Link> and <Link to="/central-christchurch-truck-hire" className="text-primary hover:underline">central Christchurch</Link>. Book online for same-day or next-day hire.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-bold text-lg">Do I need a special licence to drive a tipper truck in Hamilton?</h3>
+              <p className="text-gray-700">
+                No — our 2-tonne tipper trucks can be driven on a standard car licence in Hamilton and all other NZ locations. For larger 3-tonne trucks, a Class-2 (HT) licence is required. See our <Link to="/hamilton-truck-rentals" className="text-primary hover:underline">Hamilton truck hire page</Link> for more details.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="bg-primary/5 rounded-lg p-6">
         <h3 className="text-xl font-bold mb-3">Ready to Rent?</h3>
         <p className="mb-4">Contact us today to check availability and book your 2 Tonne Tipper Truck rental.</p>
