@@ -189,6 +189,22 @@ const TwoTonneBoxTailLiftDetail = () => {
           </div>
         </div>
       </div>
+
+      <div className="mt-12 bg-primary/5 rounded-lg p-6">
+        <h2 className="text-xl font-bold mb-3">Related City Links</h2>
+        <p className="text-muted-foreground mb-4">
+          The 2 Tonne Box Truck with Tail Lift is perfect for furniture removals and heavy-item transport. Explore truck hire options in these key locations.
+        </p>
+        <div className="flex flex-wrap gap-x-4 gap-y-2">
+          <Link to="/auckland-truck-rentals" className="text-primary hover:underline">Auckland Truck Hire</Link>
+          <Link to="/west-auckland-truck-rentals" className="text-primary hover:underline">West Auckland</Link>
+          <Link to="/wellington-truck-rentals" className="text-primary hover:underline">Wellington Truck Hire</Link>
+          <Link to="/christchurch-truck-rentals" className="text-primary hover:underline">Christchurch Truck Hire</Link>
+          <Link to="/central-christchurch-truck-hire" className="text-primary hover:underline">Central Christchurch</Link>
+          <Link to="/hamilton-truck-rentals" className="text-primary hover:underline">Hamilton Truck Hire</Link>
+        </div>
+      </div>
+
       <div className="mt-12 bg-muted/30 rounded-lg p-6">
         <h2 className="text-xl font-bold mb-3">Truck Hire Locations</h2>
         <p className="text-muted-foreground mb-4">

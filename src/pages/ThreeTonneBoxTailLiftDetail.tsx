@@ -157,6 +157,19 @@ const ThreeTonneBoxTailLiftDetail = () => {
         </TabsContent>
       </Tabs>
 
+      <div className="mt-12 bg-primary/5 rounded-lg p-6">
+        <h2 className="text-xl font-bold mb-3">Related City Links</h2>
+        <p className="text-gray-700 mb-4">
+          The 3 Tonne Box Truck (18m³) with Tail Lift is ideal for large commercial moves and freight transport. Explore truck hire options in these major centres.
+        </p>
+        <div className="flex flex-wrap gap-x-4 gap-y-2">
+          <Link to="/auckland-truck-rentals" className="text-primary hover:underline">Auckland Truck Hire</Link>
+          <Link to="/wellington-truck-rentals" className="text-primary hover:underline">Wellington Truck Hire</Link>
+          <Link to="/christchurch-truck-rentals" className="text-primary hover:underline">Christchurch Truck Hire</Link>
+          <Link to="/hamilton-truck-rentals" className="text-primary hover:underline">Hamilton Truck Hire</Link>
+        </div>
+      </div>
+
       <div className="bg-muted/30 rounded-lg p-6 mb-10">
         <h2 className="text-xl font-bold mb-3">Truck Hire Locations</h2>
         <p className="text-gray-700 mb-4">
