@@ -242,6 +242,36 @@ const TwoTonneBoxTruckDetail = () => {
           <Link to="/hamilton-truck-rentals" className="text-primary hover:underline">Hamilton Truck Hire</Link>
         </div>
       </div>
+
+      <div className="mt-12 bg-primary text-primary-foreground rounded-xl p-8 text-center">
+        <h2 className="text-2xl font-bold mb-3">Get a Quote & Book Now</h2>
+        <p className="mb-6 opacity-90 max-w-2xl mx-auto">
+          Ready to hire this 2-tonne box truck? Choose your nearest branch for local rates, live availability, and instant booking.
+        </p>
+        <div className="flex flex-wrap justify-center gap-3 mb-6">
+          <Button asChild className="bg-white text-primary hover:bg-white/90 font-semibold">
+            <Link to="/auckland-truck-rentals">Auckland Truck Hire</Link>
+          </Button>
+          <Button asChild className="bg-white text-primary hover:bg-white/90 font-semibold">
+            <Link to="/west-auckland-truck-rentals">West Auckland</Link>
+          </Button>
+          <Button asChild className="bg-white text-primary hover:bg-white/90 font-semibold">
+            <Link to="/wellington-truck-rentals">Wellington Truck Hire</Link>
+          </Button>
+          <Button asChild className="bg-white text-primary hover:bg-white/90 font-semibold">
+            <Link to="/christchurch-truck-rentals">Christchurch Truck Hire</Link>
+          </Button>
+          <Button asChild className="bg-white text-primary hover:bg-white/90 font-semibold">
+            <Link to="/central-christchurch-truck-hire">Central Christchurch</Link>
+          </Button>
+          <Button asChild className="bg-white text-primary hover:bg-white/90 font-semibold">
+            <Link to="/hamilton-truck-rentals">Hamilton Truck Hire</Link>
+          </Button>
+        </div>
+        <p className="text-sm opacity-80">
+          Not sure which location? <Link to="/truck-hire" className="underline hover:no-underline">View all truck hire locations</Link> or <Link to="/contact" className="underline hover:no-underline">contact us</Link> for help.
+        </p>
+      </div>
     </div>
   );
 };
