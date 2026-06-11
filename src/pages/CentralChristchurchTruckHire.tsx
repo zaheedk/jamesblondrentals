@@ -322,7 +322,7 @@ const CentralChristchurchTruckHire = () => {
               Check live availability and lock in a price in under a minute.
             </p>
           </div>
-          <SearchForm
+          <TruckQuoteSearchForm
             defaultPickupLocation="14"
             defaultDropoffLocation="14"
             defaultCarCategory="12"
