@@ -4,7 +4,7 @@ import { Truck, Home, Box, Package, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import SearchForm from '@/components/home/SearchForm';
+import TruckQuoteSearchForm from '@/components/home/TruckQuoteSearchForm';
 import { Link } from 'react-router-dom';
 import familyUnloadingTruck from '@/assets/family-unloading-removal-truck.jpg';
 import familyUnpacking from '@/assets/family-unpacking-moving-truck.jpg';
@@ -398,7 +398,7 @@ const WestAucklandTruckRentals = () => {
           <p className="text-center mb-6">Check availability and reserve your moving truck today</p>
           
           <div className="max-w-4xl mx-auto">
-            <SearchForm />
+            <TruckQuoteSearchForm />
           </div>
         </div>
       </section>

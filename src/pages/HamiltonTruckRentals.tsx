@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Phone, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import SearchForm from '@/components/home/SearchForm';
+import TruckQuoteSearchForm from '@/components/home/TruckQuoteSearchForm';
 import PageSEO from '@/components/PageSEO';
 import JsonLd from '@/components/JsonLd';
 import truckOpenDoors from '@/assets/truck-open-doors-loading-boxes.jpg';
@@ -314,7 +314,7 @@ const HamiltonTruckRentals = () => {
               Check live availability and lock in a price in under a minute.
             </p>
           </div>
-          <SearchForm />
+          <TruckQuoteSearchForm />
         </div>
       </section>
 
