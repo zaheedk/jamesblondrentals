@@ -10,6 +10,9 @@ interface TruckQuoteSearchFormProps {
    * `?truck=<slug>`. Leave undefined to let the visitor pick.
    */
   fallbackTruckSlug?: string;
+  defaultPickupLocation?: string;
+  defaultDropoffLocation?: string;
+  defaultCarCategory?: string;
 }
 
 /**
@@ -22,7 +25,12 @@ interface TruckQuoteSearchFormProps {
  * preselect the matching vehicle category. The quote submission to the RCM
  * API then includes the correct `carCategory` automatically.
  */
-const TruckQuoteSearchForm = ({ fallbackTruckSlug }: TruckQuoteSearchFormProps = {}) => {
+const TruckQuoteSearchForm = ({
+  fallbackTruckSlug,
+  defaultPickupLocation,
+  defaultDropoffLocation,
+  defaultCarCategory,
+}: TruckQuoteSearchFormProps = {}) => {
   const [searchParams] = useSearchParams();
   const truckSlug = searchParams.get("truck") || fallbackTruckSlug;
   const selectedTruck = getTruckBySlug(truckSlug);
@@ -53,6 +61,9 @@ const TruckQuoteSearchForm = ({ fallbackTruckSlug }: TruckQuoteSearchFormProps =
 
       <SearchForm
         defaultCategoryName={selectedTruck?.categoryNameHint}
+        defaultPickupLocation={defaultPickupLocation}
+        defaultDropoffLocation={defaultDropoffLocation}
+        defaultCarCategory={defaultCarCategory}
       />
     </div>
   );
