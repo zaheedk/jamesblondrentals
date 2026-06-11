@@ -161,11 +161,11 @@ const WellingtonTruckRentals = () => {
                   <li>Box: 3100(L) x 1750(W) x 2050(H)</li>
                   <li>Fits typical Wellington apartment contents</li>
                 </ul>
-                <Button asChild variant="outline">
+                <div className="flex flex-wrap gap-2"><Button asChild variant="outline">
                   <Link to="/fleet/trucks/2-tonne-box-12m3" className="flex items-center">
                     View Details <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
-                </Button>
+                </Button><Button asChild><Link to={`?truck=2-tonne-box-12m3#booking`}>Book Now</Link></Button></div>
               </div>
               
               <div>
@@ -186,11 +186,11 @@ const WellingtonTruckRentals = () => {
                   <li>Max Tail Lift Load: 400kg</li>
                   <li>Perfect for moving up and down Wellington's hills</li>
                 </ul>
-                <Button asChild variant="outline">
+                <div className="flex flex-wrap gap-2"><Button asChild variant="outline">
                   <Link to="/fleet/trucks/2-tonne-box-12m3-tail" className="flex items-center">
                     View Details <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
-                </Button>
+                </Button><Button asChild><Link to={`?truck=2-tonne-box-12m3-tail#booking`}>Book Now</Link></Button></div>
               </div>
             </div>
           </TabsContent>
@@ -215,11 +215,11 @@ const WellingtonTruckRentals = () => {
                   <li>Box: 3800(L) x 2000(W) x 2000(H)</li>
                   <li>Spacious interior for complete house moves</li>
                 </ul>
-                <Button asChild variant="outline">
+                <div className="flex flex-wrap gap-2"><Button asChild variant="outline">
                   <Link to="/fleet/trucks/2-tonne-box-16m3" className="flex items-center">
                     View Details <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
-                </Button>
+                </Button><Button asChild><Link to={`?truck=2-tonne-box-16m3#booking`}>Book Now</Link></Button></div>
               </div>
               
               <div>
@@ -240,11 +240,11 @@ const WellingtonTruckRentals = () => {
                   <li>Box: 4800(L) x 2100(W) x 2100(H)</li>
                   <li>Tail lift for easy loading of heavy furniture</li>
                 </ul>
-                <Button asChild variant="outline">
+                <div className="flex flex-wrap gap-2"><Button asChild variant="outline">
                   <Link to="/fleet/trucks/3-tonne-box-19m3" className="flex items-center">
                     View Details <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
-                </Button>
+                </Button><Button asChild><Link to={`?truck=3-tonne-box-19m3#booking`}>Book Now</Link></Button></div>
               </div>
             </div>
           </TabsContent>
@@ -269,11 +269,11 @@ const WellingtonTruckRentals = () => {
                   <li>Tray: 3100(L) x 1600(W)</li>
                   <li>Manual transmission with good hill-climbing ability</li>
                 </ul>
-                <Button asChild variant="outline">
+                <div className="flex flex-wrap gap-2"><Button asChild variant="outline">
                   <Link to="/fleet/trucks/2-tonne-tipper" className="flex items-center">
                     View Details <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
-                </Button>
+                </Button><Button asChild><Link to={`?truck=2-tonne-tipper#booking`}>Book Now</Link></Button></div>
               </div>
               
               <div>
@@ -294,11 +294,11 @@ const WellingtonTruckRentals = () => {
                   <li>Box: 4400(L) x 2100(W) x 2050(H)</li>
                   <li>Hydraulic tail lift for loading on uneven terrain</li>
                 </ul>
-                <Button asChild variant="outline">
+                <div className="flex flex-wrap gap-2"><Button asChild variant="outline">
                   <Link to="/fleet/trucks/3-tonne-box-18m3" className="flex items-center">
                     View Details <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
-                </Button>
+                </Button><Button asChild><Link to={`?truck=3-tonne-box-18m3#booking`}>Book Now</Link></Button></div>
               </div>
             </div>
           </TabsContent>
