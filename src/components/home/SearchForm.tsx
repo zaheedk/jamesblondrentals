@@ -135,6 +135,22 @@ const SearchForm = ({
     });
   }, [initializeApi]);
 
+  // Resolve defaultCategoryName -> RCM category id once categories load,
+  // so the quote search submits with the right `carCategory` (e.g. "Truck").
+  // Won't override an explicit defaultCarCategory the caller passed in.
+  useEffect(() => {
+    if (!defaultCategoryName) return;
+    if (defaultCarCategory && defaultCarCategory !== "0") return;
+    if (!carCategories || carCategories.length === 0) return;
+    const hint = defaultCategoryName.trim().toLowerCase();
+    const match = carCategories.find(c =>
+      String(c.vehiclecategorytype || "").toLowerCase().includes(hint)
+    );
+    if (match) {
+      setCarCategory(String(match.id));
+    }
+  }, [defaultCategoryName, defaultCarCategory, carCategories]);
+
   // Set up initial values once data is loaded
   useEffect(() => {
     if (isInitialized || isProcessingDates) return;
