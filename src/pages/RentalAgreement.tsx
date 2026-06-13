@@ -986,17 +986,21 @@ const RentalAgreement = () => {
       throw new Error(`Failed to upload PDF: ${uploadError.message}`);
     }
 
-    const { data: publicUrlData } = supabase.storage
+    // Use a signed URL (1 year) so the bucket can stay private while the
+    // email recipient can still download their signed agreement.
+    const { data: signedUrlData, error: signedUrlError } = await supabase.storage
       .from("signed-agreements")
-      .getPublicUrl(filePath);
+      .createSignedUrl(filePath, 60 * 60 * 24 * 365);
 
-    if (!publicUrlData?.publicUrl) {
-      throw new Error("Failed to generate PDF download link");
+    if (signedUrlError || !signedUrlData?.signedUrl) {
+      throw new Error(
+        `Failed to generate PDF download link${signedUrlError ? `: ${signedUrlError.message}` : ""}`
+      );
     }
 
     return {
       fileName,
-      publicUrl: publicUrlData.publicUrl,
+      publicUrl: signedUrlData.signedUrl,
     };
   };
 
