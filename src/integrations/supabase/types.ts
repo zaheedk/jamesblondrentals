@@ -682,6 +682,17 @@ export type Database = {
         Returns: boolean
       }
       is_admin_user: { Args: never; Returns: boolean }
+      update_booking_payment_status_by_reference: {
+        Args: {
+          _booking_reference?: string
+          _booking_status: string
+          _payment_intent_id?: string
+          _payment_status: string
+          _references: string[]
+          _reservation_reference?: string
+        }
+        Returns: number
+      }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
