@@ -99,35 +99,17 @@ export async function updateBookingPaymentStatus(
     references: uniqueReferences,
   });
 
-  const updateData: Database['public']['Tables']['bookings']['Update'] = {
-    payment_status: paymentStatus,
-    booking_status: bookingStatus,
-    updated_at: new Date().toISOString(),
-  };
-
-  if (transactionId) {
-    updateData.payment_intent_id = transactionId;
-  }
-
-  if (references?.bookingReference) {
-    updateData.booking_reference = references.bookingReference;
-  }
-
-  if (references?.reservationReference) {
-    updateData.reservation_reference = references.reservationReference;
-  }
-
-  const referenceFilter = uniqueReferences
-    .flatMap((reference) => [
-      `booking_reference.eq.${reference}`,
-      `reservation_reference.eq.${reference}`,
-    ])
-    .join(',');
-
-  const { error } = await supabase
-    .from('bookings')
-    .update(updateData)
-    .or(referenceFilter);
+  const { error } = await supabase.rpc(
+    'update_booking_payment_status_by_reference',
+    {
+      _references: uniqueReferences,
+      _payment_status: paymentStatus,
+      _booking_status: bookingStatus,
+      _payment_intent_id: transactionId ?? null,
+      _booking_reference: references?.bookingReference ?? null,
+      _reservation_reference: references?.reservationReference ?? null,
+    }
+  );
 
   if (error) {
     console.error('Error updating booking payment status:', error);
