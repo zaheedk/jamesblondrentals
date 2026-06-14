@@ -404,16 +404,6 @@ const FuelCalculator = () => {
               <Card className="h-full">
                 <CardContent className="p-0">
                   <div className="relative w-full h-[600px] rounded-lg overflow-hidden">
-                    <LoadScript 
-                      googleMapsApiKey="AIzaSyC2BGBMGyKkuOlkIcXj_EcmQ6k7gYcT-rg"
-                      onLoad={() => {
-                        setMapLoaded(true);
-                        // Initialize autocomplete refs array
-                        autocompleteRefs.current = new Array(locations.length).fill(null);
-                      }}
-                      onError={(e) => console.error('Google Maps failed to load:', e)}
-                      libraries={GOOGLE_MAPS_LIBRARIES}
-                    >
                       <GoogleMap
                         mapContainerStyle={containerStyle}
                         center={center}
@@ -438,7 +428,6 @@ const FuelCalculator = () => {
                           />
                         )}
                       </GoogleMap>
-                    </LoadScript>
                     
                     {!mapLoaded && (
                       <div className="absolute inset-0 flex items-center justify-center bg-muted rounded-lg">
@@ -453,6 +442,7 @@ const FuelCalculator = () => {
               </Card>
             </div>
           </div>
+          </LoadScript>
         </div>
       </div>
     </>
