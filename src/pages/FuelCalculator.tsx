@@ -208,6 +208,15 @@ const FuelCalculator = () => {
             </p>
           </div>
 
+          <LoadScript
+            googleMapsApiKey="AIzaSyC2BGBMGyKkuOlkIcXj_EcmQ6k7gYcT-rg"
+            libraries={GOOGLE_MAPS_LIBRARIES}
+            onLoad={() => {
+              setMapLoaded(true);
+              autocompleteRefs.current = new Array(locations.length).fill(null);
+            }}
+            onError={(e) => console.error('Google Maps failed to load:', e)}
+          >
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left Panel - Trip Planning */}
             <div className="lg:col-span-1 space-y-6">
@@ -280,6 +289,7 @@ const FuelCalculator = () => {
                             }`}></div>
                           </div>
                           <div className="flex-1">
+                            {mapLoaded ? (
                             <Autocomplete
                               onLoad={(autocomplete) => {
                                 autocompleteRefs.current[index] = autocomplete;
@@ -301,6 +311,15 @@ const FuelCalculator = () => {
                                 className="w-full"
                               />
                             </Autocomplete>
+                            ) : (
+                              <Input
+                                value={location}
+                                onChange={(e) => handleLocationChange(index, e.target.value)}
+                                placeholder="Loading map..."
+                                className="w-full"
+                                disabled
+                              />
+                            )}
                           </div>
                           {locations.length > 2 && index > 0 && index < locations.length - 1 && (
                             <Button
