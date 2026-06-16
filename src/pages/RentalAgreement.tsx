@@ -919,7 +919,10 @@ const RentalAgreement = () => {
         const filePath = `${reservationRef.trim()}/${rego}/${fileName}`;
         const { error } = await supabase.storage
           .from("vehicle-photos")
-          .upload(filePath, stampedFile);
+          .upload(filePath, stampedFile, {
+            contentType: "image/jpeg",
+            upsert: true,
+          });
 
         if (!error) {
           const { data: urlData } = supabase.storage
@@ -928,6 +931,7 @@ const RentalAgreement = () => {
           uploaded.push({ url: urlData.publicUrl, name: `${rego}/${fileName}` });
         } else {
           console.error("Error uploading photo:", error);
+          toast.error(`Photo upload failed: ${error.message}`);
         }
       }
       setVehiclePhotos(prev => [...prev, ...uploaded]);
