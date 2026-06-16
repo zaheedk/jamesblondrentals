@@ -274,35 +274,47 @@ const VehiclePhotos = () => {
     if (!photos.length) return;
     setSyncing(true);
 
+    const CONCURRENCY = 4;
     let synced = 0;
     let failed = 0;
 
-    for (const photo of photos) {
-      try {
-        await updatePhotoStatus(photo.id, "uploading");
+    for (let i = 0; i < photos.length; i += CONCURRENCY) {
+      const batch = photos.slice(i, i + CONCURRENCY);
+      const batchId = `batch-${Date.now()}`;
 
-        const file = new File([photo.blob], photo.fileName, { type: "image/jpeg" });
-        const stampedFile = await addTimestampToPhoto(file, photo.vehicleRego || undefined);
-        const batchId = `batch-${Date.now()}`;
-        const basePath = `${photo.reservationRef}/${photo.vehicleRego || "no-rego"}/${batchId}`;
-        const filePath = `${basePath}/${photo.fileName}`;
+      const results = await Promise.all(
+        batch.map(async (photo) => {
+          try {
+            await updatePhotoStatus(photo.id, "uploading");
 
-        const { error } = await supabase.storage
-          .from("vehicle-photos")
-          .upload(filePath, stampedFile);
+            const file = new File([photo.blob], photo.fileName, { type: "image/jpeg" });
+            const stampedFile = await addTimestampToPhoto(file, photo.vehicleRego || undefined);
+            const basePath = `${photo.reservationRef}/${photo.vehicleRego || "no-rego"}/${batchId}`;
+            const filePath = `${basePath}/${photo.fileName}`;
 
-        if (!error) {
-          await removePhoto(photo.id);
-          const { data: urlData } = supabase.storage.from("vehicle-photos").getPublicUrl(filePath);
-          setUploadedPhotos(prev => [...prev, { url: urlData.publicUrl, name: photo.fileName }]);
-          synced++;
-        } else {
-          await updatePhotoStatus(photo.id, "failed", error.message);
-          failed++;
-        }
-      } catch (err) {
-        await updatePhotoStatus(photo.id, "failed", String(err));
-        failed++;
+            const { error } = await supabase.storage
+              .from("vehicle-photos")
+              .upload(filePath, stampedFile);
+
+            if (!error) {
+              await removePhoto(photo.id);
+              const { data: urlData } = supabase.storage.from("vehicle-photos").getPublicUrl(filePath);
+              setUploadedPhotos(prev => [...prev, { url: urlData.publicUrl, name: photo.fileName }]);
+              return { ok: true };
+            } else {
+              await updatePhotoStatus(photo.id, "failed", error.message);
+              return { ok: false };
+            }
+          } catch (err) {
+            await updatePhotoStatus(photo.id, "failed", String(err));
+            return { ok: false };
+          }
+        }),
+      );
+
+      for (const r of results) {
+        if (r.ok) synced++;
+        else failed++;
       }
     }
 
