@@ -277,6 +277,7 @@ const VehiclePhotos = () => {
     const CONCURRENCY = 4;
     let synced = 0;
     let failed = 0;
+    let lastError: string | null = null;
 
     for (let i = 0; i < photos.length; i += CONCURRENCY) {
       const batch = photos.slice(i, i + CONCURRENCY);
@@ -294,7 +295,10 @@ const VehiclePhotos = () => {
 
             const { error } = await supabase.storage
               .from("vehicle-photos")
-              .upload(filePath, stampedFile);
+              .upload(filePath, stampedFile, {
+                contentType: "image/jpeg",
+                upsert: true,
+              });
 
             if (!error) {
               await removePhoto(photo.id);
@@ -302,28 +306,33 @@ const VehiclePhotos = () => {
               setUploadedPhotos(prev => [...prev, { url: urlData.publicUrl, name: photo.fileName }]);
               return { ok: true };
             } else {
+              console.error("Sync upload failed:", error);
               await updatePhotoStatus(photo.id, "failed", error.message);
-              return { ok: false };
+              return { ok: false, error: error.message };
             }
           } catch (err) {
+            console.error("Sync exception:", err);
             await updatePhotoStatus(photo.id, "failed", String(err));
-            return { ok: false };
+            return { ok: false, error: String(err) };
           }
         }),
       );
 
       for (const r of results) {
         if (r.ok) synced++;
-        else failed++;
+        else {
+          failed++;
+          if (r.error) lastError = r.error;
+        }
       }
     }
 
     if (synced > 0 && failed === 0) {
       toast.success(`${synced} photo(s) synced successfully!`);
     } else if (synced > 0) {
-      toast.success(`${synced} synced, ${failed} still pending`);
+      toast.warning(`${synced} synced, ${failed} failed: ${lastError ?? "unknown error"}`);
     } else {
-      toast.error("Sync failed — please check your connection");
+      toast.error(`Sync failed: ${lastError ?? "check your connection"}`);
     }
 
     await loadOfflinePhotos(reservationRef.trim() || undefined);
