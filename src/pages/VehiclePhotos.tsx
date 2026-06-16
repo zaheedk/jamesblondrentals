@@ -169,7 +169,10 @@ const VehiclePhotos = () => {
 
     const { error } = await supabase.storage
       .from("vehicle-photos")
-      .upload(filePath, stampedFile);
+      .upload(filePath, stampedFile, {
+        contentType: "image/jpeg",
+        upsert: true,
+      });
 
     if (!error) {
       const { data: urlData } = supabase.storage.from("vehicle-photos").getPublicUrl(filePath);
