@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { Camera, Upload, X, Loader2, ImageIcon, RefreshCw, WifiOff, AlertTriangle } from "lucide-react";
 import VehicleCamera from "@/components/VehicleCamera";
 import { addTimestampToPhoto, normalizeImageFile } from "@/lib/vehicle-photo-utils";
+import { uploadVehiclePhoto } from "@/lib/upload-vehicle-photo";
 import {
   savePhotoOffline,
   getPendingPhotos,
@@ -167,27 +168,21 @@ const VehiclePhotos = () => {
     const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`;
     const filePath = `${basePath}/${fileName}`;
 
-    const { error } = await supabase.storage
-      .from("vehicle-photos")
-      .upload(filePath, stampedFile, {
-        contentType: "image/jpeg",
-        upsert: true,
+    try {
+      const { publicUrl } = await uploadVehiclePhoto(filePath, stampedFile);
+      return { url: publicUrl, name: fileName };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error("Upload error, saving offline:", error);
+      await savePhotoOffline({
+        reservationRef: ref,
+        vehicleRego: rego,
+        fileName,
+        blob: originalBlob,
       });
-
-    if (!error) {
-      const { data: urlData } = supabase.storage.from("vehicle-photos").getPublicUrl(filePath);
-      return { url: urlData.publicUrl, name: fileName };
+      toast.error(`Photo saved offline: ${message}`);
+      return null;
     }
-
-    // Upload failed — save offline
-    console.error("Upload error, saving offline:", error);
-    await savePhotoOffline({
-      reservationRef: ref,
-      vehicleRego: rego,
-      fileName,
-      blob: originalBlob,
-    });
-    return null;
   };
 
   const handleUpload = async () => {
@@ -296,22 +291,16 @@ const VehiclePhotos = () => {
             const basePath = `${photo.reservationRef}/${photo.vehicleRego || "no-rego"}/${batchId}`;
             const filePath = `${basePath}/${photo.fileName}`;
 
-            const { error } = await supabase.storage
-              .from("vehicle-photos")
-              .upload(filePath, stampedFile, {
-                contentType: "image/jpeg",
-                upsert: true,
-              });
-
-            if (!error) {
+            try {
+              const { publicUrl } = await uploadVehiclePhoto(filePath, stampedFile);
               await removePhoto(photo.id);
-              const { data: urlData } = supabase.storage.from("vehicle-photos").getPublicUrl(filePath);
-              setUploadedPhotos(prev => [...prev, { url: urlData.publicUrl, name: photo.fileName }]);
+              setUploadedPhotos(prev => [...prev, { url: publicUrl, name: photo.fileName }]);
               return { ok: true };
-            } else {
+            } catch (error) {
+              const message = error instanceof Error ? error.message : String(error);
               console.error("Sync upload failed:", error);
-              await updatePhotoStatus(photo.id, "failed", error.message);
-              return { ok: false, error: error.message };
+              await updatePhotoStatus(photo.id, "failed", message);
+              return { ok: false, error: message };
             }
           } catch (err) {
             console.error("Sync exception:", err);
