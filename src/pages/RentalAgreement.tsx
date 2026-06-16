@@ -22,6 +22,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import VehicleCamera from "@/components/VehicleCamera";
+import { uploadVehiclePhoto } from "@/lib/upload-vehicle-photo";
 import type { RCMBookingInfoResponse } from "@/lib/api/rcm-api-types";
 import jsPDF from "jspdf";
 
@@ -917,21 +918,13 @@ const RentalAgreement = () => {
         const stampedFile = await addTimestampToPhoto(pending.file);
         const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`;
         const filePath = `${reservationRef.trim()}/${rego}/${fileName}`;
-        const { error } = await supabase.storage
-          .from("vehicle-photos")
-          .upload(filePath, stampedFile, {
-            contentType: "image/jpeg",
-            upsert: true,
-          });
-
-        if (!error) {
-          const { data: urlData } = supabase.storage
-            .from("vehicle-photos")
-            .getPublicUrl(filePath);
-          uploaded.push({ url: urlData.publicUrl, name: `${rego}/${fileName}` });
-        } else {
+        try {
+          const { publicUrl } = await uploadVehiclePhoto(filePath, stampedFile);
+          uploaded.push({ url: publicUrl, name: `${rego}/${fileName}` });
+        } catch (error) {
           console.error("Error uploading photo:", error);
-          toast.error(`Photo upload failed: ${error.message}`);
+          const message = error instanceof Error ? error.message : "Photo upload failed";
+          toast.error(`Photo upload failed: ${message}`);
         }
       }
       setVehiclePhotos(prev => [...prev, ...uploaded]);
