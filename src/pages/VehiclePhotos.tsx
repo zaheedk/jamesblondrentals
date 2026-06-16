@@ -258,13 +258,26 @@ const VehiclePhotos = () => {
   };
 
   const handleSync = async () => {
-    if (!offlinePhotos.length) return;
+    return handleSyncPhotos(offlinePhotos);
+  };
+
+  const handleSyncAll = async () => {
+    const all = await getPendingPhotos();
+    if (!all.length) {
+      toast.info("No photos waiting to sync");
+      return;
+    }
+    await handleSyncPhotos(all);
+  };
+
+  const handleSyncPhotos = async (photos: OfflinePhoto[]) => {
+    if (!photos.length) return;
     setSyncing(true);
 
     let synced = 0;
     let failed = 0;
 
-    for (const photo of offlinePhotos) {
+    for (const photo of photos) {
       try {
         await updatePhotoStatus(photo.id, "uploading");
 
@@ -301,7 +314,7 @@ const VehiclePhotos = () => {
       toast.error("Sync failed — please check your connection");
     }
 
-    await loadOfflinePhotos(reservationRef.trim());
+    await loadOfflinePhotos(reservationRef.trim() || undefined);
     setSyncing(false);
   };
 
@@ -349,6 +362,15 @@ const VehiclePhotos = () => {
                   <p className="text-xs text-muted-foreground mt-1">
                     Enter the reservation details and tap sync to upload
                   </p>
+                  <Button
+                    onClick={handleSyncAll}
+                    disabled={syncing}
+                    variant="outline"
+                    className="w-full mt-3 h-11 border-amber-500 text-amber-700 hover:bg-amber-100 dark:hover:bg-amber-900/30"
+                  >
+                    {syncing ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <RefreshCw className="h-4 w-4 mr-2" />}
+                    Sync All Now
+                  </Button>
                 </CardContent>
               </Card>
             )}
