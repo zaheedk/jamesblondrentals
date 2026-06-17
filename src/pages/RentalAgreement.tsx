@@ -965,40 +965,22 @@ const RentalAgreement = () => {
     toast.success("Photo deleted successfully");
   };
 
-  const uploadPdfForEmail = async (pdfBlob: Blob, agreementRef: string) => {
-    const safeRef = (agreementRef || reservationRef || "rental-agreement")
-      .replace(/[^a-zA-Z0-9-_]/g, "-")
-      .replace(/-+/g, "-");
-    const fileName = `Rental-Agreement-${agreementRef}.pdf`;
-    const filePath = `${safeRef}/${Date.now()}-${fileName}`;
+  const blobToBase64 = (blob: Blob): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const result = reader.result as string;
+        // strip data:application/pdf;base64, prefix
+        resolve(result.split(",")[1] || "");
+      };
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(blob);
+    });
 
-    const { error: uploadError } = await supabase.storage
-      .from("signed-agreements")
-      .upload(filePath, pdfBlob, {
-        contentType: "application/pdf",
-        upsert: false,
-      });
-
-    if (uploadError) {
-      throw new Error(`Failed to upload PDF: ${uploadError.message}`);
-    }
-
-    // Use a signed URL (1 year) so the bucket can stay private while the
-    // email recipient can still download their signed agreement.
-    const { data: signedUrlData, error: signedUrlError } = await supabase.storage
-      .from("signed-agreements")
-      .createSignedUrl(filePath, 60 * 60 * 24 * 365);
-
-    if (signedUrlError || !signedUrlData?.signedUrl) {
-      throw new Error(
-        `Failed to generate PDF download link${signedUrlError ? `: ${signedUrlError.message}` : ""}`
-      );
-    }
-
-    return {
-      fileName,
-      publicUrl: signedUrlData.signedUrl,
-    };
+  const buildPdfAttachment = async (pdfBlob: Blob, agreementRef: string) => {
+    const fileName = `Rental-Agreement-${agreementRef || "signed"}.pdf`;
+    const Content = await blobToBase64(pdfBlob);
+    return { Name: fileName, Content, ContentType: "application/pdf" };
   };
 
   const sendAgreementEmail = async (
@@ -1011,9 +993,9 @@ const RentalAgreement = () => {
     const vehicleName = bookingItem?.vehiclecategory || "Vehicle";
     const pickupDate = bookingItem?.pickupdate || "";
     const dropoffDate = bookingItem?.dropoffdate || "";
-    const { fileName, publicUrl } = await uploadPdfForEmail(pdfBlob, agreementRef);
+    const attachment = await buildPdfAttachment(pdfBlob, agreementRef);
 
-    console.log("Sending email with hosted PDF attachment:", publicUrl);
+    console.log("Sending email with inline PDF attachment:", attachment.Name);
 
     const { data, error: emailError } = await supabase.functions.invoke('send-postmark-email', {
       body: {
@@ -1061,13 +1043,7 @@ const RentalAgreement = () => {
             <p style="color: #999; font-size: 11px;">James Blond Rentals | GST: 140-174-963</p>
           </div>
         `,
-        remoteAttachments: [
-          {
-            Name: fileName,
-            Url: publicUrl,
-            ContentType: "application/pdf"
-          }
-        ],
+        attachments: [attachment],
       },
     });
 
