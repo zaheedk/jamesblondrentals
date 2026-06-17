@@ -17,3 +17,5 @@ project_id = "jlwvqbrtdzwrcwelyylv"
     verify_jwt = false
   [functions.process-infringement]
     verify_jwt = false
+  [functions.send-postmark-email]
+    verify_jwt = false
