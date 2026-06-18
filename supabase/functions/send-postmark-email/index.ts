@@ -48,6 +48,16 @@ serve(async (req) => {
   try {
     const { to, subject, html, from, from_name, attachments, remoteAttachments }: EmailRequest = await req.json()
 
+    if (!to || !subject || !html) {
+      return new Response(
+        JSON.stringify({ success: false, error: "Email recipient, subject, and HTML body are required" }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 400,
+        },
+      )
+    }
+
     console.log(`Sending email via Postmark to ${to} with subject: ${subject}`)
 
     const postmarkApiKey = Deno.env.get("POSTMARK_API_KEY")
@@ -118,8 +128,6 @@ serve(async (req) => {
       let errorMessage = `Failed to send email: ${response.status}`
       if (errorData.ErrorCode === 412) {
         errorMessage = "Your Postmark account is pending approval. You can only send emails to addresses on the same domain as your sender address."
-      } else if (errorData.ErrorCode === 300) {
-        errorMessage = "Your domain needs to be verified in Postmark. Please verify your domain in the Postmark dashboard."
       } else if (errorData.Message) {
         errorMessage = errorData.Message
       }
