@@ -19,3 +19,5 @@ project_id = "jlwvqbrtdzwrcwelyylv"
     verify_jwt = false
   [functions.send-postmark-email]
     verify_jwt = false
+  [functions.save-rental-agreement]
+    verify_jwt = false
