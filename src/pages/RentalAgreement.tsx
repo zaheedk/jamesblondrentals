@@ -1141,19 +1141,13 @@ const RentalAgreement = () => {
 
       if (saveError) throw saveError;
       if (saveResult?.success === false) throw new Error(saveResult.error || "Failed to save rental agreement");
-      setSaved(true);
-      setAlreadySigned(true);
-      setExistingSignature(hirerSignature);
-      setExistingAdditionalSig(additionalDriverSignature);
-      setSignedAt(new Date().toISOString());
-      toast.success("Rental agreement saved successfully! You can now add photos and email the agreement.");
 
       // Auto-send a copy of the signed agreement to Savo
       try {
         const pdfBlob = await generatePdf();
         if (pdfBlob) {
           const attachment = await buildPdfAttachment(pdfBlob, String(agreementRef));
-          await supabase.functions.invoke("send-postmark-email", {
+          const { data: savoEmailResult, error: savoEmailError } = await supabase.functions.invoke("send-postmark-email", {
             body: {
               to: "jamesblondrentals@hires.savo.co.nz",
               subject: `Signed Rental Agreement - ${agreementRef}`,
@@ -1171,11 +1165,21 @@ const RentalAgreement = () => {
               attachments: [attachment],
             },
           });
+
+          if (savoEmailError) throw savoEmailError;
+          if (savoEmailResult?.success === false) throw new Error(savoEmailResult.error || "Failed to email rental agreement");
           console.log("Signed agreement copy sent to Savo");
         }
       } catch (savoErr) {
         console.error("Failed to auto-send signed agreement to Savo:", savoErr);
       }
+
+      setSaved(true);
+      setAlreadySigned(true);
+      setExistingSignature(hirerSignature);
+      setExistingAdditionalSig(additionalDriverSignature);
+      setSignedAt(new Date().toISOString());
+      toast.success("Rental agreement saved successfully! You can now add photos and email the agreement.");
     } catch (error) {
       console.error("Error saving rental agreement:", error);
       toast.error("Failed to save rental agreement");
