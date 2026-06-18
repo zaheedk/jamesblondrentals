@@ -1118,22 +1118,12 @@ const RentalAgreement = () => {
         vehicle_rego: vehicleRego,
       };
 
-      const { data: updated, error: updateError } = await supabase
-        .from("bookings")
-        .update(signatureData)
-        .eq("reservation_reference", reservationRef)
-        .select("id");
-
-      if (updateError) throw updateError;
-
-      // If no existing booking was found, insert a new record
-      if (!updated || updated.length === 0) {
-        const bookingInfo = bookingData.bookinginfo?.[0];
-        const { error: insertError } = await supabase
-          .from("bookings")
-          .insert({
-            ...signatureData,
-            reservation_reference: reservationRef,
+      const bookingInfo = bookingData.bookinginfo?.[0];
+      const { data: saveResult, error: saveError } = await supabase.functions.invoke("save-rental-agreement", {
+        body: {
+          reservationRef,
+          signatureData,
+          insertData: {
             booking_reference: String(bookingInfo?.reservationno || ""),
             customer_first_name: customer?.firstname || null,
             customer_last_name: customer?.lastname || null,
@@ -1145,11 +1135,12 @@ const RentalAgreement = () => {
             dropoff_time: bookingInfo?.dropofftime || "09:00",
             total_days: parseInt(String(bookingInfo?.numberofdays)) || 1,
             vehicle_name: bookingInfo?.vehiclecategory || null,
-            booking_status: "confirmed",
-          });
+          },
+        },
+      });
 
-        if (insertError) throw insertError;
-      }
+      if (saveError) throw saveError;
+      if (saveResult?.success === false) throw new Error(saveResult.error || "Failed to save rental agreement");
       setSaved(true);
       setAlreadySigned(true);
       setExistingSignature(hirerSignature);
