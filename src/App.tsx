@@ -98,6 +98,7 @@ import HandTrolleyDetail from "./pages/HandTrolleyDetail"; // Import the new Han
 import LargeHandTrolleyDetail from "./pages/LargeHandTrolleyDetail"; // Import the new Large Hand Trolley detail page
 import WestAucklandTruckRentals from "./pages/WestAucklandTruckRentals"; // Import the new West Auckland Truck Rentals page
 import AucklandTruckRentals from "./pages/AucklandTruckRentals"; // Import the new Auckland Truck Rentals page
+import MovingTruckHire from "./pages/MovingTruckHire";
 import TruckHire from "./pages/TruckHire";
 import WellingtonTruckRentals from "./pages/WellingtonTruckRentals";
 import ChristchurchTruckRentals from "./pages/ChristchurchTruckRentals";
