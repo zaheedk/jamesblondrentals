@@ -93,7 +93,7 @@ const HamiltonTruckRentals = () => {
       <PageSEO
         title="Truck Hire Hamilton | Moving Trucks from $35/hr | James Blond"
         description="Affordable truck hire in Hamilton for house moves, furniture pickups and business deliveries. 2-tonne and 3-tonne trucks with optional tail lifts."
-        canonical="/hamilton-truck-rentals-hire"
+        canonical="/truck-hire-hamilton"
       />
       <JsonLd data={faqJsonLd} />
 

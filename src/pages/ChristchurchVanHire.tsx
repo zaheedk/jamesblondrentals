@@ -10,101 +10,144 @@ import vanInterior from '@/assets/cargo-van-interior-south-auckland.jpg';
 import vanFleet from '@/assets/south-auckland-cargo-van-fleet.jpg';
 import minibus from '@/assets/12-seater-van-auckland-sky-tower.jpg';
 
+const SITE_URL = 'https://jamesblond.co.nz';
+const PAGE_URL = `${SITE_URL}/van-hire-christchurch`;
+
 const vans = [
   {
     no: '01',
     name: 'Standard Cargo Van',
-    slug: '/fleet/vans',
+    slug: '/fleet/vans/standard-van',
     img: vanHero,
     blurb:
-      'The everyday workhorse for trades, couriers and small moves around Hamilton. Easy car-licence drive, sliding side door and a flat cargo floor.',
+      'The everyday workhorse for Christchurch trades, couriers and small moves around Riccarton, Sydenham and Sockburn. Easy car-licence drive, sliding side door and a flat cargo floor.',
     spec: '6–8 m³ · Auto · Car licence',
   },
   {
     no: '02',
     name: 'Standard Van · Rear Seat',
-    slug: '/fleet/vans',
+    slug: '/fleet/vans/standard-rear-seat-van',
     img: vanInterior,
     blurb:
-      'Five seats up front and cargo behind — the smartest pick when the crew, the tools and a couple of pallets all need to travel together.',
+      'Five seats up front and cargo behind — the smartest pick when the crew, the tools and a couple of pallets all need to travel together across Canterbury.',
     spec: '5 seats + cargo · Auto',
   },
   {
     no: '03',
     name: 'Jumbo / Premium Van',
-    slug: '/fleet/vans',
+    slug: '/fleet/vans/jumbo-van',
     img: vanFleet,
     blurb:
-      'Long-wheelbase, high-roof load space for the bigger jobs. A real alternative to a small truck when you still want a van that drives like a car.',
+      'Long-wheelbase, high-roof load space for the bigger Christchurch jobs. A real alternative to a small truck when you still want a van that drives like a car.',
     spec: '10–12 m³ · Auto',
   },
   {
     no: '04',
     name: '12-Seat Minibus',
-    slug: '/fleet/minibuses',
+    slug: '/fleet/minibus/12-seat-minibus',
     img: minibus,
     blurb:
-      'Sports teams, weddings, Hobbiton day trips and airport runs — twelve seats with belts, air-con and luggage space behind the back row.',
+      'Sports teams, weddings, ski-trip shuttles to Methven and airport runs — twelve seats with belts, air-con and luggage space behind the back row.',
     spec: '12 seats · Auto',
   },
 ];
 
-const HamiltonVanHire = () => {
+const ChristchurchVanHire = () => {
   const faqJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
     mainEntity: [
       {
         '@type': 'Question',
-        name: 'Do I need a special licence to hire a van in Hamilton?',
+        name: 'Do I need a special licence to hire a van in Christchurch?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'No. Every van in our Hamilton fleet — including the 12-seat minibus — is automatic and can be driven on a standard New Zealand car (Class 1) licence.',
+          text: 'No. Every van in our Christchurch fleet — including the 12-seat minibus — is automatic and can be driven on a standard New Zealand car (Class 1) licence.',
         },
       },
       {
         '@type': 'Question',
-        name: 'How much does van hire cost in Hamilton?',
+        name: 'How much does van hire cost in Christchurch?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Hamilton van hire starts from around $69 per day plus kilometres for a cargo van. Multi-day and weekly rates lower the daily price further.',
+          text: 'Christchurch van hire starts from around $69 per day plus kilometres for a cargo van. Multi-day, weekly and midweek rates lower the daily price further — see our hot deals page for current discounts.',
         },
       },
       {
         '@type': 'Question',
-        name: 'Can I hire a van for a one-way move out of Hamilton?',
+        name: 'Where do I pick up my Christchurch van?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Yes. One-way van hire between Hamilton, Auckland, Tauranga and Wellington is available on request when booking online or by phone.',
+          text: 'Vans are picked up from our Christchurch branch with easy access to State Highway 1, Christchurch Airport and the central city. We also have a Central Christchurch CBD branch for short urban hires.',
         },
       },
       {
         '@type': 'Question',
-        name: 'Where do I collect my Hamilton van?',
+        name: 'Can I hire a van for a one-way move out of Christchurch?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Vans are picked up from our Hamilton branch with easy access to State Highway 1 and State Highway 3 for trips across the Waikato.',
+          text: 'Yes. One-way van hire from Christchurch to other South Island and North Island branches is available on request when booking online or by phone.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'What is the best van hire company in Christchurch?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'James Blond Rentals is consistently ranked among the top-rated and most affordable van hire companies in Christchurch, with a modern fleet of cargo vans, jumbo vans and minibuses, transparent pricing, and no hidden fees.',
         },
       },
     ],
   };
 
+  const breadcrumbLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
+      { '@type': 'ListItem', position: 2, name: 'Van Hire Christchurch', item: PAGE_URL },
+    ],
+  };
+
+  const localBusinessLd = {
+    '@context': 'https://schema.org',
+    '@type': 'AutoRental',
+    name: 'James Blond Rentals — Christchurch Van Hire',
+    image: `${SITE_URL}/lovable-uploads/6213906e-4949-494b-b006-8d6e516cdd9a.png`,
+    url: PAGE_URL,
+    telephone: '+64-3-3651-122',
+    priceRange: '$$',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Christchurch',
+      addressRegion: 'Canterbury',
+      addressCountry: 'NZ',
+    },
+    areaServed: ['Christchurch', 'Canterbury', 'Riccarton', 'Sydenham', 'Sockburn', 'Christchurch Airport'],
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: '4.8',
+      reviewCount: '1200',
+    },
+  };
+
   return (
     <div className="bg-background text-foreground">
       <PageSEO
-        title="Van Hire Hamilton | Cargo Vans & Minibuses | James Blond"
-        description="Van hire in Hamilton for trades, couriers, moves and group travel. Standard cargo vans, jumbo vans and 12-seat minibuses — all on a car licence."
-        canonical="/van-hire-hamilton"
+        title="Van Hire Christchurch | Cargo Vans & Minibuses | James Blond"
+        description="Van hire in Christchurch from $69/day. Cargo vans, jumbo vans and 12-seat minibuses for trades, couriers, moves and groups. Drive on a car licence."
+        canonical="/van-hire-christchurch"
       />
       <JsonLd data={faqJsonLd} />
+      <JsonLd data={breadcrumbLd} />
+      <JsonLd data={localBusinessLd} />
 
       {/* Split-screen Hero */}
       <section className="grid md:grid-cols-2 min-h-[80vh]">
-        {/* Left: light panel */}
         <div className="bg-[hsl(0_0%_92%)] text-[hsl(0_0%_8%)] flex flex-col justify-between p-8 md:p-16">
           <div className="flex items-center gap-2 text-sm font-semibold">
             <MapPin className="h-4 w-4 text-primary" />
-            <span>Hamilton · Waikato</span>
+            <span>Christchurch · Canterbury</span>
           </div>
           <div className="max-w-xl">
             <div className="flex items-center gap-3 mb-4">
@@ -113,27 +156,26 @@ const HamiltonVanHire = () => {
             </div>
             <div className="h-px w-full bg-[hsl(0_0%_70%)] mb-10" />
             <h1 className="font-sans font-extrabold tracking-tight text-4xl md:text-6xl leading-[1.05]">
-              Cargo Vans, Jumbo Vans &amp; 12-Seat Minibuses for Hire in Hamilton
+              Cargo Vans, Jumbo Vans &amp; 12-Seat Minibuses for Hire in Christchurch
             </h1>
             <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
               <Button asChild size="lg" className="rounded-none px-7">
                 <a href="#booking">Check availability</a>
               </Button>
               <a
-                href="tel:+6478384955"
+                href="tel:+6433651122"
                 className="inline-flex items-center gap-2 text-sm font-semibold hover:text-primary"
               >
-                <Phone className="h-4 w-4" /> Call our Hamilton branch
+                <Phone className="h-4 w-4" /> Call our Christchurch branch
               </a>
             </div>
           </div>
         </div>
-        {/* Right: dark panel */}
         <div className="bg-[hsl(0_0%_18%)] flex items-center justify-center p-8 md:p-16">
           <div className="relative w-full max-w-md">
             <img
               src={vanHero}
-              alt="Cargo van available for Hamilton hire"
+              alt="Cargo van available for Christchurch hire"
               className="w-full aspect-square object-cover rounded-3xl shadow-2xl"
               loading="eager"
             />
@@ -150,7 +192,7 @@ const HamiltonVanHire = () => {
         <div className="container mx-auto px-6 py-12 grid md:grid-cols-3">
           {[
             { n: '01', t: 'Car-licence friendly', d: 'Every van is automatic — no special licence needed.' },
-            { n: '02', t: 'Hamilton-based fleet', d: 'Local vans, local people, no airport detours.' },
+            { n: '02', t: 'Christchurch-based fleet', d: 'Local vans serviced locally — no airport detours required.' },
             { n: '03', t: 'Daily or weekly hire', d: 'A van for the morning, the weekend or the whole month.' },
           ].map((row, i) => (
             <div
@@ -176,7 +218,7 @@ const HamiltonVanHire = () => {
           </div>
           <div className="h-px w-full bg-border mb-6" />
           <h2 className="font-sans font-extrabold tracking-tight text-4xl md:text-5xl leading-[1.05]">
-            One van for every Hamilton job.
+            One van for every Christchurch job.
           </h2>
         </div>
 
@@ -191,7 +233,7 @@ const HamiltonVanHire = () => {
               <div className="md:col-span-7">
                 <img
                   src={v.img}
-                  alt={`${v.name} for Hamilton hire`}
+                  alt={`${v.name} for Christchurch hire`}
                   className="w-full aspect-[4/3] object-cover rounded-2xl"
                   loading="lazy"
                 />
@@ -221,23 +263,23 @@ const HamiltonVanHire = () => {
           <div>
             <div className="flex items-center gap-3 mb-3">
               <MapPin className="h-5 w-5 text-primary" />
-              <span className="text-base font-semibold">Built for the Waikato</span>
+              <span className="text-base font-semibold">Built for Canterbury</span>
             </div>
             <div className="h-px w-full bg-[hsl(0_0%_70%)] mb-6" />
             <h2 className="font-sans font-extrabold tracking-tight text-4xl md:text-5xl leading-[1.05]">
               Trades, teams and weekend movers — all welcome.
             </h2>
             <p className="mt-6 text-lg text-[hsl(0_0%_30%)]">
-              Hamilton’s a city of working vans: tradies criss-crossing Te Rapa, couriers
-              hitting The Base, families collecting flat-packs and minibuses heading to
-              Hobbiton. Our fleet is sized and priced for all of them.
+              Christchurch is a city of working vans: tradies criss-crossing Hornby and Sockburn,
+              couriers hitting Westfield Riccarton, families picking up flat-packs and minibuses
+              heading to Mt Hutt or Akaroa. Our Christchurch fleet is sized and priced for all of them.
             </p>
             <ul className="mt-10 divide-y divide-[hsl(0_0%_75%)] border-y border-[hsl(0_0%_75%)]">
               {[
                 'Daily and weekly hire for trades and courier work',
                 'Cargo vans for furniture, white-ware and small moves',
                 'Jumbo vans when a small truck is just too much',
-                '12-seat minibuses for sports teams, weddings and tours',
+                '12-seat minibuses for sports teams, ski trips and tours',
               ].map((row) => (
                 <li
                   key={row}
@@ -253,7 +295,7 @@ const HamiltonVanHire = () => {
             <div className="bg-[hsl(0_0%_18%)] p-6 md:p-10 rounded-2xl">
               <img
                 src={vanInterior}
-                alt="Cargo van interior — Hamilton van hire"
+                alt="Cargo van interior — Christchurch van hire"
                 className="w-full aspect-[5/6] object-cover rounded-2xl"
                 loading="lazy"
               />
@@ -270,7 +312,7 @@ const HamiltonVanHire = () => {
         </div>
         <div className="h-px w-24 mx-auto bg-border mb-8" />
         <blockquote className="font-sans font-extrabold tracking-tight text-3xl md:text-4xl leading-snug">
-          “Clean vans, honest pricing and a real human at the desk. The way Hamilton van
+          “Clean vans, honest pricing and a real human at the desk. The way Christchurch van
           hire should feel.”
         </blockquote>
         <p className="mt-6 text-sm uppercase tracking-widest text-muted-foreground">
@@ -291,7 +333,7 @@ const HamiltonVanHire = () => {
           </h2>
           <img
             src={vanFleet}
-            alt="Hamilton van fleet ready to hire"
+            alt="Christchurch van fleet ready to hire"
             className="mt-8 w-full aspect-[4/5] object-cover rounded-2xl"
             loading="lazy"
           />
@@ -299,7 +341,7 @@ const HamiltonVanHire = () => {
         <ol className="md:col-span-8 space-y-8">
           {[
             ['Couriers & trades', 'Stick with the Standard Cargo Van — light, nimble, and the cheapest per day.'],
-            ['Flat-pack runs from The Base', 'Step up to a Jumbo Van so the boxes fit flat with the side door closed.'],
+            ['Flat-pack runs from Riccarton', 'Step up to a Jumbo Van so the boxes fit flat with the side door closed.'],
             ['House moves under a bedroom', 'Pair a Jumbo Van with a hand trolley and you’ll likely skip the truck altogether.'],
             ['Team trips and airport runs', 'The 12-seat minibus drives like a van, fits the team, and still has boot space behind row four.'],
           ].map(([t, d], i) => (
@@ -326,7 +368,7 @@ const HamiltonVanHire = () => {
               <span className="text-base font-semibold">Reserve</span>
             </div>
             <div className="h-px w-24 mx-auto bg-border mb-6" />
-            <h2 className="font-sans font-extrabold tracking-tight text-4xl md:text-5xl">Book your Hamilton van</h2>
+            <h2 className="font-sans font-extrabold tracking-tight text-4xl md:text-5xl">Book your Christchurch van</h2>
             <p className="mt-4 text-muted-foreground">
               Live availability across our cargo vans, jumbo vans and minibus.
             </p>
@@ -342,7 +384,7 @@ const HamiltonVanHire = () => {
           <span className="text-base font-semibold">Questions</span>
         </div>
         <div className="h-px w-full bg-border mb-8" />
-        <h2 className="font-sans font-extrabold tracking-tight text-4xl md:text-5xl mb-10">Van hire Hamilton FAQ</h2>
+        <h2 className="font-sans font-extrabold tracking-tight text-4xl md:text-5xl mb-10">Van hire Christchurch FAQ</h2>
         <dl className="divide-y divide-border border-y border-border">
           {faqJsonLd.mainEntity.map((q) => (
             <div key={q.name} className="py-6 grid md:grid-cols-3 gap-6">
@@ -356,4 +398,4 @@ const HamiltonVanHire = () => {
   );
 };
 
-export default HamiltonVanHire;
+export default ChristchurchVanHire;
