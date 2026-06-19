@@ -4,42 +4,73 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="google-site-verification" content="HZeyjDje3HWNnfTZ9UA7CaprQN-k3ZVdKo7eb0gBLoA" />
-    <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.defer=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-W79QXTK');</script>
-    <!-- End Google Tag Manager -->
-    <!-- Google tag (gtag.js) -->
-    <script defer src="https://www.googletagmanager.com/gtag/js?id=G-504DCLJNP1"></script>
-    <script defer>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+    <!-- Analytics & marketing tags: lazy-loaded after first interaction or idle to protect INP. -->
+    <script>
+      (function () {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){ window.dataLayer.push(arguments); }
+        window.gtag = window.gtag || gtag;
+        gtag('js', new Date());
 
-      gtag('config', 'G-504DCLJNP1');
-    </script>
-    <!-- Google tag (gtag.js) -->
-    <script defer src="https://www.googletagmanager.com/gtag/js?id=AW-11070147455">
-    </script>
-    <script defer>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+        var loaded = false;
+        function loadAnalytics() {
+          if (loaded) return;
+          loaded = true;
 
-      gtag('config', 'AW-11070147455');
+          // Google Tag Manager
+          (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+          new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+          j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+          'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+          })(window,document,'script','dataLayer','GTM-W79QXTK');
+
+          // gtag.js (GA4 + Google Ads)
+          var ga = document.createElement('script');
+          ga.async = true;
+          ga.src = 'https://www.googletagmanager.com/gtag/js?id=G-504DCLJNP1';
+          document.head.appendChild(ga);
+          gtag('config', 'G-504DCLJNP1');
+          gtag('config', 'AW-11070147455');
+
+          // Microsoft Clarity
+          (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+          })(window, document, "clarity", "script", "tyzaymgmg4");
+
+          // Meta Pixel
+          !function(f,b,e,v,n,t,s)
+          {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+          n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+          if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+          n.queue=[];t=b.createElement(e);t.async=!0;
+          t.src=v;s=b.getElementsByTagName(e)[0];
+          s.parentNode.insertBefore(t,s)}(window, document,'script',
+          'https://connect.facebook.net/en_US/fbevents.js');
+          window.fbq('init', '1268758624224312');
+          window.fbq('init', '553552300551753');
+          window.fbq('track', 'PageView');
+
+          // Lucky Orange
+          var lo = document.createElement('script');
+          lo.async = true;
+          lo.src = 'https://tools.luckyorange.com/core/lo.js?site-id=8582da9b';
+          document.head.appendChild(lo);
+        }
+
+        var events = ['pointerdown','keydown','touchstart','scroll'];
+        function trigger(){ events.forEach(function(e){ window.removeEventListener(e, trigger, { passive: true }); }); loadAnalytics(); }
+        events.forEach(function(e){ window.addEventListener(e, trigger, { passive: true, once: true }); });
+
+        // Fallback: load on idle / after first paint, but never block initial interaction.
+        if ('requestIdleCallback' in window) {
+          window.requestIdleCallback(loadAnalytics, { timeout: 5000 });
+        } else {
+          setTimeout(loadAnalytics, 4000);
+        }
+      })();
     </script>
-    
-    <!-- Microsoft Clarity -->
-    <script type="text/javascript">
-      (function(c,l,a,r,i,t,y){
-          c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-          t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-          y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-      })(window, document, "clarity", "script", "tyzaymgmg4");
-    </script>
-    <!-- End Microsoft Clarity -->
     
     <link rel="icon" href="/lovable-uploads/ee23bb91-cc75-4cf1-a745-f44e4a4bbb12.png?v=2" type="image/png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -99,25 +130,7 @@
     <link rel="preconnect" href="https://images.unsplash.com">
     
     
-    <!-- Meta Pixel Code -->
-    <script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.defer=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '1268758624224312');
-    fbq('init', '553552300551753');
-    fbq('track', 'PageView');
-    </script>
-    <!-- End Meta Pixel Code -->
-    
-    <!-- Lucky Orange -->
-    <script defer src="https://tools.luckyorange.com/core/lo.js?site-id=8582da9b"></script>
-    <!-- End Lucky Orange -->
+    <!-- Meta Pixel + Lucky Orange are loaded by the lazy analytics loader above to protect INP. -->
 
     <!-- Sitewide JSON-LD: Organization + WebSite -->
     <script type="application/ld+json">
