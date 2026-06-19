@@ -214,15 +214,14 @@ const VehicleCamera = ({ onPhotoCaptured, onClose, photoCount }: VehicleCameraPr
     <div className="fixed inset-0 z-50 bg-black flex flex-col h-[100dvh] w-screen overflow-hidden">
       {flash && <div className="absolute inset-0 z-50 bg-white pointer-events-none" />}
 
-      {/* Top bar */}
       <div className="shrink-0 flex items-center justify-between px-3 py-2 bg-black/80 text-white z-10">
-        <Button variant="ghost" size="icon" onClick={handleClose} className="text-white hover:bg-white/20">
+        <Button variant="ghost" size="icon" onClick={handleClose} className="text-white hover:bg-white/20" aria-label="Close">
           <X className="h-6 w-6" />
         </Button>
         <span className="text-sm font-medium">
           {photoCount} photo{photoCount !== 1 ? "s" : ""} taken
         </span>
-        <Button variant="ghost" size="icon" onClick={switchCamera} className="text-white hover:bg-white/20">
+        <Button variant="ghost" size="icon" onClick={switchCamera} className="text-white hover:bg-white/20" aria-label="Switch camera">
           <RotateCcw className="h-5 w-5" />
         </Button>
       </div>
