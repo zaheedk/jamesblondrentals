@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
@@ -106,6 +106,7 @@ import HamiltonTruckRentals from "./pages/HamiltonTruckRentals";
 import HamiltonVanHire from "./pages/HamiltonVanHire";
 import CentralChristchurchTruckHire from "./pages/CentralChristchurchTruckHire";
 import CentralChristchurchVanHire from "./pages/CentralChristchurchVanHire";
+import ChristchurchVanHire from "./pages/ChristchurchVanHire";
 import CentralChristchurchCarHire from "./pages/CentralChristchurchCarHire";
 import WellingtonCargoVanRentals from "./pages/WellingtonCargoVanRentals"; // Import the new Wellington Cargo Van Rentals page
 import WestAucklandCargoVanRentals from "./pages/WestAucklandCargoVanRentals"; // Import the new West Auckland Cargo Van Rentals page
@@ -272,8 +273,11 @@ const App = () => {
                 <Route path="/truck-hire" element={<TruckHire />} />
                 <Route path="/truck-hire-wellington" element={<WellingtonTruckRentals />} />
                 <Route path="/truck-hire-christchurch" element={<ChristchurchTruckRentals />} />
-                <Route path="/hamilton-truck-rentals-hire" element={<HamiltonTruckRentals />} />
-                <Route path="/hamilton-van-hire" element={<HamiltonVanHire />} />
+                <Route path="/hamilton-truck-rentals-hire" element={<Navigate to="/truck-hire-hamilton" replace />} />
+                <Route path="/truck-hire-hamilton" element={<HamiltonTruckRentals />} />
+                <Route path="/hamilton-van-hire" element={<Navigate to="/van-hire-hamilton" replace />} />
+                <Route path="/van-hire-hamilton" element={<HamiltonVanHire />} />
+                <Route path="/van-hire-christchurch" element={<ChristchurchVanHire />} />
                 <Route path="/central-christchurch-truck-hire" element={<CentralChristchurchTruckHire />} />
                 <Route path="/central-christchurch-van-hire" element={<CentralChristchurchVanHire />} />
                 <Route path="/central-christchurch-car-hire" element={<CentralChristchurchCarHire />} />
