@@ -5,10 +5,12 @@ import PageSEO from '@/components/PageSEO';
 import JsonLd from '@/components/JsonLd';
 import { bookingHowTo, pickupHowTo } from '@/seo/howToJsonLd';
 import WellingtonInternalLinks from '@/components/WellingtonInternalLinks';
+import WellingtonBreadcrumb from '@/components/WellingtonBreadcrumb';
 
 const AirportWellington = () => (
   <>
   <div className="container mx-auto px-4 py-8 space-y-6">
+    <WellingtonBreadcrumb currentLabel="Wellington Airport" />
     <PageSEO
       title="Wellington Airport Car Rental — Vehicles for Lower Hutt, Upper Hutt, Porirua & Kapiti"
       description="Vehicle rental at Wellington Airport (Miramar). Cars, vans, trucks and minibuses with easy pickup for travellers heading to Wellington CBD, Lower Hutt, Upper Hutt, Petone, Porirua, Tawa and the Kapiti Coast."

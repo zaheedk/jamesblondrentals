@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import SearchForm from '@/components/home/SearchForm';
 import { Link } from 'react-router-dom';
 import WellingtonInternalLinks from '@/components/WellingtonInternalLinks';
+import WellingtonBreadcrumb from '@/components/WellingtonBreadcrumb';
 import PageSEO from '@/components/PageSEO';
 
 
@@ -23,6 +24,7 @@ const WellingtonMinibusHire = () => {
   return (
     <>
     <div className="container mx-auto px-4 py-8">
+      <WellingtonBreadcrumb currentLabel="Minibus Hire" />
       <PageSEO
         title="Minibus Hire Wellington from $129/day — 10 & 12 Seat Van Rental Near You"
         description="10 and 12-seat minibus hire & van rental across the Wellington region — CBD, Lower Hutt, Upper Hutt, Petone, Porirua, Tawa, Johnsonville and the Kapiti Coast. Group travel, weddings, corporate events. Drive on a car licence."

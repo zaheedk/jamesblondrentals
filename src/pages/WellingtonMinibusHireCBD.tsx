@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import SearchForm from '@/components/home/SearchForm';
 import PageSEO from '@/components/PageSEO';
 import WellingtonInternalLinks from '@/components/WellingtonInternalLinks';
+import WellingtonBreadcrumb from '@/components/WellingtonBreadcrumb';
 
 
 const WellingtonMinibusHireCBD = () => {
@@ -20,6 +21,7 @@ const WellingtonMinibusHireCBD = () => {
   return (
     <>
     <div className="container mx-auto px-4 py-8">
+      <WellingtonBreadcrumb currentLabel="CBD Minibus Hire" />
       <PageSEO
         title="Minibus Hire Wellington CBD — 10 & 12 Seat Van Rental, Walk-In Pickup"
         description="10 and 12-seat minibus hire from our Wellington CBD branch — easy walk-in pickup for groups travelling to Lower Hutt, Upper Hutt, Petone, Porirua, Tawa or the Kapiti Coast."
