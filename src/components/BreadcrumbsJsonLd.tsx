@@ -153,11 +153,6 @@ const BreadcrumbsJsonLd = () => {
     );
   }
 
-  // Fallback: skip generic /airport/* and /contact/* (no city match).
-  if (pathname.startsWith('/airport/') || pathname.startsWith('/contact/')) {
-    return null;
-  }
-
   const segments = pathname.split('/').filter(Boolean);
 
   const items = [
