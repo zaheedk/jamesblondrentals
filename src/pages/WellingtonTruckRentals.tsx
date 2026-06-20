@@ -18,9 +18,9 @@ const WellingtonTruckRentals = () => {
   return (
     <>
       <Helmet>
-        <title>Truck Hire Wellington from $35/hr — Same-Day Moving Truck Rental</title>
-        <meta name="description" content="Book a moving truck rental in Wellington from $35/hr. 2-tonne & 3-tonne trucks with tail lifts. Same-day pickup, no hidden fees, drive on a car licence." />
-        <meta name="keywords" content="Wellington truck rentals, moving trucks Wellington, furniture truck hire, Wellington moving, truck hire CBD" />
+        <title>Truck Hire Wellington from $35/hr — Moving Truck Rental Near You</title>
+        <meta name="description" content="Truck rental & hire in Wellington from $35/hr — CBD, Lower Hutt, Upper Hutt, Petone, Porirua, Kapiti, Johnsonville. Same-day moving truck pickup, drive on a car licence." />
+        <meta name="keywords" content="truck hire Wellington, truck rental Wellington, moving truck Lower Hutt, truck hire Upper Hutt, truck hire Petone, truck rental Porirua, Kapiti truck hire" />
         <link rel="canonical" href="https://www.jamesblond.co.nz/truck-hire-wellington" />
       </Helmet>
       
@@ -29,9 +29,9 @@ const WellingtonTruckRentals = () => {
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-6 mb-8">
         <div className="grid md:grid-cols-2 gap-6 items-center">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold mb-4">Truck Hire in Wellington – Affordable Rentals</h1>
+            <h1 className="text-3xl md:text-4xl font-bold mb-4">Truck Hire & Moving Truck Rental — Wellington</h1>
             <p className="text-lg text-gray-700 mb-6">
-              Making your move in Wellington easier and more affordable with our range of rental trucks tailored for the capital city.
+              Same-day truck rental and moving truck hire across the Wellington region — Wellington CBD, Te Aro, Newtown, Kilbirnie, Johnsonville, Petone, Lower Hutt, Upper Hutt, Porirua, Tawa and the Kapiti Coast. 2-tonne and 3-tonne trucks from $35/hr, drive on a standard car licence.
             </p>
             <div className="flex items-center gap-2">
               <Button asChild size="lg">
