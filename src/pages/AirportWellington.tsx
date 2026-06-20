@@ -4,8 +4,10 @@ import FuelStationsMapWellington from '../components/FuelStationsMapWellington';
 import PageSEO from '@/components/PageSEO';
 import JsonLd from '@/components/JsonLd';
 import { bookingHowTo, pickupHowTo } from '@/seo/howToJsonLd';
+import WellingtonInternalLinks from '@/components/WellingtonInternalLinks';
 
 const AirportWellington = () => (
+  <>
   <div className="container mx-auto px-4 py-8 space-y-6">
     <PageSEO
       title="Wellington Airport Car Rental — Vehicles for Lower Hutt, Upper Hutt, Porirua & Kapiti"
@@ -203,6 +205,8 @@ const AirportWellington = () => (
       </div>
     </section>
   </div>
+  <WellingtonInternalLinks currentPath="/airport/wellington" />
+  </>
 );
 
 export default AirportWellington;

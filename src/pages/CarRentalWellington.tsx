@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import WellingtonInternalLinks from '@/components/WellingtonInternalLinks';
 import { MapPin, Phone, Mail, ArrowRight, Fuel } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,6 +11,7 @@ import PageSEO from '@/components/PageSEO';
 
 const CarRentalWellington = () => {
   return (
+    <>
     <div className="container mx-auto px-4 py-8">
       <PageSEO
         title="Car Rental Wellington from $45/day — Car Hire CBD, Lower Hutt, Porirua & Kapiti"
@@ -232,6 +234,8 @@ const CarRentalWellington = () => {
         </div>
       </section>
     </div>
+      <WellingtonInternalLinks currentPath="/car-rental-wellington-new-zealand" />
+      </>
   );
 };
 

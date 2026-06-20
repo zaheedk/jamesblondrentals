@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import SearchForm from '@/components/home/SearchForm';
 import { Link } from 'react-router-dom';
+import WellingtonInternalLinks from '@/components/WellingtonInternalLinks';
 import PageSEO from '@/components/PageSEO';
 
 
@@ -20,6 +21,7 @@ const WellingtonMinibusRentals = () => {
   }, []);
 
   return (
+    <>
     <div className="container mx-auto px-4 py-8">
       <PageSEO
         title="Minibus Rental Wellington from $129/day — 10 & 12 Seat Hire Near You"
@@ -492,6 +494,8 @@ const WellingtonMinibusRentals = () => {
         </p>
       </section>
     </div>
+    <WellingtonInternalLinks currentPath="/minibus-hire-wellington" />
+    </>
   );
 };
 
