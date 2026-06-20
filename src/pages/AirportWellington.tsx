@@ -205,6 +205,8 @@ const AirportWellington = () => (
       </div>
     </section>
   </div>
+  <WellingtonInternalLinks currentPath="/airport/wellington" />
+  </>
 );
 
 export default AirportWellington;
