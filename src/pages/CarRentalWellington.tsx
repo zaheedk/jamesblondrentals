@@ -11,6 +11,7 @@ import PageSEO from '@/components/PageSEO';
 
 const CarRentalWellington = () => {
   return (
+    <>
     <div className="container mx-auto px-4 py-8">
       <PageSEO
         title="Car Rental Wellington from $45/day — Car Hire CBD, Lower Hutt, Porirua & Kapiti"
