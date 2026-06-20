@@ -12,18 +12,18 @@ const WellingtonCargoVanRentals = () => {
   return (
     <>
       <Helmet>
-        <title>Van Hire Wellington from $69/day — Cargo Van Rental, Same-Day Pickup</title>
-        <meta name="description" content="Cargo van rental in Wellington from $69/day. Standard, jumbo and rear-seat vans for trades, couriers and moves. Same-day pickup, 7 days a week." />
-        <meta name="keywords" content="Wellington cargo van hire, van rental Wellington, cheap van hire Wellington, cargo van Wellington, delivery van Wellington" />
+        <title>Van Rental Wellington from $69/day — Cargo Van Hire Near You</title>
+        <meta name="description" content="Cargo van rental & hire in Wellington from $69/day — CBD, Lower Hutt, Upper Hutt, Petone, Porirua, Kapiti, Johnsonville. Same-day pickup, drive on a car licence." />
+        <meta name="keywords" content="van hire Wellington, van rental Wellington, van rental Lower Hutt, van rental Upper Hutt, cargo van Petone, van hire Porirua, Kapiti van hire" />
         <link rel="canonical" href="https://www.jamesblond.co.nz/van-hire-wellington" />
       </Helmet>
       <div className="container mx-auto px-4 py-8">
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-6 mb-8">
         <div className="text-center mb-6">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">Van Hire in Wellington – Affordable Cargo Van Rentals</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">Van Rental & Cargo Van Hire — Wellington</h1>
           <p className="text-lg text-gray-700 mb-6">
-            Affordable, reliable cargo vans for hire in Wellington. Perfect for small moves, deliveries, and business needs throughout the capital city.
+            Same-day van rental and cargo van hire across the Wellington region — Wellington CBD, Te Aro, Newtown, Kilbirnie, Johnsonville, Petone, Lower Hutt, Upper Hutt, Porirua, Tawa and the Kapiti Coast. Drive on a standard car licence.
           </p>
         </div>
       </div>
