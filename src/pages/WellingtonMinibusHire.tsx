@@ -21,6 +21,7 @@ const WellingtonMinibusHire = () => {
   }, []);
 
   return (
+    <>
     <div className="container mx-auto px-4 py-8">
       <PageSEO
         title="Minibus Hire Wellington from $129/day — 10 & 12 Seat Van Rental Near You"
