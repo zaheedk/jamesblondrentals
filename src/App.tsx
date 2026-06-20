@@ -108,6 +108,9 @@ import CentralChristchurchTruckHire from "./pages/CentralChristchurchTruckHire";
 import CentralChristchurchVanHire from "./pages/CentralChristchurchVanHire";
 import ChristchurchVanHire from "./pages/ChristchurchVanHire";
 import CentralChristchurchCarHire from "./pages/CentralChristchurchCarHire";
+import HamiltonCarHire from "./pages/HamiltonCarHire";
+import AucklandCarHire from "./pages/AucklandCarHire";
+import ChristchurchCarHire from "./pages/ChristchurchCarHire";
 import WellingtonCargoVanRentals from "./pages/WellingtonCargoVanRentals"; // Import the new Wellington Cargo Van Rentals page
 import WestAucklandCargoVanRentals from "./pages/WestAucklandCargoVanRentals"; // Import the new West Auckland Cargo Van Rentals page
 import AucklandAirportCargoVanRentals from "./pages/AucklandAirportCargoVanRentals"; // Import the new Auckland Airport Cargo Van Rentals page
