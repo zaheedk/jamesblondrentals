@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TruckQuoteSearchForm from '@/components/home/TruckQuoteSearchForm';
 import { Link } from 'react-router-dom';
 import WellingtonInternalLinks from '@/components/WellingtonInternalLinks';
+import WellingtonBreadcrumb from '@/components/WellingtonBreadcrumb';
 import { LazyImage } from '@/components/LazyImage';
 import truckMovingBoxes from '@/assets/truck-moving-boxes-household-items.jpg';
 import truckOpenDoors from '@/assets/truck-open-doors-loading-boxes.jpg';
@@ -26,6 +27,7 @@ const WellingtonTruckRentals = () => {
       </Helmet>
       
       <div className="container mx-auto px-4 py-8">
+      <WellingtonBreadcrumb currentLabel="Truck Hire" />
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-6 mb-8">
         <div className="grid md:grid-cols-2 gap-6 items-center">

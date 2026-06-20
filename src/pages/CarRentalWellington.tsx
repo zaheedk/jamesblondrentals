@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import WellingtonInternalLinks from '@/components/WellingtonInternalLinks';
+import WellingtonBreadcrumb from '@/components/WellingtonBreadcrumb';
 import { MapPin, Phone, Mail, ArrowRight, Fuel } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -13,6 +14,7 @@ const CarRentalWellington = () => {
   return (
     <>
     <div className="container mx-auto px-4 py-8">
+      <WellingtonBreadcrumb currentLabel="Wellington" isHub={true} />
       <PageSEO
         title="Car Rental Wellington from $45/day — Car Hire CBD, Lower Hutt, Porirua & Kapiti"
         description="Affordable car hire & car rental across the Wellington region — CBD, Lower Hutt, Upper Hutt, Petone, Porirua, Tawa, Johnsonville and the Kapiti Coast. SUVs, sedans, economy cars and people movers, daily and weekly rates."

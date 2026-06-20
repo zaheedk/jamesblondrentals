@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import SearchForm from '@/components/home/SearchForm';
 import { Link } from 'react-router-dom';
 import WellingtonInternalLinks from '@/components/WellingtonInternalLinks';
+import WellingtonBreadcrumb from '@/components/WellingtonBreadcrumb';
 import { Helmet } from 'react-helmet-async';
 import { LazyImage } from '@/components/LazyImage';
 
@@ -19,6 +20,7 @@ const WellingtonCargoVanRentals = () => {
         <link rel="canonical" href="https://www.jamesblond.co.nz/van-hire-wellington" />
       </Helmet>
       <div className="container mx-auto px-4 py-8">
+      <WellingtonBreadcrumb currentLabel="Van Hire" />
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-6 mb-8">
         <div className="text-center mb-6">
