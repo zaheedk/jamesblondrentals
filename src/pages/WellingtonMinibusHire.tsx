@@ -21,14 +21,18 @@ const WellingtonMinibusHire = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <PageSEO title="Minibus Hire Wellington – 10 & 12 Seat | James Blond" description="Rent 10 and 12-seat minibuses in Wellington for group travel, tours, weddings and corporate events." canonical="/wellington-minibus-hire" />
+      <PageSEO
+        title="Minibus Hire Wellington from $129/day — 10 & 12 Seat Van Rental Near You"
+        description="10 and 12-seat minibus hire & van rental across the Wellington region — CBD, Lower Hutt, Upper Hutt, Petone, Porirua, Tawa, Johnsonville and the Kapiti Coast. Group travel, weddings, corporate events. Drive on a car licence."
+        canonical="/wellington-minibus-hire"
+      />
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-6 mb-8">
         <div className="grid md:grid-cols-2 gap-6 items-center">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold mb-4">Cheap 10 & 12 Seat Van Minibus Hire Wellington</h1>
+            <h1 className="text-3xl md:text-4xl font-bold mb-4">10 & 12 Seat Minibus Hire & Van Rental — Wellington</h1>
             <p className="text-lg text-gray-700 mb-6">
-              Affordable Toyota Hiace minibus rentals perfect for family travel and group adventures throughout Wellington, Lower Hutt, and Upper Hutt.
+              Affordable Toyota Hiace minibus rentals across the Wellington region — Wellington CBD, Te Aro, Newtown, Kilbirnie, Johnsonville, Petone, Lower Hutt, Upper Hutt, Porirua, Tawa and the Kapiti Coast. Drive on a standard car licence.
             </p>
             <div className="flex items-center gap-2 mb-4">
               <Button asChild size="lg">

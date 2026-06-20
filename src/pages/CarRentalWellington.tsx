@@ -11,7 +11,11 @@ import PageSEO from '@/components/PageSEO';
 const CarRentalWellington = () => {
   return (
     <div className="container mx-auto px-4 py-8">
-      <PageSEO title="Car Rental Wellington NZ | James Blond Rentals" description="Affordable car hire in Wellington. SUVs, sedans, economy cars and people movers available for daily and weekly rental." canonical="/car-rental-wellington-new-zealand" />
+      <PageSEO
+        title="Car Rental Wellington from $45/day — Car Hire CBD, Lower Hutt, Porirua & Kapiti"
+        description="Affordable car hire & car rental across the Wellington region — CBD, Lower Hutt, Upper Hutt, Petone, Porirua, Tawa, Johnsonville and the Kapiti Coast. SUVs, sedans, economy cars and people movers, daily and weekly rates."
+        canonical="/car-rental-wellington-new-zealand"
+      />
       {/* Hero Section */}
       <section className="bg-primary/5 rounded-lg p-6 mb-12">
         <div className="flex flex-col items-center">
