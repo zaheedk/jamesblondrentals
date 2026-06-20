@@ -111,6 +111,9 @@ import CentralChristchurchCarHire from "./pages/CentralChristchurchCarHire";
 import HamiltonCarHire from "./pages/HamiltonCarHire";
 import UteHireNZ from "./pages/UteHireNZ";
 import PickupTruckRental from "./pages/PickupTruckRental";
+import TipperTruckHire from "./pages/TipperTruckHire";
+import TautlinerHire from "./pages/TautlinerHire";
+import MovingTruckRental from "./pages/MovingTruckRental";
 import AucklandCarHire from "./pages/AucklandCarHire";
 import ChristchurchCarHire from "./pages/ChristchurchCarHire";
 import WellingtonCargoVanRentals from "./pages/WellingtonCargoVanRentals"; // Import the new Wellington Cargo Van Rentals page
@@ -288,6 +291,9 @@ const App = () => {
                 <Route path="/car-hire-christchurch" element={<ChristchurchCarHire />} />
                 <Route path="/ute-hire" element={<UteHireNZ />} />
                 <Route path="/pickup-truck-rental" element={<PickupTruckRental />} />
+                <Route path="/tipper-truck-hire" element={<TipperTruckHire />} />
+                <Route path="/tautliner-hire" element={<TautlinerHire />} />
+                <Route path="/moving-truck-rental" element={<MovingTruckRental />} />
                 <Route path="/central-christchurch-truck-hire" element={<CentralChristchurchTruckHire />} />
                 <Route path="/central-christchurch-van-hire" element={<CentralChristchurchVanHire />} />
                 <Route path="/central-christchurch-car-hire" element={<CentralChristchurchCarHire />} />

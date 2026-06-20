@@ -12,12 +12,16 @@ import PageSEO from '@/components/PageSEO';
 const WestAucklandCargoVanRentals = () => {
   return (
     <div className="container mx-auto px-4 py-8">
-      <PageSEO title="Cargo Van Hire West Auckland | James Blond Rentals" description="Hire cargo vans in West Auckland for deliveries, courier work and commercial transport in the western suburbs." canonical="/west-auckland-cargo-van-rentals-hire" />
+      <PageSEO
+        title="Van Rental West Auckland from $69/day — Cargo Van Hire Near You"
+        description="Cargo van rental & hire in West Auckland — Henderson, Henderson Valley, New Lynn, Swanson, Te Atatu, Westgate, Hobsonville, Long Bay, Whitford, Redvale. Same-day pickup, drive on a car licence."
+        canonical="/west-auckland-cargo-van-rentals-hire"
+      />
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-6 mb-8">
         <div className="grid md:grid-cols-2 gap-6 items-center">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold mb-4">West Auckland Cargo Van Rentals & Hire</h1>
+            <h1 className="text-3xl md:text-4xl font-bold mb-4">Van Rental & Cargo Van Hire — West Auckland</h1>
             <p className="text-lg text-gray-700 mb-6">
               Affordable, reliable cargo vans for hire in West Auckland. Perfect for small moves, deliveries, and business needs throughout Auckland's western suburbs.
             </p>

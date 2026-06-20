@@ -302,6 +302,9 @@ const Index = () => {
                   { label: 'Car hire Hamilton', to: '/car-hire-hamilton' },
                   { label: 'Ute hire NZ', to: '/ute-hire' },
                   { label: 'Pickup truck rental', to: '/pickup-truck-rental' },
+                  { label: 'Moving truck rental', to: '/moving-truck-rental' },
+                  { label: 'Tipper truck hire', to: '/tipper-truck-hire' },
+                  { label: 'Tautliner hire', to: '/tautliner-hire' },
                 ],
               },
             ].map((col) => (
