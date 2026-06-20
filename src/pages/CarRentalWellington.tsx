@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import WellingtonInternalLinks from '@/components/WellingtonInternalLinks';
 import { MapPin, Phone, Mail, ArrowRight, Fuel } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -232,6 +233,8 @@ const CarRentalWellington = () => {
         </div>
       </section>
     </div>
+      <WellingtonInternalLinks currentPath="/car-rental-wellington-new-zealand" />
+      </>
   );
 };
 
