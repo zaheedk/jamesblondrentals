@@ -134,8 +134,8 @@ const ChristchurchVanHire = () => {
   return (
     <div className="bg-background text-foreground">
       <PageSEO
-        title="Van Hire Christchurch | Cargo Vans & Minibuses | James Blond"
-        description="Van hire in Christchurch from $69/day. Cargo vans, jumbo vans and 12-seat minibuses for trades, couriers, moves and groups. Drive on a car licence."
+        title="Van Hire Christchurch from $69/day — Cargo Van Rental, Same-Day"
+        description="Cargo van rental in Christchurch from $69/day. Standard, jumbo and 12-seat vans for trades, couriers and moves. Same-day pickup, drive on a car licence."
         canonical="/van-hire-christchurch"
       />
       <JsonLd data={faqJsonLd} />

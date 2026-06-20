@@ -59,7 +59,7 @@ const AucklandVanHire = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <PageSEO title="12-Seater Van Hire Auckland | James Blond Rentals" description="Rent a 12-seater van in Auckland for group travel, sports teams and events. Comfortable and easy to drive." canonical="/12-seater-van-hire-auckland" />
+      <PageSEO title="12-Seater Van Hire Auckland from $129/day — Minibus Rental" description="Rent a 12-seater van or minibus in Auckland from $129/day for group travel, sports teams and events. Same-day pickup, drive on a car licence." canonical="/12-seater-van-hire-auckland" />
       {/* Breadcrumb */}
       <div className="bg-muted/50 py-4">
         <div className="container mx-auto px-4">

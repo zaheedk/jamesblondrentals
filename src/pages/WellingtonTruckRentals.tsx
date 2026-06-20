@@ -18,8 +18,8 @@ const WellingtonTruckRentals = () => {
   return (
     <>
       <Helmet>
-        <title>Truck Hire Wellington | Affordable Truck Rentals – James Blond</title>
-        <meta name="description" content="Book affordable truck hire in Wellington. Perfect for moving, business deliveries, and heavy loads. Flexible daily and weekly rentals – no hidden costs." />
+        <title>Truck Hire Wellington from $35/hr — Same-Day Moving Truck Rental</title>
+        <meta name="description" content="Book a moving truck rental in Wellington from $35/hr. 2-tonne & 3-tonne trucks with tail lifts. Same-day pickup, no hidden fees, drive on a car licence." />
         <meta name="keywords" content="Wellington truck rentals, moving trucks Wellington, furniture truck hire, Wellington moving, truck hire CBD" />
         <link rel="canonical" href="https://www.jamesblond.co.nz/truck-hire-wellington" />
       </Helmet>
