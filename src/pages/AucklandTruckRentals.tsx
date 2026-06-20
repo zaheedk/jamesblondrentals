@@ -20,9 +20,9 @@ const AucklandTruckRentals = () => {
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-6 mb-8">
         <div className="grid md:grid-cols-2 gap-6 items-center">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold mb-4">Cheap and Affordable Furniture & Moving Truck Hire Auckland</h1>
+            <h1 className="text-3xl md:text-4xl font-bold mb-4">Truck Hire Auckland — Moving Truck Rental Near You</h1>
             <p className="text-lg text-gray-700 mb-6">
-              Making your move simpler, faster and more affordable with our range of rental trucks specifically designed for Auckland residents.
+              Same-day truck rental and moving truck hire across Auckland — CBD, Penrose, Auckland Airport, North Shore, South Auckland and West Auckland. 2-tonne and 3-tonne trucks from $35/hr, drive on a standard car licence.
             </p>
             <div className="flex items-center gap-2">
               <Button asChild size="lg">

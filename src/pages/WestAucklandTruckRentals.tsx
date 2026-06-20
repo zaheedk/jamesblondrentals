@@ -14,14 +14,18 @@ import PageSEO from '@/components/PageSEO';
 const WestAucklandTruckRentals = () => {
   return (
     <div className="container mx-auto px-4 py-8">
-      <PageSEO title="Truck Hire West Auckland | James Blond Rentals" description="Rent trucks in West Auckland including Henderson, New Lynn and Waitakere. Convenient pickup for moving and deliveries." canonical="/west-auckland-truck-rentals-hire" />
+      <PageSEO
+        title="Truck Hire West Auckland from $35/hr — Moving Truck Rental Near You"
+        description="Truck rental & hire in West Auckland from $35/hr — Henderson, New Lynn, Swanson, Waitakere, Lower Hutt-style suburbs. Same-day moving truck pickup, drive on a car licence."
+        canonical="/west-auckland-truck-rentals-hire"
+      />
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-6 mb-8">
         <div className="grid md:grid-cols-2 gap-6 items-center">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold mb-4">Cheap and Affordable Furniture & Moving Truck Hire West Auckland</h1>
+            <h1 className="text-3xl md:text-4xl font-bold mb-4">Truck Hire & Moving Truck Rental — West Auckland</h1>
             <p className="text-lg text-gray-700 mb-6">
-              Making your move simpler, faster and more affordable with our range of rental trucks specifically designed for West Auckland residents.
+              Same-day truck rental and moving truck hire across West Auckland — Henderson, Henderson Valley, New Lynn, Swanson, Te Atatu, Massey, Westgate, Hobsonville, Waitakere and Titirangi. Drive on a standard car licence.
             </p>
             <div className="flex items-center gap-2">
               <Button asChild size="lg">
