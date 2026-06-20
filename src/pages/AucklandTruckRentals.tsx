@@ -15,7 +15,7 @@ import PageSEO from '@/components/PageSEO';
 const AucklandTruckRentals = () => {
   return (
     <div className="container mx-auto px-4 py-8">
-      <PageSEO title="Truck Hire Auckland | James Blond Rentals" description="Rent trucks in Auckland for house moves, business deliveries and construction. 2-tonne and 3-tonne trucks available daily." canonical="/auckland-truck-rentals-hire" />
+      <PageSEO title="Truck Hire Auckland from $35/hr — Moving Truck Rental, Same-Day" description="Rent a moving truck in Auckland from $35/hr. 2-tonne & 3-tonne trucks with tail lifts for house moves, deliveries & trades. Same-day pickup, drive on a car licence." canonical="/auckland-truck-rentals-hire" />
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-6 mb-8">
         <div className="grid md:grid-cols-2 gap-6 items-center">

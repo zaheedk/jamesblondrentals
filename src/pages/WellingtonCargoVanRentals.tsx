@@ -12,8 +12,8 @@ const WellingtonCargoVanRentals = () => {
   return (
     <>
       <Helmet>
-        <title>Van Hire Wellington | Affordable Van Rental – James Blond</title>
-        <meta name="description" content="Book affordable van hire in Wellington with James Blond. Reliable vans for moving, delivery, and travel – 7 days a week" />
+        <title>Van Hire Wellington from $69/day — Cargo Van Rental, Same-Day Pickup</title>
+        <meta name="description" content="Cargo van rental in Wellington from $69/day. Standard, jumbo and rear-seat vans for trades, couriers and moves. Same-day pickup, 7 days a week." />
         <meta name="keywords" content="Wellington cargo van hire, van rental Wellington, cheap van hire Wellington, cargo van Wellington, delivery van Wellington" />
         <link rel="canonical" href="https://www.jamesblond.co.nz/van-hire-wellington" />
       </Helmet>

@@ -91,8 +91,8 @@ const HamiltonTruckRentals = () => {
   return (
     <div className="bg-background text-foreground">
       <PageSEO
-        title="Truck Hire Hamilton | Moving Trucks from $35/hr | James Blond"
-        description="Affordable truck hire in Hamilton for house moves, furniture pickups and business deliveries. 2-tonne and 3-tonne trucks with optional tail lifts."
+        title="Truck Hire Hamilton from $35/hr — Same-Day Moving Truck Rental"
+        description="Book a moving truck rental in Hamilton from $35/hr. 2-tonne & 3-tonne trucks with tail lifts, same-day pickup, no hidden fees. Drive on a car licence."
         canonical="/truck-hire-hamilton"
       />
       <JsonLd data={faqJsonLd} />

@@ -104,6 +104,8 @@ export const sitemapRoutes: SitemapRoute[] = [
   { path: '/car-hire-hamilton', priority: 0.9, changefreq: 'weekly' },
   { path: '/car-hire-auckland', priority: 0.9, changefreq: 'weekly' },
   { path: '/car-hire-christchurch', priority: 0.9, changefreq: 'weekly' },
+  { path: '/ute-hire', priority: 0.9, changefreq: 'weekly' },
+  { path: '/pickup-truck-rental', priority: 0.9, changefreq: 'weekly' },
   { path: '/central-christchurch-truck-hire', priority: 0.9, changefreq: 'weekly' },
   { path: '/central-christchurch-van-hire', priority: 0.9, changefreq: 'weekly' },
   { path: '/central-christchurch-car-hire', priority: 0.9, changefreq: 'weekly' },

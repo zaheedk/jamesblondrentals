@@ -92,8 +92,8 @@ const HamiltonVanHire = () => {
   return (
     <div className="bg-background text-foreground">
       <PageSEO
-        title="Van Hire Hamilton | Cargo Vans & Minibuses | James Blond"
-        description="Van hire in Hamilton for trades, couriers, moves and group travel. Standard cargo vans, jumbo vans and 12-seat minibuses — all on a car licence."
+        title="Van Hire Hamilton from $69/day — Cargo Van Rental, Same-Day Pickup"
+        description="Cargo van rental in Hamilton from $69/day. Standard, jumbo and 12-seat vans for trades, couriers and moves. Same-day pickup, drive on a car licence."
         canonical="/van-hire-hamilton"
       />
       <JsonLd data={faqJsonLd} />

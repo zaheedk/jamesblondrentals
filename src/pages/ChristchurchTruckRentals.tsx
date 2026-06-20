@@ -18,8 +18,8 @@ const ChristchurchTruckRentals = () => {
   return (
     <>
       <Helmet>
-        <title>Truck Hire Christchurch | Affordable Truck Rentals – James Blond</title>
-        <meta name="description" content="Book affordable truck hire in Christchurch. Perfect for moving, business deliveries, and heavy loads. Flexible daily and weekly rentals – no hidden costs." />
+        <title>Truck Hire Christchurch from $35/hr — Moving Truck Rental, Same-Day</title>
+        <meta name="description" content="Book a moving truck rental in Christchurch from $35/hr. 2-tonne & 3-tonne trucks with tail lifts. Same-day pickup, no hidden fees, drive on a car licence." />
         <meta name="keywords" content="Christchurch truck rentals, moving trucks Christchurch, furniture truck hire, Christchurch moving, truck hire Canterbury" />
         <link rel="canonical" href="https://www.jamesblond.co.nz/truck-hire-christchurch" />
       </Helmet>

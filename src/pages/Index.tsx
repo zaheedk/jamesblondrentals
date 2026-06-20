@@ -258,6 +258,70 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Hire by City — internal-link SEO block */}
+      <section className="section-padding border-t bg-background">
+        <div className="container mx-auto container-padding max-w-6xl">
+          <div className="mb-10">
+            <h2 className="text-balance mb-2">Hire by city &amp; vehicle type</h2>
+            <p className="text-muted-foreground">Same-day truck, van, ute and car rental at every James Blond branch.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                city: 'Auckland',
+                links: [
+                  { label: 'Truck hire Auckland', to: '/auckland-truck-rentals-hire' },
+                  { label: 'Van hire Auckland', to: '/central-auckland-cargo-van-rentals-hire' },
+                  { label: 'Car hire Auckland', to: '/car-hire-auckland' },
+                  { label: '12-seater minibus Auckland', to: '/12-seater-van-hire-auckland' },
+                ],
+              },
+              {
+                city: 'Wellington',
+                links: [
+                  { label: 'Truck hire Wellington', to: '/truck-hire-wellington' },
+                  { label: 'Van hire Wellington', to: '/van-hire-wellington' },
+                  { label: 'Car hire Wellington', to: '/car-rental-wellington-new-zealand' },
+                  { label: 'Minibus hire Wellington', to: '/minibus-hire-wellington' },
+                ],
+              },
+              {
+                city: 'Christchurch',
+                links: [
+                  { label: 'Truck hire Christchurch', to: '/truck-hire-christchurch' },
+                  { label: 'Van hire Christchurch', to: '/van-hire-christchurch' },
+                  { label: 'Car hire Christchurch', to: '/car-hire-christchurch' },
+                  { label: 'Christchurch CBD hire', to: '/central-christchurch-car-hire' },
+                ],
+              },
+              {
+                city: 'Hamilton & national',
+                links: [
+                  { label: 'Truck hire Hamilton', to: '/truck-hire-hamilton' },
+                  { label: 'Van hire Hamilton', to: '/van-hire-hamilton' },
+                  { label: 'Car hire Hamilton', to: '/car-hire-hamilton' },
+                  { label: 'Ute hire NZ', to: '/ute-hire' },
+                  { label: 'Pickup truck rental', to: '/pickup-truck-rental' },
+                ],
+              },
+            ].map((col) => (
+              <div key={col.city}>
+                <h3 className="font-bold mb-3">{col.city}</h3>
+                <ul className="space-y-2 text-sm">
+                  {col.links.map((l) => (
+                    <li key={l.to}>
+                      <Link to={l.to} className="text-muted-foreground hover:text-primary transition-colors">
+                        {l.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* FAQ Section */}
       <section className="section-padding bg-muted/20 border-t">
         <div className="container mx-auto container-padding">
