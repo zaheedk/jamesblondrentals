@@ -21,13 +21,17 @@ const WellingtonMinibusRentals = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <PageSEO title="Minibus Rentals Wellington | James Blond Rentals" description="Affordable minibus hire in Wellington. 10-seat and 12-seat options for groups, events and family travel." canonical="/minibus-hire-wellington" />
+      <PageSEO
+        title="Minibus Rental Wellington from $129/day — 10 & 12 Seat Hire Near You"
+        description="Minibus hire & 10–12 seat van rental across the Wellington region — CBD, Lower Hutt, Upper Hutt, Petone, Porirua, Tawa, Johnsonville and the Kapiti Coast. Groups, events and family travel."
+        canonical="/minibus-hire-wellington"
+      />
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-6 mb-8">
         <div className="text-center mb-6">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">Minibus Hire in Wellington – 10 to 12-Seater Rentals</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">Minibus Hire & Van Rental — Wellington (10 & 12 Seat)</h1>
           <p className="text-lg text-gray-700 mb-6">
-            Premium minibus rentals in Wellington for groups, families, and corporate travel. Comfortable, reliable transport for up to 12 passengers throughout the capital city and greater Wellington region.
+            Premium minibus rentals across the Wellington region — Wellington CBD, Petone, Lower Hutt, Upper Hutt, Porirua, Tawa, Johnsonville and the Kapiti Coast. Comfortable transport for up to 12 passengers, drive on a standard car licence.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button asChild size="lg">

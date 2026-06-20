@@ -18,13 +18,17 @@ const WellingtonMinibusHireCBD = () => {
   
   return (
     <div className="container mx-auto px-4 py-8">
-      <PageSEO title="Minibus Hire Wellington CBD | James Blond Rentals" description="Convenient minibus hire from our Wellington CBD location. Walk-in pickup for 10 and 12-seat minibuses." canonical="/wellington-minibus-hire-cbd" />
+      <PageSEO
+        title="Minibus Hire Wellington CBD — 10 & 12 Seat Van Rental, Walk-In Pickup"
+        description="10 and 12-seat minibus hire from our Wellington CBD branch — easy walk-in pickup for groups travelling to Lower Hutt, Upper Hutt, Petone, Porirua, Tawa or the Kapiti Coast."
+        canonical="/wellington-minibus-hire-cbd"
+      />
       {/* Hero Section */}
       <section className="bg-primary/5 rounded-lg p-6 mb-12">
         <div className="flex flex-col items-center">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4 text-center">Wellington CBD Minibus Hire & Rentals</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4 text-center">Wellington CBD Minibus Hire & Van Rental</h1>
           <p className="text-lg text-gray-700 mb-6 max-w-3xl text-center">
-            Comfortable, reliable minibus rentals in Wellington CBD for groups exploring the capital city. Perfect for corporate events, family trips, and sightseeing tours.
+            Comfortable 10 and 12-seat minibus rentals from our Wellington CBD branch — easy walk-in pickup for groups heading to Petone, Lower Hutt, Upper Hutt, Porirua, Tawa, Johnsonville and the Kapiti Coast. Corporate events, family trips and sightseeing tours.
           </p>
           <div className="w-full max-w-4xl">
             <Card className="border-0 shadow-lg">
