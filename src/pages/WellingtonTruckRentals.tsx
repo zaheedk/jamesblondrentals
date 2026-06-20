@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TruckQuoteSearchForm from '@/components/home/TruckQuoteSearchForm';
 import { Link } from 'react-router-dom';
 import WellingtonInternalLinks from '@/components/WellingtonInternalLinks';
+import WellingtonBreadcrumb from '@/components/WellingtonBreadcrumb';
 import { LazyImage } from '@/components/LazyImage';
 import truckMovingBoxes from '@/assets/truck-moving-boxes-household-items.jpg';
 import truckOpenDoors from '@/assets/truck-open-doors-loading-boxes.jpg';
