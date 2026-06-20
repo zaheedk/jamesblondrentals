@@ -283,6 +283,10 @@ const Index = () => {
                   { label: 'Van hire Wellington', to: '/van-hire-wellington' },
                   { label: 'Car hire Wellington', to: '/car-rental-wellington-new-zealand' },
                   { label: 'Minibus hire Wellington', to: '/minibus-hire-wellington' },
+                  { label: '10 & 12 seat minibus Wellington', to: '/wellington-minibus-hire' },
+                  { label: '10 & 12 seat van rental Wellington', to: '/wellington-10-12-seat-van-minibus-rental' },
+                  { label: 'Wellington CBD minibus hire', to: '/wellington-minibus-hire-cbd' },
+                  { label: 'Wellington airport pickup', to: '/airport/wellington' },
                 ],
               },
               {
