@@ -490,6 +490,8 @@ const WellingtonMinibusHire = () => {
         </p>
       </section>
     </div>
+    <WellingtonInternalLinks currentPath="/wellington-minibus-hire" />
+    </>
   );
 };
 
