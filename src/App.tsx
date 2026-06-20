@@ -284,6 +284,8 @@ const App = () => {
                 <Route path="/car-hire-hamilton" element={<HamiltonCarHire />} />
                 <Route path="/car-hire-auckland" element={<AucklandCarHire />} />
                 <Route path="/car-hire-christchurch" element={<ChristchurchCarHire />} />
+                <Route path="/ute-hire" element={<UteHireNZ />} />
+                <Route path="/pickup-truck-rental" element={<PickupTruckRental />} />
                 <Route path="/central-christchurch-truck-hire" element={<CentralChristchurchTruckHire />} />
                 <Route path="/central-christchurch-van-hire" element={<CentralChristchurchVanHire />} />
                 <Route path="/central-christchurch-car-hire" element={<CentralChristchurchCarHire />} />
