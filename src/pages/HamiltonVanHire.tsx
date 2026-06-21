@@ -352,6 +352,91 @@ const HamiltonVanHire = () => {
           ))}
         </dl>
       </section>
+
+      {/* Hamilton areas & routes — topical depth for local SEO */}
+      <section className="border-t border-border bg-[hsl(0_0%_92%)] text-[hsl(0_0%_8%)]">
+        <div className="container mx-auto px-6 py-20 grid md:grid-cols-12 gap-12">
+          <div className="md:col-span-5">
+            <div className="flex items-center gap-3 mb-3">
+              <MapPin className="h-5 w-5 text-primary" />
+              <span className="text-base font-semibold">Areas &amp; routes</span>
+            </div>
+            <div className="h-px w-full bg-[hsl(0_0%_70%)] mb-6" />
+            <h2 className="font-sans font-extrabold tracking-tight text-4xl md:text-5xl leading-[1.05]">
+              Hamilton suburbs &amp; Waikato routes our vans run every day.
+            </h2>
+            <p className="mt-6 text-[hsl(0_0%_30%)]">
+              From courier loops around Te Rapa to flat-pack runs from The Base and weekend
+              minibus trips out to Hobbiton and Raglan, our Hamilton van rentals cover every
+              corner of the Waikato. Pickup is from our Hamilton branch with quick access to
+              State Highway 1 and State Highway 3.
+            </p>
+          </div>
+          <div className="md:col-span-7 grid sm:grid-cols-2 gap-10">
+            <div>
+              <h3 className="font-sans font-extrabold text-2xl tracking-tight mb-4">
+                Hamilton suburbs we serve
+              </h3>
+              <ul className="text-sm text-[hsl(0_0%_30%)] space-y-2">
+                <li>Hamilton East &amp; Claudelands</li>
+                <li>Hamilton West &amp; Frankton</li>
+                <li>Rototuna &amp; Flagstaff</li>
+                <li>Chartwell &amp; Fairfield</li>
+                <li>Te Rapa &amp; The Base</li>
+                <li>Glenview, Melville &amp; Dinsdale</li>
+                <li>Hillcrest &amp; Silverdale</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-sans font-extrabold text-2xl tracking-tight mb-4">
+                Routes &amp; day trips
+              </h3>
+              <ul className="text-sm text-[hsl(0_0%_30%)] space-y-2">
+                <li>SH1 north to Auckland &amp; the airport</li>
+                <li>SH1 south to Taupō &amp; Tongariro</li>
+                <li>SH3 west to Raglan &amp; the coast</li>
+                <li>SH29 east to Tauranga &amp; the Mount</li>
+                <li>Cambridge, Te Awamutu &amp; Hobbiton</li>
+                <li>Huntly, Ngāruawāhia &amp; Morrinsville</li>
+                <li>One-way van hire on request</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Related Hamilton services — internal linking */}
+      <section className="container mx-auto px-6 py-20 border-t border-border">
+        <div className="flex items-center gap-3 mb-3">
+          <Truck className="h-5 w-5 text-primary" />
+          <span className="text-base font-semibold">Also in Hamilton</span>
+        </div>
+        <div className="h-px w-full bg-border mb-8" />
+        <h2 className="font-sans font-extrabold tracking-tight text-3xl md:text-4xl mb-10">
+          Related Hamilton rentals
+        </h2>
+        <div className="grid md:grid-cols-3 gap-8">
+          {[
+            { to: '/truck-hire-hamilton', t: 'Truck hire Hamilton', d: '2-tonne and 3-tonne moving trucks from $35/hr — drive on a car licence.' },
+            { to: '/contact-hamilton', t: 'Hamilton branch', d: 'Address, hours, phone and directions to our Hamilton depot.' },
+            { to: '/fleet/minibuses', t: '12-seat minibus', d: 'Sports teams, weddings, Hobbiton trips and airport runs.' },
+          ].map((c) => (
+            <Link
+              key={c.to}
+              to={c.to}
+              className="group block border-t border-border pt-6 hover:border-primary transition-colors"
+            >
+              <h3 className="font-sans font-extrabold text-2xl tracking-tight group-hover:text-primary transition-colors">
+                {c.t}
+              </h3>
+              <p className="mt-3 text-sm text-muted-foreground">{c.d}</p>
+              <span className="mt-4 inline-flex items-center gap-2 text-sm font-medium">
+                Learn more <ArrowRight className="h-4 w-4" />
+              </span>
+            </Link>
+          ))}
+        </div>
+      </section>
     </div>
   );
 };

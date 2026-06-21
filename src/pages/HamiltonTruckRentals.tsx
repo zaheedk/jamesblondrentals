@@ -339,6 +339,82 @@ const HamiltonTruckRentals = () => {
           ))}
         </dl>
       </section>
+
+      {/* Hamilton areas & routes — topical depth for local SEO */}
+      <section className="border-t border-border bg-muted/30">
+        <div className="container mx-auto px-6 py-20 grid md:grid-cols-12 gap-12">
+          <div className="md:col-span-5">
+            <p className="text-sm tracking-[0.25em] uppercase text-muted-foreground mb-4">
+              Areas &amp; routes
+            </p>
+            <h2 className="font-serif text-4xl md:text-5xl leading-tight">
+              Hamilton suburbs &amp; Waikato routes our trucks know best.
+            </h2>
+            <p className="mt-6 text-muted-foreground">
+              Our Hamilton truck rentals run jobs across the city every day — from quick
+              furniture pickups in Hamilton East to full house moves out to Cambridge, Te
+              Awamutu and beyond. Pickup is from our Hamilton branch with quick on-ramps to
+              State Highway 1 and State Highway 3, so you can be on the open road within
+              minutes of leaving the counter.
+            </p>
+          </div>
+          <div className="md:col-span-7 grid sm:grid-cols-2 gap-10">
+            <div>
+              <h3 className="font-serif text-2xl mb-4">Hamilton suburbs we move</h3>
+              <ul className="text-sm text-muted-foreground space-y-2">
+                <li>Hamilton East &amp; Claudelands</li>
+                <li>Hamilton West &amp; Frankton</li>
+                <li>Rototuna &amp; Flagstaff</li>
+                <li>Chartwell &amp; Fairfield</li>
+                <li>Te Rapa &amp; The Base</li>
+                <li>Glenview, Melville &amp; Dinsdale</li>
+                <li>Hillcrest &amp; Silverdale</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-serif text-2xl mb-4">Routes &amp; out-of-town moves</h3>
+              <ul className="text-sm text-muted-foreground space-y-2">
+                <li>SH1 north to Auckland &amp; the airport</li>
+                <li>SH1 south to Taupō &amp; the central plateau</li>
+                <li>SH3 west to Raglan &amp; the coast</li>
+                <li>SH29 east to Tauranga &amp; Mount Maunganui</li>
+                <li>Cambridge, Te Awamutu &amp; Morrinsville</li>
+                <li>Huntly, Ngāruawāhia &amp; Te Kauwhata</li>
+                <li>One-way moves on request when booking</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Related Hamilton services — internal linking */}
+      <section className="container mx-auto px-6 py-20 border-t border-border">
+        <p className="text-sm tracking-[0.25em] uppercase text-muted-foreground mb-4">
+          Also in Hamilton
+        </p>
+        <h2 className="font-serif text-3xl md:text-4xl mb-10">Related Hamilton rentals</h2>
+        <div className="grid md:grid-cols-3 gap-8">
+          {[
+            { to: '/van-hire-hamilton', t: 'Van hire Hamilton', d: 'Cargo vans, jumbo vans and a 12-seat minibus from $69/day.' },
+            { to: '/contact-hamilton', t: 'Hamilton branch', d: 'Address, hours, phone and directions to our Hamilton depot.' },
+            { to: '/moving-truck-rental', t: 'Moving truck rental', d: 'Compare every truck size and tail-lift option in our fleet.' },
+          ].map((c) => (
+            <Link
+              key={c.to}
+              to={c.to}
+              className="group block border-t border-border pt-6 hover:border-primary transition-colors"
+            >
+              <h3 className="font-serif text-2xl group-hover:text-primary transition-colors">
+                {c.t}
+              </h3>
+              <p className="mt-3 text-sm text-muted-foreground">{c.d}</p>
+              <span className="mt-4 inline-flex items-center gap-2 text-sm font-medium">
+                Learn more <ArrowRight className="h-4 w-4" />
+              </span>
+            </Link>
+          ))}
+        </div>
+      </section>
     </div>
   );
 };
