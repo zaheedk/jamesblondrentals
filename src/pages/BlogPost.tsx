@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -1102,12 +1102,54 @@ const BlogPost = () => {
   const { slug } = useParams();
   const [article, setArticle] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const contentRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (slug) {
       fetchArticle(slug);
     }
   }, [slug]);
+
+  // Track clicks on the in-article "Jump to FAQ" CTAs
+  useEffect(() => {
+    if (!article) return;
+    const root = contentRef.current;
+    if (!root) return;
+
+    const handleClick = (e: MouseEvent) => {
+      const target = (e.target as HTMLElement | null)?.closest('a');
+      if (!target) return;
+      const href = target.getAttribute('href') || '';
+      if (!href.includes('#faq')) return;
+
+      let cta: string | null = null;
+      if (href.includes('#faq-pricing')) cta = 'truck_pricing';
+      else if (href.includes('#faq-availability')) cta = 'van_availability';
+      else if (href.includes('#faq')) cta = 'faq_general';
+      if (!cta) return;
+
+      const payload = {
+        event_category: 'blog_cta',
+        event_label: cta,
+        blog_slug: slug,
+        link_url: href,
+        link_text: (target.textContent || '').trim().slice(0, 120),
+      };
+
+      try {
+        (window as any).dataLayer = (window as any).dataLayer || [];
+        (window as any).dataLayer.push({ event: 'blog_faq_cta_click', ...payload });
+        if (typeof (window as any).gtag === 'function') {
+          (window as any).gtag('event', 'blog_faq_cta_click', payload);
+        }
+      } catch (err) {
+        console.error('Analytics event failed', err);
+      }
+    };
+
+    root.addEventListener('click', handleClick);
+    return () => root.removeEventListener('click', handleClick);
+  }, [article, slug]);
 
   const fetchArticle = async (articleSlug: string) => {
     try {
@@ -1221,13 +1263,14 @@ const BlogPost = () => {
           <CardContent className="p-8">
             {article.content.includes('<') ? (
               // If content contains HTML tags, render as HTML
-              <div 
+              <div
+                ref={contentRef}
                 className="prose prose-lg max-w-none"
                 dangerouslySetInnerHTML={{ __html: article.content }}
               />
             ) : (
               // If content is plain text/markdown, render using ReactMarkdown
-              <div className="prose prose-lg max-w-none">
+              <div ref={contentRef} className="prose prose-lg max-w-none">
                 <ReactMarkdown 
                   components={{
                     h1: ({children}) => <h1 className="text-4xl font-bold text-foreground mb-6">{children}</h1>,
