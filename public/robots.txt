@@ -8,12 +8,29 @@ Disallow: /drivers/
 Disallow: /?p=
 Disallow: /?page_id=
 Disallow: /?s=
+Disallow: /*?elementskit_template=
+Disallow: /*?feed=
+Disallow: /*?ref=
+Disallow: /*?gclid=
+Disallow: /*?utm_
+Disallow: /vehicles?
+Disallow: /insurance-and-extras
+Disallow: /payment-options
+Disallow: /booking
+Disallow: /customer-details
+Disallow: /payment
 
 User-agent: Bingbot
 Allow: /
 Disallow: /admin/
 Disallow: /elementor-hf/
 Disallow: /index.php/
+Disallow: /vehicles?
+Disallow: /insurance-and-extras
+Disallow: /payment-options
+Disallow: /booking
+Disallow: /customer-details
+Disallow: /payment
 
 User-agent: Twitterbot
 Allow: /
@@ -24,5 +41,13 @@ Allow: /
 User-agent: *
 Allow: /
 Disallow: /admin/
+Disallow: /vehicles?
+Disallow: /insurance-and-extras
+Disallow: /payment-options
+Disallow: /booking
+Disallow: /customer-details
+Disallow: /payment
+Disallow: /*?utm_
+Disallow: /*?gclid=
 
 Sitemap: https://jamesblond.co.nz/sitemap.xml

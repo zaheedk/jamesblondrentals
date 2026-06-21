@@ -381,6 +381,7 @@ const InsuranceAndExtrasSelection = () => {
       <Helmet>
         <title>Insurance & Extras | James Blond Rentals</title>
         <meta name="description" content="Select insurance cover and optional extras for your James Blond vehicle rental. Choose from excess reduction, GPS, child seats and more." />
+        <meta name="robots" content="noindex, nofollow" />
       </Helmet>
       <BookingSteps currentStep={3} />
       <div className="container mx-auto px-4 py-8">

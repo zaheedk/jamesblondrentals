@@ -618,6 +618,7 @@ const Vehicles = () => {
         title="Available Rental Vehicles | James Blond Rentals"
         description="Browse available cars, vans, trucks and utes for hire. Compare prices and book online with James Blond Rentals."
         canonical="/vehicles"
+        noindex
       />
       <ExitIntentPopup />
       <BookingSteps currentStep={2} />

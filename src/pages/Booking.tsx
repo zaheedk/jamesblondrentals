@@ -27,6 +27,7 @@ const Booking = () => {
       <Helmet>
         <title>Book Your Rental Vehicle | James Blond Rentals</title>
         <meta name="description" content="Complete your vehicle booking with James Blond Rentals. Choose from cars, vans, trucks and utes across Auckland, Wellington and Christchurch." />
+        <meta name="robots" content="noindex, nofollow" />
       </Helmet>
       <div className="animate-pulse">Redirecting to booking flow...</div>
     </div>
