@@ -100,15 +100,6 @@ const ChristchurchVanHire = () => {
     ],
   };
 
-  const breadcrumbLd = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
-      { '@type': 'ListItem', position: 2, name: 'Van Hire Christchurch', item: PAGE_URL },
-    ],
-  };
-
   const localBusinessLd = {
     '@context': 'https://schema.org',
     '@type': 'AutoRental',
@@ -139,7 +130,6 @@ const ChristchurchVanHire = () => {
         canonical="/van-hire-christchurch"
       />
       <JsonLd data={faqJsonLd} />
-      <JsonLd data={breadcrumbLd} />
       <JsonLd data={localBusinessLd} />
 
       {/* Split-screen Hero */}
