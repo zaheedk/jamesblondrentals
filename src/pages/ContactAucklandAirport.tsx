@@ -11,7 +11,6 @@ const ContactAucklandAirport = () => {
   return (
     <div className="container mx-auto px-4 py-12">
     <PageSEO title="Contact Auckland Airport – James Blond Rentals" description="Contact our Auckland Airport branch for vehicle pickup and drop-off. Get directions, phone number and opening hours." canonical="/contact/auckland-airport" />
-    <JsonLd data={{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://jamesblond.co.nz/"},{"@type":"ListItem","position":2,"name":"Contact Us","item":"https://jamesblond.co.nz/contact"},{"@type":"ListItem","position":3,"name":"Auckland Airport Branch","item":"https://jamesblond.co.nz/contact/auckland-airport"}]}} />
     <JsonLd
       data={{
         "@context": "https://schema.org",
