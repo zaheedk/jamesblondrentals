@@ -21,7 +21,6 @@ export const sitemapRoutes: SitemapRoute[] = [
   { path: '/', priority: 1.0, changefreq: 'weekly' },
   { path: '/about', priority: 0.8, changefreq: 'monthly' },
   { path: '/contact', priority: 0.8, changefreq: 'monthly' },
-  { path: '/vehicles', priority: 0.9, changefreq: 'daily' },
   { path: '/faq', priority: 0.7, changefreq: 'monthly' },
   { path: '/terms', priority: 0.5, changefreq: 'monthly' },
   { path: '/privacy', priority: 0.5, changefreq: 'monthly' },
@@ -29,11 +28,8 @@ export const sitemapRoutes: SitemapRoute[] = [
   { path: '/blog', priority: 0.7, changefreq: 'weekly' },
   { path: '/win', priority: 0.9, changefreq: 'monthly' },
 
-  // Auth Pages (noindex but kept for completeness - excluded from sitemap)
-  // Login, Register, ForgotPassword, ResetPassword are noindexed via PageSEO
-
-  // Booking Process Pages (only booking entry point is indexed)
-  { path: '/booking', priority: 0.8, changefreq: 'weekly' },
+  // Auth Pages (Login, Register, ForgotPassword, ResetPassword) are noindexed via PageSEO — excluded from sitemap
+  // Booking flow pages (/vehicles, /booking, /insurance-and-extras, /customer-details, /payment-options, /payment) are noindexed — excluded from sitemap
 
   // Fleet Pages
   { path: '/fleet', priority: 0.8, changefreq: 'monthly' },
@@ -104,6 +100,8 @@ export const sitemapRoutes: SitemapRoute[] = [
   { path: '/car-hire-hamilton', priority: 0.9, changefreq: 'weekly' },
   { path: '/car-hire-auckland', priority: 0.9, changefreq: 'weekly' },
   { path: '/car-hire-christchurch', priority: 0.9, changefreq: 'weekly' },
+  { path: '/truck-hire', priority: 0.9, changefreq: 'weekly' },
+  { path: '/moving-truck-hire-auckland', priority: 0.9, changefreq: 'weekly' },
   { path: '/ute-hire', priority: 0.9, changefreq: 'weekly' },
   { path: '/pickup-truck-rental', priority: 0.9, changefreq: 'weekly' },
   { path: '/tipper-truck-hire', priority: 0.9, changefreq: 'weekly' },
@@ -133,6 +131,7 @@ export const sitemapRoutes: SitemapRoute[] = [
   { path: '/contact/wellington', priority: 0.7, changefreq: 'monthly' },
   { path: '/contact/christchurch', priority: 0.7, changefreq: 'monthly' },
   { path: '/contact/christchurch-central', priority: 0.7, changefreq: 'monthly' },
+  { path: '/contact/hamilton', priority: 0.7, changefreq: 'monthly' },
 
   // Airport Pages
   { path: '/airport', priority: 0.7, changefreq: 'monthly' },
