@@ -72,6 +72,22 @@ const HamiltonVanHire = () => {
       },
       {
         '@type': 'Question',
+        name: 'What van sizes are available in Hamilton?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Our Hamilton fleet includes standard cargo vans (6–8 m³), a rear-seat cargo van, a jumbo/premium van (10–12 m³), and a 12-seat minibus. Cargo vans suit trades and small moves; jumbo vans handle larger loads without needing a truck licence.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Can I hire a van in Hamilton at short notice?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Yes. Same-day and next-day van hire is regularly available in Hamilton, especially Tuesday to Thursday. Booking online shows live fleet availability and confirms your reservation instantly.',
+        },
+      },
+      {
+        '@type': 'Question',
         name: 'Can I hire a van for a one-way move out of Hamilton?',
         acceptedAnswer: {
           '@type': 'Answer',
@@ -84,6 +100,22 @@ const HamiltonVanHire = () => {
         acceptedAnswer: {
           '@type': 'Answer',
           text: 'Vans are picked up from our Hamilton branch with easy access to State Highway 1 and State Highway 3 for trips across the Waikato.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'What is the minimum age to hire a van in Hamilton?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'You must be at least 21 years old with a full, valid driver licence. A credit or debit card is required for the security hold at pickup.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Is insurance included with Hamilton van hire?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Yes — basic insurance is included with a standard excess. Optional excess reduction is available at the counter if you prefer a lower liability limit.',
         },
       },
     ],
