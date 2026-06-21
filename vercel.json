@@ -37,7 +37,17 @@
     { "source": "/home-slideshow/", "destination": "/", "statusCode": 301 },
     { "source": "/drivers/:path*", "destination": "/", "statusCode": 301 },
     { "source": "/2024/:path*", "destination": "/blog", "statusCode": 301 },
-    { "source": "/2025/:path*", "destination": "/blog", "statusCode": 301 }
+    { "source": "/2025/:path*", "destination": "/blog", "statusCode": 301 },
+    { "source": "/trucks/", "destination": "/fleet/trucks", "statusCode": 301 },
+    { "source": "/trucks/:path*", "destination": "/fleet/trucks", "statusCode": 301 },
+    { "source": "/trailers/", "destination": "/fleet/trailers", "statusCode": 301 },
+    { "source": "/trailers/:path*", "destination": "/fleet/trailers", "statusCode": 301 },
+    { "source": "/people-movers", "destination": "/people-mover", "statusCode": 301 },
+    { "source": "/Car-Rental-Auckland/", "destination": "/auckland-car-hire", "statusCode": 301 },
+    { "source": "/Car-Rental-Auckland", "destination": "/auckland-car-hire", "statusCode": 301 },
+    { "source": "/home-video/", "destination": "/", "statusCode": 301 },
+    { "source": "/new-van-model/", "destination": "/fleet/vans", "statusCode": 301 },
+    { "source": "/2025/", "destination": "/blog", "statusCode": 301 }
   ],
   "rewrites": [
     {
