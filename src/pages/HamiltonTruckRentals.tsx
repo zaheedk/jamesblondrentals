@@ -49,7 +49,7 @@ const trucks = [
 ];
 
 const HamiltonTruckRentals = () => {
-  const faqJsonLd = {
+const faqJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
     mainEntity: [
@@ -71,6 +71,22 @@ const HamiltonTruckRentals = () => {
       },
       {
         '@type': 'Question',
+        name: 'What truck sizes are available for hire in Hamilton?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'We offer 2-tonne box trucks in 12 m³ and 16 m³ sizes, plus a 3-tonne 19 m³ truck with tail lift. The 12 m³ is ideal for apartments, the 16 m³ for 2–3 bedroom homes, and the 19 m³ for large family or commercial moves.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Can I hire a truck in Hamilton on short notice?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Yes. Same-day and next-day truck hire is often available in Hamilton, especially midweek. Booking online locks in your vehicle instantly and shows live availability.',
+        },
+      },
+      {
+        '@type': 'Question',
         name: 'Where can I pick up my Hamilton truck rental?',
         acceptedAnswer: {
           '@type': 'Answer',
@@ -83,6 +99,22 @@ const HamiltonTruckRentals = () => {
         acceptedAnswer: {
           '@type': 'Answer',
           text: 'Yes. One-way and long-distance moves between Hamilton, Auckland, Tauranga and Wellington are available on request when booking.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'What is the minimum age to hire a truck in Hamilton?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Drivers must be at least 21 years old and hold a valid full New Zealand licence (or an acceptable overseas equivalent). A standard credit or debit card is required at pickup.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Is insurance included with Hamilton truck hire?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Basic insurance is included with a standard excess. You can reduce your excess by purchasing optional excess reduction cover at the counter when you collect the truck.',
         },
       },
     ],
