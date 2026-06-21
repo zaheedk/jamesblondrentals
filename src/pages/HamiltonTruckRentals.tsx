@@ -357,7 +357,7 @@ const faqJsonLd = {
       </section>
 
       {/* FAQ */}
-      <section className="container mx-auto px-6 pb-24">
+      <section id="faq" className="container mx-auto px-6 pb-24">
         <p className="text-sm tracking-[0.25em] uppercase text-muted-foreground mb-4">
           Questions
         </p>
@@ -370,6 +370,16 @@ const faqJsonLd = {
             </div>
           ))}
         </dl>
+        <p className="mt-8 text-sm text-muted-foreground">
+          Want a deeper breakdown? Read our{' '}
+          <Link
+            to="/blog/truck-and-van-hire-hamilton-pricing-availability"
+            className="underline underline-offset-4 hover:text-foreground"
+          >
+            Hamilton truck &amp; van hire pricing and availability guide
+          </Link>
+          .
+        </p>
       </section>
 
       {/* Hamilton areas & routes — topical depth for local SEO */}
