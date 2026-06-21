@@ -376,8 +376,12 @@ const HamiltonVanHire = () => {
         <div className="h-px w-full bg-border mb-8" />
         <h2 className="font-sans font-extrabold tracking-tight text-4xl md:text-5xl mb-10">Van hire Hamilton FAQ</h2>
         <dl className="divide-y divide-border border-y border-border">
-          {faqJsonLd.mainEntity.map((q) => (
-            <div key={q.name} className="py-6 grid md:grid-cols-3 gap-6">
+          {faqJsonLd.mainEntity.map((q, i) => (
+            <div
+              key={q.name}
+              id={i === 1 ? 'faq-pricing' : i === 3 ? 'faq-availability' : undefined}
+              className="py-6 grid md:grid-cols-3 gap-6 scroll-mt-20"
+            >
               <dt className="font-sans font-bold text-xl tracking-tight">{q.name}</dt>
               <dd className="md:col-span-2 text-muted-foreground">{q.acceptedAnswer.text}</dd>
             </div>
