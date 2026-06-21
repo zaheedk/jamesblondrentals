@@ -368,7 +368,7 @@ const HamiltonVanHire = () => {
       </section>
 
       {/* FAQ */}
-      <section className="container mx-auto px-6 pb-24">
+      <section id="faq" className="container mx-auto px-6 pb-24">
         <div className="flex items-center gap-3 mb-3">
           <GraduationCap className="h-5 w-5 text-primary" />
           <span className="text-base font-semibold">Questions</span>
@@ -383,6 +383,16 @@ const HamiltonVanHire = () => {
             </div>
           ))}
         </dl>
+        <p className="mt-8 text-sm text-muted-foreground">
+          Want more detail on rates and lead times? Read our{' '}
+          <Link
+            to="/blog/truck-and-van-hire-hamilton-pricing-availability"
+            className="underline underline-offset-4 hover:text-foreground"
+          >
+            Hamilton truck &amp; van hire pricing and availability guide
+          </Link>
+          .
+        </p>
       </section>
 
       {/* Hamilton areas & routes — topical depth for local SEO */}
