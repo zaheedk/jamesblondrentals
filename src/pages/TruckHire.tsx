@@ -99,15 +99,6 @@ const faqs = [
 ];
 
 const TruckHire = () => {
-  const breadcrumbLd = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
-      { '@type': 'ListItem', position: 2, name: 'Truck Hire NZ', item: PAGE_URL },
-    ],
-  };
-
   const faqLd = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -153,7 +144,6 @@ const TruckHire = () => {
         description="Truck hire across Auckland, Wellington, Christchurch and Hamilton. 2-tonne and 3-tonne box trucks, tippers and tail-lift trucks. Book online for instant rates."
         canonical="/truck-hire"
       />
-      <JsonLd data={breadcrumbLd} />
       <JsonLd data={faqLd} />
       <JsonLd data={itemListLd} />
       <JsonLd data={productsLd} />

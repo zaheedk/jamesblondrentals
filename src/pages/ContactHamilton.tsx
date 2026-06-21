@@ -15,7 +15,6 @@ const ContactHamilton = () => {
       description="Contact our Hamilton branch for car, van and truck rentals. Find our address, phone number, opening hours and directions."
       canonical="/contact/hamilton"
     />
-    <JsonLd data={{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://jamesblond.co.nz/"},{"@type":"ListItem","position":2,"name":"Contact Us","item":"https://jamesblond.co.nz/contact"},{"@type":"ListItem","position":3,"name":"Hamilton Branch","item":"https://jamesblond.co.nz/contact/hamilton"}]}} />
     <JsonLd
       data={{
         "@context": "https://schema.org",

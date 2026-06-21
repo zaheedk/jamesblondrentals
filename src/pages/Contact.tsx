@@ -72,7 +72,6 @@ const Contact = () => {
   return (
     <div className="container mx-auto py-12 px-4">
       <PageSEO title="Contact Us – James Blond Rentals NZ" description="Get in touch with James Blond Rentals. Find phone numbers, email and office locations for Auckland, Wellington and Christchurch branches." canonical="/contact" />
-      <JsonLd data={{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://jamesblond.co.nz/"},{"@type":"ListItem","position":2,"name":"Contact Us","item":"https://jamesblond.co.nz/contact"}]}} />
       <JsonLd
         data={{
           "@context": "https://schema.org",

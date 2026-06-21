@@ -16,7 +16,6 @@ const AirportWellington = () => (
       description="Vehicle rental at Wellington Airport (Miramar). Cars, vans, trucks and minibuses with easy pickup for travellers heading to Wellington CBD, Lower Hutt, Upper Hutt, Petone, Porirua, Tawa and the Kapiti Coast."
       canonical="/airport/wellington"
     />
-    <JsonLd data={{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://jamesblond.co.nz/"},{"@type":"ListItem","position":2,"name":"Airport Car Rental","item":"https://jamesblond.co.nz/airport"},{"@type":"ListItem","position":3,"name":"Wellington Airport","item":"https://jamesblond.co.nz/airport/wellington"}]}} />
     <JsonLd
       data={{
         "@context": "https://schema.org",
