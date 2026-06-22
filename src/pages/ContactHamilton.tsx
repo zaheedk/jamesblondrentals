@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Phone, Mail, Facebook, Truck, Caravan } from 'lucide-react';
+import { MapPin, Phone, Mail, Facebook, Truck, Caravan, Sofa, Box } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import ContactForm from '@/components/ContactForm';
 import PageSEO from '@/components/PageSEO';
@@ -192,6 +192,45 @@ const ContactHamilton = () => {
                 <div>
                   <h3 className="font-semibold group-hover:text-primary transition-colors">Hamilton Van Hire</h3>
                   <p className="text-sm text-gray-600">Cargo vans & 12-seater minibuses from $69/day</p>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+          <Link to="/furniture-truck-hire-hamilton" className="group">
+            <Card className="h-full transition-colors hover:bg-muted/50">
+              <CardContent className="p-6 flex items-center gap-4">
+                <div className="p-3 rounded-full bg-primary/10 text-primary">
+                  <Sofa className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="font-semibold group-hover:text-primary transition-colors">Furniture Truck Hire</h3>
+                  <p className="text-sm text-gray-600">Tail-lift trucks for Hamilton home & furniture moves</p>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+          <Link to="/trailer-hire-hamilton" className="group">
+            <Card className="h-full transition-colors hover:bg-muted/50">
+              <CardContent className="p-6 flex items-center gap-4">
+                <div className="p-3 rounded-full bg-primary/10 text-primary">
+                  <Box className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="font-semibold group-hover:text-primary transition-colors">Trailer Hire</h3>
+                  <p className="text-sm text-gray-600">Cage, luggage & car-transporter trailers in Hamilton</p>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+          <Link to="/moving-truck-hire-hamilton" className="group">
+            <Card className="h-full transition-colors hover:bg-muted/50">
+              <CardContent className="p-6 flex items-center gap-4">
+                <div className="p-3 rounded-full bg-primary/10 text-primary">
+                  <Truck className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="font-semibold group-hover:text-primary transition-colors">Moving Truck Hire</h3>
+                  <p className="text-sm text-gray-600">Same-day house movers from $35/hr in Hamilton</p>
                 </div>
               </CardContent>
             </Card>
