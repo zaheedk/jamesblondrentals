@@ -32,6 +32,13 @@ const FurnitureTruckHireHamilton = () => (
       { q: 'Where do I pick the truck up in Hamilton?', a: 'All Hamilton furniture trucks are collected from our Frankton branch at 17 Bandon Street, with easy access to SH1 and SH3 for moves across the Waikato.' },
       { q: 'Can I take a furniture truck from Hamilton to Auckland or Tauranga?', a: 'Yes — one-way and long-distance moves between Hamilton, Auckland, Tauranga and Wellington are available on request when booking.' },
       { q: 'Do I need a special licence?', a: 'No. Every 2-tonne furniture truck drives on a standard NZ Class 1 car licence. The 3-tonne 19 m³ requires a Class 2 (HT) licence.' },
+      { q: 'What is the minimum age to hire a furniture truck in Hamilton?', a: 'You must be at least 21 years old and hold a full New Zealand licence (or an approved overseas equivalent in English, or with an approved translation).' },
+      { q: 'Is insurance included with Hamilton furniture truck hire?', a: 'Basic insurance is included with a standard excess. You can reduce your excess at the counter by upgrading to Premium or Ultimate cover for extra peace of mind on furniture moves.' },
+      { q: 'Is a bond or security deposit required?', a: 'Yes — a refundable pre-authorisation hold is placed on your credit or debit card at pickup. The amount depends on the truck size and insurance option you choose. Prepaid cards are not accepted.' },
+      { q: 'Are moving blankets, trolleys and straps included?', a: 'Moving blankets, hand trolleys, large hand trolleys and ratchet straps are available as low-cost extras at the counter, and they nearly always pay for themselves on a Hamilton move.' },
+      { q: 'How does fuel work?', a: 'Trucks are supplied full and should be returned full. Mobil, Z and BP stations within a few minutes of our Frankton branch make refuelling easy. A refuelling fee applies if returned short.' },
+      { q: 'Are there kilometre limits on Hamilton furniture truck hire?', a: 'Hourly hires include a generous local kilometre allowance, with a small per-kilometre charge beyond that. Daily and weekly rates with higher km caps are available — perfect for full Waikato or out-of-region moves.' },
+      { q: 'Can I pick up or drop off outside opening hours?', a: 'Yes — after-hours pick up and drop off are available on request. Phone our Hamilton branch on 0800 525 663 to arrange this in advance.' },
     ]}
   />
 );
