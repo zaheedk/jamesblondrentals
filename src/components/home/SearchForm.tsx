@@ -413,6 +413,11 @@ const SearchForm = ({
     return category ? category.vehiclecategorytype : "";
   };
 
+  const getLocationName = (locationId: string) => {
+    const loc = locations.find(l => String(l.id) === String(locationId));
+    return loc ? loc.name : "";
+  };
+
   const formatDateForApi = (date: Date): string => {
     return format(date, 'dd/MM/yyyy');
   };
