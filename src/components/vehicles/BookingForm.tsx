@@ -5,6 +5,7 @@ import { saveBookingData } from "@/lib/booking-session";
 import { parse, format } from "date-fns";
 import { toZonedTime } from 'date-fns-tz';
 import { toast } from "sonner";
+import { trackEvent } from "@/lib/analytics";
 
 interface BookingFormProps {
   vehicle: Vehicle;
