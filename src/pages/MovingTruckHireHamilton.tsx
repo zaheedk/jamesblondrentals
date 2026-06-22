@@ -53,6 +53,7 @@ const MovingTruckHireHamilton = () => (
     primaryCtaTo="/booking"
     primaryCtaLabel="Book a moving truck"
     cities={cities}
+    localBusiness={localBusiness}
     faq={[
       { q: 'How much does a moving truck cost in Hamilton?', a: 'Moving trucks in Hamilton start from $35/hr plus kilometres, with daily rates from around $129/day for a 2-tonne. Tail-lift and 3-tonne options are a little higher.' },
       { q: 'What size moving truck do I need for my Hamilton move?', a: 'For a one-bedroom apartment a 2-tonne 12 m³ is plenty. For a 2–3 bedroom Hamilton home, the 2-tonne 16 m³ or 3-tonne 19 m³ with tail lift handles it in one trip.' },
