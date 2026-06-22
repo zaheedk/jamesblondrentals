@@ -53,6 +53,7 @@ const TrailerHireHamilton = () => (
     primaryCtaTo="/booking"
     primaryCtaLabel="Book a trailer"
     cities={cities}
+    localBusiness={localBusiness}
     faq={[
       { q: 'How much does it cost to hire a trailer in Hamilton?', a: 'Trailer hire in Hamilton starts from around $40/day for a caged trailer. Luggage and car-transporter trailers are slightly higher. Online booking shows live availability and the exact daily rate.' },
       { q: 'What kinds of trailers can I hire in Hamilton?', a: 'We hire caged trailers (tip runs, garden waste, bulky goods), luggage trailers (moves, road trips, ski trips) and car-transporter trailers for shifting vehicles around the Waikato.' },
