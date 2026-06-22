@@ -19,7 +19,7 @@ export interface SimpleHubProps {
   localBusiness?: Record<string, unknown>;
 }
 
-const SimpleHubPage = ({ slug, title, description, h1, intro, bullets, primaryCtaTo, primaryCtaLabel, cities, faq }: SimpleHubProps) => {
+const SimpleHubPage = ({ slug, title, description, h1, intro, bullets, primaryCtaTo, primaryCtaLabel, cities, faq, localBusiness }: SimpleHubProps) => {
   const faqLd = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -32,6 +32,7 @@ const SimpleHubPage = ({ slug, title, description, h1, intro, bullets, primaryCt
   return (
     <div className="bg-background text-foreground">
       <PageSEO title={title} description={description} canonical={slug} />
+      {localBusiness && <JsonLd data={localBusiness} />}
       <JsonLd data={faqLd} />
 
       <section className="container mx-auto px-6 pt-16 pb-12 md:pt-24">
