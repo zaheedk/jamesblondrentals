@@ -8,6 +8,7 @@ import { addDays, isBefore, format, parse } from "date-fns";
 import { toast } from "sonner";
 import { useRcmApi } from "@/hooks/use-rcm-api";
 import Cookies from "js-cookie";
+import { trackEvent } from "@/lib/analytics";
 
 import { LocationSelect } from "./form-components/LocationSelect";
 import { DateSelect } from "./form-components/DateSelect";
