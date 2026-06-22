@@ -5,6 +5,7 @@ import { saveBookingData } from "@/lib/booking-session";
 import { parse, format } from "date-fns";
 import { toZonedTime } from 'date-fns-tz';
 import { toast } from "sonner";
+import { trackEvent } from "@/lib/analytics";
 
 interface BookingFormProps {
   vehicle: Vehicle;
@@ -202,6 +203,23 @@ export default function BookingForm({
       rateType: isHourlyRate() ? 'hourly' : 'daily',
       numberofdays: vehicle.totalDays || 1, // Include number of days from API
       campaignCode: campaignCode || ""
+    });
+
+    trackEvent("vehicle_selected", {
+      vehicle_id: String(vehicle.id),
+      vehicle_name: `${vehicle.make} ${vehicle.model}`,
+      vehicle_type: vehicle.type,
+      vehicle_category_type_id: vehicle.vehicleCategoryTypeId?.toString() || "",
+      pickup_location_id: pickupLocationId,
+      pickup_location_name: pickupLocationName || "",
+      dropoff_location_id: dropoffLocationId,
+      dropoff_location_name: dropoffLocationName || "",
+      pickup_date: formattedPickupDate,
+      dropoff_date: formattedDropoffDate,
+      rate_type: isHourlyRate() ? "hourly" : "daily",
+      total_rate: totalRateAfterDiscount ?? (typeof vehicle.price === "number" ? vehicle.price : 0),
+      has_discount: !!(totalDiscountAmount && totalDiscountAmount > 0),
+      campaign_code: campaignCode || "",
     });
     
     navigate('/booking');

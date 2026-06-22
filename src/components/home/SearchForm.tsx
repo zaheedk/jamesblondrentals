@@ -8,6 +8,7 @@ import { addDays, isBefore, format, parse } from "date-fns";
 import { toast } from "sonner";
 import { useRcmApi } from "@/hooks/use-rcm-api";
 import Cookies from "js-cookie";
+import { trackEvent } from "@/lib/analytics";
 
 import { LocationSelect } from "./form-components/LocationSelect";
 import { DateSelect } from "./form-components/DateSelect";
@@ -412,6 +413,11 @@ const SearchForm = ({
     return category ? category.vehiclecategorytype : "";
   };
 
+  const getLocationName = (locationId: string) => {
+    const loc = locations.find(l => String(l.id) === String(locationId));
+    return loc ? loc.name : "";
+  };
+
   const formatDateForApi = (date: Date): string => {
     return format(date, 'dd/MM/yyyy');
   };
@@ -478,6 +484,19 @@ const SearchForm = ({
     const searchParams = new URLSearchParams(searchParamsObj);
     
     console.log("Navigating to vehicles with params:", searchParams.toString());
+    trackEvent("search_submitted", {
+      pickup_location_id: pickupLocation,
+      pickup_location_name: getLocationName(pickupLocation),
+      dropoff_location_id: dropoffLocation || pickupLocation,
+      dropoff_location_name: getLocationName(dropoffLocation || pickupLocation),
+      same_location: sameLocation,
+      category_id: carCategory,
+      category_name: getCategoryName(carCategory),
+      pickup_date: formattedPickupDate,
+      dropoff_date: formattedDropoffDate,
+      driver_age_id: ageParam,
+      has_promo_code: !!(campaignCode && campaignCode.trim()),
+    });
     navigate(`/vehicles?${searchParams.toString()}`);
   };
 
@@ -509,6 +528,11 @@ const SearchForm = ({
                     Cookies.set('dropoffLocation', value, { expires: 365 });
                     console.log("🍪 Saved dropoff cookie (same):", Cookies.get('dropoffLocation'));
                   }
+                  trackEvent("search_pickup_location_selected", {
+                    location_id: value,
+                    location_name: getLocationName(value),
+                    same_as_dropoff: sameLocation,
+                  });
                 }}
                 isLoading={isLoadingLocations}
                 hasError={isLocationError}
@@ -621,6 +645,10 @@ const SearchForm = ({
                   setDropoffLocation(value);
                   Cookies.set('dropoffLocation', value, { expires: 365 });
                   console.log("🍪 Saved dropoff cookie:", Cookies.get('dropoffLocation'));
+                  trackEvent("search_dropoff_location_selected", {
+                    location_id: value,
+                    location_name: getLocationName(value),
+                  });
                 }}
                 isLoading={isLoadingLocations}
                 hasError={isLocationError}
@@ -650,7 +678,13 @@ const SearchForm = ({
                     id="car-category"
                     label="Category"
                     value={carCategory}
-                    onValueChange={setCarCategory}
+                    onValueChange={(value) => {
+                      setCarCategory(value);
+                      trackEvent("search_category_selected", {
+                        category_id: value,
+                        category_name: getCategoryName(value),
+                      });
+                    }}
                     options={carCategories.map(category => ({ id: String(category.id), name: category.vehiclecategorytype }))}
                     getOptionName={getCategoryName}
                     isLoading={isLoadingCategories}
