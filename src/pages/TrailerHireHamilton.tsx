@@ -7,6 +7,34 @@ const cities = [
   { name: 'Contact Hamilton', to: '/contact/hamilton' },
 ];
 
+const localBusiness = {
+  "@context": "https://schema.org",
+  "@type": "AutoRental",
+  "name": "James Blond Rentals — Hamilton",
+  "url": "https://jamesblond.co.nz/trailer-hire-hamilton",
+  "telephone": "+64800525663",
+  "email": "info@jamesblond.co.nz",
+  "priceRange": "$$",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "17 Bandon Street",
+    "addressLocality": "Frankton",
+    "addressRegion": "Hamilton",
+    "postalCode": "3204",
+    "addressCountry": "NZ",
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": "-37.7833",
+    "longitude": "175.2667",
+  },
+  "openingHours": "Mo-Su 08:00-17:00",
+  "areaServed": {
+    "@type": "City",
+    "name": "Hamilton",
+  },
+};
+
 const TrailerHireHamilton = () => (
   <SimpleHubPage
     slug="/trailer-hire-hamilton"
@@ -25,6 +53,7 @@ const TrailerHireHamilton = () => (
     primaryCtaTo="/booking"
     primaryCtaLabel="Book a trailer"
     cities={cities}
+    localBusiness={localBusiness}
     faq={[
       { q: 'How much does it cost to hire a trailer in Hamilton?', a: 'Trailer hire in Hamilton starts from around $40/day for a caged trailer. Luggage and car-transporter trailers are slightly higher. Online booking shows live availability and the exact daily rate.' },
       { q: 'What kinds of trailers can I hire in Hamilton?', a: 'We hire caged trailers (tip runs, garden waste, bulky goods), luggage trailers (moves, road trips, ski trips) and car-transporter trailers for shifting vehicles around the Waikato.' },

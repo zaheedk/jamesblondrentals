@@ -7,6 +7,34 @@ const cities = [
   { name: 'Contact Hamilton', to: '/contact/hamilton' },
 ];
 
+const localBusiness = {
+  "@context": "https://schema.org",
+  "@type": "AutoRental",
+  "name": "James Blond Rentals — Hamilton",
+  "url": "https://jamesblond.co.nz/moving-truck-hire-hamilton",
+  "telephone": "+64800525663",
+  "email": "info@jamesblond.co.nz",
+  "priceRange": "$$",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "17 Bandon Street",
+    "addressLocality": "Frankton",
+    "addressRegion": "Hamilton",
+    "postalCode": "3204",
+    "addressCountry": "NZ",
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": "-37.7833",
+    "longitude": "175.2667",
+  },
+  "openingHours": "Mo-Su 08:00-17:00",
+  "areaServed": {
+    "@type": "City",
+    "name": "Hamilton",
+  },
+};
+
 const MovingTruckHireHamilton = () => (
   <SimpleHubPage
     slug="/moving-truck-hire-hamilton"
@@ -25,6 +53,7 @@ const MovingTruckHireHamilton = () => (
     primaryCtaTo="/booking"
     primaryCtaLabel="Book a moving truck"
     cities={cities}
+    localBusiness={localBusiness}
     faq={[
       { q: 'How much does a moving truck cost in Hamilton?', a: 'Moving trucks in Hamilton start from $35/hr plus kilometres, with daily rates from around $129/day for a 2-tonne. Tail-lift and 3-tonne options are a little higher.' },
       { q: 'What size moving truck do I need for my Hamilton move?', a: 'For a one-bedroom apartment a 2-tonne 12 m³ is plenty. For a 2–3 bedroom Hamilton home, the 2-tonne 16 m³ or 3-tonne 19 m³ with tail lift handles it in one trip.' },
