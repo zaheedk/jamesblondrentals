@@ -16,6 +16,7 @@ export interface SimpleHubProps {
   primaryCtaLabel: string;
   cities: { name: string; to: string }[];
   faq: { q: string; a: string }[];
+  localBusiness?: Record<string, unknown>;
 }
 
 const SimpleHubPage = ({ slug, title, description, h1, intro, bullets, primaryCtaTo, primaryCtaLabel, cities, faq }: SimpleHubProps) => {
