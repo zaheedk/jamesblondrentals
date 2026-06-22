@@ -7,6 +7,34 @@ const cities = [
   { name: 'Contact Hamilton', to: '/contact/hamilton' },
 ];
 
+const localBusiness = {
+  "@context": "https://schema.org",
+  "@type": "AutoRental",
+  "name": "James Blond Rentals — Hamilton",
+  "url": "https://jamesblond.co.nz/furniture-truck-hire-hamilton",
+  "telephone": "+64800525663",
+  "email": "info@jamesblond.co.nz",
+  "priceRange": "$$",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "17 Bandon Street",
+    "addressLocality": "Frankton",
+    "addressRegion": "Hamilton",
+    "postalCode": "3204",
+    "addressCountry": "NZ",
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": "-37.7833",
+    "longitude": "175.2667",
+  },
+  "openingHours": "Mo-Su 08:00-17:00",
+  "areaServed": {
+    "@type": "City",
+    "name": "Hamilton",
+  },
+};
+
 const FurnitureTruckHireHamilton = () => (
   <SimpleHubPage
     slug="/furniture-truck-hire-hamilton"
@@ -25,6 +53,7 @@ const FurnitureTruckHireHamilton = () => (
     primaryCtaTo="/booking"
     primaryCtaLabel="Book a furniture truck"
     cities={cities}
+    localBusiness={localBusiness}
     faq={[
       { q: 'How much does furniture truck hire cost in Hamilton?', a: 'Furniture trucks in Hamilton start from $35/hr plus kilometres, with daily rates from around $129/day for a 2-tonne. Tail-lift and 3-tonne trucks are slightly higher. Quotes are instant when you book online.' },
       { q: 'Which size furniture truck do I need?', a: 'For a one-bedroom apartment a 2-tonne 12 m³ is plenty. For a two- or three-bedroom Hamilton home, a 2-tonne 16 m³ or 3-tonne 19 m³ with tail lift is the right call.' },
