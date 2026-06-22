@@ -484,6 +484,19 @@ const SearchForm = ({
     const searchParams = new URLSearchParams(searchParamsObj);
     
     console.log("Navigating to vehicles with params:", searchParams.toString());
+    trackEvent("search_submitted", {
+      pickup_location_id: pickupLocation,
+      pickup_location_name: getLocationName(pickupLocation),
+      dropoff_location_id: dropoffLocation || pickupLocation,
+      dropoff_location_name: getLocationName(dropoffLocation || pickupLocation),
+      same_location: sameLocation,
+      category_id: carCategory,
+      category_name: getCategoryName(carCategory),
+      pickup_date: formattedPickupDate,
+      dropoff_date: formattedDropoffDate,
+      driver_age_id: ageParam,
+      has_promo_code: !!(campaignCode && campaignCode.trim()),
+    });
     navigate(`/vehicles?${searchParams.toString()}`);
   };
 
