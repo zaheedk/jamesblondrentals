@@ -32,6 +32,13 @@ const TrailerHireHamilton = () => (
       { q: 'Where do I collect the trailer?', a: 'All Hamilton trailers are picked up from our Frankton branch at 17 Bandon Street, with easy access to SH1 and SH3.' },
       { q: 'Can I keep the trailer overnight or for the weekend?', a: 'Yes — daily, weekend and weekly rates are available. Most customers grab a trailer Friday afternoon and return Monday morning.' },
       { q: 'Does my vehicle need a tow bar?', a: 'Yes, your vehicle needs a properly fitted tow bar with the correct rating for the trailer and load. We can advise at the counter if you’re unsure.' },
+      { q: 'What is the minimum age to hire a trailer in Hamilton?', a: 'Drivers must be at least 21 years old and hold a full New Zealand licence (or an approved overseas equivalent). The towing vehicle must also meet the trailer’s tow-rating requirements.' },
+      { q: 'Is insurance included with trailer hire?', a: 'Basic cover is included with a standard excess. Note that damage caused by your towing vehicle is generally covered by your own vehicle insurance — check with your insurer before towing.' },
+      { q: 'Is a bond required for trailer hire?', a: 'Yes — a refundable pre-authorisation hold is placed on your credit or debit card at pickup. The amount depends on the trailer type. Prepaid cards are not accepted.' },
+      { q: 'How heavy can I load a Hamilton trailer?', a: 'Each trailer has a clearly stamped maximum gross weight. Caged trailers typically carry up to 750 kg unbraked; car transporters and braked trailers carry more. Don’t exceed the rated load — overloaded trailers are dangerous and uninsured.' },
+      { q: 'Can I take a trailer outside Hamilton?', a: 'Yes — our trailers can be taken anywhere in New Zealand. One-way trailer hire between branches is available on request.' },
+      { q: 'Do you supply tie-downs and ratchet straps?', a: 'Ratchet straps and rope are available as low-cost extras at the counter — strongly recommended for any open caged or car-transporter load.' },
+      { q: 'Can I pick up or drop off outside opening hours?', a: 'Yes — after-hours pick up and drop off are available on request. Phone 0800 525 663 to arrange in advance.' },
     ]}
   />
 );

@@ -32,6 +32,13 @@ const MovingTruckHireHamilton = () => (
       { q: 'Do I need a truck licence?', a: 'No — every 2-tonne moving truck drives on a standard NZ Class 1 car licence. The 3-tonne 19 m³ requires a Class 2 (HT) licence.' },
       { q: 'Where do I pick the moving truck up?', a: 'All Hamilton moving trucks are collected from our Frankton branch at 17 Bandon Street, minutes from SH1 and SH3.' },
       { q: 'Can I book a moving truck in Hamilton on short notice?', a: 'Yes — same-day and next-day moving truck hire is usually available, especially midweek. Online booking confirms instantly with live availability.' },
+      { q: 'What is the minimum age to hire a moving truck?', a: 'Drivers must be at least 21 years old with a full NZ licence, or an approved overseas equivalent in English (or with an approved translation).' },
+      { q: 'Is insurance included with Hamilton moving truck hire?', a: 'Basic insurance is included with a standard excess. You can reduce your excess at the counter by upgrading to Premium or Ultimate cover — recommended on big move days.' },
+      { q: 'Is a bond required at pickup?', a: 'Yes — a refundable pre-authorisation hold is placed on your credit or debit card. The amount depends on the truck and insurance option chosen. Prepaid cards are not accepted.' },
+      { q: 'How does fuel work on a moving truck?', a: 'Trucks are supplied full and must be returned full. Mobil, Z and BP stations within a few minutes of Frankton make this easy. A refuelling fee applies if returned short.' },
+      { q: 'Are there kilometre limits or extra charges?', a: 'Hourly hires include a generous local kilometre allowance with a small per-kilometre charge beyond. Daily and weekly rates with higher km caps suit full Waikato or out-of-region moves — see the booking page for the exact figures.' },
+      { q: 'Can I pick up or drop off outside opening hours?', a: 'Yes — after-hours pick up and drop off are available on request. Call our Hamilton branch on 0800 525 663 to arrange in advance.' },
+      { q: 'How early should I book my moving truck?', a: 'Weekends and end-of-month dates fill up fast in Hamilton — book 1–2 weeks ahead if you can. Midweek (Tuesday–Thursday) almost always has same-day availability.' },
     ]}
   />
 );
