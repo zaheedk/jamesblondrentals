@@ -515,6 +515,11 @@ const SearchForm = ({
                     Cookies.set('dropoffLocation', value, { expires: 365 });
                     console.log("🍪 Saved dropoff cookie (same):", Cookies.get('dropoffLocation'));
                   }
+                  trackEvent("search_pickup_location_selected", {
+                    location_id: value,
+                    location_name: getLocationName(value),
+                    same_as_dropoff: sameLocation,
+                  });
                 }}
                 isLoading={isLoadingLocations}
                 hasError={isLocationError}
@@ -627,6 +632,10 @@ const SearchForm = ({
                   setDropoffLocation(value);
                   Cookies.set('dropoffLocation', value, { expires: 365 });
                   console.log("🍪 Saved dropoff cookie:", Cookies.get('dropoffLocation'));
+                  trackEvent("search_dropoff_location_selected", {
+                    location_id: value,
+                    location_name: getLocationName(value),
+                  });
                 }}
                 isLoading={isLoadingLocations}
                 hasError={isLocationError}
@@ -656,7 +665,13 @@ const SearchForm = ({
                     id="car-category"
                     label="Category"
                     value={carCategory}
-                    onValueChange={setCarCategory}
+                    onValueChange={(value) => {
+                      setCarCategory(value);
+                      trackEvent("search_category_selected", {
+                        category_id: value,
+                        category_name: getCategoryName(value),
+                      });
+                    }}
                     options={carCategories.map(category => ({ id: String(category.id), name: category.vehiclecategorytype }))}
                     getOptionName={getCategoryName}
                     isLoading={isLoadingCategories}
