@@ -623,6 +623,7 @@ const Vehicles = () => {
       />
       <ExitIntentPopup />
       <BookingSteps currentStep={2} />
+      <TrustGuaranteeBanner />
       <div className="bg-gray-50">
         <div className="container mx-auto px-4 py-8">
           <div className="flex flex-col sm:flex-row justify-between items-start gap-4">

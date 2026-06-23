@@ -440,6 +440,7 @@ const CustomerDetails = () => {
     <div>
       <PageSEO title="Customer Details – Complete Your Booking | James Blond" description="Enter your details to complete your vehicle rental booking with James Blond Rentals." canonical="/customer-details" noindex />
       <BookingSteps currentStep={4} />
+      <TrustGuaranteeBanner />
       <div className="container mx-auto px-4 py-8">
         <ExitIntentPopup />
         <BookingRentalAccordion />

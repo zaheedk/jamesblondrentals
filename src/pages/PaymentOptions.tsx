@@ -514,6 +514,7 @@ const PaymentOptions = () => {
       <ExitIntentPopup />
       <div className="max-w-2xl mx-auto">
         <h1 className="text-3xl font-bold mb-6">Payment Options</h1>
+        <TrustGuaranteeBanner className="mb-6 rounded-lg border" />
         
         <div className="bg-white shadow-md rounded-lg p-6">
           {(() => {

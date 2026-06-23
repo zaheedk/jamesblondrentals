@@ -385,6 +385,7 @@ const InsuranceAndExtrasSelection = () => {
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
       <BookingSteps currentStep={3} />
+      <TrustGuaranteeBanner />
       <div className="container mx-auto px-4 py-8">
         <ExitIntentPopup />
         {/* Sticky price summary - keeps total visible as user scrolls through insurance + extras */}

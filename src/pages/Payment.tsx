@@ -242,6 +242,7 @@ const Payment = () => {
       />
       <div className="max-w-4xl mx-auto flex flex-col items-center">
         <h1 className="text-3xl font-bold mb-6">Processing Payment</h1>
+        <TrustGuaranteeBanner className="mb-6 w-full max-w-4xl rounded-lg border" />
         
         <div className="bg-white shadow-md rounded-lg p-6 w-full">
           {isLoading ? (
