@@ -7,6 +7,7 @@ import { format } from "date-fns";
 import { useState, useEffect } from "react";
 import { ChevronDown, CalendarClock, Users, MapPin, Crown, ArrowRight } from "lucide-react";
 import PageSEO from '@/components/PageSEO';
+import SocialProofNotifications from '@/components/SocialProofNotifications';
 import {
   Accordion,
   AccordionContent,
@@ -61,6 +62,8 @@ const Index = () => {
       />
       
       <Hero />
+
+      <SocialProofNotifications />
       
       <CustomerReviews />
       
