@@ -10,6 +10,7 @@ import KmCharges from '@/components/booking/KmCharges';
 import ExtrasSelection from '@/components/booking/ExtrasSelection';
 import BookingRentalAccordion from '@/components/booking/BookingRentalAccordion';
 import BookingSteps from '@/components/booking/BookingSteps';
+import TrustGuaranteeBanner from '@/components/booking/TrustGuaranteeBanner';
 import { differenceInDays, parseISO } from 'date-fns';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ChevronDown } from 'lucide-react';
@@ -384,6 +385,7 @@ const InsuranceAndExtrasSelection = () => {
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
       <BookingSteps currentStep={3} />
+      <TrustGuaranteeBanner />
       <div className="container mx-auto px-4 py-8">
         <ExitIntentPopup />
         {/* Sticky price summary - keeps total visible as user scrolls through insurance + extras */}

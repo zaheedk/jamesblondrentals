@@ -1,7 +1,7 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import PageSEO from '@/components/PageSEO';
+import TrustGuaranteeBanner from '@/components/booking/TrustGuaranteeBanner';
 import { getBookingData, updateBookingData } from "@/lib/booking-session";
 import { updateBookingPaymentStatus } from "@/hooks/use-bookings";
 import { toast } from "sonner";
@@ -242,6 +242,7 @@ const Payment = () => {
       />
       <div className="max-w-4xl mx-auto flex flex-col items-center">
         <h1 className="text-3xl font-bold mb-6">Processing Payment</h1>
+        <TrustGuaranteeBanner className="mb-6 w-full max-w-4xl rounded-lg border" />
         
         <div className="bg-white shadow-md rounded-lg p-6 w-full">
           {isLoading ? (

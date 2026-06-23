@@ -20,6 +20,7 @@ import { getCampaignCode } from "@/lib/utils";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
 import PageSEO from '@/components/PageSEO';
 import BookingSteps from "@/components/booking/BookingSteps";
+import TrustGuaranteeBanner from "@/components/booking/TrustGuaranteeBanner";
 import { parse, format, addDays } from "date-fns";
 
 interface RcmVehicleWithPricing {
@@ -622,6 +623,7 @@ const Vehicles = () => {
       />
       <ExitIntentPopup />
       <BookingSteps currentStep={2} />
+      <TrustGuaranteeBanner />
       <div className="bg-gray-50">
         <div className="container mx-auto px-4 py-8">
           <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
