@@ -161,13 +161,13 @@ const VehicleCard = ({
             25% Airport Discount Applied
           </Badge>
         )}
-        {lowStockCount !== null && (
+        {isLimitedAvailability && (
           <Badge
             className="w-fit mb-2 bg-red-100 text-red-800 border-red-200 gap-1 animate-pulse"
-            aria-label={`Only ${lowStockCount} left at this location`}
+            aria-label={limitedMessage}
           >
             <AlertTriangle className="w-3 h-3" />
-            Only {lowStockCount} left at {pickupLocationName || "this location"}
+            {limitedMessage}
           </Badge>
         )}
         <div className="space-y-3">
