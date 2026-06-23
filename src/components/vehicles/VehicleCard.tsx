@@ -125,16 +125,18 @@ const VehicleCard = ({
 
   const numberOfHours = getNumberOfHours();
 
-  // Use the real RCM availability status. RCM's `available` field is a status
-  // code, not a remaining-units count:
-  //   1 = available, 2 = on request / limited, anything else = unavailable.
-  // We surface an urgency badge only when RCM flags the category as limited
-  // (status === 2), preferring the API's own `availablemessage` text.
+  // Surface an urgency badge when RCM flags the category as constrained.
+  // RCM's `available` field is a status code (1 = available, 2 = on request /
+  // limited). In practice almost all bookable cars come back as 1, and RCM
+  // signals constrained inventory via the free-text `availablemessage` field
+  // — so treat the presence of that message (or status 2) as the trigger.
   const rcmAvailableStatus =
     typeof vehicle.available === "number" ? vehicle.available : null;
-  const isLimitedAvailability = isAvailable && rcmAvailableStatus === 2;
+  const rcmMessage = vehicle.availableMessage?.trim() || "";
+  const isLimitedAvailability =
+    isAvailable && (rcmAvailableStatus === 2 || rcmMessage.length > 0);
   const limitedMessage =
-    vehicle.availableMessage?.trim() ||
+    rcmMessage ||
     `Limited availability at ${pickupLocationName || "this location"}`;
 
   return (
