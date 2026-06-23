@@ -30,6 +30,7 @@ export interface Vehicle {
   hasLocationDiscount?: boolean; // Property to track if location discount is applied
   nextAvailableDate?: string; // Next date the vehicle becomes available (dd/MM/yyyy format)
   isCheckingAvailability?: boolean; // Whether we're currently checking future dates
+  availableMessage?: string; // RCM "availablemessage" — free-text status (e.g. "Limited availability")
 }
 
 export type VehicleType = "economy" | "compact" | "midsize" | "suv" | "luxury" | "van" | "convertible";

@@ -337,6 +337,7 @@ const Vehicles = () => {
           fuelEfficiency: "N/A",
           available: car.available,
           location: pickupLocation,
+          availableMessage: car.availablemessage,
           features: [
             `${car.numberofadults} Adults`,
             `${car.numberofchildren} Children`,
