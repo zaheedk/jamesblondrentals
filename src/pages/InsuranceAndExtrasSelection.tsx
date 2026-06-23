@@ -386,9 +386,12 @@ const InsuranceAndExtrasSelection = () => {
       <BookingSteps currentStep={3} />
       <div className="container mx-auto px-4 py-8">
         <ExitIntentPopup />
-        <BookingRentalAccordion key={`accordion-${selectedInsurance?.id}-${selectedKmCharge?.id}-${JSON.stringify(selectedExtras)}`} />
-        
-        <div className="space-y-8">
+        {/* Sticky price summary - keeps total visible as user scrolls through insurance + extras */}
+        <div className="sticky top-0 z-30 -mx-4 px-4 py-2 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 border-b">
+          <BookingRentalAccordion key={`accordion-${selectedInsurance?.id}-${selectedKmCharge?.id}-${JSON.stringify(selectedExtras)}`} className="!mb-0" />
+        </div>
+
+        <div className="space-y-8 pt-6">
           {/* Insurance Section */}
           <div className="space-y-6">
             <h2 className="text-2xl font-bold">Insurance Options</h2>
@@ -432,7 +435,16 @@ const InsuranceAndExtrasSelection = () => {
 
           {/* Extras Section */}
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold">Optional Extras</h2>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h2 className="text-2xl font-bold">Optional Extras</h2>
+              <button
+                type="button"
+                onClick={handleProceedToDetails}
+                className="text-sm font-medium text-primary underline-offset-4 hover:underline"
+              >
+                Skip extras — continue to details →
+              </button>
+            </div>
             {(extras.length > 0 || optionalFees.length > 0) && (
               <ExtrasSelection
                 extras={extras}
