@@ -22,7 +22,24 @@ const VEHICLES = [
   'Premium Midsize Car',
   'AWD SUV',
 ];
-const LOCATIONS = ['Auckland Airport', 'Wellington City', 'Christchurch Airport', 'Hamilton', 'West Auckland', 'Christchurch Central'];
+const LOCATIONS = [
+  'Auckland Airport',
+  'Wellington City',
+  'Christchurch Airport',
+  'Hamilton',
+  'West Auckland',
+  'Christchurch Central',
+  'South Auckland',
+  'Wellington Airport',
+  'North Shore',
+  'Tauranga',
+  'Rotorua',
+  'Queenstown',
+  'Dunedin',
+  'Palmerston North',
+  'New Plymouth',
+  'Napier',
+];
 const TIMES = ['just now', '2 minutes ago', '8 minutes ago', '14 minutes ago', '23 minutes ago', '1 hour ago', '2 hours ago'];
 
 const pick = <T,>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import Navbar from './Navbar';
@@ -8,6 +7,7 @@ import { ResourcePreloader } from '@/components/ResourcePreloader';
 import PromoBanner from './PromoBanner';
 import EarlyWeekBanner from './EarlyWeekBanner';
 import BreadcrumbsJsonLd from '@/components/BreadcrumbsJsonLd';
+import SocialProofNotifications from '@/components/SocialProofNotifications';
 
 const CHROMELESS_ROUTES = ['/admin/rental-agreement', '/photos', '/photo-gallery', '/ra'];
 
@@ -36,6 +36,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
       </main>
       <Footer />
       <ChatWidget />
+      <SocialProofNotifications />
     </div>
   );
 };
