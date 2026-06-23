@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Car, Truck, Bus, CarFront, Caravan, Package } from "lucide-react";
+import { useCategoryPricing } from "@/hooks/use-category-pricing";
 
 const fleetCategories = [
   {
@@ -65,6 +66,8 @@ const fleetCategories = [
 ];
 
 const FeaturedVehicles = () => {
+  const { data: pricing, isLoading: isPricingLoading } = useCategoryPricing();
+
   return (
     <section className="container mx-auto px-4 py-12 md:py-16">
       <div className="text-center mb-10 md:mb-12">
@@ -107,6 +110,16 @@ const FeaturedVehicles = () => {
               <h3 className="text-lg md:text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
                 {category.title}
               </h3>
+              <div className="mb-2 min-h-[1.5rem]" aria-live="polite">
+                {isPricingLoading ? (
+                  <span className="inline-block h-5 w-24 rounded bg-muted animate-pulse" />
+                ) : pricing?.[category.href] ? (
+                  <span className="text-primary font-semibold text-sm md:text-base">
+                    from ${Math.floor(pricing[category.href] as number)}
+                    <span className="text-muted-foreground font-normal">/day</span>
+                  </span>
+                ) : null}
+              </div>
               <p className="text-muted-foreground text-sm md:text-base leading-relaxed flex-grow">
                 {category.description}
               </p>
