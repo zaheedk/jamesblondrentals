@@ -1,5 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { X, CheckCircle2, MapPin } from 'lucide-react';
+import { rcmApi } from '@/lib/api/rcm-api';
+import { useQuery } from '@tanstack/react-query';
 
 type Notification = {
   name: string;
@@ -22,32 +24,14 @@ const VEHICLES = [
   'Premium Midsize Car',
   'AWD SUV',
 ];
-const LOCATIONS = [
-  'Auckland Airport',
-  'Wellington City',
-  'Christchurch Airport',
-  'Hamilton',
-  'West Auckland',
-  'Christchurch Central',
-  'South Auckland',
-  'Wellington Airport',
-  'North Shore',
-  'Tauranga',
-  'Rotorua',
-  'Queenstown',
-  'Dunedin',
-  'Palmerston North',
-  'New Plymouth',
-  'Napier',
-];
 const TIMES = ['just now', '2 minutes ago', '8 minutes ago', '14 minutes ago', '23 minutes ago', '1 hour ago', '2 hours ago'];
 
 const pick = <T,>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
 
-const buildNotification = (): Notification => ({
+const buildNotification = (locations: string[]): Notification => ({
   name: pick(FIRST_NAMES),
   vehicle: pick(VEHICLES),
-  location: pick(LOCATIONS),
+  location: pick(locations),
   timeAgo: pick(TIMES),
 });
 
@@ -57,12 +41,30 @@ const SocialProofNotifications = ({ maxToShow = 4 }: { maxToShow?: number }) => 
   const [dismissed, setDismissed] = useState(false);
   const [shownCount, setShownCount] = useState(0);
 
+  const { data: rcmLocations } = useQuery({
+    queryKey: ['social-proof-locations'],
+    queryFn: async () => {
+      const response = await rcmApi.getStep1();
+      if (response.status === 'OK' && response.results?.locations) {
+        return response.results.locations
+          .map((l: any) => (l.location || '').trim())
+          .filter((n: string) => n.length > 0);
+      }
+      return [] as string[];
+    },
+    staleTime: 10 * 60 * 1000,
+    retry: 1,
+  });
+
+  const locationNames = useMemo(() => rcmLocations ?? [], [rcmLocations]);
+
   useEffect(() => {
     if (dismissed || shownCount >= maxToShow) return;
+    if (locationNames.length === 0) return;
 
     const initialDelay = shownCount === 0 ? 6000 : 12000 + Math.random() * 6000;
     const showTimer = setTimeout(() => {
-      setCurrent(buildNotification());
+      setCurrent(buildNotification(locationNames));
       setVisible(true);
       setShownCount((c) => c + 1);
 
@@ -71,7 +73,7 @@ const SocialProofNotifications = ({ maxToShow = 4 }: { maxToShow?: number }) => 
     }, initialDelay);
 
     return () => clearTimeout(showTimer);
-  }, [shownCount, dismissed, maxToShow, visible === false]);
+  }, [shownCount, dismissed, maxToShow, visible === false, locationNames]);
 
   if (dismissed || !current) return null;
 
