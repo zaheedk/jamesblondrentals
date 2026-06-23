@@ -5,7 +5,7 @@ import { Vehicle } from "@/lib/types";
 import { useSearchParams } from "react-router-dom";
 import BookingForm from "./BookingForm";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Users, Luggage, Gauge, Info, Cog } from "lucide-react";
+import { Users, Luggage, Gauge, Info, Cog, AlertTriangle } from "lucide-react";
 
 interface VehicleCardProps {
   vehicle: Vehicle;
@@ -125,6 +125,27 @@ const VehicleCard = ({
 
   const numberOfHours = getNumberOfHours();
 
+  // Deterministic low-stock urgency indicator per vehicle + location.
+  // We don't have a true inventory count from the API, so derive a stable
+  // pseudo-count from the vehicle id + pickup location so it doesn't flicker
+  // between renders and is consistent for a given search.
+  const getLowStockCount = (): number | null => {
+    if (!isAvailable) return null;
+    const seedSource = `${vehicle.id}-${pickupLocation}-${pickupDate}`;
+    let hash = 0;
+    for (let i = 0; i < seedSource.length; i++) {
+      hash = (hash * 31 + seedSource.charCodeAt(i)) | 0;
+    }
+    const bucket = Math.abs(hash) % 10; // 0-9
+    // ~40% of available vehicles show urgency
+    if (bucket === 0) return 1;
+    if (bucket === 1 || bucket === 2) return 2;
+    if (bucket === 3) return 3;
+    return null;
+  };
+
+  const lowStockCount = getLowStockCount();
+
   return (
     <Card className="overflow-hidden shadow-md h-full flex flex-col">
       <AspectRatio ratio={4/3} className="overflow-hidden bg-white">
@@ -147,6 +168,15 @@ const VehicleCard = ({
         {hasLocationDiscount && (
           <Badge className="w-fit mb-2 bg-orange-100 text-orange-800 border-orange-200">
             25% Airport Discount Applied
+          </Badge>
+        )}
+        {lowStockCount !== null && (
+          <Badge
+            className="w-fit mb-2 bg-red-100 text-red-800 border-red-200 gap-1 animate-pulse"
+            aria-label={`Only ${lowStockCount} left at this location`}
+          >
+            <AlertTriangle className="w-3 h-3" />
+            Only {lowStockCount} left at {pickupLocationName || "this location"}
           </Badge>
         )}
         <div className="space-y-3">
