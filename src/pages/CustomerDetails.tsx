@@ -28,6 +28,7 @@ import BookingRentalAccordion from '@/components/booking/BookingRentalAccordion'
 import ExitIntentPopup from "@/components/ExitIntentPopup";
 import DebugApiResponse from '@/components/diagnostics/DebugApiResponse';
 import BookingSteps from '@/components/booking/BookingSteps';
+import TrustGuaranteeBanner from '@/components/booking/TrustGuaranteeBanner';
 import PageSEO from '@/components/PageSEO';
 
 

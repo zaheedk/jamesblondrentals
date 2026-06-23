@@ -1,7 +1,7 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import PageSEO from '@/components/PageSEO';
+import TrustGuaranteeBanner from '@/components/booking/TrustGuaranteeBanner';
 import { getBookingData, updateBookingData } from "@/lib/booking-session";
 import { updateBookingPaymentStatus } from "@/hooks/use-bookings";
 import { toast } from "sonner";

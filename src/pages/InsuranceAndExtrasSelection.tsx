@@ -10,6 +10,7 @@ import KmCharges from '@/components/booking/KmCharges';
 import ExtrasSelection from '@/components/booking/ExtrasSelection';
 import BookingRentalAccordion from '@/components/booking/BookingRentalAccordion';
 import BookingSteps from '@/components/booking/BookingSteps';
+import TrustGuaranteeBanner from '@/components/booking/TrustGuaranteeBanner';
 import { differenceInDays, parseISO } from 'date-fns';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ChevronDown } from 'lucide-react';
