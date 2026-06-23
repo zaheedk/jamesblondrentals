@@ -62,8 +62,6 @@ const Index = () => {
       
       <Hero />
 
-      <SocialProofNotifications />
-      
       <CustomerReviews />
       
       <FeaturedVehicles />
