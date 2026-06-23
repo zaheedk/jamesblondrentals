@@ -125,26 +125,17 @@ const VehicleCard = ({
 
   const numberOfHours = getNumberOfHours();
 
-  // Deterministic low-stock urgency indicator per vehicle + location.
-  // We don't have a true inventory count from the API, so derive a stable
-  // pseudo-count from the vehicle id + pickup location so it doesn't flicker
-  // between renders and is consistent for a given search.
-  const getLowStockCount = (): number | null => {
-    if (!isAvailable) return null;
-    const seedSource = `${vehicle.id}-${pickupLocation}-${pickupDate}`;
-    let hash = 0;
-    for (let i = 0; i < seedSource.length; i++) {
-      hash = (hash * 31 + seedSource.charCodeAt(i)) | 0;
-    }
-    const bucket = Math.abs(hash) % 10; // 0-9
-    // ~40% of available vehicles show urgency
-    if (bucket === 0) return 1;
-    if (bucket === 1 || bucket === 2) return 2;
-    if (bucket === 3) return 3;
-    return null;
-  };
-
-  const lowStockCount = getLowStockCount();
+  // Use the real RCM availability status. RCM's `available` field is a status
+  // code, not a remaining-units count:
+  //   1 = available, 2 = on request / limited, anything else = unavailable.
+  // We surface an urgency badge only when RCM flags the category as limited
+  // (status === 2), preferring the API's own `availablemessage` text.
+  const rcmAvailableStatus =
+    typeof vehicle.available === "number" ? vehicle.available : null;
+  const isLimitedAvailability = isAvailable && rcmAvailableStatus === 2;
+  const limitedMessage =
+    vehicle.availableMessage?.trim() ||
+    `Limited availability at ${pickupLocationName || "this location"}`;
 
   return (
     <Card className="overflow-hidden shadow-md h-full flex flex-col">
