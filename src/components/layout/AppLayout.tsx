@@ -36,6 +36,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
       </main>
       <Footer />
       <ChatWidget />
+      <SocialProofNotifications />
     </div>
   );
 };
