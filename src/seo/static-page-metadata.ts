@@ -141,6 +141,62 @@ const overrides: Record<string, Partial<Omit<StaticPageMetadata, 'path'>>> = {
     heading: 'Win up to $200 back on your rental',
     body: 'Every month James Blond Rentals draws 5 lucky winners who each receive up to $200 back from their rental amount. Hire a car, van, ute, minibus or truck in Auckland, Wellington or Christchurch to be automatically entered.',
   },
+  '/one-way-car-hire': {
+    title: 'One-Way Car Hire NZ | Pick Up & Drop Off in Different Cities | James Blond',
+    description: 'One-way car hire across New Zealand. Pick up in Auckland, Hamilton, Wellington or Christchurch and drop off at any other James Blond branch. Transparent one-way fees, modern fleet.',
+    heading: 'One-Way Car Hire New Zealand',
+    body: 'One-way car rental between James Blond branches in Auckland, Auckland Airport, Hamilton, Wellington and Christchurch. Drive one direction and skip the return trip — fees are quoted live during online booking.',
+  },
+  '/one-way-car-hire/auckland-to-wellington': {
+    title: 'One-Way Car Hire Auckland to Wellington | James Blond Rentals',
+    description: 'One-way car hire from Auckland to Wellington — 640km, 8h 30m drive. Pick up in Auckland, drop off in Wellington. Modern fleet and transparent one-way fee.',
+    heading: 'One-Way Car Hire Auckland to Wellington',
+  },
+  '/one-way-car-hire/wellington-to-auckland': {
+    title: 'One-Way Car Hire Wellington to Auckland | James Blond Rentals',
+    description: 'One-way car hire from Wellington to Auckland — 640km up SH1. Pick up in Wellington, drop off in Auckland city or airport.',
+    heading: 'One-Way Car Hire Wellington to Auckland',
+  },
+  '/one-way-car-hire/auckland-to-christchurch': {
+    title: 'One-Way Car Hire Auckland to Christchurch | James Blond',
+    description: 'One-way car hire from Auckland to Christchurch via the Cook Strait ferry. North-to-South Island road trip with drop-off in Christchurch.',
+    heading: 'One-Way Car Hire Auckland to Christchurch',
+  },
+  '/one-way-car-hire/christchurch-to-auckland': {
+    title: 'One-Way Car Hire Christchurch to Auckland | James Blond',
+    description: 'One-way car hire from Christchurch to Auckland via the Kaikoura coast and Cook Strait ferry. Drop off in Auckland or Auckland Airport.',
+    heading: 'One-Way Car Hire Christchurch to Auckland',
+  },
+  '/one-way-car-hire/wellington-to-christchurch': {
+    title: 'One-Way Car Hire Wellington to Christchurch | James Blond',
+    description: 'One-way car hire from Wellington to Christchurch via the Interislander ferry and Kaikoura coast. Easy South Island arrival.',
+    heading: 'One-Way Car Hire Wellington to Christchurch',
+  },
+  '/one-way-car-hire/christchurch-to-wellington': {
+    title: 'One-Way Car Hire Christchurch to Wellington | James Blond',
+    description: 'One-way car hire from Christchurch to Wellington via Kaikoura and the Cook Strait ferry. Drop off in the capital.',
+    heading: 'One-Way Car Hire Christchurch to Wellington',
+  },
+  '/one-way-car-hire/auckland-to-hamilton': {
+    title: 'One-Way Car Hire Auckland to Hamilton | James Blond Rentals',
+    description: 'One-way car hire from Auckland to Hamilton — short 125km run down the Waikato Expressway. Pickup in Auckland, drop-off in Hamilton.',
+    heading: 'One-Way Car Hire Auckland to Hamilton',
+  },
+  '/one-way-car-hire/hamilton-to-auckland': {
+    title: 'One-Way Car Hire Hamilton to Auckland | James Blond Rentals',
+    description: 'One-way car hire from Hamilton to Auckland or Auckland Airport. Quick 125km drive — great for outbound flights and city trips.',
+    heading: 'One-Way Car Hire Hamilton to Auckland',
+  },
+  '/one-way-car-hire/hamilton-to-wellington': {
+    title: 'One-Way Car Hire Hamilton to Wellington | James Blond Rentals',
+    description: 'One-way car hire from Hamilton to Wellington — 525km down SH1 through Taupo and the Desert Road. Drop off in the capital.',
+    heading: 'One-Way Car Hire Hamilton to Wellington',
+  },
+  '/one-way-car-hire/wellington-to-hamilton': {
+    title: 'One-Way Car Hire Wellington to Hamilton | James Blond Rentals',
+    description: 'One-way car hire from Wellington to Hamilton — 525km up SH1 through Manawatu and Taupo to the heart of the Waikato.',
+    heading: 'One-Way Car Hire Wellington to Hamilton',
+  },
 };
 
 export const staticPageMetadata: StaticPageMetadata[] = sitemapRoutes.map((route: SitemapRoute) => ({

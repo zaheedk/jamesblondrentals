@@ -312,6 +312,15 @@ const CityCarHire: React.FC<CityCarHireProps> = ({
             </div>
           ))}
         </dl>
+        <div className="mt-10 p-6 border border-border rounded-2xl bg-card">
+          <p className="text-sm uppercase tracking-widest text-primary font-semibold">One-way trip?</p>
+          <p className="mt-2 text-lg">
+            Picking up in {city} and dropping off in a different city?{' '}
+            <Link to="/one-way-car-hire" className="font-semibold underline hover:text-primary">
+              See one-way car hire across New Zealand →
+            </Link>
+          </p>
+        </div>
       </section>
     </div>
   );
