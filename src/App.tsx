@@ -158,6 +158,8 @@ import Unsubscribe from "./pages/Unsubscribe";
 import VehiclePhotos from "./pages/VehiclePhotos";
 import PhotoGallery from "./pages/PhotoGallery";
 import Win from "./pages/Win";
+import OneWayCarHire from "./pages/OneWayCarHire";
+import OneWayRoutePage from "./pages/OneWayRoutePage";
 
 const queryClient = new QueryClient();
 
