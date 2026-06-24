@@ -154,4 +154,17 @@ export const sitemapRoutes: SitemapRoute[] = [
   { path: '/jumbo-taxi-launch', priority: 0.6, changefreq: 'monthly' },
   { path: '/fuel-calculator', priority: 0.7, changefreq: 'monthly' },
   { path: '/buy-used-vehicles', priority: 0.7, changefreq: 'weekly' },
+
+  // One-Way Car Hire
+  { path: '/one-way-car-hire', priority: 0.9, changefreq: 'monthly' },
+  { path: '/one-way-car-hire/auckland-to-wellington', priority: 0.8, changefreq: 'monthly' },
+  { path: '/one-way-car-hire/wellington-to-auckland', priority: 0.8, changefreq: 'monthly' },
+  { path: '/one-way-car-hire/auckland-to-christchurch', priority: 0.8, changefreq: 'monthly' },
+  { path: '/one-way-car-hire/christchurch-to-auckland', priority: 0.8, changefreq: 'monthly' },
+  { path: '/one-way-car-hire/wellington-to-christchurch', priority: 0.8, changefreq: 'monthly' },
+  { path: '/one-way-car-hire/christchurch-to-wellington', priority: 0.8, changefreq: 'monthly' },
+  { path: '/one-way-car-hire/auckland-to-hamilton', priority: 0.7, changefreq: 'monthly' },
+  { path: '/one-way-car-hire/hamilton-to-auckland', priority: 0.7, changefreq: 'monthly' },
+  { path: '/one-way-car-hire/hamilton-to-wellington', priority: 0.7, changefreq: 'monthly' },
+  { path: '/one-way-car-hire/wellington-to-hamilton', priority: 0.7, changefreq: 'monthly' },
 ];
