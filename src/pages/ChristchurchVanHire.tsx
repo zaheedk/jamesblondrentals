@@ -9,6 +9,7 @@ import vanHero from '@/assets/cargo-van-south-auckland-skyline.jpg';
 import vanInterior from '@/assets/cargo-van-interior-south-auckland.jpg';
 import vanFleet from '@/assets/south-auckland-cargo-van-fleet.jpg';
 import minibus from '@/assets/12-seater-van-auckland-sky-tower.jpg';
+import { christchurchVanPages } from '@/lib/christchurch-van-pages';
 
 const SITE_URL = 'https://jamesblond.co.nz';
 const PAGE_URL = `${SITE_URL}/van-hire-christchurch`;
@@ -383,6 +384,37 @@ const ChristchurchVanHire = () => {
             </div>
           ))}
         </dl>
+      </section>
+
+      {/* Related Christchurch & Canterbury van hire */}
+      <section className="border-t border-border bg-[hsl(0_0%_18%)] text-[hsl(0_0%_92%)]">
+        <div className="container mx-auto px-6 py-16">
+          <div className="max-w-2xl mb-10">
+            <div className="flex items-center gap-3 mb-3">
+              <MapPin className="h-5 w-5 text-primary" />
+              <span className="text-base font-semibold">Explore by use case &amp; location</span>
+            </div>
+            <div className="h-px w-full bg-[hsl(0_0%_30%)] mb-6" />
+            <h2 className="font-sans font-extrabold tracking-tight text-3xl md:text-4xl leading-[1.05]">
+              Christchurch &amp; Canterbury van hire, by the way you need it.
+            </h2>
+          </div>
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {christchurchVanPages.map((r) => (
+              <Link
+                key={r.slug}
+                to={r.path}
+                className="block p-6 rounded-xl bg-[hsl(0_0%_24%)] hover:bg-[hsl(0_0%_30%)] transition-colors"
+              >
+                <p className="text-xs uppercase tracking-widest opacity-70">{r.eyebrow}</p>
+                <p className="mt-2 font-semibold text-lg">{r.breadcrumbLabel}</p>
+                <span className="mt-3 inline-flex items-center gap-2 text-sm text-primary">
+                  View page <ArrowRight className="h-4 w-4" />
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
       </section>
     </div>
   );
