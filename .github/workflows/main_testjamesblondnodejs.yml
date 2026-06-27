@@ -46,13 +46,14 @@ jobs:
           rm -rf node_modules/.cache
 
       - name: Zip artifact for deployment
-        run: zip -r release.zip . -x "node_modules/.cache/*" "node_modules/.bin/*"
+        run: zip -r release.zip . -x "node_modules/*" ".git/*" ".github/*"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: node-app
           path: release.zip
+          retention-days: 1
 
   deploy:
     runs-on: ubuntu-latest
