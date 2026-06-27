@@ -8,6 +8,19 @@ const WELLINGTON_LINKS = [
   { to: "/wellington-minibus-hire", label: "10 & 12 Seat Minibus Hire — Wellington" },
   { to: "/wellington-10-12-seat-van-minibus-rental", label: "10 & 12 Seat Van Rental — Wellington" },
   { to: "/wellington-minibus-hire-cbd", label: "Wellington CBD Minibus Hire" },
+  // Van satellites
+  { to: "/cargo-van-hire-wellington", label: "Cargo Van Hire Wellington" },
+  { to: "/moving-van-hire-wellington", label: "Moving Van Hire Wellington" },
+  { to: "/van-hire-wellington-airport", label: "Van Hire Wellington Airport" },
+  { to: "/van-hire-lower-hutt", label: "Van Hire Lower Hutt" },
+  { to: "/van-hire-porirua", label: "Van Hire Porirua" },
+  { to: "/van-hire-kapiti-coast", label: "Van Hire Kāpiti Coast" },
+  // Truck satellites
+  { to: "/small-truck-hire-wellington", label: "Small Truck Hire Wellington" },
+  { to: "/moving-truck-hire-wellington", label: "Moving Truck Hire Wellington" },
+  { to: "/furniture-truck-hire-wellington", label: "Furniture Truck Hire Wellington" },
+  { to: "/truck-hire-lower-hutt", label: "Truck Hire Lower Hutt" },
+  { to: "/truck-hire-porirua", label: "Truck Hire Porirua" },
   { to: "/airport/wellington", label: "Wellington Airport Pickup" },
   { to: "/contact/wellington", label: "Contact Wellington Branch" },
 ];

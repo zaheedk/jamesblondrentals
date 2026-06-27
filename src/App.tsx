@@ -162,6 +162,8 @@ import PhotoGallery from "./pages/PhotoGallery";
 import Win from "./pages/Win";
 import OneWayCarHire from "./pages/OneWayCarHire";
 import OneWayRoutePage from "./pages/OneWayRoutePage";
+import WellingtonVanTruckSubPage from "./pages/WellingtonVanTruckSubPage";
+import { wellingtonVanTruckPages } from "./lib/wellington-van-truck-pages";
 
 const queryClient = new QueryClient();
 
@@ -300,6 +302,9 @@ const App = () => {
                 <Route path="/van-hire-christchurch" element={<ChristchurchVanHire />} />
                 {christchurchVanPages.map((p) => (
                   <Route key={p.path} path={p.path} element={<ChristchurchVanSubPage page={p} />} />
+                ))}
+                {wellingtonVanTruckPages.map((p) => (
+                  <Route key={p.path} path={p.path} element={<WellingtonVanTruckSubPage page={p} />} />
                 ))}
                 <Route path="/car-hire-hamilton" element={<HamiltonCarHire />} />
                 <Route path="/car-hire-auckland" element={<AucklandCarHire />} />
