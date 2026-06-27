@@ -110,6 +110,8 @@ import MovingTruckHireHamilton from "./pages/MovingTruckHireHamilton";
 import CentralChristchurchTruckHire from "./pages/CentralChristchurchTruckHire";
 import CentralChristchurchVanHire from "./pages/CentralChristchurchVanHire";
 import ChristchurchVanHire from "./pages/ChristchurchVanHire";
+import ChristchurchVanSubPage from "./pages/ChristchurchVanSubPage";
+import { christchurchVanPages } from "./lib/christchurch-van-pages";
 import CentralChristchurchCarHire from "./pages/CentralChristchurchCarHire";
 import HamiltonCarHire from "./pages/HamiltonCarHire";
 import UteHireNZ from "./pages/UteHireNZ";
@@ -296,6 +298,9 @@ const App = () => {
                 <Route path="/trailer-hire-hamilton" element={<TrailerHireHamilton />} />
                 <Route path="/moving-truck-hire-hamilton" element={<MovingTruckHireHamilton />} />
                 <Route path="/van-hire-christchurch" element={<ChristchurchVanHire />} />
+                {christchurchVanPages.map((p) => (
+                  <Route key={p.path} path={p.path} element={<ChristchurchVanSubPage page={p} />} />
+                ))}
                 <Route path="/car-hire-hamilton" element={<HamiltonCarHire />} />
                 <Route path="/car-hire-auckland" element={<AucklandCarHire />} />
                 <Route path="/car-hire-christchurch" element={<ChristchurchCarHire />} />
