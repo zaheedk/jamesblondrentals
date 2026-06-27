@@ -31,6 +31,7 @@ jobs:
         with:
           name: preview-build
           path: dist/
+          retention-days: 1
 
   deploy-preview:
     runs-on: ubuntu-latest
