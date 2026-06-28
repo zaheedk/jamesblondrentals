@@ -1,0 +1,93 @@
+Keyword,Match type,Level,Notes
+bunnings,Phrase,Account,Competitor brand (Bunnings hire)
+bunnings hire van,Phrase,Account,Competitor brand
+bunnings rent a van,Phrase,Account,Competitor brand
+bunnings rent a ute,Phrase,Account,Competitor brand
+bunnings hire,Phrase,Account,Competitor brand
+hireace,Phrase,Account,Competitor brand
+hire ace,Phrase,Account,Competitor brand
+hirepool,Phrase,Account,Competitor brand
+hire pool,Phrase,Account,Competitor brand
+kennards,Phrase,Account,Competitor brand
+hertz,Phrase,Account,Competitor brand
+avis,Phrase,Account,Competitor brand
+budget rent a car,Phrase,Account,Competitor brand
+europcar,Phrase,Account,Competitor brand
+thrifty,Phrase,Account,Competitor brand
+jucy,Phrase,Account,Competitor brand
+gorent,Phrase,Account,Competitor brand
+gorentals,Phrase,Account,Competitor brand
+apex,Phrase,Account,Competitor brand
+ezi car rental,Phrase,Account,Competitor brand
+escape rentals,Phrase,Account,Competitor brand
+britz,Phrase,Account,Competitor brand
+maui,Phrase,Account,Competitor brand
+spaceships,Phrase,Account,Competitor brand
+mighty cars,Phrase,Account,Competitor brand
+wicked campers,Phrase,Account,Competitor brand
+omega rental,Phrase,Account,Competitor brand
+snap rental,Phrase,Account,Competitor brand
+handy rentals,Phrase,Account,Competitor brand
+sydney,Broad,Account,Wrong country
+melbourne,Broad,Account,Wrong country
+brisbane,Broad,Account,Wrong country
+perth,Broad,Account,Wrong country
+adelaide,Broad,Account,Wrong country
+australia,Broad,Account,Wrong country
+australian,Broad,Account,Wrong country
+usa,Broad,Account,Wrong country
+uk,Broad,Account,Wrong country
+london,Broad,Account,Wrong country
+india,Broad,Account,Wrong country
+fiji,Broad,Account,Wrong country
+for sale,Phrase,Account,Wrong intent (buying not hiring)
+second hand,Phrase,Account,Wrong intent
+used van for sale,Phrase,Account,Wrong intent
+trademe,Broad,Account,Wrong intent
+trade me,Phrase,Account,Wrong intent
+buy a van,Phrase,Account,Wrong intent
+buy van,Phrase,Account,Wrong intent
+job,Broad,Account,Wrong intent (employment)
+jobs,Broad,Account,Wrong intent
+career,Broad,Account,Wrong intent
+careers,Broad,Account,Wrong intent
+vacancy,Broad,Account,Wrong intent
+vacancies,Broad,Account,Wrong intent
+salary,Broad,Account,Wrong intent
+wage,Broad,Account,Wrong intent
+driver wanted,Phrase,Account,Wrong intent
+free,Broad,Account,Wrong intent
+freight forwarder,Phrase,Account,Wrong service
+repair,Broad,Account,Wrong service
+repairs,Broad,Account,Wrong service
+parts,Broad,Account,Wrong service
+workshop,Broad,Account,Wrong service
+tyre,Broad,Account,Wrong service
+tyres,Broad,Account,Wrong service
+battery,Broad,Account,Wrong service
+food truck,Phrase,Account,Unrelated vehicle
+ice cream truck,Phrase,Account,Unrelated vehicle
+tow truck,Phrase,Account,Unrelated vehicle
+tow truck hire,Phrase,Account,Unrelated vehicle
+cement truck,Phrase,Account,Unrelated vehicle
+fire truck,Phrase,Account,Unrelated vehicle
+monster truck,Phrase,Account,Unrelated vehicle
+toy truck,Phrase,Account,Unrelated vehicle
+truck driver,Phrase,Account,Wrong intent (employment)
+courier driver,Phrase,Account,Wrong intent (employment)
+moving company,Phrase,Account,Wrong service (full-service movers)
+removalist,Broad,Account,Wrong service
+removalists,Broad,Account,Wrong service
+moving company quote,Phrase,Account,Wrong service
+packing service,Phrase,Account,Wrong service
+storage,Broad,Account,Wrong service
+self storage,Phrase,Account,Wrong service
+rent to own,Phrase,Account,Wrong intent
+lease,Broad,Account,Wrong intent (long-term lease)
+leasing,Broad,Account,Wrong intent
+finance,Broad,Account,Wrong intent
+insurance only,Phrase,Account,Wrong intent
+rental cars,Phrase,Truck campaigns,Wrong product
+car rental,Phrase,Truck campaigns,Wrong product
+car hire,Phrase,Truck campaigns,Wrong product
+car rental cost,Phrase,Account,Research intent zero conv
