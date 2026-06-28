@@ -97,6 +97,7 @@ import StrapsRatchetDetail from "./pages/StrapsRatchetDetail"; // Import the new
 import HandTrolleyDetail from "./pages/HandTrolleyDetail"; // Import the new Hand Trolley detail page
 import LargeHandTrolleyDetail from "./pages/LargeHandTrolleyDetail"; // Import the new Large Hand Trolley detail page
 import WestAucklandTruckRentals from "./pages/WestAucklandTruckRentals"; // Import the new West Auckland Truck Rentals page
+import WestAucklandVanHire from "./pages/WestAucklandVanHire";
 import AucklandTruckRentals from "./pages/AucklandTruckRentals"; // Import the new Auckland Truck Rentals page
 import MovingTruckHire from "./pages/MovingTruckHire";
 import TruckHire from "./pages/TruckHire";
@@ -285,6 +286,7 @@ const App = () => {
                 <Route path="/auckland-airport-minibus-rentals-hire" element={<AucklandAirportMinibusRentals />} />
                 <Route path="/auckland-airport-car-rentals" element={<AucklandAirportCarRentals />} />
                 <Route path="/west-auckland-truck-rentals-hire" element={<WestAucklandTruckRentals />} />
+                <Route path="/west-auckland-van-hire" element={<WestAucklandVanHire />} />
                 <Route path="/auckland-truck-rentals-hire" element={<AucklandTruckRentals />} />
                 <Route path="/moving-truck-hire-auckland" element={<MovingTruckHire />} />
                 <Route path="/truck-hire" element={<TruckHire />} />
