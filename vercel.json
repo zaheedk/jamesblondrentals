@@ -55,7 +55,7 @@
       "destination": "https://apis.rentalcarmanager.com/:path*"
     },
     {
-      "source": "/((?!sitemap.xml|robots.txt).*)",
+      "source": "/((?!sitemap.xml|robots.txt|google-ads/).*)",
       "destination": "/index.html"
     }
   ],
