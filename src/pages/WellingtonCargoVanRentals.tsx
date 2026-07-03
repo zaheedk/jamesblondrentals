@@ -32,7 +32,7 @@ const WellingtonCargoVanRentals = () => {
       </div>
 
       {/* Booking Form Section - Moved to Top */}
-      <section className="mb-12">
+      <section id="booking-form" className="mb-12">
         <div className="bg-primary/5 border border-primary/10 rounded-lg p-6">
           <h2 className="text-2xl font-bold mb-6 text-center">Book Your Wellington Cargo Van</h2>
           <p className="text-center mb-6">Check availability and reserve your van today</p>
