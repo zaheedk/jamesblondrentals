@@ -32,7 +32,7 @@ const Hero = () => {
           </p>
         </div>
 
-        <div className="max-w-4xl mx-auto">
+        <div id="booking-form" className="max-w-4xl mx-auto scroll-mt-20">
           <SearchForm />
         </div>
       </div>

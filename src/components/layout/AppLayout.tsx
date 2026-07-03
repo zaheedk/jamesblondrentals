@@ -8,6 +8,7 @@ import PromoBanner from './PromoBanner';
 import EarlyWeekBanner from './EarlyWeekBanner';
 import BreadcrumbsJsonLd from '@/components/BreadcrumbsJsonLd';
 import SocialProofNotifications from '@/components/SocialProofNotifications';
+import StickyMobileBookBar from './StickyMobileBookBar';
 
 const CHROMELESS_ROUTES = ['/admin/rental-agreement', '/photos', '/photo-gallery', '/ra'];
 
@@ -37,6 +38,9 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
       <Footer />
       <ChatWidget />
       <SocialProofNotifications />
+      <StickyMobileBookBar />
+      {/* Reserve space so the sticky bar never covers page content on mobile */}
+      <div className="md:hidden h-16" aria-hidden="true" />
     </div>
   );
 };
