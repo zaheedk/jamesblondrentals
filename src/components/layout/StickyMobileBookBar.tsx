@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Phone, CalendarCheck } from 'lucide-react';
 
 /**
@@ -24,8 +24,19 @@ const HIDE_ON_PREFIXES = [
 
 const StickyMobileBookBar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const hidden = HIDE_ON_PREFIXES.some((p) => location.pathname.startsWith(p));
   if (hidden) return null;
+
+  const handleBookClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const target = document.getElementById('booking-form');
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      navigate('/#booking-form');
+    }
+  };
 
   return (
     <div
@@ -43,14 +54,15 @@ const StickyMobileBookBar = () => {
           <Phone className="h-4 w-4" />
           Call
         </a>
-        <Link
-          to="/#booking-form"
+        <a
+          href="#booking-form"
+          onClick={handleBookClick}
           className="flex-[1.6] inline-flex items-center justify-center gap-2 rounded-md bg-primary text-primary-foreground font-semibold text-sm py-2.5 shadow-md active:scale-[0.98] transition"
           aria-label="Book a rental now"
         >
           <CalendarCheck className="h-4 w-4" />
           Book Now · from $35
-        </Link>
+        </a>
       </div>
     </div>
   );
