@@ -6,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import PageSEO from '@/components/PageSEO';
 import JsonLd from '@/components/JsonLd';
 import TruckQuoteSearchForm from '@/components/home/TruckQuoteSearchForm';
+import SearchForm from '@/components/home/SearchForm';
 
 const suburbs = [
   'Henderson', 'New Lynn', 'Te Atatu', 'Massey', 'Swanson',
@@ -64,6 +65,17 @@ const WestAucklandVanHire = () => {
       />
       <JsonLd data={faqLd} />
       <JsonLd data={breadcrumbLd} />
+
+      {/* Above-the-fold quote form — captures Google Ads clicks before they bounce */}
+      <section id="booking-form" className="mb-8 bg-primary/5 border border-primary/10 rounded-xl p-4 md:p-6">
+        <div className="text-center mb-4">
+          <h2 className="text-xl md:text-2xl font-bold">Get an instant West Auckland van quote</h2>
+          <p className="text-sm text-muted-foreground">Pick your dates — see live pricing in seconds.</p>
+        </div>
+        <div className="max-w-4xl mx-auto">
+          <SearchForm defaultCategoryName="Van" />
+        </div>
+      </section>
 
       {/* Hero */}
       <section className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-6 md:p-10 mb-10">
