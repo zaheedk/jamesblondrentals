@@ -12,6 +12,7 @@ interface EmailRequest {
   html: string;
   from?: string;
   replyTo?: string;
+  attachments?: Array<{ filename: string; content: string; content_type?: string }>;
 }
 
 serve(async (req) => {
@@ -29,7 +30,7 @@ serve(async (req) => {
   }
 
   try {
-    const { to, subject, html, from, replyTo }: EmailRequest = await req.json();
+    const { to, subject, html, from, replyTo, attachments }: EmailRequest = await req.json();
 
     if (!to || !subject || !html) {
       return new Response(
@@ -47,6 +48,10 @@ serve(async (req) => {
 
     if (replyTo) {
       emailPayload.reply_to = [replyTo];
+    }
+
+    if (attachments && attachments.length > 0) {
+      emailPayload.attachments = attachments;
     }
 
     const res = await fetch("https://api.resend.com/emails", {
