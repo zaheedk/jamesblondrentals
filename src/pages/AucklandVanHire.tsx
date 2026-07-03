@@ -7,6 +7,7 @@ import vanImage from '@/assets/12-seater-van-auckland-sky-tower.jpg';
 import vanInteriorImage from '@/assets/12-seater-van-interior-auckland.jpg';
 import fleetImage from '@/assets/auckland-van-fleet-sky-tower.jpg';
 import PageSEO from '@/components/PageSEO';
+import SearchForm from '@/components/home/SearchForm';
 
 
 const AucklandVanHire = () => {
@@ -72,6 +73,19 @@ const AucklandVanHire = () => {
           </nav>
         </div>
       </div>
+
+      {/* Above-the-fold quote form */}
+      <section id="booking-form" className="py-6 bg-primary/5 border-b border-primary/10">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-4">
+            <h2 className="text-xl md:text-2xl font-bold">Get an instant Auckland minibus quote</h2>
+            <p className="text-sm text-muted-foreground">Choose dates — live pricing in seconds.</p>
+          </div>
+          <div className="max-w-4xl mx-auto">
+            <SearchForm defaultCategoryName="Minibus" />
+          </div>
+        </div>
+      </section>
 
       {/* Hero Section */}
       <section className="py-12 bg-gradient-to-br from-primary/5 to-secondary/5">
