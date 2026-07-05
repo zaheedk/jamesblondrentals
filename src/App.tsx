@@ -39,6 +39,8 @@ import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import ChristchurchAkaroaDayTrip from "./pages/blog/ChristchurchAkaroaDayTrip";
 import ChristchurchMtHuttSkiGuide from "./pages/blog/ChristchurchMtHuttSkiGuide";
+import ChristchurchQueenstownOneWay from "./pages/blog/ChristchurchQueenstownOneWay";
+import ChristchurchHanmerSprings from "./pages/blog/ChristchurchHanmerSprings";
 const AdminBlog = lazy(() => import("./pages/AdminBlog"));
 const AdminBlogEditor = lazy(() => import("./pages/AdminBlogEditor"));
 const AdminBlogImport = lazy(() => import("./pages/AdminBlogImport"));
@@ -207,6 +209,8 @@ const App = () => {
                 <Route path="/blog" element={<Blog />} />
                 <Route path="/blog/akaroa-day-trip-from-christchurch-car-hire-guide" element={<ChristchurchAkaroaDayTrip />} />
                 <Route path="/blog/mt-hutt-ski-guide-awd-hire-christchurch" element={<ChristchurchMtHuttSkiGuide />} />
+                <Route path="/blog/one-way-car-hire-christchurch-to-queenstown" element={<ChristchurchQueenstownOneWay />} />
+                <Route path="/blog/hanmer-springs-weekend-from-christchurch-car-hire" element={<ChristchurchHanmerSprings />} />
                 <Route path="/blog/:slug" element={<BlogPost />} />
                 
                 {/* Admin Blog routes */}
