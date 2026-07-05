@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { MapIcon } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import FuelStationsMapChristchurch from '../components/FuelStationsMapChristchurch';
@@ -113,6 +114,9 @@ const AirportChristchurch = () => (
           </p>
           <p className="text-gray-600 mb-4">
             Whether you're travelling for business or adventure, our wide selection of rental vehicles – from cars and SUVs to vans, trucks, and trailers – ensures we've got the perfect fit for your trip.
+          </p>
+          <p className="text-gray-600 mb-4">
+            Browse our full range of <Link to="/car-hire-christchurch" className="text-primary hover:underline font-medium">Christchurch car hire vehicles</Link> — from economy cars to AWD SUVs for South Island road trips.
           </p>
           <div className="mt-6">
             <h3 className="text-xl font-semibold mb-2">Contact Information</h3>

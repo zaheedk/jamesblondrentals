@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { MapPin, Phone, Mail, Facebook } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import ContactForm from '@/components/ContactForm';
@@ -93,6 +94,9 @@ const ContactChristchurch = () => {
     <JsonLd data={bookingHowTo("https://jamesblond.co.nz/contact/christchurch")} />
     <JsonLd data={pickupHowTo({ pageUrl: "https://jamesblond.co.nz/contact/christchurch", locationName: "Christchurch", address: "25 Logistics Drive, Harewood, Christchurch", isAirport: false })} />
       <h1 className="text-4xl font-bold mb-8 text-center">Christchurch Branch</h1>
+      <p className="text-center text-muted-foreground mb-8 max-w-2xl mx-auto">
+        Looking for a rental vehicle? <Link to="/car-hire-christchurch" className="text-primary hover:underline font-medium">Explore our Christchurch car hire range</Link> — cars, SUVs, vans and trucks.
+      </p>
       
       <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
         {/* Contact Information */}
