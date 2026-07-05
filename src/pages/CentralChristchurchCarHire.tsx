@@ -128,6 +128,10 @@ const CentralChristchurchCarHire = () => {
                 {' '}and{' '}
                 <Link to="/central-christchurch-truck-hire" className="underline hover:text-primary">truck hire</Link>.
               </p>
+              <p className="mt-2 text-sm text-muted-foreground max-w-xl">
+                Looking for the full Christchurch car hire hub?{' '}
+                <Link to="/car-hire-christchurch" className="underline hover:text-primary font-medium">View all Christchurch car rental options</Link>.
+              </p>
               <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
                 <Button asChild size="lg" className="rounded-full px-7">
                   <a href="#booking">Check availability</a>
