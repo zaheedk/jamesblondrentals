@@ -293,10 +293,10 @@ const ChristchurchCarHire = () => {
             </p>
             <ul className="mt-10 divide-y divide-border border-y border-border">
               {[
-                { label: 'Weekend to Akaroa & Banks Peninsula', to: '/car-hire-christchurch' },
-                { label: 'Ski runs to Mt Hutt, Porters & Cheeseman', to: '/fleet/cars/premium-awd-suv' },
+                { label: 'Akaroa day trip guide — driving times, itinerary & best hire car', to: '/blog/akaroa-day-trip-from-christchurch-car-hire-guide' },
+                { label: 'Mt Hutt ski guide — hiring an AWD SUV from Christchurch', to: '/blog/mt-hutt-ski-guide-awd-hire-christchurch' },
                 { label: 'One-way Christchurch → Queenstown', to: '/one-way-car-hire' },
-                { label: 'Hanmer Springs, Kaikōura & Waipara', to: '/car-hire-christchurch' },
+                { label: 'Premium AWD SUV — winter & mountain rentals', to: '/fleet/cars/premium-awd-suv' },
                 { label: 'Christchurch Airport pickups', to: '/airport/christchurch' },
               ].map((row) => (
                 <li key={row.label} className="flex items-center justify-between py-4 text-sm md:text-base">
