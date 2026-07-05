@@ -7,6 +7,7 @@ import { ResourcePreloader } from '@/components/ResourcePreloader';
 import PromoBanner from './PromoBanner';
 import EarlyWeekBanner from './EarlyWeekBanner';
 import BreadcrumbsJsonLd from '@/components/BreadcrumbsJsonLd';
+import SiteJsonLd from '@/components/SiteJsonLd';
 import SocialProofNotifications from '@/components/SocialProofNotifications';
 import StickyMobileBookBar from './StickyMobileBookBar';
 
@@ -19,6 +20,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
   if (isChromeless) {
     return (
       <div className="min-h-screen bg-background">
+        <SiteJsonLd />
         <BreadcrumbsJsonLd />
         {children}
       </div>
@@ -27,6 +29,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SiteJsonLd />
       <BreadcrumbsJsonLd />
       <ResourcePreloader />
       <PromoBanner />
