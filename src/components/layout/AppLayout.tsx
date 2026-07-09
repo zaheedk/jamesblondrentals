@@ -8,6 +8,7 @@ import PromoBanner from './PromoBanner';
 import EarlyWeekBanner from './EarlyWeekBanner';
 import BreadcrumbsJsonLd from '@/components/BreadcrumbsJsonLd';
 import SiteJsonLd from '@/components/SiteJsonLd';
+import ChristchurchBreadcrumbs from '@/components/ChristchurchBreadcrumbs';
 import SocialProofNotifications from '@/components/SocialProofNotifications';
 import StickyMobileBookBar from './StickyMobileBookBar';
 
@@ -36,6 +37,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
       <EarlyWeekBanner />
       <Navbar />
       <main className="flex-1">
+        <ChristchurchBreadcrumbs />
         {children}
       </main>
       <Footer />
