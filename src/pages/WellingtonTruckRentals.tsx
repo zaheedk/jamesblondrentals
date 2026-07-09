@@ -15,6 +15,7 @@ import truckOpenDoors from '@/assets/truck-open-doors-loading-boxes.jpg';
 import familyUnloading from '@/assets/family-unloading-removal-truck.jpg';
 import familyUnpacking from '@/assets/family-unpacking-moving-truck.jpg';
 import coupleMoving from '@/assets/couple-moving-boxes-truck.jpg';
+import JsonLd from '@/components/JsonLd';
 
 const WellingtonTruckRentals = () => {
   return (
@@ -25,7 +26,38 @@ const WellingtonTruckRentals = () => {
         <meta name="keywords" content="truck hire Wellington, truck rental Wellington, moving truck Lower Hutt, truck hire Upper Hutt, truck hire Petone, truck rental Porirua, Kapiti truck hire" />
         <link rel="canonical" href="https://www.jamesblond.co.nz/truck-hire-wellington" />
       </Helmet>
-      
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Service",
+          serviceType: "Truck Hire Wellington",
+          name: "Truck Hire Wellington — James Blond Rentals",
+          url: "https://jamesblond.co.nz/truck-hire-wellington",
+          areaServed: { "@type": "City", name: "Wellington" },
+          provider: {
+            "@type": "AutoRental",
+            name: "James Blond Rentals",
+            url: "https://jamesblond.co.nz",
+            telephone: "+64800525663",
+            address: {
+              "@type": "PostalAddress",
+              streetAddress: "24 Abel Smith Street",
+              addressLocality: "Te Aro",
+              addressRegion: "Wellington",
+              postalCode: "6011",
+              addressCountry: "NZ",
+            },
+          },
+          offers: {
+            "@type": "AggregateOffer",
+            priceCurrency: "NZD",
+            lowPrice: "35",
+            highPrice: "199",
+            offerCount: "6",
+          },
+        }}
+      />
+
       <div className="container mx-auto px-4 py-8">
       <WellingtonBreadcrumb currentLabel="Truck Hire" />
       {/* Hero Section */}
