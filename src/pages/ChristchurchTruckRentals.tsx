@@ -54,6 +54,30 @@ const ChristchurchTruckRentals = () => {
           },
         }}
       />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: [
+            { "@type": "Question", name: "How much does it cost to hire a truck in Christchurch?", acceptedAnswer: { "@type": "Answer", text: "Truck hire in Christchurch starts from $35/hr with daily rates for longer moves. The final cost depends on truck size (2-tonne vs 3-tonne), tail-lift option and hire duration. Call 0800 525 663 or book online for an exact quote." } },
+            { "@type": "Question", name: "Do you offer same-day truck rentals in Christchurch?", acceptedAnswer: { "@type": "Answer", text: "Yes — same-day truck hire is available at both our Harewood (Airport) and Central Christchurch branches, subject to availability. Most customers can book and drive away the same day." } },
+            { "@type": "Question", name: "Can I drive a moving truck on a car licence?", acceptedAnswer: { "@type": "Answer", text: "Yes. All of our Christchurch moving trucks (2-tonne and 3-tonne box trucks) are drivable on a standard NZ Class 1 car licence — no truck licence needed." } },
+            { "@type": "Question", name: "Which Christchurch branch should I pick up from?", acceptedAnswer: { "@type": "Answer", text: "Our Airport branch at 17/25 Logistics Drive, Harewood is best for moves in the north and west (Rangiora, Rolleston, Belfast, Papanui). Our Central branch at 515 Moorhouse Avenue suits CBD, south and east Christchurch moves." } },
+            { "@type": "Question", name: "Do your trucks come with insurance?", acceptedAnswer: { "@type": "Answer", text: "Yes, every Christchurch truck rental includes standard insurance cover. You can upgrade to Premium or Ultimate cover at booking to reduce your excess." } },
+          ],
+        }}
+      />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: "https://jamesblond.co.nz/" },
+            { "@type": "ListItem", position: 2, name: "Truck Hire", item: "https://jamesblond.co.nz/truck-hire" },
+            { "@type": "ListItem", position: 3, name: "Truck Hire Christchurch", item: "https://jamesblond.co.nz/truck-hire-christchurch" },
+          ],
+        }}
+      />
 
       <div className="container mx-auto px-4 py-8">
       {/* Hero Section */}
