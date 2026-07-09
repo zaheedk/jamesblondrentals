@@ -186,6 +186,29 @@ const Footer = () => {
           </div>
         </div>
 
+        {/* Dedicated Christchurch section — internal linking hub for local SEO */}
+        <div className="mt-10 pt-8 border-t border-gray-800">
+          <h3 className="text-lg font-bold mb-4">Christchurch Car, Van & Truck Hire</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-2">
+            <Link to="/car-hire-christchurch" className="text-gray-300 hover:text-white transition-colors text-sm">Car Hire Christchurch</Link>
+            <Link to="/truck-hire-christchurch" className="text-gray-300 hover:text-white transition-colors text-sm">Truck Hire Christchurch</Link>
+            <Link to="/van-hire-christchurch" className="text-gray-300 hover:text-white transition-colors text-sm">Van Hire Christchurch</Link>
+            <Link to="/central-christchurch-car-hire" className="text-gray-300 hover:text-white transition-colors text-sm">Central Christchurch Car Hire</Link>
+            <Link to="/central-christchurch-truck-hire" className="text-gray-300 hover:text-white transition-colors text-sm">Central Christchurch Truck Hire</Link>
+            <Link to="/central-christchurch-van-hire" className="text-gray-300 hover:text-white transition-colors text-sm">Central Christchurch Van Hire</Link>
+            <Link to="/airport/christchurch" className="text-gray-300 hover:text-white transition-colors text-sm">Christchurch Airport Branch</Link>
+            <Link to="/contact/christchurch" className="text-gray-300 hover:text-white transition-colors text-sm">Contact Christchurch Airport</Link>
+            <Link to="/contact/christchurch-central" className="text-gray-300 hover:text-white transition-colors text-sm">Contact Central Christchurch</Link>
+            <Link to="/blog/moving-house-christchurch-truck-hire-guide" className="text-gray-300 hover:text-white transition-colors text-sm">Christchurch Moving Truck Guide</Link>
+            <Link to="/blog/how-to-drive-moving-truck-christchurch" className="text-gray-300 hover:text-white transition-colors text-sm">How to Drive a Moving Truck</Link>
+            <Link to="/blog/truck-hire-christchurch-to-rolleston-rangiora" className="text-gray-300 hover:text-white transition-colors text-sm">Christchurch to Rolleston / Rangiora</Link>
+            <Link to="/blog/akaroa-day-trip-from-christchurch-car-hire-guide" className="text-gray-300 hover:text-white transition-colors text-sm">Akaroa Day Trip Guide</Link>
+            <Link to="/blog/mt-hutt-ski-guide-awd-hire-christchurch" className="text-gray-300 hover:text-white transition-colors text-sm">Mt Hutt Ski Guide (AWD)</Link>
+            <Link to="/blog/one-way-car-hire-christchurch-to-queenstown" className="text-gray-300 hover:text-white transition-colors text-sm">Christchurch to Queenstown One-Way</Link>
+            <Link to="/blog/hanmer-springs-weekend-from-christchurch-car-hire" className="text-gray-300 hover:text-white transition-colors text-sm">Hanmer Springs Weekend Guide</Link>
+          </div>
+        </div>
+
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-600">
           <p>&copy; {new Date().getFullYear()} James Blond Rentals. All rights reserved.</p>
         </div>
