@@ -271,7 +271,7 @@ const Index = () => {
                 city: 'Auckland',
                 links: [
                   { label: 'Truck hire Auckland', to: '/auckland-truck-rentals-hire' },
-                  { label: 'Van hire Auckland', to: '/central-auckland-cargo-van-rentals-hire' },
+                  { label: 'Van hire Auckland', to: '/van-hire-auckland' },
                   { label: 'Car hire Auckland', to: '/car-hire-auckland' },
                   { label: '12-seater minibus Auckland', to: '/12-seater-van-hire-auckland' },
                 ],
