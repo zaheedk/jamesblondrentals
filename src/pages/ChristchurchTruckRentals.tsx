@@ -667,6 +667,35 @@ const ChristchurchTruckRentals = () => {
           </Button>
         </div>
       </section>
+
+      {/* Christchurch internal linking hub */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold mb-6">Christchurch Truck Hire — Related Guides & Locations</h2>
+        <div className="grid md:grid-cols-2 gap-6">
+          <div>
+            <h3 className="font-bold mb-3">Christchurch branches & fleets</h3>
+            <ul className="space-y-2">
+              <li><Link to="/central-christchurch-truck-hire" className="text-primary hover:underline">Central Christchurch truck hire (Moorhouse Ave)</Link></li>
+              <li><Link to="/airport/christchurch" className="text-primary hover:underline">Christchurch Airport branch (Harewood)</Link></li>
+              <li><Link to="/car-hire-christchurch" className="text-primary hover:underline">Car hire Christchurch</Link></li>
+              <li><Link to="/van-hire-christchurch" className="text-primary hover:underline">Van hire Christchurch</Link></li>
+              <li><Link to="/central-christchurch-van-hire" className="text-primary hover:underline">Central Christchurch van hire</Link></li>
+              <li><Link to="/central-christchurch-car-hire" className="text-primary hover:underline">Central Christchurch car hire</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="font-bold mb-3">Christchurch moving & travel guides</h3>
+            <ul className="space-y-2">
+              <li><Link to="/blog/moving-house-christchurch-truck-hire-guide" className="text-primary hover:underline">Moving house in Christchurch — truck hire guide</Link></li>
+              <li><Link to="/blog/how-to-drive-moving-truck-christchurch" className="text-primary hover:underline">How to drive a moving truck in Christchurch</Link></li>
+              <li><Link to="/blog/truck-hire-christchurch-to-rolleston-rangiora" className="text-primary hover:underline">Truck hire: Christchurch to Rolleston & Rangiora</Link></li>
+              <li><Link to="/blog/one-way-car-hire-christchurch-to-queenstown" className="text-primary hover:underline">One-way Christchurch to Queenstown</Link></li>
+              <li><Link to="/blog/akaroa-day-trip-from-christchurch-car-hire-guide" className="text-primary hover:underline">Akaroa day trip from Christchurch</Link></li>
+              <li><Link to="/blog/mt-hutt-ski-guide-awd-hire-christchurch" className="text-primary hover:underline">Mt Hutt ski guide — AWD hire Christchurch</Link></li>
+            </ul>
+          </div>
+        </div>
+      </section>
       </div>
     </>
   );
