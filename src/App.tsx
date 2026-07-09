@@ -44,6 +44,7 @@ import ChristchurchHanmerSprings from "./pages/blog/ChristchurchHanmerSprings";
 import ChristchurchMovingTruckGuide from "./pages/blog/ChristchurchMovingTruckGuide";
 import ChristchurchDriveMovingTruck from "./pages/blog/ChristchurchDriveMovingTruck";
 import ChristchurchToRollestonRangiora from "./pages/blog/ChristchurchToRollestonRangiora";
+import DrivingNZOverseasLicense from "./pages/blog/DrivingNZOverseasLicense";
 const AdminBlog = lazy(() => import("./pages/AdminBlog"));
 const AdminBlogEditor = lazy(() => import("./pages/AdminBlogEditor"));
 const AdminBlogImport = lazy(() => import("./pages/AdminBlogImport"));
@@ -218,6 +219,7 @@ const App = () => {
                 <Route path="/blog/moving-house-christchurch-truck-hire-guide" element={<ChristchurchMovingTruckGuide />} />
                 <Route path="/blog/how-to-drive-moving-truck-christchurch" element={<ChristchurchDriveMovingTruck />} />
                 <Route path="/blog/truck-hire-christchurch-to-rolleston-rangiora" element={<ChristchurchToRollestonRangiora />} />
+                <Route path="/blog/driving-in-new-zealand-with-overseas-license" element={<DrivingNZOverseasLicense />} />
                 <Route path="/blog/:slug" element={<BlogPost />} />
                 
                 {/* Admin Blog routes */}
