@@ -118,6 +118,7 @@ import MovingTruckHireHamilton from "./pages/MovingTruckHireHamilton";
 import CentralChristchurchTruckHire from "./pages/CentralChristchurchTruckHire";
 import CentralChristchurchVanHire from "./pages/CentralChristchurchVanHire";
 import ChristchurchVanHire from "./pages/ChristchurchVanHire";
+import AucklandVanHireHub from "./pages/AucklandVanHireHub";
 import ChristchurchVanSubPage from "./pages/ChristchurchVanSubPage";
 import { christchurchVanPages } from "./lib/christchurch-van-pages";
 import CentralChristchurchCarHire from "./pages/CentralChristchurchCarHire";
