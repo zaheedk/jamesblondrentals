@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TruckQuoteSearchForm from '@/components/home/TruckQuoteSearchForm';
 import { Link } from 'react-router-dom';
 import { LazyImage } from '@/components/LazyImage';
+import JsonLd from '@/components/JsonLd';
 import truckMovingBoxes from '@/assets/truck-moving-boxes-household-items.jpg';
 import truckOpenDoors from '@/assets/truck-open-doors-loading-boxes.jpg';
 import familyUnloading from '@/assets/family-unloading-removal-truck.jpg';
@@ -23,15 +24,45 @@ const ChristchurchTruckRentals = () => {
         <meta name="keywords" content="Christchurch truck rentals, moving trucks Christchurch, furniture truck hire, Christchurch moving, truck hire Canterbury" />
         <link rel="canonical" href="https://www.jamesblond.co.nz/truck-hire-christchurch" />
       </Helmet>
-      
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Service",
+          serviceType: "Truck Hire Christchurch",
+          name: "Truck Hire Christchurch — James Blond Rentals",
+          url: "https://jamesblond.co.nz/truck-hire-christchurch",
+          areaServed: { "@type": "City", name: "Christchurch" },
+          provider: {
+            "@type": "AutoRental",
+            name: "James Blond Rentals",
+            url: "https://jamesblond.co.nz",
+            telephone: "+64800525663",
+            address: {
+              "@type": "PostalAddress",
+              streetAddress: "17/25 Logistics Drive, Harewood",
+              addressLocality: "Christchurch",
+              postalCode: "8544",
+              addressCountry: "NZ",
+            },
+          },
+          offers: {
+            "@type": "AggregateOffer",
+            priceCurrency: "NZD",
+            lowPrice: "35",
+            highPrice: "199",
+            offerCount: "6",
+          },
+        }}
+      />
+
       <div className="container mx-auto px-4 py-8">
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-6 mb-8">
         <div className="grid md:grid-cols-2 gap-6 items-center">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold mb-4">Truck Hire in Christchurch – Affordable Rentals</h1>
+            <h1 className="text-3xl md:text-4xl font-bold mb-4">Truck Hire Christchurch — Moving Truck Rental from $35/hr</h1>
             <p className="text-lg text-muted-foreground mb-6">
-              Making your move in Christchurch easier and more affordable with our range of rental trucks tailored for the Garden City.
+              Same-day <strong>truck hire in Christchurch</strong> from our Harewood (Airport) and central branches. 2-tonne and 3-tonne moving trucks with tail lifts — drive on a standard NZ car licence, hourly and daily rates, no hidden fees. Serving Christchurch CBD, Riccarton, Addington, Hornby, Rangiora, Rolleston and greater Canterbury.
             </p>
             <div className="flex items-center gap-2">
               <Button asChild size="lg">
