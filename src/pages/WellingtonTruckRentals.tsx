@@ -57,6 +57,30 @@ const WellingtonTruckRentals = () => {
           },
         }}
       />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: [
+            { "@type": "Question", name: "How much does it cost to hire a truck in Wellington?", acceptedAnswer: { "@type": "Answer", text: "Wellington truck hire starts from $35/hr, with daily rates for longer moves. Price depends on truck size (2-tonne vs 3-tonne), tail-lift option and hire duration. Call 0800 525 663 or book online for a firm quote." } },
+            { "@type": "Question", name: "Do you offer same-day truck rentals in Wellington?", acceptedAnswer: { "@type": "Answer", text: "Yes — same-day truck rental is available from our Te Aro branch and covers Wellington CBD, Lower Hutt, Upper Hutt, Petone, Porirua, Kapiti and the wider region, subject to availability." } },
+            { "@type": "Question", name: "Can I drive a moving truck on a car licence in Wellington?", acceptedAnswer: { "@type": "Answer", text: "Yes. Our 2-tonne and 3-tonne Wellington moving trucks are all drivable on a standard NZ Class 1 car licence — no truck endorsement needed." } },
+            { "@type": "Question", name: "Which Wellington suburbs do you cover?", acceptedAnswer: { "@type": "Answer", text: "We hire trucks to customers across Wellington CBD, Te Aro, Newtown, Kilbirnie, Johnsonville, Karori, Miramar, Petone, Lower Hutt, Upper Hutt, Porirua, Tawa and the Kapiti Coast." } },
+            { "@type": "Question", name: "Do your trucks come with insurance?", acceptedAnswer: { "@type": "Answer", text: "Yes — every Wellington truck rental includes standard insurance cover, with Premium and Ultimate upgrades available at booking to reduce your excess." } },
+          ],
+        }}
+      />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: "https://jamesblond.co.nz/" },
+            { "@type": "ListItem", position: 2, name: "Truck Hire", item: "https://jamesblond.co.nz/truck-hire" },
+            { "@type": "ListItem", position: 3, name: "Truck Hire Wellington", item: "https://jamesblond.co.nz/truck-hire-wellington" },
+          ],
+        }}
+      />
 
       <div className="container mx-auto px-4 py-8">
       <WellingtonBreadcrumb currentLabel="Truck Hire" />
