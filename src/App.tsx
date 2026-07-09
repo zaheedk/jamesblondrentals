@@ -41,6 +41,9 @@ import ChristchurchAkaroaDayTrip from "./pages/blog/ChristchurchAkaroaDayTrip";
 import ChristchurchMtHuttSkiGuide from "./pages/blog/ChristchurchMtHuttSkiGuide";
 import ChristchurchQueenstownOneWay from "./pages/blog/ChristchurchQueenstownOneWay";
 import ChristchurchHanmerSprings from "./pages/blog/ChristchurchHanmerSprings";
+import ChristchurchMovingTruckGuide from "./pages/blog/ChristchurchMovingTruckGuide";
+import ChristchurchDriveMovingTruck from "./pages/blog/ChristchurchDriveMovingTruck";
+import ChristchurchToRollestonRangiora from "./pages/blog/ChristchurchToRollestonRangiora";
 const AdminBlog = lazy(() => import("./pages/AdminBlog"));
 const AdminBlogEditor = lazy(() => import("./pages/AdminBlogEditor"));
 const AdminBlogImport = lazy(() => import("./pages/AdminBlogImport"));
@@ -211,6 +214,9 @@ const App = () => {
                 <Route path="/blog/mt-hutt-ski-guide-awd-hire-christchurch" element={<ChristchurchMtHuttSkiGuide />} />
                 <Route path="/blog/one-way-car-hire-christchurch-to-queenstown" element={<ChristchurchQueenstownOneWay />} />
                 <Route path="/blog/hanmer-springs-weekend-from-christchurch-car-hire" element={<ChristchurchHanmerSprings />} />
+                <Route path="/blog/moving-house-christchurch-truck-hire-guide" element={<ChristchurchMovingTruckGuide />} />
+                <Route path="/blog/how-to-drive-moving-truck-christchurch" element={<ChristchurchDriveMovingTruck />} />
+                <Route path="/blog/truck-hire-christchurch-to-rolleston-rangiora" element={<ChristchurchToRollestonRangiora />} />
                 <Route path="/blog/:slug" element={<BlogPost />} />
                 
                 {/* Admin Blog routes */}
