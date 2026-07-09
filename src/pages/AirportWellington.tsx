@@ -6,6 +6,7 @@ import JsonLd from '@/components/JsonLd';
 import { bookingHowTo, pickupHowTo } from '@/seo/howToJsonLd';
 import WellingtonInternalLinks from '@/components/WellingtonInternalLinks';
 import WellingtonBreadcrumb from '@/components/WellingtonBreadcrumb';
+import { Link } from 'react-router-dom';
 
 const AirportWellington = () => (
   <>
@@ -118,6 +119,9 @@ const AirportWellington = () => (
           </p>
           <p className="text-gray-600 mb-4">
             We provide a full fleet of well-maintained vehicles including cars, SUVs, vans, minibuses, and trailers – all backed by our excellent service and 24/7 shuttle support.
+          </p>
+          <p className="text-gray-600 mb-4">
+            Landing with a big load? See our <Link to="/truck-hire-wellington" className="text-primary hover:underline font-medium">truck hire Wellington</Link> range — 2-tonne and 3-tonne moving trucks with tail lifts, ready to collect from our Te Aro branch.
           </p>
           <div className="mt-6">
             <h3 className="text-xl font-semibold mb-2">Contact Information</h3>

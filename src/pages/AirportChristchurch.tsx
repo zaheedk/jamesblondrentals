@@ -118,6 +118,9 @@ const AirportChristchurch = () => (
           <p className="text-gray-600 mb-4">
             Browse our full range of <Link to="/car-hire-christchurch" className="text-primary hover:underline font-medium">Christchurch car hire vehicles</Link> — from economy cars to AWD SUVs for South Island road trips.
           </p>
+          <p className="text-gray-600 mb-4">
+            Moving house or shifting stock? See our <Link to="/truck-hire-christchurch" className="text-primary hover:underline font-medium">truck hire Christchurch</Link> range — 2-tonne and 3-tonne moving trucks with tail lifts, drive on a car licence.
+          </p>
           <div className="mt-6">
             <h3 className="text-xl font-semibold mb-2">Contact Information</h3>
             <p className="text-gray-600">Address:</p>

@@ -7,6 +7,7 @@ import PageSEO from '@/components/PageSEO';
 import JsonLd from '@/components/JsonLd';
 import WellingtonBreadcrumb from '@/components/WellingtonBreadcrumb';
 import { bookingHowTo, pickupHowTo } from '@/seo/howToJsonLd';
+import { Link } from 'react-router-dom';
 
 
 const ContactWellington = () => {
@@ -95,7 +96,10 @@ const ContactWellington = () => {
     <JsonLd data={bookingHowTo("https://jamesblond.co.nz/contact/wellington")} />
     <JsonLd data={pickupHowTo({ pageUrl: "https://jamesblond.co.nz/contact/wellington", locationName: "Wellington", address: "24 Abel Smith Street, Te Aro, Wellington", isAirport: false })} />
       <h1 className="text-4xl font-bold mb-8 text-center">Wellington Branch</h1>
-      
+      <p className="text-center text-gray-600 mb-8 max-w-2xl mx-auto">
+        Need a moving truck in the capital? Browse our <Link to="/truck-hire-wellington" className="text-primary hover:underline font-medium">truck hire Wellington</Link> range — 2-tonne and 3-tonne trucks with tail lifts, ideal for CBD apartments and Hutt Valley moves.
+      </p>
+
       <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
         {/* Contact Information */}
         <Card>
