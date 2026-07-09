@@ -58,6 +58,7 @@ export interface BookingSessionData {
   mandatoryFees?: Array<{
     name: string;
     amount: number;
+    feegroupname?: string;
   }>;
   // Add these new fields from the API response
   numberofdays?: number;  // This is the API field for number of days

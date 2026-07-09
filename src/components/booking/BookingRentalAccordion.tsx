@@ -77,9 +77,17 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
   const { otherFeesTotal, bondAmount, oneWayFee } = dedupedFees.reduce(
     (acc, fee) => {
       const name = (fee.name || '').toLowerCase();
+      const group = ((fee as any).feegroupname || '').toLowerCase();
+      const combined = `${name} ${group}`;
       const amount = fee.amount || 0;
       if (name.includes('bond')) acc.bondAmount += amount;
-      else if (name.includes('one way') || name.includes('oneway')) acc.oneWayFee += amount;
+      else if (
+        combined.includes('one way') ||
+        combined.includes('one-way') ||
+        combined.includes('oneway') ||
+        combined.includes('relocation') ||
+        combined.includes('reloc')
+      ) acc.oneWayFee += amount;
       else acc.otherFeesTotal += amount;
       return acc;
     },
