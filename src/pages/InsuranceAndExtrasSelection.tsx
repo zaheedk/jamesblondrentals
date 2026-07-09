@@ -114,6 +114,7 @@ const InsuranceAndExtrasSelection = () => {
             const mapped = (step2.results.mandatoryfees || []).map((f: any) => ({
               name: f.name || f.feegroupname || 'Fee',
               amount: Number(f.totalfeeamount ?? f.amount ?? 0),
+              feegroupname: f.feegroupname || '',
             }));
             // Deduplicate by fee name to prevent accumulation
             const deduped = mapped.reduce((acc: any[], current: any) => {
