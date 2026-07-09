@@ -43,7 +43,7 @@ const faqLd = {
   mainEntity: [
     {
       '@type': 'Question',
-      name: 'Do I need an international driver\u2019s licence to drive in New Zealand?',
+      name: 'Do I need an international driver’s licence to drive in New Zealand?',
       acceptedAnswer: {
         '@type': 'Answer',
         text: 'No, an International Driving Permit (IDP) is not required if your overseas licence is in English. If your licence is in another language you must carry either an accurate English translation from an approved provider (NZTA, embassy, or authorised translator) or an IDP. You can drive in New Zealand on a valid overseas licence for up to 12 months.',
@@ -51,10 +51,10 @@ const faqLd = {
     },
     {
       '@type': 'Question',
-      name: 'Can I drive in New Zealand with a US driver\u2019s licence?',
+      name: 'Can I drive in New Zealand with a US driver’s licence?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Yes. A current US state driver\u2019s licence is accepted for up to 12 months. You do not need an IDP because the licence is already in English. Bring the physical card \u2014 photos or app-only licences are not accepted at rental counters.',
+        text: 'Yes. A current US state driver’s licence is accepted for up to 12 months. You do not need an IDP because the licence is already in English. Bring the physical card — photos or app-only licences are not accepted at rental counters.',
       },
     },
     {
@@ -135,10 +135,10 @@ const DrivingNZOverseasLicense = () => (
 
     <div className="container mx-auto px-6 py-14 max-w-3xl prose prose-lg prose-neutral dark:prose-invert">
       <p className="lead text-xl leading-relaxed">
-        If you\u2019re flying into Auckland, Wellington or Christchurch and picking up a rental car,
+        If you’re flying into Auckland, Wellington or Christchurch and picking up a rental car,
         the good news is that New Zealand makes it easy for overseas visitors to drive. You can use
-        your home country licence for up to <strong>12 months</strong> \u2014 no NZ licence needed \u2014 provided
-        you meet a few simple conditions. Here\u2019s exactly what you need to know before you get behind
+        your home country licence for up to <strong>12 months</strong> — no NZ licence needed — provided
+        you meet a few simple conditions. Here’s exactly what you need to know before you get behind
         the wheel.
       </p>
 
@@ -149,21 +149,21 @@ const DrivingNZOverseasLicense = () => (
         <li>If it is <strong>not in English</strong>, you also need an accurate English translation
           from NZTA, your embassy, an authorised translator, or an International Driving Permit (IDP).</li>
         <li>You can only drive vehicles in the same class as your home licence permits.</li>
-        <li>After 12 months of living in NZ you must convert to a New Zealand licence \u2014 this doesn\u2019t
+        <li>After 12 months of living in NZ you must convert to a New Zealand licence — this doesn’t
           apply to tourists on shorter visits.</li>
       </ul>
 
-      <h2>Do I need an International Driver\u2019s Licence (IDP) for New Zealand?</h2>
+      <h2>Do I need an International Driver’s Licence (IDP) for New Zealand?</h2>
       <p>
         Short answer: <strong>only if your licence is not in English.</strong> An IDP is essentially
         a certified translation of your home licence. If you hold a US, UK, Canadian, Australian,
-        Irish, South African or NZ-English licence, you do <em>not</em> need an IDP \u2014 your licence
+        Irish, South African or NZ-English licence, you do <em>not</em> need an IDP — your licence
         already works.
       </p>
       <p>
-        \u201CInternational driver\u2019s licence NZ\u201D is one of the top searches from visitors, and the
+        “International driver’s licence NZ” is one of the top searches from visitors, and the
         confusion is understandable: NZ Police and rental companies will always accept an IDP, so
-        many travellers get one \u201Cjust in case.\u201D That\u2019s fine, but for English-language licences it\u2019s
+        many travellers get one “just in case.” That’s fine, but for English-language licences it’s
         not a legal requirement.
       </p>
 
@@ -171,7 +171,7 @@ const DrivingNZOverseasLicense = () => (
 
       <h3>United States</h3>
       <p>
-        Any valid US state licence is accepted for up to 12 months. Bring the physical card \u2014
+        Any valid US state licence is accepted for up to 12 months. Bring the physical card —
         mobile/app licences (Apple Wallet, state DMV apps) are <strong>not accepted</strong> at
         rental counters or by NZ Police. Remember: NZ drives on the <strong>left</strong>, gives
         way differently at intersections, and speed limits are in <strong>km/h</strong>.
@@ -180,8 +180,8 @@ const DrivingNZOverseasLicense = () => (
       <h3>United Kingdom</h3>
       <p>
         Full UK photocard licences are accepted for up to 12 months. Provisional (learner) licences
-        are <strong>not</strong> accepted. If you still have the old paper counterpart, you don\u2019t
-        need to bring it \u2014 the photocard is enough.
+        are <strong>not</strong> accepted. If you still have the old paper counterpart, you don’t
+        need to bring it — the photocard is enough.
       </p>
 
       <h3>Australia</h3>
@@ -189,7 +189,7 @@ const DrivingNZOverseasLicense = () => (
         Full Australian state and territory licences (NSW, VIC, QLD, WA, SA, TAS, ACT, NT) are
         accepted for up to 12 months. Learner and P1 licences are <strong>not</strong> accepted for
         hire vehicles. Digital licences on the Service NSW or myGov app are not accepted at pickup
-        \u2014 bring the physical card.
+        — bring the physical card.
       </p>
 
       <h3>China</h3>
@@ -198,7 +198,7 @@ const DrivingNZOverseasLicense = () => (
       </p>
       <ul>
         <li>A certified English translation from an NZTA-approved translator (we can arrange this at pickup for a small fee).</li>
-        <li>An International Driving Permit issued in China <em>before</em> you arrived in NZ (IDPs cannot be issued once you\u2019re in New Zealand).</li>
+        <li>An International Driving Permit issued in China <em>before</em> you arrived in NZ (IDPs cannot be issued once you’re in New Zealand).</li>
       </ul>
 
       <h3>Other countries</h3>
@@ -216,9 +216,9 @@ const DrivingNZOverseasLicense = () => (
         Every James Blond rental includes:
       </p>
       <ul>
-        <li><strong>Basic cover</strong> \u2014 included in every rate. Comes with a bond/excess of up to $3,900 depending on vehicle class.</li>
-        <li><strong>Premium cover</strong> \u2014 popular with tourists. Reduces the excess to $500.</li>
-        <li><strong>Ultimate cover</strong> \u2014 zero excess. Recommended for South Island alpine touring, campervan-style trips or long itineraries.</li>
+        <li><strong>Basic cover</strong> — included in every rate. Comes with a bond/excess of up to $3,900 depending on vehicle class.</li>
+        <li><strong>Premium cover</strong> — popular with tourists. Reduces the excess to $500.</li>
+        <li><strong>Ultimate cover</strong> — zero excess. Recommended for South Island alpine touring, campervan-style trips or long itineraries.</li>
       </ul>
       <p>
         See <Link to="/price-guide">our price guide</Link> for current cover pricing, or add cover
@@ -231,41 +231,41 @@ const DrivingNZOverseasLicense = () => (
         <li><strong>Give way rules.</strong> At a T-intersection the terminating road gives way. At uncontrolled intersections, give way to any vehicle coming from your right.</li>
         <li><strong>Speed limits are in km/h.</strong> Open road is 100 km/h, urban areas 50 km/h, many rural roads are now 80 km/h.</li>
         <li><strong>Seatbelts are compulsory</strong> for every passenger, every seat, every trip. Fines apply to the driver.</li>
-        <li><strong>Zero mobile phone use</strong> while driving \u2014 including at traffic lights. Use a mounted holder and hands-free only.</li>
+        <li><strong>Zero mobile phone use</strong> while driving — including at traffic lights. Use a mounted holder and hands-free only.</li>
         <li><strong>Alcohol limit is 0.05</strong> (250 mg/L breath) for drivers 20+, and <strong>zero</strong> for drivers under 20.</li>
         <li><strong>One-lane bridges</strong> are common on rural roads. A red arrow means give way to oncoming traffic.</li>
-        <li><strong>Passing lanes are short.</strong> Don\u2019t tailgate \u2014 wait for the marked passing lane.</li>
+        <li><strong>Passing lanes are short.</strong> Don’t tailgate — wait for the marked passing lane.</li>
       </ul>
 
       <h2>What you actually need at the rental counter</h2>
       <ol>
         <li>Your <strong>physical driver licence</strong> (not a photo, not a phone).</li>
-        <li>An <strong>English translation or IDP</strong> if your licence isn\u2019t in English.</li>
-        <li>A <strong>credit or debit card</strong> in the driver\u2019s name for the bond.</li>
+        <li>An <strong>English translation or IDP</strong> if your licence isn’t in English.</li>
+        <li>A <strong>credit or debit card</strong> in the driver’s name for the bond.</li>
         <li>Your <strong>booking confirmation</strong> (email or printout).</li>
-        <li><strong>Passport</strong> \u2014 recommended for ID verification.</li>
+        <li><strong>Passport</strong> — recommended for ID verification.</li>
       </ol>
 
       <h2>Common mistakes overseas visitors make</h2>
       <ul>
-        <li><strong>Booking a car too small.</strong> NZ roads are winding and hilly. If you\u2019re driving Auckland\u2013Wellington or the South Island loop, size up to a Premium Midsize or Compact SUV.</li>
+        <li><strong>Booking a car too small.</strong> NZ roads are winding and hilly. If you’re driving Auckland–Wellington or the South Island loop, size up to a Premium Midsize or Compact SUV.</li>
         <li><strong>Skipping insurance upgrade.</strong> Gravel roads and wildlife (especially in Fiordland and the West Coast) cause more claims than city driving.</li>
-        <li><strong>Underestimating drive times.</strong> Google Maps times are optimistic \u2014 add 20% for realistic planning.</li>
+        <li><strong>Underestimating drive times.</strong> Google Maps times are optimistic — add 20% for realistic planning.</li>
         <li><strong>Trying to drive too far in one day.</strong> Auckland to Wellington is 640 km / 8.5 hours minimum.</li>
       </ul>
 
       <h2>Ready to book?</h2>
       <p>
-        We\u2019re a Kiwi-owned rental company with branches at every major arrival point in New
+        We’re a Kiwi-owned rental company with branches at every major arrival point in New
         Zealand. Book online in about 60 seconds and pick up your car at the airport or in the
         city.
       </p>
       <p>
-        <Link to="/airport/auckland">\u2192 Auckland Airport car hire</Link><br />
-        <Link to="/airport/wellington">\u2192 Wellington Airport car hire</Link><br />
-        <Link to="/airport/christchurch">\u2192 Christchurch Airport car hire</Link><br />
-        <Link to="/one-way-car-hire">\u2192 One-way hire between the North and South Islands</Link><br />
-        <Link to="/fleet/cars">\u2192 Browse the full car fleet</Link>
+        <Link to="/airport/auckland">→ Auckland Airport car hire</Link><br />
+        <Link to="/airport/wellington">→ Wellington Airport car hire</Link><br />
+        <Link to="/airport/christchurch">→ Christchurch Airport car hire</Link><br />
+        <Link to="/one-way-car-hire">→ One-way hire between the North and South Islands</Link><br />
+        <Link to="/fleet/cars">→ Browse the full car fleet</Link>
       </p>
     </div>
 
@@ -275,17 +275,17 @@ const DrivingNZOverseasLicense = () => (
         <ul className="space-y-3">
           <li>
             <Link to="/blog/akaroa-day-trip-from-christchurch-car-hire-guide" className="hover:text-primary">
-              \u2192 Akaroa day trip from Christchurch \u2014 the complete car-hire guide
+              → Akaroa day trip from Christchurch — the complete car-hire guide
             </Link>
           </li>
           <li>
             <Link to="/blog/one-way-car-hire-christchurch-to-queenstown" className="hover:text-primary">
-              \u2192 One-way car hire: Christchurch to Queenstown
+              → One-way car hire: Christchurch to Queenstown
             </Link>
           </li>
           <li>
             <Link to="/faq" className="hover:text-primary">
-              \u2192 Rental FAQs \u2014 age, bond, insurance and pickup
+              → Rental FAQs — age, bond, insurance and pickup
             </Link>
           </li>
         </ul>
