@@ -120,6 +120,7 @@ import MovingTruckHireHamilton from "./pages/MovingTruckHireHamilton";
 import TrailerHireAuckland from "./pages/TrailerHireAuckland";
 import TrailerHireWellington from "./pages/TrailerHireWellington";
 import TrailerHireChristchurch from "./pages/TrailerHireChristchurch";
+import CarHireAucklandAirportFromAustralia from "./pages/CarHireAucklandAirportFromAustralia";
 import CentralChristchurchTruckHire from "./pages/CentralChristchurchTruckHire";
 import CentralChristchurchVanHire from "./pages/CentralChristchurchVanHire";
 import ChristchurchVanHire from "./pages/ChristchurchVanHire";
