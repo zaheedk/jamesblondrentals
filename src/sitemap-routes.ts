@@ -112,6 +112,7 @@ export const sitemapRoutes: SitemapRoute[] = [
   { path: '/furniture-truck-hire-hamilton', priority: 0.9, changefreq: 'weekly' },
   { path: '/trailer-hire-hamilton', priority: 0.9, changefreq: 'weekly' },
   { path: '/trailer-hire-auckland', priority: 0.9, changefreq: 'weekly' },
+  { path: '/car-hire-auckland-airport-from-australia', priority: 0.9, changefreq: 'weekly' },
   { path: '/trailer-hire-wellington', priority: 0.9, changefreq: 'weekly' },
   { path: '/trailer-hire-christchurch', priority: 0.9, changefreq: 'weekly' },
   { path: '/blog/cost-of-moving-house-nz-2026', priority: 0.8, changefreq: 'monthly' },
