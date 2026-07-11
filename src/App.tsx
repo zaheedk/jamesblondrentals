@@ -45,6 +45,7 @@ import ChristchurchMovingTruckGuide from "./pages/blog/ChristchurchMovingTruckGu
 import ChristchurchDriveMovingTruck from "./pages/blog/ChristchurchDriveMovingTruck";
 import ChristchurchToRollestonRangiora from "./pages/blog/ChristchurchToRollestonRangiora";
 import DrivingNZOverseasLicense from "./pages/blog/DrivingNZOverseasLicense";
+import CostOfMovingHouseNZ from "./pages/blog/CostOfMovingHouseNZ";
 const AdminBlog = lazy(() => import("./pages/AdminBlog"));
 const AdminBlogEditor = lazy(() => import("./pages/AdminBlogEditor"));
 const AdminBlogImport = lazy(() => import("./pages/AdminBlogImport"));
@@ -116,6 +117,9 @@ import HamiltonVanHire from "./pages/HamiltonVanHire";
 import FurnitureTruckHireHamilton from "./pages/FurnitureTruckHireHamilton";
 import TrailerHireHamilton from "./pages/TrailerHireHamilton";
 import MovingTruckHireHamilton from "./pages/MovingTruckHireHamilton";
+import TrailerHireAuckland from "./pages/TrailerHireAuckland";
+import TrailerHireWellington from "./pages/TrailerHireWellington";
+import TrailerHireChristchurch from "./pages/TrailerHireChristchurch";
 import CentralChristchurchTruckHire from "./pages/CentralChristchurchTruckHire";
 import CentralChristchurchVanHire from "./pages/CentralChristchurchVanHire";
 import ChristchurchVanHire from "./pages/ChristchurchVanHire";
@@ -220,6 +224,7 @@ const App = () => {
                 <Route path="/blog/how-to-drive-moving-truck-christchurch" element={<ChristchurchDriveMovingTruck />} />
                 <Route path="/blog/truck-hire-christchurch-to-rolleston-rangiora" element={<ChristchurchToRollestonRangiora />} />
                 <Route path="/blog/driving-in-new-zealand-with-overseas-license" element={<DrivingNZOverseasLicense />} />
+                <Route path="/blog/cost-of-moving-house-nz-2026" element={<CostOfMovingHouseNZ />} />
                 <Route path="/blog/:slug" element={<BlogPost />} />
                 
                 {/* Admin Blog routes */}
@@ -317,6 +322,9 @@ const App = () => {
                 <Route path="/van-hire-hamilton" element={<HamiltonVanHire />} />
                 <Route path="/furniture-truck-hire-hamilton" element={<FurnitureTruckHireHamilton />} />
                 <Route path="/trailer-hire-hamilton" element={<TrailerHireHamilton />} />
+                <Route path="/trailer-hire-auckland" element={<TrailerHireAuckland />} />
+                <Route path="/trailer-hire-wellington" element={<TrailerHireWellington />} />
+                <Route path="/trailer-hire-christchurch" element={<TrailerHireChristchurch />} />
                 <Route path="/moving-truck-hire-hamilton" element={<MovingTruckHireHamilton />} />
                 <Route path="/van-hire-christchurch" element={<ChristchurchVanHire />} />
                 {christchurchVanPages.map((p) => (
