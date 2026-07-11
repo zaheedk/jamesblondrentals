@@ -655,6 +655,52 @@ const WellingtonTruckRentals = () => {
         </div>
       </section>
 
+      {/* How Wellingtonians search for truck hire */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold mb-6">Truck Hire, Truck Rental &amp; Small Trucks in Wellington</h2>
+        <p className="text-gray-700 mb-6">
+          Whether you searched for <strong>truck hire Wellington</strong>, <strong>hire a truck Wellington</strong>, <strong>truck rental Wellington</strong>, <strong>small truck hire Wellington</strong>, <strong>moving truck hire</strong> or <strong>truck hire Lower Hutt</strong>, James Blond Rentals covers every variation from our Te Aro depot.
+        </p>
+        <div className="grid md:grid-cols-2 gap-6">
+          <div className="border rounded-lg p-5">
+            <h3 className="font-bold mb-2">Small truck hire Wellington</h3>
+            <p className="text-gray-600">
+              The most popular small truck in Wellington is our 2-tonne 12m³ box truck — automatic, easy to drive on Wellington's hills, and fits a 1-bedroom flat comfortably. No truck licence required.
+            </p>
+          </div>
+          <div className="border rounded-lg p-5">
+            <h3 className="font-bold mb-2">Hire a truck in Wellington</h3>
+            <p className="text-gray-600">
+              Hire a truck in Wellington by the hour or day from our Te Aro depot. 2-tonne and 3-tonne box trucks with tail-lift options — great for flat moves, tradies, tip runs and CBD deliveries.
+            </p>
+          </div>
+          <div className="border rounded-lg p-5">
+            <h3 className="font-bold mb-2">Truck hire Lower Hutt &amp; Upper Hutt</h3>
+            <p className="text-gray-600">
+              We deliver truck hire from Wellington across to Lower Hutt, Upper Hutt, Petone, Wainuiomata, Stokes Valley and Silverstream. Short 20–30 minute drive from our depot — same-day pickup available.
+            </p>
+          </div>
+          <div className="border rounded-lg p-5">
+            <h3 className="font-bold mb-2">Moving truck hire Wellington</h3>
+            <p className="text-gray-600">
+              For a full house move try our <Link to="/moving-truck-hire" className="text-primary hover:underline">3-tonne 19m³ moving truck with tail lift</Link> — fits a 3-bedroom home in one trip. Much cheaper than a Wellington removalist and drivable on a car licence.
+            </p>
+          </div>
+          <div className="border rounded-lg p-5">
+            <h3 className="font-bold mb-2">Truck rental Wellington</h3>
+            <p className="text-gray-600">
+              Straight-forward truck rental in Wellington from $35/hr. 12m³, 16m³ and 19m³ box trucks plus 2-tonne tippers — every truck WOF'd, registered and ready to go.
+            </p>
+          </div>
+          <div className="border rounded-lg p-5">
+            <h3 className="font-bold mb-2">Trailer hire Wellington</h3>
+            <p className="text-gray-600">
+              Prefer to tow? <Link to="/trailer-hire-wellington" className="text-primary hover:underline">Cage, luggage and car-transporter trailers</Link> are available from the same Te Aro depot — often the cheapest option for tip runs and small moves.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="mb-12 text-center">
         <div className="bg-primary p-8 rounded-lg text-white">
