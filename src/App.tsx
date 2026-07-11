@@ -45,6 +45,7 @@ import ChristchurchMovingTruckGuide from "./pages/blog/ChristchurchMovingTruckGu
 import ChristchurchDriveMovingTruck from "./pages/blog/ChristchurchDriveMovingTruck";
 import ChristchurchToRollestonRangiora from "./pages/blog/ChristchurchToRollestonRangiora";
 import DrivingNZOverseasLicense from "./pages/blog/DrivingNZOverseasLicense";
+import CostOfMovingHouseNZ from "./pages/blog/CostOfMovingHouseNZ";
 const AdminBlog = lazy(() => import("./pages/AdminBlog"));
 const AdminBlogEditor = lazy(() => import("./pages/AdminBlogEditor"));
 const AdminBlogImport = lazy(() => import("./pages/AdminBlogImport"));
