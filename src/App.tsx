@@ -224,6 +224,7 @@ const App = () => {
                 <Route path="/blog/how-to-drive-moving-truck-christchurch" element={<ChristchurchDriveMovingTruck />} />
                 <Route path="/blog/truck-hire-christchurch-to-rolleston-rangiora" element={<ChristchurchToRollestonRangiora />} />
                 <Route path="/blog/driving-in-new-zealand-with-overseas-license" element={<DrivingNZOverseasLicense />} />
+                <Route path="/blog/cost-of-moving-house-nz-2026" element={<CostOfMovingHouseNZ />} />
                 <Route path="/blog/:slug" element={<BlogPost />} />
                 
                 {/* Admin Blog routes */}
