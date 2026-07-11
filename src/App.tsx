@@ -321,6 +321,9 @@ const App = () => {
                 <Route path="/van-hire-hamilton" element={<HamiltonVanHire />} />
                 <Route path="/furniture-truck-hire-hamilton" element={<FurnitureTruckHireHamilton />} />
                 <Route path="/trailer-hire-hamilton" element={<TrailerHireHamilton />} />
+                <Route path="/trailer-hire-auckland" element={<TrailerHireAuckland />} />
+                <Route path="/trailer-hire-wellington" element={<TrailerHireWellington />} />
+                <Route path="/trailer-hire-christchurch" element={<TrailerHireChristchurch />} />
                 <Route path="/moving-truck-hire-hamilton" element={<MovingTruckHireHamilton />} />
                 <Route path="/van-hire-christchurch" element={<ChristchurchVanHire />} />
                 {christchurchVanPages.map((p) => (
