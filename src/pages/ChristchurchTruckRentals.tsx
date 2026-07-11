@@ -657,6 +657,40 @@ const ChristchurchTruckRentals = () => {
         </div>
       </section>
 
+      {/* How Cantabrians search for truck hire */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold mb-6">Truck Hire, Truck Rental &amp; Moving Trucks in Christchurch</h2>
+        <p className="text-muted-foreground mb-6">
+          Whether you searched for <strong>truck hire Christchurch</strong>, <strong>hire a truck Christchurch</strong>, <strong>truck rental Christchurch</strong> or <strong>moving truck hire Christchurch</strong>, you're in the right place. James Blond Rentals covers every version of Christchurch truck hire from a single-day tip run to a full house move.
+        </p>
+        <div className="grid md:grid-cols-2 gap-6">
+          <div className="border rounded-lg p-5">
+            <h3 className="font-bold mb-2">Hire a truck in Christchurch</h3>
+            <p className="text-muted-foreground">
+              Hire a truck in Christchurch by the hour or the day. Our 2-tonne and 3-tonne box trucks all drive on a standard NZ car licence — perfect for DIY movers, tradies and first-time truck drivers.
+            </p>
+          </div>
+          <div className="border rounded-lg p-5">
+            <h3 className="font-bold mb-2">Truck rental Christchurch</h3>
+            <p className="text-muted-foreground">
+              Looking for straight-forward truck rental in Christchurch? Our fleet includes 12m³, 16m³ and 19m³ box trucks plus 2-tonne tippers, with tail-lift options for heavy loads.
+            </p>
+          </div>
+          <div className="border rounded-lg p-5">
+            <h3 className="font-bold mb-2">Moving truck Christchurch</h3>
+            <p className="text-muted-foreground">
+              Need a <Link to="/moving-truck-hire" className="text-primary hover:underline">moving truck in Christchurch</Link>? Our 16m³ and 19m³ trucks fit a full 2–3 bedroom home in a single trip — much cheaper than a professional removalist.
+            </p>
+          </div>
+          <div className="border rounded-lg p-5">
+            <h3 className="font-bold mb-2">Trailer hire Christchurch</h3>
+            <p className="text-muted-foreground">
+              Prefer to tow? <Link to="/trailer-hire-christchurch" className="text-primary hover:underline">Cage, luggage and car-transporter trailers</Link> are available from the same Christchurch branches — often the cheapest option for tip runs and small moves.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="mb-12 text-center">
         <div className="bg-primary p-8 rounded-lg text-primary-foreground">
