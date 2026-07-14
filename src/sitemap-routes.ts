@@ -116,6 +116,7 @@ export const sitemapRoutes: SitemapRoute[] = [
   { path: '/christchurch-minibus-hire', priority: 0.9, changefreq: 'weekly' },
   { path: '/12-seater-van-hire-christchurch', priority: 0.9, changefreq: 'weekly' },
   { path: '/hamilton-minibus-hire', priority: 0.8, changefreq: 'weekly' },
+  { path: '/auckland-minibus-hire', priority: 0.9, changefreq: 'weekly' },
   { path: '/trailer-hire-wellington', priority: 0.9, changefreq: 'weekly' },
   { path: '/trailer-hire-christchurch', priority: 0.9, changefreq: 'weekly' },
   { path: '/blog/cost-of-moving-house-nz-2026', priority: 0.8, changefreq: 'monthly' },
