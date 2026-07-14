@@ -169,6 +169,7 @@ import FleetCargoVans from "@/pages/FleetCargoVans";
 import WinzQuotes from "./pages/WinzQuotes";
 import CourierOperatorDeals from "./pages/CourierOperatorDeals";
 import AucklandVanHire from "./pages/AucklandVanHire";
+import AucklandMinibusHire from "./pages/AucklandMinibusHire";
 import WellingtonMinibusHire from "./pages/WellingtonMinibusHire";
 import WellingtonMinibusRentals from "./pages/WellingtonMinibusRentals";
 import WellingtonMinibusHireCBD from "./pages/WellingtonMinibusHireCBD";
