@@ -169,6 +169,7 @@ import FleetCargoVans from "@/pages/FleetCargoVans";
 import WinzQuotes from "./pages/WinzQuotes";
 import CourierOperatorDeals from "./pages/CourierOperatorDeals";
 import AucklandVanHire from "./pages/AucklandVanHire";
+import AucklandMinibusHire from "./pages/AucklandMinibusHire";
 import WellingtonMinibusHire from "./pages/WellingtonMinibusHire";
 import WellingtonMinibusRentals from "./pages/WellingtonMinibusRentals";
 import WellingtonMinibusHireCBD from "./pages/WellingtonMinibusHireCBD";
@@ -421,6 +422,8 @@ const App = () => {
                 <Route path="/winz-quotes" element={<WinzQuotes />} />
                 <Route path="/12-seater-van-hire-auckland" element={<AucklandVanHire />} />
                 <Route path="/van-hire-auckland" element={<AucklandVanHireHub />} />
+                <Route path="/auckland-minibus-hire" element={<AucklandMinibusHire />} />
+                <Route path="/minibus-hire-auckland" element={<AucklandMinibusHire />} />
                 <Route path="/wellington-10-12-seat-van-minibus-rental" element={<WellingtonMinibusHire />} />
                 <Route path="/wellington-minibus-hire" element={<WellingtonMinibusHire />} />
                 <Route path="/minibus-hire-wellington" element={<WellingtonMinibusRentals />} />
