@@ -155,6 +155,8 @@ export const sitemapRoutes: SitemapRoute[] = [
   { path: '/car-rental-wellington-new-zealand', priority: 0.8, changefreq: 'monthly' },
   { path: '/car-rental-auckland-airport-new-zealand', priority: 0.8, changefreq: 'monthly' },
   { path: '/12-seater-van-hire-auckland', priority: 0.8, changefreq: 'weekly' },
+  { path: '/14-seater-van-hire-auckland', priority: 0.9, changefreq: 'weekly' },
+  { path: '/12-seater-van-hire-wellington', priority: 0.95, changefreq: 'weekly' },
   { path: '/van-hire-auckland', priority: 0.9, changefreq: 'weekly' },
   { path: '/wellington-10-12-seat-van-minibus-rental', priority: 0.8, changefreq: 'weekly' },
   { path: '/wellington-minibus-hire', priority: 0.8, changefreq: 'weekly' },
