@@ -125,6 +125,8 @@ import CentralChristchurchTruckHire from "./pages/CentralChristchurchTruckHire";
 import CentralChristchurchVanHire from "./pages/CentralChristchurchVanHire";
 import ChristchurchMinibusHire from "./pages/ChristchurchMinibusHire";
 import TwelveSeaterVanHireChristchurch from "./pages/TwelveSeaterVanHireChristchurch";
+import TwelveSeaterVanHireWellington from "./pages/TwelveSeaterVanHireWellington";
+import FourteenSeaterVanHireAuckland from "./pages/FourteenSeaterVanHireAuckland";
 import HamiltonMinibusHire from "./pages/HamiltonMinibusHire";
 import ChristchurchVanHire from "./pages/ChristchurchVanHire";
 import AucklandVanHireHub from "./pages/AucklandVanHireHub";
@@ -421,6 +423,8 @@ const App = () => {
                 <Route path="/contact/hamilton" element={<ContactHamilton />} />
                 <Route path="/winz-quotes" element={<WinzQuotes />} />
                 <Route path="/12-seater-van-hire-auckland" element={<AucklandVanHire />} />
+                <Route path="/14-seater-van-hire-auckland" element={<FourteenSeaterVanHireAuckland />} />
+                <Route path="/12-seater-van-hire-wellington" element={<TwelveSeaterVanHireWellington />} />
                 <Route path="/van-hire-auckland" element={<AucklandVanHireHub />} />
                 <Route path="/auckland-minibus-hire" element={<AucklandMinibusHire />} />
                 <Route path="/minibus-hire-auckland" element={<AucklandMinibusHire />} />
