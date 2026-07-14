@@ -349,6 +349,9 @@ const App = () => {
                 <Route path="/central-christchurch-truck-hire" element={<CentralChristchurchTruckHire />} />
                 <Route path="/central-christchurch-van-hire" element={<CentralChristchurchVanHire />} />
                 <Route path="/central-christchurch-car-hire" element={<CentralChristchurchCarHire />} />
+                <Route path="/christchurch-minibus-hire" element={<ChristchurchMinibusHire />} />
+                <Route path="/12-seater-van-hire-christchurch" element={<TwelveSeaterVanHireChristchurch />} />
+                <Route path="/hamilton-minibus-hire" element={<HamiltonMinibusHire />} />
                 <Route path="/van-hire-wellington" element={<WellingtonCargoVanRentals />} />
                 <Route path="/west-auckland-cargo-van-rentals-hire" element={<WestAucklandCargoVanRentals />} />
                 <Route path="/south-auckland-cargo-van-rentals-hire" element={<SouthAucklandCargoVanRentals />} />
