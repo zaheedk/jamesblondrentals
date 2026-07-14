@@ -88,6 +88,16 @@ const FleetMinibuses = () => {
       <p className="text-lg text-gray-700">
         Choose from our range of comfortable minibuses for group travel and special occasions.
       </p>
+      <div className="mt-6 flex flex-wrap justify-center gap-2 text-sm">
+        <span className="text-gray-600">Local minibus &amp; 12-seater hire:</span>
+        <Link to="/auckland-minibus-hire" className="text-primary hover:underline">Auckland</Link>
+        <span className="text-gray-400">·</span>
+        <Link to="/christchurch-minibus-hire" className="text-primary hover:underline">Christchurch minibus</Link>
+        <span className="text-gray-400">·</span>
+        <Link to="/12-seater-van-hire-christchurch" className="text-primary hover:underline">Christchurch 12-seater</Link>
+        <span className="text-gray-400">·</span>
+        <Link to="/hamilton-minibus-hire" className="text-primary hover:underline">Hamilton</Link>
+      </div>
     </div>
     
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
