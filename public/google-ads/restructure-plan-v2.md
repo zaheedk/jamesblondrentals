@@ -135,3 +135,176 @@ URLs above resolve to a real page. The only outstanding site work is:
 - A **`tel:` click event** wired to Google Ads via GTM if not already firing (v1 §6 item 2)
 
 Everything else in v1 §7 (Implementation order) is unchanged.
+
+---
+
+## 8. NEW: Trans-Tasman campaign — target Australians planning NZ trips
+
+Aussies searching from AU IPs are ~40% of NZ inbound tourism car-hire demand and the
+global brands (Hertz/Budget/Sixt) don't geo-target them hard. Two dedicated AU landing
+pages now exist:
+
+- `/car-hire-auckland-airport-from-australia`
+- `/car-hire-christchurch-airport-from-australia`
+
+### Semrush AU-market sizing (database: `au`)
+
+| Keyword | Volume (AU) | CPC (AUD) | KDI |
+|---|---|---|---|
+| car rental auckland airport | 3,600/mo | $3.51 | 39 (possible) |
+| car rental christchurch airport | 1,000/mo | $3.61 | 43 (possible) |
+| rental car new zealand | 390/mo | $1.79 | 46 |
+| cheap car hire nz | 390/mo | $2.45 | 56 |
+
+Aussies searching from AU don't append "from australia" to the query — they use the
+same terms as Kiwis. Ad targeting does the segmentation (geo = Australia); the
+landing pages then reassure with AUD pricing, AU licence acceptance and no overseas
+card surcharge.
+
+### 8a. New campaign
+
+**Campaign name:** `Search - AU - Car Hire NZ`
+
+| Setting | Value |
+|---|---|
+| Network | Google Search only (no Search Partners, no Display) |
+| Location targeting | Australia — "People in or regularly in" (NOT "interested in") |
+| Language | English |
+| Bid strategy | Manual CPC → switch to Maximise Conversions after 30 conversions |
+| Daily budget | AUD $30/day to start (~NZD $33) |
+| Ad schedule | 24/7 first 14 days, then dayparted to AU business hours |
+| Currency | Account stays NZD; ad copy shows "from AUD $45/day" |
+
+### 8b. Ad groups
+
+| Ad group | Final URL | Match type | Core keywords |
+|---|---|---|---|
+| AU → Auckland Airport | `/car-hire-auckland-airport-from-australia` | Phrase + Exact | `"car rental auckland airport"`, `"car hire auckland airport"`, `"auckland airport car hire"`, `[car rental auckland new zealand]` |
+| AU → Christchurch Airport | `/car-hire-christchurch-airport-from-australia` | Phrase + Exact | `"car rental christchurch airport"`, `"car hire christchurch"`, `[christchurch airport car hire]`, `"south island car hire"` |
+| AU → NZ Road Trip / One-Way | `/one-way-car-hire` | Phrase | `"new zealand road trip car"`, `"one way car hire nz"`, `"auckland to queenstown car hire"`, `"christchurch to queenstown car"` |
+| AU → General NZ Car Hire | `/fleet/cars` | Phrase | `"rental car new zealand"`, `"nz car rental"`, `"cheap car hire nz"`, `"car hire new zealand"` |
+
+### 8c. Negative keywords (campaign-level)
+
+Add a new shared list `JB AU Negatives 2026-07`, applied only to this campaign:
+
+```
+campervan
+camper van
+motorhome
+rv
+jucy
+britz
+maui
+apollo
+wicked
+spaceships
+relocation
+relocations
+ute
+truck
+van hire
+moving truck
+long term lease
+lease
+```
+
+Rationale: AU searchers looking for campervans/motorhomes have very different intent
+and much higher CPC — you don't want to compete there. Also strip out van/truck/ute
+queries because those pages don't exist in AU-friendly form yet.
+
+### 8d. RSA copy — AU → Auckland Airport
+
+**Path:** `/car-hire` `/auckland-airport`
+
+Headlines (15):
+1. NZ Car Hire From AUD $45
+2. Auckland Airport Car Hire
+3. Book NZ Car Hire in AUD
+4. Aussie Licence Accepted
+5. No Overseas Card Fees
+6. Free Airport Shuttle
+7. Kiwi-Owned – Not a Chain
+8. Beat Hertz & Budget by 40%
+9. Sydney to Auckland? Book Here
+10. Melbourne to Auckland Car Hire
+11. Brisbane to Auckland Car Hire
+12. Unlimited KM on All Cars
+13. Same-Day Airport Pickup
+14. Trusted by 10,000+ Kiwis
+15. Instant Free Quote
+
+Descriptions (4):
+1. Auckland Airport car hire from AUD $45/day. Aussie licences accepted, AU cards welcome.
+2. Skip the big-brand queues — Kiwi-owned depot, free shuttle from International Terminal.
+3. No overseas card surcharge. Unlimited km. Perfect for North Island road trips from AU.
+4. Book online in 2 minutes or call NZ 0800 525 663. Trans-Tasman travellers save 40%.
+
+### 8e. RSA copy — AU → Christchurch Airport
+
+**Path:** `/car-hire` `/christchurch`
+
+Headlines (15):
+1. NZ Car Hire From AUD $45
+2. Christchurch Airport Car Hire
+3. South Island Road Trip Ready
+4. Aussie Licence Accepted
+5. No Overseas Card Fees
+6. Free Airport Shuttle
+7. Kiwi-Owned – Not a Chain
+8. Beat Hertz & Budget by 40%
+9. Christchurch to Queenstown
+10. Tekapo & Mount Cook Ready
+11. Ski Season Chch Car Hire
+12. Unlimited KM on All Cars
+13. Sydney to Chch? Book Direct
+14. Melbourne to Chch Car Hire
+15. Instant Free Quote
+
+Descriptions (4):
+1. Christchurch Airport car hire from AUD $45/day. Perfect for South Island road trips.
+2. Aussie licences accepted, AU cards welcome, no overseas card surcharge. Unlimited km.
+3. Chch → Tekapo → Queenstown or Milford — the classic Aussie loop starts here.
+4. Kiwi-owned, 5-minute shuttle from the International Terminal. Book online in 2 min.
+
+### 8f. Ad extensions (campaign-level)
+
+**Sitelinks:**
+- AUD Pricing Info → `/car-hire-auckland-airport-from-australia#pricing`
+- One-Way NZ Rentals → `/one-way-car-hire`
+- View Full Fleet → `/fleet/cars`
+- 7-Seat SUVs & Minibuses → `/fleet/minibuses`
+
+**Callouts:** `AUD pricing` · `AU licence OK` · `No overseas card fees` · `Free airport shuttle` · `Unlimited km` · `Kiwi-owned`
+
+**Structured snippets — Destinations:** Auckland, Christchurch, Queenstown, Rotorua, Wellington, Tekapo
+
+### 8g. Tracking additions
+
+- Add `?utm_source=google&utm_medium=cpc&utm_campaign=au-trans-tasman&utm_content={adgroup}` to all Final URL suffixes
+- In GA4, create an audience `AU visitors — car hire pages` (country = Australia, page path contains `/car-hire`) — feed to Google Ads for observation and later retargeting
+- Add `en-AU` to the site's accepted languages so AU users don't get redirected/localised weirdly by any CDN in front
+
+### 8h. Complementary on-site work (blocking for full ROI, not for launch)
+
+In priority order — none of these are needed to run the campaign, but each lifts AU
+conversion rate:
+
+1. **Currency toggle NZD ↔ AUD** on booking pages (live FX rate, cached daily) — biggest single lift (est. +15–25% AU conversion)
+2. **AU 1800 forwarding number** displayed on both AU landing pages (perceived-local, lifts AU calls 20–40%)
+3. **Blog posts targeting AU-market long-tails** — pitched at Aussies, ranks in `google.com.au`:
+   - "Driving in New Zealand: what Australians need to know"
+   - "Sydney to Auckland — planning your NZ car hire"
+   - "South Island road trip from Christchurch: 7-day Aussie itinerary"
+   - "Do I need travel insurance if I hire a car in NZ?"
+
+### 8i. Launch checklist
+
+- [ ] Create shared negative list `JB AU Negatives 2026-07`
+- [ ] Create campaign `Search - AU - Car Hire NZ` with settings from §8a
+- [ ] Build the 4 ad groups from §8b
+- [ ] Add 2 RSAs per ad group (§8d and §8e; mirror the pattern for road-trip and general NZ groups)
+- [ ] Attach sitelinks, callouts and structured snippets from §8f
+- [ ] Apply the campaign-level negatives list
+- [ ] Enable UTM auto-tagging per §8g
+- [ ] Run at AUD $30/day for 14 days, then review search-term report and scale winners
