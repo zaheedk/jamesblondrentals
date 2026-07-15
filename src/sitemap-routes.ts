@@ -113,6 +113,7 @@ export const sitemapRoutes: SitemapRoute[] = [
   { path: '/trailer-hire-hamilton', priority: 0.9, changefreq: 'weekly' },
   { path: '/trailer-hire-auckland', priority: 0.9, changefreq: 'weekly' },
   { path: '/car-hire-auckland-airport-from-australia', priority: 0.9, changefreq: 'weekly' },
+  { path: '/car-hire-christchurch-airport-from-australia', priority: 0.9, changefreq: 'weekly' },
   { path: '/christchurch-minibus-hire', priority: 0.9, changefreq: 'weekly' },
   { path: '/12-seater-van-hire-christchurch', priority: 0.9, changefreq: 'weekly' },
   { path: '/hamilton-minibus-hire', priority: 0.8, changefreq: 'weekly' },
