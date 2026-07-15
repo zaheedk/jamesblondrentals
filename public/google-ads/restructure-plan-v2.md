@@ -9,7 +9,6 @@ Score lever left on the account.
 
 - `/12-seater-van-hire-wellington`
 - `/12-seater-van-hire-christchurch`
-- `/14-seater-van-hire-auckland`
 - `/christchurch-minibus-hire`
 - `/hamilton-minibus-hire`
 - `/furniture-truck-hire-hamilton`
@@ -44,7 +43,6 @@ Only the deltas vs v1 are shown. Keep everything else from v1 as-is.
 | Tipper | `/tipper-truck-hire` |
 | Tail-lift / box truck | `/fleet/trucks/2-tonne-box-12m3-tail` |
 | Minibus / 12-seater – Auckland | `/12-seater-van-hire-auckland` |
-| Minibus / 14-seater – Auckland | `/14-seater-van-hire-auckland` |
 | Minibus / 12-seater – Wellington | `/12-seater-van-hire-wellington` |
 | Minibus / 12-seater – Christchurch | `/12-seater-van-hire-christchurch` |
 | Minibus – Christchurch (general) | `/christchurch-minibus-hire` |
@@ -67,10 +65,11 @@ launch with a single tightly-themed RSA, exact + phrase match only:
 1. **Furniture Truck – Hamilton** — target `furniture truck hire hamilton`, `furniture truck hamilton`, `hamilton furniture removal truck`. Est. 880/mo, KD 20. Highest priority.
 2. **12-Seater Van – Wellington** — `12 seater van hire wellington`, `12 seater minibus wellington`.
 3. **12-Seater Van – Christchurch** — `12 seater van hire christchurch`, `minibus hire christchurch`.
-4. **14-Seater Van – Auckland** — `14 seater van hire auckland`, `14 seater minibus auckland`.
-5. **Moving Truck – Auckland** — `moving truck hire auckland`, `house moving truck auckland`. Est. 1,300/mo.
-6. **Trailer Hire – Auckland** — `trailer hire auckland`, `box trailer hire auckland`, `car trailer hire auckland`. Est. 720/mo.
-7. **West Auckland Van Hire** — `van hire west auckland`, `van hire henderson`. Small volume, zero competition, dedicated LP.
+4. **Moving Truck – Auckland** — `moving truck hire auckland`, `house moving truck auckland`. Est. 1,300/mo.
+5. **Trailer Hire – Auckland** — `trailer hire auckland`, `box trailer hire auckland`, `car trailer hire auckland`. Est. 720/mo.
+6. **West Auckland Van Hire** — `van hire west auckland`, `van hire henderson`. Small volume, zero competition, dedicated LP.
+
+> Note: we do **not** run a 14-seater — largest passenger van in the fleet is a 12-seater. The `/14-seater-van-hire-auckland` page exists purely as an SEO redirect that explains this and pushes users to the 12-seater. Do **not** build a paid ad group for 14-seaters.
 
 ---
 
@@ -107,7 +106,7 @@ Added to `negative-keywords.csv` in this same commit:
 | Truck Hire (master) | Keep +30% | Still the best CPA in the account |
 | Furniture Truck – Hamilton (new) | Seed $15/day | Untapped 880/mo, dedicated LP, KD 20 |
 | Moving Truck – Auckland (new) | Seed $25/day | 1,300/mo, direct match to owned box trucks |
-| Minibus 12/14-seater (Auck/Wgtn/Chch) (new) | Seed $8/day each | Recover CPA from generic Minibus hire group |
+| Minibus 12-seater (Auck/Wgtn/Chch) (new) | Seed $8/day each | Recover CPA from generic Minibus hire group |
 | Minibus hire (old catch-all) | −50% | Redistribute to the 4 geo-specific minibus groups |
 | Van Hire #2 (old duplicate) | Pause | Merge into geo-split groups from v1 §1 |
 | Trailer Hire – Auckland (new) | Seed $10/day | 720/mo, dedicated LP, low competition |
