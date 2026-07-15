@@ -90,4 +90,26 @@ insurance only,Phrase,Account,Wrong intent
 rental cars,Phrase,Truck campaigns,Wrong product
 car rental,Phrase,Truck campaigns,Wrong product
 car hire,Phrase,Truck campaigns,Wrong product
-car rental cost,Phrase,Account,Research intent zero conv
+car rental cost,Phrase,Account,Research intent zero convcaravan,Broad,Account,Wrong vehicle class
+caravan hire,Phrase,Account,Wrong vehicle class
+motorhome,Broad,Account,Wrong vehicle class
+motorhome hire,Phrase,Account,Wrong vehicle class
+campervan,Broad,Account,Wrong vehicle class
+campervan hire,Phrase,Account,Wrong vehicle class
+rental agreement template,Phrase,Account,Wrong intent (paperwork lookup)
+rental agreement form,Phrase,Account,Wrong intent (paperwork lookup)
+tenancy,Broad,Account,Wrong intent
+driving school,Phrase,Account,Wrong intent
+driving lessons,Phrase,Account,Wrong intent
+learner licence,Phrase,Account,Wrong intent
+used van,Phrase,Account,Buying not hiring
+van for sale nz,Phrase,Account,Buying not hiring
+truck for sale,Phrase,Account,Buying not hiring
+youtube,Broad,Account,Research intent
+review video,Phrase,Account,Research intent
+wof,Broad,Account,Wrong service (compliance)
+warrant of fitness,Phrase,Account,Wrong service
+rego,Broad,Account,Wrong service
+registration,Broad,Account,Wrong service
+airbnb,Broad,Account,Accommodation confusion
+booking.com,Phrase,Account,Accommodation confusion
