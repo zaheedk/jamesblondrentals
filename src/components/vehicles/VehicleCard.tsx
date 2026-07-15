@@ -144,7 +144,7 @@ const VehicleCard = ({
   const limitedMessage = `Only ${lowStockCount} left at ${pickupLocationName || "this location"}`;
 
   return (
-    <Card className="overflow-hidden shadow-md h-full flex flex-col">
+    <Card id={`vehicle-${vehicle.id}`} className="overflow-hidden shadow-md h-full flex flex-col scroll-mt-24">
       <AspectRatio ratio={4/3} className="overflow-hidden bg-white">
         <img 
           src={imageUrl} 
