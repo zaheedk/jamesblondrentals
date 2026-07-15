@@ -121,6 +121,7 @@ import TrailerHireAuckland from "./pages/TrailerHireAuckland";
 import TrailerHireWellington from "./pages/TrailerHireWellington";
 import TrailerHireChristchurch from "./pages/TrailerHireChristchurch";
 import CarHireAucklandAirportFromAustralia from "./pages/CarHireAucklandAirportFromAustralia";
+import CarHireChristchurchAirportFromAustralia from "./pages/CarHireChristchurchAirportFromAustralia";
 import CentralChristchurchTruckHire from "./pages/CentralChristchurchTruckHire";
 import CentralChristchurchVanHire from "./pages/CentralChristchurchVanHire";
 import ChristchurchMinibusHire from "./pages/ChristchurchMinibusHire";
