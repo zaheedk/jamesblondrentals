@@ -24,14 +24,14 @@ const EarlyWeekBanner = () => {
     <aside
       role="region"
       aria-label="Early week discount promotion"
-      className="relative w-full bg-gradient-to-r from-amber-600 via-orange-600 to-amber-700 text-white"
+      className="relative w-full bg-muted text-foreground border-b"
     >
       <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 px-10 py-2.5 text-center text-sm sm:text-base font-semibold">
         <Percent className="w-5 h-5 shrink-0" aria-hidden="true" />
         <span>
           <span className="underline underline-offset-2">25% Early Week Discount</span> on Trucks & Jumbo Vans — hire must start & end Mon–Thu
         </span>
-        <span className="hidden sm:inline rounded-full bg-white/15 px-3 py-0.5 text-xs uppercase tracking-wide">
+        <span className="hidden sm:inline rounded-full bg-foreground/10 px-3 py-0.5 text-xs uppercase tracking-wide">
           Save Now
         </span>
       </div>
@@ -39,7 +39,7 @@ const EarlyWeekBanner = () => {
         type="button"
         onClick={dismiss}
         aria-label="Dismiss early week discount banner"
-        className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1.5 hover:bg-white/15 transition"
+        className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1.5 hover:bg-foreground/10 transition"
       >
         <X className="w-4 h-4" />
       </button>
