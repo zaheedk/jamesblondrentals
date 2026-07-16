@@ -97,13 +97,13 @@ const PaymentSuccess = () => {
       bookingDetails.basePrice ??
       0;
 
-    const transactionId =
-      transactionId_safe(transactionId) ||
+    const txId =
+      (transactionId && transactionId !== 'N/A' ? transactionId : '') ||
       bookingDetails.reservationRef ||
       `jb-${Date.now()}`;
 
     trackEvent('purchase', {
-      transaction_id: transactionId,
+      transaction_id: txId,
       value: Number(value) || 0,
       currency: 'NZD',
       items_name: bookingDetails.vehicleName || '',
