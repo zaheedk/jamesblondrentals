@@ -16,6 +16,7 @@ import { useCreateBooking, updateBookingPaymentStatus } from "@/hooks/use-bookin
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import PageSEO from '@/components/PageSEO';
+import { trackEvent } from '@/lib/analytics';
 
 
 interface BookingDetails {
@@ -80,6 +81,41 @@ const PaymentSuccess = () => {
   const [imageError, setImageError] = useState<boolean>(false);
   const savoSyncedRef = useRef(false);
   const [showSurvey, setShowSurvey] = useState<boolean>(false);
+  const purchaseTrackedRef = useRef(false);
+
+  // Fire GA4 `purchase` event once when payment succeeds and booking details are loaded.
+  // Without this, GA4 shows $0 revenue and channel ROAS can't be calculated.
+  useEffect(() => {
+    if (purchaseTrackedRef.current) return;
+    if (paymentStatus !== 'success') return;
+    if (!bookingDetails) return;
+
+    const value =
+      bookingDetails.totalcost ??
+      bookingDetails.paymentAmount ??
+      bookingDetails.payment ??
+      bookingDetails.basePrice ??
+      0;
+
+    const txId =
+      (transactionId && transactionId !== 'N/A' ? transactionId : '') ||
+      bookingDetails.reservationRef ||
+      `jb-${Date.now()}`;
+
+    trackEvent('purchase', {
+      transaction_id: txId,
+      value: Number(value) || 0,
+      currency: 'NZD',
+      items_name: bookingDetails.vehicleName || '',
+      pickup_location: bookingDetails.pickupLocationName || '',
+      dropoff_location: bookingDetails.dropoffLocationName || '',
+      pickup_date: bookingDetails.pickupDate || '',
+      dropoff_date: bookingDetails.dropoffDate || '',
+      rental_days: rentalDuration || 0,
+    });
+
+    purchaseTrackedRef.current = true;
+  }, [paymentStatus, bookingDetails, transactionId, rentalDuration]);
 
   const handleImageError = () => {
     console.log("Error loading vehicle image");
