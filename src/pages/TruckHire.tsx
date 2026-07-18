@@ -140,8 +140,8 @@ const TruckHire = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <PageSEO
-        title="Truck Hire NZ | Furniture & Moving Trucks — James Blond Rentals"
-        description="Truck hire across Auckland, Wellington, Christchurch and Hamilton. 2-tonne and 3-tonne box trucks, tippers and tail-lift trucks. Book online for instant rates."
+        title="Truck Hire NZ from $35/Hr | Moving & Furniture Trucks — Same-Day"
+        description="Truck hire from $35/hr across Auckland, Wellington, Christchurch & Hamilton. 2-tonne and 3-tonne box, tail-lift and tipper trucks. Drive on a car licence. Book online."
         canonical="/truck-hire"
       />
       <JsonLd data={faqLd} />

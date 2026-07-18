@@ -97,7 +97,6 @@ export const sitemapRoutes: SitemapRoute[] = [
   { path: '/truck-hire-christchurch', priority: 0.9, changefreq: 'weekly' },
   { path: '/van-hire-christchurch', priority: 0.9, changefreq: 'weekly' },
   // Christchurch / Canterbury van hire — long-tail satellites
-  { path: '/cargo-van-hire-christchurch', priority: 0.85, changefreq: 'weekly' },
   { path: '/moving-van-hire-christchurch', priority: 0.85, changefreq: 'weekly' },
   { path: '/12-seater-van-hire-christchurch', priority: 0.8, changefreq: 'weekly' },
   { path: '/courier-van-hire-christchurch', priority: 0.8, changefreq: 'weekly' },
@@ -136,7 +135,6 @@ export const sitemapRoutes: SitemapRoute[] = [
   { path: '/central-christchurch-car-hire', priority: 0.9, changefreq: 'weekly' },
   { path: '/van-hire-wellington', priority: 0.9, changefreq: 'weekly' },
   // Wellington van & truck — long-tail satellites
-  { path: '/cargo-van-hire-wellington', priority: 0.85, changefreq: 'weekly' },
   { path: '/moving-van-hire-wellington', priority: 0.85, changefreq: 'weekly' },
   { path: '/van-hire-wellington-airport', priority: 0.85, changefreq: 'weekly' },
   { path: '/van-hire-lower-hutt', priority: 0.8, changefreq: 'monthly' },

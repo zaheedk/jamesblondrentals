@@ -1,6 +1,9 @@
 
 {
   "redirects": [
+    { "source": "/:path*", "has": [{ "type": "host", "value": "jamesblond.co.nz" }], "destination": "https://www.jamesblond.co.nz/:path*", "statusCode": 301 },
+    { "source": "/cargo-van-hire-wellington", "destination": "/van-hire-wellington", "statusCode": 301 },
+    { "source": "/cargo-van-hire-christchurch", "destination": "/van-hire-christchurch", "statusCode": 301 },
     { "source": "/cars-and-suvs/premium-4wd-suv/", "destination": "/fleet/cars/premium-awd-suv", "statusCode": 301 },
     { "source": "/cars-and-suvs/premium-economy/", "destination": "/fleet/cars/premium-economy", "statusCode": 301 },
     { "source": "/cars-and-suvs/:path*", "destination": "/fleet/cars", "statusCode": 301 },

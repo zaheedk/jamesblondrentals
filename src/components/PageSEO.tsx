@@ -9,7 +9,7 @@ interface PageSEOProps {
   ogType?: string;
 }
 
-const SITE_URL = 'https://jamesblond.co.nz';
+const SITE_URL = 'https://www.jamesblond.co.nz';
 const DEFAULT_OG_IMAGE = `${SITE_URL}/lovable-uploads/6213906e-4949-494b-b006-8d6e516cdd9a.png`;
 
 const PageSEO = ({ title, description, canonical, noindex, ogImage, ogType = 'website' }: PageSEOProps) => (
