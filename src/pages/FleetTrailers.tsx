@@ -1,6 +1,7 @@
 
 import { Link } from "react-router-dom";
 import PageSEO from '@/components/PageSEO';
+import RelatedLocations from '@/components/RelatedLocations';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
@@ -146,6 +147,7 @@ const FleetTrailers = () => (
         </Card>
       ))}
     </div>
+    <RelatedLocations vehicleType="trailers" title="Trailer hire by city" />
   </div>
 );
 
