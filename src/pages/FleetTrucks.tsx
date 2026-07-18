@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import PageSEO from '@/components/PageSEO';
+import RelatedLocations from '@/components/RelatedLocations';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
@@ -209,6 +210,7 @@ const FleetTrucks = () => (
         </Button>
       </div>
     </div>
+    <RelatedLocations vehicleType="trucks" title="Truck hire by city" />
   </div>
 );
 
