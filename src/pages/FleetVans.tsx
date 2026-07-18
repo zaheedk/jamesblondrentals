@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { useEffect } from "react";
 import PageSEO from '@/components/PageSEO';
+import RelatedLocations from '@/components/RelatedLocations';
 
 
 const vans = [
@@ -138,6 +139,7 @@ const FleetVans = () => {
           </Card>
         ))}
       </div>
+      <RelatedLocations vehicleType="vans" title="Van hire near you" />
     </div>
   );
 };
