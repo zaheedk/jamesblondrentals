@@ -420,6 +420,7 @@ const WellingtonCargoVanRentals = () => {
       </section>
     </div>
     <WellingtonInternalLinks currentPath="/van-hire-wellington" />
+    <RelatedLocations vehicleType="vans" currentCity="wellington" title="Van hire in other NZ cities" />
     </>
   );
 };

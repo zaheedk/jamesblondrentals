@@ -450,6 +450,7 @@ const AucklandTruckRentals = () => {
           </Button>
         </div>
       </section>
+      <RelatedLocations vehicleType="trucks" currentCity="auckland" title="More hire options in Auckland" />
     </div>
   );
 };

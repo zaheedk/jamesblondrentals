@@ -1,4 +1,5 @@
 import React from 'react';
+import RelatedLocations from '@/components/RelatedLocations';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Phone, Users, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -345,6 +346,7 @@ const ChristchurchMinibusHire = () => {
           515 Moorhouse Avenue, Waltham, Christchurch 8011
         </div>
       </section>
+      <RelatedLocations vehicleType="minibuses" currentCity="christchurch" title="More hire options in Christchurch" />
     </div>
   );
 };

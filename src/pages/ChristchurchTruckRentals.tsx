@@ -731,6 +731,7 @@ const ChristchurchTruckRentals = () => {
         </div>
       </section>
       </div>
+      <RelatedLocations vehicleType="trucks" currentCity="christchurch" title="More hire options in Christchurch" />
     </>
   );
 };

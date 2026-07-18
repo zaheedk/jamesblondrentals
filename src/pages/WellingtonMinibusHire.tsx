@@ -494,6 +494,7 @@ const WellingtonMinibusHire = () => {
       </section>
     </div>
     <WellingtonInternalLinks currentPath="/wellington-minibus-hire" />
+    <RelatedLocations vehicleType="minibuses" currentCity="wellington" title="Minibus hire in other NZ cities" />
     </>
   );
 };

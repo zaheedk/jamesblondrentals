@@ -1,4 +1,5 @@
 import React from 'react';
+import RelatedLocations from '@/components/RelatedLocations';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Phone, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -461,6 +462,7 @@ const faqJsonLd = {
           ))}
         </div>
       </section>
+      <RelatedLocations vehicleType="trucks" currentCity="hamilton" title="More hire options in Hamilton" />
     </div>
   );
 };

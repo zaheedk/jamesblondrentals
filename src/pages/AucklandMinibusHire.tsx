@@ -1,4 +1,5 @@
 import React from 'react';
+import RelatedLocations from '@/components/RelatedLocations';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Phone, Users, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -353,6 +354,7 @@ const AucklandMinibusHire = () => {
           Penrose branch &amp; Auckland Airport branch — Auckland
         </div>
       </section>
+      <RelatedLocations vehicleType="minibuses" currentCity="auckland" title="More hire options in Auckland" />
     </div>
   );
 };

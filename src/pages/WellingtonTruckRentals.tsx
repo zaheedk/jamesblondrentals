@@ -713,6 +713,7 @@ const WellingtonTruckRentals = () => {
       </section>
       </div>
       <WellingtonInternalLinks currentPath="/truck-hire-wellington" />
+      <RelatedLocations vehicleType="trucks" currentCity="wellington" title="Truck hire in other NZ cities" />
     </>
   );
 };

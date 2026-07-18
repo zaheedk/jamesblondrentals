@@ -1,4 +1,5 @@
 import React from 'react';
+import RelatedLocations from '@/components/RelatedLocations';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Phone, Package, GraduationCap, Truck, MapPin, Quote } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -483,6 +484,7 @@ const HamiltonVanHire = () => {
           ))}
         </div>
       </section>
+      <RelatedLocations vehicleType="vans" currentCity="hamilton" title="More hire options in Hamilton" />
     </div>
   );
 };
