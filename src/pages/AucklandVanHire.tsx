@@ -98,8 +98,8 @@ const AucklandVanHire = () => {
   return (
     <div className="bg-background text-foreground">
       <PageSEO
-        title="12 Seater Van Hire Auckland | Toyota Hiace | James Blond"
-        description="12 seater van hire in Auckland from Penrose and Auckland Airport. Toyota Hiace and LDV, automatic, car-licence, tow bar and unlimited kms."
+        title="12 Seater Van Hire Auckland from $189/Day | Toyota Hiace — James Blond"
+        description="12 seater van hire in Auckland from $189/day. Toyota Hiace automatic, car-licence, tow bar, unlimited kms. Penrose & Airport pickup. Same-day availability."
         canonical="/12-seater-van-hire-auckland"
         ogImage="https://jamesblond.co.nz/lovable-uploads/bdd5521d-5fab-4187-8d79-fcf80b3f46db.png"
       />

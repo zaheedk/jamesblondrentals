@@ -21,8 +21,8 @@ const WellingtonTruckRentals = () => {
   return (
     <>
       <Helmet>
-        <title>Truck Hire Wellington from $35/hr — Moving Truck Rental Near You</title>
-        <meta name="description" content="Truck rental & hire in Wellington from $35/hr — CBD, Lower Hutt, Upper Hutt, Petone, Porirua, Kapiti, Johnsonville. Same-day moving truck pickup, drive on a car licence." />
+        <title>Truck Hire Wellington from $35/Hr | Same-Day Moving Truck Rental</title>
+        <meta name="description" content="Truck hire Wellington from $35/hr — 2-tonne & 3-tonne moving trucks with tail lifts. CBD, Lower Hutt, Porirua & Kāpiti pickup. Drive on a car licence. Book online." />
         <meta name="keywords" content="truck hire Wellington, truck rental Wellington, moving truck Lower Hutt, truck hire Upper Hutt, truck hire Petone, truck rental Porirua, Kapiti truck hire" />
         <link rel="canonical" href="https://www.jamesblond.co.nz/truck-hire-wellington" />
       </Helmet>
