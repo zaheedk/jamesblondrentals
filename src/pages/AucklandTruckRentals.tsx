@@ -1,3 +1,4 @@
+import RelatedLocations from '@/components/RelatedLocations';
 
 import React from 'react';
 import { Truck, Home, Box, Package, ArrowRight } from 'lucide-react';

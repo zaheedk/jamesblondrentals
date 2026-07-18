@@ -1,3 +1,4 @@
+import RelatedLocations from '@/components/RelatedLocations';
 import React from 'react';
 import { Package, ShieldCheck, Truck, Map, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';

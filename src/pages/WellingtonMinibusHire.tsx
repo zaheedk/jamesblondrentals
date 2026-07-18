@@ -1,3 +1,4 @@
+import RelatedLocations from '@/components/RelatedLocations';
 import React, { useEffect } from 'react';
 import { Users, Car, Navigation, Shield, ArrowRight, Phone, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';

@@ -1,3 +1,4 @@
+import RelatedLocations from '@/components/RelatedLocations';
 
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
