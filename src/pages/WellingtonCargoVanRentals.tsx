@@ -1,3 +1,4 @@
+import RelatedLocations from '@/components/RelatedLocations';
 import React from 'react';
 import { Package, ShieldCheck, Truck, Map, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -420,6 +421,7 @@ const WellingtonCargoVanRentals = () => {
       </section>
     </div>
     <WellingtonInternalLinks currentPath="/van-hire-wellington" />
+    <RelatedLocations vehicleType="vans" currentCity="wellington" title="Van hire in other NZ cities" />
     </>
   );
 };

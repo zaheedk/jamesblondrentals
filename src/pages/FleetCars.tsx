@@ -17,6 +17,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import PageSEO from '@/components/PageSEO';
+import RelatedLocations from '@/components/RelatedLocations';
 
 
 const cars = [
@@ -250,6 +251,7 @@ const FleetCars = () => {
         </CollapsibleContent>
       </Collapsible>
     </section>
+    <RelatedLocations vehicleType="cars" title="Car hire by city" />
   </div>
   );
 };

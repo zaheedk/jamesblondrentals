@@ -5,6 +5,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription }
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Bluetooth, AirVent, Anchor } from "lucide-react";
 import PageSEO from '@/components/PageSEO';
+import RelatedLocations from '@/components/RelatedLocations';
 
 
 const minibuses = [
@@ -149,6 +150,7 @@ const FleetMinibuses = () => {
         </Card>
       ))}
     </div>
+    <RelatedLocations vehicleType="minibuses" title="Minibus & 12-seater hire by city" />
   </div>
   );
 };

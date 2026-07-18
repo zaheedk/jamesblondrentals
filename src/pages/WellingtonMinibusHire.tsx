@@ -1,3 +1,4 @@
+import RelatedLocations from '@/components/RelatedLocations';
 import React, { useEffect } from 'react';
 import { Users, Car, Navigation, Shield, ArrowRight, Phone, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -494,6 +495,7 @@ const WellingtonMinibusHire = () => {
       </section>
     </div>
     <WellingtonInternalLinks currentPath="/wellington-minibus-hire" />
+    <RelatedLocations vehicleType="minibuses" currentCity="wellington" title="Minibus hire in other NZ cities" />
     </>
   );
 };

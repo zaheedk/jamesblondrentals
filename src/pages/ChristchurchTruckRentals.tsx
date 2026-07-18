@@ -1,3 +1,4 @@
+import RelatedLocations from '@/components/RelatedLocations';
 
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
@@ -731,6 +732,7 @@ const ChristchurchTruckRentals = () => {
         </div>
       </section>
       </div>
+      <RelatedLocations vehicleType="trucks" currentCity="christchurch" title="More hire options in Christchurch" />
     </>
   );
 };

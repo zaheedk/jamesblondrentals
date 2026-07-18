@@ -1,3 +1,4 @@
+import RelatedLocations from '@/components/RelatedLocations';
 
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
@@ -713,6 +714,7 @@ const WellingtonTruckRentals = () => {
       </section>
       </div>
       <WellingtonInternalLinks currentPath="/truck-hire-wellington" />
+      <RelatedLocations vehicleType="trucks" currentCity="wellington" title="Truck hire in other NZ cities" />
     </>
   );
 };

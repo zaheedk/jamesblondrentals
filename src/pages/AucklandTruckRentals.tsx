@@ -1,3 +1,4 @@
+import RelatedLocations from '@/components/RelatedLocations';
 
 import React from 'react';
 import { Truck, Home, Box, Package, ArrowRight } from 'lucide-react';
@@ -450,6 +451,7 @@ const AucklandTruckRentals = () => {
           </Button>
         </div>
       </section>
+      <RelatedLocations vehicleType="trucks" currentCity="auckland" title="More hire options in Auckland" />
     </div>
   );
 };

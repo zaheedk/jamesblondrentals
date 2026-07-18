@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import SearchForm from '@/components/home/SearchForm';
 import PageSEO from '@/components/PageSEO';
 import JsonLd from '@/components/JsonLd';
+import RelatedLocations from '@/components/RelatedLocations';
 import heroSuv from '@/assets/auckland-7-seater-suv-family.jpg';
 import coastal from '@/assets/auckland-car-rental-coastal-road.jpg';
 import awd from '@/assets/awd-suv-nz-mountain-adventure.jpg';
@@ -322,6 +323,21 @@ const CityCarHire: React.FC<CityCarHireProps> = ({
           </p>
         </div>
       </section>
+      <RelatedLocations
+        vehicleType="cars"
+        currentCity={
+          slug.includes('auckland')
+            ? 'auckland'
+            : slug.includes('christchurch')
+            ? 'christchurch'
+            : slug.includes('wellington')
+            ? 'wellington'
+            : slug.includes('hamilton')
+            ? 'hamilton'
+            : undefined
+        }
+        title={`More hire options in ${city}`}
+      />
     </div>
   );
 };
