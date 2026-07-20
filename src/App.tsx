@@ -184,6 +184,9 @@ import PhotoGallery from "./pages/PhotoGallery";
 import Win from "./pages/Win";
 import OneWayCarHire from "./pages/OneWayCarHire";
 import OneWayRoutePage from "./pages/OneWayRoutePage";
+import OneWayTruckHire from "./pages/OneWayTruckHire";
+import OneWayVanHire from "./pages/OneWayVanHire";
+import OneWayCommercialRoutePage from "./pages/OneWayCommercialRoutePage";
 import WellingtonVanTruckSubPage from "./pages/WellingtonVanTruckSubPage";
 import { wellingtonVanTruckPages } from "./lib/wellington-van-truck-pages";
 
@@ -322,6 +325,10 @@ const App = () => {
                 <Route path="/truck-hire" element={<TruckHire />} />
                 <Route path="/one-way-car-hire" element={<OneWayCarHire />} />
                 <Route path="/one-way-car-hire/:slug" element={<OneWayRoutePage />} />
+                <Route path="/one-way-truck-hire" element={<OneWayTruckHire />} />
+                <Route path="/one-way-truck-hire/:slug" element={<OneWayCommercialRoutePage variant="truck" />} />
+                <Route path="/one-way-van-hire" element={<OneWayVanHire />} />
+                <Route path="/one-way-van-hire/:slug" element={<OneWayCommercialRoutePage variant="van" />} />
                 <Route path="/truck-hire-wellington" element={<WellingtonTruckRentals />} />
                 <Route path="/truck-hire-christchurch" element={<ChristchurchTruckRentals />} />
                 <Route path="/hamilton-truck-rentals-hire" element={<Navigate to="/truck-hire-hamilton" replace />} />
