@@ -201,4 +201,26 @@ export const sitemapRoutes: SitemapRoute[] = [
   { path: '/one-way-car-hire/hamilton-to-auckland', priority: 0.7, changefreq: 'monthly' },
   { path: '/one-way-car-hire/hamilton-to-wellington', priority: 0.7, changefreq: 'monthly' },
   { path: '/one-way-car-hire/wellington-to-hamilton', priority: 0.7, changefreq: 'monthly' },
+
+  // One-Way Truck Hire
+  { path: '/one-way-truck-hire', priority: 0.9, changefreq: 'monthly' },
+  { path: '/one-way-truck-hire/auckland-to-wellington', priority: 0.8, changefreq: 'monthly' },
+  { path: '/one-way-truck-hire/wellington-to-auckland', priority: 0.8, changefreq: 'monthly' },
+  { path: '/one-way-truck-hire/auckland-to-christchurch', priority: 0.8, changefreq: 'monthly' },
+  { path: '/one-way-truck-hire/christchurch-to-auckland', priority: 0.8, changefreq: 'monthly' },
+  { path: '/one-way-truck-hire/wellington-to-christchurch', priority: 0.8, changefreq: 'monthly' },
+  { path: '/one-way-truck-hire/christchurch-to-wellington', priority: 0.8, changefreq: 'monthly' },
+  { path: '/one-way-truck-hire/auckland-to-hamilton', priority: 0.7, changefreq: 'monthly' },
+  { path: '/one-way-truck-hire/hamilton-to-auckland', priority: 0.7, changefreq: 'monthly' },
+
+  // One-Way Van Hire
+  { path: '/one-way-van-hire', priority: 0.9, changefreq: 'monthly' },
+  { path: '/one-way-van-hire/auckland-to-wellington', priority: 0.8, changefreq: 'monthly' },
+  { path: '/one-way-van-hire/wellington-to-auckland', priority: 0.8, changefreq: 'monthly' },
+  { path: '/one-way-van-hire/auckland-to-christchurch', priority: 0.8, changefreq: 'monthly' },
+  { path: '/one-way-van-hire/christchurch-to-auckland', priority: 0.8, changefreq: 'monthly' },
+  { path: '/one-way-van-hire/wellington-to-christchurch', priority: 0.8, changefreq: 'monthly' },
+  { path: '/one-way-van-hire/christchurch-to-wellington', priority: 0.8, changefreq: 'monthly' },
+  { path: '/one-way-van-hire/auckland-to-hamilton', priority: 0.7, changefreq: 'monthly' },
+  { path: '/one-way-van-hire/hamilton-to-auckland', priority: 0.7, changefreq: 'monthly' },
 ];
