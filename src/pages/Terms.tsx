@@ -72,7 +72,6 @@ const Terms = () => {
           <AccordionTrigger>6. Payments By Hirer</AccordionTrigger>
           <AccordionContent>
             <ul className="list-disc pl-6 space-y-2">
-              <li><strong>Deposit Required:</strong> A non-refundable deposit of $50 is required for all bookings.</li>
               <li>The hirer shall pay to the owner as payment for the hire of the vehicle, accessories, insurance upgrade 
                   options, and any extra charges incurred for the period of hire the sum as specified in this agreement.</li>
               <li>In addition the hirer shall pay to the owner on termination of the hiring a distance charge at the rate 
@@ -191,7 +190,6 @@ const Terms = () => {
           <AccordionTrigger>18. Cancellation Fees</AccordionTrigger>
           <AccordionContent>
             <ul className="list-disc pl-6 space-y-2">
-              <li>The $50 deposit required for all bookings is non-refundable.</li>
               <li>A cancellation fee of 1 days hireage applies if cancelled 24-72 hours before pickup.</li>
               <li>For cancellations within 24 hours or no-shows, the fee is $150 or 50% of the total rental, whichever is greater.</li>
             </ul>
