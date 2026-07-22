@@ -124,7 +124,9 @@ const Vehicles = () => {
     pickupDate, 
     dropoffDate,
     "", // vehicle name not available at this stage
-    carCategory // pass category ID to help determine if it's truck/van
+    carCategory, // pass category ID to help determine if it's truck/van
+    pickupTime,
+    dropoffTime
   );
 
   console.log('Campaign code being passed to API:', {
