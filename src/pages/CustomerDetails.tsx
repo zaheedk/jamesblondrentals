@@ -179,7 +179,9 @@ const CustomerDetails = () => {
           bookingData.pickupDate, 
           bookingData.dropoffDate,
           bookingData.vehicleName,
-          bookingData.vehicleCategoryTypeId
+          bookingData.vehicleCategoryTypeId,
+          bookingData.pickupTime,
+          bookingData.dropoffTime
         ),
         customer: {
           firstname: formData.firstName,
