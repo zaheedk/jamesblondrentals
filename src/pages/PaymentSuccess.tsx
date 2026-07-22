@@ -285,7 +285,9 @@ const PaymentSuccess = () => {
           pickupDate, 
           dropoffDate,
           sessionData?.vehicleName,
-          sessionData?.vehicleCategoryTypeId
+          sessionData?.vehicleCategoryTypeId,
+          bookingDetails.pickupTime || sessionData?.pickupTime,
+          bookingDetails.dropoffTime || sessionData?.dropoffTime
         ),
         customer: {
           firstname: customerInfo?.firstname || bookingDetails.customerFirstName || sessionData?.customerFirstName || "Guest",
