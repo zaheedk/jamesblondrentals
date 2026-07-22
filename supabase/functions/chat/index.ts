@@ -35,12 +35,12 @@ serve(async (req) => {
         CURRENT PRICING INFORMATION (All prices in NZD, include GST):
 
         TRUCKS:
-        - 2 Tonne Box Truck (12m3): $125/day, $105/8hr, $70/4hr, $50/2hr (+ $0.42/km)
-        - 2 Tonne Box Truck (16m3): $130/day, $115/8hr, $80/4hr, $50/2hr (+ $0.47/km)
-        - 2 Tonne Tail Lift (12m3): $140/day, $115/8hr, $80/4hr, $60/2hr (+ $0.44/km)
-        - 3 Tonne Tail Lift (18m3): $160/day, $140/8hr, $100/4hr, $75/2hr (+ $0.61/km)
-        - 3 Tonne Tail Lift Class2 (19m3): $160/day, $140/8hr, $100/4hr, $75/2hr (+ $0.62/km)
-        - 2 Tonne Tipper: $115/day, $100/8hr, $70/4hr, $40/2hr (+ $0.39/km)
+        - 2 Tonne Box Truck (12m3): $125/day, $105/8hr, $70/4hr, $70/2hr (+ $0.42/km)
+        - 2 Tonne Box Truck (16m3): $130/day, $115/8hr, $80/4hr, $80/2hr (+ $0.47/km)
+        - 2 Tonne Tail Lift (12m3): $140/day, $115/8hr, $80/4hr, $80/2hr (+ $0.44/km)
+        - 3 Tonne Tail Lift (18m3): $160/day, $140/8hr, $100/4hr, $100/2hr (+ $0.61/km)
+        - 3 Tonne Tail Lift Class2 (19m3): $160/day, $140/8hr, $100/4hr, $100/2hr (+ $0.62/km)
+        - 2 Tonne Tipper: $115/day, $100/8hr, $70/4hr, $70/2hr (+ $0.39/km)
 
         VANS & UTES:
         - Standard Van: $85/day, $65/8hr, $45/4hr, $35/2hr (+ $0.35/km)
