@@ -224,7 +224,7 @@ const PriceGuide = () => {
                           name: "2T Box 9m3 - (12m3)",
                           dimensions: "3 x 1.6 x 1.8m",
                           kmRate: "$0.42",
-                          hour2: "$50.00",
+                          hour2: "$70.00",
                           hour4: "$70.00", 
                           hour8: "$105.00",
                           day1: "$125.00"
@@ -232,7 +232,7 @@ const PriceGuide = () => {
                       >
                         <TableCell className="font-medium">2T Box 9m3 - (12m3)<br/>3 x 1.6 x 1.8m</TableCell>
                         <TableCell>$0.42</TableCell>
-                        <TableCell>$50.00</TableCell>
+                        <TableCell>$70.00</TableCell>
                         <TableCell>$70.00</TableCell>
                         <TableCell>$105.00</TableCell>
                         <TableCell>$125.00</TableCell>
@@ -247,7 +247,7 @@ const PriceGuide = () => {
                           name: "2T T/Lift (12m3)",
                           dimensions: "3.1 x 1.8 x 2m",
                           kmRate: "$0.44",
-                          hour2: "$60.00",
+                          hour2: "$80.00",
                           hour4: "$80.00", 
                           hour8: "$115.00",
                           day1: "$140.00"
@@ -255,7 +255,7 @@ const PriceGuide = () => {
                       >
                         <TableCell className="font-medium">2T T/Lift (12m3)<br/>3.1 x 1.8 x 2m</TableCell>
                         <TableCell>$0.44</TableCell>
-                        <TableCell>$60.00</TableCell>
+                        <TableCell>$80.00</TableCell>
                         <TableCell>$80.00</TableCell>
                         <TableCell>$115.00</TableCell>
                         <TableCell>$140.00</TableCell>
@@ -270,7 +270,7 @@ const PriceGuide = () => {
                           name: "2T (16m3)",
                           dimensions: "4 x 2 x 2m",
                           kmRate: "$0.47",
-                          hour2: "$50.00",
+                          hour2: "$80.00",
                           hour4: "$80.00", 
                           hour8: "$115.00",
                           day1: "$130.00"
@@ -278,7 +278,7 @@ const PriceGuide = () => {
                       >
                         <TableCell className="font-medium">2T (16m3)<br/>4 x 2 x 2m</TableCell>
                         <TableCell>$0.47</TableCell>
-                        <TableCell>$50.00</TableCell>
+                        <TableCell>$80.00</TableCell>
                         <TableCell>$80.00</TableCell>
                         <TableCell>$115.00</TableCell>
                         <TableCell>$130.00</TableCell>
@@ -293,7 +293,7 @@ const PriceGuide = () => {
                           name: "3T (18m3) T/Lift",
                           dimensions: "4.5 x 2 x 2m",
                           kmRate: "$0.61",
-                          hour2: "$75.00",
+                          hour2: "$100.00",
                           hour4: "$100.00", 
                           hour8: "$140.00",
                           day1: "$160.00"
@@ -301,7 +301,7 @@ const PriceGuide = () => {
                       >
                         <TableCell className="font-medium">3T (18m3) T/Lift<br/>4.5 x 2 x 2m</TableCell>
                         <TableCell>$0.61</TableCell>
-                        <TableCell>$75.00</TableCell>
+                        <TableCell>$100.00</TableCell>
                         <TableCell>$100.00</TableCell>
                         <TableCell>$140.00</TableCell>
                         <TableCell>$160.00</TableCell>
@@ -316,7 +316,7 @@ const PriceGuide = () => {
                           name: "3T Tail Lift Class2 (19m3)",
                           dimensions: "4.5 x 2 x 2m",
                           kmRate: "$0.62",
-                          hour2: "$75.00",
+                          hour2: "$100.00",
                           hour4: "$100.00", 
                           hour8: "$140.00",
                           day1: "$160.00"
@@ -324,7 +324,7 @@ const PriceGuide = () => {
                       >
                         <TableCell className="font-medium">3T Tail Lift Class2 (19m3)<br/>4.5 x 2 x 2m</TableCell>
                         <TableCell>$0.62</TableCell>
-                        <TableCell>$75.00</TableCell>
+                        <TableCell>$100.00</TableCell>
                         <TableCell>$100.00</TableCell>
                         <TableCell>$140.00</TableCell>
                         <TableCell>$160.00</TableCell>
@@ -339,7 +339,7 @@ const PriceGuide = () => {
                           name: "2 Ton Tipper",
                           dimensions: "-",
                           kmRate: "$0.39",
-                          hour2: "$40.00",
+                          hour2: "$70.00",
                           hour4: "$70.00", 
                           hour8: "$100.00",
                           day1: "$115.00"
@@ -347,7 +347,7 @@ const PriceGuide = () => {
                       >
                         <TableCell className="font-medium">2 Ton Tipper</TableCell>
                         <TableCell>$0.39</TableCell>
-                        <TableCell>$40.00</TableCell>
+                        <TableCell>$70.00</TableCell>
                         <TableCell>$70.00</TableCell>
                         <TableCell>$100.00</TableCell>
                         <TableCell>$115.00</TableCell>
