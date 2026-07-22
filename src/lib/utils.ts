@@ -92,14 +92,18 @@ export function getCampaignCode(
   pickupDate: string, 
   dropoffDate: string, 
   vehicleName?: string,
-  vehicleCategoryTypeId?: string | number
+  vehicleCategoryTypeId?: string | number,
+  pickupTime?: string,
+  dropoffTime?: string
 ): string {
   console.log('getCampaignCode called with:', {
     originalCampaignCode,
     pickupDate,
     dropoffDate,
     vehicleName,
-    vehicleCategoryTypeId
+    vehicleCategoryTypeId,
+    pickupTime,
+    dropoffTime
   });
 
   // If there's already a campaign code (user manually entered), use it
@@ -108,6 +112,23 @@ export function getCampaignCode(
     return originalCampaignCode;
   }
   
+  // Skip the 25% commercial midweek discount on short (≤2 hour) same-day hires.
+  // These already use hourly rates and were never intended to receive the daily discount.
+  if (pickupTime && dropoffTime && pickupDate && dropoffDate) {
+    const sameDay = pickupDate === dropoffDate;
+    if (sameDay) {
+      const [ph, pm] = pickupTime.split(':').map(Number);
+      const [dh, dm] = dropoffTime.split(':').map(Number);
+      if ([ph, pm, dh, dm].every(n => !isNaN(n))) {
+        const durationMinutes = (dh * 60 + dm) - (ph * 60 + pm);
+        if (durationMinutes > 0 && durationMinutes <= 120) {
+          console.log('❌ Skipping earlyweekcommercial25 — 2-hour (or shorter) same-day hire');
+          return "";
+        }
+      }
+    }
+  }
+
   // Check if dates qualify for weekday discount (Monday-Thursday same week)
   const isWeekday = isWeekdayRental(pickupDate, dropoffDate);
   console.log('Weekday rental check:', {
