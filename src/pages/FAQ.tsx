@@ -164,10 +164,10 @@ const faqData = [
     ),
   },
   {
-    question: "How do I pay, and is there a bond or deposit?",
+    question: "How do I pay, and is there a bond?",
     answer: (
       <>
-        We accept debit/credit cards and cash. A bond may apply depending on your licence type and payment method, refundable on vehicle return.
+        We accept debit and credit cards. A bond may apply depending on your licence type and payment method, refundable on vehicle return.
       </>
     ),
   },
@@ -247,7 +247,7 @@ const faqData = [
     question: "Can I rent a car without a credit card?",
     answer: (
       <>
-        Yes, we accept debit cards or cash, but a refundable bond applies. Speak with our team to confirm details based on your rental.
+        Yes, we accept debit cards, but a refundable bond applies. Speak with our team to confirm details based on your rental.
       </>
     ),
   },

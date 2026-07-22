@@ -284,7 +284,7 @@ const MovingTruckHire = () => {
           <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             {[
               { n: "1", title: "Get a quote", body: "Enter your pickup branch and dates above for an instant price." },
-              { n: "2", title: "Reserve online", body: "Add insurance and any extras, then pay a small deposit to lock it in." },
+              { n: "2", title: "Reserve online", body: "Add insurance and any extras, then pay online to lock in your booking." },
               { n: "3", title: "Pick up & move", body: "Show your licence at the branch, we hand over the keys — usually in under 10 minutes." },
             ].map((s) => (
               <div key={s.n} className="text-center">
