@@ -20,11 +20,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import PageSEO from '@/components/PageSEO';
 import TrustGuaranteeBanner from '@/components/booking/TrustGuaranteeBanner';
 
-const DEPOSIT_AMOUNT = 50;
-
 const PaymentOptions = () => {
   const navigate = useNavigate();
-  const [paymentType, setPaymentType] = useState<"deposit" | "full">("full");
+  const [paymentType] = useState<"full">("full");
   const [bookingDetails, setBookingDetails] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [totalAmount, setTotalAmount] = useState(0);
@@ -497,7 +495,7 @@ const PaymentOptions = () => {
     setIsLoading(true);
     
     try {
-      const amountToPay = paymentType === "deposit" ? DEPOSIT_AMOUNT : totalCost;
+      const amountToPay = totalCost;
       
       updateBookingData({
         paymentAmount: amountToPay,
@@ -590,8 +588,8 @@ const PaymentOptions = () => {
             }
             totalCost={totalCost}
             bookingInfoTotalCost={bookingInfoTotalCost}
-            payment={paymentType === "deposit" ? DEPOSIT_AMOUNT : totalCost}
-            balanceDue={paymentType === "deposit" ? totalCost - DEPOSIT_AMOUNT : 0}
+            payment={totalCost}
+            balanceDue={0}
           />
           
           {/* Complete your booking section */}
@@ -644,31 +642,13 @@ const PaymentOptions = () => {
           </Card>
           
           <div className="mb-6">
-            <RadioGroup 
-              value={paymentType} 
-              onValueChange={(value) => setPaymentType(value as "deposit" | "full")}
-              className="space-y-3"
-            >
-              <div className="flex items-center space-x-2 border p-3 rounded-md">
-                <RadioGroupItem value="full" id="payment-full" />
-                <Label htmlFor="payment-full" className="flex-grow cursor-pointer">
-                  <div className="font-medium">Pay in Full</div>
-                  <div className="text-sm text-gray-600">Pay {formatCurrency(totalCost)} now</div>
-                </Label>
-                <div className="font-bold">{formatCurrency(totalCost)}</div>
-              </div>
-              
-              <div className="flex items-center space-x-2 border p-3 rounded-md">
-                <RadioGroupItem value="deposit" id="payment-deposit" />
-                <Label htmlFor="payment-deposit" className="flex-grow cursor-pointer">
-                  <div className="font-medium">Pay Deposit</div>
-                  <div className="text-sm text-gray-600">
-                    Pay {formatCurrency(DEPOSIT_AMOUNT)} now, {formatCurrency(totalCost - DEPOSIT_AMOUNT)} at pickup
-                  </div>
-                </Label>
-                <div className="font-bold">{formatCurrency(DEPOSIT_AMOUNT)}</div>
-              </div>
-            </RadioGroup>
+            <div className="flex items-center space-x-2 border p-3 rounded-md bg-gray-50">
+              <Label className="flex-grow">
+                <div className="font-medium">Pay in Full</div>
+                <div className="text-sm text-gray-600">Pay {formatCurrency(totalCost)} now</div>
+              </Label>
+              <div className="font-bold">{formatCurrency(totalCost)}</div>
+            </div>
           </div>
           
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -682,7 +662,7 @@ const PaymentOptions = () => {
                   <span className="animate-spin mr-2">◌</span> Processing...
                 </>
               ) : (
-                `Proceed to Pay ${paymentType === "deposit" ? formatCurrency(DEPOSIT_AMOUNT) : formatCurrency(totalCost)}`
+                `Proceed to Pay ${formatCurrency(totalCost)}`
               )}
             </Button>
             
