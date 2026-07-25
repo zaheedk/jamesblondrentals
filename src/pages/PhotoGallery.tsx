@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Loader2, Search, ImageIcon, ChevronLeft, ChevronRight, LogOut, RotateCw } from "lucide-react";
 
-type PhotoItem = { url: string; name: string; folder: string };
+type PhotoItem = { url: string; thumbUrl?: string; name: string; folder: string };
 type BatchGroup = {
   reservationNo: string;
   rego: string;
@@ -20,8 +20,18 @@ type BatchGroup = {
   photos: PhotoItem[];
   isHydrated?: boolean;
 };
+type IndexedBatchRow = {
+  reservation_no: string;
+  rego: string;
+  batch_id: string;
+  batch_label: string;
+  sort_key: number | string | null;
+  photo_count?: number | null;
+};
 
 const BATCH_PAGE_SIZE = 5;
+
+const normalizeSearchTerm = (value: string) => value.replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
 
 const formatBatchDate = (batchId: string): string => {
   const match = batchId.match(/batch-(\d+)/);
@@ -58,8 +68,19 @@ const PhotoGallery = () => {
   const [visibleCount, setVisibleCount] = useState(BATCH_PAGE_SIZE);
   const [initialLoading, setInitialLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [loadingMoreSearch, setLoadingMoreSearch] = useState(false);
   const [scanComplete, setScanComplete] = useState(false);
+  const [activeSearchTerm, setActiveSearchTerm] = useState("");
+  const [hasMoreSearchBatches, setHasMoreSearchBatches] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
+
+  const getPhotoUrls = (path: string) => {
+    const { data: urlData } = supabase.storage.from("vehicle-photos").getPublicUrl(path);
+    const { data: thumbData } = supabase.storage.from("vehicle-photos").getPublicUrl(path, {
+      transform: { width: 320, height: 320, resize: "cover", quality: 60 },
+    });
+    return { url: urlData.publicUrl, thumbUrl: thumbData.publicUrl };
+  };
 
   const collectFiles = async (folder: string): Promise<PhotoItem[]> => {
     try {
@@ -73,8 +94,7 @@ const PhotoGallery = () => {
       for (const file of files) {
         if (file.id) {
           const path = `${folder}/${file.name}`;
-          const { data: urlData } = supabase.storage.from("vehicle-photos").getPublicUrl(path);
-          results.push({ url: urlData.publicUrl, name: file.name, folder });
+          results.push({ ...getPhotoUrls(path), name: file.name, folder });
         }
       }
 
@@ -98,6 +118,37 @@ const PhotoGallery = () => {
     const loadedMap = new Map(loaded.map((batch) => [getBatchKey(batch), batch]));
     return existing.map((batch) => loadedMap.get(getBatchKey(batch)) ?? batch);
   };
+
+  const mapIndexedBatch = (row: IndexedBatchRow): BatchGroup => ({
+    reservationNo: row.reservation_no,
+    rego: row.rego,
+    batchId: row.batch_id,
+    batchLabel: row.batch_label,
+    sortKey: Number(row.sort_key ?? 0),
+    photos: [],
+    isHydrated: false,
+  });
+
+  const fetchIndexedBatches = useCallback(async (rawTerm: string, offset = 0) => {
+    const normalizedTerm = normalizeSearchTerm(rawTerm);
+    if (!normalizedTerm) return { batches: [] as BatchGroup[], hasMore: false };
+
+    const pattern = `%${normalizedTerm}%`;
+    const { data, error } = await supabase
+      .from("photo_batches")
+      .select("reservation_no, rego, batch_id, batch_label, sort_key, photo_count")
+      .or(`reservation_search.ilike.${pattern},rego_search.ilike.${pattern}`)
+      .order("sort_key", { ascending: false })
+      .range(offset, offset + BATCH_PAGE_SIZE);
+
+    if (error) throw error;
+
+    const rows = (data ?? []) as IndexedBatchRow[];
+    return {
+      batches: rows.slice(0, BATCH_PAGE_SIZE).map(mapIndexedBatch),
+      hasMore: rows.length > BATCH_PAGE_SIZE,
+    };
+  }, []);
 
   // Scan all folders to discover batches on mount
   const runStorageScan = useCallback(async (): Promise<BatchGroup[]> => {
@@ -378,6 +429,23 @@ const PhotoGallery = () => {
   // No auto-load: the gallery stays empty until the user searches by
   // reservation number or rego. This avoids the up-front bucket scan.
 
+  const loadMoreSearchBatches = useCallback(async () => {
+    if (!activeSearchTerm || loadingMoreSearch || !hasMoreSearchBatches) return;
+
+    setLoadingMoreSearch(true);
+    try {
+      const nextPage = await fetchIndexedBatches(activeSearchTerm, allBatches.length);
+      setAllBatches((prev) => [...prev, ...nextPage.batches]);
+      setVisibleCount((prev) => prev + nextPage.batches.length);
+      setHasMoreSearchBatches(nextPage.hasMore);
+    } catch (err) {
+      console.error("Failed to load more photo batches:", err);
+      setHasMoreSearchBatches(false);
+    } finally {
+      setLoadingMoreSearch(false);
+    }
+  }, [activeSearchTerm, allBatches.length, fetchIndexedBatches, hasMoreSearchBatches, loadingMoreSearch]);
+
   // Infinite scroll observer
   useEffect(() => {
     if (searchMode !== "recent") return;
@@ -386,7 +454,14 @@ const PhotoGallery = () => {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && !initialLoading && !loadingMore && visibleCount < allBatches.length) {
+        if (!entries[0].isIntersecting || initialLoading || loadingMore || loadingMoreSearch) return;
+
+        if (searched && hasMoreSearchBatches) {
+          void loadMoreSearchBatches();
+          return;
+        }
+
+        if (visibleCount < allBatches.length) {
           setLoadingMore(true);
           setVisibleCount(prev => Math.min(prev + BATCH_PAGE_SIZE, allBatches.length));
         }
@@ -395,7 +470,7 @@ const PhotoGallery = () => {
     );
     observer.observe(sentinel);
     return () => observer.disconnect();
-  }, [searchMode, visibleCount, allBatches.length, initialLoading, loadingMore]);
+  }, [searchMode, searched, visibleCount, allBatches.length, initialLoading, loadingMore, loadingMoreSearch, hasMoreSearchBatches, loadMoreSearchBatches]);
 
   // Load photos for newly visible batches
   useEffect(() => {
@@ -440,11 +515,11 @@ const PhotoGallery = () => {
     };
   }, [allBatches, visibleCount, searchMode, initialLoading]);
 
-  const normalize = (s: string) => s.replace(/[\s\-_]/g, "").toUpperCase();
+  const normalize = normalizeSearchTerm;
 
   const searchPhotos = async () => {
     const rawTerm = searchTerm.trim();
-    const term = rawTerm.replace(/[\s\-]/g, "").toUpperCase();
+    const term = normalizeSearchTerm(rawTerm);
     if (!term) {
       handleClearSearch();
       return;
@@ -457,163 +532,31 @@ const PhotoGallery = () => {
     setAllBatches([]);
     setVisibleCount(BATCH_PAGE_SIZE);
     setScanComplete(false);
+    setActiveSearchTerm("");
+    setHasMoreSearchBatches(false);
 
-    // Fast path: use the photo_batches index. Match reservation_no or rego
-    // (case-insensitive, ignoring spaces/hyphens in the stored values via a
-    // pattern on the raw text — the index stores the same normalized folder
-    // names used in storage).
+    // Fast path: use the pre-built photo_batches index. Fetch only the first
+    // 5 batch records, then load the next 5 on scroll instead of scanning the
+    // whole storage bucket.
     try {
-      const pattern = `%${rawTerm.replace(/[\s\-]/g, "")}%`;
-      const { data: indexed, error: indexErr } = await supabase
-        .from("photo_batches")
-        .select("reservation_no, rego, batch_id, batch_label, sort_key")
-        .or(`reservation_no.ilike.${pattern},rego.ilike.${pattern}`)
-        .order("sort_key", { ascending: false })
-        .limit(500);
-
-      if (!indexErr && indexed && indexed.length > 0) {
-        const fromIndex: BatchGroup[] = indexed.map((r) => ({
-          reservationNo: r.reservation_no,
-          rego: r.rego,
-          batchId: r.batch_id,
-          batchLabel: r.batch_label,
-          sortKey: Number(r.sort_key),
-          photos: [],
-          isHydrated: false,
-        }));
-        setAllBatches(fromIndex);
+      const firstPage = await fetchIndexedBatches(rawTerm, 0);
+      if (firstPage.batches.length > 0) {
+        setAllBatches(firstPage.batches);
+        setActiveSearchTerm(rawTerm);
+        setHasMoreSearchBatches(firstPage.hasMore);
         setSearchMode("recent"); // reuse the batch-feed rendering + infinite scroll
-        setVisibleCount(BATCH_PAGE_SIZE);
+        setVisibleCount(firstPage.batches.length);
         setScanComplete(true);
         setLoading(false);
         return;
       }
     } catch (err) {
-      console.warn("Photo index lookup failed, falling back to storage scan:", err);
+      console.warn("Photo index lookup failed:", err);
     }
 
-    try {
-      const { data: topLevel } = await supabase.storage.from("vehicle-photos").list("", { limit: 1000 });
-      if (!topLevel) { setLoading(false); return; }
-
-      const directMatch = topLevel.find(item => !item.id && normalize(item.name).includes(term));
-
-      if (directMatch) {
-        setSearchMode("reservation");
-        const allPhotos: PhotoItem[] = [];
-        const { data: subItems } = await supabase.storage.from("vehicle-photos").list(directMatch.name, { limit: 200 });
-        if (subItems) {
-          for (const sub of subItems) {
-            if (sub.id) {
-              const path = `${directMatch.name}/${sub.name}`;
-              const { data: urlData } = supabase.storage.from("vehicle-photos").getPublicUrl(path);
-              allPhotos.push({ url: urlData.publicUrl, name: sub.name, folder: directMatch.name });
-            } else {
-              const regoPath = `${directMatch.name}/${sub.name}`;
-              const { data: regoItems } = await supabase.storage.from("vehicle-photos").list(regoPath, { limit: 200 });
-              if (regoItems) {
-                for (const ri of regoItems) {
-                  if (ri.id) {
-                    const path = `${regoPath}/${ri.name}`;
-                    const { data: urlData } = supabase.storage.from("vehicle-photos").getPublicUrl(path);
-                    allPhotos.push({ url: urlData.publicUrl, name: ri.name, folder: regoPath });
-                  } else {
-                    const batchPhotos = await collectFiles(`${regoPath}/${ri.name}`);
-                    allPhotos.push(...batchPhotos);
-                  }
-                }
-              }
-            }
-          }
-        }
-        setFlatPhotos(allPhotos);
-      } else {
-        setSearchMode("rego");
-        const perReservation = await Promise.all(
-          topLevel
-            .filter((r) => !r.id)
-            .map(async (resFolder): Promise<BatchGroup[]> => {
-              const { data: subItems } = await supabase.storage
-                .from("vehicle-photos")
-                .list(resFolder.name, { limit: 100 });
-              if (!subItems) return [];
-
-              const matches = subItems.filter(
-                (sub) => !sub.id && normalize(sub.name).includes(term)
-              );
-
-              const nested = await Promise.all(
-                matches.map(async (sub): Promise<BatchGroup[]> => {
-                  const regoPath = `${resFolder.name}/${sub.name}`;
-                  const { data: batchFolders } = await supabase.storage
-                    .from("vehicle-photos")
-                    .list(regoPath, { limit: 100 });
-                  if (!batchFolders) return [];
-
-                  const legacyPhotos: PhotoItem[] = [];
-                  const folderBatches = batchFolders.filter((bf) => !bf.id);
-                  const legacyFiles = batchFolders.filter((bf) => bf.id);
-
-                  for (const bf of legacyFiles) {
-                    const path = `${regoPath}/${bf.name}`;
-                    const { data: urlData } = supabase.storage
-                      .from("vehicle-photos")
-                      .getPublicUrl(path);
-                    legacyPhotos.push({
-                      url: urlData.publicUrl,
-                      name: bf.name,
-                      folder: regoPath,
-                    });
-                  }
-
-                  const hydrated = await Promise.all(
-                    folderBatches.map(async (bf) => {
-                      const batchPhotos = await collectFiles(
-                        `${regoPath}/${bf.name}`
-                      );
-                      if (batchPhotos.length === 0) return null;
-                      return {
-                        reservationNo: resFolder.name,
-                        rego: sub.name,
-                        batchId: bf.name,
-                        batchLabel: formatBatchDate(bf.name),
-                        sortKey: getBatchSortKey(bf.name),
-                        photos: batchPhotos,
-                        isHydrated: true,
-                      } as BatchGroup;
-                    })
-                  );
-
-                  const out: BatchGroup[] = hydrated.filter(
-                    (b): b is BatchGroup => b !== null
-                  );
-                  if (legacyPhotos.length > 0) {
-                    out.push({
-                      reservationNo: resFolder.name,
-                      rego: sub.name,
-                      batchId: "legacy",
-                      batchLabel: "Earlier uploads",
-                      sortKey: 0,
-                      photos: legacyPhotos,
-                      isHydrated: true,
-                    });
-                  }
-                  return out;
-                })
-              );
-              return nested.flat();
-            })
-        );
-
-        const batchGroups = perReservation.flat();
-        batchGroups.sort((a, b) => b.sortKey - a.sortKey);
-        setBatches(batchGroups);
-      }
-    } catch (err) {
-      console.error("Search error:", err);
-    } finally {
-      setLoading(false);
-    }
+    setSearchMode("recent");
+    setScanComplete(true);
+    setLoading(false);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -627,6 +570,9 @@ const PhotoGallery = () => {
     setSearched(false);
     setBatches([]);
     setFlatPhotos([]);
+    setAllBatches([]);
+    setActiveSearchTerm("");
+    setHasMoreSearchBatches(false);
   };
 
   // Determine which batches to show
@@ -767,7 +713,7 @@ const PhotoGallery = () => {
         {!loading && !initialLoading && (searchMode === "rego" || searchMode === "recent") && displayBatches.length > 0 && (
           <>
             <p className="text-sm text-muted-foreground mb-4">
-              {allBatches.length} batch(es) found — showing {Math.min(visibleCount, allBatches.length)}
+                {allBatches.length}{hasMoreSearchBatches ? "+" : ""} batch(es) found — showing {Math.min(visibleCount, allBatches.length)}
             </p>
             <div className="space-y-6">
               {displayBatches.map((batch, bi) => (
@@ -802,7 +748,7 @@ const PhotoGallery = () => {
                             className="relative aspect-square rounded-lg overflow-hidden cursor-pointer border border-border hover:ring-2 hover:ring-primary transition-all"
                             onClick={() => openLightbox(photo, batch.photos)}
                           >
-                            <img src={photo.url} alt={photo.name} className="w-full h-full object-cover" loading="lazy" />
+                            <img src={photo.thumbUrl ?? photo.url} alt={photo.name} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                           </div>
                         ))}
                       </div>
@@ -813,9 +759,9 @@ const PhotoGallery = () => {
             </div>
 
             {/* Infinite scroll sentinel */}
-            {searchMode === "recent" && visibleCount < allBatches.length && (
+            {searchMode === "recent" && (visibleCount < allBatches.length || hasMoreSearchBatches) && (
               <div ref={sentinelRef} className="flex items-center justify-center py-8">
-                {loadingMore ? (
+                {loadingMore || loadingMoreSearch ? (
                   <>
                     <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
                     <span className="ml-2 text-sm text-muted-foreground">Loading more...</span>
