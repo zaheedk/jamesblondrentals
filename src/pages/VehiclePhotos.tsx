@@ -212,6 +212,9 @@ const VehiclePhotos = () => {
       }
 
       setUploadedPhotos(prev => [...prev, ...uploaded]);
+      if (uploaded.length > 0) {
+        void upsertPhotoBatch({ reservationNo: ref, rego, batchId });
+      }
       pendingPhotos.forEach(p => URL.revokeObjectURL(p.previewUrl));
       setPendingPhotos([]);
 
