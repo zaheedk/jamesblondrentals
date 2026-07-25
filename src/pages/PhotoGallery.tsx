@@ -443,14 +443,10 @@ const PhotoGallery = () => {
   const normalize = (s: string) => s.replace(/[\s\-_]/g, "").toUpperCase();
 
   const searchPhotos = async () => {
-    const term = searchTerm.trim().replace(/[\s\-]/g, "").toUpperCase();
+    const rawTerm = searchTerm.trim();
+    const term = rawTerm.replace(/[\s\-]/g, "").toUpperCase();
     if (!term) {
-      // Clear search, go back to recent feed
-      setSearchMode("recent");
-      setVisibleCount(BATCH_PAGE_SIZE);
-      setSearched(false);
-      setBatches([]);
-      setFlatPhotos([]);
+      handleClearSearch();
       return;
     }
 
@@ -458,6 +454,43 @@ const PhotoGallery = () => {
     setSearched(true);
     setBatches([]);
     setFlatPhotos([]);
+    setAllBatches([]);
+    setVisibleCount(BATCH_PAGE_SIZE);
+    setScanComplete(false);
+
+    // Fast path: use the photo_batches index. Match reservation_no or rego
+    // (case-insensitive, ignoring spaces/hyphens in the stored values via a
+    // pattern on the raw text — the index stores the same normalized folder
+    // names used in storage).
+    try {
+      const pattern = `%${rawTerm.replace(/[\s\-]/g, "")}%`;
+      const { data: indexed, error: indexErr } = await supabase
+        .from("photo_batches")
+        .select("reservation_no, rego, batch_id, batch_label, sort_key")
+        .or(`reservation_no.ilike.${pattern},rego.ilike.${pattern}`)
+        .order("sort_key", { ascending: false })
+        .limit(500);
+
+      if (!indexErr && indexed && indexed.length > 0) {
+        const fromIndex: BatchGroup[] = indexed.map((r) => ({
+          reservationNo: r.reservation_no,
+          rego: r.rego,
+          batchId: r.batch_id,
+          batchLabel: r.batch_label,
+          sortKey: Number(r.sort_key),
+          photos: [],
+          isHydrated: false,
+        }));
+        setAllBatches(fromIndex);
+        setSearchMode("recent"); // reuse the batch-feed rendering + infinite scroll
+        setVisibleCount(BATCH_PAGE_SIZE);
+        setScanComplete(true);
+        setLoading(false);
+        return;
+      }
+    } catch (err) {
+      console.warn("Photo index lookup failed, falling back to storage scan:", err);
+    }
 
     try {
       const { data: topLevel } = await supabase.storage.from("vehicle-photos").list("", { limit: 1000 });
