@@ -375,9 +375,8 @@ const PhotoGallery = () => {
     }
   }, [runStorageScan, persistBatchIndex]);
 
-  useEffect(() => {
-    scanAllBatches();
-  }, [scanAllBatches]);
+  // No auto-load: the gallery stays empty until the user searches by
+  // reservation number or rego. This avoids the up-front bucket scan.
 
   // Infinite scroll observer
   useEffect(() => {
