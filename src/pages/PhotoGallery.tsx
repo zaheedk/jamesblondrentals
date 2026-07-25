@@ -829,10 +829,11 @@ const PhotoGallery = () => {
           </>
         )}
 
-        {!loading && !initialLoading && searchMode === "recent" && allBatches.length === 0 && scanComplete && (
+        {!loading && !searched && (
           <div className="text-center py-20 text-muted-foreground">
-            <ImageIcon className="h-12 w-12 mx-auto mb-3 opacity-50" />
-            <p>No photo batches found. Upload photos from the Vehicle Photos page.</p>
+            <Search className="h-12 w-12 mx-auto mb-3 opacity-50" />
+            <p className="text-base">Enter a reservation number or rego to view photos.</p>
+            <p className="text-sm mt-2">Nothing loads until you search — results appear 5 batches at a time.</p>
           </div>
         )}
 
