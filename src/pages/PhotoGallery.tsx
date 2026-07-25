@@ -106,54 +106,35 @@ const PhotoGallery = () => {
       const { data: topLevel } = await supabase.storage.from("vehicle-photos").list("", { limit: 1000 });
       if (!topLevel) { setInitialLoading(false); setScanComplete(true); return; }
 
-      const discovered: BatchGroup[] = [];
+      // Process every reservation folder in parallel (was sequential → primary
+      // cause of slow load: hundreds of round-trips fired one at a time).
+      const perReservation = await Promise.all(
+        topLevel
+          .filter((r) => !r.id) // folders only
+          .map(async (resFolder): Promise<BatchGroup[]> => {
+            const { data: subItems } = await supabase.storage
+              .from("vehicle-photos")
+              .list(resFolder.name, { limit: 200 });
+            if (!subItems) return [];
 
-      for (const resFolder of topLevel) {
-        if (resFolder.id) continue; // skip files
-        const { data: subItems } = await supabase.storage.from("vehicle-photos").list(resFolder.name, { limit: 200 });
-        if (!subItems) continue;
+            const batches: BatchGroup[] = [];
+            const hasDirectFiles = subItems.some((item) => item.id);
 
-        // Check if this folder has files directly (legacy flat structure)
-        const hasDirectFiles = subItems.some(item => item.id);
-        const hasSubFolders = subItems.some(item => !item.id);
-
-        if (hasDirectFiles) {
-          // Legacy flat upload: files directly in {reservationNo}/
-          const oldestFile = subItems.filter(f => f.id).sort((a, b) => 
-            new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime()
-          )[0];
-          const sortKey = oldestFile?.created_at ? new Date(oldestFile.created_at).getTime() : 0;
-          discovered.push({
-            reservationNo: resFolder.name,
-            rego: "",
-            batchId: "legacy-flat",
-            batchLabel: "Earlier uploads",
-            sortKey,
-            photos: [],
-            isHydrated: false,
-          });
-        }
-
-        if (hasSubFolders) {
-          for (const sub of subItems) {
-            if (sub.id) continue; // skip files at this level
-            const regoPath = `${resFolder.name}/${sub.name}`;
-            const { data: regoItems } = await supabase.storage.from("vehicle-photos").list(regoPath, { limit: 200 });
-            if (!regoItems) continue;
-
-            // Check if rego folder has direct files (legacy with rego but no batch)
-            const regoHasFiles = regoItems.some(item => item.id);
-            const regoHasBatches = regoItems.some(item => !item.id && item.name.startsWith("batch-"));
-
-            if (regoHasFiles) {
-              const oldestFile = regoItems.filter(f => f.id).sort((a, b) =>
-                new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime()
-              )[0];
-              const sortKey = oldestFile?.created_at ? new Date(oldestFile.created_at).getTime() : 0;
-              discovered.push({
+            if (hasDirectFiles) {
+              const oldestFile = subItems
+                .filter((f) => f.id)
+                .sort(
+                  (a, b) =>
+                    new Date(a.created_at || 0).getTime() -
+                    new Date(b.created_at || 0).getTime()
+                )[0];
+              const sortKey = oldestFile?.created_at
+                ? new Date(oldestFile.created_at).getTime()
+                : 0;
+              batches.push({
                 reservationNo: resFolder.name,
-                rego: sub.name,
-                batchId: "legacy-rego",
+                rego: "",
+                batchId: "legacy-flat",
                 batchLabel: "Earlier uploads",
                 sortKey,
                 photos: [],
@@ -161,25 +142,62 @@ const PhotoGallery = () => {
               });
             }
 
-            if (regoHasBatches) {
-              for (const bf of regoItems) {
-                if (bf.id) continue;
-                if (bf.name.startsWith("batch-")) {
-                  discovered.push({
-                    reservationNo: resFolder.name,
-                    rego: sub.name,
-                    batchId: bf.name,
-                    batchLabel: formatBatchDate(bf.name),
-                    sortKey: getBatchSortKey(bf.name),
-                    photos: [],
-                    isHydrated: false,
-                  });
-                }
-              }
-            }
-          }
-        }
-      }
+            // Parallelize the rego-folder walk within this reservation
+            const regoResults = await Promise.all(
+              subItems
+                .filter((s) => !s.id)
+                .map(async (sub): Promise<BatchGroup[]> => {
+                  const regoPath = `${resFolder.name}/${sub.name}`;
+                  const { data: regoItems } = await supabase.storage
+                    .from("vehicle-photos")
+                    .list(regoPath, { limit: 200 });
+                  if (!regoItems) return [];
+
+                  const out: BatchGroup[] = [];
+                  const regoHasFiles = regoItems.some((item) => item.id);
+
+                  if (regoHasFiles) {
+                    const oldestFile = regoItems
+                      .filter((f) => f.id)
+                      .sort(
+                        (a, b) =>
+                          new Date(a.created_at || 0).getTime() -
+                          new Date(b.created_at || 0).getTime()
+                      )[0];
+                    const sortKey = oldestFile?.created_at
+                      ? new Date(oldestFile.created_at).getTime()
+                      : 0;
+                    out.push({
+                      reservationNo: resFolder.name,
+                      rego: sub.name,
+                      batchId: "legacy-rego",
+                      batchLabel: "Earlier uploads",
+                      sortKey,
+                      photos: [],
+                      isHydrated: false,
+                    });
+                  }
+
+                  for (const bf of regoItems) {
+                    if (bf.id) continue;
+                    if (!bf.name.startsWith("batch-")) continue;
+                    out.push({
+                      reservationNo: resFolder.name,
+                      rego: sub.name,
+                      batchId: bf.name,
+                      batchLabel: formatBatchDate(bf.name),
+                      sortKey: getBatchSortKey(bf.name),
+                      photos: [],
+                      isHydrated: false,
+                    });
+                  }
+                  return out;
+                })
+            );
+            return batches.concat(...regoResults);
+          })
+      );
+      const discovered: BatchGroup[] = perReservation.flat();
 
       // Sort newest first
       discovered.sort((a, b) => b.sortKey - a.sortKey);
