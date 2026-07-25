@@ -56,7 +56,7 @@ const PhotoGallery = () => {
   // All discovered batches (for recent feed & infinite scroll)
   const [allBatches, setAllBatches] = useState<BatchGroup[]>([]);
   const [visibleCount, setVisibleCount] = useState(BATCH_PAGE_SIZE);
-  const [initialLoading, setInitialLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [scanComplete, setScanComplete] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
