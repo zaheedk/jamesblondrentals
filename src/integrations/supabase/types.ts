@@ -592,7 +592,9 @@ export type Database = {
           id: string
           photo_count: number
           rego: string
+          rego_search: string | null
           reservation_no: string
+          reservation_search: string | null
           sort_key: number
           updated_at: string
         }
@@ -603,7 +605,9 @@ export type Database = {
           id?: string
           photo_count?: number
           rego?: string
+          rego_search?: string | null
           reservation_no: string
+          reservation_search?: string | null
           sort_key: number
           updated_at?: string
         }
@@ -614,7 +618,9 @@ export type Database = {
           id?: string
           photo_count?: number
           rego?: string
+          rego_search?: string | null
           reservation_no?: string
+          reservation_search?: string | null
           sort_key?: number
           updated_at?: string
         }
@@ -718,6 +724,8 @@ export type Database = {
         Returns: boolean
       }
       is_admin_user: { Args: never; Returns: boolean }
+      show_limit: { Args: never; Returns: number }
+      show_trgm: { Args: { "": string }; Returns: string[] }
       update_booking_payment_status_by_reference: {
         Args: {
           _booking_reference?: string
