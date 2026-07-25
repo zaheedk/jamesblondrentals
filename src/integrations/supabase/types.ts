@@ -584,6 +584,42 @@ export type Database = {
         }
         Relationships: []
       }
+      photo_batches: {
+        Row: {
+          batch_id: string
+          batch_label: string
+          created_at: string
+          id: string
+          photo_count: number
+          rego: string
+          reservation_no: string
+          sort_key: number
+          updated_at: string
+        }
+        Insert: {
+          batch_id: string
+          batch_label: string
+          created_at?: string
+          id?: string
+          photo_count?: number
+          rego?: string
+          reservation_no: string
+          sort_key: number
+          updated_at?: string
+        }
+        Update: {
+          batch_id?: string
+          batch_label?: string
+          created_at?: string
+          id?: string
+          photo_count?: number
+          rego?: string
+          reservation_no?: string
+          sort_key?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null

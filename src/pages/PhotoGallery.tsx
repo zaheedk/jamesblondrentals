@@ -103,6 +103,32 @@ const PhotoGallery = () => {
   const scanAllBatches = useCallback(async () => {
     setInitialLoading(true);
     try {
+      // Fast path: read the pre-built index. If populated, we skip the
+      // expensive bucket walk entirely (one SQL query vs hundreds of Storage
+      // list calls). If it's empty (first run, before backfill), fall through
+      // to the parallel storage scan and populate the index on the way out.
+      const { data: indexed, error: indexErr } = await supabase
+        .from("photo_batches")
+        .select("reservation_no, rego, batch_id, batch_label, sort_key")
+        .order("sort_key", { ascending: false })
+        .limit(1000);
+      if (!indexErr && indexed && indexed.length > 0) {
+        const fromIndex: BatchGroup[] = indexed.map((r) => ({
+          reservationNo: r.reservation_no,
+          rego: r.rego,
+          batchId: r.batch_id,
+          batchLabel: r.batch_label,
+          sortKey: Number(r.sort_key),
+          photos: [],
+          isHydrated: false,
+        }));
+        setAllBatches(fromIndex);
+        setVisibleCount(BATCH_PAGE_SIZE);
+        setScanComplete(true);
+        setInitialLoading(false);
+        return;
+      }
+
       const { data: topLevel } = await supabase.storage.from("vehicle-photos").list("", { limit: 1000 });
       if (!topLevel) { setInitialLoading(false); setScanComplete(true); return; }
 
@@ -204,6 +230,26 @@ const PhotoGallery = () => {
       setAllBatches(discovered);
       setVisibleCount(BATCH_PAGE_SIZE);
       setScanComplete(true);
+
+      // Populate the index for next visit — fire-and-forget.
+      if (discovered.length > 0) {
+        const rows = discovered.map((b) => ({
+          reservation_no: b.reservationNo,
+          rego: b.rego,
+          batch_id: b.batchId,
+          batch_label: b.batchLabel,
+          sort_key: b.sortKey,
+        }));
+        // Upsert in chunks so we don't hit request size limits.
+        const CHUNK = 500;
+        for (let i = 0; i < rows.length; i += CHUNK) {
+          void supabase
+            .from("photo_batches")
+            .upsert(rows.slice(i, i + CHUNK), {
+              onConflict: "reservation_no,rego,batch_id",
+            });
+        }
+      }
     } catch (err) {
       console.error("Scan error:", err);
     } finally {
