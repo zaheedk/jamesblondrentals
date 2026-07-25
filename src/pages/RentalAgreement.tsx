@@ -929,6 +929,17 @@ const RentalAgreement = () => {
         }
       }
       setVehiclePhotos(prev => [...prev, ...uploaded]);
+      if (uploaded.length > 0) {
+        // Rental Agreement uploads use the flat rego folder (no batch-*),
+        // so index them as the "legacy-rego" pseudo-batch the gallery uses.
+        void upsertPhotoBatch({
+          reservationNo: reservationRef.trim(),
+          rego,
+          batchId: "legacy-rego",
+          batchLabel: "Earlier uploads",
+          sortKey: Date.now(),
+        });
+      }
       // Revoke object URLs
       pendingPhotos.forEach(p => URL.revokeObjectURL(p.previewUrl));
       setPendingPhotos([]);
