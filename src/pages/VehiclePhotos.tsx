@@ -15,6 +15,7 @@ import { Camera, Upload, X, Loader2, ImageIcon, RefreshCw, WifiOff, AlertTriangl
 import VehicleCamera from "@/components/VehicleCamera";
 import { addTimestampToPhoto, normalizeImageFile } from "@/lib/vehicle-photo-utils";
 import { uploadVehiclePhoto } from "@/lib/upload-vehicle-photo";
+import { upsertPhotoBatch } from "@/lib/photo-batch-index";
 import {
   savePhotoOffline,
   getPendingPhotos,
@@ -211,6 +212,9 @@ const VehiclePhotos = () => {
       }
 
       setUploadedPhotos(prev => [...prev, ...uploaded]);
+      if (uploaded.length > 0) {
+        void upsertPhotoBatch({ reservationNo: ref, rego, batchId });
+      }
       pendingPhotos.forEach(p => URL.revokeObjectURL(p.previewUrl));
       setPendingPhotos([]);
 
@@ -295,6 +299,11 @@ const VehiclePhotos = () => {
               const { publicUrl } = await uploadVehiclePhoto(filePath, stampedFile);
               await removePhoto(photo.id);
               setUploadedPhotos(prev => [...prev, { url: publicUrl, name: photo.fileName }]);
+              void upsertPhotoBatch({
+                reservationNo: photo.reservationRef,
+                rego: photo.vehicleRego || "no-rego",
+                batchId,
+              });
               return { ok: true };
             } catch (error) {
               const message = error instanceof Error ? error.message : String(error);

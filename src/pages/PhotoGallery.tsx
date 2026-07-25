@@ -100,13 +100,128 @@ const PhotoGallery = () => {
   };
 
   // Scan all folders to discover batches on mount
+  const runStorageScan = useCallback(async (): Promise<BatchGroup[]> => {
+    const { data: topLevel } = await supabase.storage.from("vehicle-photos").list("", { limit: 1000 });
+    if (!topLevel) return [];
+    const perReservation = await Promise.all(
+      topLevel
+        .filter((r) => !r.id) // folders only
+        .map(async (resFolder): Promise<BatchGroup[]> => {
+          const { data: subItems } = await supabase.storage
+            .from("vehicle-photos")
+            .list(resFolder.name, { limit: 200 });
+          if (!subItems) return [];
+
+          const batches: BatchGroup[] = [];
+          const hasDirectFiles = subItems.some((item) => item.id);
+
+          if (hasDirectFiles) {
+            const oldestFile = subItems
+              .filter((f) => f.id)
+              .sort(
+                (a, b) =>
+                  new Date(a.created_at || 0).getTime() -
+                  new Date(b.created_at || 0).getTime()
+              )[0];
+            const sortKey = oldestFile?.created_at
+              ? new Date(oldestFile.created_at).getTime()
+              : 0;
+            batches.push({
+              reservationNo: resFolder.name,
+              rego: "",
+              batchId: "legacy-flat",
+              batchLabel: "Earlier uploads",
+              sortKey,
+              photos: [],
+              isHydrated: false,
+            });
+          }
+
+          const regoResults = await Promise.all(
+            subItems
+              .filter((s) => !s.id)
+              .map(async (sub): Promise<BatchGroup[]> => {
+                const regoPath = `${resFolder.name}/${sub.name}`;
+                const { data: regoItems } = await supabase.storage
+                  .from("vehicle-photos")
+                  .list(regoPath, { limit: 200 });
+                if (!regoItems) return [];
+
+                const out: BatchGroup[] = [];
+                const regoHasFiles = regoItems.some((item) => item.id);
+
+                if (regoHasFiles) {
+                  const oldestFile = regoItems
+                    .filter((f) => f.id)
+                    .sort(
+                      (a, b) =>
+                        new Date(a.created_at || 0).getTime() -
+                        new Date(b.created_at || 0).getTime()
+                    )[0];
+                  const sortKey = oldestFile?.created_at
+                    ? new Date(oldestFile.created_at).getTime()
+                    : 0;
+                  out.push({
+                    reservationNo: resFolder.name,
+                    rego: sub.name,
+                    batchId: "legacy-rego",
+                    batchLabel: "Earlier uploads",
+                    sortKey,
+                    photos: [],
+                    isHydrated: false,
+                  });
+                }
+
+                for (const bf of regoItems) {
+                  if (bf.id) continue;
+                  if (!bf.name.startsWith("batch-")) continue;
+                  out.push({
+                    reservationNo: resFolder.name,
+                    rego: sub.name,
+                    batchId: bf.name,
+                    batchLabel: formatBatchDate(bf.name),
+                    sortKey: getBatchSortKey(bf.name),
+                    photos: [],
+                    isHydrated: false,
+                  });
+                }
+                return out;
+              })
+          );
+          return batches.concat(...regoResults);
+        })
+    );
+    const discovered: BatchGroup[] = perReservation.flat();
+    discovered.sort((a, b) => b.sortKey - a.sortKey);
+    return discovered;
+  }, []);
+
+  const persistBatchIndex = useCallback(async (batches: BatchGroup[]) => {
+    if (batches.length === 0) return;
+    const rows = batches.map((b) => ({
+      reservation_no: b.reservationNo,
+      rego: b.rego,
+      batch_id: b.batchId,
+      batch_label: b.batchLabel,
+      sort_key: b.sortKey,
+    }));
+    const CHUNK = 500;
+    for (let i = 0; i < rows.length; i += CHUNK) {
+      void supabase
+        .from("photo_batches")
+        .upsert(rows.slice(i, i + CHUNK), {
+          onConflict: "reservation_no,rego,batch_id",
+        });
+    }
+  }, []);
+
   const scanAllBatches = useCallback(async () => {
     setInitialLoading(true);
     try {
-      // Fast path: read the pre-built index. If populated, we skip the
-      // expensive bucket walk entirely (one SQL query vs hundreds of Storage
-      // list calls). If it's empty (first run, before backfill), fall through
-      // to the parallel storage scan and populate the index on the way out.
+      // Fast path: read the pre-built index. If populated, we render
+      // instantly, then run a background reconciliation scan so any
+      // previously-uploaded batches that aren't in the index yet still get
+      // picked up (and indexed for next time).
       const { data: indexed, error: indexErr } = await supabase
         .from("photo_batches")
         .select("reservation_no, rego, batch_id, batch_label, sort_key")
@@ -126,6 +241,30 @@ const PhotoGallery = () => {
         setVisibleCount(BATCH_PAGE_SIZE);
         setScanComplete(true);
         setInitialLoading(false);
+
+        // Background reconciliation: merge in any batches missing from the
+        // index (older uploads made before this table existed).
+        (async () => {
+          try {
+            const discovered = await runStorageScan();
+            if (discovered.length === 0) return;
+            const knownKeys = new Set(
+              fromIndex.map((b) => getBatchKey(b))
+            );
+            const missing = discovered.filter(
+              (b) => !knownKeys.has(getBatchKey(b))
+            );
+            if (missing.length === 0) return;
+            setAllBatches((prev) => {
+              const merged = [...prev, ...missing];
+              merged.sort((a, b) => b.sortKey - a.sortKey);
+              return merged;
+            });
+            void persistBatchIndex(missing);
+          } catch (err) {
+            console.warn("Background photo-batch reconcile failed:", err);
+          }
+        })();
         return;
       }
 
@@ -224,38 +363,17 @@ const PhotoGallery = () => {
           })
       );
       const discovered: BatchGroup[] = perReservation.flat();
-
-      // Sort newest first
       discovered.sort((a, b) => b.sortKey - a.sortKey);
       setAllBatches(discovered);
       setVisibleCount(BATCH_PAGE_SIZE);
       setScanComplete(true);
-
-      // Populate the index for next visit — fire-and-forget.
-      if (discovered.length > 0) {
-        const rows = discovered.map((b) => ({
-          reservation_no: b.reservationNo,
-          rego: b.rego,
-          batch_id: b.batchId,
-          batch_label: b.batchLabel,
-          sort_key: b.sortKey,
-        }));
-        // Upsert in chunks so we don't hit request size limits.
-        const CHUNK = 500;
-        for (let i = 0; i < rows.length; i += CHUNK) {
-          void supabase
-            .from("photo_batches")
-            .upsert(rows.slice(i, i + CHUNK), {
-              onConflict: "reservation_no,rego,batch_id",
-            });
-        }
-      }
+      void persistBatchIndex(discovered);
     } catch (err) {
       console.error("Scan error:", err);
     } finally {
       setInitialLoading(false);
     }
-  }, []);
+  }, [runStorageScan, persistBatchIndex]);
 
   useEffect(() => {
     scanAllBatches();
