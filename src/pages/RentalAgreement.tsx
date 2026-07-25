@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import VehicleCamera from "@/components/VehicleCamera";
 import { uploadVehiclePhoto } from "@/lib/upload-vehicle-photo";
+import { upsertPhotoBatch } from "@/lib/photo-batch-index";
 import type { RCMBookingInfoResponse } from "@/lib/api/rcm-api-types";
 import jsPDF from "jspdf";
 
