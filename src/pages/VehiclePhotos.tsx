@@ -299,6 +299,11 @@ const VehiclePhotos = () => {
               const { publicUrl } = await uploadVehiclePhoto(filePath, stampedFile);
               await removePhoto(photo.id);
               setUploadedPhotos(prev => [...prev, { url: publicUrl, name: photo.fileName }]);
+              void upsertPhotoBatch({
+                reservationNo: photo.reservationRef,
+                rego: photo.vehicleRego || "no-rego",
+                batchId,
+              });
               return { ok: true };
             } catch (error) {
               const message = error instanceof Error ? error.message : String(error);
