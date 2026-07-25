@@ -56,7 +56,7 @@ const PhotoGallery = () => {
   // All discovered batches (for recent feed & infinite scroll)
   const [allBatches, setAllBatches] = useState<BatchGroup[]>([]);
   const [visibleCount, setVisibleCount] = useState(BATCH_PAGE_SIZE);
-  const [initialLoading, setInitialLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [scanComplete, setScanComplete] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -375,9 +375,8 @@ const PhotoGallery = () => {
     }
   }, [runStorageScan, persistBatchIndex]);
 
-  useEffect(() => {
-    scanAllBatches();
-  }, [scanAllBatches]);
+  // No auto-load: the gallery stays empty until the user searches by
+  // reservation number or rego. This avoids the up-front bucket scan.
 
   // Infinite scroll observer
   useEffect(() => {
@@ -444,14 +443,10 @@ const PhotoGallery = () => {
   const normalize = (s: string) => s.replace(/[\s\-_]/g, "").toUpperCase();
 
   const searchPhotos = async () => {
-    const term = searchTerm.trim().replace(/[\s\-]/g, "").toUpperCase();
+    const rawTerm = searchTerm.trim();
+    const term = rawTerm.replace(/[\s\-]/g, "").toUpperCase();
     if (!term) {
-      // Clear search, go back to recent feed
-      setSearchMode("recent");
-      setVisibleCount(BATCH_PAGE_SIZE);
-      setSearched(false);
-      setBatches([]);
-      setFlatPhotos([]);
+      handleClearSearch();
       return;
     }
 
@@ -459,6 +454,43 @@ const PhotoGallery = () => {
     setSearched(true);
     setBatches([]);
     setFlatPhotos([]);
+    setAllBatches([]);
+    setVisibleCount(BATCH_PAGE_SIZE);
+    setScanComplete(false);
+
+    // Fast path: use the photo_batches index. Match reservation_no or rego
+    // (case-insensitive, ignoring spaces/hyphens in the stored values via a
+    // pattern on the raw text — the index stores the same normalized folder
+    // names used in storage).
+    try {
+      const pattern = `%${rawTerm.replace(/[\s\-]/g, "")}%`;
+      const { data: indexed, error: indexErr } = await supabase
+        .from("photo_batches")
+        .select("reservation_no, rego, batch_id, batch_label, sort_key")
+        .or(`reservation_no.ilike.${pattern},rego.ilike.${pattern}`)
+        .order("sort_key", { ascending: false })
+        .limit(500);
+
+      if (!indexErr && indexed && indexed.length > 0) {
+        const fromIndex: BatchGroup[] = indexed.map((r) => ({
+          reservationNo: r.reservation_no,
+          rego: r.rego,
+          batchId: r.batch_id,
+          batchLabel: r.batch_label,
+          sortKey: Number(r.sort_key),
+          photos: [],
+          isHydrated: false,
+        }));
+        setAllBatches(fromIndex);
+        setSearchMode("recent"); // reuse the batch-feed rendering + infinite scroll
+        setVisibleCount(BATCH_PAGE_SIZE);
+        setScanComplete(true);
+        setLoading(false);
+        return;
+      }
+    } catch (err) {
+      console.warn("Photo index lookup failed, falling back to storage scan:", err);
+    }
 
     try {
       const { data: topLevel } = await supabase.storage.from("vehicle-photos").list("", { limit: 1000 });
@@ -735,8 +767,7 @@ const PhotoGallery = () => {
         {!loading && !initialLoading && (searchMode === "rego" || searchMode === "recent") && displayBatches.length > 0 && (
           <>
             <p className="text-sm text-muted-foreground mb-4">
-              {searchMode === "recent" ? "Recent uploads" : `${totalCount} photo(s) in ${displayBatches.length} batch(es)`}
-              {searchMode === "recent" && scanComplete && ` — ${allBatches.length} batch(es) total`}
+              {allBatches.length} batch(es) found — showing {Math.min(visibleCount, allBatches.length)}
             </p>
             <div className="space-y-6">
               {displayBatches.map((batch, bi) => (
@@ -797,10 +828,11 @@ const PhotoGallery = () => {
           </>
         )}
 
-        {!loading && !initialLoading && searchMode === "recent" && allBatches.length === 0 && scanComplete && (
+        {!loading && !searched && (
           <div className="text-center py-20 text-muted-foreground">
-            <ImageIcon className="h-12 w-12 mx-auto mb-3 opacity-50" />
-            <p>No photo batches found. Upload photos from the Vehicle Photos page.</p>
+            <Search className="h-12 w-12 mx-auto mb-3 opacity-50" />
+            <p className="text-base">Enter a reservation number or rego to view photos.</p>
+            <p className="text-sm mt-2">Nothing loads until you search — results appear 5 batches at a time.</p>
           </div>
         )}
 
