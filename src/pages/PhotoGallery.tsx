@@ -333,56 +333,83 @@ const PhotoGallery = () => {
         setFlatPhotos(allPhotos);
       } else {
         setSearchMode("rego");
-        const batchGroups: BatchGroup[] = [];
+        const perReservation = await Promise.all(
+          topLevel
+            .filter((r) => !r.id)
+            .map(async (resFolder): Promise<BatchGroup[]> => {
+              const { data: subItems } = await supabase.storage
+                .from("vehicle-photos")
+                .list(resFolder.name, { limit: 100 });
+              if (!subItems) return [];
 
-        for (const resFolder of topLevel) {
-          if (resFolder.id) continue;
-          const { data: subItems } = await supabase.storage.from("vehicle-photos").list(resFolder.name, { limit: 100 });
-          if (!subItems) continue;
+              const matches = subItems.filter(
+                (sub) => !sub.id && normalize(sub.name).includes(term)
+              );
 
-          for (const sub of subItems) {
-            if (sub.id) continue;
-            if (!normalize(sub.name).includes(term)) continue;
+              const nested = await Promise.all(
+                matches.map(async (sub): Promise<BatchGroup[]> => {
+                  const regoPath = `${resFolder.name}/${sub.name}`;
+                  const { data: batchFolders } = await supabase.storage
+                    .from("vehicle-photos")
+                    .list(regoPath, { limit: 100 });
+                  if (!batchFolders) return [];
 
-            const regoPath = `${resFolder.name}/${sub.name}`;
-            const { data: batchFolders } = await supabase.storage.from("vehicle-photos").list(regoPath, { limit: 100 });
-            if (!batchFolders) continue;
+                  const legacyPhotos: PhotoItem[] = [];
+                  const folderBatches = batchFolders.filter((bf) => !bf.id);
+                  const legacyFiles = batchFolders.filter((bf) => bf.id);
 
-            const legacyPhotos: PhotoItem[] = [];
-            for (const bf of batchFolders) {
-              if (bf.id) {
-                const path = `${regoPath}/${bf.name}`;
-                const { data: urlData } = supabase.storage.from("vehicle-photos").getPublicUrl(path);
-                legacyPhotos.push({ url: urlData.publicUrl, name: bf.name, folder: regoPath });
-              } else {
-                const batchPhotos = await collectFiles(`${regoPath}/${bf.name}`);
-                if (batchPhotos.length > 0) {
-                  batchGroups.push({
-                    reservationNo: resFolder.name,
-                    rego: sub.name,
-                    batchId: bf.name,
-                    batchLabel: formatBatchDate(bf.name),
-                    sortKey: getBatchSortKey(bf.name),
-                    photos: batchPhotos,
-                  isHydrated: true,
-                  });
-                }
-              }
-            }
-            if (legacyPhotos.length > 0) {
-              batchGroups.push({
-                reservationNo: resFolder.name,
-                rego: sub.name,
-                batchId: "legacy",
-                batchLabel: "Earlier uploads",
-                sortKey: 0,
-                photos: legacyPhotos,
-                isHydrated: true,
-              });
-            }
-          }
-        }
+                  for (const bf of legacyFiles) {
+                    const path = `${regoPath}/${bf.name}`;
+                    const { data: urlData } = supabase.storage
+                      .from("vehicle-photos")
+                      .getPublicUrl(path);
+                    legacyPhotos.push({
+                      url: urlData.publicUrl,
+                      name: bf.name,
+                      folder: regoPath,
+                    });
+                  }
 
+                  const hydrated = await Promise.all(
+                    folderBatches.map(async (bf) => {
+                      const batchPhotos = await collectFiles(
+                        `${regoPath}/${bf.name}`
+                      );
+                      if (batchPhotos.length === 0) return null;
+                      return {
+                        reservationNo: resFolder.name,
+                        rego: sub.name,
+                        batchId: bf.name,
+                        batchLabel: formatBatchDate(bf.name),
+                        sortKey: getBatchSortKey(bf.name),
+                        photos: batchPhotos,
+                        isHydrated: true,
+                      } as BatchGroup;
+                    })
+                  );
+
+                  const out: BatchGroup[] = hydrated.filter(
+                    (b): b is BatchGroup => b !== null
+                  );
+                  if (legacyPhotos.length > 0) {
+                    out.push({
+                      reservationNo: resFolder.name,
+                      rego: sub.name,
+                      batchId: "legacy",
+                      batchLabel: "Earlier uploads",
+                      sortKey: 0,
+                      photos: legacyPhotos,
+                      isHydrated: true,
+                    });
+                  }
+                  return out;
+                })
+              );
+              return nested.flat();
+            })
+        );
+
+        const batchGroups = perReservation.flat();
         batchGroups.sort((a, b) => b.sortKey - a.sortKey);
         setBatches(batchGroups);
       }
