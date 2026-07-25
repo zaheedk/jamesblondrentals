@@ -767,8 +767,7 @@ const PhotoGallery = () => {
         {!loading && !initialLoading && (searchMode === "rego" || searchMode === "recent") && displayBatches.length > 0 && (
           <>
             <p className="text-sm text-muted-foreground mb-4">
-              {searchMode === "recent" ? "Recent uploads" : `${totalCount} photo(s) in ${displayBatches.length} batch(es)`}
-              {searchMode === "recent" && scanComplete && ` — ${allBatches.length} batch(es) total`}
+              {allBatches.length} batch(es) found — showing {Math.min(visibleCount, allBatches.length)}
             </p>
             <div className="space-y-6">
               {displayBatches.map((batch, bi) => (
