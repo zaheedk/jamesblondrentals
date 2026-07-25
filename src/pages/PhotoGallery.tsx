@@ -577,6 +577,7 @@ const PhotoGallery = () => {
 
   // Determine which batches to show
   const displayBatches = searchMode === "rego" ? batches : searchMode === "recent" ? allBatches.slice(0, visibleCount) : [];
+  const hasResults = searchMode === "reservation" ? flatPhotos.length > 0 : displayBatches.length > 0;
 
   // Per-photo rotation state: keyed by photo URL, value is degrees (0, 90, 180, 270)
   const [photoRotations, setPhotoRotations] = useState<Record<string, number>>({});
@@ -684,7 +685,7 @@ const PhotoGallery = () => {
           </div>
         )}
 
-        {!loading && searched && totalCount === 0 && (
+        {!loading && searched && !hasResults && (
           <div className="text-center py-20 text-muted-foreground">
             <ImageIcon className="h-12 w-12 mx-auto mb-3 opacity-50" />
             <p>No photos found for "{searchTerm}"</p>
