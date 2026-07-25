@@ -15,6 +15,7 @@ import { Camera, Upload, X, Loader2, ImageIcon, RefreshCw, WifiOff, AlertTriangl
 import VehicleCamera from "@/components/VehicleCamera";
 import { addTimestampToPhoto, normalizeImageFile } from "@/lib/vehicle-photo-utils";
 import { uploadVehiclePhoto } from "@/lib/upload-vehicle-photo";
+import { upsertPhotoBatch } from "@/lib/photo-batch-index";
 import {
   savePhotoOffline,
   getPendingPhotos,
