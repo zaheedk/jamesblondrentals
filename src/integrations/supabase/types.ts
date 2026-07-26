@@ -724,8 +724,6 @@ export type Database = {
         Returns: boolean
       }
       is_admin_user: { Args: never; Returns: boolean }
-      show_limit: { Args: never; Returns: number }
-      show_trgm: { Args: { "": string }; Returns: string[] }
       update_booking_payment_status_by_reference: {
         Args: {
           _booking_reference?: string
