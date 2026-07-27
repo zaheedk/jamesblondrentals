@@ -112,6 +112,7 @@ import MovingTruckHire from "./pages/MovingTruckHire";
 import TruckHire from "./pages/TruckHire";
 import WellingtonTruckRentals from "./pages/WellingtonTruckRentals";
 import ChristchurchTruckRentals from "./pages/ChristchurchTruckRentals";
+import SmallTruckHireChristchurch from "./pages/SmallTruckHireChristchurch";
 import HamiltonTruckRentals from "./pages/HamiltonTruckRentals";
 import HamiltonVanHire from "./pages/HamiltonVanHire";
 import FurnitureTruckHireHamilton from "./pages/FurnitureTruckHireHamilton";
@@ -331,6 +332,7 @@ const App = () => {
                 <Route path="/one-way-van-hire/:slug" element={<OneWayCommercialRoutePage variant="van" />} />
                 <Route path="/truck-hire-wellington" element={<WellingtonTruckRentals />} />
                 <Route path="/truck-hire-christchurch" element={<ChristchurchTruckRentals />} />
+                <Route path="/small-truck-hire-christchurch" element={<SmallTruckHireChristchurch />} />
                 <Route path="/hamilton-truck-rentals-hire" element={<Navigate to="/truck-hire-hamilton" replace />} />
                 <Route path="/truck-hire-hamilton" element={<HamiltonTruckRentals />} />
                 <Route path="/hamilton-van-hire" element={<Navigate to="/van-hire-hamilton" replace />} />
