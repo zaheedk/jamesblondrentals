@@ -57,6 +57,7 @@ const RentalAgreement = lazy(() => import("./pages/RentalAgreement"));
 const AdminRentalAgreements = lazy(() => import("./pages/AdminRentalAgreements"));
 const AdminBookingImport = lazy(() => import("./pages/AdminBookingImport"));
 const AdminInfringements = lazy(() => import("./pages/AdminInfringements"));
+const AdminSearchEvents = lazy(() => import("./pages/AdminSearchEvents"));
 
 import Fleet from "./pages/Fleet";
 import FleetCars from "./pages/FleetCars";
@@ -294,6 +295,11 @@ const App = () => {
           <Route path="/admin/infringements" element={
             <ProtectedRoute>
               <AdminInfringements />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/search-events" element={
+            <ProtectedRoute>
+              <AdminSearchEvents />
             </ProtectedRoute>
           } />
                 

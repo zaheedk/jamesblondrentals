@@ -656,6 +656,78 @@ export type Database = {
         }
         Relationships: []
       }
+      search_events: {
+        Row: {
+          category_id: string | null
+          category_name: string | null
+          created_at: string
+          driver_age_id: string | null
+          dropoff_date: string | null
+          dropoff_location_id: string | null
+          dropoff_location_name: string | null
+          dropoff_time: string | null
+          has_promo_code: boolean | null
+          id: string
+          page_path: string | null
+          pickup_date: string | null
+          pickup_location_id: string | null
+          pickup_location_name: string | null
+          pickup_time: string | null
+          promo_code: string | null
+          referrer: string | null
+          same_location: boolean | null
+          session_id: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          category_id?: string | null
+          category_name?: string | null
+          created_at?: string
+          driver_age_id?: string | null
+          dropoff_date?: string | null
+          dropoff_location_id?: string | null
+          dropoff_location_name?: string | null
+          dropoff_time?: string | null
+          has_promo_code?: boolean | null
+          id?: string
+          page_path?: string | null
+          pickup_date?: string | null
+          pickup_location_id?: string | null
+          pickup_location_name?: string | null
+          pickup_time?: string | null
+          promo_code?: string | null
+          referrer?: string | null
+          same_location?: boolean | null
+          session_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          category_id?: string | null
+          category_name?: string | null
+          created_at?: string
+          driver_age_id?: string | null
+          dropoff_date?: string | null
+          dropoff_location_id?: string | null
+          dropoff_location_name?: string | null
+          dropoff_time?: string | null
+          has_promo_code?: boolean | null
+          id?: string
+          page_path?: string | null
+          pickup_date?: string | null
+          pickup_location_id?: string | null
+          pickup_location_name?: string | null
+          pickup_time?: string | null
+          promo_code?: string | null
+          referrer?: string | null
+          same_location?: boolean | null
+          session_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string | null

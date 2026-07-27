@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { useRcmApi } from "@/hooks/use-rcm-api";
 import Cookies from "js-cookie";
 import { trackEvent } from "@/lib/analytics";
+import { logSearchEvent } from "@/lib/search-logging";
 
 import { LocationSelect } from "./form-components/LocationSelect";
 import { DateSelect } from "./form-components/DateSelect";
@@ -496,6 +497,22 @@ const SearchForm = ({
       dropoff_date: formattedDropoffDate,
       driver_age_id: ageParam,
       has_promo_code: !!(campaignCode && campaignCode.trim()),
+    });
+    void logSearchEvent({
+      pickup_location_id: pickupLocation,
+      pickup_location_name: getLocationName(pickupLocation),
+      dropoff_location_id: dropoffLocation || pickupLocation,
+      dropoff_location_name: getLocationName(dropoffLocation || pickupLocation),
+      same_location: sameLocation,
+      category_id: carCategory,
+      category_name: getCategoryName(carCategory),
+      pickup_date: formattedPickupDate,
+      dropoff_date: formattedDropoffDate,
+      pickup_time: pickupTime,
+      dropoff_time: dropoffTime,
+      driver_age_id: ageParam,
+      has_promo_code: !!(campaignCode && campaignCode.trim()),
+      promo_code: campaignCode?.trim() || null,
     });
     navigate(`/vehicles?${searchParams.toString()}`);
   };
