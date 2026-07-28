@@ -8,7 +8,7 @@ import fs from 'fs';
 import path from 'path';
 import { sitemapRoutes } from '../src/sitemap-routes';
 
-const SITE_URL = 'https://jamesblond.co.nz';
+const SITE_URL = 'https://www.jamesblond.co.nz';
 
 function generateSitemap(): string {
   const today = new Date().toISOString().split('T')[0];
