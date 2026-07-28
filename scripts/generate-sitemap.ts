@@ -28,6 +28,6 @@ ${urls}
 }
 
 const sitemap = generateSitemap();
-const outPath = path.resolve(__dirname, '../public/sitemap.xml');
+const outPath = path.resolve(process.cwd(), 'public/sitemap.xml');
 fs.writeFileSync(outPath, sitemap, 'utf-8');
 console.log(`✅ Sitemap generated with ${sitemapRoutes.length} URLs → public/sitemap.xml`);
