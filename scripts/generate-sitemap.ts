@@ -8,7 +8,7 @@ import fs from 'fs';
 import path from 'path';
 import { sitemapRoutes } from '../src/sitemap-routes';
 
-const SITE_URL = 'https://jamesblond.co.nz';
+const SITE_URL = 'https://www.jamesblond.co.nz';
 
 function generateSitemap(): string {
   const today = new Date().toISOString().split('T')[0];
@@ -28,6 +28,6 @@ ${urls}
 }
 
 const sitemap = generateSitemap();
-const outPath = path.resolve(__dirname, '../public/sitemap.xml');
+const outPath = path.resolve(process.cwd(), 'public/sitemap.xml');
 fs.writeFileSync(outPath, sitemap, 'utf-8');
 console.log(`✅ Sitemap generated with ${sitemapRoutes.length} URLs → public/sitemap.xml`);

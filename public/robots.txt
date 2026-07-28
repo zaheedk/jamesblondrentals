@@ -50,4 +50,4 @@ Disallow: /payment
 Disallow: /*?utm_
 Disallow: /*?gclid=
 
-Sitemap: https://jamesblond.co.nz/sitemap.xml
+Sitemap: https://www.jamesblond.co.nz/sitemap.xml
