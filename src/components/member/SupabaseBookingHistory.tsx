@@ -17,7 +17,9 @@ const SupabaseBookingHistory = () => {
   useEffect(() => {
     if (!bookings || bookings.length === 0) return;
 
-    const bookingsWithRef = bookings.filter(b => b.reservation_reference);
+    // Only check live status for the 10 most recent bookings — one API call per
+    // booking makes this the slowest part of the page.
+    const bookingsWithRef = bookings.filter(b => b.reservation_reference).slice(0, 10);
     if (bookingsWithRef.length === 0) return;
 
     bookingsWithRef.forEach(async (booking) => {
