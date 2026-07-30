@@ -4,12 +4,12 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { CalendarIcon, ClockIcon, MapPinIcon, CarIcon, CreditCardIcon, Loader2 } from 'lucide-react';
-import { useBookings, type Booking } from '@/hooks/use-bookings';
+import { useMyBookings } from '@/hooks/use-bookings';
 import { rcmApi } from '@/lib/api/rcm-api';
 import { toast } from 'sonner';
 
 const SupabaseBookingHistory = () => {
-  const { data: bookings, isLoading, error } = useBookings();
+  const { data: bookings, isLoading, error } = useMyBookings();
   const [searchQuery, setSearchQuery] = useState('');
   const [rcmStatuses, setRcmStatuses] = useState<Record<string, { status: string; loading: boolean }>>({});
 
@@ -17,7 +17,9 @@ const SupabaseBookingHistory = () => {
   useEffect(() => {
     if (!bookings || bookings.length === 0) return;
 
-    const bookingsWithRef = bookings.filter(b => b.reservation_reference);
+    // Only check live status for the 10 most recent bookings — one API call per
+    // booking makes this the slowest part of the page.
+    const bookingsWithRef = bookings.filter(b => b.reservation_reference).slice(0, 10);
     if (bookingsWithRef.length === 0) return;
 
     bookingsWithRef.forEach(async (booking) => {
