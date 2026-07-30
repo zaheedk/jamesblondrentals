@@ -58,6 +58,9 @@ const AdminRentalAgreements = lazy(() => import("./pages/AdminRentalAgreements")
 const AdminBookingImport = lazy(() => import("./pages/AdminBookingImport"));
 const AdminInfringements = lazy(() => import("./pages/AdminInfringements"));
 const AdminSearchEvents = lazy(() => import("./pages/AdminSearchEvents"));
+const AdminVehicles = lazy(() => import("./pages/AdminVehicles"));
+const AdminGroomChecklists = lazy(() => import("./pages/AdminGroomChecklists"));
+const GroomChecklist = lazy(() => import("./pages/GroomChecklist"));
 
 import Fleet from "./pages/Fleet";
 import FleetCars from "./pages/FleetCars";
@@ -300,6 +303,21 @@ const App = () => {
           <Route path="/admin/search-events" element={
             <ProtectedRoute>
               <AdminSearchEvents />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/vehicles" element={
+            <ProtectedRoute>
+              <AdminVehicles />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/groom-checklist" element={
+            <ProtectedRoute>
+              <GroomChecklist />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/groom-checklists" element={
+            <ProtectedRoute>
+              <AdminGroomChecklists />
             </ProtectedRoute>
           } />
                 
