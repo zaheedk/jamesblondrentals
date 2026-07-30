@@ -59,6 +59,7 @@ const AdminBookingImport = lazy(() => import("./pages/AdminBookingImport"));
 const AdminInfringements = lazy(() => import("./pages/AdminInfringements"));
 const AdminSearchEvents = lazy(() => import("./pages/AdminSearchEvents"));
 const AdminVehicles = lazy(() => import("./pages/AdminVehicles"));
+const AdminReferenceData = lazy(() => import("./pages/AdminReferenceData"));
 const AdminGroomChecklists = lazy(() => import("./pages/AdminGroomChecklists"));
 const GroomChecklist = lazy(() => import("./pages/GroomChecklist"));
 
@@ -308,6 +309,11 @@ const App = () => {
           <Route path="/admin/vehicles" element={
             <ProtectedRoute>
               <AdminVehicles />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/reference-data" element={
+            <ProtectedRoute>
+              <AdminReferenceData />
             </ProtectedRoute>
           } />
           <Route path="/admin/groom-checklist" element={
