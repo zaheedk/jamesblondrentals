@@ -127,6 +127,24 @@ export default function MemberDashboard() {
                     <span className="truncate">Photo Gallery</span>
                   </Button>
                 </Link>
+                <Link to="/admin/groom-checklist">
+                  <Button variant="outline" className="w-full justify-start text-xs sm:text-sm" size="lg">
+                    <ClipboardCheck className="w-4 h-4 mr-2 shrink-0" />
+                    <span className="truncate">Vehicle Inspection</span>
+                  </Button>
+                </Link>
+                <Link to="/admin/groom-checklists">
+                  <Button variant="outline" className="w-full justify-start text-xs sm:text-sm" size="lg">
+                    <ClipboardList className="w-4 h-4 mr-2 shrink-0" />
+                    <span className="truncate">Inspection Records</span>
+                  </Button>
+                </Link>
+                <Link to="/admin/vehicles">
+                  <Button variant="outline" className="w-full justify-start text-xs sm:text-sm" size="lg">
+                    <Car className="w-4 h-4 mr-2 shrink-0" />
+                    <span className="truncate">Vehicle Register</span>
+                  </Button>
+                </Link>
               </div>
             </CardContent>
           </Card>
