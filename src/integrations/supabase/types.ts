@@ -749,6 +749,59 @@ export type Database = {
         }
         Relationships: []
       }
+      vehicle_groom_checklists: {
+        Row: {
+          checked_at: string
+          checked_by_name: string
+          checked_by_user_id: string | null
+          created_at: string
+          id: string
+          issues_found: boolean
+          items: Json
+          notes: string | null
+          odometer: number | null
+          updated_at: string
+          vehicle_id: string
+          vehicle_rego: string
+        }
+        Insert: {
+          checked_at?: string
+          checked_by_name: string
+          checked_by_user_id?: string | null
+          created_at?: string
+          id?: string
+          issues_found?: boolean
+          items?: Json
+          notes?: string | null
+          odometer?: number | null
+          updated_at?: string
+          vehicle_id: string
+          vehicle_rego: string
+        }
+        Update: {
+          checked_at?: string
+          checked_by_name?: string
+          checked_by_user_id?: string | null
+          created_at?: string
+          id?: string
+          issues_found?: boolean
+          items?: Json
+          notes?: string | null
+          odometer?: number | null
+          updated_at?: string
+          vehicle_id?: string
+          vehicle_rego?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vehicle_groom_checklists_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vehicle_rental_rates: {
         Row: {
           created_at: string
@@ -779,6 +832,48 @@ export type Database = {
           updated_at?: string
           vehicle_category?: string
           website_name?: string
+        }
+        Relationships: []
+      }
+      vehicles: {
+        Row: {
+          active: boolean
+          branch: string | null
+          category: string | null
+          created_at: string
+          id: string
+          make: string | null
+          model: string | null
+          notes: string | null
+          rego: string
+          updated_at: string
+          year: number | null
+        }
+        Insert: {
+          active?: boolean
+          branch?: string | null
+          category?: string | null
+          created_at?: string
+          id?: string
+          make?: string | null
+          model?: string | null
+          notes?: string | null
+          rego: string
+          updated_at?: string
+          year?: number | null
+        }
+        Update: {
+          active?: boolean
+          branch?: string | null
+          category?: string | null
+          created_at?: string
+          id?: string
+          make?: string | null
+          model?: string | null
+          notes?: string | null
+          rego?: string
+          updated_at?: string
+          year?: number | null
         }
         Relationships: []
       }
