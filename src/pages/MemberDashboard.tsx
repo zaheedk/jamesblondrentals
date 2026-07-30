@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Settings, BookOpen, TrendingUp, MessageSquare, Calendar, Users, Car, UserCircle, FileText, AlertTriangle, Camera, ImageIcon, Upload } from 'lucide-react';
+import { Settings, BookOpen, TrendingUp, MessageSquare, Calendar, Users, Car, UserCircle, FileText, AlertTriangle, Camera, ImageIcon, Upload, ClipboardList, ClipboardCheck } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useState } from 'react';
 import SupabaseBookingHistory from '@/components/member/SupabaseBookingHistory';
@@ -127,6 +127,24 @@ export default function MemberDashboard() {
                     <span className="truncate">Photo Gallery</span>
                   </Button>
                 </Link>
+                <Link to="/admin/groom-checklist">
+                  <Button variant="outline" className="w-full justify-start text-xs sm:text-sm" size="lg">
+                    <ClipboardCheck className="w-4 h-4 mr-2 shrink-0" />
+                    <span className="truncate">Vehicle Inspection</span>
+                  </Button>
+                </Link>
+                <Link to="/admin/groom-checklists">
+                  <Button variant="outline" className="w-full justify-start text-xs sm:text-sm" size="lg">
+                    <ClipboardList className="w-4 h-4 mr-2 shrink-0" />
+                    <span className="truncate">Inspection Records</span>
+                  </Button>
+                </Link>
+                <Link to="/admin/vehicles">
+                  <Button variant="outline" className="w-full justify-start text-xs sm:text-sm" size="lg">
+                    <Car className="w-4 h-4 mr-2 shrink-0" />
+                    <span className="truncate">Vehicle Register</span>
+                  </Button>
+                </Link>
               </div>
             </CardContent>
           </Card>
@@ -166,6 +184,24 @@ export default function MemberDashboard() {
                   <Button variant="outline" className="w-full justify-start" size="lg">
                     <ImageIcon className="w-4 h-4 mr-2" />
                     Photo Gallery
+                  </Button>
+                </Link>
+                <Link to="/admin/groom-checklist">
+                  <Button variant="outline" className="w-full justify-start" size="lg">
+                    <ClipboardCheck className="w-4 h-4 mr-2" />
+                    Vehicle Inspection
+                  </Button>
+                </Link>
+                <Link to="/admin/groom-checklists">
+                  <Button variant="outline" className="w-full justify-start" size="lg">
+                    <ClipboardList className="w-4 h-4 mr-2" />
+                    Inspection Records
+                  </Button>
+                </Link>
+                <Link to="/admin/vehicles">
+                  <Button variant="outline" className="w-full justify-start" size="lg">
+                    <Car className="w-4 h-4 mr-2" />
+                    Vehicle Register
                   </Button>
                 </Link>
               </div>
