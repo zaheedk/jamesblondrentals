@@ -4,12 +4,12 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { CalendarIcon, ClockIcon, MapPinIcon, CarIcon, CreditCardIcon, Loader2 } from 'lucide-react';
-import { useBookings, type Booking } from '@/hooks/use-bookings';
+import { useMyBookings } from '@/hooks/use-bookings';
 import { rcmApi } from '@/lib/api/rcm-api';
 import { toast } from 'sonner';
 
 const SupabaseBookingHistory = () => {
-  const { data: bookings, isLoading, error } = useBookings();
+  const { data: bookings, isLoading, error } = useMyBookings();
   const [searchQuery, setSearchQuery] = useState('');
   const [rcmStatuses, setRcmStatuses] = useState<Record<string, { status: string; loading: boolean }>>({});
 

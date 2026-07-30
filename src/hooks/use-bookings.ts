@@ -5,6 +5,68 @@ import type { Database } from '@/integrations/supabase/types';
 
 export type Booking = Database['public']['Tables']['bookings']['Row'];
 
+// Columns needed by the member booking history UI. Selecting the full row of a
+// very wide table for 13k+ rows is what caused statement timeouts.
+const MEMBER_BOOKING_COLUMNS = [
+  'id',
+  'user_id',
+  'vehicle_name',
+  'pickup_date',
+  'dropoff_date',
+  'pickup_time',
+  'dropoff_time',
+  'total_days',
+  'pickup_location_name',
+  'dropoff_location_name',
+  'customer_email',
+  'total_amount',
+  'payment_status',
+  'booking_status',
+  'booking_reference',
+  'reservation_reference',
+  'special_requirements',
+  'created_at',
+].join(',');
+
+export type MemberBooking = Pick<
+  Booking,
+  'id' | 'user_id' | 'vehicle_name' | 'pickup_date' | 'dropoff_date' | 'pickup_time' |
+  'dropoff_time' | 'total_days' | 'pickup_location_name' | 'dropoff_location_name' |
+  'customer_email' | 'total_amount' | 'payment_status' | 'booking_status' |
+  'booking_reference' | 'reservation_reference' | 'special_requirements' | 'created_at'
+>;
+
+/** Bookings belonging to the signed-in user only — fast, indexed, no full-table scan. */
+export function useMyBookings() {
+  const { user } = useAuth();
+
+  return useQuery({
+    queryKey: ['my-bookings', user?.id, user?.email],
+    queryFn: async (): Promise<MemberBooking[]> => {
+      if (!user?.id) throw new Error('User not authenticated');
+
+      const filters = [`user_id.eq.${user.id}`];
+      if (user.email) filters.push(`customer_email.eq.${user.email}`);
+
+      const { data, error } = await supabase
+        .from('bookings')
+        .select(MEMBER_BOOKING_COLUMNS)
+        .or(filters.join(','))
+        .order('pickup_date', { ascending: false })
+        .limit(200);
+
+      if (error) {
+        console.error('Error fetching my bookings:', error);
+        throw error;
+      }
+
+      return (data ?? []) as unknown as MemberBooking[];
+    },
+    enabled: !!user?.id,
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
 export function useBookings() {
   const { user } = useAuth();
 
