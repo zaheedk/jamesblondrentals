@@ -62,6 +62,7 @@ const AdminVehicles = lazy(() => import("./pages/AdminVehicles"));
 const AdminReferenceData = lazy(() => import("./pages/AdminReferenceData"));
 const AdminGroomChecklists = lazy(() => import("./pages/AdminGroomChecklists"));
 const GroomChecklist = lazy(() => import("./pages/GroomChecklist"));
+const StaffApp = lazy(() => import("./pages/StaffApp"));
 
 import Fleet from "./pages/Fleet";
 import FleetCars from "./pages/FleetCars";
@@ -324,6 +325,11 @@ const App = () => {
           <Route path="/admin/groom-checklists" element={
             <ProtectedRoute>
               <AdminGroomChecklists />
+            </ProtectedRoute>
+          } />
+          <Route path="/staff" element={
+            <ProtectedRoute>
+              <StaffApp />
             </ProtectedRoute>
           } />
                 
