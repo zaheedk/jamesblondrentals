@@ -5,6 +5,8 @@ const cities = [
   { name: 'Hamilton Van Hire', to: '/van-hire-hamilton' },
   { name: 'Hamilton Car Hire', to: '/car-hire-hamilton' },
   { name: 'Contact Hamilton', to: '/contact/hamilton' },
+  { name: 'Cheap Trailer Hire NZ', to: '/cheap-trailer-hire' },
+  { name: 'Trailer Hire Auckland', to: '/trailer-hire-auckland' },
 ];
 
 const localBusiness = {
@@ -52,6 +54,31 @@ const TrailerHireHamilton = () => (
     ]}
     primaryCtaTo="/booking"
     primaryCtaLabel="Book a trailer"
+    priceTable={{
+      heading: 'Hamilton trailer hire rates',
+      note: 'Indicative rates from our Frankton branch — live availability and the exact price for your dates show in online booking.',
+      rows: [
+        { item: 'Caged trailer', daily: 'from $40', weekend: 'from $80', best: 'Tip runs to Lincoln Street, green waste, bulky rubbish' },
+        { item: 'Luggage trailer (lockable)', daily: 'from $50', weekend: 'from $100', best: 'Flat moves, road trips, Ruapehu ski gear' },
+        { item: 'Car-transporter trailer', daily: 'from $80', weekend: 'from $160', best: 'Shifting a vehicle around the Waikato' },
+      ],
+    }}
+    sections={[
+      {
+        h2: 'How Hamilton customers search for a trailer',
+        body: 'Most Hamilton trailer enquiries fall into three jobs: a weekend tip run, a small flat move, or shifting a car. Our Frankton branch sits minutes from SH1 and SH3, so Chartwell, Rototuna, Te Rapa, Cambridge and Te Awamutu runs are all short hops — and you can grab the trailer on the way out of town rather than doubling back.',
+        points: [
+          'Tip runs to the Lincoln Street transfer station',
+          'Garden and green-waste clean-ups across Rototuna and Chartwell',
+          'Small flat and student moves near the University of Waikato',
+          'Cambridge, Te Awamutu and Morrinsville pickups and deliveries',
+        ],
+      },
+      {
+        h2: 'Trailer, van or truck for a Hamilton move?',
+        body: 'A caged trailer is the cheapest option and fine for open loads. If the load needs to stay dry, a lockable luggage trailer or a cargo van is the better call. Anything over roughly a bedroom of furniture is faster in one 2-tonne truck run than three trailer trips — our Hamilton branch carries all three, so you can switch on the day.',
+      },
+    ]}
     cities={cities}
     localBusiness={localBusiness}
     faq={[

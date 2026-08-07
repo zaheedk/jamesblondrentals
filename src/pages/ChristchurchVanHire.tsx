@@ -99,6 +99,30 @@ const ChristchurchVanHire = () => {
           text: 'James Blond Rentals is consistently ranked among the top-rated and most affordable van hire companies in Christchurch, with a modern fleet of cargo vans, jumbo vans and minibuses, transparent pricing, and no hidden fees.',
         },
       },
+      {
+        '@type': 'Question',
+        name: 'What is the cheapest van to hire in Christchurch?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'The Standard Cargo Van is our cheapest Christchurch van, from around $69 per day. Midweek and multi-day hire lowers the daily rate further, and a caged trailer from $40/day is cheaper again if your load is open and small.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Can I hire a van near Christchurch Airport?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Yes. Our Christchurch branch is a short run from Christchurch Airport with easy State Highway 1 access, and we also have a Central Christchurch CBD branch for short urban hires.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Do I need a van or a small truck in Christchurch?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'A cargo or jumbo van handles up to roughly a one-bedroom move. Beyond that, a 2-tonne box truck is one trip instead of three and usually works out cheaper overall — our Christchurch branch carries both, so you can switch on the day.',
+        },
+      },
     ],
   };
 
@@ -349,6 +373,60 @@ const ChristchurchVanHire = () => {
             </li>
           ))}
         </ol>
+      </section>
+
+      {/* Rates */}
+      <section className="container mx-auto px-6 py-16 border-t border-border">
+        <div className="max-w-2xl mb-8">
+          <div className="flex items-center gap-3 mb-3">
+            <Package className="h-5 w-5 text-primary" />
+            <span className="text-base font-semibold">Christchurch van hire rates</span>
+          </div>
+          <div className="h-px w-full bg-border mb-6" />
+          <h2 className="font-sans font-extrabold tracking-tight text-4xl md:text-5xl leading-[1.05]">
+            What a Christchurch van costs.
+          </h2>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm border border-border rounded-lg overflow-hidden">
+            <thead className="bg-muted/50 text-left">
+              <tr>
+                <th className="p-4 font-semibold">Vehicle</th>
+                <th className="p-4 font-semibold">Load space</th>
+                <th className="p-4 font-semibold">From (daily)</th>
+                <th className="p-4 font-semibold">Best for</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                ['Standard Cargo Van', '6–8 m³', '$69', 'Trades, couriers, single-item pickups'],
+                ['Standard Van · Rear Seat', '5 seats + cargo', '$79', 'Crew plus tools on the same job'],
+                ['Jumbo / Premium Van', '10–12 m³', '$89', 'Studio and one-bedroom moves, flat-packs'],
+                ['12-Seat Minibus', '12 seats + luggage', '$149', 'Teams, weddings, Mt Hutt and airport runs'],
+              ].map(([v, space, price, best]) => (
+                <tr key={v} className="border-t border-border">
+                  <td className="p-4 font-medium">{v}</td>
+                  <td className="p-4">{space}</td>
+                  <td className="p-4">{price}</td>
+                  <td className="p-4 text-muted-foreground">{best}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="mt-4 text-sm text-muted-foreground max-w-3xl">
+          Indicative daily rates plus kilometres. Midweek, multi-day and weekly hire lower the daily
+          price — live rates for your exact dates show in the booking form below. Moving more than a
+          one-bedroom flat? A{' '}
+          <Link to="/truck-hire-christchurch" className="underline hover:text-primary">
+            Christchurch truck hire
+          </Link>{' '}
+          is usually one trip instead of three. Open, smaller loads can go on a{' '}
+          <Link to="/trailer-hire-christchurch" className="underline hover:text-primary">
+            Christchurch trailer from $40/day
+          </Link>
+          .
+        </p>
       </section>
 
       {/* Booking */}

@@ -5,6 +5,7 @@ const cities = [
   { name: 'Christchurch Van Hire', to: '/christchurch-van-hire' },
   { name: 'Christchurch Car Hire', to: '/car-hire-christchurch' },
   { name: 'Contact Christchurch', to: '/contact/christchurch' },
+  { name: 'Cheap Trailer Hire NZ', to: '/cheap-trailer-hire' },
 ];
 
 const localBusiness = {
@@ -42,6 +43,27 @@ const TrailerHireChristchurch = () => (
     ]}
     primaryCtaTo="/booking"
     primaryCtaLabel="Book a trailer"
+    priceTable={{
+      heading: 'Christchurch trailer hire rates',
+      note: 'Indicative rates — live availability and the exact price for your dates show in online booking.',
+      rows: [
+        { item: 'Caged trailer', daily: 'from $40', weekend: 'from $80', best: 'Tip runs, green waste, bulky rubbish' },
+        { item: 'Luggage trailer (lockable)', daily: 'from $50', weekend: 'from $100', best: 'Rolleston moves, road trips, Mt Hutt ski gear' },
+        { item: 'Car-transporter trailer', daily: 'from $80', weekend: 'from $160', best: 'Vehicle relocations across Canterbury' },
+      ],
+    }}
+    sections={[
+      {
+        h2: 'Cheap trailer hire in Christchurch',
+        body: 'A caged trailer from $40/day is the cheapest way to clear a garage, do a Styx Mill or Parkhouse Road tip run, or shift a single item. There is no per-kilometre charge on trailers and no counter admin fee, so the quoted daily rate is what you pay. Pick up Friday and return Monday for a weekend rate rather than three full days.',
+        points: [
+          'No per-kilometre charge on trailer hire',
+          'Weekend hire charged as two days',
+          'Rolleston, Rangiora, Ashburton and Timaru runs are common',
+          'Swap to a van or small truck if the load turns out bigger',
+        ],
+      },
+    ]}
     cities={cities}
     localBusiness={localBusiness}
     faq={[
