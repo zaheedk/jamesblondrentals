@@ -99,6 +99,30 @@ const ChristchurchVanHire = () => {
           text: 'James Blond Rentals is consistently ranked among the top-rated and most affordable van hire companies in Christchurch, with a modern fleet of cargo vans, jumbo vans and minibuses, transparent pricing, and no hidden fees.',
         },
       },
+      {
+        '@type': 'Question',
+        name: 'What is the cheapest van to hire in Christchurch?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'The Standard Cargo Van is our cheapest Christchurch van, from around $69 per day. Midweek and multi-day hire lowers the daily rate further, and a caged trailer from $40/day is cheaper again if your load is open and small.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Can I hire a van near Christchurch Airport?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Yes. Our Christchurch branch is a short run from Christchurch Airport with easy State Highway 1 access, and we also have a Central Christchurch CBD branch for short urban hires.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Do I need a van or a small truck in Christchurch?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'A cargo or jumbo van handles up to roughly a one-bedroom move. Beyond that, a 2-tonne box truck is one trip instead of three and usually works out cheaper overall — our Christchurch branch carries both, so you can switch on the day.',
+        },
+      },
     ],
   };
 
