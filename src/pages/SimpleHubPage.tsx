@@ -17,9 +17,13 @@ export interface SimpleHubProps {
   cities: { name: string; to: string }[];
   faq: { q: string; a: string }[];
   localBusiness?: Record<string, unknown>;
+  /** Optional price table — competitors ranking above us all show rates on-page. */
+  priceTable?: { heading: string; note?: string; rows: { item: string; daily: string; weekend?: string; best: string }[] };
+  /** Optional extra editorial sections for topical depth. */
+  sections?: { h2: string; body: string; points?: string[] }[];
 }
 
-const SimpleHubPage = ({ slug, title, description, h1, intro, bullets, primaryCtaTo, primaryCtaLabel, cities, faq, localBusiness }: SimpleHubProps) => {
+const SimpleHubPage = ({ slug, title, description, h1, intro, bullets, primaryCtaTo, primaryCtaLabel, cities, faq, localBusiness, priceTable, sections }: SimpleHubProps) => {
   const faqLd = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -65,6 +69,52 @@ const SimpleHubPage = ({ slug, title, description, h1, intro, bullets, primaryCt
           </CardContent>
         </Card>
       </section>
+
+      {priceTable && (
+        <section className="container mx-auto px-6 py-12 border-t">
+          <h2 className="font-serif text-3xl md:text-4xl mb-6">{priceTable.heading}</h2>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm border border-border rounded-lg overflow-hidden">
+              <thead className="bg-muted/50 text-left">
+                <tr>
+                  <th className="p-4 font-semibold">Trailer / vehicle</th>
+                  <th className="p-4 font-semibold">Daily</th>
+                  <th className="p-4 font-semibold">Weekend</th>
+                  <th className="p-4 font-semibold">Best for</th>
+                </tr>
+              </thead>
+              <tbody>
+                {priceTable.rows.map((r) => (
+                  <tr key={r.item} className="border-t border-border">
+                    <td className="p-4 font-medium">{r.item}</td>
+                    <td className="p-4">{r.daily}</td>
+                    <td className="p-4">{r.weekend ?? '—'}</td>
+                    <td className="p-4 text-muted-foreground">{r.best}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {priceTable.note && <p className="mt-4 text-sm text-muted-foreground">{priceTable.note}</p>}
+        </section>
+      )}
+
+      {sections?.map((s) => (
+        <section key={s.h2} className="container mx-auto px-6 py-12 border-t">
+          <h2 className="font-serif text-3xl md:text-4xl mb-4 max-w-3xl">{s.h2}</h2>
+          <p className="text-muted-foreground max-w-3xl">{s.body}</p>
+          {s.points && (
+            <ul className="mt-6 grid md:grid-cols-2 gap-3 max-w-4xl">
+              {s.points.map((p) => (
+                <li key={p} className="flex items-start gap-2">
+                  <Check className="h-4 w-4 text-primary mt-1 flex-shrink-0" />
+                  <span>{p}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      ))}
 
       <section className="container mx-auto px-6 py-12 border-t">
         <h2 className="font-serif text-3xl md:text-4xl mb-6">Pickup near you</h2>
