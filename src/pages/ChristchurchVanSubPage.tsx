@@ -98,6 +98,12 @@ const ChristchurchVanSubPage = ({ page: pageProp }: Props) => {
               {page.h1}
             </h1>
             <p className="mt-6 text-base md:text-lg text-[hsl(0_0%_30%)]">{page.intro}</p>
+            {page.pickupNotice && (
+              <div className="mt-6 flex gap-3 border-l-4 border-primary bg-background/70 p-4 text-sm text-foreground">
+                <MapPin className="h-4 w-4 shrink-0 text-primary mt-0.5" />
+                <p>{page.pickupNotice}</p>
+              </div>
+            )}
             <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
               <Button asChild size="lg" className="rounded-none px-7">
                 <a href="#booking">Check availability</a>

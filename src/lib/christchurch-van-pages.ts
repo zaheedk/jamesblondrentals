@@ -354,11 +354,13 @@ export const christchurchVanPages: ChristchurchVanPage[] = [
   {
     slug: 'van-hire-timaru',
     path: '/van-hire-timaru',
-    metaTitle: 'Van Hire Timaru — South Canterbury Van Rental from Christchurch',
+    metaTitle: 'Van Hire Timaru — Pickup from Christchurch (2hrs up SH1)',
     metaDescription:
-      'Van hire for Timaru and South Canterbury. Cargo, jumbo and 12-seat minibuses from our Christchurch branch — one-way drops welcome.',
+      'Van hire for Timaru and South Canterbury. We have no Timaru branch — vans are collected from our Christchurch branch, about two hours north on SH1, from $95/day. One-way drops welcome.',
     eyebrow: 'South Canterbury · Timaru',
     h1: 'Van Hire in Timaru',
+    pickupNotice:
+      'No Timaru branch: vans are collected from our Christchurch branch (Moorhouse Ave), around two hours north on SH1. One-way drops heading south can be arranged — call 0800 525 663.',
     intro:
       'Timaru sits around two hours south of Christchurch on SH1. Pick a van up from our Christchurch branch and drive south — or arrange a one-way drop on the way to Oamaru, Tekapo or Queenstown.',
     heroImage: vanFleet,
