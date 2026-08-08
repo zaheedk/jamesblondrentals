@@ -16,8 +16,8 @@ const CarRentalWellington = () => {
     <div className="container mx-auto px-4 py-8">
       <WellingtonBreadcrumb currentLabel="Wellington" isHub={true} />
       <PageSEO
-        title="Car Rental Wellington from $45/day — Car Hire CBD, Lower Hutt, Porirua & Kapiti"
-        description="Affordable car hire & car rental across the Wellington region — CBD, Lower Hutt, Upper Hutt, Petone, Porirua, Tawa, Johnsonville and the Kapiti Coast. SUVs, sedans, economy cars and people movers, daily and weekly rates."
+        title="Cheap Car Rental Wellington — From $45/Day, No Hidden Fees"
+        description="Compare cheap car hire prices in Wellington from $45/day. Economy cars, SUVs and people movers with daily and weekly rates, no hidden fees. Pickup in CBD, Lower Hutt, Petone, Porirua and Kāpiti — book online."
         canonical="/car-rental-wellington-new-zealand"
       />
       {/* Hero Section */}

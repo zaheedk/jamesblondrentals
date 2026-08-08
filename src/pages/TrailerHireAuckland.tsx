@@ -28,8 +28,8 @@ const localBusiness = {
 const TrailerHireAuckland = () => (
   <SimpleHubPage
     slug="/trailer-hire-auckland"
-    title="Trailer Hire Auckland — Cage, Luggage & Car Transporter Trailers"
-    description="Trailer hire in Auckland from $65/day. Cage, luggage and car-transporter trailers. Same-day pickup across Auckland, tow on a standard NZ car licence."
+    title="Cheap Trailer Hire Auckland — Prices From $65/Day"
+    description="Cheap trailer hire prices in Auckland from $65/day. Cage, luggage and car-transporter trailers, WOF'd and ready. No hidden fees, same-day pickup across Auckland — compare rates and book online."
     h1="Trailer Hire Auckland — Cage, Luggage & Car Transporters"
     intro="Whether it's a tip run, a house move or shifting a vehicle across town, our Auckland trailers are WOF'd, registered and ready to go. Same-day pickup, daily and weekly rates, and easy online booking."
     bullets={[

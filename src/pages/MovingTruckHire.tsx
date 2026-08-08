@@ -134,13 +134,13 @@ const MovingTruckHire = () => {
   return (
     <div>
       <Helmet>
-        <title>Moving Truck Hire Auckland | From $119/day · James Blond</title>
+        <title>Cheap Moving Truck Hire Auckland — From $119/Day, Price Beat</title>
         <meta
           name="description"
-          content="Cheap moving truck hire in Auckland from $119/day. 2 & 3 tonne box trucks with tail lift, insurance included, 24/7 roadside. Book online in 60 seconds."
+          content="Cheap moving truck hire prices in Auckland from $119/day (or $35/hr). 2 & 3 tonne trucks with tail lift, insurance included, no hidden fees and a best-price beat. Book online in 60 seconds."
         />
         <link rel="canonical" href={canonical} />
-        <meta property="og:title" content="Moving Truck Hire Auckland | From $119/day" />
+        <meta property="og:title" content="Cheap Moving Truck Hire Auckland — From $119/Day" />
         <meta property="og:url" content={canonical} />
         <meta property="og:type" content="website" />
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
