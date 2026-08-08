@@ -58,9 +58,9 @@ const TrailerHireHamilton = () => (
       heading: 'Hamilton trailer hire rates',
       note: 'Indicative rates from our Frankton branch — live availability and the exact price for your dates show in online booking.',
       rows: [
-        { item: 'Caged trailer', daily: 'from $40', weekend: 'from $80', best: 'Tip runs to Lincoln Street, green waste, bulky rubbish' },
-        { item: 'Luggage trailer (lockable)', daily: 'from $50', weekend: 'from $100', best: 'Flat moves, road trips, Ruapehu ski gear' },
-        { item: 'Car-transporter trailer', daily: 'from $80', weekend: 'from $160', best: 'Shifting a vehicle around the Waikato' },
+        { item: 'Caged trailer', daily: 'from $65', weekend: 'from $100', best: 'Tip runs to Lincoln Street, green waste, bulky rubbish' },
+        { item: 'Luggage trailer (lockable)', daily: 'from $45', weekend: 'from $90', best: 'Flat moves, road trips, Ruapehu ski gear' },
+        { item: 'Car-transporter trailer', daily: 'from $120', weekend: 'from $200', best: 'Shifting a vehicle around the Waikato' },
       ],
     }}
     sections={[

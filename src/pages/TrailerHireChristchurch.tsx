@@ -47,9 +47,9 @@ const TrailerHireChristchurch = () => (
       heading: 'Christchurch trailer hire rates',
       note: 'Indicative rates — live availability and the exact price for your dates show in online booking.',
       rows: [
-        { item: 'Caged trailer', daily: 'from $40', weekend: 'from $80', best: 'Tip runs, green waste, bulky rubbish' },
-        { item: 'Luggage trailer (lockable)', daily: 'from $50', weekend: 'from $100', best: 'Rolleston moves, road trips, Mt Hutt ski gear' },
-        { item: 'Car-transporter trailer', daily: 'from $80', weekend: 'from $160', best: 'Vehicle relocations across Canterbury' },
+        { item: 'Caged trailer', daily: 'from $65', weekend: 'from $100', best: 'Tip runs, green waste, bulky rubbish' },
+        { item: 'Luggage trailer (lockable)', daily: 'from $45', weekend: 'from $90', best: 'Rolleston moves, road trips, Mt Hutt ski gear' },
+        { item: 'Car-transporter trailer', daily: 'from $120', weekend: 'from $200', best: 'Vehicle relocations across Canterbury' },
       ],
     }}
     sections={[
