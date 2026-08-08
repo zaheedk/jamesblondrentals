@@ -1,6 +1,7 @@
 import SearchForm from "./SearchForm";
 import { useIsMobile } from "@/hooks/use-mobile";
 import heroImage from "@/assets/hero-ski-season.jpg";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
   const isMobile = useIsMobile();
@@ -35,6 +36,14 @@ const Hero = () => {
         <div id="booking-form" className="max-w-4xl mx-auto scroll-mt-20">
           <SearchForm />
         </div>
+
+        {/* Descriptive internal links to key city hubs */}
+        <nav aria-label="Popular hire pages" className="max-w-4xl mx-auto mt-6 flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm">
+          <Link to="/car-hire-auckland" className="text-white/90 underline hover:text-white">Car hire Auckland</Link>
+          <Link to="/auckland-airport-car-rentals" className="text-white/90 underline hover:text-white">Auckland Airport car rental</Link>
+          <Link to="/auckland-truck-rentals-hire" className="text-white/90 underline hover:text-white">Truck hire Auckland</Link>
+          <Link to="/van-hire-auckland" className="text-white/90 underline hover:text-white">Van hire Auckland</Link>
+        </nav>
       </div>
     </div>
   );

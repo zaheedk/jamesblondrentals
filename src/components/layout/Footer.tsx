@@ -71,6 +71,12 @@ const Footer = () => {
                 <Link to="/truck-hire" className="text-gray-300 hover:text-white transition-colors">Truck Hire</Link>
               </li>
               <li>
+                <Link to="/car-hire-auckland" className="text-gray-300 hover:text-white transition-colors">Car Hire Auckland</Link>
+              </li>
+              <li>
+                <Link to="/auckland-airport-car-rentals" className="text-gray-300 hover:text-white transition-colors">Auckland Airport Car Rental</Link>
+              </li>
+              <li>
                 <Link to="/one-way-car-hire" className="text-gray-300 hover:text-white transition-colors">One-Way Car Hire</Link>
               </li>
               <li>

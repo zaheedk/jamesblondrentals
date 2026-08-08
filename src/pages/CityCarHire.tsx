@@ -143,8 +143,8 @@ const CityCarHire: React.FC<CityCarHireProps> = ({
   return (
     <div className="bg-background text-foreground">
       <PageSEO
-        title={`Car Hire ${city} | Cheap Car Rental from ${fromPrice}/day | James Blond`}
-        description={`Car hire in ${city} from ${fromPrice} per day. Economy cars, midsize sedans and SUVs from a top-rated local rental company. Transparent pricing, no hidden fees.`}
+        title={`Cheap Car Hire ${city} — Prices From ${fromPrice}/Day, No Hidden Fees`}
+        description={`Car hire ${city} from ${fromPrice} per day. Compare economy, midsize and SUV rates — cheaper weekly and midweek prices, unlimited km options, no hidden fees. Book online.`}
         canonical={slug}
       />
       <JsonLd data={faqJsonLd} />
@@ -269,6 +269,36 @@ const CityCarHire: React.FC<CityCarHireProps> = ({
       </section>
 
       {/* Quote */}
+      {/* Price angle */}
+      <section className="border-t border-border bg-card">
+        <div className="container mx-auto px-6 py-16">
+          <h2 className="font-sans font-extrabold tracking-tight text-3xl md:text-4xl">
+            How much is car hire in {city}?
+          </h2>
+          <p className="mt-4 text-muted-foreground max-w-3xl">
+            {city} car hire starts from {fromPrice} per day. The longer you hire, the cheaper the daily
+            rate — multi-day, weekly and midweek pickups all reduce the price. Every quote shows the
+            full cost up front, so there are no hidden fees at the counter.
+          </p>
+          <div className="mt-8 grid sm:grid-cols-3 gap-4">
+            {[
+              { t: 'Daily hire', d: `From ${fromPrice} per day on our economy cars.` },
+              { t: 'Weekly hire', d: 'Lower per-day rates on hires of 7 days or more.' },
+              { t: 'Midweek deals', d: 'Cheapest pickups are usually Monday to Thursday.' },
+            ].map((row) => (
+              <div key={row.t} className="border border-border rounded-2xl p-6">
+                <p className="text-xs uppercase tracking-widest text-primary font-semibold">{row.t}</p>
+                <p className="mt-2 text-sm text-muted-foreground">{row.d}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3 text-sm font-medium">
+            <Link to="/price-guide" className="underline hover:text-primary">See our full price guide →</Link>
+            <Link to="/hot-deals" className="underline hover:text-primary">Current {city} car hire deals →</Link>
+          </div>
+        </div>
+      </section>
+
       <section className="container mx-auto px-6 py-24 md:py-32 text-center max-w-4xl">
         <div className="flex items-center justify-center gap-3 mb-4">
           <Quote className="h-5 w-5 text-primary" />
