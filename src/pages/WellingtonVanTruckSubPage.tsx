@@ -11,7 +11,7 @@ import {
   type WellingtonSubPage,
 } from '@/lib/wellington-van-truck-pages';
 
-const SITE_URL = 'https://jamesblond.co.nz';
+const SITE_URL = 'https://www.jamesblond.co.nz';
 
 interface Props {
   page?: WellingtonSubPage;

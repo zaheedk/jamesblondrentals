@@ -103,7 +103,7 @@ const ChristchurchMinibusHire = () => {
         title="Minibus Hire Christchurch | 10 & 12 Seater Vans | James Blond"
         description="12-seater and 10-seater minibus hire in Christchurch from 515 Moorhouse Avenue. Automatic, car-licence, tow bar, unlimited kms."
         canonical="/christchurch-minibus-hire"
-        ogImage="https://jamesblond.co.nz/lovable-uploads/bdd5521d-5fab-4187-8d79-fcf80b3f46db.png"
+        ogImage="https://www.jamesblond.co.nz/lovable-uploads/bdd5521d-5fab-4187-8d79-fcf80b3f46db.png"
       />
       <JsonLd data={faqJsonLd} />
 

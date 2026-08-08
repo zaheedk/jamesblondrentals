@@ -18,7 +18,7 @@ const AucklandAirportCarRentals = () => {
         <title>Cheap Car Rentals | Auckland Airport - James Blond</title>
         <meta name="description" content="Affordable car rentals at Auckland Airport. Cheap daily rates on economy cars, sedans, wagons & SUVs. Book your Auckland Airport car hire today with flexible terms & unlimited km options!" />
         <meta name="keywords" content="cheap car rentals Auckland Airport, Auckland Airport car hire, budget car rental Auckland, airport car rental deals, affordable cars Auckland" />
-        <link rel="canonical" href="https://jamesblond.co.nz/auckland-airport-car-rentals" />
+        <link rel="canonical" href="https://www.jamesblond.co.nz/auckland-airport-car-rentals" />
       </Helmet>
     <div className="container mx-auto px-4 py-8">
       {/* Hero Section */}

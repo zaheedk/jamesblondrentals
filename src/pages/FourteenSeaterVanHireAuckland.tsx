@@ -92,7 +92,7 @@ const FourteenSeaterVanHireAuckland = () => {
         title="14 Seater Van Hire Auckland | Our Largest is a 12-Seater | James Blond"
         description="Looking for a 14 seater van in Auckland? Our largest passenger van is a 12-seater Toyota Hiace on a car licence — same drop-off, same simplicity,."
         canonical="/14-seater-van-hire-auckland"
-        ogImage="https://jamesblond.co.nz/lovable-uploads/bdd5521d-5fab-4187-8d79-fcf80b3f46db.png"
+        ogImage="https://www.jamesblond.co.nz/lovable-uploads/bdd5521d-5fab-4187-8d79-fcf80b3f46db.png"
       />
       <JsonLd data={faqJsonLd} />
 

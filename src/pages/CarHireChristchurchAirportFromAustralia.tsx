@@ -6,7 +6,7 @@ import PageSEO from '@/components/PageSEO';
 import JsonLd from '@/components/JsonLd';
 import { Helmet } from 'react-helmet-async';
 
-const PAGE_URL = 'https://jamesblond.co.nz/car-hire-christchurch-airport-from-australia';
+const PAGE_URL = 'https://www.jamesblond.co.nz/car-hire-christchurch-airport-from-australia';
 
 const CarHireChristchurchAirportFromAustralia = () => (
   <div className="container mx-auto px-4 py-10 space-y-10">
@@ -17,8 +17,8 @@ const CarHireChristchurchAirportFromAustralia = () => (
     />
     <Helmet>
       <link rel="alternate" hrefLang="en-au" href={PAGE_URL} />
-      <link rel="alternate" hrefLang="en-nz" href="https://jamesblond.co.nz/car-rental-christchurch-airport" />
-      <link rel="alternate" hrefLang="x-default" href="https://jamesblond.co.nz/car-rental-christchurch-airport" />
+      <link rel="alternate" hrefLang="en-nz" href="https://www.jamesblond.co.nz/car-rental-christchurch-airport" />
+      <link rel="alternate" hrefLang="x-default" href="https://www.jamesblond.co.nz/car-rental-christchurch-airport" />
     </Helmet>
     <JsonLd
       data={{

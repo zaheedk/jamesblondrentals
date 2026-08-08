@@ -18,7 +18,7 @@ const ContactChristchurchCentral = () => {
         "@context": "https://schema.org",
         "@type": "AutoRental",
         name: "James Blond Rentals — Christchurch Central",
-        url: "https://jamesblond.co.nz/contact/christchurch-central",
+        url: "https://www.jamesblond.co.nz/contact/christchurch-central",
         telephone: "+64800525663",
         email: "christchurch@jamesblond.co.nz",
         priceRange: "$$",
@@ -90,8 +90,8 @@ const ContactChristchurchCentral = () => {
         ],
       }}
     />
-    <JsonLd data={bookingHowTo("https://jamesblond.co.nz/contact/christchurch-central")} />
-    <JsonLd data={pickupHowTo({ pageUrl: "https://jamesblond.co.nz/contact/christchurch-central", locationName: "Christchurch Central", address: "515 Moorhouse Avenue, Waltham, Christchurch", isAirport: false })} />
+    <JsonLd data={bookingHowTo("https://www.jamesblond.co.nz/contact/christchurch-central")} />
+    <JsonLd data={pickupHowTo({ pageUrl: "https://www.jamesblond.co.nz/contact/christchurch-central", locationName: "Christchurch Central", address: "515 Moorhouse Avenue, Waltham, Christchurch", isAirport: false })} />
       <h1 className="text-4xl font-bold mb-8 text-center">Christchurch Central Branch</h1>
       <p className="text-center text-muted-foreground mb-8 max-w-2xl mx-auto">
         Looking for a rental vehicle? <Link to="/car-hire-christchurch" className="text-primary hover:underline font-medium">Explore our Christchurch car hire range</Link> — cars, SUVs, vans and trucks.

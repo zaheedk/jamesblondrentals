@@ -153,7 +153,7 @@ const FeaturedVehicles = () => {
             "@type": "ListItem",
             "position": idx + 1,
             "name": cat.title,
-            "url": `https://jamesblond.co.nz${cat.href}`,
+            "url": `https://www.jamesblond.co.nz${cat.href}`,
             "description": cat.description,
           })),
         })}

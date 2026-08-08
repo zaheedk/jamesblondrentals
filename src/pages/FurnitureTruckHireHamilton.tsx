@@ -11,7 +11,7 @@ const localBusiness = {
   "@context": "https://schema.org",
   "@type": "AutoRental",
   "name": "James Blond Rentals — Hamilton",
-  "url": "https://jamesblond.co.nz/furniture-truck-hire-hamilton",
+  "url": "https://www.jamesblond.co.nz/furniture-truck-hire-hamilton",
   "telephone": "+64800525663",
   "email": "info@jamesblond.co.nz",
   "priceRange": "$$",

@@ -7,7 +7,7 @@ import PageSEO from '@/components/PageSEO';
 import JsonLd from '@/components/JsonLd';
 import { christchurchVanPages, getChristchurchVanPageBySlug, type ChristchurchVanPage } from '@/lib/christchurch-van-pages';
 
-const SITE_URL = 'https://jamesblond.co.nz';
+const SITE_URL = 'https://www.jamesblond.co.nz';
 
 interface Props {
   page?: ChristchurchVanPage;

@@ -14,7 +14,7 @@ import {
 import coastal from '@/assets/auckland-car-rental-coastal-road.jpg';
 import heroImg from '@/assets/auckland-7-seater-suv-family.jpg';
 
-const SITE_URL = 'https://jamesblond.co.nz';
+const SITE_URL = 'https://www.jamesblond.co.nz';
 
 interface Props { variant: CommercialVariant }
 

@@ -20,8 +20,8 @@ const ContactWellington = () => {
         "@context": "https://schema.org",
         "@type": "AutoRental",
         name: "James Blond Rentals — Wellington",
-        image: "https://jamesblond.co.nz/lovable-uploads/cccdce30-4e44-423f-8a01-6db19d07e8fd.png",
-        url: "https://jamesblond.co.nz/contact/wellington",
+        image: "https://www.jamesblond.co.nz/lovable-uploads/cccdce30-4e44-423f-8a01-6db19d07e8fd.png",
+        url: "https://www.jamesblond.co.nz/contact/wellington",
         telephone: "+64800525663",
         email: "wellington@jamesblond.co.nz",
         priceRange: "$$",
@@ -93,8 +93,8 @@ const ContactWellington = () => {
         ],
       }}
     />
-    <JsonLd data={bookingHowTo("https://jamesblond.co.nz/contact/wellington")} />
-    <JsonLd data={pickupHowTo({ pageUrl: "https://jamesblond.co.nz/contact/wellington", locationName: "Wellington", address: "24 Abel Smith Street, Te Aro, Wellington", isAirport: false })} />
+    <JsonLd data={bookingHowTo("https://www.jamesblond.co.nz/contact/wellington")} />
+    <JsonLd data={pickupHowTo({ pageUrl: "https://www.jamesblond.co.nz/contact/wellington", locationName: "Wellington", address: "24 Abel Smith Street, Te Aro, Wellington", isAirport: false })} />
       <h1 className="text-4xl font-bold mb-8 text-center">Wellington Branch</h1>
       <p className="text-center text-gray-600 mb-8 max-w-2xl mx-auto">
         Need a moving truck in the capital? Browse our <Link to="/truck-hire-wellington" className="text-primary hover:underline font-medium">truck hire Wellington</Link> range — 2-tonne and 3-tonne trucks with tail lifts, ideal for CBD apartments and Hutt Valley moves.

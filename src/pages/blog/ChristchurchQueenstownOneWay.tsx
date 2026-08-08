@@ -4,7 +4,7 @@ import PageSEO from '@/components/PageSEO';
 import JsonLd from '@/components/JsonLd';
 import heroImg from '@/assets/awd-suv-nz-mountain-adventure.jpg';
 
-const SITE_URL = 'https://jamesblond.co.nz';
+const SITE_URL = 'https://www.jamesblond.co.nz';
 const SLUG = 'one-way-car-hire-christchurch-to-queenstown';
 const URL = `${SITE_URL}/blog/${SLUG}`;
 const PUBLISHED = '2026-06-24';

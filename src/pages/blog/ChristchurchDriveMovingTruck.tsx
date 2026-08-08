@@ -4,7 +4,7 @@ import PageSEO from '@/components/PageSEO';
 import JsonLd from '@/components/JsonLd';
 import heroImg from '@/assets/truck-open-doors-loading-boxes.jpg';
 
-const SITE_URL = 'https://jamesblond.co.nz';
+const SITE_URL = 'https://www.jamesblond.co.nz';
 const SLUG = 'how-to-drive-moving-truck-christchurch';
 const URL = `${SITE_URL}/blog/${SLUG}`;
 const PUBLISHED = '2026-07-09';

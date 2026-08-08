@@ -102,7 +102,7 @@ const AucklandVanHire = () => {
         title="12 Seater Van Hire Auckland | Toyota Hiace — James Blond"
         description="12 seater van hire in Auckland. Toyota Hiace automatic, car-licence, tow bar, unlimited kms. Penrose & Airport pickup. Same-day availability."
         canonical="/12-seater-van-hire-auckland"
-        ogImage="https://jamesblond.co.nz/lovable-uploads/bdd5521d-5fab-4187-8d79-fcf80b3f46db.png"
+        ogImage="https://www.jamesblond.co.nz/lovable-uploads/bdd5521d-5fab-4187-8d79-fcf80b3f46db.png"
       />
       <JsonLd data={faqJsonLd} />
 

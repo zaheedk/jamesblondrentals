@@ -11,7 +11,7 @@ const localBusiness = {
   '@context': 'https://schema.org',
   '@type': 'AutoRental',
   name: 'James Blond Rentals — Cheap Trailer Hire NZ',
-  url: 'https://jamesblond.co.nz/cheap-trailer-hire',
+  url: 'https://www.jamesblond.co.nz/cheap-trailer-hire',
   telephone: '+64800525663',
   email: 'info@jamesblond.co.nz',
   priceRange: '$',

@@ -1,6 +1,6 @@
 import JsonLd from './JsonLd';
 
-const SITE_URL = 'https://jamesblond.co.nz';
+const SITE_URL = 'https://www.jamesblond.co.nz';
 
 /**
  * Global Organization + AggregateRating structured data.

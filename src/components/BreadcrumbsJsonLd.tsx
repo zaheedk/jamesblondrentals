@@ -1,7 +1,7 @@
 import { useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 
-const SITE_URL = 'https://jamesblond.co.nz';
+const SITE_URL = 'https://www.jamesblond.co.nz';
 
 const toTitle = (slug: string) =>
   slug

@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { staticPageMetadata } from '../src/seo/static-page-metadata';
 
-const SITE_URL = 'https://jamesblond.co.nz';
+const SITE_URL = 'https://www.jamesblond.co.nz';
 const distDir = path.resolve(process.cwd(), 'dist');
 const appHtmlPath = path.join(distDir, 'index.html');
 

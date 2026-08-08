@@ -154,7 +154,7 @@ const VanDetail = () => {
           "@context": "https://schema.org",
           "@type": "Product",
           name: van.title,
-          image: `https://jamesblond.co.nz${van.img}`,
+          image: `https://www.jamesblond.co.nz${van.img}`,
           description: van.description,
           brand: { "@type": "Brand", name: "James Blond Rentals" },
           category: "Vehicle Rental",
