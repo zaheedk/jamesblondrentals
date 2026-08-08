@@ -30,7 +30,7 @@ const TrailerHireChristchurch = () => (
   <SimpleHubPage
     slug="/trailer-hire-christchurch"
     title="Trailer Hire Christchurch — Cage, Luggage & Car Transporter Trailers"
-    description="Trailer hire in Christchurch from $40/day. Cage, luggage and car-transporter trailers with same-day pickup across Canterbury."
+    description="Trailer hire in Christchurch from $65/day. Cage, luggage and car-transporter trailers with same-day pickup across Canterbury."
     h1="Trailer Hire Christchurch — Cage, Luggage & Car Transporters"
     intro="From tip runs to Rolleston moves and Mt Hutt gear runs, our Christchurch trailers are WOF'd, registered and ready when you are. Same-day pickup and daily, weekend or weekly rates."
     bullets={[
@@ -55,7 +55,7 @@ const TrailerHireChristchurch = () => (
     sections={[
       {
         h2: 'Cheap trailer hire in Christchurch',
-        body: 'A caged trailer from $40/day is the cheapest way to clear a garage, do a Styx Mill or Parkhouse Road tip run, or shift a single item. There is no per-kilometre charge on trailers and no counter admin fee, so the quoted daily rate is what you pay. Pick up Friday and return Monday for a weekend rate rather than three full days.',
+        body: 'A caged trailer from $65/day is the cheapest way to clear a garage, do a Styx Mill or Parkhouse Road tip run, or shift a single item. There is no per-kilometre charge on trailers and no counter admin fee, so the quoted daily rate is what you pay. Pick up Friday and return Monday for a weekend rate rather than three full days.',
         points: [
           'No per-kilometre charge on trailer hire',
           'Weekend hire charged as two days',
@@ -67,7 +67,7 @@ const TrailerHireChristchurch = () => (
     cities={cities}
     localBusiness={localBusiness}
     faq={[
-      { q: 'How much does trailer hire cost in Christchurch?', a: 'Cage trailer hire in Christchurch starts from around $40/day. Luggage and car-transporter trailers are slightly higher. Online booking shows live availability and the exact daily rate.' },
+      { q: 'How much does trailer hire cost in Christchurch?', a: 'Cage trailer hire in Christchurch starts from around $65/day. Luggage and car-transporter trailers are slightly higher. Online booking shows live availability and the exact daily rate.' },
       { q: 'What kinds of trailers can I hire in Christchurch?', a: 'We hire caged trailers (tip runs, green waste, bulky goods), lockable luggage trailers (moves, road trips, ski trips) and car-transporter trailers for shifting a vehicle around Canterbury.' },
       { q: 'Do I need a special licence to tow a trailer in Christchurch?', a: 'No — most caged and luggage trailers can be towed on a Class 1 NZ car licence. Heavier combinations may need a Class 2 endorsement; we flag this at booking.' },
       { q: 'Where do I pick up the trailer in Christchurch?', a: 'Trailers are available at our Christchurch branches for same-day pickup. Enter your dates in the booking form for the closest branch.' },

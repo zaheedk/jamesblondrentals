@@ -17,7 +17,7 @@ const suburbs = [
 const faq = [
   {
     q: 'How much is van hire in West Auckland?',
-    a: 'Standard cargo vans start from $69/day with unlimited kilometres. Jumbo vans for bigger loads from $99/day. Same-day pickup available from our Kelston branch — just minutes from Henderson, New Lynn and Te Atatu.',
+    a: 'Standard cargo vans start from $95/day with unlimited kilometres. Jumbo vans for bigger loads from $99/day. Same-day pickup available from our Kelston branch — just minutes from Henderson, New Lynn and Te Atatu.',
   },
   {
     q: 'Where do I pick up the van in West Auckland?',
@@ -59,8 +59,8 @@ const WestAucklandVanHire = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <PageSEO
-        title="Van Hire West Auckland from $69/day — Henderson, New Lynn, Te Atatu"
-        description="Cheap van hire in West Auckland — cargo, moving & jumbo vans from $69/day with unlimited km. Pickup minutes from Henderson, New Lynn, Te Atatu, Massey & Swanson. Drive on a car licence."
+        title="Van Hire West Auckland from $95/day — Henderson, New Lynn, Te Atatu"
+        description="Cheap van hire in West Auckland — cargo, moving & jumbo vans from $95/day with unlimited km. Pickup minutes from Henderson, New Lynn, Te Atatu, Massey & Swanson. Drive on a car licence."
         canonical="/west-auckland-van-hire"
       />
       <JsonLd data={faqLd} />
@@ -82,7 +82,7 @@ const WestAucklandVanHire = () => {
         <div className="grid md:grid-cols-2 gap-8 items-center">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold mb-4">
-              Van Hire West Auckland — From $69/day
+              Van Hire West Auckland — From $95/day
             </h1>
             <p className="text-lg text-gray-700 mb-6">
               Same-day cargo, moving and jumbo van hire from our Kelston branch — minutes
@@ -108,7 +108,7 @@ const WestAucklandVanHire = () => {
       {/* Quick benefits */}
       <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
         {[
-          { icon: Truck, t: 'From $69/day', s: 'Standard cargo van' },
+          { icon: Truck, t: 'From $95/day', s: 'Standard cargo van' },
           { icon: MapPin, t: 'Kelston branch', s: 'Near Henderson & New Lynn' },
           { icon: Clock, t: 'Same-day pickup', s: 'Book online or call' },
           { icon: Check, t: 'Car licence OK', s: 'No special licence needed' },
@@ -132,7 +132,7 @@ const WestAucklandVanHire = () => {
               <h3 className="font-bold text-lg mb-2">Standard Cargo Van</h3>
               <p className="text-sm text-muted-foreground mb-3">Toyota Hiace · 2.8m × 1.4m × 1.5m · 1,000kg payload</p>
               <p className="mb-4">Perfect for furniture deliveries, courier work, and 1-bedroom apartment moves around West Auckland. Unlimited km.</p>
-              <p className="text-2xl font-bold text-primary mb-3">From $69/day</p>
+              <p className="text-2xl font-bold text-primary mb-3">From $95/day</p>
               <Button asChild variant="outline" className="w-full">
                 <Link to="/fleet/vans/standard-van">View details</Link>
               </Button>

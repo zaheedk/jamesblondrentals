@@ -29,7 +29,7 @@ const TrailerHireWellington = () => (
   <SimpleHubPage
     slug="/trailer-hire-wellington"
     title="Trailer Hire Wellington — Cage, Luggage & Car Transporter Trailers"
-    description="Trailer hire in Wellington from $40/day. Cage, luggage and car-transporter trailers with same-day pickup. Tow on a standard NZ car licence."
+    description="Trailer hire in Wellington from $65/day. Cage, luggage and car-transporter trailers with same-day pickup. Tow on a standard NZ car licence."
     h1="Trailer Hire Wellington — Cage, Luggage & Car Transporters"
     intro="Need a trailer for a tip run, a flat move or a weekend project across Wellington? Our trailers are WOF'd, registered and ready. Pickup same day, keep it for the weekend or the week — your call."
     bullets={[
@@ -45,7 +45,7 @@ const TrailerHireWellington = () => (
     cities={cities}
     localBusiness={localBusiness}
     faq={[
-      { q: 'How much does trailer hire cost in Wellington?', a: 'Cage trailer hire in Wellington starts from around $40/day. Luggage and car-transporter trailers are slightly higher. Online booking shows the exact daily rate for your dates.' },
+      { q: 'How much does trailer hire cost in Wellington?', a: 'Cage trailer hire in Wellington starts from around $65/day. Luggage and car-transporter trailers are slightly higher. Online booking shows the exact daily rate for your dates.' },
       { q: 'What kinds of trailers can I hire in Wellington?', a: 'Caged trailers for tip runs and green waste, lockable luggage trailers for flat moves and road trips, and car-transporter trailers for shifting a car around the region.' },
       { q: 'Do I need a special licence to tow?', a: 'No — most caged and luggage trailers can be towed on a Class 1 NZ car licence. Heavier combinations may need a Class 2 endorsement; we flag this at booking.' },
       { q: 'Where do I pick up the trailer in Wellington?', a: 'Trailers are available at our Wellington branch for same-day pickup. Enter your dates in the booking form and we will confirm the closest branch.' },
