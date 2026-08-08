@@ -33,7 +33,7 @@ const CheapTrailerHire = () => (
     slug="/cheap-trailer-hire"
     title="Cheap Trailer Hire NZ from $65/day — Cage & Luggage Trailers"
     description="Cheap trailer hire in New Zealand from $65 a day. Cage, luggage and car-transporter trailers in Auckland, Hamilton, Wellington and Christchurch. Same-day pickup, no hidden fees."
-    h1="Cheap Trailer Hire NZ — from $40 a Day"
+    h1="Cheap Trailer Hire NZ — from $65 a Day"
     intro="Low-cost trailer hire without the low-cost surprises. Cage, luggage and car-transporter trailers from $65/day at James Blond branches in Auckland, Hamilton, Wellington and Christchurch — WOF'd, registered and ready for same-day pickup."
     bullets={[
       'Cage trailers from $65/day — the cheapest way to do a tip run',
