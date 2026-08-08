@@ -20,8 +20,8 @@ const ChristchurchTruckRentals = () => {
   return (
     <>
       <Helmet>
-        <title>Truck Hire Christchurch from $35/Hr | Same-Day Moving Truck Rental</title>
-        <meta name="description" content="Cheap truck hire Christchurch from $35/hr — 2-tonne & 3-tonne moving trucks with tail lifts. Same-day pickup, no hidden fees, drive on a car licence. Book online." />
+        <title>Cheapest Truck Hire Christchurch — From $35/Hr, Prices Upfront</title>
+        <meta name="description" content="Cheap truck hire prices in Christchurch: from $35/hr or $119/day for 2 & 3-tonne trucks with tail lift. Insurance included, no hidden fees, same-day pickup — see rates and book online." />
         <meta name="keywords" content="Christchurch truck rentals, moving trucks Christchurch, furniture truck hire, Christchurch moving, truck hire Canterbury" />
         <link rel="canonical" href="https://www.jamesblond.co.nz/truck-hire-christchurch" />
       </Helmet>

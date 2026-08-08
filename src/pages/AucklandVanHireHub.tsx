@@ -138,8 +138,8 @@ const AucklandVanHireHub = () => {
   return (
     <div className="bg-background text-foreground">
       <PageSEO
-        title="Van Hire Auckland from $95/Day | Same-Day Pickup — James Blond"
-        description="Van hire in Auckland from $95/day — cargo, jumbo and 12-seat vans. Same-day pickup at Penrose, Airport, South & West Auckland. Drive on a car licence. Book online."
+        title="Cheap Van Hire Auckland — Prices From $95/Day, No Hidden Fees"
+        description="Compare cheap van hire prices in Auckland from $95/day — cargo, jumbo and 12-seat vans. No hidden fees, same-day pickup at Penrose, Airport, South & West Auckland. See rates and book online."
         canonical="/van-hire-auckland"
       />
       <JsonLd data={faqJsonLd} />

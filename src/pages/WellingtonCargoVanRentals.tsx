@@ -15,8 +15,8 @@ const WellingtonCargoVanRentals = () => {
   return (
     <>
       <Helmet>
-        <title>Van Hire Wellington from $95/Day | Same-Day Pickup — James Blond</title>
-        <meta name="description" content="Van hire Wellington from $95/day — cargo and jumbo vans across CBD, Lower Hutt, Upper Hutt, Petone, Porirua and Kāpiti. Same-day pickup, drive on a car licence." />
+        <title>Cheap Van Hire Wellington — Prices From $95/Day, No Hidden Fees</title>
+        <meta name="description" content="Cheap van hire prices in Wellington from $95/day — cargo and jumbo vans with unlimited km options. No hidden fees, same-day pickup in CBD, Lower Hutt, Petone, Porirua and Kāpiti. Compare rates and book online." />
         <meta name="keywords" content="van hire Wellington, van rental Wellington, van rental Lower Hutt, van rental Upper Hutt, cargo van Petone, van hire Porirua, Kapiti van hire" />
         <link rel="canonical" href="https://www.jamesblond.co.nz/van-hire-wellington" />
       </Helmet>
