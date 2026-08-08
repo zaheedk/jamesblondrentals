@@ -72,7 +72,7 @@ const FourteenSeaterVanHireAuckland = () => {
         name: 'How much does a 12 seater van cost to hire in Auckland?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Daily rates start from around $189 for the 12-seat Toyota Hiace, with cheaper weekend, weekly and multi-day rates. Get a live quote in the booking form below.',
+          text: "Minibus and 12-seater rates change with demand and season, so we don't publish a fixed price guide. Ring 0800 525 663 or use the booking form for a live quote on your dates.",
         },
       },
       {
@@ -90,7 +90,7 @@ const FourteenSeaterVanHireAuckland = () => {
     <div className="bg-background text-foreground">
       <PageSEO
         title="14 Seater Van Hire Auckland | Our Largest is a 12-Seater | James Blond"
-        description="Looking for a 14 seater van in Auckland? Our largest passenger van is a 12-seater Toyota Hiace on a car licence — same drop-off, same simplicity, from $189/day."
+        description="Looking for a 14 seater van in Auckland? Our largest passenger van is a 12-seater Toyota Hiace on a car licence — same drop-off, same simplicity,."
         canonical="/14-seater-van-hire-auckland"
         ogImage="https://jamesblond.co.nz/lovable-uploads/bdd5521d-5fab-4187-8d79-fcf80b3f46db.png"
       />
@@ -148,8 +148,8 @@ const FourteenSeaterVanHireAuckland = () => {
                   loading="eager"
                 />
                 <div className="absolute -bottom-6 -left-6 bg-background border border-border px-5 py-3">
-                  <p className="text-xs uppercase tracking-widest text-muted-foreground">From</p>
-                  <p className="font-serif text-2xl">$189 / day</p>
+                  <p className="text-xs uppercase tracking-widest text-muted-foreground">Rates</p>
+                  <p className="font-serif text-2xl">On request</p>
                 </div>
               </div>
             </div>

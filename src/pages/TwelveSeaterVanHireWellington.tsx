@@ -56,7 +56,7 @@ const TwelveSeaterVanHireWellington = () => {
         name: 'How much does a 12 seater van cost to hire in Wellington?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Daily rates for a 12-seat Toyota Hiace start from around $189, with cheaper weekend, weekly and multi-day rates. Ring 0800 525 663 for a live quote on your dates.',
+          text: "Minibus and 12-seater rates change with demand and season, so we don't publish a fixed price guide. Ring 0800 525 663 or use the booking form for a live quote on your dates.",
         },
       },
       {
@@ -90,7 +90,7 @@ const TwelveSeaterVanHireWellington = () => {
     <div className="bg-background text-foreground">
       <PageSEO
         title="12 Seater Van Hire Wellington | Toyota Hiace | James Blond"
-        description="12 seater van hire in Wellington — Toyota Hiace and LDV Deliver 9. Automatic, car-licence, tow bar and unlimited kms. From $189/day."
+        description="12 seater van hire in Wellington — Toyota Hiace and LDV Deliver 9. Automatic, car-licence, tow bar and unlimited kms.."
         canonical="/12-seater-van-hire-wellington"
         ogImage="https://jamesblond.co.nz/lovable-uploads/bdd5521d-5fab-4187-8d79-fcf80b3f46db.png"
       />
@@ -140,8 +140,8 @@ const TwelveSeaterVanHireWellington = () => {
                   loading="eager"
                 />
                 <div className="absolute -bottom-6 -left-6 bg-background border border-border px-5 py-3">
-                  <p className="text-xs uppercase tracking-widest text-muted-foreground">From</p>
-                  <p className="font-serif text-2xl">$189 / day</p>
+                  <p className="text-xs uppercase tracking-widest text-muted-foreground">Rates</p>
+                  <p className="font-serif text-2xl">On request</p>
                 </div>
               </div>
             </div>

@@ -66,7 +66,7 @@ const HamiltonMinibusHire = () => {
         name: 'How much does 12 seater minibus hire cost in Hamilton?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Daily rates for a 12-seat minibus in Hamilton start from around $189, with cheaper weekend, weekly and multi-day rates. Ring 0800 525 663 for a live quote.',
+          text: "Minibus and 12-seater rates change with demand and season, so we don't publish a fixed price guide. Ring 0800 525 663 or use the booking form for a live quote on your dates.",
         },
       },
       {
@@ -142,8 +142,8 @@ const HamiltonMinibusHire = () => {
                   loading="eager"
                 />
                 <div className="absolute -bottom-6 -left-6 bg-background border border-border px-5 py-3">
-                  <p className="text-xs uppercase tracking-widest text-muted-foreground">From</p>
-                  <p className="font-serif text-2xl">$189 / day</p>
+                  <p className="text-xs uppercase tracking-widest text-muted-foreground">Rates</p>
+                  <p className="font-serif text-2xl">On request</p>
                 </div>
               </div>
             </div>
