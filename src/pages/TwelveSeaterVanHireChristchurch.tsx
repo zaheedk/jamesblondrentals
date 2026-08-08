@@ -93,7 +93,7 @@ const TwelveSeaterVanHireChristchurch = () => {
         title="12 Seater Van Hire Christchurch | Toyota Hiace | James Blond"
         description="12 seater van hire in Christchurch from 515 Moorhouse Avenue. Toyota Hiace and LDV, automatic, car-licence, tow bar and unlimited kms."
         canonical="/12-seater-van-hire-christchurch"
-        ogImage="https://jamesblond.co.nz/lovable-uploads/bdd5521d-5fab-4187-8d79-fcf80b3f46db.png"
+        ogImage="https://www.jamesblond.co.nz/lovable-uploads/bdd5521d-5fab-4187-8d79-fcf80b3f46db.png"
       />
       <JsonLd data={faqJsonLd} />
 

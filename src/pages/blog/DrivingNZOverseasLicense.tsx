@@ -4,7 +4,7 @@ import PageSEO from '@/components/PageSEO';
 import JsonLd from '@/components/JsonLd';
 import heroImg from '@/assets/auckland-car-rental-coastal-road.jpg';
 
-const SITE_URL = 'https://jamesblond.co.nz';
+const SITE_URL = 'https://www.jamesblond.co.nz';
 const SLUG = 'driving-in-new-zealand-with-overseas-license';
 const URL = `${SITE_URL}/blog/${SLUG}`;
 const PUBLISHED = '2026-07-09';

@@ -4,7 +4,7 @@ import PageSEO from '@/components/PageSEO';
 import JsonLd from '@/components/JsonLd';
 import heroImg from '@/assets/eco-hybrid-car-nz-landscape.jpg';
 
-const SITE_URL = 'https://jamesblond.co.nz';
+const SITE_URL = 'https://www.jamesblond.co.nz';
 const SLUG = 'hanmer-springs-weekend-from-christchurch-car-hire';
 const URL = `${SITE_URL}/blog/${SLUG}`;
 const PUBLISHED = '2026-06-26';

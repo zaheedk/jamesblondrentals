@@ -31,12 +31,12 @@ const ChristchurchTruckRentals = () => {
           "@type": "Service",
           serviceType: "Truck Hire Christchurch",
           name: "Truck Hire Christchurch — James Blond Rentals",
-          url: "https://jamesblond.co.nz/truck-hire-christchurch",
+          url: "https://www.jamesblond.co.nz/truck-hire-christchurch",
           areaServed: { "@type": "City", name: "Christchurch" },
           provider: {
             "@type": "AutoRental",
             name: "James Blond Rentals",
-            url: "https://jamesblond.co.nz",
+            url: "https://www.jamesblond.co.nz",
             telephone: "+64800525663",
             address: {
               "@type": "PostalAddress",
@@ -73,9 +73,9 @@ const ChristchurchTruckRentals = () => {
           "@context": "https://schema.org",
           "@type": "BreadcrumbList",
           itemListElement: [
-            { "@type": "ListItem", position: 1, name: "Home", item: "https://jamesblond.co.nz/" },
-            { "@type": "ListItem", position: 2, name: "Truck Hire", item: "https://jamesblond.co.nz/truck-hire" },
-            { "@type": "ListItem", position: 3, name: "Truck Hire Christchurch", item: "https://jamesblond.co.nz/truck-hire-christchurch" },
+            { "@type": "ListItem", position: 1, name: "Home", item: "https://www.jamesblond.co.nz/" },
+            { "@type": "ListItem", position: 2, name: "Truck Hire", item: "https://www.jamesblond.co.nz/truck-hire" },
+            { "@type": "ListItem", position: 3, name: "Truck Hire Christchurch", item: "https://www.jamesblond.co.nz/truck-hire-christchurch" },
           ],
         }}
       />

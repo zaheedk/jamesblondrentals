@@ -94,7 +94,7 @@ const HamiltonMinibusHire = () => {
         title="Minibus & 12 Seater Van Hire Hamilton | James Blond"
         description="12-seater minibus and 10-seater van hire in Hamilton. Automatic, car-licence, tow bar, unlimited kms across the Waikato and North Island."
         canonical="/hamilton-minibus-hire"
-        ogImage="https://jamesblond.co.nz/lovable-uploads/bdd5521d-5fab-4187-8d79-fcf80b3f46db.png"
+        ogImage="https://www.jamesblond.co.nz/lovable-uploads/bdd5521d-5fab-4187-8d79-fcf80b3f46db.png"
       />
       <JsonLd data={faqJsonLd} />
 

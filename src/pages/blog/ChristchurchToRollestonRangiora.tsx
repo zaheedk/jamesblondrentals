@@ -4,7 +4,7 @@ import PageSEO from '@/components/PageSEO';
 import JsonLd from '@/components/JsonLd';
 import heroImg from '@/assets/couple-moving-boxes-truck.jpg';
 
-const SITE_URL = 'https://jamesblond.co.nz';
+const SITE_URL = 'https://www.jamesblond.co.nz';
 const SLUG = 'truck-hire-christchurch-to-rolleston-rangiora';
 const URL = `${SITE_URL}/blog/${SLUG}`;
 const PUBLISHED = '2026-07-09';

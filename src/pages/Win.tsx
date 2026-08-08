@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import PageSEO from '@/components/PageSEO';
 
-const SITE_URL = 'https://jamesblond.co.nz';
+const SITE_URL = 'https://www.jamesblond.co.nz';
 
 const Win = () => {
   const promotionLd = {

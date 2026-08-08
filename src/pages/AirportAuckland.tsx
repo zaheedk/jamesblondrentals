@@ -14,8 +14,8 @@ const AirportAuckland = () => (
         "@context": "https://schema.org",
         "@type": "AutoRental",
         name: "James Blond Rentals — Auckland Airport",
-        image: "https://jamesblond.co.nz/lovable-uploads/6a274083-edb0-4ac2-8e40-4ac3703a8660.png",
-        url: "https://jamesblond.co.nz/airport/auckland",
+        image: "https://www.jamesblond.co.nz/lovable-uploads/6a274083-edb0-4ac2-8e40-4ac3703a8660.png",
+        url: "https://www.jamesblond.co.nz/airport/auckland",
         telephone: "+64800525663",
         email: "info@jamesblond.co.nz",
         priceRange: "$$",
@@ -95,8 +95,8 @@ const AirportAuckland = () => (
         ],
       }}
     />
-    <JsonLd data={bookingHowTo("https://jamesblond.co.nz/airport/auckland")} />
-    <JsonLd data={pickupHowTo({ pageUrl: "https://jamesblond.co.nz/airport/auckland", locationName: "Auckland Airport", address: "5/203 Kirkbride Road, Mangere, Auckland", isAirport: true, shuttle: "After collecting your bags, call 0800 525 663 and our free shuttle will collect you from the Auckland International or Domestic terminal and take you to 5/203 Kirkbride Road, Mangere." })} />
+    <JsonLd data={bookingHowTo("https://www.jamesblond.co.nz/airport/auckland")} />
+    <JsonLd data={pickupHowTo({ pageUrl: "https://www.jamesblond.co.nz/airport/auckland", locationName: "Auckland Airport", address: "5/203 Kirkbride Road, Mangere, Auckland", isAirport: true, shuttle: "After collecting your bags, call 0800 525 663 and our free shuttle will collect you from the Auckland International or Domestic terminal and take you to 5/203 Kirkbride Road, Mangere." })} />
     <section className="mb-8">
       <div className="text-center bg-secondary p-4 rounded-lg mb-6">
         <p className="text-lg font-bold">

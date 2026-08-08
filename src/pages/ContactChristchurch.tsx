@@ -18,8 +18,8 @@ const ContactChristchurch = () => {
         "@context": "https://schema.org",
         "@type": "AutoRental",
         name: "James Blond Rentals — Christchurch",
-        image: "https://jamesblond.co.nz/lovable-uploads/f40953dd-07c7-405f-a446-bbb6de3b2aac.png",
-        url: "https://jamesblond.co.nz/contact/christchurch",
+        image: "https://www.jamesblond.co.nz/lovable-uploads/f40953dd-07c7-405f-a446-bbb6de3b2aac.png",
+        url: "https://www.jamesblond.co.nz/contact/christchurch",
         telephone: "+64800525663",
         email: "christchurch@jamesblond.co.nz",
         priceRange: "$$",
@@ -91,8 +91,8 @@ const ContactChristchurch = () => {
         ],
       }}
     />
-    <JsonLd data={bookingHowTo("https://jamesblond.co.nz/contact/christchurch")} />
-    <JsonLd data={pickupHowTo({ pageUrl: "https://jamesblond.co.nz/contact/christchurch", locationName: "Christchurch", address: "25 Logistics Drive, Harewood, Christchurch", isAirport: false })} />
+    <JsonLd data={bookingHowTo("https://www.jamesblond.co.nz/contact/christchurch")} />
+    <JsonLd data={pickupHowTo({ pageUrl: "https://www.jamesblond.co.nz/contact/christchurch", locationName: "Christchurch", address: "25 Logistics Drive, Harewood, Christchurch", isAirport: false })} />
       <h1 className="text-4xl font-bold mb-8 text-center">Christchurch Branch</h1>
       <p className="text-center text-muted-foreground mb-8 max-w-2xl mx-auto">
         Looking for a rental vehicle? <Link to="/car-hire-christchurch" className="text-primary hover:underline font-medium">Explore our Christchurch car hire range</Link> — cars, SUVs, vans and trucks.

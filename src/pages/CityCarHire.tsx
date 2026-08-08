@@ -11,7 +11,7 @@ import coastal from '@/assets/auckland-car-rental-coastal-road.jpg';
 import awd from '@/assets/awd-suv-nz-mountain-adventure.jpg';
 import eco from '@/assets/eco-hybrid-car-nz-landscape.jpg';
 
-const SITE_URL = 'https://jamesblond.co.nz';
+const SITE_URL = 'https://www.jamesblond.co.nz';
 
 export interface CityCarHireProps {
   city: string;

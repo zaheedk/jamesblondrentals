@@ -20,7 +20,7 @@ const ContactHamilton = () => {
         "@context": "https://schema.org",
         "@type": "AutoRental",
         name: "James Blond Rentals — Hamilton",
-        url: "https://jamesblond.co.nz/contact/hamilton",
+        url: "https://www.jamesblond.co.nz/contact/hamilton",
         telephone: "+64800525663",
         email: "info@jamesblond.co.nz",
         priceRange: "$$",
@@ -92,8 +92,8 @@ const ContactHamilton = () => {
         ],
       }}
     />
-    <JsonLd data={bookingHowTo("https://jamesblond.co.nz/contact/hamilton")} />
-    <JsonLd data={pickupHowTo({ pageUrl: "https://jamesblond.co.nz/contact/hamilton", locationName: "Hamilton", address: "17 Bandon Street, Frankton, Hamilton", isAirport: false })} />
+    <JsonLd data={bookingHowTo("https://www.jamesblond.co.nz/contact/hamilton")} />
+    <JsonLd data={pickupHowTo({ pageUrl: "https://www.jamesblond.co.nz/contact/hamilton", locationName: "Hamilton", address: "17 Bandon Street, Frankton, Hamilton", isAirport: false })} />
       <h1 className="text-4xl font-bold mb-8 text-center">Hamilton Branch</h1>
 
       <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-12">

@@ -9,7 +9,7 @@ import { oneWayRoutes } from '@/lib/one-way-routes';
 import coastal from '@/assets/auckland-car-rental-coastal-road.jpg';
 import heroSuv from '@/assets/auckland-7-seater-suv-family.jpg';
 
-const SITE_URL = 'https://jamesblond.co.nz';
+const SITE_URL = 'https://www.jamesblond.co.nz';
 const PAGE_URL = `${SITE_URL}/one-way-car-hire`;
 
 const OneWayCarHire: React.FC = () => {

@@ -4,7 +4,7 @@ import PageSEO from '@/components/PageSEO';
 import JsonLd from '@/components/JsonLd';
 import heroImg from '@/assets/hero-ski-season.jpg';
 
-const SITE_URL = 'https://jamesblond.co.nz';
+const SITE_URL = 'https://www.jamesblond.co.nz';
 const SLUG = 'mt-hutt-ski-guide-awd-hire-christchurch';
 const URL = `${SITE_URL}/blog/${SLUG}`;
 const PUBLISHED = '2026-06-22';

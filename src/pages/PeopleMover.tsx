@@ -10,7 +10,7 @@ const seo = {
   title: "People Mover Rentals: 8, 10, 12 Seaters | James Blond",
   description:
     "Premium 8, 10 and 12 seater people movers in NZ. Kia Carnival, Toyota HiAce, LDV Deliver 9. Unlimited km, zero excess option. Auckland, Wellington, Christchurch.",
-  canonical: "https://jamesblond.co.nz/people-mover",
+  canonical: "https://www.jamesblond.co.nz/people-mover",
 };
 
 export default function PeopleMover() {

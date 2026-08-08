@@ -33,12 +33,12 @@ const WellingtonTruckRentals = () => {
           "@type": "Service",
           serviceType: "Truck Hire Wellington",
           name: "Truck Hire Wellington — James Blond Rentals",
-          url: "https://jamesblond.co.nz/truck-hire-wellington",
+          url: "https://www.jamesblond.co.nz/truck-hire-wellington",
           areaServed: { "@type": "City", name: "Wellington" },
           provider: {
             "@type": "AutoRental",
             name: "James Blond Rentals",
-            url: "https://jamesblond.co.nz",
+            url: "https://www.jamesblond.co.nz",
             telephone: "+64800525663",
             address: {
               "@type": "PostalAddress",
@@ -76,9 +76,9 @@ const WellingtonTruckRentals = () => {
           "@context": "https://schema.org",
           "@type": "BreadcrumbList",
           itemListElement: [
-            { "@type": "ListItem", position: 1, name: "Home", item: "https://jamesblond.co.nz/" },
-            { "@type": "ListItem", position: 2, name: "Truck Hire", item: "https://jamesblond.co.nz/truck-hire" },
-            { "@type": "ListItem", position: 3, name: "Truck Hire Wellington", item: "https://jamesblond.co.nz/truck-hire-wellington" },
+            { "@type": "ListItem", position: 1, name: "Home", item: "https://www.jamesblond.co.nz/" },
+            { "@type": "ListItem", position: 2, name: "Truck Hire", item: "https://www.jamesblond.co.nz/truck-hire" },
+            { "@type": "ListItem", position: 3, name: "Truck Hire Wellington", item: "https://www.jamesblond.co.nz/truck-hire-wellington" },
           ],
         }}
       />

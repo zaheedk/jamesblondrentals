@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Home, ChevronRight } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 
-const SITE_URL = 'https://jamesblond.co.nz';
+const SITE_URL = 'https://www.jamesblond.co.nz';
 
 interface WellingtonBreadcrumbProps {
   currentLabel: string;

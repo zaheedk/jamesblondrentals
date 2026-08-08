@@ -22,8 +22,8 @@ const AirportWellington = () => (
         "@context": "https://schema.org",
         "@type": "AutoRental",
         name: "James Blond Rentals — Wellington Airport",
-        image: "https://jamesblond.co.nz/lovable-uploads/cccdce30-4e44-423f-8a01-6db19d07e8fd.png",
-        url: "https://jamesblond.co.nz/airport/wellington",
+        image: "https://www.jamesblond.co.nz/lovable-uploads/cccdce30-4e44-423f-8a01-6db19d07e8fd.png",
+        url: "https://www.jamesblond.co.nz/airport/wellington",
         telephone: "+64800525663",
         email: "wellington@jamesblond.co.nz",
         priceRange: "$$",
@@ -102,8 +102,8 @@ const AirportWellington = () => (
         ],
       }}
     />
-    <JsonLd data={bookingHowTo("https://jamesblond.co.nz/airport/wellington")} />
-    <JsonLd data={pickupHowTo({ pageUrl: "https://jamesblond.co.nz/airport/wellington", locationName: "Wellington Airport", address: "19 Shelly Bay Road, Miramar, Wellington", isAirport: true, shuttle: "After collecting your bags, call Windy Depot on 027 837 4372 and our complimentary 24/7 shuttle will pick you up from the terminal and take you to 19 Shelly Bay Road, Miramar." })} />
+    <JsonLd data={bookingHowTo("https://www.jamesblond.co.nz/airport/wellington")} />
+    <JsonLd data={pickupHowTo({ pageUrl: "https://www.jamesblond.co.nz/airport/wellington", locationName: "Wellington Airport", address: "19 Shelly Bay Road, Miramar, Wellington", isAirport: true, shuttle: "After collecting your bags, call Windy Depot on 027 837 4372 and our complimentary 24/7 shuttle will pick you up from the terminal and take you to 19 Shelly Bay Road, Miramar." })} />
     <section className="mb-8">
       <div className="text-center bg-secondary p-4 rounded-lg mb-6">
         <p className="text-lg font-bold">

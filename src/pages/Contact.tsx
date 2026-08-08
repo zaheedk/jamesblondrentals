@@ -77,8 +77,8 @@ const Contact = () => {
           "@context": "https://schema.org",
           "@type": "AutoRental",
           name: "James Blond Rentals",
-          image: "https://jamesblond.co.nz/lovable-uploads/ee23bb91-cc75-4cf1-a745-f44e4a4bbb12.png",
-          url: "https://jamesblond.co.nz/contact",
+          image: "https://www.jamesblond.co.nz/lovable-uploads/ee23bb91-cc75-4cf1-a745-f44e4a4bbb12.png",
+          url: "https://www.jamesblond.co.nz/contact",
           telephone: "+64800525663",
           email: "info@jamesblond.co.nz",
           priceRange: "$$",
@@ -158,8 +158,8 @@ const Contact = () => {
           ],
         }}
       />
-      <JsonLd data={bookingHowTo("https://jamesblond.co.nz/contact")} />
-      <JsonLd data={pickupHowTo({ pageUrl: "https://jamesblond.co.nz/contact", locationName: "James Blond Rentals", address: "4004 Great North Road, Glen Eden, Auckland", isAirport: false })} />
+      <JsonLd data={bookingHowTo("https://www.jamesblond.co.nz/contact")} />
+      <JsonLd data={pickupHowTo({ pageUrl: "https://www.jamesblond.co.nz/contact", locationName: "James Blond Rentals", address: "4004 Great North Road, Glen Eden, Auckland", isAirport: false })} />
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl md:text-4xl font-bold mb-6">Contact Us</h1>
         

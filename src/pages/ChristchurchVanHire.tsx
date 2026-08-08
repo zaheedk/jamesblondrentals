@@ -12,7 +12,7 @@ import vanFleet from '@/assets/south-auckland-cargo-van-fleet.jpg';
 import minibus from '@/assets/12-seater-van-auckland-sky-tower.jpg';
 import { christchurchVanPages } from '@/lib/christchurch-van-pages';
 
-const SITE_URL = 'https://jamesblond.co.nz';
+const SITE_URL = 'https://www.jamesblond.co.nz';
 const PAGE_URL = `${SITE_URL}/van-hire-christchurch`;
 
 const vans = [

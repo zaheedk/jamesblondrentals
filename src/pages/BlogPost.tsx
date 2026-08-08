@@ -1198,7 +1198,7 @@ const BlogPost = () => {
       <Helmet>
         <title>{`${article.title} | James Blond Rentals Blog`}</title>
         <meta name="description" content={article.excerpt?.substring(0, 160) || article.meta_description || `Read ${article.title} on the James Blond Rentals blog.`} />
-        <link rel="canonical" href={`https://jamesblond.co.nz/blog/${article.slug || slug}`} />
+        <link rel="canonical" href={`https://www.jamesblond.co.nz/blog/${article.slug || slug}`} />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Article",
@@ -1211,9 +1211,9 @@ const BlogPost = () => {
           "publisher": {
             "@type": "Organization",
             "name": "James Blond Rentals",
-            "logo": { "@type": "ImageObject", "url": "https://jamesblond.co.nz/lovable-uploads/ee23bb91-cc75-4cf1-a745-f44e4a4bbb12.png" }
+            "logo": { "@type": "ImageObject", "url": "https://www.jamesblond.co.nz/lovable-uploads/ee23bb91-cc75-4cf1-a745-f44e4a4bbb12.png" }
           },
-          "mainEntityOfPage": { "@type": "WebPage", "@id": `https://jamesblond.co.nz/blog/${article.slug || slug}` }
+          "mainEntityOfPage": { "@type": "WebPage", "@id": `https://www.jamesblond.co.nz/blog/${article.slug || slug}` }
         })}</script>
       </Helmet>
       {/* Back to Blog Button */}

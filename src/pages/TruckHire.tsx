@@ -7,7 +7,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import PageSEO from '@/components/PageSEO';
 import JsonLd from '@/components/JsonLd';
 
-const SITE_URL = 'https://jamesblond.co.nz';
+const SITE_URL = 'https://www.jamesblond.co.nz';
 const PAGE_URL = `${SITE_URL}/truck-hire`;
 
 const cityLinks = [

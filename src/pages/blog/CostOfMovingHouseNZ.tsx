@@ -3,7 +3,7 @@ import { Calendar, Clock, ArrowLeft, MapPin } from 'lucide-react';
 import PageSEO from '@/components/PageSEO';
 import JsonLd from '@/components/JsonLd';
 
-const SITE_URL = 'https://jamesblond.co.nz';
+const SITE_URL = 'https://www.jamesblond.co.nz';
 const SLUG = 'cost-of-moving-house-nz-2026';
 const URL = `${SITE_URL}/blog/${SLUG}`;
 const PUBLISHED = '2026-07-11';

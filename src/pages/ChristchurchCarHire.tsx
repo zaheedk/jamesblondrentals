@@ -10,7 +10,7 @@ import coastal from '@/assets/auckland-car-rental-coastal-road.jpg';
 import ski from '@/assets/hero-ski-season.jpg';
 import eco from '@/assets/eco-hybrid-car-nz-landscape.jpg';
 
-const SITE_URL = 'https://jamesblond.co.nz';
+const SITE_URL = 'https://www.jamesblond.co.nz';
 const PAGE_URL = `${SITE_URL}/car-hire-christchurch`;
 const FROM_PRICE = '$45';
 

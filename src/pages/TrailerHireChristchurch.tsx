@@ -12,7 +12,7 @@ const localBusiness = {
   '@context': 'https://schema.org',
   '@type': 'AutoRental',
   name: 'James Blond Rentals — Christchurch',
-  url: 'https://jamesblond.co.nz/trailer-hire-christchurch',
+  url: 'https://www.jamesblond.co.nz/trailer-hire-christchurch',
   telephone: '+64800525663',
   email: 'info@jamesblond.co.nz',
   priceRange: '$$',

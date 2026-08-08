@@ -11,7 +11,7 @@ const localBusiness = {
   '@context': 'https://schema.org',
   '@type': 'AutoRental',
   name: 'James Blond Rentals — Wellington',
-  url: 'https://jamesblond.co.nz/trailer-hire-wellington',
+  url: 'https://www.jamesblond.co.nz/trailer-hire-wellington',
   telephone: '+64800525663',
   email: 'info@jamesblond.co.nz',
   priceRange: '$$',
