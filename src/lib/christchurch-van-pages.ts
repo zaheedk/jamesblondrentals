@@ -21,6 +21,8 @@ export interface ChristchurchVanPage {
   bodyParagraphs: string[];
   breadcrumbLabel: string;
   locationName: string; // e.g. "Christchurch", "Rolleston"
+  /** Shown above the fold when there is no branch in this town — sets pickup expectations. */
+  pickupNotice?: string;
 }
 
 const baseFaqs = [
@@ -315,11 +317,13 @@ export const christchurchVanPages: ChristchurchVanPage[] = [
   {
     slug: 'van-hire-ashburton',
     path: '/van-hire-ashburton',
-    metaTitle: 'Van Hire Ashburton — Cargo & Moving Vans Serving Mid Canterbury',
+    metaTitle: 'Van Hire Ashburton — Pickup from Christchurch (1hr up SH1)',
     metaDescription:
-      'Van hire for Ashburton and Mid Canterbury. Pick up cargo vans, jumbo vans or 12-seat minibuses from our Christchurch branch, around an hour up SH1.',
+      'Van hire for Ashburton and Mid Canterbury. We have no Ashburton branch — vans are collected from our Christchurch branch, about an hour north on SH1, from $95/day. Delivery possible on longer hires.',
     eyebrow: 'Mid Canterbury · Ashburton',
     h1: 'Van Hire in Ashburton',
+    pickupNotice:
+      'No Ashburton branch: vans are collected from our Christchurch branch (Moorhouse Ave), about an hour north on SH1. Delivery into Ashburton may be possible on longer hires — call 0800 525 663.',
     intro:
       'Ashburton sits an hour south of Christchurch on State Highway 1. Our Christchurch van fleet covers Mid-Canterbury trades, moves and tourism runs — including one-way drops further south.',
     heroImage: vanInterior,
