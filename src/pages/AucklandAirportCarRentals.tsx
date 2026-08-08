@@ -15,8 +15,8 @@ const AucklandAirportCarRentals = () => {
   return (
     <>
       <Helmet>
-        <title>Cheap Car Rentals | Auckland Airport - James Blond</title>
-        <meta name="description" content="Affordable car rentals at Auckland Airport. Cheap daily rates on economy cars, sedans, wagons & SUVs. Book your Auckland Airport car hire today with flexible terms & unlimited km options!" />
+        <title>Auckland Airport Car Rental — Cheap Rates &amp; Free Shuttle</title>
+        <meta name="description" content="Auckland Airport car rental with free shuttle from both terminals. Cheap daily rates on economy cars, sedans, wagons & SUVs, unlimited km options and no hidden fees. Book online." />
         <meta name="keywords" content="cheap car rentals Auckland Airport, Auckland Airport car hire, budget car rental Auckland, airport car rental deals, affordable cars Auckland" />
         <link rel="canonical" href="https://www.jamesblond.co.nz/auckland-airport-car-rentals" />
       </Helmet>
@@ -24,7 +24,7 @@ const AucklandAirportCarRentals = () => {
       {/* Hero Section */}
       <section className="bg-primary/5 rounded-lg p-6 mb-12">
         <div className="flex flex-col items-center">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4 text-center">Cheap Car Rentals at Auckland Airport - Budget-Friendly Rates</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4 text-center">Auckland Airport Car Rental — Cheap Rates, Free Terminal Shuttle</h1>
           <p className="text-lg text-gray-700 mb-6 max-w-3xl text-center">
             Find affordable car hire at Auckland Airport with James Blond Rentals. From economy cars to SUVs, we offer competitive daily rates with flexible rental terms and unlimited kilometer options.
           </p>
@@ -99,6 +99,58 @@ const AucklandAirportCarRentals = () => {
               />
             </AspectRatio>
           </div>
+        </div>
+      </section>
+
+      {/* Terminal pickup & shuttle */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold mb-6">Where to Pick Up Your Car at Auckland Airport</h2>
+        <div className="grid md:grid-cols-2 gap-6">
+          <Card>
+            <CardContent className="pt-6">
+              <h3 className="font-bold text-xl mb-3">International Terminal arrivals</h3>
+              <ol className="space-y-3 text-gray-600 text-sm">
+                <li className="flex gap-2"><span className="font-bold text-primary">1.</span> Clear customs and biosecurity, then exit through the arrivals hall.</li>
+                <li className="flex gap-2"><span className="font-bold text-primary">2.</span> Call our branch on <a href="tel:0800525663" className="text-primary hover:underline">0800 525 663</a> once you have your bags.</li>
+                <li className="flex gap-2"><span className="font-bold text-primary">3.</span> Wait at the transport / shuttle pickup area outside arrivals.</li>
+                <li className="flex gap-2"><span className="font-bold text-primary">4.</span> Our free shuttle takes you to 5/203 Kirkbride Road, Māngere — a short drive from the terminal.</li>
+              </ol>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <h3 className="font-bold text-xl mb-3">Domestic Terminal arrivals</h3>
+              <ol className="space-y-3 text-gray-600 text-sm">
+                <li className="flex gap-2"><span className="font-bold text-primary">1.</span> Collect your bags from the domestic baggage claim.</li>
+                <li className="flex gap-2"><span className="font-bold text-primary">2.</span> Call <a href="tel:0800525663" className="text-primary hover:underline">0800 525 663</a> to let us know you have landed.</li>
+                <li className="flex gap-2"><span className="font-bold text-primary">3.</span> Meet the shuttle at the domestic terminal pickup zone.</li>
+                <li className="flex gap-2"><span className="font-bold text-primary">4.</span> Paperwork and keys take about 10 minutes at the branch, then you are on the motorway.</li>
+              </ol>
+            </CardContent>
+          </Card>
+        </div>
+        <div className="mt-6 grid md:grid-cols-3 gap-4">
+          <Card>
+            <CardContent className="pt-6">
+              <h3 className="font-semibold mb-2">Shuttle hours</h3>
+              <p className="text-sm text-gray-600">Free shuttle runs during branch hours, 6:00 AM – 10:00 PM daily. Arrange after-hours pickup in advance.</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <h3 className="font-semibold mb-2">Delayed flight?</h3>
+              <p className="text-sm text-gray-600">Add your flight number to your booking and we will hold your car if your flight is late.</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <h3 className="font-semibold mb-2">Returning your car</h3>
+              <p className="text-sm text-gray-600">Drop the car at the Kirkbride Road branch and we shuttle you back to your terminal — allow 30 minutes before check-in.</p>
+            </CardContent>
+          </Card>
+        </div>
+        <div className="mt-6 text-sm">
+          <Link to="/car-hire-auckland" className="text-primary hover:underline font-medium">Not flying in? See car hire in Auckland city →</Link>
         </div>
       </section>
 
