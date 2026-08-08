@@ -58,9 +58,9 @@ const TrailerHireHamilton = () => (
       heading: 'Hamilton trailer hire rates',
       note: 'Indicative rates from our Frankton branch — live availability and the exact price for your dates show in online booking.',
       rows: [
-        { item: 'Caged trailer', daily: 'from $40', weekend: 'from $80', best: 'Tip runs to Lincoln Street, green waste, bulky rubbish' },
-        { item: 'Luggage trailer (lockable)', daily: 'from $50', weekend: 'from $100', best: 'Flat moves, road trips, Ruapehu ski gear' },
-        { item: 'Car-transporter trailer', daily: 'from $80', weekend: 'from $160', best: 'Shifting a vehicle around the Waikato' },
+        { item: 'Caged trailer', daily: 'from $65', weekend: 'from $100', best: 'Tip runs to Lincoln Street, green waste, bulky rubbish' },
+        { item: 'Luggage trailer (lockable)', daily: 'from $45', weekend: 'from $90', best: 'Flat moves, road trips, Ruapehu ski gear' },
+        { item: 'Car-transporter trailer', daily: 'from $120', weekend: 'from $200', best: 'Shifting a vehicle around the Waikato' },
       ],
     }}
     sections={[
@@ -82,7 +82,7 @@ const TrailerHireHamilton = () => (
     cities={cities}
     localBusiness={localBusiness}
     faq={[
-      { q: 'How much does it cost to hire a trailer in Hamilton?', a: 'Trailer hire in Hamilton starts from around $40/day for a caged trailer. Luggage and car-transporter trailers are slightly higher. Online booking shows live availability and the exact daily rate.' },
+      { q: 'How much does it cost to hire a trailer in Hamilton?', a: 'Trailer hire in Hamilton starts from around $65/day for a caged trailer. Luggage and car-transporter trailers are slightly higher. Online booking shows live availability and the exact daily rate.' },
       { q: 'What kinds of trailers can I hire in Hamilton?', a: 'We hire caged trailers (tip runs, garden waste, bulky goods), luggage trailers (moves, road trips, ski trips) and car-transporter trailers for shifting vehicles around the Waikato.' },
       { q: 'Do I need a special licence to tow your trailers?', a: 'No — all standard caged and luggage trailers can be towed on a Class 1 NZ car licence. Heavier combinations may require a Class 2 endorsement; we’ll flag that at booking.' },
       { q: 'Where do I collect the trailer?', a: 'All Hamilton trailers are picked up from our Frankton branch at 17 Bandon Street, with easy access to SH1 and SH3.' },

@@ -13,7 +13,7 @@ const WestAucklandCargoVanRentals = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <PageSEO
-        title="Van Rental West Auckland from $69/day — Cargo Van Hire Near You"
+        title="Van Rental West Auckland from $95/day — Cargo Van Hire Near You"
         description="Cargo van rental & hire in West Auckland — Henderson, Henderson Valley, New Lynn, Swanson, Te Atatu, Westgate, Hobsonville, Long Bay, Whitford, Redvale. Same-day pickup, drive on a car licence."
         canonical="/west-auckland-cargo-van-rentals-hire"
       />

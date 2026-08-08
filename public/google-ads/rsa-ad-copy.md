@@ -11,8 +11,8 @@ Headlines: max 30 chars · Descriptions: max 90 chars. All counts verified ≤ l
 **Path:** `/van-hire` `/auckland`
 
 ### Headlines (15)
-1. Van Hire Auckland $69/Day
-2. Cargo Vans From $69/Day
+1. Van Hire Auckland $95/Day
+2. Cargo Vans From $95/Day
 3. Same-Day Van Hire Auckland
 4. Auckland Van Rental
 5. Moving Van Hire Auckland
@@ -29,7 +29,7 @@ Headlines: max 30 chars · Descriptions: max 90 chars. All counts verified ≤ l
 
 ### Descriptions (4)
 1. Cargo, moving and jumbo van hire across Auckland. Unlimited km on standard vans.
-2. Pick up from Penrose or Auckland Airport — same-day hire from $69/day. Book online.
+2. Pick up from Penrose or Auckland Airport — same-day hire from $95/day. Book online.
 3. Drive on a normal car licence. Auto and manual vans, twin side doors for easy loading.
 4. 5-star reviews from Auckland customers. Friendly local team — call 09 838 5300 today.
 
@@ -50,7 +50,7 @@ Headlines: max 30 chars · Descriptions: max 90 chars. All counts verified ≤ l
 **Path:** `/van-hire` `/wellington`
 
 ### Headlines (15)
-1. Van Hire Wellington $69/Day
+1. Van Hire Wellington $95/Day
 2. Wellington Cargo Van Hire
 3. Same-Day Wellington Vans
 4. Moving Van Wellington
@@ -67,7 +67,7 @@ Headlines: max 30 chars · Descriptions: max 90 chars. All counts verified ≤ l
 15. Call 04 555 5000 Now
 
 ### Descriptions (4)
-1. Cargo and moving vans in Wellington from $69/day. Unlimited km. Pickup CBD or airport.
+1. Cargo and moving vans in Wellington from $95/day. Unlimited km. Pickup CBD or airport.
 2. Same-day Wellington van hire — auto & manual, twin side doors, drive on a car licence.
 3. Serving Wellington CBD, Lower Hutt, Porirua and Kāpiti. Friendly local team.
 4. Book online in 60 seconds or call us today for an instant Wellington van quote.
@@ -80,7 +80,7 @@ Headlines: max 30 chars · Descriptions: max 90 chars. All counts verified ≤ l
 **Path:** `/van-hire` `/christchurch`
 
 ### Headlines (15)
-1. Van Hire Christchurch $69
+1. Van Hire Christchurch $95
 2. Christchurch Cargo Vans
 3. Same-Day Vans Christchurch
 4. Moving Van Christchurch
@@ -97,7 +97,7 @@ Headlines: max 30 chars · Descriptions: max 90 chars. All counts verified ≤ l
 15. Call for Instant Quote
 
 ### Descriptions (4)
-1. Same-day cargo and moving vans in Christchurch from $69/day. Unlimited km on standards.
+1. Same-day cargo and moving vans in Christchurch from $95/day. Unlimited km on standards.
 2. Pick up from Christchurch Airport. Auto & manual vans, drive on a car licence.
 3. Serving Christchurch, Rolleston, Rangiora, Ashburton and Timaru. Local Canterbury team.
 4. Friendly service, transparent pricing, no hidden fees. Book online or call today.

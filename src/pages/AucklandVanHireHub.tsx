@@ -83,7 +83,7 @@ const AucklandVanHireHub = () => {
         name: 'How much does van hire cost in Auckland?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Auckland van hire starts from around $69 per day plus kilometres for a cargo van. Multi-day, weekly and midweek rates lower the daily price further — check the hot deals page for current discounts.',
+          text: 'Auckland van hire starts from around $95 per day plus kilometres for a cargo van. Multi-day, weekly and midweek rates lower the daily price further — check the hot deals page for current discounts.',
         },
       },
       {
@@ -138,8 +138,8 @@ const AucklandVanHireHub = () => {
   return (
     <div className="bg-background text-foreground">
       <PageSEO
-        title="Van Hire Auckland from $69/Day | Same-Day Pickup — James Blond"
-        description="Van hire in Auckland from $69/day — cargo, jumbo and 12-seat vans. Same-day pickup at Penrose, Airport, South & West Auckland. Drive on a car licence. Book online."
+        title="Van Hire Auckland from $95/Day | Same-Day Pickup — James Blond"
+        description="Van hire in Auckland from $95/day — cargo, jumbo and 12-seat vans. Same-day pickup at Penrose, Airport, South & West Auckland. Drive on a car licence. Book online."
         canonical="/van-hire-auckland"
       />
       <JsonLd data={faqJsonLd} />
@@ -184,7 +184,7 @@ const AucklandVanHireHub = () => {
             />
             <div className="absolute -bottom-5 -left-5 bg-primary text-primary-foreground px-5 py-3 rounded-xl shadow-xl">
               <p className="text-[10px] uppercase tracking-widest opacity-80">From</p>
-              <p className="font-extrabold text-2xl leading-none">$69 / day</p>
+              <p className="font-extrabold text-2xl leading-none">$95 / day</p>
             </div>
           </div>
         </div>

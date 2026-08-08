@@ -191,7 +191,7 @@ const ContactHamilton = () => {
                 </div>
                 <div>
                   <h3 className="font-semibold group-hover:text-primary transition-colors">Hamilton Van Hire</h3>
-                  <p className="text-sm text-gray-600">Cargo vans & 12-seater minibuses from $69/day</p>
+                  <p className="text-sm text-gray-600">Cargo vans & 12-seater minibuses from $95/day</p>
                 </div>
               </CardContent>
             </Card>

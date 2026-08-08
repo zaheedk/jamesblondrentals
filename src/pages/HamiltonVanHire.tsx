@@ -68,7 +68,7 @@ const HamiltonVanHire = () => {
         name: 'How much does van hire cost in Hamilton?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Hamilton van hire starts from around $69 per day plus kilometres for a cargo van. Multi-day and weekly rates lower the daily price further.',
+          text: 'Hamilton van hire starts from around $95 per day plus kilometres for a cargo van. Multi-day and weekly rates lower the daily price further.',
         },
       },
       {
@@ -125,8 +125,8 @@ const HamiltonVanHire = () => {
   return (
     <div className="bg-background text-foreground">
       <PageSEO
-        title="Van Hire Hamilton from $69/day — Cargo Van Rental, Same-Day Pickup"
-        description="Cargo van rental in Hamilton from $69/day. Standard, jumbo and 12-seat vans for trades, couriers and moves. Same-day pickup, drive on a car licence."
+        title="Van Hire Hamilton from $95/day — Cargo Van Rental, Same-Day Pickup"
+        description="Cargo van rental in Hamilton from $95/day. Standard, jumbo and 12-seat vans for trades, couriers and moves. Same-day pickup, drive on a car licence."
         canonical="/van-hire-hamilton"
       />
       <JsonLd data={faqJsonLd} />
@@ -172,7 +172,7 @@ const HamiltonVanHire = () => {
             />
             <div className="absolute -bottom-5 -left-5 bg-primary text-primary-foreground px-5 py-3 rounded-xl shadow-xl">
               <p className="text-[10px] uppercase tracking-widest opacity-80">From</p>
-              <p className="font-extrabold text-2xl leading-none">$69 / day</p>
+              <p className="font-extrabold text-2xl leading-none">$95 / day</p>
             </div>
           </div>
         </div>

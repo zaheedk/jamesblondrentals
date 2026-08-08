@@ -72,7 +72,7 @@ const ChristchurchVanHire = () => {
         name: 'How much does van hire cost in Christchurch?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Christchurch van hire starts from around $69 per day plus kilometres for a cargo van. Multi-day, weekly and midweek rates lower the daily price further — see our hot deals page for current discounts.',
+          text: 'Christchurch van hire starts from around $95 per day plus kilometres for a cargo van. Multi-day, weekly and midweek rates lower the daily price further — see our hot deals page for current discounts.',
         },
       },
       {
@@ -104,7 +104,7 @@ const ChristchurchVanHire = () => {
         name: 'What is the cheapest van to hire in Christchurch?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'The Standard Cargo Van is our cheapest Christchurch van, from around $69 per day. Midweek and multi-day hire lowers the daily rate further, and a caged trailer from $40/day is cheaper again if your load is open and small.',
+          text: 'The Standard Cargo Van is our cheapest Christchurch van, from around $95 per day. Midweek and multi-day hire lowers the daily rate further, and a caged trailer from $65/day is cheaper again if your load is open and small.',
         },
       },
       {
@@ -151,8 +151,8 @@ const ChristchurchVanHire = () => {
   return (
     <div className="bg-background text-foreground">
       <PageSEO
-        title="Van Hire Christchurch from $69/day — Cargo Van Rental, Same-Day"
-        description="Cargo van rental in Christchurch from $69/day. Standard, jumbo and 12-seat vans for trades, couriers and moves. Same-day pickup, drive on a car licence."
+        title="Van Hire Christchurch from $95/day — Cargo Van Rental, Same-Day"
+        description="Cargo van rental in Christchurch from $95/day. Standard, jumbo and 12-seat vans for trades, couriers and moves. Same-day pickup, drive on a car licence."
         canonical="/van-hire-christchurch"
       />
       <JsonLd data={faqJsonLd} />
@@ -197,7 +197,7 @@ const ChristchurchVanHire = () => {
             />
             <div className="absolute -bottom-5 -left-5 bg-primary text-primary-foreground px-5 py-3 rounded-xl shadow-xl">
               <p className="text-[10px] uppercase tracking-widest opacity-80">From</p>
-              <p className="font-extrabold text-2xl leading-none">$69 / day</p>
+              <p className="font-extrabold text-2xl leading-none">$95 / day</p>
             </div>
           </div>
         </div>
@@ -399,7 +399,7 @@ const ChristchurchVanHire = () => {
             </thead>
             <tbody>
               {[
-                ['Standard Cargo Van', '6–8 m³', '$69', 'Trades, couriers, single-item pickups'],
+                ['Standard Cargo Van', '6–8 m³', '$95', 'Trades, couriers, single-item pickups'],
                 ['Standard Van · Rear Seat', '5 seats + cargo', '$79', 'Crew plus tools on the same job'],
                 ['Jumbo / Premium Van', '10–12 m³', '$89', 'Studio and one-bedroom moves, flat-packs'],
                 ['12-Seat Minibus', '12 seats + luggage', '$149', 'Teams, weddings, Mt Hutt and airport runs'],
@@ -423,7 +423,7 @@ const ChristchurchVanHire = () => {
           </Link>{' '}
           is usually one trip instead of three. Open, smaller loads can go on a{' '}
           <Link to="/trailer-hire-christchurch" className="underline hover:text-primary">
-            Christchurch trailer from $40/day
+            Christchurch trailer from $65/day
           </Link>
           .
         </p>

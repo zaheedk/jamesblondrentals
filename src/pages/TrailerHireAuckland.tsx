@@ -29,7 +29,7 @@ const TrailerHireAuckland = () => (
   <SimpleHubPage
     slug="/trailer-hire-auckland"
     title="Trailer Hire Auckland — Cage, Luggage & Car Transporter Trailers"
-    description="Trailer hire in Auckland from $40/day. Cage, luggage and car-transporter trailers. Same-day pickup across Auckland, tow on a standard NZ car licence."
+    description="Trailer hire in Auckland from $65/day. Cage, luggage and car-transporter trailers. Same-day pickup across Auckland, tow on a standard NZ car licence."
     h1="Trailer Hire Auckland — Cage, Luggage & Car Transporters"
     intro="Whether it's a tip run, a house move or shifting a vehicle across town, our Auckland trailers are WOF'd, registered and ready to go. Same-day pickup, daily and weekly rates, and easy online booking."
     bullets={[
@@ -45,7 +45,7 @@ const TrailerHireAuckland = () => (
     cities={cities}
     localBusiness={localBusiness}
     faq={[
-      { q: 'How much does trailer hire cost in Auckland?', a: 'Cage trailer hire in Auckland starts from around $40/day. Luggage trailers and car transporters are slightly higher. Online booking shows live availability and the exact daily rate for your dates.' },
+      { q: 'How much does trailer hire cost in Auckland?', a: 'Cage trailer hire in Auckland starts from around $65/day. Luggage trailers and car transporters are slightly higher. Online booking shows live availability and the exact daily rate for your dates.' },
       { q: 'What types of trailers can I hire in Auckland?', a: 'We hire caged trailers (tip runs, green waste, bulky goods), lockable luggage trailers (moves, road trips) and car-transporter trailers for shifting cars around Auckland or further afield.' },
       { q: 'Do I need a special licence to tow a trailer in Auckland?', a: 'No — all standard caged and luggage trailers can be towed on a Class 1 NZ car licence. Heavier combinations may need a Class 2 endorsement; we flag this at booking.' },
       { q: 'Where do I pick up the trailer in Auckland?', a: 'Trailers are available at our Auckland branches for same-day pickup. Enter your dates in the booking form for the closest branch to you.' },

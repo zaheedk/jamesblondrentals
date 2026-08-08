@@ -442,7 +442,7 @@ const faqJsonLd = {
         <h2 className="font-serif text-3xl md:text-4xl mb-10">Related Hamilton rentals</h2>
         <div className="grid md:grid-cols-3 gap-8">
           {[
-            { to: '/van-hire-hamilton', t: 'Van hire Hamilton', d: 'Cargo vans, jumbo vans and a 12-seat minibus from $69/day.' },
+            { to: '/van-hire-hamilton', t: 'Van hire Hamilton', d: 'Cargo vans, jumbo vans and a 12-seat minibus from $95/day.' },
             { to: '/contact-hamilton', t: 'Hamilton branch', d: 'Address, hours, phone and directions to our Hamilton depot.' },
             { to: '/moving-truck-rental', t: 'Moving truck rental', d: 'Compare every truck size and tail-lift option in our fleet.' },
           ].map((c) => (
