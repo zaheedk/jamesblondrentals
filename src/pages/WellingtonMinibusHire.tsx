@@ -27,7 +27,7 @@ const WellingtonMinibusHire = () => {
     <div className="container mx-auto px-4 py-8">
       <WellingtonBreadcrumb currentLabel="Minibus Hire" />
       <PageSEO
-        title="Minibus Hire Wellington from $129/day — 10 & 12 Seat Van Rental Near You"
+        title="Minibus Hire Wellington — 10 & 12 Seat Van Rental Near You"
         description="10 and 12-seat minibus hire & van rental across the Wellington region — CBD, Lower Hutt, Upper Hutt, Petone, Porirua, Tawa, Johnsonville and the Kapiti Coast. Group travel, weddings, corporate events. Drive on a car licence."
         canonical="/wellington-minibus-hire"
       />

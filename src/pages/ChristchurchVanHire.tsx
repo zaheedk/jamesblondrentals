@@ -400,9 +400,9 @@ const ChristchurchVanHire = () => {
             <tbody>
               {[
                 ['Standard Cargo Van', '6–8 m³', '$95', 'Trades, couriers, single-item pickups'],
-                ['Standard Van · Rear Seat', '5 seats + cargo', '$79', 'Crew plus tools on the same job'],
-                ['Jumbo / Premium Van', '10–12 m³', '$89', 'Studio and one-bedroom moves, flat-packs'],
-                ['12-Seat Minibus', '12 seats + luggage', '$149', 'Teams, weddings, Mt Hutt and airport runs'],
+                ['Standard Van · Rear Seat', '5 seats + cargo', '$110', 'Crew plus tools on the same job'],
+                ['Jumbo / Premium Van', '10–12 m³', '$100', 'Studio and one-bedroom moves, flat-packs'],
+                ['12-Seat Minibus', '12 seats + luggage', 'On request', 'Teams, weddings, Mt Hutt and airport runs'],
               ].map(([v, space, price, best]) => (
                 <tr key={v} className="border-t border-border">
                   <td className="p-4 font-medium">{v}</td>
