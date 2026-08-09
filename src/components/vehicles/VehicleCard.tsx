@@ -6,6 +6,7 @@ import { useSearchParams } from "react-router-dom";
 import BookingForm from "./BookingForm";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Users, Luggage, Gauge, Info, Cog, AlertTriangle } from "lucide-react";
+import { isMidweekEligibleVehicle, datesQualifyForMidweek } from "@/lib/midweek-discount";
 
 interface VehicleCardProps {
   vehicle: Vehicle;
@@ -143,6 +144,11 @@ const VehicleCard = ({
   const isLimitedAvailability = isAvailable && lowStockCount !== null;
   const limitedMessage = `Only ${lowStockCount} left at ${pickupLocationName || "this location"}`;
 
+  // 25% early-week (Mon–Thu) discount applies to trucks & jumbo vans only
+  const hasMidweekDiscount =
+    isMidweekEligibleVehicle(`${vehicle.make || ""} ${vehicle.model || ""}`, vehicle.type as string) &&
+    datesQualifyForMidweek(pickupDate, dropoffDate);
+
   return (
     <Card id={`vehicle-${vehicle.id}`} className="overflow-hidden shadow-md h-full flex flex-col scroll-mt-24">
       <AspectRatio ratio={4/3} className="overflow-hidden bg-white">
@@ -165,6 +171,14 @@ const VehicleCard = ({
         {hasLocationDiscount && (
           <Badge className="w-fit mb-2 bg-orange-100 text-orange-800 border-orange-200">
             25% Airport Discount Applied
+          </Badge>
+        )}
+        {hasMidweekDiscount && (
+          <Badge
+            className="w-fit mb-2 bg-green-100 text-green-800 border-green-200"
+            title="Applies because your hire starts and ends Mon–Thu in the same week"
+          >
+            25% Early Week Discount Applied
           </Badge>
         )}
         {isLimitedAvailability && (
