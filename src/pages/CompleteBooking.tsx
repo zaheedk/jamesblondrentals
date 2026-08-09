@@ -190,6 +190,9 @@ const CompleteBooking = () => {
     }
   };
 
+  const dueNow = quote ? (quote.balanceDue > 0 ? quote.balanceDue : quote.totalCost) : 0;
+  const amountDueNow = paymentChoice === "deposit" ? Math.min(DEPOSIT_AMOUNT, dueNow) : dueNow;
+
   return (
     <div className="container mx-auto px-4 py-8">
       <PageSEO
