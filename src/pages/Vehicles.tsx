@@ -6,6 +6,7 @@ import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import VehicleCard from "@/components/vehicles/VehicleCard";
 import TradeUpBanner from "@/components/vehicles/TradeUpBanner";
+import MidweekDateNudge from "@/components/vehicles/MidweekDateNudge";
 import { Vehicle, VehicleType } from "@/lib/types";
 import { useRcmApi } from "@/hooks/use-rcm-api";
 import { RCMAvailableCar, RCMMandatoryFee, RCMSeasonalRate } from "@/lib/api/rcm-api-types";
@@ -763,6 +764,7 @@ const Vehicles = () => {
             </div>
           ) : (
             <>
+              <MidweekDateNudge vehicles={filteredVehicles} />
               <TradeUpBanner vehicles={filteredVehicles} />
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                {filteredVehicles.map((vehicle) => (
