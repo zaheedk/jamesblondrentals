@@ -150,7 +150,8 @@ const CompleteBooking = () => {
     if (!quote) return;
     setIsPaying(true);
     try {
-      const amount = quote.balanceDue > 0 ? quote.balanceDue : quote.totalCost;
+      const dueNow = quote.balanceDue > 0 ? quote.balanceDue : quote.totalCost;
+      const amount = paymentChoice === "deposit" ? Math.min(DEPOSIT_AMOUNT, dueNow) : dueNow;
       saveBookingData({
         vehicleId: quote.reservationRef,
         vehicleName: quote.vehicleName,
@@ -167,7 +168,7 @@ const CompleteBooking = () => {
         basePrice: quote.totalCost,
         vehicleImage: quote.vehicleImage,
         paymentAmount: amount,
-        paymentType: quote.balanceDue < quote.totalCost ? "deposit" : "full",
+        paymentType: paymentChoice,
         reservationRef: quote.reservationRef,
         reservationNo: quote.reservationNo,
         customerFirstName: quote.firstName,
@@ -304,7 +305,7 @@ const CompleteBooking = () => {
                   </div>
                 ))}
                 <div className="flex justify-between font-semibold text-base pt-2">
-                  <span>Total</span>
+                  <span>Rental total (excludes security bond)</span>
                   <span>{money(quote.totalCost)}</span>
                 </div>
                 {quote.paidToDate > 0 && (
@@ -313,10 +314,47 @@ const CompleteBooking = () => {
                     <span>-{money(quote.paidToDate)}</span>
                   </div>
                 )}
-                <div className="flex justify-between font-bold text-lg">
-                  <span>Due now</span>
-                  <span>{money(quote.balanceDue > 0 ? quote.balanceDue : quote.totalCost)}</span>
-                </div>
+                <p className="text-xs text-muted-foreground pt-1">
+                  A refundable security bond
+                  {quote.securityBond > 0 ? ` of ${money(quote.securityBond)}` : " of $200–$300"} is held on
+                  your card at pick up — it is not charged online today.
+                </p>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-3">
+                <p className="font-semibold text-sm">Choose how much to pay now</p>
+                <button
+                  type="button"
+                  onClick={() => setPaymentChoice("full")}
+                  className={`w-full text-left border rounded-md p-3 flex items-center justify-between ${
+                    paymentChoice === "full" ? "border-primary ring-1 ring-primary" : ""
+                  }`}
+                >
+                  <span>
+                    <span className="block font-medium">Pay in full</span>
+                    <span className="block text-sm text-muted-foreground">
+                      Rental total, excluding the security bond
+                    </span>
+                  </span>
+                  <span className="font-bold">{money(dueNow)}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPaymentChoice("deposit")}
+                  className={`w-full text-left border rounded-md p-3 flex items-center justify-between ${
+                    paymentChoice === "deposit" ? "border-primary ring-1 ring-primary" : ""
+                  }`}
+                >
+                  <span>
+                    <span className="block font-medium">Pay a {money(DEPOSIT_AMOUNT)} deposit</span>
+                    <span className="block text-sm text-muted-foreground">
+                      Non-refundable. Balance of {money(Math.max(dueNow - DEPOSIT_AMOUNT, 0))} due at pick up.
+                    </span>
+                  </span>
+                  <span className="font-bold">{money(Math.min(DEPOSIT_AMOUNT, dueNow))}</span>
+                </button>
               </div>
 
               <Button onClick={handlePayNow} disabled={isPaying} size="lg" className="w-full">
@@ -325,7 +363,7 @@ const CompleteBooking = () => {
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Opening secure payment
                   </>
                 ) : (
-                  `Pay ${money(quote.balanceDue > 0 ? quote.balanceDue : quote.totalCost)} & confirm booking`
+                  `Pay ${money(amountDueNow)} & confirm booking`
                 )}
               </Button>
 
