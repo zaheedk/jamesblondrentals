@@ -33,8 +33,7 @@ const PaymentOptions = () => {
   const [lastRequestPayload, setLastRequestPayload] = useState<any>(null);
   const [securityBond, setSecurityBond] = useState(0);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
-  const [acceptedLicense, setAcceptedLicense] = useState(false);
-  const [acceptedBond, setAcceptedBond] = useState(false);
+  const [showConsentError, setShowConsentError] = useState(false);
   const { useLocationDetails } = useRcmApi();
   const { data: locationDetails } = useLocationDetails();
 
@@ -483,14 +482,14 @@ const PaymentOptions = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate that all checkboxes are checked
-    if (!acceptedTerms || !acceptedLicense || !acceptedBond) {
-      toast.error("Please accept all terms and conditions", {
-        description: "You must agree to all requirements before proceeding.",
-      });
+    // Validate consent
+    if (!acceptedTerms) {
+      setShowConsentError(true);
+      document.getElementById("terms")?.scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
-    
+    setShowConsentError(false);
+
     setIsLoading(true);
     
     try {
@@ -592,51 +591,46 @@ const PaymentOptions = () => {
           />
           
           {/* Complete your booking section */}
-          <Card className="mb-6 bg-primary text-primary-foreground">
+          <Card className={`mb-6 bg-primary text-primary-foreground ${showConsentError ? 'ring-2 ring-destructive' : ''}`}>
             <CardContent className="p-6">
               <h3 className="text-xl font-semibold mb-4">Complete your booking</h3>
-              
-              <div className="space-y-4">
-                <div className="flex items-start space-x-3">
-                  <Checkbox
-                    id="terms"
-                    checked={acceptedTerms}
-                    onCheckedChange={(checked) => setAcceptedTerms(checked as boolean)}
-                    className="mt-1 border-primary-foreground data-[state=checked]:bg-primary-foreground data-[state=checked]:text-primary"
-                  />
-                  <Label htmlFor="terms" className="text-sm leading-relaxed cursor-pointer">
-                    I agree to the{" "}
-                    <Link to="/terms" className="font-semibold underline hover:text-primary-foreground/80" target="_blank">
-                      Terms & Conditions
-                    </Link>
-                    .
-                  </Label>
-                </div>
-                
-                <div className="flex items-start space-x-3">
-                  <Checkbox
-                    id="license"
-                    checked={acceptedLicense}
-                    onCheckedChange={(checked) => setAcceptedLicense(checked as boolean)}
-                    className="mt-1 border-primary-foreground data-[state=checked]:bg-primary-foreground data-[state=checked]:text-primary"
-                  />
-                  <Label htmlFor="license" className="text-sm leading-relaxed cursor-pointer">
-                    To hire a vehicle, you will need a valid and full or restricted Driver's Licence depending on the type of vehicle you are hiring. I consent to James Blond verifying my driver licence details with authorised third-party services for the purposes of identity verification and rental eligibility - Please select to confirm
-                  </Label>
-                </div>
-                
-                <div className="flex items-start space-x-3">
-                  <Checkbox
-                    id="bond"
-                    checked={acceptedBond}
-                    onCheckedChange={(checked) => setAcceptedBond(checked as boolean)}
-                    className="mt-1 border-primary-foreground data-[state=checked]:bg-primary-foreground data-[state=checked]:text-primary"
-                  />
-                  <Label htmlFor="bond" className="text-sm leading-relaxed cursor-pointer">
-                    A Full or Restricted Driver's License and a valid Credit/Debit Card matching the name of the hirer must be provided for payment and security at the time of vehicle pick up. The bond of either $200 or $300 will be applied to your card at the time of pick up, depending on the type of vehicle you have booked.
-                  </Label>
-                </div>
+
+              <div className="flex items-start space-x-3">
+                <Checkbox
+                  id="terms"
+                  checked={acceptedTerms}
+                  onCheckedChange={(checked) => {
+                    setAcceptedTerms(checked as boolean);
+                    if (checked) setShowConsentError(false);
+                  }}
+                  className="mt-1 border-primary-foreground data-[state=checked]:bg-primary-foreground data-[state=checked]:text-primary"
+                />
+                <Label htmlFor="terms" className="text-sm leading-relaxed cursor-pointer">
+                  I agree to the{" "}
+                  <Link to="/terms" className="font-semibold underline hover:text-primary-foreground/80" target="_blank">
+                    Terms &amp; Conditions
+                  </Link>
+                  , the driver licence requirements, and the refundable security bond{securityBond > 0 ? ` of ${formatCurrency(securityBond)}` : ' of $200–$300'} held on my card at pick up.
+                </Label>
               </div>
+
+              {showConsentError && (
+                <p className="text-sm font-medium mt-3 bg-primary-foreground text-destructive rounded px-3 py-2">
+                  Please tick this box to continue to payment.
+                </p>
+              )}
+
+              <details className="mt-4 text-sm">
+                <summary className="cursor-pointer underline font-medium">What am I agreeing to?</summary>
+                <div className="mt-3 space-y-3 leading-relaxed text-primary-foreground/90">
+                  <p>
+                    <strong>Driver licence:</strong> you need a valid full or restricted driver licence for the vehicle type you are hiring. You consent to James Blond verifying your licence details with authorised third-party services for identity verification and rental eligibility.
+                  </p>
+                  <p>
+                    <strong>Security bond:</strong> a credit/debit card in the hirer's name must be presented at pick up. A bond of {securityBond > 0 ? formatCurrency(securityBond) : '$200 or $300 (depending on vehicle type)'} is held on that card at pick up and released after the vehicle is returned.
+                  </p>
+                </div>
+              </details>
             </CardContent>
           </Card>
           
@@ -653,7 +647,7 @@ const PaymentOptions = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <Button 
               type="submit"
-              disabled={isLoading || !acceptedTerms || !acceptedLicense || !acceptedBond}
+              disabled={isLoading}
               className="w-full"
             >
               {isLoading ? (
@@ -665,15 +659,16 @@ const PaymentOptions = () => {
               )}
             </Button>
             
-            <Button 
-              type="button"
-              variant="outline"
-              onClick={handleSaveQuotation}
-              className="w-full"
-            >
-              <Save className="mr-2" />
-              Save Quotation
-            </Button>
+            <div className="text-center">
+              <button
+                type="button"
+                onClick={handleSaveQuotation}
+                className="inline-flex items-center text-sm text-gray-600 underline hover:text-gray-900"
+              >
+                <Save className="mr-2 h-4 w-4" />
+                Email me this quote instead
+              </button>
+            </div>
           </form>
         </div>
       </div>
