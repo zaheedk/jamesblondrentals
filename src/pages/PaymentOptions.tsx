@@ -17,6 +17,7 @@ import ExitIntentPopup from "@/components/ExitIntentPopup";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent } from "@/components/ui/card";
 import PageSEO from '@/components/PageSEO';
+import { supabase } from "@/integrations/supabase/client";
 import TrustGuaranteeBanner from '@/components/booking/TrustGuaranteeBanner';
 
 const PaymentOptions = () => {
