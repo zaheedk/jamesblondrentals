@@ -20,6 +20,8 @@ import PageSEO from '@/components/PageSEO';
 import { supabase } from "@/integrations/supabase/client";
 import TrustGuaranteeBanner from '@/components/booking/TrustGuaranteeBanner';
 
+const DEPOSIT_AMOUNT = 50;
+
 const PaymentOptions = () => {
   const navigate = useNavigate();
   const [paymentType, setPaymentType] = useState<"full" | "deposit">("full");
