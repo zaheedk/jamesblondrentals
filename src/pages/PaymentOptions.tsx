@@ -35,6 +35,7 @@ const PaymentOptions = () => {
   const [securityBond, setSecurityBond] = useState(0);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [showConsentError, setShowConsentError] = useState(false);
+  const [isSavingQuote, setIsSavingQuote] = useState(false);
   const { useLocationDetails } = useRcmApi();
   const { data: locationDetails } = useLocationDetails();
 
