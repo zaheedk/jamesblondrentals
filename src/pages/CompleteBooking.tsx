@@ -29,11 +29,14 @@ type QuoteInfo = {
   totalCost: number;
   paidToDate: number;
   balanceDue: number;
+  securityBond: number;
   firstName: string;
   lastName: string;
   email: string;
   mandatoryFees: Array<{ name: string; amount: number }>;
 };
+
+const DEPOSIT_AMOUNT = 50;
 
 const num = (v: unknown): number => {
   const n = typeof v === "number" ? v : parseFloat(String(v ?? "0").replace(/[^0-9.\-]/g, ""));
@@ -56,6 +59,7 @@ const CompleteBooking = () => {
   const [quote, setQuote] = useState<QuoteInfo | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isPaying, setIsPaying] = useState(false);
+  const [paymentChoice, setPaymentChoice] = useState<"full" | "deposit">("full");
   const [error, setError] = useState<string | null>(null);
 
   const lookup = useCallback(async (ref: string, lastName?: string) => {
@@ -82,9 +86,16 @@ const CompleteBooking = () => {
         return;
       }
 
-      const totalCost = num(info.totalrateafterdiscount) || num(info.totalcost);
+      // Security bond is held on the card at pick up — never charged online
+      const bondFee = (response.results?.extrafees as any[] | undefined)?.find(
+        (fee: any) => fee?.isbondfee === true
+      );
+      const securityBond = bondFee ? num(bondFee.fees) : 0;
+
+      const rawTotal = num(info.totalrateafterdiscount) || num(info.totalcost);
+      const totalCost = Math.max(rawTotal - securityBond, 0);
       const paidToDate = num(info.payment);
-      const balanceDue = num(info.balancedue) || Math.max(totalCost - paidToDate, 0);
+      const balanceDue = Math.max(totalCost - paidToDate, 0);
 
       setQuote({
         reservationRef: String(info.reservationref || trimmed),
@@ -107,13 +118,16 @@ const CompleteBooking = () => {
         totalCost,
         paidToDate,
         balanceDue,
+        securityBond,
         firstName: customer?.firstname || "",
         lastName: customer?.lastname || "",
         email: customer?.email || "",
-        mandatoryFees: (info.mandatoryfees || []).map((fee) => ({
-          name: fee.name || "Fee",
-          amount: num(fee.totalfeeamount ?? fee.amount),
-        })),
+        mandatoryFees: (info.mandatoryfees || [])
+          .map((fee) => ({
+            name: fee.name || "Fee",
+            amount: num(fee.totalfeeamount ?? fee.amount),
+          }))
+          .filter((fee) => !/bond/i.test(fee.name)),
       });
     } catch (err) {
       console.error("Quote lookup failed:", err);
