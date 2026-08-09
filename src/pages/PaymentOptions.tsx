@@ -711,11 +711,26 @@ const PaymentOptions = () => {
               <button
                 type="button"
                 onClick={handleSaveQuotation}
-                className="inline-flex items-center text-sm text-gray-600 underline hover:text-gray-900"
+                disabled={isSavingQuote}
+                className="inline-flex items-center text-sm text-gray-600 underline hover:text-gray-900 disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                <Save className="mr-2 h-4 w-4" />
-                Email me this quote instead
+                {isSavingQuote ? (
+                  <>
+                    <span className="animate-spin mr-2">◌</span>
+                    Saving your quote…
+                  </>
+                ) : (
+                  <>
+                    <Save className="mr-2 h-4 w-4" />
+                    Email me this quote instead
+                  </>
+                )}
               </button>
+              {isSavingQuote && (
+                <p className="mt-2 text-xs text-muted-foreground">
+                  Please wait — we're creating your quote and emailing it to you.
+                </p>
+              )}
             </div>
           </form>
         </div>
