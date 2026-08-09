@@ -17,6 +17,7 @@ import InsuranceAndExtrasSelection from "./pages/InsuranceAndExtrasSelection";
 import CustomerDetails from "./pages/CustomerDetails";
 import PaymentOptions from "./pages/PaymentOptions";
 import Payment from "./pages/Payment";
+import CompleteBooking from "./pages/CompleteBooking";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -231,6 +232,8 @@ const App = () => {
                 <Route path="/customer-details" element={<CustomerDetails />} />
                 <Route path="/payment-options" element={<PaymentOptions />} />
                 <Route path="/payment" element={<Payment />} />
+                <Route path="/complete-booking" element={<CompleteBooking />} />
+                <Route path="/complete-booking/:reference" element={<CompleteBooking />} />
                 <Route path="/payment-success" element={<PaymentSuccess />} />
                 <Route path="/terms" element={<Terms />} />
                 <Route path="/privacy" element={<Privacy />} />
