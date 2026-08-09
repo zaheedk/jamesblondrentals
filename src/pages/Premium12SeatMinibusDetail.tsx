@@ -314,14 +314,14 @@ const Premium12SeatMinibusDetail = () => {
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button size="lg" className="px-8" asChild>
-            <Link to="/">Book Now - Get Instant Quote</Link>
+            <a href="tel:0800525663"><Phone className="mr-2 h-4 w-4" /> Get a Quote — 0800 525 663</a>
           </Button>
           <Button variant="outline" size="lg" className="px-8" asChild>
-            <Link to="/contact">Speak to Our Team</Link>
+            <Link to="/contact">Request a quote online</Link>
           </Button>
         </div>
         <p className="text-sm text-muted-foreground mt-4">
-          Available for pickup in Auckland, Wellington & Christchurch
+          Available for pickup in Auckland, Wellington &amp; Christchurch. Minibus rates change with dates and demand, so we quote on your travel dates.
         </p>
       </div>
 

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { ArrowLeft, Calendar, Fuel, MapPin, Car, AirVent, Bluetooth, Anchor } from "lucide-react";
+import { ArrowLeft, Calendar, Fuel, MapPin, Car, AirVent, Bluetooth, Anchor, Phone } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import PageSEO from '@/components/PageSEO';
 
@@ -117,9 +117,17 @@ const TenSeaterMinibusDetail = () => {
             ))}
           </div>
 
-          <Button className="w-full" size="lg" asChild>
-            <Link to="/">Book Now</Link>
-          </Button>
+          <div className="space-y-3">
+            <Button className="w-full" size="lg" asChild>
+              <a href="tel:0800525663"><Phone className="mr-2 h-4 w-4" /> Get a Quote — 0800 525 663</a>
+            </Button>
+            <Button className="w-full" size="lg" variant="outline" asChild>
+              <Link to="/contact">Request a minibus quote online</Link>
+            </Button>
+            <p className="text-sm text-gray-600">
+              Minibus rates change with dates and demand, so we quote on your travel dates.
+            </p>
+          </div>
         </div>
       </div>
 
@@ -138,14 +146,19 @@ const TenSeaterMinibusDetail = () => {
       </div>
 
       <div className="bg-primary/5 rounded-lg p-6 mb-12">
-        <h2 className="text-xl font-semibold mb-3">Ready to Book?</h2>
+        <h2 className="text-xl font-semibold mb-3">Ready for a Quote?</h2>
         <p className="mb-4">
           Our 10-Seat Minibus is perfect for small group travel of all kinds. Reserve yours today and enjoy a comfortable, 
           hassle-free journey with your team, friends, or family.
         </p>
         <Button size="lg" asChild>
-          <Link to="/">Check Availability</Link>
+          <a href="tel:0800525663"><Phone className="mr-2 h-4 w-4" /> Call 0800 525 663</a>
         </Button>
+        <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm">
+          <Link to="/wedding-minibus-hire" className="text-primary hover:underline">Wedding minibus hire</Link>
+          <Link to="/sports-team-minibus-hire" className="text-primary hover:underline">Sports team minibus hire</Link>
+          <Link to="/airport-transfer-minibus-hire" className="text-primary hover:underline">Airport transfer minibus hire</Link>
+        </div>
       </div>
     </div>
   );

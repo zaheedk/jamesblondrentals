@@ -128,6 +128,9 @@ import TrailerHireAuckland from "./pages/TrailerHireAuckland";
 import TrailerHireWellington from "./pages/TrailerHireWellington";
 import TrailerHireChristchurch from "./pages/TrailerHireChristchurch";
 import CheapTrailerHire from "./pages/CheapTrailerHire";
+import MinibusHireWeddings from "./pages/MinibusHireWeddings";
+import MinibusHireSportsTeams from "./pages/MinibusHireSportsTeams";
+import MinibusAirportTransfers from "./pages/MinibusAirportTransfers";
 import CarHireAucklandAirportFromAustralia from "./pages/CarHireAucklandAirportFromAustralia";
 import CarHireChristchurchAirportFromAustralia from "./pages/CarHireChristchurchAirportFromAustralia";
 import CentralChristchurchTruckHire from "./pages/CentralChristchurchTruckHire";
@@ -475,6 +478,9 @@ const App = () => {
                 <Route path="/14-seater-van-hire-auckland" element={<FourteenSeaterVanHireAuckland />} />
                 <Route path="/12-seater-van-hire-wellington" element={<TwelveSeaterVanHireWellington />} />
                 <Route path="/van-hire-auckland" element={<AucklandVanHireHub />} />
+                <Route path="/wedding-minibus-hire" element={<MinibusHireWeddings />} />
+                <Route path="/sports-team-minibus-hire" element={<MinibusHireSportsTeams />} />
+                <Route path="/airport-transfer-minibus-hire" element={<MinibusAirportTransfers />} />
                 <Route path="/auckland-minibus-hire" element={<AucklandMinibusHire />} />
                 <Route path="/minibus-hire-auckland" element={<AucklandMinibusHire />} />
                 <Route path="/wellington-10-12-seat-van-minibus-rental" element={<WellingtonMinibusHire />} />

@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Bluetooth, AirVent, Anchor } from "lucide-react";
+import { Bluetooth, AirVent, Anchor, Phone } from "lucide-react";
 import PageSEO from '@/components/PageSEO';
 import RelatedLocations from '@/components/RelatedLocations';
 
@@ -99,6 +99,25 @@ const FleetMinibuses = () => {
         <span className="text-gray-400">·</span>
         <Link to="/hamilton-minibus-hire" className="text-primary hover:underline">Hamilton</Link>
       </div>
+      <div className="mt-4 flex flex-wrap justify-center gap-2 text-sm">
+        <span className="text-gray-600">Hiring for an occasion?</span>
+        <Link to="/wedding-minibus-hire" className="text-primary hover:underline">Weddings</Link>
+        <span className="text-gray-400">·</span>
+        <Link to="/sports-team-minibus-hire" className="text-primary hover:underline">Sports teams</Link>
+        <span className="text-gray-400">·</span>
+        <Link to="/airport-transfer-minibus-hire" className="text-primary hover:underline">Airport transfers</Link>
+      </div>
+      <div className="mt-6 flex flex-col sm:flex-row justify-center gap-3">
+        <Button size="lg" asChild>
+          <a href="tel:0800525663"><Phone className="mr-2 h-4 w-4" /> Get a Quote — 0800 525 663</a>
+        </Button>
+        <Button size="lg" variant="outline" asChild>
+          <Link to="/contact">Request a minibus quote online</Link>
+        </Button>
+      </div>
+      <p className="mt-3 text-sm text-gray-600">
+        Minibus and 12-seater rates change with dates and demand, so we quote on your travel dates.
+      </p>
     </div>
     
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -141,7 +160,7 @@ const FleetMinibuses = () => {
           <CardFooter>
             {minibus.id === "12-seat-minibus" || minibus.id === "10-seat-minibus" || minibus.id === "premium-12-seat-minibus" ? (
               <Link to={`/fleet/minibus/${minibus.id}`} className="w-full">
-                <Button variant="outline" className="w-full">View Details</Button>
+                <Button variant="outline" className="w-full">View details &amp; get a quote</Button>
               </Link>
             ) : (
               <Button variant="outline" className="w-full" disabled>Coming Soon</Button>
