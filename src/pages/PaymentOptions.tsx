@@ -33,8 +33,7 @@ const PaymentOptions = () => {
   const [lastRequestPayload, setLastRequestPayload] = useState<any>(null);
   const [securityBond, setSecurityBond] = useState(0);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
-  const [acceptedLicense, setAcceptedLicense] = useState(false);
-  const [acceptedBond, setAcceptedBond] = useState(false);
+  const [showConsentError, setShowConsentError] = useState(false);
   const { useLocationDetails } = useRcmApi();
   const { data: locationDetails } = useLocationDetails();
 
@@ -483,14 +482,14 @@ const PaymentOptions = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate that all checkboxes are checked
-    if (!acceptedTerms || !acceptedLicense || !acceptedBond) {
-      toast.error("Please accept all terms and conditions", {
-        description: "You must agree to all requirements before proceeding.",
-      });
+    // Validate consent
+    if (!acceptedTerms) {
+      setShowConsentError(true);
+      document.getElementById("terms")?.scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
-    
+    setShowConsentError(false);
+
     setIsLoading(true);
     
     try {
