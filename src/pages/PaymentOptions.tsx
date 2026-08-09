@@ -22,7 +22,7 @@ import TrustGuaranteeBanner from '@/components/booking/TrustGuaranteeBanner';
 
 const PaymentOptions = () => {
   const navigate = useNavigate();
-  const [paymentType] = useState<"full">("full");
+  const [paymentType, setPaymentType] = useState<"full" | "deposit">("full");
   const [bookingDetails, setBookingDetails] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [totalAmount, setTotalAmount] = useState(0);
