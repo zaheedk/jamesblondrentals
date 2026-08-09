@@ -17,6 +17,7 @@ import ExitIntentPopup from "@/components/ExitIntentPopup";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent } from "@/components/ui/card";
 import PageSEO from '@/components/PageSEO';
+import { supabase } from "@/integrations/supabase/client";
 import TrustGuaranteeBanner from '@/components/booking/TrustGuaranteeBanner';
 
 const PaymentOptions = () => {
@@ -453,6 +454,41 @@ const PaymentOptions = () => {
       console.log('Complete API response from save quotation:', bookingResponse);
 
       if (bookingResponse.status === "OK") {
+        const quoteRef =
+          bookingResponse.results?.reservationref ||
+          bookingResponse.reservationRef ||
+          bookingDetails.reservationRef ||
+          sessionData?.reservationRef ||
+          "";
+        const quoteEmail =
+          customerInfo?.email ||
+          bookingDetails.customerEmail ||
+          sessionData?.customerEmail ||
+          "";
+
+        if (quoteRef && quoteEmail && !quoteEmail.includes("example.com")) {
+          try {
+            await supabase.functions.invoke("send-quote-email", {
+              body: {
+                recipientEmail: quoteEmail,
+                customerName: customerInfo?.firstname || bookingDetails.customerFirstName || sessionData?.customerFirstName || "",
+                reservationRef: quoteRef,
+                reservationNo: String(bookingResponse.results?.reservationno ?? ""),
+                vehicleName: sessionData?.vehicleName || bookingDetails.vehicleName || "",
+                pickupDate,
+                pickupTime: bookingDetails.pickupTime || "",
+                dropoffDate,
+                dropoffTime: bookingDetails.dropoffTime || "",
+                pickupLocation: bookingDetails.pickupLocationName || sessionData?.pickupLocationName || "",
+                dropoffLocation: bookingDetails.dropoffLocationName || sessionData?.dropoffLocationName || "",
+                totalCost: formatCurrency(totalCost),
+              },
+            });
+          } catch (emailError) {
+            console.error("Failed to send James Blond quote email:", emailError);
+          }
+        }
+
         toast.success("Quotation saved successfully!", {
           description: `Check your email for the quote details.`
         });
