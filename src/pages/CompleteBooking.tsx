@@ -77,7 +77,7 @@ const CompleteBooking = () => {
       if (response.status !== "OK" || !info) {
         setQuote(null);
         setError(
-          "We couldn't find that quote. Please check the reference from your email, or call us on 0800 111 999 and we'll finish it for you."
+          "We couldn't find that quote. Please check the reference from your email, or call us on 0800 525 663 and we'll finish it for you."
         );
         return;
       }
@@ -119,7 +119,7 @@ const CompleteBooking = () => {
       console.error("Quote lookup failed:", err);
       setQuote(null);
       setError(
-        "We couldn't load that quote right now. Please try again, or call 0800 111 999 and we'll complete your booking over the phone."
+        "We couldn't load that quote right now. Please try again, or call 0800 525 663 and we'll complete your booking over the phone."
       );
     } finally {
       setIsLoading(false);
@@ -229,7 +229,7 @@ const CompleteBooking = () => {
                 )}
               </Button>
               <p className="text-sm text-muted-foreground flex items-center gap-2">
-                <Phone className="h-4 w-4" /> Prefer to talk? Call 0800 111 999 and we'll finish it for you.
+                <Phone className="h-4 w-4" /> Prefer to talk? Call 0800 525 663 and we'll finish it for you.
               </p>
             </CardContent>
           </Card>
