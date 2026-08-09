@@ -424,7 +424,7 @@ const AucklandAirportMinibusRentals = () => {
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Button variant="secondary" size="lg" asChild>
-              <a href="#top">Book Now</a>
+              <a href="tel:0800525663">Get a Quote — 0800 525 663</a>
             </Button>
             <Button size="lg" variant="outline" className="bg-white hover:bg-white/90" asChild>
               <a href="tel:0800525663">Call Us: 0800 525 663</a>

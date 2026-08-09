@@ -41,7 +41,7 @@ const WellingtonMinibusHire = () => {
             </p>
             <div className="flex items-center gap-2 mb-4">
               <Button asChild size="lg">
-                <a href="#booking">Book Now</a>
+                <a href="tel:0800525663">Get a Quote — 0800 525 663</a>
               </Button>
               <Button variant="outline" asChild size="lg">
                 <Link to="/fleet/minibus">View All Minibuses</Link>
