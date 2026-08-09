@@ -35,6 +35,7 @@ const PaymentOptions = () => {
   const [securityBond, setSecurityBond] = useState(0);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [showConsentError, setShowConsentError] = useState(false);
+  const [isSavingQuote, setIsSavingQuote] = useState(false);
   const { useLocationDetails } = useRcmApi();
   const { data: locationDetails } = useLocationDetails();
 
@@ -282,9 +283,16 @@ const PaymentOptions = () => {
   };
 
   const handleSaveQuotation = async () => {
+    if (isSavingQuote) return;
+    const toastId = toast.loading("Saving your quote…", {
+      description: "This takes a few seconds. We'll email it to you.",
+    });
+    setIsSavingQuote(true);
     try {
       if (!bookingDetails) {
         toast.error("No booking details available to save quote");
+        toast.dismiss(toastId);
+        setIsSavingQuote(false);
         return;
       }
 
@@ -467,8 +475,8 @@ const PaymentOptions = () => {
           "";
 
         if (quoteRef && quoteEmail && !quoteEmail.includes("example.com")) {
-          try {
-            await supabase.functions.invoke("send-quote-email", {
+          void supabase.functions
+            .invoke("send-quote-email", {
               body: {
                 recipientEmail: quoteEmail,
                 customerName: customerInfo?.firstname || bookingDetails.customerFirstName || sessionData?.customerFirstName || "",
@@ -483,14 +491,15 @@ const PaymentOptions = () => {
                 dropoffLocation: bookingDetails.dropoffLocationName || sessionData?.dropoffLocationName || "",
                 totalCost: formatCurrency(totalCost),
               },
+            })
+            .catch((emailError) => {
+              console.error("Failed to send James Blond quote email:", emailError);
             });
-          } catch (emailError) {
-            console.error("Failed to send James Blond quote email:", emailError);
-          }
         }
 
-        toast.success("Quotation saved successfully!", {
-          description: `Check your email for the quote details.`
+        toast.success("Quote saved!", {
+          id: toastId,
+          description: "Check your email for the quote details.",
         });
       } else {
         throw new Error(bookingResponse.error || "Failed to save quotation");
@@ -498,8 +507,11 @@ const PaymentOptions = () => {
     } catch (error) {
       console.error("Failed to save quotation:", error);
       toast.error("Failed to save quotation", {
-        description: error instanceof Error ? error.message : "Please try again or contact support"
+        id: toastId,
+        description: error instanceof Error ? error.message : "Please try again or contact support",
       });
+    } finally {
+      setIsSavingQuote(false);
     }
   };
 
@@ -699,11 +711,26 @@ const PaymentOptions = () => {
               <button
                 type="button"
                 onClick={handleSaveQuotation}
-                className="inline-flex items-center text-sm text-gray-600 underline hover:text-gray-900"
+                disabled={isSavingQuote}
+                className="inline-flex items-center text-sm text-gray-600 underline hover:text-gray-900 disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                <Save className="mr-2 h-4 w-4" />
-                Email me this quote instead
+                {isSavingQuote ? (
+                  <>
+                    <span className="animate-spin mr-2">◌</span>
+                    Saving your quote…
+                  </>
+                ) : (
+                  <>
+                    <Save className="mr-2 h-4 w-4" />
+                    Email me this quote instead
+                  </>
+                )}
               </button>
+              {isSavingQuote && (
+                <p className="mt-2 text-xs text-muted-foreground">
+                  Please wait — we're creating your quote and emailing it to you.
+                </p>
+              )}
             </div>
           </form>
         </div>
