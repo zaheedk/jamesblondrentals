@@ -20,9 +20,11 @@ import PageSEO from '@/components/PageSEO';
 import { supabase } from "@/integrations/supabase/client";
 import TrustGuaranteeBanner from '@/components/booking/TrustGuaranteeBanner';
 
+const DEPOSIT_AMOUNT = 50;
+
 const PaymentOptions = () => {
   const navigate = useNavigate();
-  const [paymentType] = useState<"full">("full");
+  const [paymentType, setPaymentType] = useState<"full" | "deposit">("full");
   const [bookingDetails, setBookingDetails] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [totalAmount, setTotalAmount] = useState(0);
@@ -541,7 +543,7 @@ const PaymentOptions = () => {
     setIsLoading(true);
     
     try {
-      const amountToPay = totalCost;
+      const amountToPay = paymentType === "deposit" ? Math.min(DEPOSIT_AMOUNT, totalCost) : totalCost;
       
       updateBookingData({
         paymentAmount: amountToPay,
@@ -683,12 +685,40 @@ const PaymentOptions = () => {
           </Card>
           
           <div className="mb-6">
-            <div className="flex items-center space-x-2 border p-3 rounded-md bg-gray-50">
-              <Label className="flex-grow">
-                <div className="font-medium">Pay in Full</div>
-                <div className="text-sm text-gray-600">Pay {formatCurrency(totalCost)} now</div>
-              </Label>
-              <div className="font-bold">{formatCurrency(totalCost)}</div>
+            <p className="font-semibold mb-2">Choose how much to pay now</p>
+            <div className="space-y-3">
+              <button
+                type="button"
+                onClick={() => setPaymentType("full")}
+                className={`w-full flex items-center space-x-2 border p-3 rounded-md bg-gray-50 text-left ${
+                  paymentType === "full" ? "border-primary ring-1 ring-primary" : ""
+                }`}
+              >
+                <span className="flex-grow">
+                  <span className="block font-medium">Pay in Full</span>
+                  <span className="block text-sm text-gray-600">
+                    Rental total, excluding the refundable security bond
+                  </span>
+                </span>
+                <span className="font-bold">{formatCurrency(totalCost)}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setPaymentType("deposit")}
+                className={`w-full flex items-center space-x-2 border p-3 rounded-md bg-gray-50 text-left ${
+                  paymentType === "deposit" ? "border-primary ring-1 ring-primary" : ""
+                }`}
+              >
+                <span className="flex-grow">
+                  <span className="block font-medium">
+                    Pay a {formatCurrency(DEPOSIT_AMOUNT)} deposit
+                  </span>
+                  <span className="block text-sm text-gray-600">
+                    Non-refundable. Balance of {formatCurrency(Math.max(totalCost - DEPOSIT_AMOUNT, 0))} due at pick up.
+                  </span>
+                </span>
+                <span className="font-bold">{formatCurrency(Math.min(DEPOSIT_AMOUNT, totalCost))}</span>
+              </button>
             </div>
           </div>
           
@@ -703,7 +733,7 @@ const PaymentOptions = () => {
                   <span className="animate-spin mr-2">◌</span> Processing...
                 </>
               ) : (
-                `Proceed to Pay ${formatCurrency(totalCost)}`
+                `Proceed to Pay ${formatCurrency(paymentType === "deposit" ? Math.min(DEPOSIT_AMOUNT, totalCost) : totalCost)}`
               )}
             </Button>
             

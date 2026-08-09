@@ -29,11 +29,14 @@ type QuoteInfo = {
   totalCost: number;
   paidToDate: number;
   balanceDue: number;
+  securityBond: number;
   firstName: string;
   lastName: string;
   email: string;
   mandatoryFees: Array<{ name: string; amount: number }>;
 };
+
+const DEPOSIT_AMOUNT = 50;
 
 const num = (v: unknown): number => {
   const n = typeof v === "number" ? v : parseFloat(String(v ?? "0").replace(/[^0-9.\-]/g, ""));
@@ -56,6 +59,7 @@ const CompleteBooking = () => {
   const [quote, setQuote] = useState<QuoteInfo | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isPaying, setIsPaying] = useState(false);
+  const [paymentChoice, setPaymentChoice] = useState<"full" | "deposit">("full");
   const [error, setError] = useState<string | null>(null);
 
   const lookup = useCallback(async (ref: string, lastName?: string) => {
@@ -82,9 +86,16 @@ const CompleteBooking = () => {
         return;
       }
 
-      const totalCost = num(info.totalrateafterdiscount) || num(info.totalcost);
+      // Security bond is held on the card at pick up — never charged online
+      const bondFee = (response.results?.extrafees as any[] | undefined)?.find(
+        (fee: any) => fee?.isbondfee === true
+      );
+      const securityBond = bondFee ? num(bondFee.fees) : 0;
+
+      const rawTotal = num(info.totalrateafterdiscount) || num(info.totalcost);
+      const totalCost = Math.max(rawTotal - securityBond, 0);
       const paidToDate = num(info.payment);
-      const balanceDue = num(info.balancedue) || Math.max(totalCost - paidToDate, 0);
+      const balanceDue = Math.max(totalCost - paidToDate, 0);
 
       setQuote({
         reservationRef: String(info.reservationref || trimmed),
@@ -107,13 +118,16 @@ const CompleteBooking = () => {
         totalCost,
         paidToDate,
         balanceDue,
+        securityBond,
         firstName: customer?.firstname || "",
         lastName: customer?.lastname || "",
         email: customer?.email || "",
-        mandatoryFees: (info.mandatoryfees || []).map((fee) => ({
-          name: fee.name || "Fee",
-          amount: num(fee.totalfeeamount ?? fee.amount),
-        })),
+        mandatoryFees: (info.mandatoryfees || [])
+          .map((fee) => ({
+            name: fee.name || "Fee",
+            amount: num(fee.totalfeeamount ?? fee.amount),
+          }))
+          .filter((fee) => !/bond/i.test(fee.name)),
       });
     } catch (err) {
       console.error("Quote lookup failed:", err);
@@ -136,7 +150,8 @@ const CompleteBooking = () => {
     if (!quote) return;
     setIsPaying(true);
     try {
-      const amount = quote.balanceDue > 0 ? quote.balanceDue : quote.totalCost;
+      const dueNow = quote.balanceDue > 0 ? quote.balanceDue : quote.totalCost;
+      const amount = paymentChoice === "deposit" ? Math.min(DEPOSIT_AMOUNT, dueNow) : dueNow;
       saveBookingData({
         vehicleId: quote.reservationRef,
         vehicleName: quote.vehicleName,
@@ -153,7 +168,7 @@ const CompleteBooking = () => {
         basePrice: quote.totalCost,
         vehicleImage: quote.vehicleImage,
         paymentAmount: amount,
-        paymentType: quote.balanceDue < quote.totalCost ? "deposit" : "full",
+        paymentType: paymentChoice,
         reservationRef: quote.reservationRef,
         reservationNo: quote.reservationNo,
         customerFirstName: quote.firstName,
@@ -174,6 +189,9 @@ const CompleteBooking = () => {
       setIsPaying(false);
     }
   };
+
+  const dueNow = quote ? (quote.balanceDue > 0 ? quote.balanceDue : quote.totalCost) : 0;
+  const amountDueNow = paymentChoice === "deposit" ? Math.min(DEPOSIT_AMOUNT, dueNow) : dueNow;
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -290,7 +308,7 @@ const CompleteBooking = () => {
                   </div>
                 ))}
                 <div className="flex justify-between font-semibold text-base pt-2">
-                  <span>Total</span>
+                  <span>Rental total (excludes security bond)</span>
                   <span>{money(quote.totalCost)}</span>
                 </div>
                 {quote.paidToDate > 0 && (
@@ -299,10 +317,47 @@ const CompleteBooking = () => {
                     <span>-{money(quote.paidToDate)}</span>
                   </div>
                 )}
-                <div className="flex justify-between font-bold text-lg">
-                  <span>Due now</span>
-                  <span>{money(quote.balanceDue > 0 ? quote.balanceDue : quote.totalCost)}</span>
-                </div>
+                <p className="text-xs text-muted-foreground pt-1">
+                  A refundable security bond
+                  {quote.securityBond > 0 ? ` of ${money(quote.securityBond)}` : " of $200–$300"} is held on
+                  your card at pick up — it is not charged online today.
+                </p>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-3">
+                <p className="font-semibold text-sm">Choose how much to pay now</p>
+                <button
+                  type="button"
+                  onClick={() => setPaymentChoice("full")}
+                  className={`w-full text-left border rounded-md p-3 flex items-center justify-between ${
+                    paymentChoice === "full" ? "border-primary ring-1 ring-primary" : ""
+                  }`}
+                >
+                  <span>
+                    <span className="block font-medium">Pay in full</span>
+                    <span className="block text-sm text-muted-foreground">
+                      Rental total, excluding the security bond
+                    </span>
+                  </span>
+                  <span className="font-bold">{money(dueNow)}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPaymentChoice("deposit")}
+                  className={`w-full text-left border rounded-md p-3 flex items-center justify-between ${
+                    paymentChoice === "deposit" ? "border-primary ring-1 ring-primary" : ""
+                  }`}
+                >
+                  <span>
+                    <span className="block font-medium">Pay a {money(DEPOSIT_AMOUNT)} deposit</span>
+                    <span className="block text-sm text-muted-foreground">
+                      Non-refundable. Balance of {money(Math.max(dueNow - DEPOSIT_AMOUNT, 0))} due at pick up.
+                    </span>
+                  </span>
+                  <span className="font-bold">{money(Math.min(DEPOSIT_AMOUNT, dueNow))}</span>
+                </button>
               </div>
 
               <Button onClick={handlePayNow} disabled={isPaying} size="lg" className="w-full">
@@ -311,7 +366,7 @@ const CompleteBooking = () => {
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Opening secure payment
                   </>
                 ) : (
-                  `Pay ${money(quote.balanceDue > 0 ? quote.balanceDue : quote.totalCost)} & confirm booking`
+                  `Pay ${money(amountDueNow)} & confirm booking`
                 )}
               </Button>
 
