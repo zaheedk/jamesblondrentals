@@ -49,12 +49,12 @@ const PriceGuide = () => {
           All prices are in NZD and include GST.
         </p>
         
-        <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-lg p-4 mb-8">
+        <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 mb-8">
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-            <h3 className="font-semibold text-green-800">Special Weekday Discount</h3>
+            <div className="w-2 h-2 bg-primary rounded-full"></div>
+            <h3 className="font-semibold text-primary">Special Weekday Discount</h3>
           </div>
-          <p className="text-green-700">
+          <p className="text-primary/80">
             Save 25% on all truck and jumbo van rentals when both pickup and dropoff are between Monday and Thursday!
           </p>
         </div>
@@ -628,23 +628,23 @@ const PriceGuide = () => {
               )}
 
               <div className="grid grid-cols-2 gap-3">
-                <div className="bg-green-50 p-3 rounded-lg text-center">
-                  <p className="text-xs text-green-600 font-medium">2 Hour</p>
-                  <p className="text-lg font-bold text-green-800">
+                <div className="bg-primary/10 p-3 rounded-lg text-center">
+                  <p className="text-xs text-primary font-medium">2 Hour</p>
+                  <p className="text-lg font-bold text-primary">
                     {selectedVehicle.hour2}
                   </p>
                 </div>
                 
-                <div className="bg-green-50 p-3 rounded-lg text-center">
-                  <p className="text-xs text-green-600 font-medium">4 Hour</p>
-                  <p className="text-lg font-bold text-green-800">
+                <div className="bg-primary/10 p-3 rounded-lg text-center">
+                  <p className="text-xs text-primary font-medium">4 Hour</p>
+                  <p className="text-lg font-bold text-primary">
                     {selectedVehicle.hour4}
                   </p>
                 </div>
                 
-                <div className="bg-green-50 p-3 rounded-lg text-center">
-                  <p className="text-xs text-green-600 font-medium">8 Hour</p>
-                  <p className="text-lg font-bold text-green-800">
+                <div className="bg-primary/10 p-3 rounded-lg text-center">
+                  <p className="text-xs text-primary font-medium">8 Hour</p>
+                  <p className="text-lg font-bold text-primary">
                     {selectedVehicle.hour8}
                   </p>
                 </div>

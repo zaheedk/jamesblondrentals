@@ -164,7 +164,7 @@ const VehicleCard = ({
       </AspectRatio>
       <CardHeader className="pb-3">
         {vehicle.fuelType === "electric" && (
-          <Badge className="w-fit mb-2 bg-green-100 text-green-800 border-green-200">
+          <Badge className="w-fit mb-2 bg-primary/10 text-primary border-primary/20">
             Electric Vehicle
           </Badge>
         )}
@@ -175,7 +175,7 @@ const VehicleCard = ({
         )}
         {hasMidweekDiscount && (
           <Badge
-            className="w-fit mb-2 bg-green-100 text-green-800 border-green-200"
+            className="w-fit mb-2 bg-primary/10 text-primary border-primary/20"
             title="Applies because your hire starts and ends Mon–Thu in the same week"
           >
             25% Early Week Discount Applied

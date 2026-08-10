@@ -522,7 +522,7 @@ const SearchForm = ({
       <CardContent className="p-6 md:p-10">
         <div className="mb-8 text-center">
           <h3 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight italic">Find Your Vehicle</h3>
-          <div className="h-1 w-12 bg-sky-500 mx-auto mt-2 rounded-full"></div>
+          <div className="h-1 w-12 bg-primary mx-auto mt-2 rounded-full"></div>
         </div>
 
         <form onSubmit={handleSearch}>
@@ -558,7 +558,7 @@ const SearchForm = ({
 
             {/* Pick-up Date and Time */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-              <div className="space-y-4 bg-sky-50/60 p-4 rounded-2xl border border-sky-100">
+              <div className="space-y-4 bg-primary/5 p-4 rounded-2xl border border-primary/10">
                 <div className="space-y-2">
                 <DateSelect
                   id="pickup-date"
@@ -584,7 +584,7 @@ const SearchForm = ({
                 </div>
               </div>
 
-              <div className="space-y-4 bg-sky-50/60 p-4 rounded-2xl border border-sky-100">
+              <div className="space-y-4 bg-primary/5 p-4 rounded-2xl border border-primary/10">
                 <div className="space-y-2">
                 <DateSelect
                   id="dropoff-date"
@@ -728,7 +728,7 @@ const SearchForm = ({
 
             <Button
               type="submit"
-              className="w-full h-auto py-5 bg-sky-500 hover:bg-sky-600 text-white font-bold text-lg rounded-2xl shadow-lg shadow-sky-500/30 active:scale-[0.98] transition-all focus-visible:ring-4 focus-visible:ring-sky-500/40"
+              className="w-full h-auto py-5 bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-lg rounded-2xl shadow-lg shadow-primary/30 active:scale-[0.98] transition-all focus-visible:ring-4 focus-visible:ring-primary/40"
               disabled={isLoading || !pickupLocation || !pickupDate || !dropoffDate || !pickupTime || !dropoffTime}
             >
               {isLoading ? "Searching..." : "Search Available Vehicles →"}
