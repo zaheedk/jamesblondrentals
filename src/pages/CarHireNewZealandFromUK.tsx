@@ -166,7 +166,7 @@ const CarHireNewZealandFromUK = () => (
               The natural mid-point of a two-island trip and the gateway to the Interislander
               ferry across Cook Strait to Picton.
             </p>
-            <Link to="/car-hire-wellington" className="text-primary hover:underline text-sm font-medium">
+            <Link to="/car-rental-wellington-new-zealand" className="text-primary hover:underline text-sm font-medium">
               → Wellington car hire
             </Link>
           </CardContent>
@@ -178,7 +178,7 @@ const CarHireNewZealandFromUK = () => (
               The best base for the South Island: Aoraki/Mt Cook, Tekapo, the West Coast glaciers
               and the drive through to Queenstown.
             </p>
-            <Link to="/christchurch-car-hire" className="text-primary hover:underline text-sm font-medium">
+            <Link to="/car-hire-christchurch" className="text-primary hover:underline text-sm font-medium">
               → Christchurch car hire
             </Link>
           </CardContent>
@@ -250,7 +250,7 @@ const CarHireNewZealandFromUK = () => (
               A 7-seat SUV or a 10 to 12-seat minibus keeps everyone together for Christmas and
               school-holiday trips. Child seats can be added at booking.
             </p>
-            <Link to="/fleet/minibuses" className="text-primary hover:underline text-sm font-medium">
+            <Link to="/fleet/minibus" className="text-primary hover:underline text-sm font-medium">
               → Minibus &amp; people mover hire
             </Link>
           </CardContent>
