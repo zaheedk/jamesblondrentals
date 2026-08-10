@@ -264,12 +264,23 @@ const ListYourVehicle = () => {
           </div>
           <div className="mt-10 flex flex-wrap gap-4">
             <Button size="lg" asChild>
-              <a href="mailto:info@jamesblond.co.nz?subject=List%20my%20vehicle%20with%20James%20Blond">
+              <a
+                href={`mailto:info@jamesblond.co.nz?subject=List%20my%20vehicle%20with%20James%20Blond%20%7C%20Source%3A%20${encodeURIComponent(FB_CAMPAIGN_UTM)}`}
+                onClick={() => {
+                  trackMetaEvent('Lead', { content_name: 'List Your Vehicle', currency: 'NZD', value: 0 });
+                  trackMetaEvent('Contact', { content_name: 'List Your Vehicle - Email' });
+                }}
+              >
                 <Mail className="mr-2 h-4 w-4" /> Talk to us about listing
               </a>
             </Button>
             <Button size="lg" variant="outline" asChild>
-              <a href="tel:0800525663"><Phone className="mr-2 h-4 w-4" /> 0800 525 663</a>
+              <a
+                href="tel:0800525663"
+                onClick={() => trackMetaEvent('Contact', { content_name: 'List Your Vehicle - Phone' })}
+              >
+                <Phone className="mr-2 h-4 w-4" /> 0800 525 663
+              </a>
             </Button>
           </div>
         </div>
