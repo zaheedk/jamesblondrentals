@@ -50,10 +50,10 @@ const SimpleHubPage = ({ slug, title, description, h1, intro, bullets, primaryCt
         phone="+6498385300"
         phoneLabel="Call James Blond"
         features={[
-          { Icon: Wallet, title: 'Transparent rates', description: bullets[0] ?? 'Clear pricing with no hidden fees.' },
-          { Icon: MapPin, title: 'Branches nationwide', description: bullets[1] ?? 'Convenient pickup across New Zealand.' },
-          { Icon: ShieldCheck, title: 'Fully insured fleet', description: bullets[2] ?? 'Well-maintained, insured vehicles.' },
-          { Icon: Check, title: 'Easy booking', description: bullets[3] ?? 'Book online or call our team 7 days.' },
+          { Icon: Wallet, title: 'Transparent rates', description: 'Published GST-inclusive pricing with no hidden booking fees.' },
+          { Icon: MapPin, title: 'Branches nationwide', description: 'Pickup in Auckland, Wellington, Christchurch and Hamilton.' },
+          { Icon: ShieldCheck, title: 'Well-maintained fleet', description: 'Late-model, serviced vehicles with insurance options available.' },
+          { Icon: Check, title: 'Easy booking', description: 'Book online in minutes or call our team seven days a week.' },
         ]}
       />
 
