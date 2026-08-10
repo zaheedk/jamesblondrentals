@@ -65,7 +65,7 @@ const InsuranceOptions = ({
       // Add tick icon before any text that contains "Include"
       formattedSecondLineHtml = formattedSecondLineHtml.replace(
         /(\b\w*[Ii]nclud\w*)/g, 
-        '<span class="inline-flex items-center gap-1 whitespace-nowrap"><svg class="w-4 h-4 text-green-500 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>$1</span>'
+        '<span class="inline-flex items-center gap-1 whitespace-nowrap"><svg class="w-4 h-4 text-primary inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>$1</span>'
       );
     }
     
@@ -129,7 +129,7 @@ const InsuranceOptions = ({
             >
               {displayData.isRecommended && (
                 <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 z-20">
-                  <div className="bg-green-800 text-white px-3 py-1 rounded text-xs font-bold shadow-lg">
+                  <div className="bg-primary text-white px-3 py-1 rounded text-xs font-bold shadow-lg">
                     RECOMMENDED
                   </div>
                 </div>
@@ -192,7 +192,7 @@ const InsuranceOptions = ({
               <div 
                 className={`w-full text-center py-1 transition-colors ${
                   isSelected 
-                    ? 'bg-green-500 hover:bg-green-600 text-white'
+                    ? 'bg-primary hover:bg-primary/90 text-primary-foreground'
                     : 'bg-yellow-400 hover:bg-yellow-500 text-black'
                 }`}
                 onClick={(e) => {
