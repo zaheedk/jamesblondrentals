@@ -16,11 +16,11 @@ const UteHire = ({ variant }: UteHireProps) => {
     ? 'Pickup Truck Rental NZ — Same-Day Ute & Pickup Hire'
     : 'Ute Hire NZ — Single & Double Cab Ute Rental, Same-Day Pickup';
   const title = isPickup
-    ? 'Pickup Truck Rental NZ from $79/day — Same-Day Ute & Pickup Hire'
-    : 'Ute Hire NZ from $79/day — Single & Double Cab Ute Rental';
+    ? 'Pickup Truck Rental NZ from $79/day — Same-Day, Towbar Fitted'
+    : 'Ute Hire from $79/day — Single & Double Cab Utes, Same Day';
   const description = isPickup
-    ? 'Pickup truck rental near you from $79/day. Single cab and double cab utes (Hilux & equivalents) for trades, tip runs and weekend projects. Same-day pickup, drive on a car licence.'
-    : 'Ute hire NZ from $79/day. Single cab and double cab utes for trades, tip runs and weekend projects. Tow up to 3,500kg, deck up to 2.4m, same-day pickup at Auckland, Wellington, Christchurch & Hamilton.';
+    ? 'Pickup truck rental from $79/day with a towbar fitted and 1-tonne deck. Single and double cab Hilux utes for trades, tip runs and weekend projects. Same-day pickup at 9 NZ branches — drive on a car licence, no endorsement.'
+    : 'Ute hire from $79/day (double cabs from $99/day). 1-tonne deck, towbar fitted, tow up to 3,500kg braked. Same-day pickup at 9 branches in Auckland, Wellington, Christchurch & Hamilton — car licence only, no hidden fees.';
 
   const utes = [
     {
