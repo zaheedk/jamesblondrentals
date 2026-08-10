@@ -247,7 +247,7 @@ const Index = () => {
               Choose from our extensive fleet of vehicles and enjoy a smooth rental experience from start to finish.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" variant="secondary" asChild className="min-w-48">
+              <Button size="lg" variant="cta" asChild className="min-w-48">
                 <Link to="/vehicles">Browse Fleet</Link>
               </Button>
               <Button size="lg" variant="outline" asChild className="min-w-48 bg-white/10 border-white/30 text-white hover:bg-white hover:text-primary">
