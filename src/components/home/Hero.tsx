@@ -1,9 +1,5 @@
 import SearchForm from "./SearchForm";
 import { useIsMobile } from "@/hooks/use-mobile";
-import heroJpg from "@/assets/hero-spring.jpg";
-import heroWebp768 from "@/assets/hero-spring-768w.webp";
-import heroWebp1200 from "@/assets/hero-spring-1200w.webp";
-import heroWebp1920 from "@/assets/hero-spring-1920w.webp";
 import { Link } from "react-router-dom";
 
 const Hero = () => {
@@ -14,12 +10,12 @@ const Hero = () => {
       {/* Responsive WebP hero image with JPEG fallback */}
       <picture>
         <source
-          srcSet={`${heroWebp768} 768w, ${heroWebp1200} 1200w, ${heroWebp1920} 1920w`}
+          srcSet="/hero-spring-768w.webp 768w, /hero-spring-1200w.webp 1200w, /hero-spring-1920w.webp 1920w"
           sizes="100vw"
           type="image/webp"
         />
         <img
-          src={heroJpg}
+          src="/hero-spring.jpg"
           alt="Car rental in New Zealand - scenic spring drive through green hills and mountain roads"
           className="hero-image"
           width="1920"
