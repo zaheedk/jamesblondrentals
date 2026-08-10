@@ -2,8 +2,7 @@ import { Link } from 'react-router-dom';
 import PageSEO from '@/components/PageSEO';
 import JsonLd from '@/components/JsonLd';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Check, Phone, Mail, ArrowRight, ShieldCheck, Wallet, Users, Car } from 'lucide-react';
+import { Check, Phone, Mail, ArrowRight, ShieldCheck, Wallet, Users, Car, TrendingUp } from 'lucide-react';
 
 const revenueSplit = [
   { item: 'Vehicle purchase or lease', owner: true, jb: false },
@@ -79,49 +78,79 @@ const ListYourVehicle = () => {
       />
       <JsonLd data={faqLd} />
 
-      <section className="container mx-auto px-6 pt-16 pb-12 md:pt-24">
-        <p className="text-sm tracking-[0.25em] uppercase text-muted-foreground mb-6">Vehicle owner partnerships · NZ</p>
-        <h1 className="font-serif text-4xl md:text-6xl leading-tight tracking-tight max-w-4xl">
-          Put your vehicle to work. Keep 70% of the rental revenue.
-        </h1>
-        <p className="mt-6 text-lg text-muted-foreground max-w-2xl">
-          If you own a cargo van, furniture truck, ute, trailer or minibus — or you want to enter the rental
-          industry without building a business from scratch — list it with James Blond. You own the asset, we bring
-          the customers and run the day-to-day.
-        </p>
-        <div className="mt-8 flex flex-wrap gap-4">
-          <Button size="lg" asChild>
-            <a href="mailto:info@jamesblond.co.nz?subject=List%20my%20vehicle%20with%20James%20Blond">
-              <Mail className="mr-2 h-4 w-4" /> Register your interest <ArrowRight className="ml-2 h-4 w-4" />
-            </a>
-          </Button>
-          <Button size="lg" variant="outline" asChild>
-            <a href="tel:0800525663"><Phone className="mr-2 h-4 w-4" /> 0800 525 663</a>
-          </Button>
+      <section className="container mx-auto px-6 py-16 md:py-24">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          {/* Left: headline, copy, CTAs */}
+          <div className="max-w-xl">
+            <span className="inline-flex items-center gap-2 bg-muted/60 border border-border rounded-full px-4 py-1.5 text-xs font-semibold tracking-wide uppercase text-primary mb-6">
+              <Car className="w-4 h-4" />
+              Vehicle Owner Partnerships
+            </span>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground mb-6">
+              Put your vehicle to work. Keep 70% of the rental revenue.
+            </h1>
+            <p className="text-lg text-muted-foreground mb-8">
+              Own a cargo van, furniture truck, ute, trailer or minibus? List it with James Blond and we will bring the customers, run the bookings and handle the day-to-day — you keep the asset and 70% of net revenue.
+            </p>
+            <div className="flex flex-wrap gap-4 mb-6">
+              <Button size="lg" variant="cta" asChild>
+                <a href="mailto:info@jamesblond.co.nz?subject=List%20my%20vehicle%20with%20James%20Blond">
+                  <Mail className="mr-2 h-4 w-4" /> Register your interest
+                </a>
+              </Button>
+              <Button size="lg" variant="outline" asChild>
+                <a href="tel:0800525663"><Phone className="mr-2 h-4 w-4" /> 0800 525 663</a>
+              </Button>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Already have questions?{' '}
+              <Link to="/contact" className="text-primary font-medium hover:underline inline-flex items-center gap-1">
+                Contact our team <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </p>
+          </div>
+
+          {/* Right: 2x2 feature grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {[
+              {
+                Icon: Wallet,
+                title: 'You earn 70%',
+                description: 'Receive 70% of net rental revenue every month from completed bookings.',
+              },
+              {
+                Icon: Users,
+                title: 'We bring demand',
+                description: 'Website, Google Ads, branch enquiries and repeat commercial customers.',
+              },
+              {
+                Icon: ShieldCheck,
+                title: 'We run the rental',
+                description: 'Rental agreements, driver checks, security bonds, photos and damage handling.',
+              },
+              {
+                Icon: TrendingUp,
+                title: 'Monthly payouts',
+                description: 'Clear statements per booking, with your share paid to your bank account.',
+              },
+            ].map(({ Icon, title, description }) => (
+              <div
+                key={title}
+                className="bg-muted/40 border border-border rounded-2xl p-6 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300"
+              >
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                  <Icon className="w-5 h-5 text-primary" />
+                </div>
+                <h3 className="text-lg font-bold text-foreground mb-2">{title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       <section className="container mx-auto px-6 py-12 border-t">
-        <h2 className="font-serif text-3xl md:text-4xl mb-8">The model in one line</h2>
-        <div className="grid md:grid-cols-3 gap-6">
-          {[
-            { Icon: Wallet, h: 'You own it, you earn 70%', p: 'You buy or already own the vehicle and receive 70% of net rental revenue every month.' },
-            { Icon: Users, h: 'We bring the demand', p: 'Website, Google Ads, branch enquiries and repeat commercial customers — plus quoting and bookings.' },
-            { Icon: ShieldCheck, h: 'We run the rental', p: 'Rental agreements, driver checks, security bonds, condition photos, damage and infringement handling.' },
-          ].map(({ Icon, h, p }) => (
-            <Card key={h}>
-              <CardContent className="p-8">
-                <Icon className="h-8 w-8 text-primary mb-4" />
-                <h3 className="text-xl font-bold mb-2">{h}</h3>
-                <p className="text-muted-foreground">{p}</p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
-
-      <section className="container mx-auto px-6 py-12 border-t">
-        <h2 className="font-serif text-3xl md:text-4xl mb-4">Who is responsible for what</h2>
+        <h2 className="text-3xl md:text-4xl mb-4">Who is responsible for what</h2>
         <p className="text-muted-foreground max-w-3xl mb-6">
           No grey areas. The owner carries the asset and its running costs; James Blond carries demand generation
           and the rental operation.
@@ -153,7 +182,7 @@ const ListYourVehicle = () => {
       </section>
 
       <section className="container mx-auto px-6 py-12 border-t">
-        <h2 className="font-serif text-3xl md:text-4xl mb-6">How the revenue share is calculated</h2>
+        <h2 className="text-3xl md:text-4xl mb-6">How the revenue share is calculated</h2>
         <ol className="space-y-4 max-w-3xl text-muted-foreground list-decimal pl-6">
           <li>A customer books your vehicle through James Blond and pays us directly.</li>
           <li>GST, card/merchant fees and any third-party booking fees are deducted to give net rental revenue.</li>
@@ -164,7 +193,7 @@ const ListYourVehicle = () => {
       </section>
 
       <section className="container mx-auto px-6 py-12 border-t">
-        <h2 className="font-serif text-3xl md:text-4xl mb-6">Vehicles we want most</h2>
+        <h2 className="text-3xl md:text-4xl mb-6">Vehicles we want most</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
             { name: 'Cargo vans', to: '/cargo-van-hire' },
@@ -187,7 +216,7 @@ const ListYourVehicle = () => {
 
       <section className="bg-muted/30 py-16 mt-12">
         <div className="container mx-auto px-6 max-w-3xl">
-          <h2 className="font-serif text-3xl md:text-4xl mb-8">Owner questions, answered</h2>
+          <h2 className="text-3xl md:text-4xl mb-8">Owner questions, answered</h2>
           <div className="space-y-6">
             {faq.map((f) => (
               <div key={f.q}>
