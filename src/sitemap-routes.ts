@@ -98,6 +98,7 @@ export const sitemapRoutes: SitemapRoute[] = [
   { path: '/small-truck-hire-christchurch', priority: 0.9, changefreq: 'weekly' },
   { path: '/cargo-van-hire', priority: 0.9, changefreq: 'weekly' },
   { path: '/cargo-van-hire-auckland', priority: 0.9, changefreq: 'weekly' },
+  { path: '/list-your-vehicle', priority: 0.8, changefreq: 'monthly' },
   { path: '/furniture-truck-hire-auckland', priority: 0.9, changefreq: 'weekly' },
   { path: '/van-hire-christchurch', priority: 0.9, changefreq: 'weekly' },
   // Christchurch / Canterbury van hire — long-tail satellites
