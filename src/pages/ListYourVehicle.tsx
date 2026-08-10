@@ -1,8 +1,24 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import PageSEO from '@/components/PageSEO';
 import JsonLd from '@/components/JsonLd';
 import { Button } from '@/components/ui/button';
 import { Check, Phone, Mail, ArrowRight, ShieldCheck, Wallet, Users, Car, TrendingUp } from 'lucide-react';
+
+const FB_CAMPAIGN_UTM = 'utm_source=facebook&utm_medium=cpc&utm_campaign=list_your_vehicle&utm_content=landing_page';
+
+const trackMetaEvent = (event: string, params?: Record<string, unknown>): void => {
+  if (typeof window === 'undefined') return;
+  try {
+    const fbq = (window as any).fbq;
+    if (typeof fbq === 'function') {
+      fbq('track', event, params);
+    }
+  } catch {
+    // Never let pixel tracking break the page
+  }
+};
+
 
 const revenueSplit = [
   { item: 'Vehicle purchase or lease', owner: true, jb: false },
@@ -59,6 +75,16 @@ const faq = [
 ];
 
 const ListYourVehicle = () => {
+  useEffect(() => {
+    trackMetaEvent('ViewContent', {
+      content_name: 'List Your Vehicle',
+      content_category: 'Vehicle Owner Partnership',
+      content_type: 'landing_page',
+      value: 0,
+      currency: 'NZD',
+    });
+  }, []);
+
   const faqLd = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -94,12 +120,23 @@ const ListYourVehicle = () => {
             </p>
             <div className="flex flex-wrap gap-4 mb-6">
               <Button size="lg" variant="cta" asChild>
-                <a href="mailto:info@jamesblond.co.nz?subject=List%20my%20vehicle%20with%20James%20Blond">
+                <a
+                  href={`mailto:info@jamesblond.co.nz?subject=List%20my%20vehicle%20with%20James%20Blond%20%7C%20Source%3A%20${encodeURIComponent(FB_CAMPAIGN_UTM)}`}
+                  onClick={() => {
+                    trackMetaEvent('Lead', { content_name: 'List Your Vehicle', currency: 'NZD', value: 0 });
+                    trackMetaEvent('Contact', { content_name: 'List Your Vehicle - Email' });
+                  }}
+                >
                   <Mail className="mr-2 h-4 w-4" /> Register your interest
                 </a>
               </Button>
               <Button size="lg" variant="outline" asChild>
-                <a href="tel:0800525663"><Phone className="mr-2 h-4 w-4" /> 0800 525 663</a>
+                <a
+                  href="tel:0800525663"
+                  onClick={() => trackMetaEvent('Contact', { content_name: 'List Your Vehicle - Phone' })}
+                >
+                  <Phone className="mr-2 h-4 w-4" /> 0800 525 663
+                </a>
               </Button>
             </div>
             <p className="text-sm text-muted-foreground">
@@ -227,12 +264,23 @@ const ListYourVehicle = () => {
           </div>
           <div className="mt-10 flex flex-wrap gap-4">
             <Button size="lg" asChild>
-              <a href="mailto:info@jamesblond.co.nz?subject=List%20my%20vehicle%20with%20James%20Blond">
+              <a
+                href={`mailto:info@jamesblond.co.nz?subject=List%20my%20vehicle%20with%20James%20Blond%20%7C%20Source%3A%20${encodeURIComponent(FB_CAMPAIGN_UTM)}`}
+                onClick={() => {
+                  trackMetaEvent('Lead', { content_name: 'List Your Vehicle', currency: 'NZD', value: 0 });
+                  trackMetaEvent('Contact', { content_name: 'List Your Vehicle - Email' });
+                }}
+              >
                 <Mail className="mr-2 h-4 w-4" /> Talk to us about listing
               </a>
             </Button>
             <Button size="lg" variant="outline" asChild>
-              <a href="tel:0800525663"><Phone className="mr-2 h-4 w-4" /> 0800 525 663</a>
+              <a
+                href="tel:0800525663"
+                onClick={() => trackMetaEvent('Contact', { content_name: 'List Your Vehicle - Phone' })}
+              >
+                <Phone className="mr-2 h-4 w-4" /> 0800 525 663
+              </a>
             </Button>
           </div>
         </div>
