@@ -130,7 +130,7 @@ const AucklandVanHire = () => {
                 <Link to="/auckland-airport-minibus-rentals" className="underline hover:text-primary">Auckland Airport minibus</Link>.
               </p>
               <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
-                <Button asChild size="lg" className="rounded-full px-7">
+                <Button asChild variant="cta" size="lg">
                   <a href="#booking">Check availability</a>
                 </Button>
                 <a
