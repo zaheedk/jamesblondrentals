@@ -185,7 +185,7 @@ const FleetTrucks = () => {
               Our professional truck fleet is designed to make your moving experience smooth — whether you're relocating your home, transporting furniture, or handling commercial deliveries.
             </p>
           </div>
-          <Button asChild variant="default" className="bg-cta-foreground text-cta hover:bg-cta-foreground/90 rounded-full px-6 py-3 shadow-sm relative z-10">
+          <Button asChild variant="default" className="bg-white text-cta hover:bg-white/90 rounded-full px-6 py-3 shadow-sm relative z-10">
             <Link to="/contact">Get in Touch</Link>
           </Button>
           <div className="absolute -right-12 -bottom-12 w-48 h-48 bg-white/10 rounded-full blur-3xl" />
