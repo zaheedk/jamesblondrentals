@@ -199,29 +199,7 @@ const FleetTrucks = () => {
         ))}
       </div>
 
-      {/* Locations Bento Tile */}
-      <div className="bg-muted/40 rounded-[2.5rem] p-8 border border-border mb-10">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-6">
-          <div>
-            <h3 className="text-xl font-bold text-foreground mb-1">Truck hire by city</h3>
-            <p className="text-sm text-muted-foreground">Find truck rentals at your nearest James Blond branch.</p>
-          </div>
-          <MapPin className="w-8 h-8 text-primary" />
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
-          {locationLinks.map((loc) => (
-            <Link
-              key={loc.name}
-              to={loc.to}
-              className="px-4 py-3 bg-card rounded-2xl border border-border text-sm font-semibold text-foreground hover:text-primary hover:border-primary/30 transition-colors text-center"
-            >
-              {loc.name}
-            </Link>
-          ))}
-        </div>
-      </div>
-
-      <RelatedLocations vehicleType="trucks" title="More truck hire locations" />
+      <RelatedLocations vehicleType="trucks" title="Truck hire by city" />
     </div>
   );
 };
