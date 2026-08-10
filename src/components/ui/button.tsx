@@ -53,7 +53,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {children}
-        {variant === "cta" && (
+        {!asChild && variant === "cta" && (
           <ArrowRight className="transition-transform duration-200 group-hover:translate-x-1" />
         )}
       </Comp>
