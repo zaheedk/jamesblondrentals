@@ -442,7 +442,7 @@ const AucklandVanHireHub = () => {
                 Pick up near Auckland Airport and drop off in Wellington or Christchurch on
                 request — handy for a one-way relocation.
               </p>
-              <Link to="/one-way-commercial-hire" className="text-primary hover:underline font-medium">
+              <Link to="/one-way-van-hire" className="text-primary hover:underline font-medium">
                 → One-way van &amp; truck hire
               </Link>
             </div>
