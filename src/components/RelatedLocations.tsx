@@ -61,6 +61,8 @@ const MATRIX: Record<CityKey, Partial<Record<VehicleType, { to: string; label?: 
 const EXTRA_LINKS: Partial<Record<VehicleType, { to: string; label: string }[]>> = {
   vans: [
     { to: "/auckland-van-hire-hub", label: "Auckland Van Hire Hub" },
+    { to: "/cargo-van-hire", label: "Cargo Van Hire NZ" },
+    { to: "/cargo-van-hire-auckland", label: "Cargo Van Hire Auckland" },
     { to: "/12-seater-van-hire-auckland", label: "12-Seater Van Hire Auckland" },
     { to: "/12-seater-van-hire-christchurch", label: "12-Seater Van Hire Christchurch" },
     { to: "/12-seater-van-hire-wellington", label: "12-Seater Van Hire Wellington" },
@@ -68,6 +70,7 @@ const EXTRA_LINKS: Partial<Record<VehicleType, { to: string; label: string }[]>>
   ],
   trucks: [
     { to: "/moving-truck-hire", label: "Moving Truck Hire" },
+    { to: "/furniture-truck-hire-auckland", label: "Furniture Truck Hire Auckland" },
     { to: "/moving-truck-hire-hamilton", label: "Moving Truck Hire Hamilton" },
     { to: "/furniture-truck-hire-hamilton", label: "Furniture Truck Hire Hamilton" },
     { to: "/west-auckland-truck-rentals", label: "West Auckland Truck Rentals" },
