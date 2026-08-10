@@ -150,7 +150,7 @@ const ListYourVehicle = () => {
       </section>
 
       <section className="container mx-auto px-6 py-12 border-t">
-        <h2 className="font-serif text-3xl md:text-4xl mb-4">Who is responsible for what</h2>
+        <h2 className="text-3xl md:text-4xl mb-4">Who is responsible for what</h2>
         <p className="text-muted-foreground max-w-3xl mb-6">
           No grey areas. The owner carries the asset and its running costs; James Blond carries demand generation
           and the rental operation.
@@ -182,7 +182,7 @@ const ListYourVehicle = () => {
       </section>
 
       <section className="container mx-auto px-6 py-12 border-t">
-        <h2 className="font-serif text-3xl md:text-4xl mb-6">How the revenue share is calculated</h2>
+        <h2 className="text-3xl md:text-4xl mb-6">How the revenue share is calculated</h2>
         <ol className="space-y-4 max-w-3xl text-muted-foreground list-decimal pl-6">
           <li>A customer books your vehicle through James Blond and pays us directly.</li>
           <li>GST, card/merchant fees and any third-party booking fees are deducted to give net rental revenue.</li>
@@ -193,7 +193,7 @@ const ListYourVehicle = () => {
       </section>
 
       <section className="container mx-auto px-6 py-12 border-t">
-        <h2 className="font-serif text-3xl md:text-4xl mb-6">Vehicles we want most</h2>
+        <h2 className="text-3xl md:text-4xl mb-6">Vehicles we want most</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
             { name: 'Cargo vans', to: '/cargo-van-hire' },
@@ -216,7 +216,7 @@ const ListYourVehicle = () => {
 
       <section className="bg-muted/30 py-16 mt-12">
         <div className="container mx-auto px-6 max-w-3xl">
-          <h2 className="font-serif text-3xl md:text-4xl mb-8">Owner questions, answered</h2>
+          <h2 className="text-3xl md:text-4xl mb-8">Owner questions, answered</h2>
           <div className="space-y-6">
             {faq.map((f) => (
               <div key={f.q}>
