@@ -16,7 +16,7 @@ import PageSEO from '@/components/PageSEO';
 const AucklandTruckRentals = () => {
   return (
     <div className="container mx-auto px-4 py-8">
-      <PageSEO title="Cheapest Truck Hire Auckland from $35/Hr | Same-Day Moving Truck" description="Cheap truck hire in Auckland from $35/hr — 2-tonne & 3-tonne trucks with tail lifts for house moves, deliveries and trades. Same-day pickup, drive on a car licence." canonical="/auckland-truck-rentals-hire" />
+      <PageSEO title="Cheapest Truck Hire Auckland from $35/hr — 5 Branches, Same Day" description="Cheap Auckland truck hire from $35/hr or $125/day. 12m³ to 19m³ trucks with 400kg tail lifts for house moves, deliveries and trades. Five branches, car licence only, no hidden fees — book online in 2 minutes." canonical="/auckland-truck-rentals-hire" />
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-6 mb-8">
         <div className="grid md:grid-cols-2 gap-6 items-center">

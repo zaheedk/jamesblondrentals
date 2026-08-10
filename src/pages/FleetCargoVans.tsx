@@ -9,7 +9,7 @@ import PageSEO from '@/components/PageSEO';
 const FleetCargoVans = () => {
   return (
     <div className="container mx-auto px-4 py-8">
-      <PageSEO title="Cargo Van Hire NZ | James Blond Rentals" description="Rent cargo vans for commercial deliveries, courier work and business logistics across Auckland, Wellington and Christchurch." canonical="/fleet/cargo-vans" />
+      <PageSEO title="Cargo Van Hire NZ from $115/day — 6m³ & 9m³ Cargo Vans" description="Cargo van hire from $115/day, or $95/day on 10+ days. 6m³ standard, 9m³ jumbo and high-roof cargo vans for couriers, trades and deliveries in Auckland, Wellington, Christchurch and Hamilton. Car licence only." canonical="/fleet/cargo-vans" />
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-8 mb-12">
         <div className="max-w-4xl mx-auto text-center">

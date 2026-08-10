@@ -96,6 +96,9 @@ export const sitemapRoutes: SitemapRoute[] = [
   { path: '/truck-hire-wellington', priority: 0.9, changefreq: 'weekly' },
   { path: '/truck-hire-christchurch', priority: 0.9, changefreq: 'weekly' },
   { path: '/small-truck-hire-christchurch', priority: 0.9, changefreq: 'weekly' },
+  { path: '/cargo-van-hire', priority: 0.9, changefreq: 'weekly' },
+  { path: '/cargo-van-hire-auckland', priority: 0.9, changefreq: 'weekly' },
+  { path: '/furniture-truck-hire-auckland', priority: 0.9, changefreq: 'weekly' },
   { path: '/van-hire-christchurch', priority: 0.9, changefreq: 'weekly' },
   // Christchurch / Canterbury van hire — long-tail satellites
   { path: '/moving-van-hire-christchurch', priority: 0.85, changefreq: 'weekly' },

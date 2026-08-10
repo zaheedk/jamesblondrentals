@@ -123,6 +123,9 @@ import SmallTruckHireChristchurch from "./pages/SmallTruckHireChristchurch";
 import HamiltonTruckRentals from "./pages/HamiltonTruckRentals";
 import HamiltonVanHire from "./pages/HamiltonVanHire";
 import FurnitureTruckHireHamilton from "./pages/FurnitureTruckHireHamilton";
+import FurnitureTruckHireAuckland from "./pages/FurnitureTruckHireAuckland";
+import CargoVanHire from "./pages/CargoVanHire";
+import CargoVanHireAuckland from "./pages/CargoVanHireAuckland";
 import TrailerHireHamilton from "./pages/TrailerHireHamilton";
 import MovingTruckHireHamilton from "./pages/MovingTruckHireHamilton";
 import TrailerHireAuckland from "./pages/TrailerHireAuckland";
@@ -381,6 +384,9 @@ const App = () => {
                 <Route path="/hamilton-van-hire" element={<Navigate to="/van-hire-hamilton" replace />} />
                 <Route path="/van-hire-hamilton" element={<HamiltonVanHire />} />
                 <Route path="/furniture-truck-hire-hamilton" element={<FurnitureTruckHireHamilton />} />
+                <Route path="/furniture-truck-hire-auckland" element={<FurnitureTruckHireAuckland />} />
+                <Route path="/cargo-van-hire" element={<CargoVanHire />} />
+                <Route path="/cargo-van-hire-auckland" element={<CargoVanHireAuckland />} />
                 <Route path="/trailer-hire-hamilton" element={<TrailerHireHamilton />} />
                 <Route path="/trailer-hire-auckland" element={<TrailerHireAuckland />} />
                 <Route path="/car-hire-auckland-airport-from-australia" element={<CarHireAucklandAirportFromAustralia />} />
