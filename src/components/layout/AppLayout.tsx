@@ -2,7 +2,6 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import Navbar from './Navbar';
 import Footer from './Footer';
-import ChatWidget from '@/components/chat/ChatWidget';
 import { ResourcePreloader } from '@/components/ResourcePreloader';
 import PromoBanner from './PromoBanner';
 import EarlyWeekBanner from './EarlyWeekBanner';
@@ -41,7 +40,6 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
         {children}
       </main>
       <Footer />
-      <ChatWidget />
       <SocialProofNotifications />
       <StickyMobileBookBar />
       {/* Reserve space so the sticky bar never covers page content on mobile */}
