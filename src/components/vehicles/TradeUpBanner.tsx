@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { ArrowUpRight, Sparkles } from "lucide-react";
 import { Vehicle } from "@/lib/types";
+import { Button } from "@/components/ui/button";
 
 interface TradeUpBannerProps {
   vehicles: Vehicle[];
@@ -113,13 +114,13 @@ const TradeUpBanner = ({ vehicles, onSelectVehicle }: TradeUpBannerProps) => {
           </p>
         </div>
       </div>
-      <button
+      <Button
         type="button"
         onClick={handleClick}
-        className="inline-flex items-center gap-1.5 self-start md:self-center bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded font-medium text-sm whitespace-nowrap"
+        size="sm"
       >
         See the upgrade <ArrowUpRight className="h-4 w-4" />
-      </button>
+      </Button>
     </div>
   );
 };
