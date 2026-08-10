@@ -14,7 +14,7 @@ import PageSEO from '@/components/PageSEO';
 const CarTransporterTrailerDetail = () => {
   return (
     <div className="container mx-auto px-4 py-10">
-      <PageSEO title="Car Transporter Trailer Hire | James Blond Rentals" description="Rent a car transporter trailer to safely move vehicles between locations. Suitable for cars and small vehicles." canonical="/fleet/trailers/car-transporter" />
+      <PageSEO title="Car Trailer Hire from $120/day — Car Transporter Trailer NZ" description="Car trailer hire from $120/day ($90/day on longer hires). Braked car transporter trailers with ramps and winch points — tow a car, race car or project vehicle. Auckland, Wellington, Christchurch & Hamilton, same-day pickup." canonical="/fleet/trailers/car-transporter" />
       <div className="mb-6">
         <Link to="/fleet/trailers">
           <Button variant="ghost" className="pl-0">
