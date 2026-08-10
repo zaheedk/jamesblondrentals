@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import PageSEO from '@/components/PageSEO';
+import PageHero from '@/components/PageHero';
 import JsonLd from '@/components/JsonLd';
 
 const SITE_URL = 'https://www.jamesblond.co.nz';
