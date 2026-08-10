@@ -32,8 +32,6 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
       <SiteJsonLd />
       <BreadcrumbsJsonLd />
       <ResourcePreloader />
-      <PromoBanner />
-      <EarlyWeekBanner />
       <Navbar />
       <main className="flex-1">
         <ChristchurchBreadcrumbs />
