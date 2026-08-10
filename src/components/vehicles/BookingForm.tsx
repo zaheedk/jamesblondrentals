@@ -248,7 +248,7 @@ export default function BookingForm({
         <input type="hidden" name="campaignCode" value={campaignCode || ''} />
         
         <div 
-          className="w-full text-center py-1 transition-colors bg-yellow-400 hover:bg-yellow-500 text-black cursor-pointer rounded-t-none"
+          className="w-full text-center py-1 transition-colors bg-emerald-500 hover:bg-emerald-600 text-white cursor-pointer rounded-t-none"
           onClick={handleBookNow}
         >
           Select
