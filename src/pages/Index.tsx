@@ -5,7 +5,7 @@ import FeaturedVehicles from "@/components/home/FeaturedVehicles";
 import CustomerReviews from "@/components/home/CustomerReviews";
 import { format } from "date-fns";
 import { useState, useEffect } from "react";
-import { ChevronDown, CalendarClock, Users, MapPin, Crown, ArrowRight } from "lucide-react";
+import { ChevronDown, CalendarClock, Users, MapPin, ArrowRight } from "lucide-react";
 import PageSEO from '@/components/PageSEO';
 import {
   Accordion,
@@ -107,16 +107,6 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Premium service wide */}
-            <div className="md:col-span-2 bg-primary/10 rounded-3xl p-8 flex items-center justify-between shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 border border-primary/15">
-              <div className="max-w-[70%]">
-                <div className="text-2xl font-bold text-primary">Premium Service</div>
-                <div className="text-primary/70 mt-2">Exceptional support and a modern fleet for every Kiwi journey.</div>
-              </div>
-              <div className="h-20 w-20 bg-background rounded-full flex items-center justify-center shadow-lg shrink-0">
-                <Crown className="w-9 h-9 text-primary" />
-              </div>
-            </div>
           </div>
 
           <div className="text-center mt-10">
