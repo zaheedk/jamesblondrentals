@@ -355,6 +355,12 @@
     <changefreq>weekly</changefreq>
   </url>
   <url>
+    <loc>https://jamesblond.co.nz/list-your-vehicle</loc>
+    <lastmod>2026-08-10</lastmod>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
     <loc>https://jamesblond.co.nz/furniture-truck-hire-auckland</loc>
     <lastmod>2026-08-10</lastmod>
     <priority>0.9</priority>
