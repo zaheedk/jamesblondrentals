@@ -83,6 +83,7 @@ const EXTRA_LINKS: Partial<Record<VehicleType, { to: string; label: string }[]>>
   cars: [
     { to: "/car-hire-auckland-airport-from-australia", label: "Auckland Airport (from Australia)" },
     { to: "/car-hire-christchurch-airport-from-australia", label: "Christchurch Airport (from Australia)" },
+    { to: "/car-hire-new-zealand-from-uk", label: "NZ Car Hire (from the UK)" },
     { to: "/car-rental-auckland-airport", label: "Auckland Airport Car Rental" },
   ],
   trailers: [],

@@ -63,6 +63,8 @@ const relatedLinks = [
   { label: 'Car hire Auckland', to: '/car-hire-auckland' },
   { label: 'Van hire Wellington', to: '/van-hire-wellington' },
   { label: 'Van hire Christchurch', to: '/van-hire-christchurch' },
+  { label: 'NZ car hire from the UK', to: '/car-hire-new-zealand-from-uk' },
+  { label: 'Auckland car hire from Australia', to: '/car-hire-auckland-airport-from-australia' },
 ];
 
 const AucklandVanHireHub = () => {
@@ -400,6 +402,54 @@ const AucklandVanHireHub = () => {
       </section>
 
       {/* Related Auckland van hire */}
+      <section className="border-t border-border">
+        <div className="container mx-auto px-6 py-14">
+          <h2 className="font-sans font-extrabold tracking-tight text-3xl md:text-4xl mb-4">
+            Van rental in Auckland, New Zealand — for overseas visitors
+          </h2>
+          <p className="text-muted-foreground max-w-3xl mb-6">
+            Arriving from Australia, the UK or further afield? A full overseas licence in English
+            is accepted in New Zealand for up to 12 months, so no International Driving Permit is
+            needed to drive one of our Auckland vans. Every van is automatic, drives on a standard
+            car licence, and includes unlimited kilometres — useful whether you are moving into a
+            new flat, shifting gear for a working holiday, or carrying a group and their luggage
+            from Auckland Airport.
+          </p>
+          <div className="grid md:grid-cols-3 gap-6 text-sm">
+            <div>
+              <h3 className="font-semibold mb-2 text-base">From Australia</h3>
+              <p className="text-muted-foreground mb-2">
+                Australian licences and AU Visa, Mastercard and Amex cards are accepted, with no
+                overseas card surcharge from us.
+              </p>
+              <Link to="/car-hire-auckland-airport-from-australia" className="text-primary hover:underline font-medium">
+                → Hiring in Auckland from Australia
+              </Link>
+            </div>
+            <div>
+              <h3 className="font-semibold mb-2 text-base">From the UK &amp; Europe</h3>
+              <p className="text-muted-foreground mb-2">
+                We drive on the left, the same as the UK, and our fleet is almost entirely
+                automatic — easy after a long-haul flight.
+              </p>
+              <Link to="/car-hire-new-zealand-from-uk" className="text-primary hover:underline font-medium">
+                → NZ hire for UK visitors
+              </Link>
+            </div>
+            <div>
+              <h3 className="font-semibold mb-2 text-base">One-way &amp; airport pickup</h3>
+              <p className="text-muted-foreground mb-2">
+                Pick up near Auckland Airport and drop off in Wellington or Christchurch on
+                request — handy for a one-way relocation.
+              </p>
+              <Link to="/one-way-van-hire" className="text-primary hover:underline font-medium">
+                → One-way van &amp; truck hire
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="border-t border-border bg-[hsl(0_0%_18%)] text-[hsl(0_0%_92%)]">
         <div className="container mx-auto px-6 py-16">
           <div className="max-w-2xl mb-10">
