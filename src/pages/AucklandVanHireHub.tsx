@@ -63,6 +63,8 @@ const relatedLinks = [
   { label: 'Car hire Auckland', to: '/car-hire-auckland' },
   { label: 'Van hire Wellington', to: '/van-hire-wellington' },
   { label: 'Van hire Christchurch', to: '/van-hire-christchurch' },
+  { label: 'NZ car hire from the UK', to: '/car-hire-new-zealand-from-uk' },
+  { label: 'Auckland car hire from Australia', to: '/car-hire-auckland-airport-from-australia' },
 ];
 
 const AucklandVanHireHub = () => {
