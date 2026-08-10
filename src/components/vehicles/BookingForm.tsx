@@ -248,7 +248,7 @@ export default function BookingForm({
         <input type="hidden" name="campaignCode" value={campaignCode || ''} />
         
         <div className="w-full flex justify-center px-3 pb-3">
-          <Button type="submit" variant="cta" size="lg" className="w-full">
+          <Button type="submit" variant="cta" className="w-full">
             Select
           </Button>
         </div>
