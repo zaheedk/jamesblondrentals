@@ -1,6 +1,6 @@
 import SearchForm from "./SearchForm";
 import { useIsMobile } from "@/hooks/use-mobile";
-import heroImage from "@/assets/hero-ski-season.jpg";
+import heroImage from "@/assets/hero-spring.jpg";
 import { Link } from "react-router-dom";
 
 const Hero = () => {
@@ -11,7 +11,7 @@ const Hero = () => {
       {/* Mobile-optimized hero image with responsive srcset */}
       <img
         src={heroImage}
-        alt="Car rental in New Zealand - scenic mountain drive through snow-capped alpine roads"
+        alt="Car rental in New Zealand - scenic spring drive through green hills and mountain roads"
         className="hero-image"
         width="1920"
         height="960"
