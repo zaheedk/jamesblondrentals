@@ -182,7 +182,7 @@ const Index = () => {
           
           <div className="text-center">
             <Button asChild variant="cta" size="lg" className="min-w-48">
-              <Link to="/vehicles">View All Vehicles</Link>
+              <Link to="/vehicles" className="inline-flex items-center gap-2">View All Vehicles <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" /></Link>
             </Button>
           </div>
         </div>
