@@ -3,8 +3,6 @@ import { useLocation } from 'react-router-dom';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import { ResourcePreloader } from '@/components/ResourcePreloader';
-import PromoBanner from './PromoBanner';
-import EarlyWeekBanner from './EarlyWeekBanner';
 import BreadcrumbsJsonLd from '@/components/BreadcrumbsJsonLd';
 import SiteJsonLd from '@/components/SiteJsonLd';
 import ChristchurchBreadcrumbs from '@/components/ChristchurchBreadcrumbs';
@@ -32,8 +30,6 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
       <SiteJsonLd />
       <BreadcrumbsJsonLd />
       <ResourcePreloader />
-      <PromoBanner />
-      <EarlyWeekBanner />
       <Navbar />
       <main className="flex-1">
         <ChristchurchBreadcrumbs />
