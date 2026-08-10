@@ -283,7 +283,7 @@ const FuelCalculator = () => {
                         <div key={index} className="flex items-center gap-2">
                           <div className="flex-shrink-0">
                             <div className={`w-3 h-3 rounded-full ${
-                              index === 0 ? 'bg-green-500' : 
+                              index === 0 ? 'bg-primary' : 
                               index === locations.length - 1 ? 'bg-red-500' : 
                               'bg-blue-500'
                             }`}></div>
@@ -385,7 +385,7 @@ const FuelCalculator = () => {
                                 <div className="border-t pt-2">
                                   <div className="flex justify-between">
                                     <span className="text-sm font-medium">Total Estimated Cost:</span>
-                                    <span className="font-bold text-green-600">${estimatedCost.toFixed(2)}</span>
+                                    <span className="font-bold text-primary">${estimatedCost.toFixed(2)}</span>
                                   </div>
                                 </div>
                               </>
