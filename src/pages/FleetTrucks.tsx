@@ -92,15 +92,6 @@ const trucks = [
   }
 ];
 
-const locationLinks = [
-  { name: "Auckland", to: "/auckland-truck-rentals-hire" },
-  { name: "Wellington", to: "/truck-hire-wellington" },
-  { name: "Christchurch", to: "/truck-hire-christchurch" },
-  { name: "Hamilton", to: "/truck-hire-hamilton" },
-  { name: "West Auckland", to: "/west-auckland-truck-rentals" },
-  { name: "South Auckland", to: "/south-auckland-truck-rentals" },
-];
-
 const FleetTrucks = () => {
   const [featuredTruck, ...otherTrucks] = trucks;
 
