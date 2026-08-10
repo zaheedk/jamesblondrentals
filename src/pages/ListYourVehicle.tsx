@@ -75,6 +75,16 @@ const faq = [
 ];
 
 const ListYourVehicle = () => {
+  useEffect(() => {
+    trackMetaEvent('ViewContent', {
+      content_name: 'List Your Vehicle',
+      content_category: 'Vehicle Owner Partnership',
+      content_type: 'landing_page',
+      value: 0,
+      currency: 'NZD',
+    });
+  }, []);
+
   const faqLd = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
