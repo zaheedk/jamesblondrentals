@@ -132,7 +132,7 @@ const ChristchurchMinibusHire = () => {
               </p>
               <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
                 <Button asChild variant="cta" size="lg">
-                  <a href="#booking">Check availability</a>
+                  <a href="#booking" className="inline-flex items-center gap-2">Check availability <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" /></a>
                 </Button>
                 <a
                   href="tel:0800525663"
