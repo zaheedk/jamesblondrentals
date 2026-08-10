@@ -94,6 +94,15 @@
     letter-spacing: -0.022em;
   }
 
+  /* Site-wide Apple-style typography: neutralise legacy serif headings so every
+     page shares the same display face without touching 180+ files. */
+  .font-serif {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+      "Helvetica Neue", 'Inter', system-ui, sans-serif !important;
+    font-weight: 700;
+    letter-spacing: -0.022em;
+  }
+
   /* Prevent layout shift by setting default dimensions */
   img {
     height: auto;
