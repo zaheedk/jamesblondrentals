@@ -162,7 +162,7 @@ const AucklandVanHireHub = () => {
               Cargo Vans, Jumbo Vans &amp; 12-Seat Minibuses for Hire in Auckland
             </h1>
             <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
-              <Button asChild size="lg" className="rounded-none px-7">
+              <Button asChild variant="cta" size="lg">
                 <a href="#booking">Check availability</a>
               </Button>
               <a
