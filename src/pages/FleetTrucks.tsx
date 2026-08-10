@@ -4,9 +4,8 @@ import RelatedLocations from '@/components/RelatedLocations';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { ShieldCheck, Truck, ArrowRight, Phone, MapPin } from "lucide-react";
+import { ShieldCheck, Truck, ArrowRight, Phone } from "lucide-react";
 import truckMovingBoxes from "@/assets/truck-moving-boxes-household-items.jpg";
-import familyUnloadingTruck from "@/assets/family-unloading-removal-truck.jpg";
 
 const trucks = [
   {
