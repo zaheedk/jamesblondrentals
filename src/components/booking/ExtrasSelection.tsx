@@ -207,10 +207,10 @@ const ExtrasSelection = ({
             </div>
 
             <div 
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                 selectedExtras.has(extra.id.toString()) 
                   ? 'bg-red-500 hover:bg-red-600 text-white'
-                  : 'bg-yellow-400 hover:bg-yellow-500 text-black'
+                  : 'bg-cta hover:bg-cta/90 text-cta-foreground'
               }`}
             >
               {selectedExtras.has(extra.id.toString()) ? 'Remove' : 'Add'}
@@ -306,10 +306,10 @@ const ExtrasSelection = ({
             </div>
 
             <div 
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                 selectedExtras.has(fee.id.toString()) 
                   ? 'bg-red-500 hover:bg-red-600 text-white'
-                  : 'bg-yellow-400 hover:bg-yellow-500 text-black'
+                  : 'bg-cta hover:bg-cta/90 text-cta-foreground'
               }`}
             >
               {selectedExtras.has(fee.id.toString()) ? 'Remove' : 'Add'}
