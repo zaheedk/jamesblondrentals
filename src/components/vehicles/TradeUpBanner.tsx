@@ -117,7 +117,6 @@ const TradeUpBanner = ({ vehicles, onSelectVehicle }: TradeUpBannerProps) => {
       <Button
         type="button"
         onClick={handleClick}
-        variant="cta"
         size="sm"
       >
         See the upgrade <ArrowUpRight className="h-4 w-4" />
