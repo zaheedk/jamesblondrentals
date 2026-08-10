@@ -728,10 +728,11 @@ const SearchForm = ({
 
             <Button
               type="submit"
-              className="w-full h-auto py-5 bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-lg rounded-2xl shadow-lg shadow-primary/30 active:scale-[0.98] transition-all focus-visible:ring-4 focus-visible:ring-primary/40"
+              variant="cta"
+              className="w-full h-auto py-5 font-bold text-lg shadow-lg shadow-cta/30"
               disabled={isLoading || !pickupLocation || !pickupDate || !dropoffDate || !pickupTime || !dropoffTime}
             >
-              {isLoading ? "Searching..." : "Search Available Vehicles →"}
+              {isLoading ? "Searching..." : "Search Available Vehicles"}
             </Button>
           </div>
         </form>
