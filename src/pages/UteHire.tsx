@@ -3,7 +3,8 @@ import PageSEO from '@/components/PageSEO';
 import JsonLd from '@/components/JsonLd';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Truck, Check, Phone, ArrowRight } from 'lucide-react';
+import { Truck, Check, Phone, ArrowRight, MapPin, Wallet, ShieldCheck } from 'lucide-react';
+import PageHero from '@/components/PageHero';
 
 interface UteHireProps {
   variant: 'ute' | 'pickup';
@@ -94,27 +95,26 @@ const UteHire = ({ variant }: UteHireProps) => {
       <PageSEO title={title} description={description} canonical={slug} />
       <JsonLd data={faq} />
 
-      <section className="container mx-auto px-6 pt-16 pb-12 md:pt-24 md:pb-16">
-        <p className="text-sm tracking-[0.25em] uppercase text-muted-foreground mb-6">
-          {isPickup ? 'Pickup truck rental · New Zealand' : 'Ute hire · New Zealand'}
-        </p>
-        <h1 className="font-serif text-4xl md:text-6xl leading-tight tracking-tight max-w-4xl">
-          {h1}
-        </h1>
-        <p className="mt-6 text-lg text-muted-foreground max-w-2xl">
-          {isPickup
+      <PageHero
+        eyebrow={isPickup ? 'Pickup truck rental · New Zealand' : 'Ute hire · New Zealand'}
+        EyebrowIcon={Truck}
+        heading={h1}
+        intro={
+          isPickup
             ? 'Need a pickup truck right now? Rent a single cab or double cab Hilux for tip runs, trade work, weekend projects or moving heavy gear. Same-day pickup at branches across Auckland, Wellington, Christchurch and Hamilton — drive on a standard car licence.'
-            : 'Single cab and double cab utes for trades, tip runs, weekend projects and moving big gear. 1-tonne deck capacity, towbars fitted, 3,500kg braked towing on the double cab. Same-day pickup at every branch.'}
-        </p>
-        <div className="mt-8 flex flex-wrap gap-4">
-          <Button size="lg" asChild>
-            <Link to="/booking">Book a ute now <ArrowRight className="ml-2 h-4 w-4" /></Link>
-          </Button>
-          <Button size="lg" variant="outline" asChild>
-            <a href="tel:+64800832636"><Phone className="mr-2 h-4 w-4" /> 0800 UTE HIRE</a>
-          </Button>
-        </div>
-      </section>
+            : 'Single cab and double cab utes for trades, tip runs, weekend projects and moving big gear. 1-tonne deck capacity, towbars fitted, 3,500kg braked towing on the double cab. Same-day pickup at every branch.'
+        }
+        primaryTo="/booking"
+        primaryLabel={isPickup ? 'Book a pickup now' : 'Book a ute now'}
+        phone="+64800832636"
+        phoneLabel="0800 UTE HIRE"
+        features={[
+          { Icon: Wallet, title: 'From $79/day', description: 'Transparent daily rates with no hidden booking fees.' },
+          { Icon: Truck, title: '1-tonne deck', description: 'Single and double cab utes with towbars fitted as standard.' },
+          { Icon: MapPin, title: 'Same-day pickup', description: 'Branches in Auckland, Wellington, Christchurch and Hamilton.' },
+          { Icon: ShieldCheck, title: 'Car licence only', description: 'Drive every ute in the fleet on a standard NZ car licence.' },
+        ]}
+      />
 
       <section className="container mx-auto px-6 py-12">
         <div className="grid md:grid-cols-3 gap-6">
