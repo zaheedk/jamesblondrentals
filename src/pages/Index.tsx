@@ -248,7 +248,7 @@ const Index = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" variant="cta" asChild className="min-w-48">
-                <Link to="/vehicles">Browse Fleet</Link>
+                <Link to="/vehicles" className="inline-flex items-center gap-2">Browse Fleet <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" /></Link>
               </Button>
               <Button size="lg" variant="outline" asChild className="min-w-48 bg-white/10 border-white/30 text-white hover:bg-white hover:text-primary">
                 <Link to="/contact">Contact Us</Link>
