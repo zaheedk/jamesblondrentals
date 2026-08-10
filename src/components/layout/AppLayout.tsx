@@ -40,7 +40,6 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
         {children}
       </main>
       <Footer />
-      <ChatWidget />
       <SocialProofNotifications />
       <StickyMobileBookBar />
       {/* Reserve space so the sticky bar never covers page content on mobile */}
