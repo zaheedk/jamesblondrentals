@@ -131,7 +131,7 @@ const AucklandTruckRentals = () => {
                   <Link to="/fleet/trucks/2-tonne-box-12m3" className="flex items-center">
                     View Details <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
-                </Button><Button asChild><Link to={`?truck=2-tonne-box-12m3#booking`}>Book Now</Link></Button></div>
+                </Button><Button asChild variant="cta"><Link to={`?truck=2-tonne-box-12m3#booking`} className="inline-flex items-center gap-2">Book Now <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" /></Link></Button></div>
               </div>
               
               <div>
@@ -151,7 +151,7 @@ const AucklandTruckRentals = () => {
                   <Link to="/fleet/trucks/2-tonne-box-12m3-tail" className="flex items-center">
                     View Details <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
-                </Button><Button asChild><Link to={`?truck=2-tonne-box-12m3-tail#booking`}>Book Now</Link></Button></div>
+                </Button><Button asChild variant="cta"><Link to={`?truck=2-tonne-box-12m3-tail#booking`} className="inline-flex items-center gap-2">Book Now <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" /></Link></Button></div>
               </div>
             </div>
           </TabsContent>
@@ -175,7 +175,7 @@ const AucklandTruckRentals = () => {
                   <Link to="/fleet/trucks/2-tonne-box-16m3" className="flex items-center">
                     View Details <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
-                </Button><Button asChild><Link to={`?truck=2-tonne-box-16m3#booking`}>Book Now</Link></Button></div>
+                </Button><Button asChild variant="cta"><Link to={`?truck=2-tonne-box-16m3#booking`} className="inline-flex items-center gap-2">Book Now <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" /></Link></Button></div>
               </div>
               
               <div>
@@ -195,7 +195,7 @@ const AucklandTruckRentals = () => {
                   <Link to="/fleet/trucks/3-tonne-box-19m3" className="flex items-center">
                     View Details <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
-                </Button><Button asChild><Link to={`?truck=3-tonne-box-19m3#booking`}>Book Now</Link></Button></div>
+                </Button><Button asChild variant="cta"><Link to={`?truck=3-tonne-box-19m3#booking`} className="inline-flex items-center gap-2">Book Now <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" /></Link></Button></div>
               </div>
             </div>
           </TabsContent>
@@ -219,7 +219,7 @@ const AucklandTruckRentals = () => {
                   <Link to="/fleet/trucks/2-tonne-tipper" className="flex items-center">
                     View Details <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
-                </Button><Button asChild><Link to={`?truck=2-tonne-tipper#booking`}>Book Now</Link></Button></div>
+                </Button><Button asChild variant="cta"><Link to={`?truck=2-tonne-tipper#booking`} className="inline-flex items-center gap-2">Book Now <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" /></Link></Button></div>
               </div>
               
               <div>
@@ -239,7 +239,7 @@ const AucklandTruckRentals = () => {
                   <Link to="/fleet/trucks/3-tonne-box-18m3" className="flex items-center">
                     View Details <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
-                </Button><Button asChild><Link to={`?truck=3-tonne-box-18m3#booking`}>Book Now</Link></Button></div>
+                </Button><Button asChild variant="cta"><Link to={`?truck=3-tonne-box-18m3#booking`} className="inline-flex items-center gap-2">Book Now <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" /></Link></Button></div>
               </div>
             </div>
           </TabsContent>
