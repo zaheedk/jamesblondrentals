@@ -1,8 +1,24 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import PageSEO from '@/components/PageSEO';
 import JsonLd from '@/components/JsonLd';
 import { Button } from '@/components/ui/button';
 import { Check, Phone, Mail, ArrowRight, ShieldCheck, Wallet, Users, Car, TrendingUp } from 'lucide-react';
+
+const FB_CAMPAIGN_UTM = 'utm_source=facebook&utm_medium=cpc&utm_campaign=list_your_vehicle&utm_content=landing_page';
+
+const trackMetaEvent = (event: string, params?: Record<string, unknown>): void => {
+  if (typeof window === 'undefined') return;
+  try {
+    const fbq = (window as any).fbq;
+    if (typeof fbq === 'function') {
+      fbq('track', event, params);
+    }
+  } catch {
+    // Never let pixel tracking break the page
+  }
+};
+
 
 const revenueSplit = [
   { item: 'Vehicle purchase or lease', owner: true, jb: false },
