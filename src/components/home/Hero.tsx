@@ -1,6 +1,9 @@
 import SearchForm from "./SearchForm";
 import { useIsMobile } from "@/hooks/use-mobile";
-import heroImage from "@/assets/hero-spring.jpg";
+import heroJpg from "@/assets/hero-spring.jpg";
+import heroWebp768 from "@/assets/hero-spring-768w.webp";
+import heroWebp1200 from "@/assets/hero-spring-1200w.webp";
+import heroWebp1920 from "@/assets/hero-spring-1920w.webp";
 import { Link } from "react-router-dom";
 
 const Hero = () => {
@@ -8,17 +11,24 @@ const Hero = () => {
 
   return (
     <div className="hero-container relative">
-      {/* Mobile-optimized hero image with responsive srcset */}
-      <img
-        src={heroImage}
-        alt="Car rental in New Zealand - scenic spring drive through green hills and mountain roads"
-        className="hero-image"
-        width="1920"
-        height="960"
-        loading="eager"
-        fetchPriority="high"
-        decoding="async"
-      />
+      {/* Responsive WebP hero image with JPEG fallback */}
+      <picture>
+        <source
+          srcSet={`${heroWebp768} 768w, ${heroWebp1200} 1200w, ${heroWebp1920} 1920w`}
+          sizes="100vw"
+          type="image/webp"
+        />
+        <img
+          src={heroJpg}
+          alt="Car rental in New Zealand - scenic spring drive through green hills and mountain roads"
+          className="hero-image"
+          width="1920"
+          height="960"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+        />
+      </picture>
       <div className="hero-overlay"></div>
       
       <div className="container mx-auto px-4 py-12 sm:py-20 md:py-28 relative z-10">
