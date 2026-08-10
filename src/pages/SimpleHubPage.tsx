@@ -3,7 +3,8 @@ import PageSEO from '@/components/PageSEO';
 import JsonLd from '@/components/JsonLd';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Truck, Check, Phone, ArrowRight } from 'lucide-react';
+import { Truck, Check, Phone, ArrowRight, ShieldCheck, MapPin, Wallet } from 'lucide-react';
+import PageHero from '@/components/PageHero';
 
 export interface SimpleHubProps {
   slug: string;
@@ -39,19 +40,22 @@ const SimpleHubPage = ({ slug, title, description, h1, intro, bullets, primaryCt
       {localBusiness && <JsonLd data={localBusiness} />}
       <JsonLd data={faqLd} />
 
-      <section className="container mx-auto px-6 pt-16 pb-12 md:pt-24">
-        <p className="text-sm tracking-[0.25em] uppercase text-muted-foreground mb-6">James Blond Rentals · NZ</p>
-        <h1 className="font-serif text-4xl md:text-6xl leading-tight tracking-tight max-w-4xl">{h1}</h1>
-        <p className="mt-6 text-lg text-muted-foreground max-w-2xl">{intro}</p>
-        <div className="mt-8 flex flex-wrap gap-4">
-          <Button size="lg" asChild>
-            <Link to={primaryCtaTo}>{primaryCtaLabel} <ArrowRight className="ml-2 h-4 w-4" /></Link>
-          </Button>
-          <Button size="lg" variant="outline" asChild>
-            <a href="tel:+6498385300"><Phone className="mr-2 h-4 w-4" /> Call James Blond</a>
-          </Button>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="James Blond Rentals · NZ"
+        EyebrowIcon={Truck}
+        heading={h1}
+        intro={intro}
+        primaryTo={primaryCtaTo}
+        primaryLabel={primaryCtaLabel}
+        phone="+6498385300"
+        phoneLabel="Call James Blond"
+        features={[
+          { Icon: Wallet, title: 'Transparent rates', description: 'Published GST-inclusive pricing with no hidden booking fees.' },
+          { Icon: MapPin, title: 'Branches nationwide', description: 'Pickup in Auckland, Wellington, Christchurch and Hamilton.' },
+          { Icon: ShieldCheck, title: 'Well-maintained fleet', description: 'Late-model, serviced vehicles with insurance options available.' },
+          { Icon: Check, title: 'Easy booking', description: 'Book online in minutes or call our team seven days a week.' },
+        ]}
+      />
 
       <section className="container mx-auto px-6 py-12">
         <Card>

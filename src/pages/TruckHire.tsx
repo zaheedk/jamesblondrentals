@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import PageSEO from '@/components/PageSEO';
+import PageHero from '@/components/PageHero';
 import JsonLd from '@/components/JsonLd';
 
 const SITE_URL = 'https://www.jamesblond.co.nz';
@@ -149,27 +150,25 @@ const TruckHire = () => {
       <JsonLd data={productsLd} />
 
       {/* Hero */}
-      <section className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-6 md:p-10 mb-10">
-        <div className="max-w-3xl">
-          <h1 className="text-3xl md:text-5xl font-bold mb-4">Truck Hire NZ — Furniture, Moving & Commercial Trucks</h1>
-          <p className="text-lg text-muted-foreground mb-6">
-            James Blond Rentals has affordable truck hire across Auckland, Wellington, Christchurch and Hamilton. Choose from 2-tonne and 3-tonne box trucks, tail-lift trucks and tippers — drive on a standard car licence on most models.
-          </p>
-          <div className="flex flex-wrap gap-3">
-            <Button asChild size="lg">
-              <Link to="/booking">Book a Truck</Link>
-            </Button>
-            <Button asChild size="lg" variant="outline">
-              <Link to="/fleet/trucks">View All Trucks</Link>
-            </Button>
-            <Button asChild size="lg" variant="ghost">
-              <a href="tel:0800525663" className="flex items-center gap-2">
-                <Phone className="h-4 w-4" /> 0800 525 663
-              </a>
-            </Button>
-          </div>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="Truck hire · New Zealand"
+        EyebrowIcon={Truck}
+        heading="Truck Hire NZ — Furniture, Moving & Commercial Trucks"
+        intro="James Blond Rentals has affordable truck hire across Auckland, Wellington, Christchurch and Hamilton. Choose from 2-tonne and 3-tonne box trucks, tail-lift trucks and tippers — drive on a standard car licence on most models."
+        primaryTo="/booking"
+        primaryLabel="Book a truck"
+        features={[
+          { Icon: Truck, title: 'Modern fleet', description: 'Late-model box, tail-lift and tipper trucks serviced regularly.' },
+          { Icon: Home, title: 'Car licence friendly', description: 'Most 2-tonne trucks drive on a standard NZ Class 1 licence.' },
+          { Icon: MapPin, title: 'Branches nationwide', description: 'Auckland, Wellington, Christchurch and Hamilton pickup points.' },
+          { Icon: Box, title: 'Sizes for every move', description: 'From single-room shifts to full house and trade loads.' },
+        ]}
+        footnote={
+          <Link to="/fleet/trucks" className="text-primary font-medium hover:underline inline-flex items-center gap-1">
+            View all trucks <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        }
+      />
 
       {/* Why us */}
       <section className="mb-12">
