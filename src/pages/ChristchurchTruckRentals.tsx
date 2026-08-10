@@ -90,8 +90,8 @@ const ChristchurchTruckRentals = () => {
               Same-day <strong>truck hire in Christchurch</strong> from our Harewood (Airport) and central branches. 2-tonne and 3-tonne moving trucks with tail lifts — drive on a standard NZ car licence, hourly and daily rates, no hidden fees. Serving Christchurch CBD, Riccarton, Addington, Hornby, Rangiora, Rolleston and greater Canterbury.
             </p>
             <div className="flex items-center gap-2">
-              <Button asChild size="lg">
-                <a href="#booking">Book Now</a>
+              <Button asChild variant="cta" size="lg">
+                <a href="#booking" className="inline-flex items-center gap-2">Book Now <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" /></a>
               </Button>
               <Button variant="outline" asChild size="lg">
                 <Link to="/fleet/trucks">View All Trucks</Link>
