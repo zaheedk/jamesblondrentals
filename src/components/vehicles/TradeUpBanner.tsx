@@ -101,9 +101,9 @@ const TradeUpBanner = ({ vehicles, onSelectVehicle }: TradeUpBannerProps) => {
   };
 
   return (
-    <div className="mb-6 rounded-lg border border-yellow-300 bg-yellow-50 p-4 md:p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+    <div className="mb-6 rounded-lg border border-emerald-300 bg-emerald-50 p-4 md:p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
       <div className="flex items-start gap-3">
-        <Sparkles className="h-5 w-5 text-yellow-600 mt-0.5 shrink-0" />
+        <Sparkles className="h-5 w-5 text-emerald-600 mt-0.5 shrink-0" />
         <div>
           <p className="font-semibold text-gray-900">
             {match.rule.headline(match.diff)}
@@ -116,7 +116,7 @@ const TradeUpBanner = ({ vehicles, onSelectVehicle }: TradeUpBannerProps) => {
       <button
         type="button"
         onClick={handleClick}
-        className="inline-flex items-center gap-1.5 self-start md:self-center bg-yellow-400 hover:bg-yellow-500 text-black px-4 py-2 rounded font-medium text-sm whitespace-nowrap"
+        className="inline-flex items-center gap-1.5 self-start md:self-center bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded font-medium text-sm whitespace-nowrap"
       >
         See the upgrade <ArrowUpRight className="h-4 w-4" />
       </button>
