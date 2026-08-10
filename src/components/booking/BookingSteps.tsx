@@ -107,7 +107,7 @@ const BookingSteps = ({ currentStep, className }: BookingStepsProps) => {
                       isCurrent
                         ? "bg-primary text-primary-foreground"
                         : isCompleted
-                        ? "bg-green-500 text-white"
+                        ? "bg-primary text-primary-foreground"
                         : "bg-muted text-muted-foreground"
                     )}
                   >
@@ -120,7 +120,7 @@ const BookingSteps = ({ currentStep, className }: BookingStepsProps) => {
                         isCurrent
                           ? "text-primary"
                           : isCompleted
-                          ? "text-green-600"
+                          ? "text-primary"
                           : "text-muted-foreground"
                       )}
                     >

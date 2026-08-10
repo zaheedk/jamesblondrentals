@@ -53,10 +53,10 @@ const ExitIntentPopup: React.FC<ExitIntentPopupProps> = ({ isEnabled = true }) =
             Wait! Don't Miss Out!
           </DialogTitle>
           <DialogDescription className="text-lg text-gray-700 leading-relaxed">
-            <div className="bg-gradient-to-r from-green-50 to-blue-50 p-4 rounded-lg border border-green-200 mb-4">
+            <div className="bg-primary/5 p-4 rounded-lg border border-primary/20 mb-4">
               <div className="flex items-center gap-2 mb-2">
-                <TrendingDown className="w-5 h-5 text-green-600" />
-                <span className="font-semibold text-green-800">Lowest Rates Guaranteed!</span>
+                <TrendingDown className="w-5 h-5 text-primary" />
+                <span className="font-semibold text-primary">Lowest Rates Guaranteed!</span>
               </div>
               <p className="text-gray-800">
                 <strong>James Blond Rentals</strong> offers the <strong>cheapest rates</strong> in commercial vehicle hire in Auckland and Wellington.
