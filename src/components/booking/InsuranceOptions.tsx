@@ -193,7 +193,7 @@ const InsuranceOptions = ({
                 className={`w-full text-center py-1 transition-colors ${
                   isSelected 
                     ? 'bg-primary hover:bg-primary/90 text-primary-foreground'
-                    : 'bg-yellow-400 hover:bg-yellow-500 text-black'
+                    : 'bg-cta hover:bg-cta/90 text-cta-foreground'
                 }`}
                 onClick={(e) => {
                   e.stopPropagation();

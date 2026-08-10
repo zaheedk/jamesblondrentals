@@ -488,7 +488,7 @@ const InsuranceAndExtrasSelection = () => {
         <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t">
           <Button 
             onClick={handleProceedToDetails}
-            className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-4 text-lg rounded-none"
+            className="w-full bg-cta hover:bg-cta/90 text-cta-foreground font-bold py-4 text-lg rounded-none"
           >
             Continue to Details
           </Button>
