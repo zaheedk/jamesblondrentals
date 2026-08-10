@@ -628,23 +628,23 @@ const PriceGuide = () => {
               )}
 
               <div className="grid grid-cols-2 gap-3">
-                <div className="bg-green-50 p-3 rounded-lg text-center">
-                  <p className="text-xs text-green-600 font-medium">2 Hour</p>
-                  <p className="text-lg font-bold text-green-800">
+                <div className="bg-primary/10 p-3 rounded-lg text-center">
+                  <p className="text-xs text-primary font-medium">2 Hour</p>
+                  <p className="text-lg font-bold text-primary">
                     {selectedVehicle.hour2}
                   </p>
                 </div>
                 
-                <div className="bg-green-50 p-3 rounded-lg text-center">
-                  <p className="text-xs text-green-600 font-medium">4 Hour</p>
-                  <p className="text-lg font-bold text-green-800">
+                <div className="bg-primary/10 p-3 rounded-lg text-center">
+                  <p className="text-xs text-primary font-medium">4 Hour</p>
+                  <p className="text-lg font-bold text-primary">
                     {selectedVehicle.hour4}
                   </p>
                 </div>
                 
-                <div className="bg-green-50 p-3 rounded-lg text-center">
-                  <p className="text-xs text-green-600 font-medium">8 Hour</p>
-                  <p className="text-lg font-bold text-green-800">
+                <div className="bg-primary/10 p-3 rounded-lg text-center">
+                  <p className="text-xs text-primary font-medium">8 Hour</p>
+                  <p className="text-lg font-bold text-primary">
                     {selectedVehicle.hour8}
                   </p>
                 </div>

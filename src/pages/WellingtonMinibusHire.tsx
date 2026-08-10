@@ -227,8 +227,8 @@ const WellingtonMinibusHire = () => {
                   <li>Cargo barrier for passenger safety</li>
                   <li>USB charging ports (select models)</li>
                 </ul>
-                <div className="bg-green-100 p-3 rounded-md mb-4">
-                  <p className="text-sm font-semibold text-green-700">✓ No special licence required - drive with standard car licence</p>
+                <div className="bg-primary/10 p-3 rounded-md mb-4 border border-primary/10">
+                  <p className="text-sm font-semibold text-primary">✓ No special licence required - drive with standard car licence</p>
                 </div>
               </div>
             </div>
@@ -466,8 +466,8 @@ const WellingtonMinibusHire = () => {
               <li>• Upper Hutt school group hire</li>
               <li>• Rimutaka Forest Park family adventures</li>
             </ul>
-            <div className="mt-4 p-4 bg-green-50 rounded-md">
-              <p className="text-sm font-semibold text-green-700">
+            <div className="mt-4 p-4 bg-primary/5 rounded-md border border-primary/10">
+              <p className="text-sm font-semibold text-primary">
                 ✓ Affordable rates with unlimited kilometres for Hutt Valley trips
               </p>
             </div>
