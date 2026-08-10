@@ -728,7 +728,7 @@ const SearchForm = ({
 
             <Button
               type="submit"
-              className="w-full h-auto py-5 bg-sky-500 hover:bg-sky-600 text-white font-bold text-lg rounded-2xl shadow-lg shadow-sky-500/30 active:scale-[0.98] transition-all focus-visible:ring-4 focus-visible:ring-sky-500/40"
+              className="w-full h-auto py-5 bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-lg rounded-2xl shadow-lg shadow-primary/30 active:scale-[0.98] transition-all focus-visible:ring-4 focus-visible:ring-primary/40"
               disabled={isLoading || !pickupLocation || !pickupDate || !dropoffDate || !pickupTime || !dropoffTime}
             >
               {isLoading ? "Searching..." : "Search Available Vehicles →"}
