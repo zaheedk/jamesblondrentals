@@ -18,7 +18,7 @@ project_id = "jlwvqbrtdzwrcwelyylv"
   [functions.process-infringement]
     verify_jwt = false
   [functions.send-postmark-email]
-    verify_jwt = false
+    verify_jwt = true
   [functions.save-rental-agreement]
     verify_jwt = false
   [functions.send-quote-email]
