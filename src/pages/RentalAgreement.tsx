@@ -27,6 +27,12 @@ import { upsertPhotoBatch } from "@/lib/photo-batch-index";
 import type { RCMBookingInfoResponse } from "@/lib/api/rcm-api-types";
 import jsPDF from "jspdf";
 
+const getAuthHeaders = async () => {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session?.access_token) return {};
+  return { Authorization: `Bearer ${session.access_token}` };
+};
+
 const parseMoneyValue = (value: unknown) => {
   if (typeof value === "number") return Number.isFinite(value) ? value : 0;
   if (typeof value === "string") {
