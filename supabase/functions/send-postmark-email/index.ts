@@ -1,9 +1,13 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { createClient } from "npm:@supabase/supabase-js@2"
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
+
+const supabaseUrl = Deno.env.get("SUPABASE_URL")!
+const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!
 
 interface Attachment {
   Name: string
@@ -43,6 +47,28 @@ const arrayBufferToBase64 = (buffer: ArrayBuffer) => {
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
+  }
+
+  const authHeader = req.headers.get("Authorization")
+  if (!authHeader?.startsWith("Bearer ")) {
+    return new Response(
+      JSON.stringify({ success: false, error: "Unauthorized" }),
+      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 }
+    )
+  }
+
+  const token = authHeader.replace("Bearer ", "")
+  const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+    global: { headers: { Authorization: authHeader } },
+  })
+
+  const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token)
+  if (claimsError || !claimsData?.claims) {
+    console.error("JWT validation failed:", claimsError)
+    return new Response(
+      JSON.stringify({ success: false, error: "Unauthorized" }),
+      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 }
+    )
   }
 
   try {

@@ -27,6 +27,12 @@ import { upsertPhotoBatch } from "@/lib/photo-batch-index";
 import type { RCMBookingInfoResponse } from "@/lib/api/rcm-api-types";
 import jsPDF from "jspdf";
 
+const getAuthHeaders = async () => {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session?.access_token) return {};
+  return { Authorization: `Bearer ${session.access_token}` };
+};
+
 const parseMoneyValue = (value: unknown) => {
   if (typeof value === "number") return Number.isFinite(value) ? value : 0;
   if (typeof value === "string") {
@@ -1010,6 +1016,7 @@ const RentalAgreement = () => {
     console.log("Sending email with inline PDF attachment:", attachment.Name);
 
     const { data, error: emailError } = await supabase.functions.invoke('send-postmark-email', {
+      headers: await getAuthHeaders(),
       body: {
         to: customerEmail,
         subject: `Your Signed Rental Agreement - ${agreementRef} | James Blond Rentals`,
@@ -1160,6 +1167,7 @@ const RentalAgreement = () => {
         if (pdfBlob) {
           const attachment = await buildPdfAttachment(pdfBlob, String(agreementRef));
           const { data: savoEmailResult, error: savoEmailError } = await supabase.functions.invoke("send-postmark-email", {
+            headers: await getAuthHeaders(),
             body: {
               to: "jamesblondrentals@hires.savo.co.nz",
               subject: `Signed Rental Agreement - ${agreementRef}`,
