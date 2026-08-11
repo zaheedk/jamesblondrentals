@@ -49,6 +49,28 @@ serve(async (req) => {
     return new Response('ok', { headers: corsHeaders })
   }
 
+  const authHeader = req.headers.get("Authorization")
+  if (!authHeader?.startsWith("Bearer ")) {
+    return new Response(
+      JSON.stringify({ success: false, error: "Unauthorized" }),
+      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 }
+    )
+  }
+
+  const token = authHeader.replace("Bearer ", "")
+  const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+    global: { headers: { Authorization: authHeader } },
+  })
+
+  const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token)
+  if (claimsError || !claimsData?.claims) {
+    console.error("JWT validation failed:", claimsError)
+    return new Response(
+      JSON.stringify({ success: false, error: "Unauthorized" }),
+      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 }
+    )
+  }
+
   try {
     const { to, subject, html, from, from_name, attachments, remoteAttachments }: EmailRequest = await req.json()
 
