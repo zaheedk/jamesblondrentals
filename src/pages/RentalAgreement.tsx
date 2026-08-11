@@ -1167,6 +1167,7 @@ const RentalAgreement = () => {
         if (pdfBlob) {
           const attachment = await buildPdfAttachment(pdfBlob, String(agreementRef));
           const { data: savoEmailResult, error: savoEmailError } = await supabase.functions.invoke("send-postmark-email", {
+            headers: await getAuthHeaders(),
             body: {
               to: "jamesblondrentals@hires.savo.co.nz",
               subject: `Signed Rental Agreement - ${agreementRef}`,
