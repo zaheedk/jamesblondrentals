@@ -181,6 +181,10 @@ const CarHireNewZealandFromUK = () => (
             <Link to="/car-hire-christchurch" className="text-primary hover:underline text-sm font-medium">
               → Christchurch car hire
             </Link>
+            <br />
+            <Link to="/car-hire-christchurch-from-uk" className="text-primary hover:underline text-sm font-medium">
+              → Christchurch car hire for UK visitors
+            </Link>
           </CardContent>
         </Card>
       </div>
