@@ -1016,6 +1016,7 @@ const RentalAgreement = () => {
     console.log("Sending email with inline PDF attachment:", attachment.Name);
 
     const { data, error: emailError } = await supabase.functions.invoke('send-postmark-email', {
+      headers: await getAuthHeaders(),
       body: {
         to: customerEmail,
         subject: `Your Signed Rental Agreement - ${agreementRef} | James Blond Rentals`,
