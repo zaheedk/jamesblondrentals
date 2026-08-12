@@ -485,6 +485,51 @@ export type Database = {
         }
         Relationships: []
       }
+      customer_documents: {
+        Row: {
+          created_at: string
+          doc_type: Database["public"]["Enums"]["document_type"]
+          file_name: string | null
+          file_path: string
+          id: string
+          licence_expiry: string | null
+          review_notes: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["document_status"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          doc_type: Database["public"]["Enums"]["document_type"]
+          file_name?: string | null
+          file_path: string
+          id?: string
+          licence_expiry?: string | null
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["document_status"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          doc_type?: Database["public"]["Enums"]["document_type"]
+          file_name?: string | null
+          file_path?: string
+          id?: string
+          licence_expiry?: string | null
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["document_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       customers: {
         Row: {
           address: string | null
@@ -930,6 +975,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      customer_has_booking: { Args: { _user_id: string }; Returns: boolean }
       get_user_email: { Args: { _user_id: string }; Returns: string }
       has_role: {
         Args: {
@@ -953,6 +999,12 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
+      document_status: "pending" | "approved" | "rejected"
+      document_type:
+        | "licence_front"
+        | "licence_back"
+        | "passport"
+        | "proof_of_address"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1081,6 +1133,13 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "moderator", "user"],
+      document_status: ["pending", "approved", "rejected"],
+      document_type: [
+        "licence_front",
+        "licence_back",
+        "passport",
+        "proof_of_address",
+      ],
     },
   },
 } as const
