@@ -45,13 +45,13 @@ A "Leads" campaign optimises delivery to people who historically click contact f
 
 ### Primary image (Feed / Audience Network)
 
-- **File:** `marketing/list-your-vehicle-facebook-ad-v2.png`
+- **File:** `marketing/list-your-vehicle-facebook-ad-v3.png`
 - **Size:** 1200 × 628 px
 - **Text coverage:** Low (< 20% text area for best delivery)
 
 ### Square image (Instagram Feed / Reels / Facebook Feed)
 
-- **File:** `marketing/list-your-vehicle-facebook-ad-square-v2.png`
+- **File:** `marketing/list-your-vehicle-facebook-ad-square-v3.png`
 - **Size:** 1080 × 1080 px
 
 ### Headline options
@@ -84,7 +84,7 @@ Rotate 3–4 headlines per ad set to test hook strength:
 **Learn More** — lowest friction alternative  
 **Contact Us** — if phone is the main goal
 
-Both creatives carry the James Blond Rentals logo, a green "Register Your Interest" button, and a trust bar (we bring the bookings · secure payments · comprehensive insurance cover · 24/7 support) plus a "Proudly Kiwi. Built for New Zealand · No joining fee · Monthly payouts" strip.
+Both creatives carry the original James Blond Rentals logo file (JB monogram, "James Blond Rentals", "Licensed to rent" script) on a white card, a green "Register Your Interest" button, and a trust bar (we bring the bookings · secure payments · comprehensive insurance cover · 24/7 support) plus a "Proudly Kiwi. Built for New Zealand · No joining fee · Monthly payouts" strip.
 
 ### Destination URL (with tracking)
 
