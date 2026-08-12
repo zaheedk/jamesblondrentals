@@ -482,10 +482,6 @@ const CustomerDetails = () => {
               }
             }
             console.log('Auto account creation result:', accountRes.value.data);
-            // Guest checkout: store the details against the account we just created
-            if (!user?.id && returnedUserId) {
-              await saveCustomerToWebsite(returnedUserId, formData);
-            }
           } else if (accountRes.status === 'rejected') {
             console.error('Auto account creation error:', accountRes.reason);
           }
