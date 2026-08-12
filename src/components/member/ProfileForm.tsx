@@ -12,6 +12,7 @@ interface ProfileData {
   first_name: string;
   last_name: string;
   mobile: string;
+  dob: string;
   license_number: string;
   license_expiry: string;
   license_country: string;
@@ -26,6 +27,7 @@ const initialData: ProfileData = {
   first_name: '',
   last_name: '',
   mobile: '',
+  dob: '',
   license_number: '',
   license_expiry: '',
   license_country: '',
