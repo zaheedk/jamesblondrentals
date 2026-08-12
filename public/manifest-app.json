@@ -1,0 +1,14 @@
+{
+  "name": "James Blond Rentals",
+  "short_name": "James Blond",
+  "description": "Manage your James Blond Rentals bookings, licence details and documents.",
+  "start_url": "/member-dashboard",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1d4ed8",
+  "icons": [
+    { "src": "/lovable-uploads/ee23bb91-cc75-4cf1-a745-f44e4a4bbb12.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/lovable-uploads/ee23bb91-cc75-4cf1-a745-f44e4a4bbb12.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

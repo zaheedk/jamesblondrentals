@@ -4,11 +4,13 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Settings, BookOpen, TrendingUp, MessageSquare, Calendar, Users, Car, UserCircle, FileText, AlertTriangle, Camera, ImageIcon, Upload, ClipboardList, ClipboardCheck } from 'lucide-react';
+import { Settings, BookOpen, TrendingUp, MessageSquare, Calendar, Users, Car, UserCircle, FileText, AlertTriangle, Camera, ImageIcon, Upload, ClipboardList, ClipboardCheck, IdCard } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/integrations/supabase/client';
 import { useState } from 'react';
 import SupabaseBookingHistory from '@/components/member/SupabaseBookingHistory';
 import ProfileForm from '@/components/member/ProfileForm';
+import DocumentsPanel from '@/components/member/DocumentsPanel';
 import { useUserRole } from '@/hooks/use-user-role';
 import PageSEO from '@/components/PageSEO';
 
@@ -52,6 +54,12 @@ export default function MemberDashboard() {
   return (
     <div className="container mx-auto px-4 py-8">
       <PageSEO title="My Dashboard – James Blond Rentals" description="View your bookings, rental history and manage your James Blond Rentals account from your personal dashboard." canonical="/member-dashboard" noindex />
+      <Helmet>
+        <link rel="manifest" href="/manifest-app.json" />
+        <meta name="theme-color" content="#1d4ed8" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-title" content="James Blond" />
+      </Helmet>
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold">Member Dashboard</h1>
@@ -101,6 +109,12 @@ export default function MemberDashboard() {
                   <Button variant="outline" className="w-full justify-start text-xs sm:text-sm" size="lg">
                     <Users className="w-4 h-4 mr-2 shrink-0" />
                     <span className="truncate">Customers</span>
+                  </Button>
+                </Link>
+                <Link to="/admin/customer-documents">
+                  <Button variant="outline" className="w-full justify-start text-xs sm:text-sm" size="lg">
+                    <IdCard className="w-4 h-4 mr-2 shrink-0" />
+                    <span className="truncate">Verify Documents</span>
                   </Button>
                 </Link>
                 <Link to="/admin/import-bookings">
@@ -232,6 +246,10 @@ export default function MemberDashboard() {
             <UserCircle className="w-4 h-4" />
             Profile
           </TabsTrigger>
+          <TabsTrigger value="documents" className="flex items-center gap-2">
+            <IdCard className="w-4 h-4" />
+            Documents
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="bookings">
@@ -240,6 +258,10 @@ export default function MemberDashboard() {
 
         <TabsContent value="profile">
           <ProfileForm />
+        </TabsContent>
+
+        <TabsContent value="documents">
+          <DocumentsPanel />
         </TabsContent>
       </Tabs>
 

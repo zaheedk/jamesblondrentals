@@ -73,6 +73,7 @@ const CustomerDetails = () => {
   const bookingData = getBookingData();
   const { rcmApi } = useRcmApi();
   const { user } = useAuth();
+  const [prefilled, setPrefilled] = React.useState(false);
   
   const form = useForm<CustomerFormValues>({
     resolver: zodResolver(formSchema),
@@ -134,6 +135,10 @@ const CustomerDetails = () => {
           form.setValue(key as keyof CustomerFormValues, value);
         }
       });
+
+      if (prefillData.firstName && prefillData.email) {
+        setPrefilled(true);
+      }
     };
 
     prefillFromProfile();
@@ -448,7 +453,18 @@ const CustomerDetails = () => {
         <BookingRentalAccordion />
         <div className="max-w-3xl mx-auto">
         <h1 className="text-3xl font-bold mb-6">Customer Details</h1>
-        
+
+        {prefilled && (
+          <div className="mb-4 rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 text-sm text-foreground">
+            Your details were pre-filled from your James Blond account. Check they're correct and continue.
+          </div>
+        )}
+        {!user && (
+          <div className="mb-4 rounded-lg border bg-muted/40 px-4 py-3 text-sm text-muted-foreground">
+            Have an account? <a href="/login" className="text-primary font-semibold underline">Sign in</a> to pre-fill your details and skip re-typing your licence next time.
+          </div>
+        )}
+
         <div className="bg-white rounded-lg shadow-md p-6">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
