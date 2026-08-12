@@ -45,13 +45,13 @@ A "Leads" campaign optimises delivery to people who historically click contact f
 
 ### Primary image (Feed / Audience Network)
 
-- **File:** `public/marketing/list-your-vehicle-facebook-ad.png`
+- **File:** `marketing/list-your-vehicle-facebook-ad-v2.png`
 - **Size:** 1200 × 628 px
 - **Text coverage:** Low (< 20% text area for best delivery)
 
 ### Square image (Instagram Feed / Reels / Facebook Feed)
 
-- **File:** `public/marketing/list-your-vehicle-facebook-ad-square.png`
+- **File:** `marketing/list-your-vehicle-facebook-ad-square-v2.png`
 - **Size:** 1080 × 1080 px
 
 ### Headline options
