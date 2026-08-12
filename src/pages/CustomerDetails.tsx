@@ -218,7 +218,16 @@ const CustomerDetails = () => {
           lastname: formData.lastName,
           email: formData.email,
           mobile: formData.phone,
-          dateofbirth: formatDateForApi(formData.dateOfBirth || "")
+          dateofbirth: formatDateForApi(formData.dateOfBirth || ""),
+          // Licence + address details from the customer's saved profile, so RCM
+          // holds the same information the customer entered in the app.
+          ...(profileExtras.licenseno ? { licenseno: profileExtras.licenseno } : {}),
+          ...(profileExtras.licenseexpires ? { licenseexpires: profileExtras.licenseexpires } : {}),
+          ...(profileExtras.address ? { address: profileExtras.address } : {}),
+          ...(profileExtras.city ? { city: profileExtras.city } : {}),
+          ...(profileExtras.state ? { state: profileExtras.state } : {}),
+          ...(profileExtras.postcode ? { postcode: profileExtras.postcode } : {}),
+          ...(profileExtras.countryid ? { countryid: profileExtras.countryid } : {})
         },
         flightin: formData.flightNumber,
         emailoption: 1, // 1=default behavior
