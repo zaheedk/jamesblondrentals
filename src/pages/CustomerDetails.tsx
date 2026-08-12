@@ -73,6 +73,7 @@ const CustomerDetails = () => {
   const bookingData = getBookingData();
   const { rcmApi } = useRcmApi();
   const { user } = useAuth();
+  const [prefilled, setPrefilled] = React.useState(false);
   
   const form = useForm<CustomerFormValues>({
     resolver: zodResolver(formSchema),
