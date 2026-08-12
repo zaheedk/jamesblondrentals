@@ -80,9 +80,11 @@ Rotate 3–4 headlines per ad set to test hook strength:
 
 ### Call to action
 
-**Learn More** (best for low-friction interest)  
-**Sign Up** (if you later add a lead form)  
-**Contact Us** (if phone is the main goal)
+**Sign Up** — matches the on-image "Register Your Interest" button (recommended)  
+**Learn More** — lowest friction alternative  
+**Contact Us** — if phone is the main goal
+
+Both creatives carry the James Blond Rentals logo, a green "Register Your Interest" button, and a trust bar (we bring the bookings · secure payments · comprehensive insurance cover · 24/7 support) plus a "Proudly Kiwi. Built for New Zealand · 60/40 revenue share · No joining fee" strip.
 
 ### Destination URL (with tracking)
 
