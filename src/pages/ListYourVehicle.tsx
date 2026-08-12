@@ -33,8 +33,8 @@ const revenueSplit = [
 
 const faq = [
   {
-    q: 'How does the 60/40 revenue share work?',
-    a: 'You receive 60% of the net rental revenue earned by your vehicle and James Blond retains 40%. Net rental revenue means the rental charge after GST, third-party booking fees and merchant/card fees. Extras such as insurance excess reduction, accessories and one-way fees are settled separately as set out in your owner agreement.',
+    q: 'How does the revenue share work?',
+    a: 'You receive a share of the net rental revenue earned by your vehicle. The exact split is set out in your owner agreement. Net rental revenue means the rental charge after GST, third-party booking fees and merchant/card fees. Extras such as insurance excess reduction, accessories and one-way fees are settled separately.',
   },
   {
     q: 'Who pays for insurance?',
@@ -50,7 +50,7 @@ const faq = [
   },
   {
     q: 'How and when do I get paid?',
-    a: 'Monthly. You receive a statement showing every booking your vehicle completed, gross revenue, deductions and your 60% share, paid by bank transfer to your nominated account.',
+    a: 'Monthly. You receive a statement showing every booking your vehicle completed, gross revenue, deductions and your share, paid by bank transfer to your nominated account.',
   },
   {
     q: 'Do I have to hand over my vehicle full time?',
@@ -98,8 +98,8 @@ const ListYourVehicle = () => {
   return (
     <div className="bg-background text-foreground">
       <PageSEO
-        title="List Your Vehicle | Earn 60% With James Blond Rentals NZ"
-        description="Own a van, truck, ute, trailer or minibus? List it with James Blond Rentals and keep 60% of net rental revenue. We handle bookings, payments and customer service."
+        title="List Your Vehicle | Vehicle Owner Partnerships | James Blond Rentals NZ"
+        description="Own a van, truck, ute, trailer or minibus? List it with James Blond Rentals and earn a share of net rental revenue. We handle bookings, payments and customer service."
         canonical="/list-your-vehicle"
       />
       <JsonLd data={faqLd} />
@@ -113,10 +113,10 @@ const ListYourVehicle = () => {
               Vehicle Owner Partnerships
             </span>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground mb-6">
-              Put your vehicle to work. Keep 60% of the rental revenue.
+              Put your vehicle to work. Earn a share of the rental revenue.
             </h1>
             <p className="text-lg text-muted-foreground mb-8">
-              Own a cargo van, furniture truck, ute, trailer or minibus? List it with James Blond and we will bring the customers, run the bookings and handle the day-to-day — you keep the asset and 60% of net revenue.
+              Own a cargo van, furniture truck, ute, trailer or minibus? List it with James Blond and we will bring the customers, run the bookings and handle the day-to-day — you keep the asset and a share of net revenue.
             </p>
             <div className="flex flex-wrap gap-4 mb-6">
               <Button size="lg" variant="cta" asChild>
@@ -152,8 +152,8 @@ const ListYourVehicle = () => {
             {[
               {
                 Icon: Wallet,
-                title: 'You earn 60%',
-                description: 'Receive 60% of net rental revenue every month from completed bookings.',
+                title: 'You earn a share',
+                description: 'Receive a share of net rental revenue every month from completed bookings.',
               },
               {
                 Icon: Users,
@@ -223,7 +223,7 @@ const ListYourVehicle = () => {
         <ol className="space-y-4 max-w-3xl text-muted-foreground list-decimal pl-6">
           <li>A customer books your vehicle through James Blond and pays us directly.</li>
           <li>GST, card/merchant fees and any third-party booking fees are deducted to give net rental revenue.</li>
-          <li>Net rental revenue is split 60% to you, 40% to James Blond.</li>
+          <li>Net rental revenue is shared between you and James Blond according to your owner agreement.</li>
           <li>Recoverable costs caused by a renter (fuel, cleaning, infringements, damage recoveries) are passed through to whoever bore them.</li>
           <li>You receive a monthly statement per booking and payment to your nominated bank account.</li>
         </ol>
