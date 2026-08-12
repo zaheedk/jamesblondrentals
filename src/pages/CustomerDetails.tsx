@@ -174,6 +174,75 @@ const CustomerDetails = () => {
     return dateStr; // Already in DD/MM/YYYY format from the mask
   };
 
+  // DD/MM/YYYY -> YYYY-MM-DD (null when empty/invalid)
+  const toIsoDate = (dateStr?: string): string | null => {
+    if (!dateStr || dateStr === "dd/mm/yyyy") return null;
+    if (dateStr.includes('/')) {
+      const [day, month, year] = dateStr.split('/');
+      if (!day || !month || !year || year.length !== 4) return null;
+      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    }
+    return dateStr;
+  };
+
+  /**
+   * Record the customer details on our own website (profiles + customers tables)
+   * so the data is stored in both James Blond and RCM.
+   */
+  const saveCustomerToWebsite = async (
+    userId: string,
+    formData: CustomerFormValues
+  ) => {
+    try {
+      const fullName = `${formData.firstName || ''} ${formData.lastName || ''}`.trim();
+
+      await supabase
+        .from('profiles')
+        .update({
+          full_name: fullName || null,
+          email: formData.email || null,
+        })
+        .eq('id', userId);
+
+      const customerRow = {
+        user_id: userId,
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        email: formData.email,
+        mobile: formData.phone || null,
+        dob: toIsoDate(formData.dateOfBirth),
+        license_number: profileExtras.licenseno || null,
+        license_expiry: toIsoDate(profileExtras.licenseexpires),
+        license_country: profileExtras.countryid || null,
+        address: profileExtras.address || null,
+        city: profileExtras.city || null,
+        state_province: profileExtras.state || null,
+        postcode: profileExtras.postcode || null,
+        country: profileExtras.countryid || null,
+      };
+
+      const { data: existing } = await supabase
+        .from('customers')
+        .select('id')
+        .eq('user_id', userId)
+        .maybeSingle();
+
+      if (existing?.id) {
+        // Don't overwrite saved values with blanks
+        const patch = Object.fromEntries(
+          Object.entries(customerRow).filter(([, v]) => v !== null && v !== undefined && v !== '')
+        );
+        const { error } = await supabase.from('customers').update(patch).eq('id', existing.id);
+        if (error) console.error('Error updating customer record:', error);
+      } else {
+        const { error } = await supabase.from('customers').insert(customerRow);
+        if (error) console.error('Error creating customer record:', error);
+      }
+    } catch (err) {
+      console.error('Exception saving customer to website DB:', err);
+    }
+  };
+
   const createBooking = async (formData: CustomerFormValues) => {
     if (!bookingData) return null;
     
@@ -317,6 +386,14 @@ const CustomerDetails = () => {
             customer_email: formData.email,
             customer_phone: formData.phone,
             customer_age: parseInt(bookingData.ageId) || null,
+            customer_dob: toIsoDate(formData.dateOfBirth),
+            customer_license_number: profileExtras.licenseno || null,
+            license_exp_date: toIsoDate(profileExtras.licenseexpires),
+            customer_address: profileExtras.address || null,
+            customer_suburb: profileExtras.city || null,
+            customer_state: profileExtras.state || null,
+            customer_postcode: profileExtras.postcode || null,
+            customer_country: profileExtras.countryid || null,
             daily_rate: bookingData.dailyrate || null,
             vehicle_total: vehicleTotal,
             extras_total: extrasTotal,
@@ -363,6 +440,11 @@ const CustomerDetails = () => {
           // Don't block the user from continuing
         }
 
+        // Record the customer details on our website for signed-in customers
+        if (user?.id) {
+          await saveCustomerToWebsite(user.id, formData);
+        }
+
         // Auto-create user account for booking and sync to Savo
         // These must be awaited so requests complete before page navigation
         if (formData.email) {
@@ -400,6 +482,10 @@ const CustomerDetails = () => {
               }
             }
             console.log('Auto account creation result:', accountRes.value.data);
+            // Guest checkout: store the details against the account we just created
+            if (!user?.id && returnedUserId) {
+              await saveCustomerToWebsite(returnedUserId, formData);
+            }
           } else if (accountRes.status === 'rejected') {
             console.error('Auto account creation error:', accountRes.reason);
           }
