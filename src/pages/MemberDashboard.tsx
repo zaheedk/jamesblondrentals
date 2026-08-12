@@ -240,6 +240,10 @@ export default function MemberDashboard() {
             <UserCircle className="w-4 h-4" />
             Profile
           </TabsTrigger>
+          <TabsTrigger value="documents" className="flex items-center gap-2">
+            <IdCard className="w-4 h-4" />
+            Documents
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="bookings">
@@ -248,6 +252,10 @@ export default function MemberDashboard() {
 
         <TabsContent value="profile">
           <ProfileForm />
+        </TabsContent>
+
+        <TabsContent value="documents">
+          <DocumentsPanel />
         </TabsContent>
       </Tabs>
 
