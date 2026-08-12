@@ -111,6 +111,12 @@ export default function MemberDashboard() {
                     <span className="truncate">Customers</span>
                   </Button>
                 </Link>
+                <Link to="/admin/customer-documents">
+                  <Button variant="outline" className="w-full justify-start text-xs sm:text-sm" size="lg">
+                    <IdCard className="w-4 h-4 mr-2 shrink-0" />
+                    <span className="truncate">Verify Documents</span>
+                  </Button>
+                </Link>
                 <Link to="/admin/import-bookings">
                   <Button variant="outline" className="w-full justify-start text-xs sm:text-sm" size="lg">
                     <Upload className="w-4 h-4 mr-2 shrink-0" />
