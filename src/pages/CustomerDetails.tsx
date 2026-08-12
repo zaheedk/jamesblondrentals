@@ -135,6 +135,10 @@ const CustomerDetails = () => {
           form.setValue(key as keyof CustomerFormValues, value);
         }
       });
+
+      if (prefillData.firstName && prefillData.email) {
+        setPrefilled(true);
+      }
     };
 
     prefillFromProfile();
