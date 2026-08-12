@@ -54,6 +54,7 @@ const AdminVehicleRates = lazy(() => import("./pages/AdminVehicleRates"));
 const AdminFeedback = lazy(() => import("./pages/AdminFeedback"));
 const AdminBookings = lazy(() => import("./pages/AdminBookings"));
 const AdminCustomers = lazy(() => import("./pages/AdminCustomers"));
+const AdminCustomerDocuments = lazy(() => import("./pages/AdminCustomerDocuments"));
 const RentalAgreement = lazy(() => import("./pages/RentalAgreement"));
 const AdminRentalAgreements = lazy(() => import("./pages/AdminRentalAgreements"));
 const AdminBookingImport = lazy(() => import("./pages/AdminBookingImport"));
