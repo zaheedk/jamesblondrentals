@@ -45,38 +45,38 @@ A "Leads" campaign optimises delivery to people who historically click contact f
 
 ### Primary image (Feed / Audience Network)
 
-- **File:** `public/marketing/list-your-vehicle-facebook-ad.png`
+- **File:** `marketing/list-your-vehicle-facebook-ad-v2.png`
 - **Size:** 1200 × 628 px
 - **Text coverage:** Low (< 20% text area for best delivery)
 
 ### Square image (Instagram Feed / Reels / Facebook Feed)
 
-- **File:** `public/marketing/list-your-vehicle-facebook-ad-square.png`
+- **File:** `marketing/list-your-vehicle-facebook-ad-square-v2.png`
 - **Size:** 1080 × 1080 px
 
 ### Headline options
 
 Rotate 3–4 headlines per ad set to test hook strength:
 
-1. **Earn 60% From Your Van or Truck**
-2. **Turn Your Vehicle Into a Monthly Income**
-3. **We Find Renters — You Keep 60%**
-4. **List Your Van/Truck. No Joining Fee.**
+1. **Turn Your Vehicle Into a Monthly Income**
+2. **We Find Renters — You Keep the Revenue Share**
+3. **List Your Van/Truck. No Joining Fee.**
+4. **Earn From Your Van or Truck With James Blond**
 
 ### Primary text options
 
 **Option A — Direct / benefit-led**
-> Own a van, truck, ute, trailer or minibus? James Blond brings the customers, handles bookings and payments — and you keep 60% of the net rental revenue. No joining fee. Join the vehicle owner partnership today.
+> Own a van, truck, ute, trailer or minibus? James Blond brings the customers, handles bookings and payments — and you earn a share of the net rental revenue. No joining fee. Join the vehicle owner partnership today.
 
 **Option B — Curiosity / problem-led**
-> Is your work van sitting idle on weekends? Put it to work with James Blond Rentals. We list it, insure the demand, manage the paperwork and pay you 60% monthly.
+> Is your work van sitting idle on weekends? Put it to work with James Blond Rentals. We list it, drive the demand, manage the paperwork and pay you a share of the revenue monthly.
 
 **Option C — Local trust**
-> Kiwis have trusted James Blond Rentals for cars, vans and trucks since 1995. Now we are looking for more commercial vehicle owners to partner with. Earn 60% net revenue — no joining fee.
+> Kiwis have trusted James Blond Rentals for cars, vans and trucks since 1995. Now we are looking for more commercial vehicle owners to partner with. Earn a share of net rental revenue — no joining fee.
 
 ### Description
 
-> NZ-wide vehicle owner partnership. No joining fee. 60% revenue share.
+> NZ-wide vehicle owner partnership. No joining fee. Revenue share model.
 
 ### Call to action
 
@@ -84,12 +84,12 @@ Rotate 3–4 headlines per ad set to test hook strength:
 **Learn More** — lowest friction alternative  
 **Contact Us** — if phone is the main goal
 
-Both creatives carry the James Blond Rentals logo, a green "Register Your Interest" button, and a trust bar (we bring the bookings · secure payments · comprehensive insurance cover · 24/7 support) plus a "Proudly Kiwi. Built for New Zealand · 60/40 revenue share · No joining fee" strip.
+Both creatives carry the James Blond Rentals logo, a green "Register Your Interest" button, and a trust bar (we bring the bookings · secure payments · comprehensive insurance cover · 24/7 support) plus a "Proudly Kiwi. Built for New Zealand · No joining fee · Monthly payouts" strip.
 
 ### Destination URL (with tracking)
 
 ```
-https://jamesblond.co.nz/list-your-vehicle?utm_source=facebook&utm_medium=cpc&utm_campaign=list_your_vehicle&utm_content=feed_ad_60pct
+https://jamesblond.co.nz/list-your-vehicle?utm_source=facebook&utm_medium=cpc&utm_campaign=list_your_vehicle&utm_content=feed_ad_revenue_share
 ```
 
 ---
@@ -143,7 +143,7 @@ In Ads Manager, create a custom conversion for:
 
 | Test | Variable | Hypothesis |
 |------|----------|------------|
-| 1 | Headline: "60%" vs "monthly income" | Percentage splits may outperform vague income claims |
+| 1 | Headline: specific earning claim vs "monthly income" | Specific claims may outperform vague income claims |
 | 2 | Creative: vehicle pair vs single van | Two vehicles may signal more categories |
 | 3 | CTA: "Learn More" vs "Contact Us" | Learn More may lower friction |
 | 4 | Audience: small business vs all vehicle owners | Interest layering may improve CPL |
