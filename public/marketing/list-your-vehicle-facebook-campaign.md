@@ -58,25 +58,25 @@ A "Leads" campaign optimises delivery to people who historically click contact f
 
 Rotate 3–4 headlines per ad set to test hook strength:
 
-1. **Earn 70% From Your Van or Truck**
+1. **Earn 60% From Your Van or Truck**
 2. **Turn Your Vehicle Into a Monthly Income**
-3. **We Find Renters — You Keep 70%**
+3. **We Find Renters — You Keep 60%**
 4. **List Your Van/Truck. No Joining Fee.**
 
 ### Primary text options
 
 **Option A — Direct / benefit-led**
-> Own a van, truck, ute, trailer or minibus? James Blond brings the customers, handles bookings and payments — and you keep 70% of the net rental revenue. No joining fee. Join the vehicle owner partnership today.
+> Own a van, truck, ute, trailer or minibus? James Blond brings the customers, handles bookings and payments — and you keep 60% of the net rental revenue. No joining fee. Join the vehicle owner partnership today.
 
 **Option B — Curiosity / problem-led**
-> Is your work van sitting idle on weekends? Put it to work with James Blond Rentals. We list it, insure the demand, manage the paperwork and pay you 70% monthly.
+> Is your work van sitting idle on weekends? Put it to work with James Blond Rentals. We list it, insure the demand, manage the paperwork and pay you 60% monthly.
 
 **Option C — Local trust**
-> Kiwis have trusted James Blond Rentals for cars, vans and trucks since 1995. Now we are looking for more commercial vehicle owners to partner with. Earn 70% net revenue — no joining fee.
+> Kiwis have trusted James Blond Rentals for cars, vans and trucks since 1995. Now we are looking for more commercial vehicle owners to partner with. Earn 60% net revenue — no joining fee.
 
 ### Description
 
-> NZ-wide vehicle owner partnership. No joining fee. 70% revenue share.
+> NZ-wide vehicle owner partnership. No joining fee. 60% revenue share.
 
 ### Call to action
 
@@ -87,7 +87,7 @@ Rotate 3–4 headlines per ad set to test hook strength:
 ### Destination URL (with tracking)
 
 ```
-https://jamesblond.co.nz/list-your-vehicle?utm_source=facebook&utm_medium=cpc&utm_campaign=list_your_vehicle&utm_content=feed_ad_70pct
+https://jamesblond.co.nz/list-your-vehicle?utm_source=facebook&utm_medium=cpc&utm_campaign=list_your_vehicle&utm_content=feed_ad_60pct
 ```
 
 ---
@@ -141,7 +141,7 @@ In Ads Manager, create a custom conversion for:
 
 | Test | Variable | Hypothesis |
 |------|----------|------------|
-| 1 | Headline: "70%" vs "monthly income" | Percentage splits may outperform vague income claims |
+| 1 | Headline: "60%" vs "monthly income" | Percentage splits may outperform vague income claims |
 | 2 | Creative: vehicle pair vs single van | Two vehicles may signal more categories |
 | 3 | CTA: "Learn More" vs "Contact Us" | Learn More may lower friction |
 | 4 | Audience: small business vs all vehicle owners | Interest layering may improve CPL |
