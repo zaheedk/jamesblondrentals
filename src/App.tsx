@@ -346,6 +346,11 @@ const App = () => {
               <StaffApp />
             </ProtectedRoute>
           } />
+          <Route path="/admin/customer-documents" element={
+            <ProtectedRoute>
+              <AdminCustomerDocuments />
+            </ProtectedRoute>
+          } />
                 
                 {/* Auth routes */}
                 <Route path="/login" element={<Login />} />
