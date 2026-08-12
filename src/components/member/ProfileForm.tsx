@@ -84,6 +84,7 @@ export default function ProfileForm() {
           first_name: data.first_name || '',
           last_name: data.last_name || '',
           mobile: data.mobile || '',
+          dob: data.dob || '',
           license_number: data.license_number || '',
           license_expiry: (data as any).license_expiry || '',
           license_country: (data as any).license_country || '',
@@ -119,6 +120,7 @@ export default function ProfileForm() {
         last_name: form.last_name.trim(),
         email: user.email || '',
         mobile: form.mobile.trim() || null,
+        dob: form.dob || null,
         license_number: form.license_number.trim() || null,
         license_expiry: form.license_expiry || null,
         license_country: form.license_country.trim() || null,
@@ -198,6 +200,14 @@ export default function ProfileForm() {
               value={form.mobile}
               onChange={e => handleChange('mobile', e.target.value)}
               placeholder="+64 21 123 4567"
+              className="h-11"
+            />
+          </FieldWithIcon>
+          <FieldWithIcon icon={Calendar} label="Date of Birth">
+            <Input
+              type="date"
+              value={form.dob}
+              onChange={e => handleChange('dob', e.target.value)}
               className="h-11"
             />
           </FieldWithIcon>
