@@ -74,6 +74,18 @@ const CustomerDetails = () => {
   const { rcmApi } = useRcmApi();
   const { user } = useAuth();
   const [prefilled, setPrefilled] = React.useState(false);
+  // Licence / address details pulled from the saved customer profile so they get
+  // pushed into RCM with the booking (not editable here — managed in the member dashboard).
+  const [profileExtras, setProfileExtras] = React.useState<{
+    licenseno?: string;
+    licenseissued?: string;
+    licenseexpires?: string;
+    address?: string;
+    city?: string;
+    state?: string;
+    postcode?: string;
+    countryid?: string;
+  }>({});
   
   const form = useForm<CustomerFormValues>({
     resolver: zodResolver(formSchema),
@@ -110,20 +122,33 @@ const CustomerDetails = () => {
       try {
         const { data: customer } = await supabase
           .from('customers')
-          .select('first_name, last_name, email, mobile, phone, dob')
+          .select('first_name, last_name, email, mobile, phone, dob, license_number, license_expiry, license_country, address, city, suburb, state_province, postcode, country')
           .eq('user_id', user.id)
           .maybeSingle();
 
         if (customer) {
+          const toDdMmYyyy = (value?: string | null) =>
+            value
+              ? new Date(value).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })
+              : "";
+
           prefillData = {
             firstName: customer.first_name || prefillData.firstName,
             lastName: customer.last_name || prefillData.lastName,
             email: customer.email || prefillData.email,
             phone: customer.mobile || customer.phone || prefillData.phone || "",
-            dateOfBirth: customer.dob 
-              ? new Date(customer.dob).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '/')
-              : "",
+            dateOfBirth: toDdMmYyyy(customer.dob),
           };
+
+          setProfileExtras({
+            licenseno: customer.license_number || undefined,
+            licenseexpires: toDdMmYyyy(customer.license_expiry) || undefined,
+            address: customer.address || undefined,
+            city: customer.city || customer.suburb || undefined,
+            state: customer.state_province || undefined,
+            postcode: customer.postcode || undefined,
+            countryid: customer.license_country || customer.country || undefined,
+          });
         }
       } catch (err) {
         console.error('Error fetching customer profile:', err);
