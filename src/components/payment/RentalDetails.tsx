@@ -14,7 +14,6 @@ interface RentalDetailsProps {
   rentalDuration: number;
   rateType?: "hourly" | "daily";
   numberOfHours?: number;
-  rateLabel?: string;
 }
 
 const RentalDetails = ({
@@ -28,7 +27,6 @@ const RentalDetails = ({
   rentalDuration,
   rateType = "daily",
   numberOfHours,
-  rateLabel,
 }: RentalDetailsProps) => {
   const sessionData = getBookingData();
   const rcmDays = (typeof sessionData?.numberofdays === 'number' && sessionData.numberofdays > 0) ? sessionData.numberofdays : undefined;
@@ -48,7 +46,6 @@ const RentalDetails = ({
   // Compute duration display using RCM-provided values
   const getDurationDisplay = () => {
     // Prefer explicit hourly value when provided by RCM
-    if (rateLabel) return rateLabel;
     if (rateType === "hourly") {
       if (typeof numberOfHours === 'number' && numberOfHours > 0) {
         return `${numberOfHours} ${numberOfHours === 1 ? 'hour' : 'hours'}`;

@@ -19,7 +19,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import PageSEO from '@/components/PageSEO';
 import { supabase } from "@/integrations/supabase/client";
 import TrustGuaranteeBanner from '@/components/booking/TrustGuaranteeBanner';
-import { getWeekendTruckRateOverride, getHireHours } from "@/lib/weekend-truck-minimum";
 
 const DEPOSIT_AMOUNT = 50;
 
@@ -285,47 +284,6 @@ const PaymentOptions = () => {
     setImageError(true);
   };
 
-  // ---- Vehicle rate display (with weekend 8-hour truck minimum) ----
-  const hireHours = getHireHours(
-    bookingDetails?.pickupDate,
-    bookingDetails?.pickupTime,
-    bookingDetails?.dropoffDate,
-    bookingDetails?.dropoffTime
-  );
-
-  const baseVehicleRate = (() => {
-    if (typeof bookingInfoTotalCost === 'number' && bookingInfoTotalCost > 0) {
-      // bookingInfoTotalCost is the RCM total already excluding the security bond
-      return bookingInfoTotalCost;
-    }
-    if (bookingDetails?.dailyrate && bookingDetails.dailyrate > 0) {
-      return bookingDetails.dailyrate * Math.max(1, rentalDays || 1);
-    }
-    return Number(bookingDetails?.basePrice || 0);
-  })();
-
-  const weekendOverride = getWeekendTruckRateOverride({
-    categoryName: bookingDetails?.vehicleName,
-    pickupDate: bookingDetails?.pickupDate,
-    pickupTime: bookingDetails?.pickupTime,
-    dropoffDate: bookingDetails?.dropoffDate,
-    dropoffTime: bookingDetails?.dropoffTime,
-    currentRate: baseVehicleRate,
-  });
-
-  const vehicleRateTotal = weekendOverride ? weekendOverride.rate : baseVehicleRate;
-  const rateUplift = weekendOverride ? weekendOverride.rate - weekendOverride.originalRate : 0;
-
-  const rateLabel = weekendOverride
-    ? "8 hours – weekend minimum"
-    : hireHours && hireHours < 24
-      ? `${Number.isInteger(hireHours) ? hireHours : hireHours.toFixed(1)} hours`
-      : undefined;
-
-  const adjustedTotalCost = totalCost + rateUplift;
-  const adjustedBookingInfoTotalCost =
-    typeof bookingInfoTotalCost === 'number' ? bookingInfoTotalCost + rateUplift : undefined;
-
   const handleSaveQuotation = async () => {
     if (isSavingQuote) return;
     const toastId = toast.loading("Saving your quote…", {
@@ -533,7 +491,7 @@ const PaymentOptions = () => {
                 dropoffTime: bookingDetails.dropoffTime || "",
                 pickupLocation: bookingDetails.pickupLocationName || sessionData?.pickupLocationName || "",
                 dropoffLocation: bookingDetails.dropoffLocationName || sessionData?.dropoffLocationName || "",
-                totalCost: formatCurrency(adjustedTotalCost),
+                totalCost: formatCurrency(totalCost),
               },
             })
             .catch((emailError) => {
@@ -585,7 +543,7 @@ const PaymentOptions = () => {
     setIsLoading(true);
     
     try {
-      const amountToPay = paymentType === "deposit" ? Math.min(DEPOSIT_AMOUNT, adjustedTotalCost) : adjustedTotalCost;
+      const amountToPay = paymentType === "deposit" ? Math.min(DEPOSIT_AMOUNT, totalCost) : totalCost;
       
       updateBookingData({
         paymentAmount: amountToPay,
@@ -676,11 +634,9 @@ const PaymentOptions = () => {
                 return acc;
               }, []) : []
             }
-            rateLabel={rateLabel}
-            vehicleRateTotal={vehicleRateTotal}
-            totalCost={adjustedTotalCost}
-            bookingInfoTotalCost={adjustedBookingInfoTotalCost}
-            payment={adjustedTotalCost}
+            totalCost={totalCost}
+            bookingInfoTotalCost={bookingInfoTotalCost}
+            payment={totalCost}
             balanceDue={0}
           />
           
@@ -744,7 +700,7 @@ const PaymentOptions = () => {
                     Rental total, excluding the refundable security bond
                   </span>
                 </span>
-                <span className="font-bold">{formatCurrency(adjustedTotalCost)}</span>
+                <span className="font-bold">{formatCurrency(totalCost)}</span>
               </button>
               <button
                 type="button"
@@ -758,10 +714,10 @@ const PaymentOptions = () => {
                     Pay a {formatCurrency(DEPOSIT_AMOUNT)} deposit
                   </span>
                   <span className="block text-sm text-gray-600">
-                    Non-refundable. Balance of {formatCurrency(Math.max(adjustedTotalCost - DEPOSIT_AMOUNT, 0))} due at pick up.
+                    Non-refundable. Balance of {formatCurrency(Math.max(totalCost - DEPOSIT_AMOUNT, 0))} due at pick up.
                   </span>
                 </span>
-                <span className="font-bold">{formatCurrency(Math.min(DEPOSIT_AMOUNT, adjustedTotalCost))}</span>
+                <span className="font-bold">{formatCurrency(Math.min(DEPOSIT_AMOUNT, totalCost))}</span>
               </button>
             </div>
           </div>
@@ -777,7 +733,7 @@ const PaymentOptions = () => {
                   <span className="animate-spin mr-2">◌</span> Processing...
                 </>
               ) : (
-                `Proceed to Pay ${formatCurrency(paymentType === "deposit" ? Math.min(DEPOSIT_AMOUNT, adjustedTotalCost) : adjustedTotalCost)}`
+                `Proceed to Pay ${formatCurrency(paymentType === "deposit" ? Math.min(DEPOSIT_AMOUNT, totalCost) : totalCost)}`
               )}
             </Button>
             

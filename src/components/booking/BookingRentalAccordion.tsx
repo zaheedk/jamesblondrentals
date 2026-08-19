@@ -11,7 +11,6 @@ import { getBookingData } from '@/lib/booking-session';
 import { useRcmApi } from '@/hooks/use-rcm-api';
 import { qualifiesForMidweekDiscount } from '@/components/home/form-components/DateTimeUtils';
 import RentalDetails from '@/components/payment/RentalDetails';
-import { getWeekendTruckRateOverride } from '@/lib/weekend-truck-minimum';
 
 interface BookingRentalAccordionProps {
   className?: string;
@@ -36,19 +35,6 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
   let basePrice = dailyRate > 0
     ? dailyRate * duration
     : (bookingData.totalRateAfterDiscount || bookingData.basePrice || 0);
-
-  // Weekend truck minimum: Sat/Sun truck hires under 8 hours are charged the 8-hour rate
-  const weekendOverride = getWeekendTruckRateOverride({
-    categoryName: bookingData.vehicleName,
-    pickupDate: bookingData.pickupDate,
-    pickupTime: bookingData.pickupTime,
-    dropoffDate: bookingData.dropoffDate,
-    dropoffTime: bookingData.dropoffTime,
-    currentRate: basePrice,
-  });
-  if (weekendOverride) {
-    basePrice = weekendOverride.rate;
-  }
     
   // Check if discount qualifies (for display purposes only - discount is applied via API campaign code)
   const pickupDate = new Date(bookingData.pickupDate.split('/').reverse().join('-'));
@@ -175,11 +161,6 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
                 <div className="text-xl sm:text-2xl font-bold text-primary">
                   NZ${totalPrice.toFixed(2)} <span className="text-xs sm:text-sm font-normal">TOTAL</span>
                 </div>
-                {weekendOverride && (
-                  <div className="text-[11px] text-muted-foreground">
-                    Weekend 8-hour minimum rate applied
-                  </div>
-                )}
                 {/* Price breakdown - hidden on mobile when collapsed */}
                 <div className="hidden sm:block text-xs text-muted-foreground space-y-0.5">
                   <div>Rental + Insurance: NZ${rentalAndInsurance.toFixed(2)}</div>
@@ -201,7 +182,6 @@ const BookingRentalAccordion = ({ className = '' }: BookingRentalAccordionProps)
                 dropoffTime={bookingData.dropoffTime || ''}
                 rentalDuration={duration}
                 rateType="daily"
-                rateLabel={weekendOverride ? '8 hours – weekend minimum' : undefined}
               />
             </div>
           </AccordionContent>

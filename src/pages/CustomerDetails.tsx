@@ -30,7 +30,6 @@ import DebugApiResponse from '@/components/diagnostics/DebugApiResponse';
 import BookingSteps from '@/components/booking/BookingSteps';
 import TrustGuaranteeBanner from '@/components/booking/TrustGuaranteeBanner';
 import PageSEO from '@/components/PageSEO';
-import { toRcmCountryId, toRcmDate } from '@/lib/rcm-country';
 
 
 const formSchema = z.object({
@@ -128,7 +127,10 @@ const CustomerDetails = () => {
           .maybeSingle();
 
         if (customer) {
-          const toDdMmYyyy = (value?: string | null) => toRcmDate(value) || "";
+          const toDdMmYyyy = (value?: string | null) =>
+            value
+              ? new Date(value).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })
+              : "";
 
           prefillData = {
             firstName: customer.first_name || prefillData.firstName,
@@ -140,12 +142,12 @@ const CustomerDetails = () => {
 
           setProfileExtras({
             licenseno: customer.license_number || undefined,
-            licenseexpires: toRcmDate(customer.license_expiry),
+            licenseexpires: toDdMmYyyy(customer.license_expiry) || undefined,
             address: customer.address || undefined,
             city: customer.city || customer.suburb || undefined,
             state: customer.state_province || undefined,
             postcode: customer.postcode || undefined,
-            countryid: toRcmCountryId(customer.license_country || customer.country),
+            countryid: customer.license_country || customer.country || undefined,
           });
         }
       } catch (err) {
@@ -289,12 +291,12 @@ const CustomerDetails = () => {
           // Licence + address details from the customer's saved profile, so RCM
           // holds the same information the customer entered in the app.
           ...(profileExtras.licenseno ? { licenseno: profileExtras.licenseno } : {}),
-          ...(toRcmDate(profileExtras.licenseexpires) ? { licenseexpires: toRcmDate(profileExtras.licenseexpires) } : {}),
+          ...(profileExtras.licenseexpires ? { licenseexpires: profileExtras.licenseexpires } : {}),
           ...(profileExtras.address ? { address: profileExtras.address } : {}),
           ...(profileExtras.city ? { city: profileExtras.city } : {}),
           ...(profileExtras.state ? { state: profileExtras.state } : {}),
           ...(profileExtras.postcode ? { postcode: profileExtras.postcode } : {}),
-          ...(toRcmCountryId(profileExtras.countryid) ? { countryid: toRcmCountryId(profileExtras.countryid) } : {})
+          ...(profileExtras.countryid ? { countryid: profileExtras.countryid } : {})
         },
         flightin: formData.flightNumber,
         emailoption: 1, // 1=default behavior
