@@ -289,12 +289,12 @@ const CustomerDetails = () => {
           // Licence + address details from the customer's saved profile, so RCM
           // holds the same information the customer entered in the app.
           ...(profileExtras.licenseno ? { licenseno: profileExtras.licenseno } : {}),
-          ...(profileExtras.licenseexpires ? { licenseexpires: profileExtras.licenseexpires } : {}),
+          ...(toRcmDate(profileExtras.licenseexpires) ? { licenseexpires: toRcmDate(profileExtras.licenseexpires) } : {}),
           ...(profileExtras.address ? { address: profileExtras.address } : {}),
           ...(profileExtras.city ? { city: profileExtras.city } : {}),
           ...(profileExtras.state ? { state: profileExtras.state } : {}),
           ...(profileExtras.postcode ? { postcode: profileExtras.postcode } : {}),
-          ...(profileExtras.countryid ? { countryid: profileExtras.countryid } : {})
+          ...(toRcmCountryId(profileExtras.countryid) ? { countryid: toRcmCountryId(profileExtras.countryid) } : {})
         },
         flightin: formData.flightNumber,
         emailoption: 1, // 1=default behavior
