@@ -11,11 +11,15 @@ import { parse, isValid, getDay } from "date-fns";
  */
 export const TRUCK_8_HOUR_RATES: { match: RegExp; rate: number }[] = [
   { match: /tipper/i, rate: 100 },
-  { match: /3\s*t.*19\s*m|class\s*2/i, rate: 140 },
-  { match: /3\s*t.*18\s*m|3\s*tonne.*18/i, rate: 140 },
-  { match: /2\s*t.*16\s*m/i, rate: 115 },
-  { match: /2\s*t.*(t\/?lift|tail\s*lift)/i, rate: 115 },
-  { match: /2\s*t.*(9\s*m|12\s*m)/i, rate: 105 },
+  // 3 tonne trucks (18m³ / 19m³ / 20m³, tail lift or Class 2) — 8 hour rate $140
+  { match: /\b3\s*(t|ton|tonne)\b/i, rate: 140 },
+  { match: /class\s*2/i, rate: 140 },
+  { match: /(18|19|20)\s*m/i, rate: 140 },
+  // 2 tonne 16m³ and tail lift — 8 hour rate $115
+  { match: /\b2\s*(t|ton|tonne)\b.*(16\s*m|t\/?lift|tail\s*lift)/i, rate: 115 },
+  { match: /\b2\s*(t|ton|tonne)\b.*(9\s*m|12\s*m)/i, rate: 105 },
+  // Fallback for any other 2 tonne truck
+  { match: /\b2\s*(t|ton|tonne)\b/i, rate: 115 },
 ];
 
 const MINIMUM_HOURS = 8;
@@ -55,8 +59,66 @@ export function isWeekendPickup(pickupDate?: string): boolean {
 /** Look up the published 8-hour rate for a truck category. */
 export function getTruck8HourRate(categoryName?: string): number | null {
   if (!categoryName) return null;
-  const entry = TRUCK_8_HOUR_RATES.find(({ match }) => match.test(categoryName));
+  const clean = categoryName.replace(/<[^>]*>/g, " ").replace(/³|&sup3;/g, "");
+  const entry = TRUCK_8_HOUR_RATES.find(({ match }) => match.test(clean));
   return entry ? entry.rate : null;
+}
+
+/** Hours between pickup and drop-off, from dd/MM/yyyy (or ISO) dates + HH:mm times. */
+export function getHireHours(
+  pickupDate?: string,
+  pickupTime?: string,
+  dropoffDate?: string,
+  dropoffTime?: string
+): number | null {
+  const start = parseDate(pickupDate);
+  const end = parseDate(dropoffDate);
+  if (!start || !end || !pickupTime || !dropoffTime) return null;
+  const [sh, sm] = pickupTime.split(":").map(Number);
+  const [eh, em] = dropoffTime.split(":").map(Number);
+  if ([sh, sm, eh, em].some((n) => Number.isNaN(n))) return null;
+  start.setHours(sh, sm, 0, 0);
+  end.setHours(eh, em, 0, 0);
+  const hours = (end.getTime() - start.getTime()) / 3600000;
+  return hours > 0 ? hours : null;
+}
+
+export interface WeekendTruckRateOverride {
+  rate: number;
+  hours: number;
+  originalRate: number;
+}
+
+/**
+ * Checkout-side override: for a Sat/Sun truck hire shorter than 8 hours,
+ * returns the published 8-hour rate so the displayed and charged vehicle
+ * rate matches the weekend minimum, regardless of what RCM returned.
+ */
+export function getWeekendTruckRateOverride({
+  categoryName,
+  pickupDate,
+  pickupTime,
+  dropoffDate,
+  dropoffTime,
+  currentRate,
+}: {
+  categoryName?: string;
+  pickupDate?: string;
+  pickupTime?: string;
+  dropoffDate?: string;
+  dropoffTime?: string;
+  currentRate: number;
+}): WeekendTruckRateOverride | null {
+  if (!isTruckCategory(categoryName)) return null;
+  if (!isWeekendPickup(pickupDate)) return null;
+
+  const hours = getHireHours(pickupDate, pickupTime, dropoffDate, dropoffTime);
+  if (!hours || hours >= MINIMUM_HOURS) return null;
+
+  const eightHourRate = getTruck8HourRate(categoryName);
+  if (!eightHourRate || eightHourRate <= currentRate) return null;
+
+  return { rate: eightHourRate, hours: MINIMUM_HOURS, originalRate: currentRate };
 }
 
 export interface WeekendTruckMinimumInput {
