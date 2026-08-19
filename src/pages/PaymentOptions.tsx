@@ -285,6 +285,46 @@ const PaymentOptions = () => {
     setImageError(true);
   };
 
+  // ---- Vehicle rate display (with weekend 8-hour truck minimum) ----
+  const hireHours = getHireHours(
+    bookingDetails?.pickupDate,
+    bookingDetails?.pickupTime,
+    bookingDetails?.dropoffDate,
+    bookingDetails?.dropoffTime
+  );
+
+  const baseVehicleRate = (() => {
+    const rcmTotal = Number(bookingDetails?.totalcost || 0);
+    const bond = Number(securityBond || 0);
+    if (rcmTotal > 0) return Math.max(0, rcmTotal - bond - mandatoryFeesTotal + (bond > 0 ? 0 : 0));
+    if (bookingDetails?.dailyrate && bookingDetails.dailyrate > 0) {
+      return bookingDetails.dailyrate * Math.max(1, rentalDays || 1);
+    }
+    return Number(bookingDetails?.basePrice || 0);
+  })();
+
+  const weekendOverride = getWeekendTruckRateOverride({
+    categoryName: bookingDetails?.vehicleName,
+    pickupDate: bookingDetails?.pickupDate,
+    pickupTime: bookingDetails?.pickupTime,
+    dropoffDate: bookingDetails?.dropoffDate,
+    dropoffTime: bookingDetails?.dropoffTime,
+    currentRate: baseVehicleRate,
+  });
+
+  const vehicleRateTotal = weekendOverride ? weekendOverride.rate : baseVehicleRate;
+  const rateUplift = weekendOverride ? weekendOverride.rate - weekendOverride.originalRate : 0;
+
+  const rateLabel = weekendOverride
+    ? "8 hours – weekend minimum"
+    : hireHours && hireHours < 24
+      ? `${Number.isInteger(hireHours) ? hireHours : hireHours.toFixed(1)} hours`
+      : undefined;
+
+  const adjustedTotalCost = totalCost + rateUplift;
+  const adjustedBookingInfoTotalCost =
+    typeof bookingInfoTotalCost === 'number' ? bookingInfoTotalCost + rateUplift : undefined;
+
   const handleSaveQuotation = async () => {
     if (isSavingQuote) return;
     const toastId = toast.loading("Saving your quote…", {
