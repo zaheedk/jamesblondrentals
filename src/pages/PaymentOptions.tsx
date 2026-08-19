@@ -533,7 +533,7 @@ const PaymentOptions = () => {
                 dropoffTime: bookingDetails.dropoffTime || "",
                 pickupLocation: bookingDetails.pickupLocationName || sessionData?.pickupLocationName || "",
                 dropoffLocation: bookingDetails.dropoffLocationName || sessionData?.dropoffLocationName || "",
-                adjustedTotalCost: formatCurrency(adjustedTotalCost),
+                totalCost: formatCurrency(adjustedTotalCost),
               },
             })
             .catch((emailError) => {
