@@ -24,6 +24,7 @@ import PageSEO from '@/components/PageSEO';
 import BookingSteps from "@/components/booking/BookingSteps";
 import TrustGuaranteeBanner from "@/components/booking/TrustGuaranteeBanner";
 import { parse, format, addDays } from "date-fns";
+import { applyWeekendTruckMinimum } from "@/lib/weekend-truck-minimum";
 
 interface RcmVehicleWithPricing {
   vehicle: RCMAvailableCar;
@@ -245,8 +246,7 @@ const Vehicles = () => {
         );
         
         const feeAmount = mandatoryFee ? Number(mandatoryFee.totalfeeamount) : 0;
-        const rateAfterDiscount = Number(car.totalrateafterdiscount) || 0;
-        const totalPrice = rateAfterDiscount + feeAmount;
+        let rateAfterDiscount = Number(car.totalrateafterdiscount) || 0;
         
         if (rateAfterDiscount === 0) {
           console.warn(`WARNING: Vehicle ${car.vehiclecategory} has $0 rate from API:`, {
@@ -303,6 +303,24 @@ const Vehicles = () => {
         
         // Clean up category name by removing prefixes like (S), (P), etc.
         const cleanCategoryName = car.vehiclecategory.replace(/^\([A-Z]\)\s*/, '');
+
+        // Saturday/Sunday truck hires under 8 hours are charged the 8-hour rate
+        const weekendMinimum = applyWeekendTruckMinimum({
+          categoryName: cleanCategoryName,
+          rateperiod,
+          numberofhours,
+          pickupDate,
+          subtotal: ratesubtotal,
+        });
+
+        if (weekendMinimum.applied) {
+          const uplift = weekendMinimum.subtotal - ratesubtotal;
+          ratesubtotal = weekendMinimum.subtotal;
+          rateAfterDiscount = rateAfterDiscount + uplift;
+          console.log(`Weekend 8-hour minimum applied to ${cleanCategoryName}:`, weekendMinimum);
+        }
+
+        const totalPrice = rateAfterDiscount + feeAmount;
         
         // Apply 25% discount for Auckland Airport and South Auckland
         const isAucklandAirportOrSouth = isAucklandAirportOrSouthAuckland(pickupLocation, locations, pickupLocationName);
