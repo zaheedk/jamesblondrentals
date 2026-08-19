@@ -147,7 +147,19 @@ const VehicleCard = ({
   const limitedMessage = `Only ${lowStockCount} left at ${pickupLocationName || "this location"}`;
 
   // 25% early-week (Mon–Thu) discount applies to trucks & jumbo vans only
+  // Excluded on short (≤2 hour) same-day hires — these use hourly rates.
+  const isShortSameDayHire = (() => {
+    if (!pickupDate || !dropoffDate || !pickupTime || !dropoffTime) return false;
+    if (pickupDate !== dropoffDate) return false;
+    const [ph, pm] = pickupTime.split(":").map(Number);
+    const [dh, dm] = dropoffTime.split(":").map(Number);
+    if ([ph, pm, dh, dm].some((n) => Number.isNaN(n))) return false;
+    const minutes = (dh * 60 + dm) - (ph * 60 + pm);
+    return minutes > 0 && minutes <= 120;
+  })();
+
   const hasMidweekDiscount =
+    !isShortSameDayHire &&
     isMidweekEligibleVehicle(`${vehicle.make || ""} ${vehicle.model || ""}`, vehicle.type as string) &&
     datesQualifyForMidweek(pickupDate, dropoffDate);
 
