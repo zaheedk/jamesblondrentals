@@ -24,6 +24,7 @@ import PageSEO from '@/components/PageSEO';
 import BookingSteps from "@/components/booking/BookingSteps";
 import TrustGuaranteeBanner from "@/components/booking/TrustGuaranteeBanner";
 import { parse, format, addDays } from "date-fns";
+import { applyWeekendTruckMinimum } from "@/lib/weekend-truck-minimum";
 
 interface RcmVehicleWithPricing {
   vehicle: RCMAvailableCar;
