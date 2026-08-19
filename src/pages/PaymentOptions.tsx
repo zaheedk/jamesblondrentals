@@ -678,7 +678,7 @@ const PaymentOptions = () => {
             }
             rateLabel={rateLabel}
             vehicleRateTotal={vehicleRateTotal}
-            adjustedTotalCost={adjustedTotalCost}
+            totalCost={adjustedTotalCost}
             bookingInfoTotalCost={adjustedBookingInfoTotalCost}
             payment={adjustedTotalCost}
             balanceDue={0}
