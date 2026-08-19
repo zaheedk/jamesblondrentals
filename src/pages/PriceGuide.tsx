@@ -200,6 +200,9 @@ const PriceGuide = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
+                <div className="bg-muted border border-border rounded-lg p-3 mb-4 text-sm text-foreground">
+                  <strong>Weekend minimum:</strong> Saturday and Sunday truck hires are charged the 8-hour rate, even for shorter 2 or 4 hour bookings.
+                </div>
                 <div className="overflow-x-auto">
                   <Table>
                     <TableCaption>Truck rental prices (NZD, inc. GST)</TableCaption>
