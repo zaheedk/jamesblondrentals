@@ -29,6 +29,10 @@ interface PaymentSummaryProps {
   bookingInfoTotalCost?: number;
   payment: number;
   balanceDue: number;
+  /** Overrides the "Vehicle Rate (n days)" label, e.g. "8 hours". */
+  rateLabel?: string;
+  /** Overrides the calculated vehicle rate total (e.g. weekend 8-hour minimum). */
+  vehicleRateTotal?: number;
 }
 
 const PaymentSummary = ({
@@ -44,6 +48,8 @@ const PaymentSummary = ({
   bookingInfoTotalCost,
   payment,
   balanceDue,
+  rateLabel,
+  vehicleRateTotal,
 }: PaymentSummaryProps) => {
   const effectiveRentalDays = Math.max(1, rentalDays || 1);
   
@@ -72,7 +78,9 @@ const PaymentSummary = ({
   
   const totalOptionalFees = insurancePrice + (extraKmsPrice || 0) + extrasTotal;
   
-  const calculatedTotalCost = (dailyRate * effectiveRentalDays) + mandatoryFeesTotal + totalOptionalFees;
+  const vehicleRate = typeof vehicleRateTotal === 'number' ? vehicleRateTotal : dailyRate * effectiveRentalDays;
+
+  const calculatedTotalCost = vehicleRate + mandatoryFeesTotal + totalOptionalFees;
   
   const displayTotalCost = bookingInfoTotalCost || 
     (totalCost > 0 ? totalCost : calculatedTotalCost);
@@ -88,8 +96,8 @@ const PaymentSummary = ({
       <h3 className="text-lg font-semibold mb-4">Payment Summary</h3>
       <div className="space-y-2">
         <div className="flex justify-between">
-          <span>Vehicle Rate ({effectiveRentalDays} {effectiveRentalDays === 1 ? 'day' : 'days'})</span>
-          <span>{formatCurrency(dailyRate * effectiveRentalDays)}</span>
+          <span>Vehicle Rate ({rateLabel || `${effectiveRentalDays} ${effectiveRentalDays === 1 ? 'day' : 'days'}`})</span>
+          <span>{formatCurrency(vehicleRate)}</span>
         </div>
         {hasDiscount && (
           <div className="flex justify-between text-sm text-primary">
