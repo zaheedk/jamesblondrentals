@@ -159,6 +159,8 @@ const VehicleCard = ({
   })();
 
   const hasMidweekDiscount =
+    // Only show when RCM actually returned a discount on this vehicle
+    (totalDiscountAmount ?? 0) > 0 &&
     !isShortSameDayHire &&
     isMidweekEligibleVehicle(`${vehicle.make || ""} ${vehicle.model || ""}`, vehicle.type as string) &&
     datesQualifyForMidweek(pickupDate, dropoffDate);
