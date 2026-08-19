@@ -676,9 +676,11 @@ const PaymentOptions = () => {
                 return acc;
               }, []) : []
             }
-            totalCost={totalCost}
-            bookingInfoTotalCost={bookingInfoTotalCost}
-            payment={totalCost}
+            rateLabel={rateLabel}
+            vehicleRateTotal={vehicleRateTotal}
+            totalCost={adjustedTotalCost}
+            bookingInfoTotalCost={adjustedBookingInfoTotalCost}
+            payment={adjustedTotalCost}
             balanceDue={0}
           />
           
