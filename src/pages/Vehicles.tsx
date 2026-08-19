@@ -376,6 +376,7 @@ const Vehicles = () => {
           rateperiod: rateperiod,
           dailyRate: car.discounteddailyrate || car.avgrate || 0,
           ratesubtotal: ratesubtotal,
+          weekendTruckMinimumApplied: weekendMinimum.applied,
           avgrate: car.avgrate || 0,
           discounteddailyrate: car.discounteddailyrate || 0,
           categoryfriendlydescription: car.categoryfriendlydescription,

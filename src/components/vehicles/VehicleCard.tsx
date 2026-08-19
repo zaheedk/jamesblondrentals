@@ -68,8 +68,10 @@ const VehicleCard = ({
     return html.replace(/<[^>]*>/g, '');
   };
 
-  const displayRate = vehicle.dailyRate || 0;
   const totalAmount = vehicle.ratesubtotal || 0;
+  // Weekend truck hires under 8 hours are charged the 8-hour rate, so show that price
+  const weekendTruckMinimumApplied = Boolean((vehicle as any).weekendTruckMinimumApplied);
+  const displayRate = weekendTruckMinimumApplied ? totalAmount : (vehicle.dailyRate || 0);
   
   // Calculate total rate before discount for comparison
   const totalRateBeforeDiscount = totalRateAfterDiscount ? totalRateAfterDiscount + (totalDiscountAmount || 0) : null;
@@ -179,6 +181,14 @@ const VehicleCard = ({
             title="Applies because your hire starts and ends Mon–Thu in the same week"
           >
             25% Early Week Discount Applied
+          </Badge>
+        )}
+        {weekendTruckMinimumApplied && (
+          <Badge
+            className="w-fit mb-2 bg-muted text-foreground border-border"
+            title="Saturday and Sunday truck hires are charged the 8-hour rate"
+          >
+            Weekend 8-hour minimum rate
           </Badge>
         )}
         {isLimitedAvailability && (
