@@ -533,7 +533,7 @@ const PaymentOptions = () => {
                 dropoffTime: bookingDetails.dropoffTime || "",
                 pickupLocation: bookingDetails.pickupLocationName || sessionData?.pickupLocationName || "",
                 dropoffLocation: bookingDetails.dropoffLocationName || sessionData?.dropoffLocationName || "",
-                totalCost: formatCurrency(totalCost),
+                adjustedTotalCost: formatCurrency(adjustedTotalCost),
               },
             })
             .catch((emailError) => {
@@ -585,7 +585,7 @@ const PaymentOptions = () => {
     setIsLoading(true);
     
     try {
-      const amountToPay = paymentType === "deposit" ? Math.min(DEPOSIT_AMOUNT, totalCost) : totalCost;
+      const amountToPay = paymentType === "deposit" ? Math.min(DEPOSIT_AMOUNT, adjustedTotalCost) : adjustedTotalCost;
       
       updateBookingData({
         paymentAmount: amountToPay,
@@ -678,7 +678,7 @@ const PaymentOptions = () => {
             }
             rateLabel={rateLabel}
             vehicleRateTotal={vehicleRateTotal}
-            totalCost={adjustedTotalCost}
+            adjustedTotalCost={adjustedTotalCost}
             bookingInfoTotalCost={adjustedBookingInfoTotalCost}
             payment={adjustedTotalCost}
             balanceDue={0}
@@ -744,7 +744,7 @@ const PaymentOptions = () => {
                     Rental total, excluding the refundable security bond
                   </span>
                 </span>
-                <span className="font-bold">{formatCurrency(totalCost)}</span>
+                <span className="font-bold">{formatCurrency(adjustedTotalCost)}</span>
               </button>
               <button
                 type="button"
@@ -758,10 +758,10 @@ const PaymentOptions = () => {
                     Pay a {formatCurrency(DEPOSIT_AMOUNT)} deposit
                   </span>
                   <span className="block text-sm text-gray-600">
-                    Non-refundable. Balance of {formatCurrency(Math.max(totalCost - DEPOSIT_AMOUNT, 0))} due at pick up.
+                    Non-refundable. Balance of {formatCurrency(Math.max(adjustedTotalCost - DEPOSIT_AMOUNT, 0))} due at pick up.
                   </span>
                 </span>
-                <span className="font-bold">{formatCurrency(Math.min(DEPOSIT_AMOUNT, totalCost))}</span>
+                <span className="font-bold">{formatCurrency(Math.min(DEPOSIT_AMOUNT, adjustedTotalCost))}</span>
               </button>
             </div>
           </div>
@@ -777,7 +777,7 @@ const PaymentOptions = () => {
                   <span className="animate-spin mr-2">◌</span> Processing...
                 </>
               ) : (
-                `Proceed to Pay ${formatCurrency(paymentType === "deposit" ? Math.min(DEPOSIT_AMOUNT, totalCost) : totalCost)}`
+                `Proceed to Pay ${formatCurrency(paymentType === "deposit" ? Math.min(DEPOSIT_AMOUNT, adjustedTotalCost) : adjustedTotalCost)}`
               )}
             </Button>
             
