@@ -294,9 +294,10 @@ const PaymentOptions = () => {
   );
 
   const baseVehicleRate = (() => {
-    const rcmTotal = Number(bookingDetails?.totalcost || 0);
-    const bond = Number(securityBond || 0);
-    if (rcmTotal > 0) return Math.max(0, rcmTotal - bond - mandatoryFeesTotal + (bond > 0 ? 0 : 0));
+    if (typeof bookingInfoTotalCost === 'number' && bookingInfoTotalCost > 0) {
+      // bookingInfoTotalCost is the RCM total already excluding the security bond
+      return bookingInfoTotalCost;
+    }
     if (bookingDetails?.dailyrate && bookingDetails.dailyrate > 0) {
       return bookingDetails.dailyrate * Math.max(1, rentalDays || 1);
     }
