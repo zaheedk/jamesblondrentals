@@ -127,10 +127,7 @@ const CustomerDetails = () => {
           .maybeSingle();
 
         if (customer) {
-          const toDdMmYyyy = (value?: string | null) =>
-            value
-              ? new Date(value).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })
-              : "";
+          const toDdMmYyyy = (value?: string | null) => toRcmDate(value) || "";
 
           prefillData = {
             firstName: customer.first_name || prefillData.firstName,
@@ -142,12 +139,12 @@ const CustomerDetails = () => {
 
           setProfileExtras({
             licenseno: customer.license_number || undefined,
-            licenseexpires: toDdMmYyyy(customer.license_expiry) || undefined,
+            licenseexpires: toRcmDate(customer.license_expiry),
             address: customer.address || undefined,
             city: customer.city || customer.suburb || undefined,
             state: customer.state_province || undefined,
             postcode: customer.postcode || undefined,
-            countryid: customer.license_country || customer.country || undefined,
+            countryid: toRcmCountryId(customer.license_country || customer.country),
           });
         }
       } catch (err) {
