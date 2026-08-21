@@ -653,6 +653,54 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_transactions: {
+        Row: {
+          amount: number
+          booking_reference: string | null
+          created_at: string
+          currency: string
+          customer_email: string | null
+          id: string
+          provider: string
+          provider_intent_id: string | null
+          provider_payment_method: string | null
+          raw_payload: Json | null
+          reservation_reference: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount?: number
+          booking_reference?: string | null
+          created_at?: string
+          currency?: string
+          customer_email?: string | null
+          id?: string
+          provider?: string
+          provider_intent_id?: string | null
+          provider_payment_method?: string | null
+          raw_payload?: Json | null
+          reservation_reference?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          booking_reference?: string | null
+          created_at?: string
+          currency?: string
+          customer_email?: string | null
+          id?: string
+          provider?: string
+          provider_intent_id?: string | null
+          provider_payment_method?: string | null
+          raw_payload?: Json | null
+          reservation_reference?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       photo_batches: {
         Row: {
           batch_id: string

@@ -24,8 +24,11 @@ export interface BookingSessionData {
   paymentAmount?: number;
   paymentType?: "deposit" | "full";
   paymentStatus?: "Approved" | "Failed" | "Pending" | "Unknown";
+  paymentProvider?: "windcave" | "airwallex";
+  paymentMethodLabel?: string;
+  airwallexIntentId?: string;
   transactionId?: string;
-  windcaveReservationRef?: string; // Adding this property to fix the type error
+  windcaveReservationRef?: string;
   // Insurance and optional fees
   insuranceId?: string;
   insuranceName?: string;

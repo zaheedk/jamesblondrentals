@@ -23,3 +23,9 @@ project_id = "jlwvqbrtdzwrcwelyylv"
     verify_jwt = false
   [functions.send-quote-email]
     verify_jwt = false
+  [functions.airwallex-create-payment]
+    verify_jwt = false
+  [functions.airwallex-verify-payment]
+    verify_jwt = false
+  [functions.airwallex-webhook]
+    verify_jwt = false

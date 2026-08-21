@@ -25,6 +25,7 @@ const DEPOSIT_AMOUNT = 50;
 const PaymentOptions = () => {
   const navigate = useNavigate();
   const [paymentType, setPaymentType] = useState<"full" | "deposit">("full");
+  const [paymentProvider, setPaymentProvider] = useState<"windcave" | "airwallex">("windcave");
   const [bookingDetails, setBookingDetails] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [totalAmount, setTotalAmount] = useState(0);
@@ -545,10 +546,55 @@ const PaymentOptions = () => {
     try {
       const amountToPay = paymentType === "deposit" ? Math.min(DEPOSIT_AMOUNT, totalCost) : totalCost;
       
-      updateBookingData({
+      const sessionData = updateBookingData({
         paymentAmount: amountToPay,
-        paymentType: paymentType
+        paymentType: paymentType,
+        paymentProvider: paymentProvider,
+        paymentMethodLabel: paymentProvider === "airwallex" ? "Klarna" : "Card (Windcave)",
       });
+
+      if (paymentProvider === "airwallex") {
+        const reservationRef =
+          sessionData?.reservationRef ||
+          bookingDetails?.reservationRef ||
+          sessionData?.bookingReference ||
+          sessionData?.reservationNo;
+
+        if (!reservationRef) {
+          toast.error("Booking reference missing", {
+            description: "Please go back and confirm your details before paying with Klarna.",
+          });
+          setIsLoading(false);
+          return;
+        }
+
+        const { data, error } = await supabase.functions.invoke("airwallex-create-payment", {
+          body: {
+            reservationRef,
+            amount: amountToPay,
+            currency: "NZD",
+            paymentMethod: "klarna",
+            returnUrl: `${window.location.origin}/payment`,
+            customerEmail: sessionData?.customerEmail || "",
+            customerFirstName: sessionData?.customerFirstName || "",
+            customerLastName: sessionData?.customerLastName || "",
+            vehicleName: sessionData?.vehicleName || bookingDetails?.vehicleName || "",
+          },
+        });
+
+        if (error || !data?.checkoutUrl) {
+          console.error("Airwallex payment session error:", error, data);
+          toast.error("Klarna is unavailable right now", {
+            description: "Please try paying by card instead.",
+          });
+          setIsLoading(false);
+          return;
+        }
+
+        updateBookingData({ airwallexIntentId: data.intentId });
+        window.location.href = data.checkoutUrl;
+        return;
+      }
       
       navigate("/payment");
     } catch (error) {
@@ -556,10 +602,10 @@ const PaymentOptions = () => {
       toast.error("An error occurred", {
         description: "Could not proceed with payment. Please try again.",
       });
-    } finally {
       setIsLoading(false);
     }
   };
+
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -721,6 +767,42 @@ const PaymentOptions = () => {
               </button>
             </div>
           </div>
+
+          <div className="mb-6">
+            <p className="font-semibold mb-2">Choose a payment method</p>
+            <div className="space-y-3">
+              <button
+                type="button"
+                onClick={() => setPaymentProvider("windcave")}
+                className={`w-full flex items-center space-x-2 border p-3 rounded-md bg-gray-50 text-left ${
+                  paymentProvider === "windcave" ? "border-primary ring-1 ring-primary" : ""
+                }`}
+              >
+                <span className="flex-grow">
+                  <span className="block font-medium">Credit or debit card</span>
+                  <span className="block text-sm text-gray-600">
+                    Visa, Mastercard and Amex — secured by Windcave.
+                  </span>
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setPaymentProvider("airwallex")}
+                className={`w-full flex items-center space-x-2 border p-3 rounded-md bg-gray-50 text-left ${
+                  paymentProvider === "airwallex" ? "border-primary ring-1 ring-primary" : ""
+                }`}
+              >
+                <span className="flex-grow">
+                  <span className="block font-medium">Klarna — pay later or in instalments</span>
+                  <span className="block text-sm text-gray-600">
+                    Approval by Klarna. The refundable security bond is still held on your card at pick up.
+                  </span>
+                </span>
+              </button>
+            </div>
+          </div>
+          
+
           
           <form onSubmit={handleSubmit} className="space-y-4">
             <Button 
