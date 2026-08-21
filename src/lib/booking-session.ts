@@ -28,6 +28,7 @@ export interface BookingSessionData {
   paymentMethodLabel?: string;
   airwallexIntentId?: string;
   transactionId?: string;
+  windcaveReservationRef?: string;
   // Insurance and optional fees
   insuranceId?: string;
   insuranceName?: string;
