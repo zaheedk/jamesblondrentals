@@ -545,10 +545,55 @@ const PaymentOptions = () => {
     try {
       const amountToPay = paymentType === "deposit" ? Math.min(DEPOSIT_AMOUNT, totalCost) : totalCost;
       
-      updateBookingData({
+      const sessionData = updateBookingData({
         paymentAmount: amountToPay,
-        paymentType: paymentType
+        paymentType: paymentType,
+        paymentProvider: paymentProvider,
+        paymentMethodLabel: paymentProvider === "airwallex" ? "Klarna" : "Card (Windcave)",
       });
+
+      if (paymentProvider === "airwallex") {
+        const reservationRef =
+          sessionData?.reservationRef ||
+          bookingDetails?.reservationRef ||
+          sessionData?.bookingReference ||
+          sessionData?.reservationNo;
+
+        if (!reservationRef) {
+          toast.error("Booking reference missing", {
+            description: "Please go back and confirm your details before paying with Klarna.",
+          });
+          setIsLoading(false);
+          return;
+        }
+
+        const { data, error } = await supabase.functions.invoke("airwallex-create-payment", {
+          body: {
+            reservationRef,
+            amount: amountToPay,
+            currency: "NZD",
+            paymentMethod: "klarna",
+            returnUrl: `${window.location.origin}/payment`,
+            customerEmail: sessionData?.customerEmail || "",
+            customerFirstName: sessionData?.customerFirstName || "",
+            customerLastName: sessionData?.customerLastName || "",
+            vehicleName: sessionData?.vehicleName || bookingDetails?.vehicleName || "",
+          },
+        });
+
+        if (error || !data?.checkoutUrl) {
+          console.error("Airwallex payment session error:", error, data);
+          toast.error("Klarna is unavailable right now", {
+            description: "Please try paying by card instead.",
+          });
+          setIsLoading(false);
+          return;
+        }
+
+        updateBookingData({ airwallexIntentId: data.intentId });
+        window.location.href = data.checkoutUrl;
+        return;
+      }
       
       navigate("/payment");
     } catch (error) {
@@ -556,10 +601,10 @@ const PaymentOptions = () => {
       toast.error("An error occurred", {
         description: "Could not proceed with payment. Please try again.",
       });
-    } finally {
       setIsLoading(false);
     }
   };
+
 
   return (
     <div className="container mx-auto px-4 py-8">
