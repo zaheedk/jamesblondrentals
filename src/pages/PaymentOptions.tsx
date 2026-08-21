@@ -25,6 +25,7 @@ const DEPOSIT_AMOUNT = 50;
 const PaymentOptions = () => {
   const navigate = useNavigate();
   const [paymentType, setPaymentType] = useState<"full" | "deposit">("full");
+  const [paymentProvider, setPaymentProvider] = useState<"windcave" | "airwallex">("windcave");
   const [bookingDetails, setBookingDetails] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [totalAmount, setTotalAmount] = useState(0);
