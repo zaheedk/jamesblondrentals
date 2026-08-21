@@ -92,7 +92,96 @@ const Payment = () => {
     };
 
     createPayment();
-  }, [navigate, bookingData, windcaveResult, location.search]);
+  }, [navigate, bookingData, windcaveResult, paymentProviderParam, airwallexIntentId, location.search]);
+
+  const verifyAirwallexPayment = async (intentId: string) => {
+    try {
+      setIsLoading(true);
+
+      const { data, error } = await supabase.functions.invoke("airwallex-verify-payment", {
+        body: { intentId },
+      });
+
+      if (error || !data) {
+        throw new Error(error?.message || "Could not verify your Klarna payment");
+      }
+
+      const paymentStatus = data.paymentStatus as "Approved" | "Failed" | "Pending" | "Unknown";
+      const reservationRef =
+        data.reservationRef ||
+        bookingData?.reservationRef ||
+        bookingData?.bookingReference ||
+        bookingData?.reservationNo ||
+        "";
+
+      if (paymentStatus === "Approved") {
+        // Record the payment against the RCM reservation.
+        try {
+          await rcmApi.request<RCMPaymentConfirmationResponse>('POST', 'confirmpayment', {
+            method: "confirmpayment",
+            reservationref: reservationRef,
+            amount: data.amount ?? bookingData?.paymentAmount,
+            success: true,
+            paytype: 'Klarna',
+            paydate: moment().format('DD/MM/YYYY'),
+            supplierid: 2,
+            transactid: intentId,
+            dpstxnref: intentId,
+            paysource: 'Klarna via Airwallex',
+            transtype: "Payment"
+          });
+        } catch (confirmError) {
+          console.error('RCM confirmation failed for Klarna payment:', confirmError);
+          toast.error("Payment Confirmation Error", {
+            description: "Your payment went through but confirmation failed. Please contact us with your booking reference.",
+          });
+        }
+
+        await updateBookingPaymentStatus(
+          reservationRef,
+          'paid',
+          'confirmed',
+          intentId,
+          {
+            bookingReference: bookingData?.bookingReference || null,
+            reservationReference: reservationRef,
+          }
+        );
+      }
+
+      updateBookingData({
+        transactionId: intentId,
+        paymentStatus,
+        paymentProvider: "airwallex",
+        paymentMethodLabel: data.paymentMethod || "Klarna",
+        airwallexIntentId: intentId,
+        ...(reservationRef ? { reservationRef } : {}),
+      });
+
+      const params = new URLSearchParams();
+      params.append('result', paymentStatus === 'Approved' ? 'success' : 'failed');
+      params.append('txnId', intentId);
+      params.append('reservationRef', reservationRef);
+      params.append('provider', 'airwallex');
+      if (paymentStatus !== 'Approved') {
+        params.append('message', paymentStatus === 'Pending'
+          ? 'Klarna is still processing this payment'
+          : 'Klarna payment was not completed');
+      }
+
+      navigate(`/payment-success?${params.toString()}`);
+    } catch (err) {
+      console.error('Error verifying Airwallex payment:', err);
+      const params = new URLSearchParams();
+      params.append('result', 'failed');
+      params.append('error', 'true');
+      params.append('provider', 'airwallex');
+      params.append('message', err instanceof Error ? err.message : 'Unknown payment error');
+      navigate(`/payment-success?${params.toString()}`);
+    }
+  };
+  
+
   
   const checkPaymentStatus = async (windcaveResult: string) => {
     try {
