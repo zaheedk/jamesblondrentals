@@ -74,7 +74,25 @@ Deno.serve(async (req) => {
       if (upsertError) {
         console.error('Failed to update payment transaction:', upsertError)
       }
+
+      // API-driven confirmation: no webhook needed, we settle the booking here.
+      const refs = [reservationRef, intent.merchant_order_id].filter(
+        (value): value is string => typeof value === 'string' && value.length > 0,
+      )
+      if (refs.length > 0 && (paymentStatus === 'PAID' || paymentStatus === 'FAILED')) {
+        const paid = paymentStatus === 'PAID'
+        const { error: rpcError } = await admin.rpc('update_booking_payment_status_by_reference', {
+          _references: refs,
+          _payment_status: paid ? 'paid' : 'failed',
+          _booking_status: paid ? 'confirmed' : 'pending',
+          _payment_intent_id: intent.id,
+        })
+        if (rpcError) {
+          console.error('Failed to update booking status:', rpcError)
+        }
+      }
     }
+
 
     return json({
       status: 'OK',
