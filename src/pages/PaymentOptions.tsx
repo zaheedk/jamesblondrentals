@@ -767,6 +767,42 @@ const PaymentOptions = () => {
               </button>
             </div>
           </div>
+
+          <div className="mb-6">
+            <p className="font-semibold mb-2">Choose a payment method</p>
+            <div className="space-y-3">
+              <button
+                type="button"
+                onClick={() => setPaymentProvider("windcave")}
+                className={`w-full flex items-center space-x-2 border p-3 rounded-md bg-gray-50 text-left ${
+                  paymentProvider === "windcave" ? "border-primary ring-1 ring-primary" : ""
+                }`}
+              >
+                <span className="flex-grow">
+                  <span className="block font-medium">Credit or debit card</span>
+                  <span className="block text-sm text-gray-600">
+                    Visa, Mastercard and Amex — secured by Windcave.
+                  </span>
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setPaymentProvider("airwallex")}
+                className={`w-full flex items-center space-x-2 border p-3 rounded-md bg-gray-50 text-left ${
+                  paymentProvider === "airwallex" ? "border-primary ring-1 ring-primary" : ""
+                }`}
+              >
+                <span className="flex-grow">
+                  <span className="block font-medium">Klarna — pay later or in instalments</span>
+                  <span className="block text-sm text-gray-600">
+                    Approval by Klarna. The refundable security bond is still held on your card at pick up.
+                  </span>
+                </span>
+              </button>
+            </div>
+          </div>
+          
+
           
           <form onSubmit={handleSubmit} className="space-y-4">
             <Button 
