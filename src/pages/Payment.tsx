@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { rcmApi } from "@/lib/api/rcm-api";
 import type { RCMPaymentResponse, RCMPaymentConfirmationResponse } from "@/lib/api/rcm-api-types";
 import moment from "moment";
+import { supabase } from "@/integrations/supabase/client";
 
 const Payment = () => {
   const navigate = useNavigate();
