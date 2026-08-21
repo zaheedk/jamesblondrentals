@@ -100,6 +100,7 @@ export function normaliseIntentStatus(status?: string): 'Approved' | 'Failed' | 
       return 'Failed'
     case 'REQUIRES_PAYMENT_METHOD':
     case 'REQUIRES_CUSTOMER_ACTION':
+    case 'REQUIRES_ACTION':
     case 'REQUIRES_CAPTURE':
     case 'PENDING':
     case 'CREATED':
