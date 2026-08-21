@@ -17,6 +17,8 @@ const Payment = () => {
   
   const queryParams = new URLSearchParams(location.search);
   const windcaveResult = queryParams.get("result");
+  const paymentProviderParam = queryParams.get("provider");
+  const airwallexIntentId = queryParams.get("intent_id");
   
   useEffect(() => {
     if (!bookingData) {
@@ -24,6 +26,11 @@ const Payment = () => {
         description: "Please start a new booking.",
       });
       navigate("/");
+      return;
+    }
+    
+    if (paymentProviderParam === "airwallex" && airwallexIntentId) {
+      verifyAirwallexPayment(airwallexIntentId);
       return;
     }
     
@@ -42,6 +49,8 @@ const Payment = () => {
     
     const paymentAmount = bookingData.paymentAmount || bookingData.basePrice;
     console.log('Payment amount:', paymentAmount);
+    
+
     
     const createPayment = async () => {
       try {
