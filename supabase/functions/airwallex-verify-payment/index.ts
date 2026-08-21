@@ -1,5 +1,6 @@
-// Retrieves an Airwallex payment intent and returns a normalised status
-// so the browser can continue the booking flow immediately after redirect.
+// Retrieves an Airwallex payment intent over the API (no webhooks) and returns a
+// normalised status, updating our own booking + payment records at the same time.
+
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import {
   airwallexRequest,
