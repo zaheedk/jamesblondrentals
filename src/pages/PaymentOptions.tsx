@@ -774,8 +774,10 @@ const PaymentOptions = () => {
                       : "hover:border-primary/30"
                   }`}
                 >
-                  <img src={klarnaImg} alt="Klarna" className="h-7 w-auto" />
-                  <span className="text-sm font-medium leading-tight">Pay later</span>
+                  <img src={klarnaImg} alt="Klarna" className="h-6 w-auto" />
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#FFC0CB] text-[#0A0B09] text-[11px] font-semibold leading-none">
+                    4 payments of {formatCurrency(totalCost / 4)}
+                  </span>
                   {paymentProvider === "airwallex" && (
                     <span className="absolute top-2 right-2 w-5 h-5 rounded-md bg-primary text-primary-foreground flex items-center justify-center">
                       <Check className="w-3.5 h-3.5" />
