@@ -6,7 +6,6 @@ import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import VehicleCard from "@/components/vehicles/VehicleCard";
 import MidweekDateNudge from "@/components/vehicles/MidweekDateNudge";
-import MidweekDateNudge from "@/components/vehicles/MidweekDateNudge";
 import { Vehicle, VehicleType } from "@/lib/types";
 import { useRcmApi } from "@/hooks/use-rcm-api";
 import { RCMAvailableCar, RCMMandatoryFee, RCMSeasonalRate } from "@/lib/api/rcm-api-types";
