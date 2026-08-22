@@ -864,18 +864,15 @@ const PaymentOptions = () => {
 
           {paymentProvider === "airwallex" && (
             <div className="mb-6">
-              <div className="flex items-center gap-3 border border-dashed border-primary/30 p-3 rounded-lg bg-[#FFC0CB]/10">
+              <div className="flex items-center gap-3 border border-primary/20 p-3 rounded-lg bg-[#FFC0CB]/10">
                 <div className="w-8 h-8 rounded-md bg-background border border-border flex items-center justify-center shrink-0">
                   <img src={klarnaImg} alt="Klarna" className="h-4 w-auto" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <span className="block font-medium text-sm text-foreground">Pay in 4 instalments</span>
+                  <span className="block font-medium text-sm text-foreground">Total amount {formatCurrency(totalCost)}</span>
                   <span className="block text-xs text-muted-foreground">
                     4 interest-free payments of {formatCurrency(totalCost / 4)}. First payment today.
                   </span>
-                </div>
-                <div className="text-right shrink-0">
-                  <span className="block font-bold text-sm">{formatCurrency(totalCost)}</span>
                 </div>
               </div>
             </div>
