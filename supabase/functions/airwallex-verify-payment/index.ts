@@ -101,8 +101,9 @@ Deno.serve(async (req) => {
       const refs = [reservationRef, intent.merchant_order_id].filter(
         (value): value is string => typeof value === 'string' && value.length > 0,
       )
-      if (refs.length > 0 && (paymentStatus === 'PAID' || paymentStatus === 'FAILED')) {
-        const paid = paymentStatus === 'PAID'
+      if (refs.length > 0 && (paymentStatus === 'Approved' || paymentStatus === 'Failed')) {
+        const paid = paymentStatus === 'Approved'
+
         const { error: rpcError } = await admin.rpc('update_booking_payment_status_by_reference', {
           _references: refs,
           _payment_status: paid ? 'paid' : 'failed',
