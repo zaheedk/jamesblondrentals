@@ -744,67 +744,46 @@ const PaymentOptions = () => {
           
           <div className="mb-6">
             <p className="font-semibold mb-3">Choose a payment method</p>
-            <div className="space-y-3">
+            <div className="grid grid-cols-2 gap-3">
               <button
                 type="button"
                 onClick={() => setPaymentProvider("windcave")}
-                className={`w-full flex items-center gap-4 border p-4 rounded-xl bg-muted text-left transition-all ${
+                className={`relative flex flex-col items-start gap-2 border p-3 rounded-lg bg-muted text-left transition-all ${
                   paymentProvider === "windcave"
                     ? "border-primary ring-1 ring-primary bg-primary/5"
                     : "hover:border-primary/30"
                 }`}
               >
-                <div className="w-12 h-12 rounded-xl bg-background border border-border flex items-center justify-center shrink-0">
-                  <CreditCard className="w-6 h-6 text-primary" />
-                </div>
-                <span className="flex-grow">
-                  <span className="block font-medium">Credit or debit card</span>
-                  <span className="block text-sm text-muted-foreground">
-                    Visa, Mastercard and Amex — secured by Windcave.
+                <img src={cardBrandsImg} alt="Visa, Mastercard and Amex" className="h-7 w-auto" />
+                <span className="text-sm font-medium leading-tight">Card</span>
+                {paymentProvider === "windcave" && (
+                  <span className="absolute top-2 right-2 w-5 h-5 rounded-md bg-primary text-primary-foreground flex items-center justify-center">
+                    <Check className="w-3.5 h-3.5" />
                   </span>
-                </span>
-                <div
-                  className={`w-6 h-6 rounded-md border-2 flex items-center justify-center transition-colors ${
-                    paymentProvider === "windcave"
-                      ? "border-primary bg-primary text-primary-foreground"
-                      : "border-muted-foreground/30"
-                  }`}
-                >
-                  {paymentProvider === "windcave" && <Check className="w-4 h-4" />}
-                </div>
+                )}
               </button>
               {canUseAirwallex && (
                 <button
                   type="button"
                   onClick={() => setPaymentProvider("airwallex")}
-                  className={`w-full flex items-center gap-4 border p-4 rounded-xl bg-muted text-left transition-all ${
+                  className={`relative flex flex-col items-start gap-2 border p-3 rounded-lg bg-muted text-left transition-all ${
                     paymentProvider === "airwallex"
                       ? "border-primary ring-1 ring-primary bg-primary/5"
                       : "hover:border-primary/30"
                   }`}
                 >
-                  <div className="w-12 h-12 rounded-xl bg-background border border-border flex items-center justify-center shrink-0">
-                    <Wallet className="w-6 h-6 text-primary" />
-                  </div>
-                  <span className="flex-grow">
-                    <span className="block font-medium">Klarna — pay later or in instalments</span>
-                    <span className="block text-sm text-muted-foreground">
-                      Processed by Airwallex. Live test mode — visible to test accounts only.
+                  <img src={klarnaImg} alt="Klarna" className="h-7 w-auto" />
+                  <span className="text-sm font-medium leading-tight">Pay later</span>
+                  {paymentProvider === "airwallex" && (
+                    <span className="absolute top-2 right-2 w-5 h-5 rounded-md bg-primary text-primary-foreground flex items-center justify-center">
+                      <Check className="w-3.5 h-3.5" />
                     </span>
-                  </span>
-                  <div
-                    className={`w-6 h-6 rounded-md border-2 flex items-center justify-center transition-colors ${
-                      paymentProvider === "airwallex"
-                        ? "border-primary bg-primary text-primary-foreground"
-                        : "border-muted-foreground/30"
-                    }`}
-                  >
-                    {paymentProvider === "airwallex" && <Check className="w-4 h-4" />}
-                  </div>
+                  )}
                 </button>
               )}
             </div>
           </div>
+
 
           <div className="mb-6">
             <p className="font-semibold mb-3">
