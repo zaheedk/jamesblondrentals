@@ -1,0 +1,2 @@
+DELETE FROM public.payment_transactions a USING public.payment_transactions b WHERE a.ctid < b.ctid AND a.provider = b.provider AND a.provider_intent_id = b.provider_intent_id;
+CREATE UNIQUE INDEX IF NOT EXISTS payment_transactions_provider_intent_uidx ON public.payment_transactions (provider, provider_intent_id);
