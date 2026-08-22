@@ -9,6 +9,9 @@ import {
   str,
 } from '../_shared/airwallex.ts'
 
+// Klarna is in live testing: only these signed-in accounts may create Airwallex payments.
+const ALLOWED_TEST_EMAILS = ['zaheedk@gmail.com']
+
 const ALLOWED_CURRENCIES = ['NZD', 'AUD', 'USD', 'GBP', 'EUR']
 const MAX_AMOUNT = 20000
 
@@ -26,6 +29,23 @@ Deno.serve(async (req) => {
   }
   if (req.method !== 'POST') {
     return json({ error: 'Method not allowed' }, 405)
+  }
+
+  // Require an authenticated allow-listed user while Klarna is in live test mode.
+  const authHeader = req.headers.get('Authorization') || ''
+  const accessToken = authHeader.replace(/^Bearer\s+/i, '').trim()
+  const supabaseUrlAuth = Deno.env.get('SUPABASE_URL')
+  const anonKey = Deno.env.get('SUPABASE_ANON_KEY')
+  if (!accessToken || !supabaseUrlAuth || !anonKey) {
+    return json({ error: 'Authentication required' }, 401)
+  }
+  const authClient = createClient(supabaseUrlAuth, anonKey, {
+    global: { headers: { Authorization: `Bearer ${accessToken}` } },
+  })
+  const { data: userData, error: userError } = await authClient.auth.getUser()
+  const userEmail = userData?.user?.email?.toLowerCase() || ''
+  if (userError || !userEmail || !ALLOWED_TEST_EMAILS.includes(userEmail)) {
+    return json({ error: 'Klarna is not available for this account' }, 403)
   }
 
   let body: Record<string, unknown>

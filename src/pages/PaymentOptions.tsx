@@ -19,8 +19,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import PageSEO from '@/components/PageSEO';
 import { supabase } from "@/integrations/supabase/client";
 import TrustGuaranteeBanner from '@/components/booking/TrustGuaranteeBanner';
+import { useAuth } from '@/contexts/AuthContext';
 
 const DEPOSIT_AMOUNT = 50;
+
+// Klarna (Airwallex) is in live testing — only these signed-in accounts can see it.
+const AIRWALLEX_TEST_EMAILS = ['zaheedk@gmail.com'];
 
 const PaymentOptions = () => {
   const navigate = useNavigate();
@@ -39,6 +43,8 @@ const PaymentOptions = () => {
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [showConsentError, setShowConsentError] = useState(false);
   const [isSavingQuote, setIsSavingQuote] = useState(false);
+  const { user } = useAuth();
+  const canUseAirwallex = !!user?.email && AIRWALLEX_TEST_EMAILS.includes(user.email.toLowerCase());
   const { useLocationDetails } = useRcmApi();
   const { data: locationDetails } = useLocationDetails();
 
@@ -553,7 +559,7 @@ const PaymentOptions = () => {
         paymentMethodLabel: paymentProvider === "airwallex" ? "Klarna" : "Card (Windcave)",
       });
 
-      if (paymentProvider === "airwallex") {
+      if (paymentProvider === "airwallex" && canUseAirwallex) {
         const reservationRef =
           sessionData?.reservationRef ||
           bookingDetails?.reservationRef ||
@@ -785,7 +791,22 @@ const PaymentOptions = () => {
                   </span>
                 </span>
               </button>
-              {/* Klarna / Airwallex hidden by request — re-enable by restoring the button below */}
+              {canUseAirwallex && (
+                <button
+                  type="button"
+                  onClick={() => setPaymentProvider("airwallex")}
+                  className={`w-full flex items-center space-x-2 border p-3 rounded-md bg-gray-50 text-left ${
+                    paymentProvider === "airwallex" ? "border-primary ring-1 ring-primary" : ""
+                  }`}
+                >
+                  <span className="flex-grow">
+                    <span className="block font-medium">Klarna — pay later or in instalments</span>
+                    <span className="block text-sm text-gray-600">
+                      Processed by Airwallex. Live test mode — visible to test accounts only.
+                    </span>
+                  </span>
+                </button>
+              )}
             </div>
           </div>
           
