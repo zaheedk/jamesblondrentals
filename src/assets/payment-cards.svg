@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="150" height="48" viewBox="0 0 150 48" role="img" aria-label="Visa, Mastercard and Amex">
+  <g>
+    <rect x="1" y="9" width="44" height="30" rx="4" fill="#ffffff" stroke="#E2E8F0"/>
+    <text x="23" y="29" font-family="Helvetica,Arial,sans-serif" font-size="14" font-style="italic" font-weight="700" fill="#1A1F71" text-anchor="middle">VISA</text>
+  </g>
+  <g>
+    <rect x="53" y="9" width="44" height="30" rx="4" fill="#ffffff" stroke="#E2E8F0"/>
+    <circle cx="70" cy="24" r="9" fill="#EB001B"/>
+    <circle cx="80" cy="24" r="9" fill="#F79E1B" fill-opacity="0.9"/>
+  </g>
+  <g>
+    <rect x="105" y="9" width="44" height="30" rx="4" fill="#006FCF"/>
+    <text x="127" y="28" font-family="Helvetica,Arial,sans-serif" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">AMEX</text>
+  </g>
+</svg>
