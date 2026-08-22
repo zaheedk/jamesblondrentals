@@ -116,27 +116,38 @@ const Payment = () => {
         "";
 
       if (paymentStatus === "Approved") {
-        // Record the payment against the RCM reservation.
+        // Record the payment against the RCM reservation using the "Klarna"
+        // payment type configured in RCM.
         try {
-          await rcmApi.request<RCMPaymentConfirmationResponse>('POST', 'confirmpayment', {
+          const confirmPayload = {
             method: "confirmpayment",
             reservationref: reservationRef,
             amount: data.amount ?? bookingData?.paymentAmount,
             success: true,
-            paytype: 'Klarna',
+            paytype: RCM_PAYTYPE_KLARNA,
             paydate: moment().format('DD/MM/YYYY'),
             supplierid: 2,
             transactid: intentId,
             dpstxnref: intentId,
             paysource: 'Klarna via Airwallex',
-            transtype: "Payment"
-          });
+            transtype: "Payment",
+          };
+          console.log('Klarna payment confirmation payload:', confirmPayload);
+          const confirmResponse = await rcmApi.request<RCMPaymentConfirmationResponse>(
+            'POST',
+            'confirmpayment',
+            confirmPayload
+          );
+          if (confirmResponse?.status !== "OK") {
+            throw new Error(confirmResponse?.error || 'RCM rejected the Klarna payment confirmation');
+          }
         } catch (confirmError) {
           console.error('RCM confirmation failed for Klarna payment:', confirmError);
           toast.error("Payment Confirmation Error", {
             description: "Your payment went through but confirmation failed. Please contact us with your booking reference.",
           });
         }
+
 
         await updateBookingPaymentStatus(
           reservationRef,
