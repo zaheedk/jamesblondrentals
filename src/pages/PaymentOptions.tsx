@@ -201,6 +201,12 @@ const PaymentOptions = () => {
 
   // Reset image error when vehicle image changes
   useEffect(() => {
+    if (paymentProvider === "airwallex") {
+      setPaymentType("full");
+    }
+  }, [paymentProvider]);
+
+  useEffect(() => {
     if (bookingDetails?.vehicleImage) {
       setImageError(false);
     }
