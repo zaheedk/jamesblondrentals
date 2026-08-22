@@ -863,14 +863,14 @@ const PaymentOptions = () => {
               )}
 
               {paymentProvider === "airwallex" && (
-                <div className="flex flex-col gap-3 border border-dashed p-4 rounded-xl bg-muted/50 justify-center">
+                <div className="flex flex-col gap-3 border border-dashed border-primary/30 p-4 rounded-xl bg-[#FFC0CB]/10 justify-center">
                   <div className="w-10 h-10 rounded-lg bg-background border border-border flex items-center justify-center">
-                    <Wallet className="w-5 h-5 text-muted-foreground" />
+                    <img src={klarnaImg} alt="Klarna" className="h-5 w-auto" />
                   </div>
                   <div>
-                    <span className="block font-medium text-muted-foreground">Deposit unavailable</span>
+                    <span className="block font-medium text-foreground">Pay in 4 instalments</span>
                     <span className="block text-xs text-muted-foreground leading-relaxed">
-                      Klarna requires the full rental total today.
+                      4 interest-free payments of {formatCurrency(totalCost / 4)}. First payment today.
                     </span>
                   </div>
                 </div>
