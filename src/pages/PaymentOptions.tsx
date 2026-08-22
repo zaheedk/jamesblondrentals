@@ -789,94 +789,97 @@ const PaymentOptions = () => {
           </div>
 
 
-          <div className="mb-6">
-            <p className="font-semibold mb-3">
-              {paymentProvider === "airwallex" ? "Payment amount" : "Choose how much to pay now"}
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <button
-                type="button"
-                onClick={() => setPaymentType("full")}
-                className={`flex flex-col gap-3 border p-4 rounded-xl bg-muted text-left transition-all ${
-                  paymentType === "full"
-                    ? "border-primary ring-1 ring-primary bg-primary/5"
-                    : "hover:border-primary/30"
-                }`}
-              >
-                <div className="flex items-start justify-between w-full">
-                  <div className="w-10 h-10 rounded-lg bg-background border border-border flex items-center justify-center">
-                    <Banknote className="w-5 h-5 text-primary" />
+          {paymentProvider === "windcave" && (
+            <div className="mb-6">
+              <p className="font-semibold mb-3">Choose how much to pay now</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setPaymentType("full")}
+                  className={`flex items-center gap-3 border p-3 rounded-lg bg-muted text-left transition-all ${
+                    paymentType === "full"
+                      ? "border-primary ring-1 ring-primary bg-primary/5"
+                      : "hover:border-primary/30"
+                  }`}
+                >
+                  <div className="w-8 h-8 rounded-md bg-background border border-border flex items-center justify-center shrink-0">
+                    <Banknote className="w-4 h-4 text-primary" />
                   </div>
-                  <div
-                    className={`w-6 h-6 rounded-md border-2 flex items-center justify-center transition-colors ${
-                      paymentType === "full"
-                        ? "border-primary bg-primary text-primary-foreground"
-                        : "border-muted-foreground/30"
-                    }`}
-                  >
-                    {paymentType === "full" && <Check className="w-4 h-4" />}
+                  <div className="flex-1 min-w-0">
+                    <span className="block font-medium text-sm">Pay in Full</span>
+                    <span className="block text-xs text-muted-foreground">
+                      Rental total
+                    </span>
                   </div>
-                </div>
-                <div className="w-full">
-                  <span className="block font-medium">Pay in Full</span>
-                  <span className="block text-xs text-muted-foreground leading-relaxed">
-                    Rental total, excluding the refundable security bond
-                  </span>
-                </div>
-                <span className="font-bold text-lg mt-auto">{formatCurrency(totalCost)}</span>
-              </button>
+                  <div className="text-right shrink-0">
+                    <span className="block font-bold text-sm">{formatCurrency(totalCost)}</span>
+                    <div
+                      className={`w-4 h-4 rounded-sm border-2 flex items-center justify-center mt-1 ml-auto transition-colors ${
+                        paymentType === "full"
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-muted-foreground/30"
+                      }`}
+                    >
+                      {paymentType === "full" && <Check className="w-3 h-3" />}
+                    </div>
+                  </div>
+                </button>
 
-              {paymentProvider === "windcave" && (
                 <button
                   type="button"
                   onClick={() => setPaymentType("deposit")}
-                  className={`flex flex-col gap-3 border p-4 rounded-xl bg-muted text-left transition-all ${
+                  className={`flex items-center gap-3 border p-3 rounded-lg bg-muted text-left transition-all ${
                     paymentType === "deposit"
                       ? "border-primary ring-1 ring-primary bg-primary/5"
                       : "hover:border-primary/30"
                   }`}
                 >
-                  <div className="flex items-start justify-between w-full">
-                    <div className="w-10 h-10 rounded-lg bg-background border border-border flex items-center justify-center">
-                      <Wallet className="w-5 h-5 text-primary" />
-                    </div>
+                  <div className="w-8 h-8 rounded-md bg-background border border-border flex items-center justify-center shrink-0">
+                    <Wallet className="w-4 h-4 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <span className="block font-medium text-sm">
+                      Pay {formatCurrency(DEPOSIT_AMOUNT)} deposit
+                    </span>
+                    <span className="block text-xs text-muted-foreground">
+                      Balance at pick up
+                    </span>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <span className="block font-bold text-sm">{formatCurrency(Math.min(DEPOSIT_AMOUNT, totalCost))}</span>
                     <div
-                      className={`w-6 h-6 rounded-md border-2 flex items-center justify-center transition-colors ${
+                      className={`w-4 h-4 rounded-sm border-2 flex items-center justify-center mt-1 ml-auto transition-colors ${
                         paymentType === "deposit"
                           ? "border-primary bg-primary text-primary-foreground"
                           : "border-muted-foreground/30"
                       }`}
                     >
-                      {paymentType === "deposit" && <Check className="w-4 h-4" />}
+                      {paymentType === "deposit" && <Check className="w-3 h-3" />}
                     </div>
                   </div>
-                  <div className="w-full">
-                    <span className="block font-medium">
-                      Pay a {formatCurrency(DEPOSIT_AMOUNT)} deposit
-                    </span>
-                    <span className="block text-xs text-muted-foreground leading-relaxed">
-                      Non-refundable. Balance of {formatCurrency(Math.max(totalCost - DEPOSIT_AMOUNT, 0))} due at pick up.
-                    </span>
-                  </div>
-                  <span className="font-bold text-lg mt-auto">{formatCurrency(Math.min(DEPOSIT_AMOUNT, totalCost))}</span>
                 </button>
-              )}
-
-              {paymentProvider === "airwallex" && (
-                <div className="flex flex-col gap-3 border border-dashed border-primary/30 p-4 rounded-xl bg-[#FFC0CB]/10 justify-center">
-                  <div className="w-10 h-10 rounded-lg bg-background border border-border flex items-center justify-center">
-                    <img src={klarnaImg} alt="Klarna" className="h-5 w-auto" />
-                  </div>
-                  <div>
-                    <span className="block font-medium text-foreground">Pay in 4 instalments</span>
-                    <span className="block text-xs text-muted-foreground leading-relaxed">
-                      4 interest-free payments of {formatCurrency(totalCost / 4)}. First payment today.
-                    </span>
-                  </div>
-                </div>
-              )}
+              </div>
             </div>
-          </div>
+          )}
+
+          {paymentProvider === "airwallex" && (
+            <div className="mb-6">
+              <div className="flex items-center gap-3 border border-dashed border-primary/30 p-3 rounded-lg bg-[#FFC0CB]/10">
+                <div className="w-8 h-8 rounded-md bg-background border border-border flex items-center justify-center shrink-0">
+                  <img src={klarnaImg} alt="Klarna" className="h-4 w-auto" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span className="block font-medium text-sm text-foreground">Pay in 4 instalments</span>
+                  <span className="block text-xs text-muted-foreground">
+                    4 interest-free payments of {formatCurrency(totalCost / 4)}. First payment today.
+                  </span>
+                </div>
+                <div className="text-right shrink-0">
+                  <span className="block font-bold text-sm">{formatCurrency(totalCost)}</span>
+                </div>
+              </div>
+            </div>
+          )}
           
 
           
