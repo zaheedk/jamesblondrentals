@@ -18,6 +18,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent } from "@/components/ui/card";
 import PageSEO from '@/components/PageSEO';
 import { supabase } from "@/integrations/supabase/client";
+import cardBrandsImg from "@/assets/payment-cards.svg";
+import klarnaImg from "@/assets/klarna-badge.svg";
 import TrustGuaranteeBanner from '@/components/booking/TrustGuaranteeBanner';
 import { useAuth } from '@/contexts/AuthContext';
 
