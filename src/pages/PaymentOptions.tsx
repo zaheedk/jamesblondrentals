@@ -6,7 +6,7 @@ import { getBookingData, updateBookingData } from "@/lib/booking-session";
 import { Label } from "@/components/ui/label";
 import { formatCurrency, getCampaignCode } from "@/lib/utils";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Car, Save } from "lucide-react";
+import { Car, Save, CreditCard, Wallet, Banknote, Check } from "lucide-react";
 import PaymentSummary from "@/components/payment/PaymentSummary";
 import RentalDetails from "@/components/payment/RentalDetails";
 import { rcmApi } from "@/lib/api/rcm-api";
