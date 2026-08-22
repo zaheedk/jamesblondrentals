@@ -6,7 +6,7 @@ import { getBookingData, updateBookingData } from "@/lib/booking-session";
 import { Label } from "@/components/ui/label";
 import { formatCurrency, getCampaignCode } from "@/lib/utils";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Car, Save } from "lucide-react";
+import { Car, Save, CreditCard, Wallet, Banknote, Check } from "lucide-react";
 import PaymentSummary from "@/components/payment/PaymentSummary";
 import RentalDetails from "@/components/payment/RentalDetails";
 import { rcmApi } from "@/lib/api/rcm-api";
@@ -200,6 +200,12 @@ const PaymentOptions = () => {
   }, [navigate, locationDetails]);
 
   // Reset image error when vehicle image changes
+  useEffect(() => {
+    if (paymentProvider === "airwallex") {
+      setPaymentType("full");
+    }
+  }, [paymentProvider]);
+
   useEffect(() => {
     if (bookingDetails?.vehicleImage) {
       setImageError(false);
@@ -737,75 +743,154 @@ const PaymentOptions = () => {
           </Card>
           
           <div className="mb-6">
-            <p className="font-semibold mb-2">Choose how much to pay now</p>
-            <div className="space-y-3">
-              <button
-                type="button"
-                onClick={() => setPaymentType("full")}
-                className={`w-full flex items-center space-x-2 border p-3 rounded-md bg-gray-50 text-left ${
-                  paymentType === "full" ? "border-primary ring-1 ring-primary" : ""
-                }`}
-              >
-                <span className="flex-grow">
-                  <span className="block font-medium">Pay in Full</span>
-                  <span className="block text-sm text-gray-600">
-                    Rental total, excluding the refundable security bond
-                  </span>
-                </span>
-                <span className="font-bold">{formatCurrency(totalCost)}</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setPaymentType("deposit")}
-                className={`w-full flex items-center space-x-2 border p-3 rounded-md bg-gray-50 text-left ${
-                  paymentType === "deposit" ? "border-primary ring-1 ring-primary" : ""
-                }`}
-              >
-                <span className="flex-grow">
-                  <span className="block font-medium">
-                    Pay a {formatCurrency(DEPOSIT_AMOUNT)} deposit
-                  </span>
-                  <span className="block text-sm text-gray-600">
-                    Non-refundable. Balance of {formatCurrency(Math.max(totalCost - DEPOSIT_AMOUNT, 0))} due at pick up.
-                  </span>
-                </span>
-                <span className="font-bold">{formatCurrency(Math.min(DEPOSIT_AMOUNT, totalCost))}</span>
-              </button>
-            </div>
-          </div>
-
-          <div className="mb-6">
-            <p className="font-semibold mb-2">Choose a payment method</p>
+            <p className="font-semibold mb-3">Choose a payment method</p>
             <div className="space-y-3">
               <button
                 type="button"
                 onClick={() => setPaymentProvider("windcave")}
-                className={`w-full flex items-center space-x-2 border p-3 rounded-md bg-gray-50 text-left ${
-                  paymentProvider === "windcave" ? "border-primary ring-1 ring-primary" : ""
+                className={`w-full flex items-center gap-4 border p-4 rounded-xl bg-muted text-left transition-all ${
+                  paymentProvider === "windcave"
+                    ? "border-primary ring-1 ring-primary bg-primary/5"
+                    : "hover:border-primary/30"
                 }`}
               >
+                <div className="w-12 h-12 rounded-xl bg-background border border-border flex items-center justify-center shrink-0">
+                  <CreditCard className="w-6 h-6 text-primary" />
+                </div>
                 <span className="flex-grow">
                   <span className="block font-medium">Credit or debit card</span>
-                  <span className="block text-sm text-gray-600">
+                  <span className="block text-sm text-muted-foreground">
                     Visa, Mastercard and Amex — secured by Windcave.
                   </span>
                 </span>
+                <div
+                  className={`w-6 h-6 rounded-md border-2 flex items-center justify-center transition-colors ${
+                    paymentProvider === "windcave"
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-muted-foreground/30"
+                  }`}
+                >
+                  {paymentProvider === "windcave" && <Check className="w-4 h-4" />}
+                </div>
               </button>
               {canUseAirwallex && (
                 <button
                   type="button"
                   onClick={() => setPaymentProvider("airwallex")}
-                  className={`w-full flex items-center space-x-2 border p-3 rounded-md bg-gray-50 text-left ${
-                    paymentProvider === "airwallex" ? "border-primary ring-1 ring-primary" : ""
+                  className={`w-full flex items-center gap-4 border p-4 rounded-xl bg-muted text-left transition-all ${
+                    paymentProvider === "airwallex"
+                      ? "border-primary ring-1 ring-primary bg-primary/5"
+                      : "hover:border-primary/30"
                   }`}
                 >
+                  <div className="w-12 h-12 rounded-xl bg-background border border-border flex items-center justify-center shrink-0">
+                    <Wallet className="w-6 h-6 text-primary" />
+                  </div>
                   <span className="flex-grow">
                     <span className="block font-medium">Klarna — pay later or in instalments</span>
-                    <span className="block text-sm text-gray-600">
+                    <span className="block text-sm text-muted-foreground">
                       Processed by Airwallex. Live test mode — visible to test accounts only.
                     </span>
                   </span>
+                  <div
+                    className={`w-6 h-6 rounded-md border-2 flex items-center justify-center transition-colors ${
+                      paymentProvider === "airwallex"
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-muted-foreground/30"
+                    }`}
+                  >
+                    {paymentProvider === "airwallex" && <Check className="w-4 h-4" />}
+                  </div>
                 </button>
+              )}
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <p className="font-semibold mb-3">
+              {paymentProvider === "airwallex" ? "Payment amount" : "Choose how much to pay now"}
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setPaymentType("full")}
+                className={`flex flex-col gap-3 border p-4 rounded-xl bg-muted text-left transition-all ${
+                  paymentType === "full"
+                    ? "border-primary ring-1 ring-primary bg-primary/5"
+                    : "hover:border-primary/30"
+                }`}
+              >
+                <div className="flex items-start justify-between w-full">
+                  <div className="w-10 h-10 rounded-lg bg-background border border-border flex items-center justify-center">
+                    <Banknote className="w-5 h-5 text-primary" />
+                  </div>
+                  <div
+                    className={`w-6 h-6 rounded-md border-2 flex items-center justify-center transition-colors ${
+                      paymentType === "full"
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-muted-foreground/30"
+                    }`}
+                  >
+                    {paymentType === "full" && <Check className="w-4 h-4" />}
+                  </div>
+                </div>
+                <div className="w-full">
+                  <span className="block font-medium">Pay in Full</span>
+                  <span className="block text-xs text-muted-foreground leading-relaxed">
+                    Rental total, excluding the refundable security bond
+                  </span>
+                </div>
+                <span className="font-bold text-lg mt-auto">{formatCurrency(totalCost)}</span>
+              </button>
+
+              {paymentProvider === "windcave" && (
+                <button
+                  type="button"
+                  onClick={() => setPaymentType("deposit")}
+                  className={`flex flex-col gap-3 border p-4 rounded-xl bg-muted text-left transition-all ${
+                    paymentType === "deposit"
+                      ? "border-primary ring-1 ring-primary bg-primary/5"
+                      : "hover:border-primary/30"
+                  }`}
+                >
+                  <div className="flex items-start justify-between w-full">
+                    <div className="w-10 h-10 rounded-lg bg-background border border-border flex items-center justify-center">
+                      <Wallet className="w-5 h-5 text-primary" />
+                    </div>
+                    <div
+                      className={`w-6 h-6 rounded-md border-2 flex items-center justify-center transition-colors ${
+                        paymentType === "deposit"
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-muted-foreground/30"
+                      }`}
+                    >
+                      {paymentType === "deposit" && <Check className="w-4 h-4" />}
+                    </div>
+                  </div>
+                  <div className="w-full">
+                    <span className="block font-medium">
+                      Pay a {formatCurrency(DEPOSIT_AMOUNT)} deposit
+                    </span>
+                    <span className="block text-xs text-muted-foreground leading-relaxed">
+                      Non-refundable. Balance of {formatCurrency(Math.max(totalCost - DEPOSIT_AMOUNT, 0))} due at pick up.
+                    </span>
+                  </div>
+                  <span className="font-bold text-lg mt-auto">{formatCurrency(Math.min(DEPOSIT_AMOUNT, totalCost))}</span>
+                </button>
+              )}
+
+              {paymentProvider === "airwallex" && (
+                <div className="flex flex-col gap-3 border border-dashed p-4 rounded-xl bg-muted/50 justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-background border border-border flex items-center justify-center">
+                    <Wallet className="w-5 h-5 text-muted-foreground" />
+                  </div>
+                  <div>
+                    <span className="block font-medium text-muted-foreground">Deposit unavailable</span>
+                    <span className="block text-xs text-muted-foreground leading-relaxed">
+                      Klarna requires the full rental total today.
+                    </span>
+                  </div>
+                </div>
               )}
             </div>
           </div>
