@@ -10,7 +10,12 @@ import type { RCMPaymentResponse, RCMPaymentConfirmationResponse } from "@/lib/a
 import moment from "moment";
 import { supabase } from "@/integrations/supabase/client";
 
+// RCM payment type names — these must match the payment types configured in RCM.
+const RCM_PAYTYPE_KLARNA = 'Klarna';
+const RCM_PAYTYPE_WINDCAVE = 'Windcave';
+
 const Payment = () => {
+
   const navigate = useNavigate();
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
@@ -116,27 +121,38 @@ const Payment = () => {
         "";
 
       if (paymentStatus === "Approved") {
-        // Record the payment against the RCM reservation.
+        // Record the payment against the RCM reservation using the "Klarna"
+        // payment type configured in RCM.
         try {
-          await rcmApi.request<RCMPaymentConfirmationResponse>('POST', 'confirmpayment', {
+          const confirmPayload = {
             method: "confirmpayment",
             reservationref: reservationRef,
             amount: data.amount ?? bookingData?.paymentAmount,
             success: true,
-            paytype: 'Klarna',
+            paytype: RCM_PAYTYPE_KLARNA,
             paydate: moment().format('DD/MM/YYYY'),
             supplierid: 2,
             transactid: intentId,
             dpstxnref: intentId,
             paysource: 'Klarna via Airwallex',
-            transtype: "Payment"
-          });
+            transtype: "Payment",
+          };
+          console.log('Klarna payment confirmation payload:', confirmPayload);
+          const confirmResponse = await rcmApi.request<RCMPaymentConfirmationResponse>(
+            'POST',
+            'confirmpayment',
+            confirmPayload
+          );
+          if (confirmResponse?.status !== "OK") {
+            throw new Error(confirmResponse?.error || 'RCM rejected the Klarna payment confirmation');
+          }
         } catch (confirmError) {
           console.error('RCM confirmation failed for Klarna payment:', confirmError);
           toast.error("Payment Confirmation Error", {
             description: "Your payment went through but confirmation failed. Please contact us with your booking reference.",
           });
         }
+
 
         await updateBookingPaymentStatus(
           reservationRef,
@@ -289,7 +305,7 @@ const Payment = () => {
         reservationref: reservationRef,
         amount: paymentInfo.Amount,
         success: true,
-        paytype: 'Windcave',
+        paytype: RCM_PAYTYPE_WINDCAVE,
         paydate: moment().format('DD/MM/YYYY'),
         supplierid: 2,
         transactid: paymentInfo.RebillingToken || '',
