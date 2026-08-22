@@ -44,15 +44,37 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const intent = await airwallexRequest<IntentResponse>(
+    let intent = await airwallexRequest<IntentResponse>(
       'GET',
       `/api/v1/pa/payment_intents/${intentId}`,
     )
+
+    // Klarna authorises first and leaves the intent in REQUIRES_CAPTURE.
+    // Capture it here so the payment settles and the booking can be confirmed.
+    if (intent.status === 'REQUIRES_CAPTURE') {
+      try {
+        intent = await airwallexRequest<IntentResponse>(
+          'POST',
+          `/api/v1/pa/payment_intents/${intentId}/capture`,
+          {
+            request_id: crypto.randomUUID(),
+            amount: intent.amount,
+          },
+        )
+      } catch (captureError) {
+        console.error('Airwallex capture failed:', captureError)
+        intent = await airwallexRequest<IntentResponse>(
+          'GET',
+          `/api/v1/pa/payment_intents/${intentId}`,
+        )
+      }
+    }
 
     const paymentStatus = normaliseIntentStatus(intent.status)
     const paymentMethod = intent.latest_payment_attempt?.payment_method?.type || null
     const reservationRef =
       typeof intent.metadata?.reservation_ref === 'string' ? intent.metadata.reservation_ref : null
+
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
