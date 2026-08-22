@@ -305,7 +305,7 @@ const Payment = () => {
         reservationref: reservationRef,
         amount: paymentInfo.Amount,
         success: true,
-        paytype: 'Windcave',
+        paytype: RCM_PAYTYPE_WINDCAVE,
         paydate: moment().format('DD/MM/YYYY'),
         supplierid: 2,
         transactid: paymentInfo.RebillingToken || '',
