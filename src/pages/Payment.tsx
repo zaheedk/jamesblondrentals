@@ -10,7 +10,12 @@ import type { RCMPaymentResponse, RCMPaymentConfirmationResponse } from "@/lib/a
 import moment from "moment";
 import { supabase } from "@/integrations/supabase/client";
 
+// RCM payment type names — these must match the payment types configured in RCM.
+const RCM_PAYTYPE_KLARNA = 'Klarna';
+const RCM_PAYTYPE_WINDCAVE = 'Windcave';
+
 const Payment = () => {
+
   const navigate = useNavigate();
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
