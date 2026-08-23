@@ -1,9 +1,8 @@
-
 import React from "react";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { RCMInsuranceOption } from "@/lib/api/rcm-api-types";
-import { Check, X, Info } from "lucide-react";
+import { Check, X, ShieldCheck } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface InsuranceOptionsProps {
   insuranceOptions: RCMInsuranceOption[];
@@ -13,14 +12,34 @@ interface InsuranceOptionsProps {
   numberOfDays: number;
 }
 
+type Line = { text: string; type: "include" | "exclude" | "neutral" };
+
+/** Turn RCM's loose HTML description into clean, typed bullet lines. */
+const parseLines = (html: string): Line[] => {
+  if (!html) return [];
+  const normalised = html
+    .replace(/<\s*(br|\/li|\/p|\/div)\s*\/?\s*>/gi, "\n")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&");
+
+  return normalised
+    .split("\n")
+    .map((line) => line.replace(/\s+/g, " ").trim())
+    .filter((line) => line.length > 0)
+    .map((text) => {
+      if (/exclud/i.test(text)) return { text, type: "exclude" as const };
+      if (/includ/i.test(text)) return { text, type: "include" as const };
+      return { text, type: "neutral" as const };
+    });
+};
+
 const InsuranceOptions = ({
   insuranceOptions,
   selectedInsuranceId,
   onSelectInsurance,
-  currencySymbol,
-  numberOfDays
+  numberOfDays,
 }: InsuranceOptionsProps) => {
-  // Check if we have valid insurance options
   if (!insuranceOptions || insuranceOptions.length === 0) {
     return (
       <div className="space-y-4">
@@ -32,180 +51,126 @@ const InsuranceOptions = ({
     );
   }
 
-  // Sort insurance options by total insurance amount
-  const sortedInsuranceOptions = [...insuranceOptions].sort((a, b) => {
-    const amountA = parseFloat(a.totalinsuranceamount.toString()) || 0;
-    const amountB = parseFloat(b.totalinsuranceamount.toString()) || 0;
-    return amountA - amountB;
-  });
-
-  // Map insurance options to display data with enhanced features
-  const getInsuranceDisplayData = (insurance: RCMInsuranceOption, index: number) => {
-    // Calculate daily rate from total amount divided by number of days
-    const totalAmount = parseFloat(insurance.totalinsuranceamount.toString()) || 0;
-    const dailyRate = numberOfDays > 0 ? totalAmount / numberOfDays : totalAmount;
-    
-    // Use feedescription1 if available, otherwise fall back to name
-    const webDescription = insurance.feedescription1 || "";
-    const title = insurance.name || "Insurance Option";
-    
-    // Use feedescription for first line and feedescription1 for second line
-    const firstLineText = (insurance.feedescription && insurance.feedescription.trim()) ? insurance.feedescription.trim() : "";
-    const secondLineHtml = (insurance.feedescription1 && insurance.feedescription1.trim()) ? insurance.feedescription1.trim() : "";
-    
-    // Parse and format the second line HTML to add X icons before "Exclude" and tick icons before "Include"
-    let formattedSecondLineHtml = secondLineHtml;
-    if (secondLineHtml) {
-      // Add X icon before any text that contains "Exclude"
-      formattedSecondLineHtml = secondLineHtml.replace(
-        /(\b\w*[Ee]xclud\w*)/g, 
-        '<span class="inline-flex items-center gap-1 whitespace-nowrap"><svg class="w-4 h-4 text-red-500 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>$1</span>'
-      );
-      
-      // Add tick icon before any text that contains "Include"
-      formattedSecondLineHtml = formattedSecondLineHtml.replace(
-        /(\b\w*[Ii]nclud\w*)/g, 
-        '<span class="inline-flex items-center gap-1 whitespace-nowrap"><svg class="w-4 h-4 text-primary inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>$1</span>'
-      );
-    }
-    
-    // Parse excess amount and bracket text for fallback
-    let excessAmount = "";
-    let bracketText: string[] = [];
-    
-    if (secondLineHtml) {
-      // Extract excess amount from HTML content
-      const excessMatch = secondLineHtml.match(/\$\s*(\d+(?:,\d+)?)\s*Excess/i);
-      excessAmount = excessMatch ? `$${excessMatch[1]} excess` : "";
-      
-      // Extract list items from HTML
-      const listItemsMatch = secondLineHtml.match(/<li>([^<]+)<\/li>/g);
-      if (listItemsMatch) {
-        bracketText = listItemsMatch.map(item => item.replace(/<\/?li>/g, ''));
-      }
-    } else {
-      // Fallback to parsing name field
-      const nameExcessMatch = title.match(/\$(\d+(?:,\d+)?)\s*excess/i);
-      excessAmount = nameExcessMatch ? `$${nameExcessMatch[1]} excess` : "";
-      
-      // Extract text in brackets from name
-      const bracketMatch = title.match(/\(([^)]+)\)/);
-      bracketText = bracketMatch ? bracketMatch[1].split('|').map(text => text.trim()).filter(text => text.length > 0) : [];
-    }
-    
-    // Check if this is Peace of Mind for special styling
-    const isPeaceOfMind = title.toLowerCase().includes('peace of mind');
-    const isRecommended = index === 2 || isPeaceOfMind; // Keep existing logic but also check for Peace of Mind
-    const isPopular = index === 1; // Middle option is popular
-
-    return {
-      ...insurance,
-      title,
-      firstLineText,
-      formattedSecondLineHtml,
-      excessAmount,
-      bracketText,
-      isPeaceOfMind,
-      isRecommended,
-      isPopular,
-      dailyRate
-    };
-  };
+  const sorted = [...insuranceOptions].sort(
+    (a, b) =>
+      (parseFloat(a.totalinsuranceamount?.toString() || "0") || 0) -
+      (parseFloat(b.totalinsuranceamount?.toString() || "0") || 0)
+  );
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-        {sortedInsuranceOptions.map((insurance, index) => {
-          const displayData = getInsuranceDisplayData(insurance, index);
-          const isSelected = selectedInsuranceId?.toString() === insurance.id.toString();
-          
-          return (
-            <Card 
-              key={insurance.id}
-              className={`relative p-0 cursor-pointer transition-all duration-200 bg-gray-50 hover:bg-gray-100 text-black flex flex-col h-full ${
-                isSelected ? 'border-2 border-primary' : 'border border-gray-200'
-              }`}
-              onClick={() => onSelectInsurance(insurance.id)}
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 mt-10">
+      {sorted.map((insurance, index) => {
+        const total = parseFloat(insurance.totalinsuranceamount?.toString() || "0") || 0;
+        const dailyRate = numberOfDays > 0 ? total / numberOfDays : total;
+        const title = (insurance.feedescription || insurance.name || "Insurance Option").trim();
+        const lines = parseLines(insurance.feedescription1 || "");
+        const isSelected = selectedInsuranceId?.toString() === insurance.id.toString();
+
+        const lowerTitle = title.toLowerCase();
+        const isPeaceOfMind = lowerTitle.includes("peace of mind");
+        const badge = isPeaceOfMind
+          ? { label: "Best cover", tone: "primary" as const }
+          : lowerTitle.includes("easy rider")
+          ? { label: "Risk taker", tone: "warning" as const }
+          : index === 1
+          ? { label: "Most popular", tone: "primary" as const }
+          : null;
+
+        return (
+          <Card
+            key={insurance.id}
+            role="button"
+            tabIndex={0}
+            aria-pressed={isSelected}
+            onClick={() => onSelectInsurance(insurance.id)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onSelectInsurance(insurance.id);
+              }
+            }}
+            className={cn(
+              "relative flex flex-col h-full overflow-hidden rounded-2xl p-0 cursor-pointer transition-all duration-300 bg-card",
+              isSelected
+                ? "border-2 border-primary shadow-lg md:-translate-y-1"
+                : "border border-border hover:border-primary/40 hover:shadow-md hover:-translate-y-0.5"
+            )}
+          >
+            {badge && (
+              <div className="flex justify-center pt-4">
+                <span
+                  className={cn(
+                    "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wide",
+                    badge.tone === "primary"
+                      ? "bg-primary/10 text-primary"
+                      : "bg-destructive/10 text-destructive"
+                  )}
+                >
+                  {badge.tone === "primary" && <ShieldCheck className="w-3.5 h-3.5" />}
+                  {badge.label}
+                </span>
+              </div>
+            )}
+
+            <div className={cn("flex-1 flex flex-col px-5 pb-5", badge ? "pt-3" : "pt-6")}>
+              <h3 className="text-base md:text-lg font-semibold text-foreground leading-snug">
+                {title}
+              </h3>
+
+              {lines.length > 0 && (
+                <ul className="mt-4 space-y-2.5">
+                  {lines.map((line, i) => (
+                    <li key={i} className="flex items-start gap-2.5 text-sm text-muted-foreground">
+                      {line.type === "exclude" ? (
+                        <X className="w-4 h-4 mt-0.5 shrink-0 text-destructive" aria-hidden />
+                      ) : line.type === "include" ? (
+                        <Check className="w-4 h-4 mt-0.5 shrink-0 text-primary" aria-hidden />
+                      ) : (
+                        <span className="w-1.5 h-1.5 mt-2 shrink-0 rounded-full bg-border" />
+                      )}
+                      <span className="leading-snug">{line.text}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              <div className="mt-6 pt-4 border-t border-border">
+                {dailyRate > 0 ? (
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-2xl font-bold text-foreground tracking-tight">
+                      ${dailyRate.toFixed(2)}
+                    </span>
+                    <span className="text-sm text-muted-foreground">per day</span>
+                  </div>
+                ) : (
+                  <div className="text-2xl font-bold text-foreground tracking-tight">Included</div>
+                )}
+              </div>
+            </div>
+
+            <div
+              className={cn(
+                "w-full text-center py-3 text-sm font-semibold transition-colors",
+                isSelected
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-cta text-cta-foreground hover:bg-cta/90"
+              )}
+              onClick={(e) => {
+                e.stopPropagation();
+                onSelectInsurance(insurance.id);
+              }}
             >
-              {displayData.isRecommended && (
-                <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 z-20">
-                  <div className="bg-primary text-white px-3 py-1 rounded text-xs font-bold shadow-lg">
-                    RECOMMENDED
-                  </div>
-                </div>
+              {isSelected ? (
+                <span className="inline-flex items-center justify-center gap-1.5">
+                  <Check className="w-4 h-4" /> Selected
+                </span>
+              ) : (
+                "Select"
               )}
-              
-              {displayData.isPopular && (
-                <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 z-20">
-                  <div className="bg-primary text-white px-3 py-1 rounded text-xs font-bold shadow-lg">
-                    POPULAR
-                  </div>
-                </div>
-              )}
-
-              {displayData.title.toLowerCase().includes('easy rider') && (
-                <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 z-20">
-                  <div className="bg-orange-700 text-white px-3 py-1 rounded text-xs font-bold shadow-lg">
-                    RISK TAKER
-                  </div>
-                </div>
-              )}
-              
-              <div className="p-6 pb-2 flex-1 flex flex-col">
-                 <div className="space-y-2 mb-4 flex-1">
-                   {(!displayData.firstLineText || !displayData.formattedSecondLineHtml) && (
-                     <h3 className="text-lg font-bold text-black">
-                       {displayData.title}
-                     </h3>
-                   )}
-                    {displayData.firstLineText && (
-                      <div className="text-lg font-bold text-black">
-                        {displayData.firstLineText}
-                      </div>
-                    )}
-                   {displayData.formattedSecondLineHtml && (
-                     <div className="text-sm text-black" dangerouslySetInnerHTML={{ __html: displayData.formattedSecondLineHtml }} />
-                   )}
-                   {!displayData.firstLineText && !displayData.formattedSecondLineHtml && displayData.excessAmount && (
-                     <div className="text-sm font-medium text-black">
-                       {displayData.excessAmount}
-                     </div>
-                   )}
-                   {!displayData.firstLineText && !displayData.formattedSecondLineHtml && displayData.bracketText.length > 0 && (
-                      <div className="text-sm text-black">
-                        {displayData.bracketText.map((line, lineIndex) => (
-                          <div key={lineIndex}>{line}</div>
-                        ))}
-                      </div>
-                    )}
-                 </div>
-
-                <div className="pt-2 border-t border-gray-300 mt-auto">
-                   <div className="flex justify-center items-center mb-2">
-                     <span className="text-lg font-bold text-black">
-                       ${displayData.dailyRate.toFixed(2)} PER DAY
-                     </span>
-                   </div>
-                </div>
-              </div>
-              
-              <div 
-                className={`w-full text-center py-1 transition-colors ${
-                  isSelected 
-                    ? 'bg-primary hover:bg-primary/90 text-primary-foreground'
-                    : 'bg-cta hover:bg-cta/90 text-cta-foreground'
-                }`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onSelectInsurance(insurance.id);
-                }}
-              >
-                {isSelected ? 'Selected' : 'Select'}
-              </div>
-            </Card>
-          );
-        })}
-      </div>
+            </div>
+          </Card>
+        );
+      })}
     </div>
   );
 };
