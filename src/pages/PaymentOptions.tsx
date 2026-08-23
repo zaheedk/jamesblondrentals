@@ -21,12 +21,11 @@ import { supabase } from "@/integrations/supabase/client";
 import cardBrandsImg from "@/assets/payment-cards.svg";
 import klarnaImg from "@/assets/klarna-badge.svg";
 import TrustGuaranteeBanner from '@/components/booking/TrustGuaranteeBanner';
-import { useAuth } from '@/contexts/AuthContext';
 
 const DEPOSIT_AMOUNT = 50;
 
-// Klarna (Airwallex) is in live testing — only these signed-in accounts can see it.
-const AIRWALLEX_TEST_EMAILS = ['zaheedk@gmail.com'];
+// Klarna (Airwallex) is available to all customers at checkout.
+const canUseAirwallex = true;
 
 const PaymentOptions = () => {
   const navigate = useNavigate();
@@ -45,8 +44,7 @@ const PaymentOptions = () => {
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [showConsentError, setShowConsentError] = useState(false);
   const [isSavingQuote, setIsSavingQuote] = useState(false);
-  const { user } = useAuth();
-  const canUseAirwallex = !!user?.email && AIRWALLEX_TEST_EMAILS.includes(user.email.toLowerCase());
+  const canUseAirwallex = true;
   const { useLocationDetails } = useRcmApi();
   const { data: locationDetails } = useLocationDetails();
 
