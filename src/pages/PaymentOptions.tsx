@@ -774,7 +774,7 @@ const PaymentOptions = () => {
                   }`}
                 >
                   <div className="flex flex-col items-start gap-1.5">
-                    <img src={klarnaImg} alt="Klarna" className="h-7 w-auto" />
+                    <img src={klarnaImg} alt="Klarna" className="h-10 w-auto" />
                     <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-[#FFC0CB] text-[#0A0B09] text-[10px] font-semibold leading-none">
                       4 payments of {formatCurrency(totalCost / 4)}
                     </span>
