@@ -767,19 +767,19 @@ const PaymentOptions = () => {
                 <button
                   type="button"
                   onClick={() => setPaymentProvider("airwallex")}
-                  className={`relative flex items-center justify-between min-h-[64px] border p-2 rounded-lg bg-muted text-left transition-all ${
+                  className={`relative flex flex-col justify-center gap-2 min-h-[72px] border p-3 rounded-lg bg-muted text-left transition-all ${
                     paymentProvider === "airwallex"
                       ? "border-primary ring-1 ring-primary bg-primary/5"
                       : "hover:border-primary/30"
                   }`}
                 >
-                  <div className="flex flex-col items-start gap-1.5">
+                  <div className="flex items-center justify-between w-full">
                     <img src={klarnaImg} alt="Klarna" className="h-10 w-auto" />
-                    <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-[#FFC0CB] text-[#0A0B09] text-[10px] font-semibold leading-none">
-                      4 payments of {formatCurrency(totalCost / 4)}
-                    </span>
+                    <span className="font-bold text-sm">{formatCurrency(totalCost)}</span>
                   </div>
-                  <span className="font-bold text-sm mr-5">{formatCurrency(totalCost)}</span>
+                  <span className="inline-flex items-center justify-center gap-1.5 w-full px-3 py-1.5 rounded-full bg-[#FFC0CB] text-[#0A0B09] text-xs font-semibold leading-none">
+                    4 payments of {formatCurrency(totalCost / 4)}
+                  </span>
                   {paymentProvider === "airwallex" && (
                     <span className="absolute top-2 right-2 w-5 h-5 rounded-md bg-primary text-primary-foreground flex items-center justify-center">
                       <Check className="w-3.5 h-3.5" />
