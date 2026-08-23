@@ -37,9 +37,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
       </main>
       <Footer />
       <SocialProofNotifications />
-      <StickyMobileBookBar />
-      {/* Reserve space so the sticky bar never covers page content on mobile */}
-      <div className="md:hidden h-16" aria-hidden="true" />
+      <FloatingPhoneButton />
     </div>
   );
 };
