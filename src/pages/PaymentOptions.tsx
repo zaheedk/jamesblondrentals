@@ -750,14 +750,13 @@ const PaymentOptions = () => {
               <button
                 type="button"
                 onClick={() => setPaymentProvider("windcave")}
-                className={`relative flex flex-col items-start gap-2 border p-3 rounded-lg bg-muted text-left transition-all ${
+                className={`relative flex items-center justify-center min-h-[64px] border p-2 rounded-lg bg-muted text-left transition-all ${
                   paymentProvider === "windcave"
                     ? "border-primary ring-1 ring-primary bg-primary/5"
                     : "hover:border-primary/30"
                 }`}
               >
-                <img src={cardBrandsImg} alt="Visa and Mastercard" className="h-7 w-auto" />
-                <span className="text-sm font-medium leading-tight">Card</span>
+                <img src={cardBrandsImg} alt="Visa and Mastercard" className="h-10 w-auto" />
                 {paymentProvider === "windcave" && (
                   <span className="absolute top-2 right-2 w-5 h-5 rounded-md bg-primary text-primary-foreground flex items-center justify-center">
                     <Check className="w-3.5 h-3.5" />
@@ -768,16 +767,19 @@ const PaymentOptions = () => {
                 <button
                   type="button"
                   onClick={() => setPaymentProvider("airwallex")}
-                  className={`relative flex flex-col items-start gap-2 border p-3 rounded-lg bg-muted text-left transition-all ${
+                  className={`relative flex items-center justify-between min-h-[64px] border p-2 rounded-lg bg-muted text-left transition-all ${
                     paymentProvider === "airwallex"
                       ? "border-primary ring-1 ring-primary bg-primary/5"
                       : "hover:border-primary/30"
                   }`}
                 >
-                  <img src={klarnaImg} alt="Klarna" className="h-6 w-auto" />
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#FFC0CB] text-[#0A0B09] text-[11px] font-semibold leading-none">
-                    4 payments of {formatCurrency(totalCost / 4)}
-                  </span>
+                  <div className="flex flex-col items-start gap-1.5">
+                    <img src={klarnaImg} alt="Klarna" className="h-7 w-auto" />
+                    <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-[#FFC0CB] text-[#0A0B09] text-[10px] font-semibold leading-none">
+                      4 payments of {formatCurrency(totalCost / 4)}
+                    </span>
+                  </div>
+                  <span className="font-bold text-sm mr-5">{formatCurrency(totalCost)}</span>
                   {paymentProvider === "airwallex" && (
                     <span className="absolute top-2 right-2 w-5 h-5 rounded-md bg-primary text-primary-foreground flex items-center justify-center">
                       <Check className="w-3.5 h-3.5" />
@@ -796,7 +798,7 @@ const PaymentOptions = () => {
                 <button
                   type="button"
                   onClick={() => setPaymentType("full")}
-                  className={`flex items-center gap-3 border p-3 rounded-lg bg-muted text-left transition-all ${
+                  className={`flex items-center gap-2 border p-2 rounded-lg bg-muted text-left transition-all ${
                     paymentType === "full"
                       ? "border-primary ring-1 ring-primary bg-primary/5"
                       : "hover:border-primary/30"
@@ -814,7 +816,7 @@ const PaymentOptions = () => {
                   <div className="text-right shrink-0">
                     <span className="block font-bold text-sm">{formatCurrency(totalCost)}</span>
                     <div
-                      className={`w-4 h-4 rounded-sm border-2 flex items-center justify-center mt-1 ml-auto transition-colors ${
+                      className={`w-4 h-4 rounded-full border-2 flex items-center justify-center mt-1 ml-auto transition-colors ${
                         paymentType === "full"
                           ? "border-primary bg-primary text-primary-foreground"
                           : "border-muted-foreground/30"
@@ -828,7 +830,7 @@ const PaymentOptions = () => {
                 <button
                   type="button"
                   onClick={() => setPaymentType("deposit")}
-                  className={`flex items-center gap-3 border p-3 rounded-lg bg-muted text-left transition-all ${
+                  className={`flex items-center gap-2 border p-2 rounded-lg bg-muted text-left transition-all ${
                     paymentType === "deposit"
                       ? "border-primary ring-1 ring-primary bg-primary/5"
                       : "hover:border-primary/30"
@@ -839,7 +841,7 @@ const PaymentOptions = () => {
                   </div>
                   <div className="flex-1 min-w-0">
                     <span className="block font-medium text-sm">
-                      Pay {formatCurrency(DEPOSIT_AMOUNT)} deposit
+                      Pay {formatCurrency(DEPOSIT_AMOUNT)} non-refundable deposit
                     </span>
                     <span className="block text-xs text-muted-foreground">
                       Balance at pick up
@@ -848,7 +850,7 @@ const PaymentOptions = () => {
                   <div className="text-right shrink-0">
                     <span className="block font-bold text-sm">{formatCurrency(Math.min(DEPOSIT_AMOUNT, totalCost))}</span>
                     <div
-                      className={`w-4 h-4 rounded-sm border-2 flex items-center justify-center mt-1 ml-auto transition-colors ${
+                      className={`w-4 h-4 rounded-full border-2 flex items-center justify-center mt-1 ml-auto transition-colors ${
                         paymentType === "deposit"
                           ? "border-primary bg-primary text-primary-foreground"
                           : "border-muted-foreground/30"
