@@ -7,7 +7,7 @@ import BreadcrumbsJsonLd from '@/components/BreadcrumbsJsonLd';
 import SiteJsonLd from '@/components/SiteJsonLd';
 import ChristchurchBreadcrumbs from '@/components/ChristchurchBreadcrumbs';
 import SocialProofNotifications from '@/components/SocialProofNotifications';
-import StickyMobileBookBar from './StickyMobileBookBar';
+import FloatingPhoneButton from './FloatingPhoneButton';
 
 const CHROMELESS_ROUTES = ['/admin/rental-agreement', '/photos', '/photo-gallery', '/ra'];
 
@@ -37,9 +37,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
       </main>
       <Footer />
       <SocialProofNotifications />
-      <StickyMobileBookBar />
-      {/* Reserve space so the sticky bar never covers page content on mobile */}
-      <div className="md:hidden h-16" aria-hidden="true" />
+      <FloatingPhoneButton />
     </div>
   );
 };
