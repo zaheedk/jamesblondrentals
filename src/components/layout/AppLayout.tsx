@@ -7,7 +7,7 @@ import BreadcrumbsJsonLd from '@/components/BreadcrumbsJsonLd';
 import SiteJsonLd from '@/components/SiteJsonLd';
 import ChristchurchBreadcrumbs from '@/components/ChristchurchBreadcrumbs';
 import SocialProofNotifications from '@/components/SocialProofNotifications';
-import StickyMobileBookBar from './StickyMobileBookBar';
+import FloatingPhoneButton from './FloatingPhoneButton';
 
 const CHROMELESS_ROUTES = ['/admin/rental-agreement', '/photos', '/photo-gallery', '/ra'];
 
