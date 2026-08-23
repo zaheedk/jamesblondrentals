@@ -24,7 +24,6 @@ const HIDE_ON_PREFIXES = [
 
 const StickyMobileBookBar = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   const hidden = HIDE_ON_PREFIXES.some((p) => location.pathname.startsWith(p));
   if (hidden) return null;
 
