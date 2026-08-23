@@ -1,6 +1,6 @@
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { Phone, CalendarCheck } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
+import { Phone } from 'lucide-react';
 
 /**
  * Mobile-only sticky bottom bar with Call + Book Now.
@@ -24,19 +24,9 @@ const HIDE_ON_PREFIXES = [
 
 const StickyMobileBookBar = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   const hidden = HIDE_ON_PREFIXES.some((p) => location.pathname.startsWith(p));
   if (hidden) return null;
 
-  const handleBookClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    const target = document.getElementById('booking-form');
-    if (target) {
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } else {
-      navigate('/#booking-form');
-    }
-  };
 
   return (
     <div
@@ -45,23 +35,14 @@ const StickyMobileBookBar = () => {
       role="region"
       aria-label="Quick booking actions"
     >
-      <div className="flex items-stretch gap-2 px-3 py-2">
+      <div className="flex items-stretch justify-center gap-2 px-3 py-2">
         <a
           href="tel:+64800525663"
-          className="flex-1 inline-flex items-center justify-center gap-2 rounded-md border border-primary text-primary font-semibold text-sm py-2.5 active:scale-[0.98] transition"
+          className="inline-flex items-center justify-center gap-2 rounded-md border border-primary text-primary font-semibold text-sm py-2.5 px-8 active:scale-[0.98] transition"
           aria-label="Call James Blond Rentals"
         >
           <Phone className="h-4 w-4" />
           Call
-        </a>
-        <a
-          href="#booking-form"
-          onClick={handleBookClick}
-          className="flex-[1.6] inline-flex items-center justify-center gap-2 rounded-md bg-primary text-primary-foreground font-semibold text-sm py-2.5 shadow-md active:scale-[0.98] transition"
-          aria-label="Book a rental now"
-        >
-          <CalendarCheck className="h-4 w-4" />
-          Book Now · from $35
         </a>
       </div>
     </div>
