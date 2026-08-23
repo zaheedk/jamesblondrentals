@@ -756,7 +756,7 @@ const PaymentOptions = () => {
                     : "hover:border-primary/30"
                 }`}
               >
-                <img src={cardBrandsImg} alt="Visa, Mastercard and Amex" className="h-7 w-auto" />
+                <img src={cardBrandsImg} alt="Visa and Mastercard" className="h-7 w-auto" />
                 <span className="text-sm font-medium leading-tight">Card</span>
                 {paymentProvider === "windcave" && (
                   <span className="absolute top-2 right-2 w-5 h-5 rounded-md bg-primary text-primary-foreground flex items-center justify-center">
@@ -792,7 +792,7 @@ const PaymentOptions = () => {
           {paymentProvider === "windcave" && (
             <div className="mb-6">
               <p className="font-semibold mb-3">Choose how much to pay now</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
                   onClick={() => setPaymentType("full")}
