@@ -118,6 +118,14 @@ const RegisterInterestEarn = () => {
               revenue share works.
             </p>
 
+            <img
+              src={heroImage}
+              alt="Van owner handing keys to a James Blond rental agent"
+              width={1280}
+              height={960}
+              className="w-full rounded-2xl border border-border object-cover aspect-[4/3] mb-8"
+            />
+
             <div className="grid sm:grid-cols-2 gap-5 mb-8">
               {benefits.map(({ Icon, title, text }) => (
                 <div key={title} className="border border-border rounded-xl p-5 bg-card">
