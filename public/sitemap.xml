@@ -1080,4 +1080,10 @@
     <priority>0.7</priority>
     <changefreq>monthly</changefreq>
   </url>
+  <url>
+    <loc>https://jamesblond.co.nz/earn-from-your-van-or-truck</loc>
+    <lastmod>2026-08-25</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
 </urlset>
