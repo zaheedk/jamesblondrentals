@@ -120,15 +120,14 @@ const ListYourVehicle = () => {
             </p>
             <div className="flex flex-wrap gap-4 mb-6">
               <Button size="lg" variant="cta" asChild>
-                <a
-                  href={`mailto:info@jamesblond.co.nz?subject=List%20my%20vehicle%20with%20James%20Blond%20%7C%20Source%3A%20${encodeURIComponent(FB_CAMPAIGN_UTM)}`}
+                <Link
+                  to="/earn-from-your-van-or-truck"
                   onClick={() => {
                     trackMetaEvent('Lead', { content_name: 'List Your Vehicle', currency: 'NZD', value: 0 });
-                    trackMetaEvent('Contact', { content_name: 'List Your Vehicle - Email' });
                   }}
                 >
                   <Mail className="mr-2 h-4 w-4" /> Register your interest
-                </a>
+                </Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
                 <a
@@ -264,15 +263,14 @@ const ListYourVehicle = () => {
           </div>
           <div className="mt-10 flex flex-wrap gap-4">
             <Button size="lg" asChild>
-              <a
-                href={`mailto:info@jamesblond.co.nz?subject=List%20my%20vehicle%20with%20James%20Blond%20%7C%20Source%3A%20${encodeURIComponent(FB_CAMPAIGN_UTM)}`}
+              <Link
+                to="/earn-from-your-van-or-truck"
                 onClick={() => {
                   trackMetaEvent('Lead', { content_name: 'List Your Vehicle', currency: 'NZD', value: 0 });
-                  trackMetaEvent('Contact', { content_name: 'List Your Vehicle - Email' });
                 }}
               >
                 <Mail className="mr-2 h-4 w-4" /> Talk to us about listing
-              </a>
+              </Link>
             </Button>
             <Button size="lg" variant="outline" asChild>
               <a
