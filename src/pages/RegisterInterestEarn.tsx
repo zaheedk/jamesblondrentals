@@ -153,8 +153,11 @@ const RegisterInterestEarn = () => {
           </div>
 
 
-          <Card className="lg:sticky lg:top-24">
+          <Card className="lg:sticky lg:top-24 border-border/70 shadow-xl rounded-3xl">
             <CardContent className="p-6 md:p-8">
+              <div className="mb-6 hidden lg:flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-primary">
+                <Wallet className="h-4 w-4" /> Free, no obligation
+              </div>
               {submitted ? (
                 <div className="text-center py-8">
                   <div className="mx-auto mb-4 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
