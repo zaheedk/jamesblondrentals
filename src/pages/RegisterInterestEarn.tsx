@@ -75,7 +75,7 @@ const RegisterInterestEarn = () => {
 
       setSubmitted(true);
       form.reset();
-      toast.success («Thanks! We\u2019ll be in touch shortly.» as unknown as string);
+      toast.success('Thanks! We will be in touch shortly.');
     } catch (err) {
       toast.error('Sorry, we could not send your details. Please try again or call 0800 525 663.');
     } finally {
