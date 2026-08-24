@@ -102,41 +102,43 @@ const RegisterInterestEarn = () => {
         }}
       />
 
-      <section className="container mx-auto px-6 py-16 md:py-24">
+      <section className="relative overflow-hidden border-b border-border bg-gradient-to-br from-primary/5 via-background to-background">
+        <div className="pointer-events-none absolute -top-32 -right-24 h-96 w-96 rounded-full bg-primary/10 blur-3xl" />
+        <div className="container relative mx-auto px-6 py-16 md:py-24">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
           <div className="max-w-xl">
-            <span className="inline-flex items-center gap-2 bg-muted/60 border border-border rounded-full px-4 py-1.5 text-xs font-semibold tracking-wide uppercase text-primary mb-6">
+            <span className="inline-flex items-center gap-2 bg-card border border-border shadow-sm rounded-full px-4 py-1.5 text-xs font-semibold tracking-wide uppercase text-primary mb-6">
               <Truck className="w-4 h-4" />
               Vehicle Owner Partnerships
             </span>
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-6">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground mb-6">
               Earn from your van or truck
             </h1>
             <p className="text-lg text-muted-foreground mb-8">
               If your cargo van, ute, furniture truck or minibus spends most of the week parked, it can be
-              earning instead. Register your interest below and our team will talk you through how the
+              earning instead. Register your interest and our team will talk you through how the
               revenue share works.
             </p>
 
-            <img
-              src={heroImage}
-              alt="Van owner handing keys to a James Blond rental agent"
-              width={1280}
-              height={960}
-              className="w-full rounded-2xl border border-border object-cover aspect-[4/3] mb-8"
-            />
-
-            <div className="grid sm:grid-cols-2 gap-5 mb-8">
-              {benefits.map(({ Icon, title, text }) => (
-                <div key={title} className="border border-border rounded-xl p-5 bg-card">
-                  <Icon className="w-5 h-5 text-primary mb-3" />
-                  <h2 className="font-semibold mb-1 text-base">{title}</h2>
-                  <p className="text-sm text-muted-foreground">{text}</p>
-                </div>
+            <ul className="grid sm:grid-cols-2 gap-3 mb-8">
+              {['No joining fee', 'Monthly payouts', 'We handle the bookings', 'You keep the asset'].map((point) => (
+                <li key={point} className="flex items-center gap-2 text-sm font-medium text-foreground">
+                  <Check className="h-4 w-4 text-primary shrink-0" /> {point}
+                </li>
               ))}
+            </ul>
+
+            <div className="relative mb-8">
+              <img
+                src={heroImage}
+                alt="Van owner handing keys to a James Blond rental agent"
+                width={1280}
+                height={960}
+                className="w-full rounded-3xl border border-border shadow-lg object-cover aspect-[16/10]"
+              />
             </div>
 
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap items-center gap-4">
               <Button variant="outline" asChild>
                 <a href="tel:0800525663">
                   <Phone className="mr-2 h-4 w-4" /> 0800 525 663
@@ -149,6 +151,7 @@ const RegisterInterestEarn = () => {
               </Button>
             </div>
           </div>
+
 
           <Card className="lg:sticky lg:top-24">
             <CardContent className="p-6 md:p-8">
