@@ -1,4 +1,4 @@
-import { AbsoluteFill } from "remotion";
+import { AbsoluteFill, Audio, staticFile } from "remotion";
 import { TransitionSeries, springTiming } from "@remotion/transitions";
 import { wipe } from "@remotion/transitions/wipe";
 import { slide } from "@remotion/transitions/slide";
@@ -14,6 +14,7 @@ const timing = springTiming({ config: { damping: 200 }, durationInFrames: 20 });
 
 export const MainVideo: React.FC = () => (
   <AbsoluteFill>
+    <Audio src={staticFile("audio/inspiring.mp3")} volume={0.85} />
     <Backdrop />
     <TransitionSeries>
       <TransitionSeries.Sequence durationInFrames={150}>
