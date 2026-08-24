@@ -9,7 +9,7 @@ import ChristchurchBreadcrumbs from '@/components/ChristchurchBreadcrumbs';
 import SocialProofNotifications from '@/components/SocialProofNotifications';
 import FloatingPhoneButton from './FloatingPhoneButton';
 
-const CHROMELESS_ROUTES = ['/admin/rental-agreement', '/photos', '/photo-gallery', '/ra'];
+const CHROMELESS_ROUTES = ['/admin/rental-agreement', '/photos', '/photo-gallery', '/ra', '/embed/'];
 
 const AppLayout = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
