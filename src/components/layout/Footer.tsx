@@ -165,6 +165,9 @@ const Footer = () => {
                 <Link to="/fuel-calculator" className="text-gray-300 hover:text-white transition-colors text-sm">Fuel & Trip Calculator</Link>
               </li>
               <li>
+                <Link to="/moving-cost-calculator" className="text-gray-300 hover:text-white transition-colors text-sm">Moving Truck Size & Cost Calculator</Link>
+              </li>
+              <li>
                 <Link to="/van-hire-wellington" className="text-gray-300 hover:text-white transition-colors text-sm">Wellington Cargo Van Rentals</Link>
               </li>
               <li>

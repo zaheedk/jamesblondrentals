@@ -197,6 +197,8 @@ import WellingtonMinibusHire from "./pages/WellingtonMinibusHire";
 import WellingtonMinibusRentals from "./pages/WellingtonMinibusRentals";
 import WellingtonMinibusHireCBD from "./pages/WellingtonMinibusHireCBD";
 import FuelCalculator from "./pages/FuelCalculator";
+import MovingCostCalculatorPage from "./pages/MovingCostCalculator";
+import EmbedMovingCostCalculator from "./pages/EmbedMovingCostCalculator";
 import BuyUsedVehicles from "./pages/BuyUsedVehicles";
 import Unsubscribe from "./pages/Unsubscribe";
 import VehiclePhotos from "./pages/VehiclePhotos";
@@ -512,6 +514,8 @@ const App = () => {
                 <Route path="/minibus-hire-wellington" element={<WellingtonMinibusRentals />} />
                 <Route path="/wellington-minibus-hire-cbd" element={<WellingtonMinibusHireCBD />} />
                 <Route path="/fuel-calculator" element={<FuelCalculator />} />
+                <Route path="/moving-cost-calculator" element={<MovingCostCalculatorPage />} />
+                <Route path="/embed/moving-cost-calculator" element={<EmbedMovingCostCalculator />} />
                 <Route path="/buy-used-vehicles" element={<BuyUsedVehicles />} />
                 
                 <Route path="/jumbo-taxi-launch" element={<JumboTaxiLaunch />} />
