@@ -43,6 +43,14 @@ const benefits = [
   { Icon: Truck, title: 'You keep the asset', text: 'The vehicle stays in your name — block out dates when you need it.' },
 ];
 
+const steps = [
+  { title: 'Register your interest', text: 'Send us your name, email and phone. No obligation and no joining fee.' },
+  { title: 'We assess demand and fit', text: 'We check utilisation and rates for your vehicle type and branch, then walk you through the revenue share.' },
+  { title: 'Your vehicle starts earning', text: 'We list it, take the bookings and handle the admin. You receive a monthly statement and payout.' },
+];
+
+
+
 const RegisterInterestEarn = () => {
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
