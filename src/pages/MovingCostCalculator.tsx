@@ -150,10 +150,10 @@ const MovingCostCalculatorPage = () => {
           ))}
         </div>
         <div className="flex flex-wrap gap-4 mt-8 text-sm">
-          <Link to="/furniture-truck-hire" className="text-primary hover:underline">
+          <Link to="/furniture-truck-hire-auckland" className="text-primary hover:underline">
             Furniture truck hire
           </Link>
-          <Link to="/moving-truck-hire" className="text-primary hover:underline">
+          <Link to="/moving-truck-hire-auckland" className="text-primary hover:underline">
             Moving truck hire
           </Link>
           <Link to="/cargo-van-hire" className="text-primary hover:underline">

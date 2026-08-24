@@ -73,7 +73,7 @@ export const MOVING_VEHICLES: VehicleOption[] = [
     eightHour: 115,
     perDay: 130,
     perKm: 0.47,
-    fleetPath: '/fleet/furniture-truck',
+    fleetPath: '/fleet/trucks/2-tonne-box-16m3',
   },
   {
     id: '3t-tail-lift',
