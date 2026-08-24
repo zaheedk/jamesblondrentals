@@ -29,7 +29,7 @@
 ### Primary text
 
 **Option A — Direct**
-> Need a van, ute, truck or car but don't want the full hit today? Choose Klarna at checkout and split your rental into 4 equal, interest-free instalments. First payment today, the rest every 2 weeks. No fee from us. James Blond Rentals — NZ-wide since 1995.
+> Need a van, ute, truck or car but don't want the full hit today? Choose Klarna at checkout and split your rental into 4 equal, interest-free instalments. First payment today, the rest every 2 weeks. No fee from us. James Blond Rentals — NZ-wide since 2004.
 
 **Option B — Moving-day angle**
 > Moving house shouldn't wreck your week's budget. Book your moving truck or cargo van with James Blond and pay with Klarna — 4 interest-free instalments instead of one big charge. Auckland, Wellington, Christchurch and Hamilton branches.

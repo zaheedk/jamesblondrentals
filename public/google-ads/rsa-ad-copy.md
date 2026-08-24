@@ -185,7 +185,7 @@ Headlines: max 30 chars · Descriptions: max 90 chars. All counts verified ≤ l
 8. Same-Day Hire Available
 9. Drive on a Car Licence
 10. Branches Across NZ
-11. Family-Owned Since 1995
+11. Family-Owned Since 2004
 12. Friendly Local Team
 13. Hourly Daily Weekly Rates
 14. Trusted by 10,000+ Kiwis
