@@ -128,6 +128,8 @@ import FurnitureTruckHireAuckland from "./pages/FurnitureTruckHireAuckland";
 import CargoVanHire from "./pages/CargoVanHire";
 import CargoVanHireAuckland from "./pages/CargoVanHireAuckland";
 import ListYourVehicle from "./pages/ListYourVehicle";
+import RegisterInterestEarn from "./pages/RegisterInterestEarn";
+
 import TrailerHireHamilton from "./pages/TrailerHireHamilton";
 import MovingTruckHireHamilton from "./pages/MovingTruckHireHamilton";
 import TrailerHireAuckland from "./pages/TrailerHireAuckland";
@@ -401,7 +403,9 @@ const App = () => {
                 <Route path="/cargo-van-hire" element={<CargoVanHire />} />
                 <Route path="/cargo-van-hire-auckland" element={<CargoVanHireAuckland />} />
                 <Route path="/list-your-vehicle" element={<ListYourVehicle />} />
+                <Route path="/earn-from-your-van-or-truck" element={<RegisterInterestEarn />} />
                 <Route path="/partner-with-us" element={<Navigate to="/list-your-vehicle" replace />} />
+
                 <Route path="/trailer-hire-hamilton" element={<TrailerHireHamilton />} />
                 <Route path="/trailer-hire-auckland" element={<TrailerHireAuckland />} />
                 <Route path="/car-hire-auckland-airport-from-australia" element={<CarHireAucklandAirportFromAustralia />} />
