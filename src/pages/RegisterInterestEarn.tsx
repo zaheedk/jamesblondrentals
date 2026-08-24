@@ -13,6 +13,7 @@ import PageSEO from '@/components/PageSEO';
 import JsonLd from '@/components/JsonLd';
 import { supabase } from '@/integrations/supabase/client';
 import { brandedEmailHtml } from '@/lib/email-template';
+import heroImage from '@/assets/earn-from-your-van-hero.jpg';
 
 const escapeHtml = (value: string) =>
   value
@@ -116,6 +117,14 @@ const RegisterInterestEarn = () => {
               earning instead. Register your interest below and our team will talk you through how the
               revenue share works.
             </p>
+
+            <img
+              src={heroImage}
+              alt="Van owner handing keys to a James Blond rental agent"
+              width={1280}
+              height={960}
+              className="w-full rounded-2xl border border-border object-cover aspect-[4/3] mb-8"
+            />
 
             <div className="grid sm:grid-cols-2 gap-5 mb-8">
               {benefits.map(({ Icon, title, text }) => (

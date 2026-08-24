@@ -4,6 +4,7 @@ import PageSEO from '@/components/PageSEO';
 import JsonLd from '@/components/JsonLd';
 import { Button } from '@/components/ui/button';
 import { Check, Phone, Mail, ArrowRight, ShieldCheck, Wallet, Users, Car, TrendingUp } from 'lucide-react';
+import heroImage from '@/assets/list-your-vehicle-hero.jpg';
 
 const FB_CAMPAIGN_UTM = 'utm_source=facebook&utm_medium=cpc&utm_campaign=list_your_vehicle&utm_content=landing_page';
 
@@ -146,8 +147,16 @@ const ListYourVehicle = () => {
             </p>
           </div>
 
-          {/* Right: 2x2 feature grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Right: hero image + 2x2 feature grid */}
+          <div className="space-y-4">
+            <img
+              src={heroImage}
+              alt="Cargo van and furniture truck parked on an Auckland driveway ready for rental"
+              width={1280}
+              height={960}
+              className="w-full rounded-2xl border border-border object-cover aspect-[4/3]"
+            />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {[
               {
                 Icon: Wallet,
@@ -181,6 +190,7 @@ const ListYourVehicle = () => {
                 <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
               </div>
             ))}
+            </div>
           </div>
         </div>
       </section>
