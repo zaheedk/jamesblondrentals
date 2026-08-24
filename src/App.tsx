@@ -128,6 +128,8 @@ import FurnitureTruckHireAuckland from "./pages/FurnitureTruckHireAuckland";
 import CargoVanHire from "./pages/CargoVanHire";
 import CargoVanHireAuckland from "./pages/CargoVanHireAuckland";
 import ListYourVehicle from "./pages/ListYourVehicle";
+import RegisterInterestEarn from "./pages/RegisterInterestEarn";
+
 import TrailerHireHamilton from "./pages/TrailerHireHamilton";
 import MovingTruckHireHamilton from "./pages/MovingTruckHireHamilton";
 import TrailerHireAuckland from "./pages/TrailerHireAuckland";
