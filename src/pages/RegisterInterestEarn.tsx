@@ -13,6 +13,7 @@ import PageSEO from '@/components/PageSEO';
 import JsonLd from '@/components/JsonLd';
 import { supabase } from '@/integrations/supabase/client';
 import { brandedEmailHtml } from '@/lib/email-template';
+import heroImage from '@/assets/earn-from-your-van-hero.jpg';
 
 const escapeHtml = (value: string) =>
   value
