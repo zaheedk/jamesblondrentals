@@ -223,6 +223,9 @@ const RegisterInterestEarn = () => {
                           </span>
                         )}
                       </Button>
+                      <p className="text-xs text-muted-foreground text-center">
+                        We only use your details to contact you about listing your vehicle.
+                      </p>
                     </form>
                   </Form>
                 </>
@@ -230,9 +233,63 @@ const RegisterInterestEarn = () => {
             </CardContent>
           </Card>
         </div>
+        </div>
+      </section>
+
+      <section className="container mx-auto px-6 py-16 md:py-20">
+        <div className="max-w-2xl mb-10">
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-3">Why owners partner with us</h2>
+          <p className="text-muted-foreground">
+            You own the vehicle. We bring the customers and run the rental end to end.
+          </p>
+        </div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {benefits.map(({ Icon, title, text }) => (
+            <div
+              key={title}
+              className="group border border-border rounded-2xl p-6 bg-card hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+            >
+              <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                <Icon className="w-5 h-5 text-primary" />
+              </div>
+              <h3 className="font-semibold mb-2 text-base">{title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">{text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="bg-muted/30 border-y border-border py-16 md:py-20">
+        <div className="container mx-auto px-6">
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-10">How it works</h2>
+          <div className="grid md:grid-cols-3 gap-6">
+            {steps.map((step, i) => (
+              <div key={step.title} className="relative bg-card border border-border rounded-2xl p-6">
+                <span className="absolute -top-4 left-6 w-9 h-9 rounded-full bg-primary text-primary-foreground text-sm font-bold flex items-center justify-center shadow-md">
+                  {i + 1}
+                </span>
+                <h3 className="font-semibold mt-4 mb-2">{step.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{step.text}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-10 flex flex-wrap gap-4">
+            <Button size="lg" variant="cta" asChild>
+              <a href="#top" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
+                <Mail className="mr-2 h-4 w-4" /> Register my interest
+              </a>
+            </Button>
+            <Button size="lg" variant="outline" asChild>
+              <a href="tel:0800525663">
+                <Phone className="mr-2 h-4 w-4" /> 0800 525 663
+              </a>
+            </Button>
+          </div>
+        </div>
       </section>
     </div>
   );
 };
+
 
 export default RegisterInterestEarn;
