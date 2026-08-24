@@ -197,6 +197,8 @@ import WellingtonMinibusHire from "./pages/WellingtonMinibusHire";
 import WellingtonMinibusRentals from "./pages/WellingtonMinibusRentals";
 import WellingtonMinibusHireCBD from "./pages/WellingtonMinibusHireCBD";
 import FuelCalculator from "./pages/FuelCalculator";
+import MovingCostCalculatorPage from "./pages/MovingCostCalculator";
+import EmbedMovingCostCalculator from "./pages/EmbedMovingCostCalculator";
 import BuyUsedVehicles from "./pages/BuyUsedVehicles";
 import Unsubscribe from "./pages/Unsubscribe";
 import VehiclePhotos from "./pages/VehiclePhotos";
