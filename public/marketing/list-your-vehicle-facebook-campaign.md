@@ -72,7 +72,7 @@ Rotate 3–4 headlines per ad set to test hook strength:
 > Is your work van sitting idle on weekends? Put it to work with James Blond Rentals. We list it, drive the demand, manage the paperwork and pay you a share of the revenue monthly.
 
 **Option C — Local trust**
-> Kiwis have trusted James Blond Rentals for cars, vans and trucks since 1995. Now we are looking for more commercial vehicle owners to partner with. Earn a share of net rental revenue — no joining fee.
+> Kiwis have trusted James Blond Rentals for cars, vans and trucks since 2004. Now we are looking for more commercial vehicle owners to partner with. Earn a share of net rental revenue — no joining fee.
 
 ### Description
 
