@@ -87,9 +87,10 @@ export const Scene5Trust: React.FC = () => {
         ))}
       </div>
 
-      <div style={{ position: "absolute", right: 82, top: 620, width: 300, opacity: 0.9 }}>
-        <Photo src="couple-moving-boxes-truck.jpg" delay={34} height={220} radius={26} tilt={2} />
+      <div style={{ position: "absolute", right: 82, top: 556, width: 300, opacity: 0.92 }}>
+        <Photo src="couple-moving-boxes-truck.jpg" delay={34} height={186} radius={26} tilt={2} />
       </div>
+
     </AbsoluteFill>
   );
 };

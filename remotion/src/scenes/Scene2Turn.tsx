@@ -13,9 +13,10 @@ export const Scene2Turn: React.FC = () => {
         <div style={{ height: 24 }} />
         <Headline
           delay={10}
-          size={112}
-          lines={["Put it", "to work.", <span key="c" style={{ color: palette.greenSoft }}>Earn monthly.</span>]}
+          size={92}
+          lines={["Put it to work.", <span key="c" style={{ color: palette.greenSoft }}>Earn monthly.</span>]}
         />
+
         <div
           style={{
             ...sub,
@@ -45,8 +46,9 @@ export const Scene2Turn: React.FC = () => {
           style={{
             ...badge,
             position: "absolute",
-            left: -18,
-            top: -44,
+            right: -14,
+            top: -40,
+
             background: palette.green,
             color: palette.cream,
             fontFamily: body,

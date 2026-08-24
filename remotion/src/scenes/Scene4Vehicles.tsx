@@ -62,8 +62,9 @@ export const Scene4Vehicles: React.FC = () => {
         }}
       >
         {types.map((t, i) => (
-          <Chip key={t} label={t} i={i} delay={46 + i * 6} />
+          <Chip key={t} label={t} i={i} delay={40 + i * 4} />
         ))}
+
       </div>
 
       <div
