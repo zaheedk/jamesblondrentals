@@ -514,6 +514,8 @@ const App = () => {
                 <Route path="/minibus-hire-wellington" element={<WellingtonMinibusRentals />} />
                 <Route path="/wellington-minibus-hire-cbd" element={<WellingtonMinibusHireCBD />} />
                 <Route path="/fuel-calculator" element={<FuelCalculator />} />
+                <Route path="/moving-cost-calculator" element={<MovingCostCalculatorPage />} />
+                <Route path="/embed/moving-cost-calculator" element={<EmbedMovingCostCalculator />} />
                 <Route path="/buy-used-vehicles" element={<BuyUsedVehicles />} />
                 
                 <Route path="/jumbo-taxi-launch" element={<JumboTaxiLaunch />} />
