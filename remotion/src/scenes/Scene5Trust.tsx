@@ -3,7 +3,7 @@ import { palette, useAccent, useDrift, useEnter } from "../theme";
 import { Headline, Kicker, Photo, body, display } from "../components/ui";
 
 const stats = [
-  { big: "1995", small: "Renting to Kiwis since" },
+  { big: "2004", small: "Renting to Kiwis since" },
   { big: "$0", small: "Joining fee, ever" },
   { big: "Monthly", small: "Payouts with statements" },
 ];
