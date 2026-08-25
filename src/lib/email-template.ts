@@ -43,7 +43,7 @@ export function brandedEmailHtml(title: string, bodyHtml: string): string {
           <tr>
             <td style="background-color:${SECONDARY};padding:24px 32px;text-align:center;">
               <p style="margin:0 0 8px;color:#ffffff;font-size:13px;font-weight:bold;">James Blond Rentals</p>
-              <p style="margin:0 0 4px;color:#cccccc;font-size:12px;">Tel: 0800 505 007 | Email: info@jamesblond.co.nz</p>
+              <p style="margin:0 0 4px;color:#cccccc;font-size:12px;">Tel: 0800 525 663 | Email: info@jamesblond.co.nz</p>
               <p style="margin:0 0 4px;color:#cccccc;font-size:12px;">Auckland • Wellington • Christchurch</p>
               <p style="margin:8px 0 0;color:#999999;font-size:11px;">
                 <a href="https://www.jamesblond.co.nz" style="color:${PRIMARY};text-decoration:none;">www.jamesblond.co.nz</a>
