@@ -96,9 +96,14 @@ const overrides: Record<string, Partial<Omit<StaticPageMetadata, 'path'>>> = {
     description: 'Truck hire in Christchurch for house moves, furniture transport, deliveries and commercial jobs.',
   },
   '/van-hire-wellington': {
-    title: 'Van Hire Wellington | James Blond Rentals',
-    description: 'Cargo van hire in Wellington for deliveries, courier work, furniture moves and business transport.',
+    title: 'Van Hire Wellington from $95/Day | Van Rental Wellington',
+    description: 'Van hire in Wellington from $95/day — cargo vans, jumbo vans and moving vans on a car licence. Serving Lower Hutt, Petone, Porirua and Kāpiti from our Te Aro branch.',
   },
+  '/car-rental-wellington-new-zealand': {
+    title: 'Car Hire Wellington from $45/Day | Car Rental Wellington',
+    description: 'Car hire in Wellington from $45/day — economy cars, SUVs, 7-seaters and people movers from our Te Aro branch. No hidden fees, one-way hire available.',
+  },
+
   '/auckland-airport-cargo-van-rentals-hire': {
     title: 'Cargo Van Hire Auckland Airport | James Blond Rentals',
     description: 'Rent cargo vans near Auckland Airport for courier work, deliveries and commercial transport. Easy airport pickup.',
