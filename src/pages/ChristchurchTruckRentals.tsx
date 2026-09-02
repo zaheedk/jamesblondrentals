@@ -507,6 +507,50 @@ const ChristchurchTruckRentals = () => {
         </div>
       </section>
 
+      {/* Moving and removal search intent */}
+      <section className="mb-12 border-y border-border py-12">
+        <div className="max-w-3xl mb-8">
+          <h2 className="text-3xl font-bold mb-4">Moving truck hire in Christchurch</h2>
+          <p className="text-lg text-muted-foreground">
+            Hiring a removal truck is a practical option for Christchurch house moves, furniture pickups and office relocations. Our 2-tonne and 3-tonne box trucks have tail lifts to make heavy sofas, appliances and packed boxes easier to load, while a standard Class 1 licence keeps the move straightforward.
+          </p>
+        </div>
+        <div className="grid md:grid-cols-3 gap-6">
+          <Card>
+            <CardContent className="pt-6">
+              <h3 className="font-bold text-xl mb-3">Furniture truck hire</h3>
+              <p className="text-muted-foreground">
+                For a couch, bed, whiteware or a larger pickup, a box truck protects the load and reduces the number of trips around Riccarton, Sydenham, Addington and the wider city.
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <h3 className="font-bold text-xl mb-3">Removal truck for house moves</h3>
+              <p className="text-muted-foreground">
+                Moving from a flat or family home? Choose the truck size that matches your load, reserve a tail lift and add moving accessories when you book for a smoother DIY relocation.
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <h3 className="font-bold text-xl mb-3">Pick up at the right branch</h3>
+              <p className="text-muted-foreground">
+                The Harewood Airport branch suits Rangiora, Belfast and the north-west. The Moorhouse Avenue branch is convenient for the CBD, south and east Christchurch.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+        <div className="mt-8 flex flex-wrap gap-6 text-sm font-medium">
+          <Link to="#booking" className="inline-flex items-center gap-2 text-primary hover:underline">
+            Check moving truck availability <ArrowRight className="h-4 w-4" />
+          </Link>
+          <Link to="/moving-truck-hire" className="inline-flex items-center gap-2 text-primary hover:underline">
+            Moving truck hire guide <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+      </section>
+
       {/* Canterbury Suburbs Services */}
       <section className="mb-12">
         <h2 className="text-2xl font-bold mb-6">Truck Hire Across Greater Christchurch</h2>
