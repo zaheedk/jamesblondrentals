@@ -225,6 +225,84 @@ const ChristchurchVanHire = () => {
         </div>
       </section>
 
+      {/* Branch details (local SEO / NAP) */}
+      <section className="container mx-auto px-6 py-16 border-b border-border">
+        <div className="max-w-2xl mb-10">
+          <div className="flex items-center gap-3 mb-3">
+            <MapPin className="h-5 w-5 text-primary" />
+            <span className="text-base font-semibold">Where to collect your van</span>
+          </div>
+          <div className="h-px w-full bg-border mb-6" />
+          <h2 className="font-sans font-extrabold tracking-tight text-4xl md:text-5xl leading-[1.05]">
+            Two Christchurch van hire branches.
+          </h2>
+        </div>
+        <div className="grid md:grid-cols-2 gap-6">
+          {[
+            {
+              name: 'Christchurch Airport / Harewood',
+              address: '17/25 Logistics Drive, Harewood, Christchurch 8051',
+              best: 'Best for the north and west — Papanui, Belfast, Rangiora, Kaiapoi and airport arrivals.',
+              to: '/contact/christchurch',
+            },
+            {
+              name: 'Central Christchurch',
+              address: '515 Moorhouse Avenue, Waltham, Christchurch 8011',
+              best: 'Best for the CBD, south and east — Sydenham, Addington, Riccarton, Linwood and Hornby.',
+              to: '/contact/christchurch-central',
+            },
+          ].map((b) => (
+            <div key={b.name} className="rounded-2xl border border-border p-6">
+              <h3 className="font-sans font-extrabold text-xl tracking-tight">{b.name}</h3>
+              <p className="mt-2 text-sm text-muted-foreground">{b.address}</p>
+              <p className="mt-3 text-sm">{b.best}</p>
+              <p className="mt-4 text-sm">
+                <a href="tel:0800525663" className="font-semibold hover:text-primary">0800 525 663</a>
+                <span className="text-muted-foreground"> · Open Mon–Sun 8am–5pm</span>
+              </p>
+              <Link
+                to={b.to}
+                className="mt-4 inline-flex items-center gap-2 text-sm font-medium border-b border-foreground pb-1 hover:text-primary hover:border-primary transition-colors"
+              >
+                Branch details &amp; directions <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Search intent sections */}
+      <section className="container mx-auto px-6 py-16 grid md:grid-cols-3 gap-10">
+        {[
+          {
+            h: 'Moving van hire in Christchurch',
+            p: 'Shifting a studio or one-bedroom flat around Riccarton, Ilam or Sydenham? A jumbo van takes a bed, a couch, a fridge and the boxes in two easy runs — and you drive it on a car licence. Add a hand trolley and straps at the counter.',
+            link: { to: '/moving-van-hire-christchurch', label: 'Moving van hire Christchurch' },
+          },
+          {
+            h: 'Courier & trade van hire',
+            p: 'Daily, weekly and monthly cargo van hire for Canterbury couriers, sparkies, builders and installers. Walk-through cabs, sliding side doors, and rates that get cheaper the longer you keep it.',
+            link: { to: '/courier-van-hire-christchurch', label: 'Courier van hire Christchurch' },
+          },
+          {
+            h: 'Cheap van rental Christchurch',
+            p: 'Our cheapest Christchurch van is the standard cargo van from $95/day. Hiring Monday to Thursday, taking multiple days or booking a full week all drop the daily rate — and there are no counter admin fees.',
+            link: { to: '/hot-deals', label: 'Current hire deals' },
+          },
+        ].map((s) => (
+          <article key={s.h}>
+            <h2 className="font-sans font-extrabold text-2xl tracking-tight">{s.h}</h2>
+            <p className="mt-4 text-muted-foreground leading-relaxed">{s.p}</p>
+            <Link
+              to={s.link.to}
+              className="mt-5 inline-flex items-center gap-2 text-sm font-medium border-b border-foreground pb-1 hover:text-primary hover:border-primary transition-colors"
+            >
+              {s.link.label} <ArrowRight className="h-4 w-4" />
+            </Link>
+          </article>
+        ))}
+      </section>
+
       {/* Zigzag fleet */}
       <section className="container mx-auto px-6 py-20 md:py-28">
         <div className="max-w-2xl mb-16">
