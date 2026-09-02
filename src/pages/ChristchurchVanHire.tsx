@@ -281,7 +281,7 @@ const ChristchurchVanHire = () => {
           },
           {
             h: 'Courier & trade van hire',
-            p: 'Daily, weekly and monthly cargo van hire for Canterbury couriers, sparkies, builders and installers. Walk-through cabs, sliding side doors, roof racks on request, and rates that get cheaper the longer you keep it.',
+            p: 'Daily, weekly and monthly cargo van hire for Canterbury couriers, sparkies, builders and installers. Walk-through cabs, sliding side doors, and rates that get cheaper the longer you keep it.',
             link: { to: '/courier-van-hire-christchurch', label: 'Courier van hire Christchurch' },
           },
           {
