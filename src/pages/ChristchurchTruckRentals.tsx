@@ -545,8 +545,8 @@ const ChristchurchTruckRentals = () => {
           <Link to="#booking" className="inline-flex items-center gap-2 text-primary hover:underline">
             Check moving truck availability <ArrowRight className="h-4 w-4" />
           </Link>
-          <Link to="/moving-truck-hire" className="inline-flex items-center gap-2 text-primary hover:underline">
-            Moving truck hire guide <ArrowRight className="h-4 w-4" />
+          <Link to="/truck-hire-christchurch" className="inline-flex items-center gap-2 text-primary hover:underline">
+            Christchurch truck hire <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
       </section>
