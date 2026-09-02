@@ -171,7 +171,7 @@ const Footer = () => {
                 <Link to="/moving-cost-calculator" className="text-gray-300 hover:text-white transition-colors text-sm">Moving Truck Size & Cost Calculator</Link>
               </li>
               <li>
-                <Link to="/van-hire-wellington" className="text-gray-300 hover:text-white transition-colors text-sm">Wellington Cargo Van Rentals</Link>
+                <Link to="/van-hire-wellington" className="text-gray-300 hover:text-white transition-colors text-sm">Van Hire Wellington</Link>
               </li>
               <li>
                 <Link to="/van-hire-auckland" className="text-gray-300 hover:text-white transition-colors text-sm">Van Hire Auckland</Link>

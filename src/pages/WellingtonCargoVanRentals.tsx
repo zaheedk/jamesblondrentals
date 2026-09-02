@@ -25,9 +25,9 @@ const WellingtonCargoVanRentals = () => {
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-6 mb-8">
         <div className="text-center mb-6">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">Van Rental & Cargo Van Hire — Wellington</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">Van Hire Wellington — Van Rental from $95 a Day</h1>
           <p className="text-lg text-gray-700 mb-6">
-            Same-day van rental and cargo van hire across the Wellington region — Wellington CBD, Te Aro, Newtown, Kilbirnie, Johnsonville, Petone, Lower Hutt, Upper Hutt, Porirua, Tawa and the Kapiti Coast. Drive on a standard car licence.
+            Same-day van hire and van rental across the Wellington region — Wellington CBD, Te Aro, Newtown, Kilbirnie, Johnsonville, Petone, Lower Hutt, Upper Hutt, Porirua, Tawa and the Kapiti Coast. Cargo vans, jumbo vans and 12-seat vans, all driveable on a standard car licence.
           </p>
         </div>
       </div>
@@ -35,7 +35,7 @@ const WellingtonCargoVanRentals = () => {
       {/* Booking Form Section - Moved to Top */}
       <section id="booking-form" className="mb-12">
         <div className="bg-primary/5 border border-primary/10 rounded-lg p-6">
-          <h2 className="text-2xl font-bold mb-6 text-center">Book Your Wellington Cargo Van</h2>
+          <h2 className="text-2xl font-bold mb-6 text-center">Book Your Wellington Van</h2>
           <p className="text-center mb-6">Check availability and reserve your van today</p>
           
           <div className="max-w-4xl mx-auto">
@@ -43,6 +43,85 @@ const WellingtonCargoVanRentals = () => {
           </div>
         </div>
       </section>
+
+      {/* Wellington branch NAP */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold mb-6">Where to pick up your Wellington van</h2>
+        <div className="grid md:grid-cols-2 gap-6">
+          <Card>
+            <CardContent className="p-6">
+              <h3 className="text-xl font-semibold mb-4">Wellington branch — Te Aro</h3>
+              <div className="space-y-2 text-sm">
+                <p><span className="font-medium">Address:</span> 24 Abel Smith Street, Te Aro, Wellington 6011</p>
+                <p>
+                  <span className="font-medium">Phone:</span>{' '}
+                  <a href="tel:0800525663" className="text-primary hover:underline">0800 525 663</a>
+                </p>
+                <p>
+                  <span className="font-medium">Email:</span>{' '}
+                  <a href="mailto:wellington@jamesblond.co.nz" className="text-primary hover:underline">wellington@jamesblond.co.nz</a>
+                </p>
+                <p><span className="font-medium">Hours:</span> 8:00 AM – 5:00 PM, 7 days. After-hours pickup and drop-off on request.</p>
+              </div>
+              <p className="mt-4 text-sm text-gray-600">
+                A few minutes from the CBD and the waterfront, with fast access to SH1 and SH2 — and about 10 minutes from Wellington Airport.
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-6">
+              <h3 className="text-xl font-semibold mb-4">Areas we serve from Te Aro</h3>
+              <ul className="space-y-2 text-sm text-gray-700">
+                <li><span className="font-medium">Wellington city:</span> Te Aro, CBD, Mt Victoria, Newtown, Kilbirnie, Miramar, Karori, Island Bay</li>
+                <li><span className="font-medium">Northern suburbs:</span> Johnsonville, Tawa, Churton Park, Ngaio</li>
+                <li><span className="font-medium">Hutt Valley:</span> Petone, Lower Hutt, Naenae, Wainuiomata, Upper Hutt — about 15 minutes via SH2</li>
+                <li><span className="font-medium">Porirua &amp; Kāpiti:</span> Porirua, Whitby, Plimmerton, Paraparaumu, Waikanae, Ōtaki</li>
+              </ul>
+              <div className="mt-4 flex flex-wrap gap-3 text-sm">
+                <Link to="/van-hire-lower-hutt" className="text-primary hover:underline">Van hire Lower Hutt</Link>
+                <Link to="/van-hire-porirua" className="text-primary hover:underline">Van hire Porirua</Link>
+                <Link to="/van-hire-kapiti-coast" className="text-primary hover:underline">Van hire Kāpiti Coast</Link>
+                <Link to="/van-hire-wellington-airport" className="text-primary hover:underline">Van hire Wellington Airport</Link>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* Van rental intent sections */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold mb-6">What kind of van hire do you need?</h2>
+        <div className="grid md:grid-cols-3 gap-6">
+          <Card>
+            <CardContent className="pt-6">
+              <h3 className="text-lg font-semibold mb-2">Moving van hire</h3>
+              <p className="text-sm text-gray-600 mb-3">
+                Shifting a flat in Te Aro or a bedroom out of Kelburn? A jumbo van takes a queen bed, sofa, fridge and 10–15 boxes — cheaper than a truck and far easier on Wellington&apos;s narrow streets. Hand trolleys, blankets and straps can be added at checkout.
+              </p>
+              <Link to="/moving-van-hire-wellington" className="text-primary hover:underline text-sm font-medium">Moving van hire Wellington</Link>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <h3 className="text-lg font-semibold mb-2">Cargo &amp; courier van hire</h3>
+              <p className="text-sm text-gray-600 mb-3">
+                Lockable cargo bay, sliding side door and a flat floor for parcel runs, trade tools and materials. Daily and weekly rates for tradies and couriers working the CBD, Newtown, Kilbirnie and the Hutt.
+              </p>
+              <Link to="/cargo-van-hire-wellington" className="text-primary hover:underline text-sm font-medium">Cargo van hire Wellington</Link>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <h3 className="text-lg font-semibold mb-2">Cheap van rental</h3>
+              <p className="text-sm text-gray-600 mb-3">
+                Van rental in Wellington starts from $95 per day. Midweek pickups are our quietest days and carry the best rates, weekly hire lowers the daily price again, and there are no broker fees when you book direct.
+              </p>
+              <Link to="/price-guide" className="text-primary hover:underline text-sm font-medium">See van hire rates</Link>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
 
       {/* Why Choose Us */}
       <section className="mb-12">
