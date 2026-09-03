@@ -161,7 +161,7 @@ const AucklandVanHireHub = () => {
             </div>
             <div className="h-px w-full bg-[hsl(0_0%_70%)] mb-10" />
             <h1 className="font-sans font-extrabold tracking-tight text-4xl md:text-6xl leading-[1.05]">
-              Cargo Vans, Jumbo Vans &amp; 12-Seat Minibuses for Hire in Auckland
+              Van Hire Auckland — Cargo Vans, Jumbo Vans &amp; 12-Seat Minibuses
             </h1>
             <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
               <Button asChild variant="cta" size="lg">
