@@ -11,12 +11,41 @@ import truckOpenDoors from '@/assets/truck-open-doors-loading-boxes.jpg';
 import familyUnpacking from '@/assets/family-unpacking-moving-truck.jpg';
 import coupleMoving from '@/assets/couple-moving-boxes-truck.jpg';
 import PageSEO from '@/components/PageSEO';
+import JsonLd from '@/components/JsonLd';
+import { MapPin, Phone, Clock } from 'lucide-react';
 
 
 const AucklandTruckRentals = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <PageSEO title="Cheapest Truck Hire Auckland from $35/hr — 5 Branches, Same Day" description="Cheap Auckland truck hire from $35/hr or $125/day. 12m³ to 19m³ trucks with 400kg tail lifts for house moves, deliveries and trades. Five branches, car licence only, no hidden fees — book online in 2 minutes." canonical="/auckland-truck-rentals-hire" />
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@type': 'AutoRental',
+          name: 'James Blond Rentals — Auckland Truck Hire',
+          url: 'https://www.jamesblond.co.nz/auckland-truck-rentals-hire',
+          telephone: '+64800525663',
+          priceRange: '$$',
+          address: {
+            '@type': 'PostalAddress',
+            streetAddress: '4004 Great North Road',
+            addressLocality: 'Glen Eden, Auckland',
+            addressRegion: 'Auckland',
+            postalCode: '0602',
+            addressCountry: 'NZ',
+          },
+          areaServed: ['Auckland', 'West Auckland', 'South Auckland', 'North Shore', 'Auckland Airport'],
+          openingHoursSpecification: [
+            {
+              '@type': 'OpeningHoursSpecification',
+              dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+              opens: '08:00',
+              closes: '17:00',
+            },
+          ],
+        }}
+      />
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-6 mb-8">
         <div className="grid md:grid-cols-2 gap-6 items-center">
@@ -438,6 +467,110 @@ const AucklandTruckRentals = () => {
               These can be added during the booking process. We recommend our hand trolleys for navigating Auckland's various terrains.
             </p>
           </div>
+        </div>
+      </section>
+
+      {/* Auckland search intent */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold mb-2">What Aucklanders hire our trucks for</h2>
+        <p className="text-gray-600 mb-6 max-w-3xl">
+          Most Auckland truck hire falls into four jobs. Pick the closest one and we will point you at the right
+          size before you book.
+        </p>
+        <div className="grid md:grid-cols-2 gap-6">
+          <Card>
+            <CardContent className="pt-6">
+              <h3 className="font-bold text-xl mb-2">Moving truck hire Auckland</h3>
+              <p className="text-gray-600 mb-3">
+                Shifting flats in Grey Lynn, Mt Eden or Papatoetoe? A 12m&sup3; 2-tonne box truck handles a
+                one or two-bedroom move in a couple of loads, on a standard car licence. Book a morning slot
+                and you are usually done by lunch.
+              </p>
+              <Link to="/fleet/trucks/2-tonne-box-12m3" className="text-primary hover:underline font-medium">
+                → 2-tonne 12m&sup3; box truck
+              </Link>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <h3 className="font-bold text-xl mb-2">Furniture truck hire Auckland</h3>
+              <p className="text-gray-600 mb-3">
+                Buying a couch, fridge or bed off Marketplace across town? A tail-lift truck means one person can
+                load heavy furniture without a ramp or a second pair of hands.
+              </p>
+              <Link to="/furniture-truck-hire-auckland" className="text-primary hover:underline font-medium">
+                → Furniture truck hire Auckland
+              </Link>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <h3 className="font-bold text-xl mb-2">Tail lift truck hire for trades &amp; deliveries</h3>
+              <p className="text-gray-600 mb-3">
+                Penrose, East Tamaki and Wiri customers hire our 400kg tail-lift trucks daily for pallet drops,
+                whiteware deliveries and site runs. Daily and weekly rates available.
+              </p>
+              <Link to="/fleet/trucks/3-tonne-box-18m3" className="text-primary hover:underline font-medium">
+                → 3-tonne tail lift truck
+              </Link>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <h3 className="font-bold text-xl mb-2">Tipper truck hire for green waste &amp; landscaping</h3>
+              <p className="text-gray-600 mb-3">
+                Our 2-tonne tipper is the Auckland pick for garden clean-ups, soil and metal cartage and dump
+                runs — tip the load instead of shovelling it out.
+              </p>
+              <Link to="/fleet/trucks/2-tonne-tipper" className="text-primary hover:underline font-medium">
+                → 2-tonne tipper truck
+              </Link>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* Branch NAP */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold mb-6">Where to pick up your Auckland truck</h2>
+        <div className="grid md:grid-cols-2 gap-6">
+          {[
+            {
+              name: 'Auckland — Glen Eden (West Auckland)',
+              lines: ['4004 Great North Road', 'Glen Eden', 'Auckland 0602'],
+              to: '/contact/auckland',
+            },
+            {
+              name: 'Auckland Airport — Māngere',
+              lines: ['203 Kirkbride Road', 'Māngere', 'Auckland 2022'],
+              to: '/contact/auckland-airport',
+            },
+          ].map((b) => (
+            <Card key={b.name}>
+              <CardContent className="pt-6 space-y-4">
+                <h3 className="text-xl font-semibold">{b.name}</h3>
+                <div className="flex items-start gap-3">
+                  <MapPin className="w-5 h-5 mt-1 text-primary" />
+                  <div>
+                    {b.lines.map((l) => (
+                      <p key={l}>{l}</p>
+                    ))}
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Phone className="w-5 h-5 text-primary" />
+                  <a href="tel:0800525663" className="hover:text-primary">0800 525 663</a>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Clock className="w-5 h-5 mt-1 text-primary" />
+                  <p>Open 7 days, 8:00am – 5:00pm</p>
+                </div>
+                <Button variant="outline" asChild>
+                  <Link to={b.to}>Branch details &amp; directions</Link>
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       </section>
 

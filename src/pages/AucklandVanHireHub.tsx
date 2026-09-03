@@ -161,7 +161,7 @@ const AucklandVanHireHub = () => {
             </div>
             <div className="h-px w-full bg-[hsl(0_0%_70%)] mb-10" />
             <h1 className="font-sans font-extrabold tracking-tight text-4xl md:text-6xl leading-[1.05]">
-              Cargo Vans, Jumbo Vans &amp; 12-Seat Minibuses for Hire in Auckland
+              Van Hire Auckland — Cargo Vans, Jumbo Vans &amp; 12-Seat Minibuses
             </h1>
             <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
               <Button asChild variant="cta" size="lg">
@@ -399,6 +399,103 @@ const AucklandVanHireHub = () => {
             </div>
           ))}
         </dl>
+      </section>
+
+      {/* Van hire rates */}
+      <section className="container mx-auto px-6 pb-16">
+        <h2 className="font-sans font-extrabold tracking-tight text-3xl md:text-4xl mb-4">
+          Auckland van hire prices
+        </h2>
+        <p className="text-muted-foreground max-w-3xl mb-8">
+          Indicative daily rates for vans collected from an Auckland branch. Multi-day, weekly and midweek
+          pickups drop the daily rate further — the booking form shows live pricing for your dates. Full rate
+          card and kilometre allowances are on our{' '}
+          <Link to="/price-guide" className="text-primary hover:underline">price guide</Link>.
+        </p>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[
+            { name: 'Standard cargo van', from: '$95', note: '6–8 m³ · car licence' },
+            { name: 'Standard van · rear seat', from: '$105', note: '5 seats + cargo' },
+            { name: 'Jumbo / premium van', from: '$115', note: '10–12 m³ · high roof' },
+            { name: '12-seat minibus', from: 'On request', note: '12 seats · car licence' },
+          ].map((r) => (
+            <div key={r.name} className="border border-border rounded-2xl p-6">
+              <h3 className="font-semibold text-lg">{r.name}</h3>
+              <p className="text-2xl font-extrabold text-primary mt-2">
+                {r.from}
+                {r.from.startsWith('$') && <span className="text-sm font-normal text-muted-foreground"> /day</span>}
+              </p>
+              <p className="text-xs uppercase tracking-widest text-muted-foreground mt-2">{r.note}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Local intent */}
+      <section className="container mx-auto px-6 pb-16 grid md:grid-cols-3 gap-8">
+        <div>
+          <h2 className="font-sans font-extrabold text-2xl mb-3">Moving van hire Auckland</h2>
+          <p className="text-muted-foreground">
+            Shifting a flat in Ponsonby, Mt Albert or Manukau? A jumbo van takes a studio or one-bedroom move in
+            two loads, drives on a car licence and parks where a truck cannot. Add a hand trolley at checkout.
+          </p>
+        </div>
+        <div>
+          <h2 className="font-sans font-extrabold text-2xl mb-3">Cargo &amp; courier van hire</h2>
+          <p className="text-muted-foreground">
+            Daily and weekly cargo van hire for Auckland couriers, trades and pop-up delivery runs across
+            Penrose, East Tamaki, Albany and the Airport precinct — swap in a bigger van at month end.
+          </p>
+        </div>
+        <div>
+          <h2 className="font-sans font-extrabold text-2xl mb-3">Cheap van hire Auckland</h2>
+          <p className="text-muted-foreground">
+            Our lowest van rates land on Monday–Wednesday pickups and multi-day hires, and every hire includes
+            8c/litre off fuel at participating Mobil stations. Booking direct means no broker margin or counter
+            fees.
+          </p>
+        </div>
+      </section>
+
+      {/* Branch NAP */}
+      <section className="container mx-auto px-6 pb-20">
+        <h2 className="font-sans font-extrabold tracking-tight text-3xl md:text-4xl mb-8">
+          Auckland van hire branches
+        </h2>
+        <div className="grid md:grid-cols-2 gap-6">
+          {[
+            {
+              name: 'Auckland — Glen Eden (West Auckland)',
+              lines: ['4004 Great North Road', 'Glen Eden', 'Auckland 0602'],
+              to: '/contact/auckland',
+            },
+            {
+              name: 'Auckland Airport — Māngere',
+              lines: ['203 Kirkbride Road', 'Māngere', 'Auckland 2022'],
+              to: '/contact/auckland-airport',
+            },
+          ].map((b) => (
+            <div key={b.name} className="border border-border rounded-2xl p-6 space-y-3">
+              <h3 className="text-xl font-semibold">{b.name}</h3>
+              <div className="flex items-start gap-3">
+                <MapPin className="h-5 w-5 mt-1 text-primary" />
+                <div>
+                  {b.lines.map((l) => (
+                    <p key={l}>{l}</p>
+                  ))}
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <Phone className="h-5 w-5 text-primary" />
+                <a href="tel:0800525663" className="hover:text-primary">0800 525 663</a>
+              </div>
+              <p className="text-sm text-muted-foreground">Open 7 days, 8:00am – 5:00pm</p>
+              <Link to={b.to} className="inline-flex items-center gap-2 text-primary hover:underline font-medium">
+                Branch details &amp; directions <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* Related Auckland van hire */}
