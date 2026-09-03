@@ -176,12 +176,7 @@ const AucklandCarHire = () => {
         description="Car hire in Auckland from $49/day. Economy cars, SUVs, 7-seaters and minibuses from our Glen Eden and Auckland Airport branches. No hidden fees — book online or call 0800 525 663."
         canonical="/car-hire-auckland"
       />
-      <BreadcrumbsJsonLd
-        items={[
-          { name: 'Home', url: SITE_URL },
-          { name: 'Car Hire Auckland', url: PAGE_URL },
-        ]}
-      />
+      <BreadcrumbsJsonLd />
       <JsonLd data={faqLd} />
       <JsonLd data={businessLd} />
 
@@ -342,7 +337,7 @@ const AucklandCarHire = () => {
                 with a free shuttle on request — no in-terminal premium and no long counter queue.
               </p>
               <Button variant="outline" asChild>
-                <Link to="/car-rental-auckland-airport">Auckland Airport pickup details</Link>
+                <Link to="/car-rental-auckland-airport-new-zealand">Auckland Airport pickup details</Link>
               </Button>
             </CardContent>
           </Card>
