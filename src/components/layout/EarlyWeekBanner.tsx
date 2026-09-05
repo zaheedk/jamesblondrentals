@@ -29,7 +29,7 @@ const EarlyWeekBanner = () => {
       <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 px-10 py-2.5 text-center text-sm sm:text-base font-semibold">
         <Percent className="w-5 h-5 shrink-0" aria-hidden="true" />
         <span>
-          <span className="underline underline-offset-2">25% Early Week Discount</span> on Trucks & Jumbo Vans — hire must start & end Mon–Thu
+          <span className="underline underline-offset-2">50% Early Week Discount</span> on Trucks & Jumbo Vans — hire must start & end Mon–Thu
         </span>
         <span className="hidden sm:inline rounded-full bg-foreground/10 px-3 py-0.5 text-xs uppercase tracking-wide">
           Save Now

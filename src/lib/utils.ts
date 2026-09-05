@@ -112,7 +112,7 @@ export function getCampaignCode(
     return originalCampaignCode;
   }
   
-  // Skip the 25% commercial midweek discount on short (≤2 hour) same-day hires.
+  // Skip the 50% commercial midweek discount on short (≤2 hour) same-day hires.
   // These already use hourly rates and were never intended to receive the daily discount.
   if (pickupTime && dropoffTime && pickupDate && dropoffDate) {
     const sameDay = pickupDate === dropoffDate;
@@ -122,7 +122,7 @@ export function getCampaignCode(
       if ([ph, pm, dh, dm].every(n => !isNaN(n))) {
         const durationMinutes = (dh * 60 + dm) - (ph * 60 + pm);
         if (durationMinutes > 0 && durationMinutes <= 120) {
-          console.log('❌ Skipping earlyweekcommercial25 — 2-hour (or shorter) same-day hire');
+          console.log('❌ Skipping earlyweekcommercial50 — 2-hour (or shorter) same-day hire');
           return "";
         }
       }
@@ -137,10 +137,10 @@ export function getCampaignCode(
     isWeekday
   });
   
-  // If weekday booking, pass earlyweekcommercial25 and let RCM apply it to qualifying categories
+  // If weekday booking, pass earlyweekcommercial50 and let RCM apply it to qualifying categories
   if (isWeekday) {
-    console.log('✅ Applying earlyweekcommercial25 campaign code for weekday booking');
-    return "earlyweekcommercial25";
+    console.log('✅ Applying earlyweekcommercial50 campaign code for weekday booking');
+    return "earlyweekcommercial50";
   }
   
   console.log('❌ No campaign code applied - not a weekday booking');

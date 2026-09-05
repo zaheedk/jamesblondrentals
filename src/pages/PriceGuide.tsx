@@ -55,7 +55,7 @@ const PriceGuide = () => {
             <h3 className="font-semibold text-primary">Special Weekday Discount</h3>
           </div>
           <p className="text-primary/80">
-            Save 25% on all truck and jumbo van rentals when both pickup and dropoff are between Monday and Thursday!
+            Save 50% on all truck and jumbo van rentals when both pickup and dropoff are between Monday and Thursday!
           </p>
         </div>
 

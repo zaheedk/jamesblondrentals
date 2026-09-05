@@ -93,7 +93,7 @@ const PaymentSummary = ({
         </div>
         {hasDiscount && (
           <div className="flex justify-between text-sm text-primary">
-            <span>25% Midweek Discount Applied</span>
+            <span>50% Midweek Discount Applied</span>
             <span></span>
           </div>
         )}

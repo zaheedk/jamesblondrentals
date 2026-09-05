@@ -1,7 +1,7 @@
 import { parse, isValid, addDays, format, differenceInCalendarDays } from "date-fns";
 import { isWeekdayRental } from "@/lib/utils";
 
-/** Vehicles that receive the 25% early-week (Mon–Thu) commercial discount */
+/** Vehicles that receive the 50% early-week (Mon–Thu) commercial discount */
 export const isMidweekEligibleVehicle = (name?: string, type?: string): boolean => {
   const haystack = `${name || ""} ${type || ""}`.toLowerCase();
   if (!haystack.trim()) return false;

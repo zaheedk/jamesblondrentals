@@ -144,7 +144,7 @@ const VehicleCard = ({
   const isLimitedAvailability = isAvailable && lowStockCount !== null;
   const limitedMessage = `Only ${lowStockCount} left at ${pickupLocationName || "this location"}`;
 
-  // 25% early-week (Mon–Thu) discount applies to trucks & jumbo vans only
+  // 50% early-week (Mon–Thu) discount applies to trucks & jumbo vans only
   const hasMidweekDiscount =
     isMidweekEligibleVehicle(`${vehicle.make || ""} ${vehicle.model || ""}`, vehicle.type as string) &&
     datesQualifyForMidweek(pickupDate, dropoffDate);
@@ -178,7 +178,7 @@ const VehicleCard = ({
             className="w-fit mb-2 bg-primary/10 text-primary border-primary/20"
             title="Applies because your hire starts and ends Mon–Thu in the same week"
           >
-            25% Early Week Discount Applied
+            50% Early Week Discount Applied
           </Badge>
         )}
         {isLimitedAvailability && (

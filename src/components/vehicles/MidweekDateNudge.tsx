@@ -9,7 +9,7 @@ interface MidweekDateNudgeProps {
 }
 
 /**
- * Shown on the results page when the selected dates miss the Mon–Thu 25%
+ * Shown on the results page when the selected dates miss the Mon–Thu 50%
  * early-week discount. Offers a one-tap swap to the nearest qualifying window.
  */
 const MidweekDateNudge = ({ vehicles }: MidweekDateNudgeProps) => {
@@ -32,7 +32,7 @@ const MidweekDateNudge = ({ vehicles }: MidweekDateNudgeProps) => {
     .filter((r) => r > 0);
   const cheapest = rates.length ? Math.min(...rates) : 0;
   const days = Math.max(1, suggestion.nights);
-  const saving = cheapest ? cheapest * days * 0.25 : 0;
+  const saving = cheapest ? cheapest * days * 0.5 : 0;
 
   const applySwap = () => {
     const next = new URLSearchParams(searchParams);
@@ -49,7 +49,7 @@ const MidweekDateNudge = ({ vehicles }: MidweekDateNudgeProps) => {
           <CalendarClock className="mt-0.5 h-5 w-5 shrink-0 text-foreground" aria-hidden="true" />
           <div>
             <p className="font-semibold">
-              Save 25% by moving to early week
+              Save 50% by moving to early week
             </p>
             <p className="text-sm text-muted-foreground">
               Same truck or jumbo van, {suggestion.pickupLabel} – {suggestion.dropoffLabel}
