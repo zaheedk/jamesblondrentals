@@ -56,7 +56,7 @@ serve(async (req) => {
         - Luggage Trailer: $45/day, $45/2hr
 
         SPECIAL OFFERS:
-        - 25% weekday discount on trucks and jumbo vans (Monday-Thursday pickup/dropoff)
+        - 50% weekday discount on trucks and jumbo vans (Monday-Thursday pickup/dropoff)
         - Multi-day discounts available (4-6 days, 7-18 days, etc.)
         - Unlimited km packages for 3+ day rentals
 

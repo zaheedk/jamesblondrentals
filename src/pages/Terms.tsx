@@ -217,10 +217,10 @@ const Terms = () => {
         </AccordionItem>
 
         <AccordionItem value="midweek-discount">
-          <AccordionTrigger>21. Midweek 25% Discount</AccordionTrigger>
+          <AccordionTrigger>21. Midweek 50% Discount</AccordionTrigger>
           <AccordionContent>
             <ul className="list-disc pl-6 space-y-2">
-              <li>The 25% Midweek Discount applies <strong>only to bookings made online</strong> through our website.</li>
+              <li>The 50% Midweek Discount applies <strong>only to bookings made online</strong> through our website.</li>
               <li>Bookings made over the phone or in store <strong>do not qualify</strong> for the midweek discount.</li>
               <li>The discount applies to eligible vehicle categories for Monday–Thursday rentals within the same week.</li>
               <li>This offer cannot be combined with other promotional codes or discounts unless otherwise stated.</li>

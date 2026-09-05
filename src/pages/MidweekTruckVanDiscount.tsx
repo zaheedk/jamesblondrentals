@@ -19,16 +19,16 @@ const MidweekTruckVanDiscount = () => {
               LIMITED TIME OFFER
             </div>
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              Save <span className="text-primary">25%</span> on Mid-Week 
+              Save <span className="text-primary">50%</span> on Mid-Week 
               <br />Truck & Jumbo Van Rentals
             </h1>
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
               Beat the weekend rush and save big! Rent our trucks and jumbo vans Monday to Thursday 
-              and enjoy 25% off your rental. Perfect for moves, deliveries, and large item transport.
+              and enjoy 50% off your rental. Perfect for moves, deliveries, and large item transport.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button asChild size="lg" className="text-lg px-8 py-6">
-                <Link to="/">Book Now & Save 25%</Link>
+                <Link to="/">Book Now & Save 50%</Link>
               </Button>
               <Button asChild variant="outline" size="lg" className="text-lg px-8 py-6">
                 <Link to="/price-guide">View Price Guide</Link>
@@ -57,7 +57,7 @@ const MidweekTruckVanDiscount = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-center text-muted-foreground">
-                    Rentals starting Monday through Thursday qualify for the full 25% discount
+                    Rentals starting Monday through Thursday qualify for the full 50% discount
                   </p>
                 </CardContent>
               </Card>
@@ -92,7 +92,7 @@ const MidweekTruckVanDiscount = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-primary mb-2">25% OFF</div>
+                    <div className="text-3xl font-bold text-primary mb-2">50% OFF</div>
                     <p className="text-muted-foreground">
                       Applied automatically to your rental rate
                     </p>
@@ -170,7 +170,7 @@ const MidweekTruckVanDiscount = () => {
               <AccordionItem value="item-4">
                 <AccordionTrigger>Can I extend my rental if I need more time?</AccordionTrigger>
                 <AccordionContent>
-                  Yes, subject to availability. Contact us as soon as possible if you need to extend your rental. Extensions are charged at the standard hourly or daily rate, and the 25% mid-week discount may not apply to extension periods.
+                  Yes, subject to availability. Contact us as soon as possible if you need to extend your rental. Extensions are charged at the standard hourly or daily rate, and the 50% mid-week discount may not apply to extension periods.
                 </AccordionContent>
               </AccordionItem>
 
@@ -191,7 +191,7 @@ const MidweekTruckVanDiscount = () => {
               <AccordionItem value="item-7">
                 <AccordionTrigger>How far in advance should I book?</AccordionTrigger>
                 <AccordionContent>
-                  We recommend booking 2-7 days in advance, especially during peak moving periods (end of month, summer months). However, same-day bookings are often available during mid-week periods when you can take advantage of our 25% discount.
+                  We recommend booking 2-7 days in advance, especially during peak moving periods (end of month, summer months). However, same-day bookings are often available during mid-week periods when you can take advantage of our 50% discount.
                 </AccordionContent>
               </AccordionItem>
 
@@ -209,7 +209,7 @@ const MidweekTruckVanDiscount = () => {
       {/* CTA Section */}
       <section className="py-16 bg-primary text-primary-foreground">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">Ready to Save 25%?</h2>
+          <h2 className="text-3xl font-bold mb-4">Ready to Save 50%?</h2>
           <p className="text-xl mb-8 opacity-90">
             Book your mid-week truck or jumbo van rental today and start saving
           </p>

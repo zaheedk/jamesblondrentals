@@ -33,7 +33,7 @@ const HotDeals = () => {
               {/* Mid-Week Truck & Van Discount */}
               <Card className="relative overflow-hidden">
                 <div className="absolute top-4 right-4 bg-destructive text-destructive-foreground px-3 py-1 rounded-full text-sm font-semibold">
-                  25% OFF
+                  50% OFF
                 </div>
                 <CardHeader>
                   <div className="flex items-center gap-3 mb-4">
@@ -42,7 +42,7 @@ const HotDeals = () => {
                     </div>
                     <div>
                       <CardTitle className="text-2xl">Mid-Week Truck & Van Special</CardTitle>
-                      <CardDescription className="text-lg">Save 25% on Monday-Thursday rentals</CardDescription>
+                      <CardDescription className="text-lg">Save 50% on Monday-Thursday rentals</CardDescription>
                     </div>
                   </div>
                 </CardHeader>
