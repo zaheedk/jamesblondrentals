@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Hero from "@/components/home/Hero";
+import MidweekDiscountPopup from "@/components/home/MidweekDiscountPopup";
 import FeaturedVehicles from "@/components/home/FeaturedVehicles";
 import CustomerReviews from "@/components/home/CustomerReviews";
 import { format } from "date-fns";
@@ -61,6 +62,8 @@ const Index = () => {
       />
       
       <Hero />
+
+      <MidweekDiscountPopup />
 
       <CustomerReviews />
       
