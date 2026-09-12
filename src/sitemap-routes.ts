@@ -145,6 +145,9 @@ export const sitemapRoutes: SitemapRoute[] = [
   { path: '/central-christchurch-truck-hire', priority: 0.9, changefreq: 'weekly' },
   { path: '/central-christchurch-van-hire', priority: 0.9, changefreq: 'weekly' },
   { path: '/central-christchurch-car-hire', priority: 0.9, changefreq: 'weekly' },
+  { path: '/west-auckland-car-hire', priority: 0.9, changefreq: 'weekly' },
+  { path: '/long-term-car-hire-auckland', priority: 0.85, changefreq: 'weekly' },
+  { path: '/long-term-car-hire-christchurch', priority: 0.85, changefreq: 'weekly' },
   { path: '/van-hire-wellington', priority: 0.9, changefreq: 'weekly' },
   // Wellington van & truck — long-tail satellites
   { path: '/moving-van-hire-wellington', priority: 0.85, changefreq: 'weekly' },
