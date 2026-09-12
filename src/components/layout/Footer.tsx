@@ -221,6 +221,7 @@ const Footer = () => {
             <Link to="/truck-hire-christchurch" className="text-gray-300 hover:text-white transition-colors text-sm">Truck Hire Christchurch</Link>
             <Link to="/van-hire-christchurch" className="text-gray-300 hover:text-white transition-colors text-sm">Van Hire Christchurch</Link>
             <Link to="/central-christchurch-car-hire" className="text-gray-300 hover:text-white transition-colors text-sm">Central Christchurch Car Hire</Link>
+            <Link to="/long-term-car-hire-christchurch" className="text-gray-300 hover:text-white transition-colors text-sm">Long Term Car Hire Christchurch</Link>
             <Link to="/central-christchurch-truck-hire" className="text-gray-300 hover:text-white transition-colors text-sm">Central Christchurch Truck Hire</Link>
             <Link to="/central-christchurch-van-hire" className="text-gray-300 hover:text-white transition-colors text-sm">Central Christchurch Van Hire</Link>
             <Link to="/airport/christchurch" className="text-gray-300 hover:text-white transition-colors text-sm">Christchurch Airport Branch</Link>
