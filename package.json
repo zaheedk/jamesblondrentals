@@ -109,14 +109,14 @@
     "vite": "^5.4.1"
   },
   "overrides": {
-    "js-yaml": "^4.3.1",
+    "js-yaml": "4.3.2",
     "@xmldom/xmldom": "0.8.15",
     "plist": {
       "@xmldom/xmldom": "0.9.12"
     }
   },
   "resolutions": {
-    "js-yaml": "^4.3.1",
+    "js-yaml": "4.3.2",
     "@xmldom/xmldom": "0.8.15"
   }
 }
