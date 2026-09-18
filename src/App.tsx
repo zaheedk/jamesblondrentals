@@ -141,6 +141,7 @@ import MinibusHireSportsTeams from "./pages/MinibusHireSportsTeams";
 import MinibusAirportTransfers from "./pages/MinibusAirportTransfers";
 import CarHireAucklandAirportFromAustralia from "./pages/CarHireAucklandAirportFromAustralia";
 import CarHireChristchurchAirportFromAustralia from "./pages/CarHireChristchurchAirportFromAustralia";
+import CarRentalChristchurchAirport from "./pages/CarRentalChristchurchAirport";
 import CarHireNewZealandFromUK from "./pages/CarHireNewZealandFromUK";
 import CarHireChristchurchFromUK from "./pages/CarHireChristchurchFromUK";
 import CentralChristchurchTruckHire from "./pages/CentralChristchurchTruckHire";
@@ -415,6 +416,7 @@ const App = () => {
                 <Route path="/car-hire-christchurch-airport-from-australia" element={<CarHireChristchurchAirportFromAustralia />} />
                 <Route path="/car-hire-new-zealand-from-uk" element={<CarHireNewZealandFromUK />} />
                 <Route path="/car-hire-christchurch-from-uk" element={<CarHireChristchurchFromUK />} />
+                <Route path="/car-rental-christchurch-airport" element={<CarRentalChristchurchAirport />} />
                 <Route path="/trailer-hire-wellington" element={<TrailerHireWellington />} />
                 <Route path="/trailer-hire-christchurch" element={<TrailerHireChristchurch />} />
                 <Route path="/cheap-trailer-hire" element={<CheapTrailerHire />} />
