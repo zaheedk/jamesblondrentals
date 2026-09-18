@@ -144,16 +144,21 @@ const AirportChristchurch = () => (
     <section className="py-6 border-t">
       <h3 className="text-xl font-semibold mb-4">Shuttle Service</h3>
       <p className="text-gray-600 mb-4">
-        The GREEN MOTION - Christchurch Airport car hire location is located out of the airport. Our team is ready to pick you up when you arrive.
+        Our Christchurch Airport car hire branch is located just outside the airport at 17/25 Logistics Drive, Harewood. Our team is ready to pick you up when you arrive.
+      </p>
+      <p className="text-gray-600 mb-4">
+        Planning a South Island holiday? See our full{' '}
+        <Link to="/car-rental-christchurch-airport" className="text-primary hover:underline font-medium">Christchurch Airport car rental guide</Link>{' '}
+        — arrival steps, overseas licence rules, driving distances and one-way options.
       </p>
       <div className="space-y-4">
         <div>
           <h4 className="font-semibold mb-2">Pickup Instructions:</h4>
           <ul className="list-disc list-inside text-gray-600 space-y-2 ml-4">
             <li>After collecting your bags, dial 'M1' on the Airport freephone (located on a pillar at the exit from international arrivals)</li>
-            <li>Or call <a href="tel:0800247727" className="text-primary hover:underline">0800 24 77 27</a> or <a href="tel:0800468468" className="text-primary hover:underline">0800 468 468</a></li>
+            <li>Or call <a href="tel:0800525663" className="text-primary hover:underline">0800 525 663</a> or <a href="tel:0800247727" className="text-primary hover:underline">0800 24 77 27</a></li>
             <li>Wait for collection at Domestic arrivals at "Door-1 or Door-2"</li>
-            <li>Take the Airpark shuttle service to the Green Motion location</li>
+            <li>Take the Airpark shuttle service to our Harewood branch</li>
           </ul>
         </div>
         <div>

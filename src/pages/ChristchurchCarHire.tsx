@@ -231,7 +231,7 @@ const ChristchurchCarHire = () => {
             </div>
             <h2 className="font-serif text-2xl md:text-3xl mb-3">Christchurch Airport (CHC)</h2>
             <p className="text-muted-foreground">Meet-and-greet at Christchurch Airport arrivals — no long shuttle rides, no queues at the terminal desks.</p>
-            <Link to="/airport/christchurch" className="mt-5 inline-flex items-center gap-2 text-sm font-medium border-b border-foreground pb-1 hover:text-primary hover:border-primary">
+            <Link to="/car-rental-christchurch-airport" className="mt-5 inline-flex items-center gap-2 text-sm font-medium border-b border-foreground pb-1 hover:text-primary hover:border-primary">
               Airport pickup details <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
@@ -297,7 +297,7 @@ const ChristchurchCarHire = () => {
                 { label: 'Mt Hutt ski guide — hiring an AWD SUV from Christchurch', to: '/blog/mt-hutt-ski-guide-awd-hire-christchurch' },
                 { label: 'One-way Christchurch → Queenstown', to: '/one-way-car-hire' },
                 { label: 'Premium AWD SUV — winter & mountain rentals', to: '/fleet/cars/premium-awd-suv' },
-                { label: 'Christchurch Airport pickups', to: '/airport/christchurch' },
+                { label: 'Christchurch Airport car rental — shuttle, licences & South Island trips', to: '/car-rental-christchurch-airport' },
               ].map((row) => (
                 <li key={row.label} className="flex items-center justify-between py-4 text-sm md:text-base">
                   <Link to={row.to} className="hover:text-primary">{row.label}</Link>
