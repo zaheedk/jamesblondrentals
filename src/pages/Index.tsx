@@ -199,7 +199,7 @@ const Index = () => {
             {[
               { name: "Auckland Airport", desc: "24/7 terminal shuttle and easy pickup right by the arrivals hall.", img: aucklandAirportImg, href: "/car-rental-auckland-airport-new-zealand" },
               { name: "Wellington City", desc: "Located in the heart of the CBD, perfect for business or leisure.", img: wellingtonCityImg, href: "/car-rental-wellington-new-zealand" },
-              { name: "Christchurch Airport", desc: "South Island gateway with direct airport access and shuttle service.", img: christchurchAirportImg, href: "/airport/christchurch" },
+              { name: "Christchurch Airport", desc: "South Island gateway with direct airport access and shuttle service.", img: christchurchAirportImg, href: "/car-rental-christchurch-airport" },
               { name: "Christchurch Central", desc: "Downtown access for easy pickup when staying in the city.", img: christchurchCentralImg, href: "/contact/christchurch-central" },
               { name: "Hamilton", desc: "Centrally located for Waikato travel and local hire needs.", img: hamiltonImg, href: "/contact/hamilton" },
               { name: "West Auckland", desc: "Conveniently serving the west with trucks, vans and cars.", img: westAucklandImg, href: "/west-auckland-truck-rentals-hire" },
