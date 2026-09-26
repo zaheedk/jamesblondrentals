@@ -205,25 +205,12 @@ export default function MemberDashboard() {
 
           {/* Main column */}
           <div className="flex-1 min-w-0 flex flex-col">
-            {/* Header */}
-            <header className="bg-card border-b border-border px-4 md:px-8 py-5 md:py-6 flex items-center justify-between gap-4">
-              <div className="min-w-0">
-                <h1 className="text-2xl font-bold text-foreground font-portalHeading tracking-tight">
-                  Welcome back, {displayName}
-                </h1>
-                <p className="text-sm text-muted-foreground mt-0.5 truncate">
-                  Manage your rentals and account details.
-                </p>
-              </div>
-              <div className="flex items-center gap-3 shrink-0">
-                <span className="w-10 h-10 rounded-full bg-portal-emerald-soft text-portal-emerald flex items-center justify-center font-bold text-sm">
-                  {initialsOf(user.user_metadata?.full_name || '', user.email)}
-                </span>
-                <Button variant="outline" size="sm" onClick={signOut} className="md:hidden gap-2">
-                  <LogOut className="w-4 h-4" />
-                  Log Out
-                </Button>
-              </div>
+            {/* Mobile log out bar */}
+            <header className="md:hidden flex justify-end border-b border-border bg-card px-4 py-2">
+              <Button variant="ghost" size="sm" onClick={signOut} className="gap-2 text-muted-foreground">
+                <LogOut className="w-4 h-4" />
+                Log Out
+              </Button>
             </header>
 
             {/* Mobile section nav */}
