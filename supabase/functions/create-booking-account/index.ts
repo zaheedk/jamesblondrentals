@@ -35,7 +35,8 @@ function buildInviteEmailHtml(activateUrl: string): string {
             By activating your account, you'll be able to:
           </p>
           <p style="font-size:15px;color:#0d6b3d;line-height:1.6;margin:4px 0 4px 10px;font-weight:600;">✓ View and manage your bookings</p>
-          <p style="font-size:15px;color:#0d6b3d;line-height:1.6;margin:4px 0 4px 10px;font-weight:600;">✓ Speed up future reservations with saved details</p>
+          <p style="font-size:15px;color:#0d6b3d;line-height:1.6;margin:4px 0 4px 10px;font-weight:600;">✓ Upload your licence for a faster pick-up</p>
+          <p style="font-size:15px;color:#0d6b3d;line-height:1.6;margin:4px 0 4px 10px;font-weight:600;">✓ Add additional drivers and your payment card securely</p>
           <p style="font-size:15px;color:#0d6b3d;line-height:1.6;margin:4px 0 4px 10px;font-weight:600;">✓ Access your rental history anytime</p>
         </td></tr>
         <!-- Button -->
@@ -93,6 +94,20 @@ serve(async (req) => {
       );
     }
 
+    // Link any bookings made with this email to the user's account
+    const linkBookings = async (userId: string) => {
+      const { error: linkError, count } = await supabase
+        .from("bookings")
+        .update({ user_id: userId })
+        .is("user_id", null)
+        .ilike("customer_email", emailLower);
+      if (linkError) {
+        console.error("Error linking bookings:", linkError);
+      } else if (count) {
+        console.log(`Linked ${count} bookings to user ${userId}`);
+      }
+    };
+
     // Check if user already exists
     const { data: existingUsers } = await supabase.auth.admin.listUsers();
     const userExists = existingUsers?.users?.some(
@@ -104,6 +119,9 @@ serve(async (req) => {
         (u) => u.email?.toLowerCase() === emailLower
       );
       console.log(`User ${email} already exists, userId: ${existingUser?.id}`);
+      if (existingUser?.id) {
+        await linkBookings(existingUser.id);
+      }
       return new Response(
         JSON.stringify({ skipped: true, message: "User already exists", userId: existingUser?.id }),
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -133,6 +151,11 @@ serve(async (req) => {
 
     console.log(`User account created for ${email}, userId: ${data.user?.id}`);
 
+    // Link any existing bookings made with this email
+    if (data.user?.id) {
+      await linkBookings(data.user.id);
+    }
+
     // Generate a password recovery link so they can set their own password
     const { data: linkData, error: linkError } = await supabase.auth.admin.generateLink({
       type: "recovery",
@@ -154,40 +177,36 @@ serve(async (req) => {
     const activateUrl = linkData?.properties?.action_link || `${SITE_URL}/reset-password`;
     console.log(`Recovery link generated for ${email}`);
 
-    // Only send welcome/invite email to test group (zaheedk*)
+    // Send the invite email to every new customer
     let emailId: string | null = null;
-    if (emailLower.startsWith("zaheedk")) {
-      const emailHtml = buildInviteEmailHtml(activateUrl);
+    const emailHtml = buildInviteEmailHtml(activateUrl);
 
-      const resendRes = await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${resendApiKey}`,
-        },
-        body: JSON.stringify({
-          from: "James Blond Rentals <info@jamesblond.co.nz>",
-          to: [email],
-          subject: "Activate Your James Blond Rentals Account",
-          html: emailHtml,
-        }),
-      });
+    const resendRes = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${resendApiKey}`,
+      },
+      body: JSON.stringify({
+        from: "James Blond Rentals <info@jamesblond.co.nz>",
+        to: [email],
+        subject: "Activate Your James Blond Rentals Account",
+        html: emailHtml,
+      }),
+    });
 
-      const resendData = await resendRes.json();
+    const resendData = await resendRes.json();
 
-      if (!resendRes.ok) {
-        console.error("Resend API error:", resendData);
-        return new Response(
-          JSON.stringify({ error: "Account created but failed to send email", details: resendData }),
-          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-
-      emailId = resendData.id;
-      console.log(`Branded invite email sent to ${email} via Resend, id: ${emailId}`);
-    } else {
-      console.log(`Skipping welcome email for ${email} - not in test group`);
+    if (!resendRes.ok) {
+      console.error("Resend API error:", resendData);
+      return new Response(
+        JSON.stringify({ error: "Account created but failed to send email", details: resendData }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
+
+    emailId = resendData.id;
+    console.log(`Branded invite email sent to ${email} via Resend, id: ${emailId}`);
 
     // Note: Savo sync is now triggered only after successful payment (PaymentSuccess page)
 

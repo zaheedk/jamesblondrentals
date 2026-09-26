@@ -215,7 +215,33 @@ export default function LoginForm() {
                 </FormItem>
               )}
             />
-            <div className="text-right text-sm">
+            <div className="flex justify-between text-sm">
+              <button
+                type="button"
+                className="text-primary hover:underline"
+                disabled={isSubmitting || networkStatus === 'offline'}
+                onClick={async () => {
+                  const email = form.getValues('email');
+                  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    setError('Enter your email address above first, then click "Email me a sign-in link".');
+                    return;
+                  }
+                  setIsSubmitting(true);
+                  setError(null);
+                  const { error: otpError } = await supabase.auth.signInWithOtp({
+                    email,
+                    options: { emailRedirectTo: `${window.location.origin}/member-dashboard` },
+                  });
+                  setIsSubmitting(false);
+                  if (otpError) {
+                    setError(otpError.message);
+                  } else {
+                    setMessage('Check your email — we sent you a sign-in link. Click it to access your account, no password needed.');
+                  }
+                }}
+              >
+                Email me a sign-in link
+              </button>
               <Link
                 to="/forgot-password"
                 className="text-primary hover:underline"
