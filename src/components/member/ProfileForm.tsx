@@ -21,6 +21,9 @@ interface ProfileData {
   city: string;
   postcode: string;
   country: string;
+  occupation: string;
+  emergency_contact_name: string;
+  emergency_contact_phone: string;
 }
 
 const initialData: ProfileData = {
@@ -36,6 +39,9 @@ const initialData: ProfileData = {
   city: '',
   postcode: '',
   country: 'New Zealand',
+  occupation: '',
+  emergency_contact_name: '',
+  emergency_contact_phone: '',
 };
 
 function FieldWithIcon({ icon: Icon, label, required, children }: {
@@ -93,6 +99,9 @@ export default function ProfileForm() {
           city: data.city || '',
           postcode: data.postcode || '',
           country: data.country || 'New Zealand',
+          occupation: (data as any).occupation || '',
+          emergency_contact_name: (data as any).emergency_contact_name || '',
+          emergency_contact_phone: (data as any).emergency_contact_phone || '',
         });
       }
     } catch (err) {
@@ -129,6 +138,9 @@ export default function ProfileForm() {
         city: form.city.trim() || null,
         postcode: form.postcode.trim() || null,
         country: form.country.trim() || null,
+        occupation: form.occupation.trim().slice(0, 100) || null,
+        emergency_contact_name: form.emergency_contact_name.trim().slice(0, 100) || null,
+        emergency_contact_phone: form.emergency_contact_phone.trim().slice(0, 30) || null,
         user_id: user.id,
       };
 
@@ -306,6 +318,31 @@ export default function ProfileForm() {
           </div>
         </div>
       </section>
+
+      <Separator />
+
+      <section>
+        <div className="flex items-center gap-2 mb-4">
+          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10">
+            <Phone className="w-4 h-4 text-primary" />
+          </div>
+          <h3 className="text-lg font-bold text-foreground">Rental Agreement Details</h3>
+        </div>
+        <div className="rounded-lg border bg-card p-6 space-y-5">
+          <FieldWithIcon icon={User} label="Occupation">
+            <Input value={form.occupation} onChange={e => handleChange('occupation', e.target.value)} className="h-11" />
+          </FieldWithIcon>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <FieldWithIcon icon={User} label="Emergency Contact Name">
+              <Input value={form.emergency_contact_name} onChange={e => handleChange('emergency_contact_name', e.target.value)} className="h-11" />
+            </FieldWithIcon>
+            <FieldWithIcon icon={Phone} label="Emergency Contact Phone">
+              <Input value={form.emergency_contact_phone} onChange={e => handleChange('emergency_contact_phone', e.target.value)} className="h-11" />
+            </FieldWithIcon>
+          </div>
+        </div>
+      </section>
+
 
       {/* Save Button */}
       <div className="flex justify-end pt-2 pb-4">
