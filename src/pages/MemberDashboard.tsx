@@ -103,7 +103,7 @@ export default function MemberDashboard() {
     switch (active) {
       case 'profile':
         return <ProfileForm />;
-      case 'documents':
+      case 'licence':
         return <DocumentsPanel />;
       case 'drivers':
         return <AdditionalDriversPanel />;
