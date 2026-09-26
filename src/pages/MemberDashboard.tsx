@@ -154,10 +154,12 @@ export default function MemberDashboard() {
           {/* Sidebar (desktop) */}
           <aside className="hidden md:flex w-64 shrink-0 bg-portal-nav text-white flex-col">
             <div className="px-6 pt-7 pb-6">
-              <div className="text-2xl font-bold tracking-tight font-portalHeading">
-                <span className="text-portal-emerald">James</span> Blond
-              </div>
-              <p className="text-xs text-white/50 mt-1">Member Portal</p>
+              <img
+                src="/lovable-uploads/900107e8-dbcb-44ce-96a9-0588959abf24.png"
+                alt="James Blond Rentals"
+                className="h-auto w-full max-w-[180px] bg-white rounded-lg px-2.5 py-2"
+              />
+              <p className="text-xs text-white/50 mt-2.5">Member Portal</p>
             </div>
 
             <nav className="px-3 space-y-1" aria-label="Dashboard sections">
