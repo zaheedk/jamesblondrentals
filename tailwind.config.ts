@@ -67,6 +67,12 @@ export default {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))'
         },
+        'portal-nav': 'hsl(var(--portal-nav))',
+        'portal-nav-item': 'hsl(var(--portal-nav-item))',
+        'portal-emerald': 'hsl(var(--portal-emerald))',
+        'portal-emerald-soft': 'hsl(var(--portal-emerald-soft))',
+        'portal-alert': 'hsl(var(--portal-alert))',
+        'portal-alert-soft': 'hsl(var(--portal-alert-soft))',
       },
       borderRadius: {
         lg: 'var(--radius)',
