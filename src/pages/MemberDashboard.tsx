@@ -55,7 +55,8 @@ export default function MemberDashboard() {
   const { isAdmin, isOfficeAdmin } = useUserRole();
   const [savoLoading, setSavoLoading] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
-  const active = (searchParams.get('tab') as SectionId) || 'bookings';
+  const rawTab = (searchParams.get('tab') as SectionId) || 'bookings';
+  const active: SectionId = rawTab === 'documents' ? 'licence' : rawTab;
 
   const setActive = (id: SectionId) => {
     setSearchParams(prev => {
