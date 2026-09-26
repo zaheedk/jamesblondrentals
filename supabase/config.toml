@@ -27,3 +27,5 @@ project_id = "jlwvqbrtdzwrcwelyylv"
     verify_jwt = false
   [functions.airwallex-verify-payment]
     verify_jwt = false
+  [functions.airwallex-save-card]
+    verify_jwt = false

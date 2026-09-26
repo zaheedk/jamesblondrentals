@@ -11,6 +11,9 @@ import { useState } from 'react';
 import SupabaseBookingHistory from '@/components/member/SupabaseBookingHistory';
 import ProfileForm from '@/components/member/ProfileForm';
 import DocumentsPanel from '@/components/member/DocumentsPanel';
+import AdditionalDriversPanel from '@/components/member/AdditionalDriversPanel';
+import PaymentCardPanel from '@/components/member/PaymentCardPanel';
+import { CreditCard } from 'lucide-react';
 import { useUserRole } from '@/hooks/use-user-role';
 import PageSEO from '@/components/PageSEO';
 
@@ -236,8 +239,8 @@ export default function MemberDashboard() {
         </div>
       )}
 
-      <Tabs defaultValue="bookings" className="w-full">
-        <TabsList className="mb-6">
+      <Tabs defaultValue={new URLSearchParams(window.location.search).get('tab') || 'bookings'} className="w-full">
+        <TabsList className="mb-6 flex-wrap h-auto">
           <TabsTrigger value="bookings" className="flex items-center gap-2">
             <Car className="w-4 h-4" />
             Bookings
@@ -248,7 +251,15 @@ export default function MemberDashboard() {
           </TabsTrigger>
           <TabsTrigger value="documents" className="flex items-center gap-2">
             <IdCard className="w-4 h-4" />
-            Documents
+            Licence
+          </TabsTrigger>
+          <TabsTrigger value="drivers" className="flex items-center gap-2">
+            <Users className="w-4 h-4" />
+            Drivers
+          </TabsTrigger>
+          <TabsTrigger value="card" className="flex items-center gap-2">
+            <CreditCard className="w-4 h-4" />
+            Card
           </TabsTrigger>
         </TabsList>
 
@@ -262,6 +273,14 @@ export default function MemberDashboard() {
 
         <TabsContent value="documents">
           <DocumentsPanel />
+        </TabsContent>
+
+        <TabsContent value="drivers">
+          <AdditionalDriversPanel />
+        </TabsContent>
+
+        <TabsContent value="card">
+          <PaymentCardPanel />
         </TabsContent>
       </Tabs>
 
