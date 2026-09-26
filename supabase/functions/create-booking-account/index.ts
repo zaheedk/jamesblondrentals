@@ -35,7 +35,8 @@ function buildInviteEmailHtml(activateUrl: string): string {
             By activating your account, you'll be able to:
           </p>
           <p style="font-size:15px;color:#0d6b3d;line-height:1.6;margin:4px 0 4px 10px;font-weight:600;">✓ View and manage your bookings</p>
-          <p style="font-size:15px;color:#0d6b3d;line-height:1.6;margin:4px 0 4px 10px;font-weight:600;">✓ Speed up future reservations with saved details</p>
+          <p style="font-size:15px;color:#0d6b3d;line-height:1.6;margin:4px 0 4px 10px;font-weight:600;">✓ Upload your licence for a faster pick-up</p>
+          <p style="font-size:15px;color:#0d6b3d;line-height:1.6;margin:4px 0 4px 10px;font-weight:600;">✓ Add additional drivers and your payment card securely</p>
           <p style="font-size:15px;color:#0d6b3d;line-height:1.6;margin:4px 0 4px 10px;font-weight:600;">✓ Access your rental history anytime</p>
         </td></tr>
         <!-- Button -->
