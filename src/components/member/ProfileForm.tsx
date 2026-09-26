@@ -33,7 +33,7 @@ const initialData: ProfileData = {
   dob: '',
   license_number: '',
   license_expiry: '',
-  license_country: '',
+  license_country: 'New Zealand',
   address: '',
   suburb: '',
   city: '',
@@ -93,7 +93,7 @@ export default function ProfileForm() {
           dob: data.dob || '',
           license_number: data.license_number || '',
           license_expiry: (data as any).license_expiry || '',
-          license_country: (data as any).license_country || '',
+          license_country: (data as any).license_country || 'New Zealand',
           address: data.address || '',
           suburb: (data as any).suburb || '',
           city: data.city || '',
@@ -253,7 +253,7 @@ export default function ProfileForm() {
                 className="h-11"
               />
             </FieldWithIcon>
-            <FieldWithIcon icon={Globe} label="Country of Issue">
+            <FieldWithIcon icon={Globe} label="Licence issued in">
               <Input
                 value={form.license_country}
                 onChange={e => handleChange('license_country', e.target.value)}

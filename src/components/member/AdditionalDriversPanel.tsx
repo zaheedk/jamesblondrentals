@@ -45,7 +45,7 @@ const FIELDS: { key: keyof Form; label: string; type?: string; span?: boolean }[
   { key: 'country', label: 'Country' },
   { key: 'license_number', label: 'Licence number' },
   { key: 'license_expiry', label: 'Licence expiry', type: 'date' },
-  { key: 'license_country', label: 'Licence country', span: true },
+  { key: 'license_country', label: 'Licence issued in', span: true },
 ];
 
 export default function AdditionalDriversPanel() {
@@ -138,7 +138,7 @@ export default function AdditionalDriversPanel() {
               <p className="text-sm text-muted-foreground">Licence {d.license_number} · expires {d.license_expiry}</p>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={() => { setEditingId(d.id); setForm({ ...empty, ...Object.fromEntries(Object.keys(empty).map((k) => [k, (d as any)[k] ?? ''])) } as Form); }}>
+              <Button variant="outline" size="sm" onClick={() => { setEditingId(d.id); const next = { ...empty, ...Object.fromEntries(Object.keys(empty).map((k) => [k, (d as any)[k] ?? ''])) } as Form; if (!next.license_country) next.license_country = 'New Zealand'; setForm(next); }}>
                 Edit
               </Button>
               <Button variant="ghost" size="sm" onClick={() => remove(d)}><Trash2 className="w-4 h-4" /></Button>
