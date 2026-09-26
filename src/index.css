@@ -39,6 +39,14 @@
     --ring: 224 76% 48%;
 
     --radius: 0.875rem;
+
+    /* Member portal (customer dashboard) palette */
+    --portal-nav: 224 64% 26%;
+    --portal-nav-item: 224 64% 33%;
+    --portal-emerald: 160 84% 39%;
+    --portal-emerald-soft: 160 84% 95%;
+    --portal-alert: 24 95% 53%;
+    --portal-alert-soft: 33 100% 96%;
   }
 
   .dark {
