@@ -1,29 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
-import { CalendarIcon, ClockIcon, MapPinIcon, CarIcon, Loader2, Search } from 'lucide-react';
+import { CarIcon, Loader2, Search } from 'lucide-react';
 import { useMyBookings } from '@/hooks/use-bookings';
 import { rcmApi } from '@/lib/api/rcm-api';
 import { toast } from 'sonner';
 
 const statusStyles: Record<string, string> = {
-  pending: 'bg-amber-100/70 text-amber-800',
-  confirmed: 'bg-emerald-100/70 text-emerald-800',
-  active: 'bg-emerald-100/70 text-emerald-800',
-  'checked out': 'bg-emerald-100/70 text-emerald-800',
+  pending: 'bg-portal-alert-soft text-portal-alert',
+  confirmed: 'bg-portal-emerald-soft text-portal-emerald',
+  active: 'bg-portal-emerald-soft text-portal-emerald',
+  'checked out': 'bg-portal-emerald-soft text-portal-emerald',
   completed: 'bg-muted text-muted-foreground',
   'checked in': 'bg-muted text-muted-foreground',
-  cancelled: 'bg-red-100/70 text-red-700',
+  cancelled: 'bg-destructive/10 text-destructive',
 };
 
 const paymentStyles: Record<string, string> = {
-  pending: 'bg-amber-100/70 text-amber-800',
-  paid: 'bg-emerald-100/70 text-emerald-800',
-  failed: 'bg-red-100/70 text-red-700',
+  pending: 'bg-portal-alert-soft text-portal-alert',
+  paid: 'bg-portal-emerald-soft text-portal-emerald',
+  failed: 'bg-destructive/10 text-destructive',
   refunded: 'bg-muted text-muted-foreground',
 };
 
-const pill = 'inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold';
+const pill = 'inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-semibold leading-none';
 
 const SupabaseBookingHistory = () => {
   const { data: bookings, isLoading, error } = useMyBookings();
@@ -119,7 +119,7 @@ const SupabaseBookingHistory = () => {
     return (
       <div className="space-y-3">
         {[...Array(3)].map((_, i) => (
-          <div key={i} className="rounded-2xl border border-border/70 bg-card p-5">
+          <div key={i} className="rounded-lg border border-border bg-card px-5 py-4">
             <div className="space-y-3">
               <Skeleton className="h-4 w-1/4" />
               <Skeleton className="h-4 w-1/2" />
@@ -152,13 +152,13 @@ const SupabaseBookingHistory = () => {
 
   return (
     <div className="space-y-4">
-      <div className="relative max-w-xs">
+      <div className="relative max-w-sm">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           placeholder="Search bookings..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full rounded-full pl-9 bg-card"
+          className="w-full rounded-lg bg-card pl-9 shadow-none"
         />
       </div>
 
@@ -167,7 +167,7 @@ const SupabaseBookingHistory = () => {
           No bookings match your search criteria.
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-2.5">
           {filteredBookings.map((booking) => {
             const ref = booking.reservation_reference;
             const rcmData = ref ? rcmStatuses[ref] : null;
@@ -176,19 +176,44 @@ const SupabaseBookingHistory = () => {
             return (
               <div
                 key={booking.id}
-                className="rounded-2xl border border-border/70 bg-card p-5 shadow-sm transition-shadow hover:shadow-md"
+                className="rounded-lg border border-border bg-card px-5 py-4 transition-colors hover:border-primary/25"
               >
-                {/* Header row */}
-                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="min-w-0">
-                    <h3 className="font-portalHeading text-[15px] font-bold leading-6 text-foreground">
-                      {booking.vehicle_name || 'Vehicle Rental'}
-                    </h3>
-                    <p className="mt-0.5 truncate text-xs text-muted-foreground">
-                      Ref. {booking.reservation_reference || booking.booking_reference || 'N/A'}
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="min-w-0 space-y-1">
+                    <div className="flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                      <h3 className="truncate font-portalHeading text-sm font-semibold leading-5 text-foreground">
+                        {booking.vehicle_name || 'Vehicle Rental'}
+                      </h3>
+                      <span className="font-mono text-[10px] text-muted-foreground">
+                        {booking.reservation_reference || booking.booking_reference || 'N/A'}
+                      </span>
+                    </div>
+                    <p className="text-xs leading-5 text-muted-foreground">
+                      <span className="font-medium text-foreground/80">Rental:</span>{' '}
+                      {formatDateTime(booking.pickup_date, booking.pickup_time)}
+                      {' · '}{booking.pickup_location_name || 'Location pending'}
+                      <span className="mx-1.5 text-border">→</span>
+                      {formatDateTime(booking.dropoff_date, booking.dropoff_time)}
+                      {' · '}{booking.dropoff_location_name || 'Location pending'}
                     </p>
+                    <p className="text-[11px] leading-4 text-muted-foreground">
+                      {booking.total_days} day{booking.total_days !== 1 ? 's' : ''}
+                      <span className="mx-1.5 text-border">•</span>
+                      <span className="font-semibold text-foreground">{formatCurrency(booking.total_amount)}</span>
+                      {booking.created_at && (
+                        <>
+                          <span className="mx-1.5 text-border">•</span>
+                          Booked {formatDate(booking.created_at)}
+                        </>
+                      )}
+                    </p>
+                    {booking.special_requirements && (
+                      <p className="line-clamp-1 text-[11px] text-muted-foreground">
+                        <span className="font-medium text-foreground/80">Notes:</span> {booking.special_requirements}
+                      </p>
+                    )}
                   </div>
-                  <div className="flex flex-wrap items-center gap-1.5 sm:justify-end shrink-0">
+                  <div className="flex shrink-0 flex-wrap items-center gap-1.5 sm:max-w-40 sm:justify-end">
                     {rcmData?.loading ? (
                       <span className={`${pill} bg-muted text-muted-foreground`}>
                         <Loader2 className="mr-1 h-3 w-3 animate-spin" />
@@ -200,51 +225,6 @@ const SupabaseBookingHistory = () => {
                     {getPaymentStatusBadge(booking.payment_status)}
                   </div>
                 </div>
-
-                {/* Detail row */}
-                <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-border/60 pt-4 sm:grid-cols-4">
-                  <div className="flex items-start gap-2">
-                    <CalendarIcon className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground/70" />
-                    <div className="min-w-0">
-                      <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground/80">Pickup</p>
-                      <p className="text-[13px] font-medium leading-5 text-foreground">{formatDateTime(booking.pickup_date, booking.pickup_time)}</p>
-                      <p className="truncate text-xs text-muted-foreground">{booking.pickup_location_name || 'Location pending'}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <MapPinIcon className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground/70" />
-                    <div className="min-w-0">
-                      <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground/80">Drop-off</p>
-                      <p className="text-[13px] font-medium leading-5 text-foreground">{formatDateTime(booking.dropoff_date, booking.dropoff_time)}</p>
-                      <p className="truncate text-xs text-muted-foreground">{booking.dropoff_location_name || 'Location pending'}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <ClockIcon className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground/70" />
-                    <div>
-                      <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground/80">Duration</p>
-                      <p className="text-[13px] font-medium leading-5 text-foreground">{booking.total_days} day{booking.total_days !== 1 ? 's' : ''}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <div>
-                      <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground/80">Total</p>
-                      <p className="font-portalHeading text-[15px] font-bold leading-5 text-foreground">{formatCurrency(booking.total_amount)}</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Footer notes */}
-                {(booking.special_requirements || booking.created_at) && (
-                  <div className="mt-3 border-t border-border/60 pt-2.5 text-[11px] text-muted-foreground">
-                    {booking.special_requirements && (
-                      <p>
-                        <span className="font-medium">Special Requirements:</span> {booking.special_requirements}
-                      </p>
-                    )}
-                    {booking.created_at && <p>Booked on {formatDate(booking.created_at)}</p>}
-                  </div>
-                )}
               </div>
             );
           })}
