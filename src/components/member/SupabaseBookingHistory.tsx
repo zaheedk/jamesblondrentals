@@ -23,7 +23,8 @@ const SupabaseBookingHistory = () => {
     if (bookingsWithRef.length === 0) return;
 
     bookingsWithRef.forEach(async (booking) => {
-      const ref = booking.reservation_reference!;
+      const ref = booking.reservation_reference;
+      if (!ref) return;
       // Skip if already fetched
       if (rcmStatuses[ref] && !rcmStatuses[ref].loading) return;
 
@@ -145,15 +146,15 @@ const SupabaseBookingHistory = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">My Bookings ({filteredBookings.length})</h2>
-        <div className="flex items-center space-x-2">
+    <div className="space-y-5">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h2 className="font-portalHeading text-xl font-bold text-foreground">My Bookings <span className="text-muted-foreground">({filteredBookings.length})</span></h2>
+        <div className="flex items-center">
           <Input
             placeholder="Search bookings..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-64"
+            className="w-full sm:w-56"
           />
         </div>
       </div>
@@ -167,22 +168,27 @@ const SupabaseBookingHistory = () => {
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {filteredBookings.map((booking) => {
             const ref = booking.reservation_reference;
             const rcmData = ref ? rcmStatuses[ref] : null;
             const displayStatus = rcmData?.status || booking.booking_status;
 
             return (
-              <Card key={booking.id} className="overflow-hidden">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg font-semibold">
-                      {booking.vehicle_name || 'Vehicle Rental'}
-                    </CardTitle>
-                    <div className="flex items-center space-x-2">
+              <Card key={booking.id} className="overflow-hidden border-border/80 shadow-sm">
+                <CardHeader className="space-y-2 border-b bg-muted/20 px-4 py-3 sm:px-5">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="min-w-0">
+                      <CardTitle className="font-portalHeading text-base font-bold leading-6 text-foreground">
+                        {booking.vehicle_name || 'Vehicle Rental'}
+                      </CardTitle>
+                      <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                        Ref. {booking.reservation_reference || booking.booking_reference || 'N/A'}
+                      </p>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-1.5 sm:justify-end">
                       {rcmData?.loading ? (
-                        <Badge variant="secondary" className="flex items-center gap-1">
+                        <Badge variant="secondary" className="flex items-center gap-1 text-xs font-medium">
                           <Loader2 className="h-3 w-3 animate-spin" />
                           Checking...
                         </Badge>
@@ -192,63 +198,53 @@ const SupabaseBookingHistory = () => {
                       {getPaymentStatusBadge(booking.payment_status)}
                     </div>
                   </div>
-                  <p className="text-sm text-muted-foreground">
-                    Booking Reference: {booking.reservation_reference || booking.booking_reference || 'N/A'}
-                  </p>
                 </CardHeader>
                 
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* Dates & Times */}
-                    <div className="space-y-2">
-                      <div className="flex items-center space-x-2 text-sm">
-                        <CalendarIcon className="h-4 w-4 text-muted-foreground" />
-                        <span className="font-medium">Pickup:</span>
-                        <span>{formatDateTime(booking.pickup_date, booking.pickup_time)}</span>
-                      </div>
-                      <div className="flex items-center space-x-2 text-sm">
-                        <CalendarIcon className="h-4 w-4 text-muted-foreground" />
-                        <span className="font-medium">Dropoff:</span>
-                        <span>{formatDateTime(booking.dropoff_date, booking.dropoff_time)}</span>
-                      </div>
-                      <div className="flex items-center space-x-2 text-sm">
-                        <ClockIcon className="h-4 w-4 text-muted-foreground" />
-                        <span className="font-medium">Duration:</span>
-                        <span>{booking.total_days} day{booking.total_days !== 1 ? 's' : ''}</span>
+                <CardContent className="space-y-3 px-4 py-3 sm:px-5">
+                  <div className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2 lg:grid-cols-4">
+                    <div className="flex items-start gap-2.5">
+                      <CalendarIcon className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+                      <div className="min-w-0">
+                        <p className="text-[11px] font-semibold uppercase text-muted-foreground">Pickup</p>
+                        <p className="text-sm font-medium text-foreground">{formatDateTime(booking.pickup_date, booking.pickup_time)}</p>
+                        <p className="truncate text-xs text-muted-foreground">{booking.pickup_location_name || 'Location pending'}</p>
                       </div>
                     </div>
-
-                    {/* Locations & Pricing */}
-                    <div className="space-y-2">
-                      <div className="flex items-center space-x-2 text-sm">
-                        <MapPinIcon className="h-4 w-4 text-muted-foreground" />
-                        <span className="font-medium">Pickup:</span>
-                        <span>{booking.pickup_location_name || 'N/A'}</span>
+                    <div className="flex items-start gap-2.5">
+                      <MapPinIcon className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+                      <div className="min-w-0">
+                        <p className="text-[11px] font-semibold uppercase text-muted-foreground">Drop-off</p>
+                        <p className="text-sm font-medium text-foreground">{formatDateTime(booking.dropoff_date, booking.dropoff_time)}</p>
+                        <p className="truncate text-xs text-muted-foreground">{booking.dropoff_location_name || 'Location pending'}</p>
                       </div>
-                      <div className="flex items-center space-x-2 text-sm">
-                        <MapPinIcon className="h-4 w-4 text-muted-foreground" />
-                        <span className="font-medium">Dropoff:</span>
-                        <span>{booking.dropoff_location_name || 'N/A'}</span>
+                    </div>
+                    <div className="flex items-start gap-2.5">
+                      <ClockIcon className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+                      <div>
+                        <p className="text-[11px] font-semibold uppercase text-muted-foreground">Duration</p>
+                        <p className="text-sm font-medium text-foreground">{booking.total_days} day{booking.total_days !== 1 ? 's' : ''}</p>
                       </div>
-                      <div className="flex items-center space-x-2 text-sm">
-                        <CreditCardIcon className="h-4 w-4 text-muted-foreground" />
-                        <span className="font-medium">Total:</span>
-                        <span className="font-semibold">{formatCurrency(booking.total_amount)}</span>
+                    </div>
+                    <div className="flex items-start gap-2.5">
+                      <CreditCardIcon className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+                      <div>
+                        <p className="text-[11px] font-semibold uppercase text-muted-foreground">Total</p>
+                        <p className="text-sm font-bold text-foreground">{formatCurrency(booking.total_amount)}</p>
                       </div>
                     </div>
                   </div>
 
                   {/* Special Requirements */}
                   {booking.special_requirements && (
-                    <div className="border-t pt-3">
-                      <p className="text-sm">
+                    <div className="border-t pt-2.5">
+                      <p className="text-xs">
                         <span className="font-medium">Special Requirements:</span> {booking.special_requirements}
                       </p>
                     </div>
                   )}
 
                   {/* Booking Date */}
-                  <div className="border-t pt-3 text-xs text-muted-foreground">
+                  <div className="border-t pt-2.5 text-[11px] text-muted-foreground">
                     Booked on {formatDate(booking.created_at)}
                   </div>
                 </CardContent>
