@@ -93,6 +93,20 @@ serve(async (req) => {
       );
     }
 
+    // Link any bookings made with this email to the user's account
+    const linkBookings = async (userId: string) => {
+      const { error: linkError, count } = await supabase
+        .from("bookings")
+        .update({ user_id: userId })
+        .is("user_id", null)
+        .ilike("customer_email", emailLower);
+      if (linkError) {
+        console.error("Error linking bookings:", linkError);
+      } else if (count) {
+        console.log(`Linked ${count} bookings to user ${userId}`);
+      }
+    };
+
     // Check if user already exists
     const { data: existingUsers } = await supabase.auth.admin.listUsers();
     const userExists = existingUsers?.users?.some(
@@ -104,6 +118,9 @@ serve(async (req) => {
         (u) => u.email?.toLowerCase() === emailLower
       );
       console.log(`User ${email} already exists, userId: ${existingUser?.id}`);
+      if (existingUser?.id) {
+        await linkBookings(existingUser.id);
+      }
       return new Response(
         JSON.stringify({ skipped: true, message: "User already exists", userId: existingUser?.id }),
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
