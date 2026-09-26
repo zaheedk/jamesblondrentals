@@ -26,6 +26,8 @@ export default {
       fontFamily: {
         sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Text"', '"SF Pro Display"', '"Helvetica Neue"', 'Inter', 'system-ui', 'sans-serif'],
         display: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"Helvetica Neue"', 'Inter', 'system-ui', 'sans-serif'],
+        portalHeading: ['"Space Grotesk"', '-apple-system', 'BlinkMacSystemFont', 'Inter', 'system-ui', 'sans-serif'],
+        portalBody: ['"DM Sans"', '-apple-system', 'BlinkMacSystemFont', 'Inter', 'system-ui', 'sans-serif'],
       },
       colors: {
         border: 'hsl(var(--border))',
@@ -65,6 +67,12 @@ export default {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))'
         },
+        'portal-nav': 'hsl(var(--portal-nav))',
+        'portal-nav-item': 'hsl(var(--portal-nav-item))',
+        'portal-emerald': 'hsl(var(--portal-emerald))',
+        'portal-emerald-soft': 'hsl(var(--portal-emerald-soft))',
+        'portal-alert': 'hsl(var(--portal-alert))',
+        'portal-alert-soft': 'hsl(var(--portal-alert-soft))',
       },
       borderRadius: {
         lg: 'var(--radius)',
