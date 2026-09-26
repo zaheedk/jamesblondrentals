@@ -150,6 +150,11 @@ serve(async (req) => {
 
     console.log(`User account created for ${email}, userId: ${data.user?.id}`);
 
+    // Link any existing bookings made with this email
+    if (data.user?.id) {
+      await linkBookings(data.user.id);
+    }
+
     // Generate a password recovery link so they can set their own password
     const { data: linkData, error: linkError } = await supabase.auth.admin.generateLink({
       type: "recovery",
