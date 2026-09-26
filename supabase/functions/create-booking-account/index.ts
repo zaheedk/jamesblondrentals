@@ -176,40 +176,36 @@ serve(async (req) => {
     const activateUrl = linkData?.properties?.action_link || `${SITE_URL}/reset-password`;
     console.log(`Recovery link generated for ${email}`);
 
-    // Only send welcome/invite email to test group (zaheedk*)
+    // Send the invite email to every new customer
     let emailId: string | null = null;
-    if (emailLower.startsWith("zaheedk")) {
-      const emailHtml = buildInviteEmailHtml(activateUrl);
+    const emailHtml = buildInviteEmailHtml(activateUrl);
 
-      const resendRes = await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${resendApiKey}`,
-        },
-        body: JSON.stringify({
-          from: "James Blond Rentals <info@jamesblond.co.nz>",
-          to: [email],
-          subject: "Activate Your James Blond Rentals Account",
-          html: emailHtml,
-        }),
-      });
+    const resendRes = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${resendApiKey}`,
+      },
+      body: JSON.stringify({
+        from: "James Blond Rentals <info@jamesblond.co.nz>",
+        to: [email],
+        subject: "Activate Your James Blond Rentals Account",
+        html: emailHtml,
+      }),
+    });
 
-      const resendData = await resendRes.json();
+    const resendData = await resendRes.json();
 
-      if (!resendRes.ok) {
-        console.error("Resend API error:", resendData);
-        return new Response(
-          JSON.stringify({ error: "Account created but failed to send email", details: resendData }),
-          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-
-      emailId = resendData.id;
-      console.log(`Branded invite email sent to ${email} via Resend, id: ${emailId}`);
-    } else {
-      console.log(`Skipping welcome email for ${email} - not in test group`);
+    if (!resendRes.ok) {
+      console.error("Resend API error:", resendData);
+      return new Response(
+        JSON.stringify({ error: "Account created but failed to send email", details: resendData }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
+
+    emailId = resendData.id;
+    console.log(`Branded invite email sent to ${email} via Resend, id: ${emailId}`);
 
     // Note: Savo sync is now triggered only after successful payment (PaymentSuccess page)
 
