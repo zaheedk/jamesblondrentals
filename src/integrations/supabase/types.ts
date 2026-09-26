@@ -14,6 +14,72 @@ export type Database = {
   }
   public: {
     Tables: {
+      additional_drivers: {
+        Row: {
+          address: string | null
+          city: string | null
+          country: string | null
+          created_at: string
+          dob: string | null
+          email: string | null
+          first_name: string
+          id: string
+          last_name: string
+          licence_back_path: string | null
+          licence_front_path: string | null
+          license_country: string | null
+          license_expiry: string | null
+          license_number: string | null
+          phone: string | null
+          postcode: string | null
+          suburb: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          dob?: string | null
+          email?: string | null
+          first_name: string
+          id?: string
+          last_name: string
+          licence_back_path?: string | null
+          licence_front_path?: string | null
+          license_country?: string | null
+          license_expiry?: string | null
+          license_number?: string | null
+          phone?: string | null
+          postcode?: string | null
+          suburb?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          dob?: string | null
+          email?: string | null
+          first_name?: string
+          id?: string
+          last_name?: string
+          licence_back_path?: string | null
+          licence_front_path?: string | null
+          license_country?: string | null
+          license_expiry?: string | null
+          license_number?: string | null
+          phone?: string | null
+          postcode?: string | null
+          suburb?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       blog_articles: {
         Row: {
           author: string
@@ -539,6 +605,8 @@ export type Database = {
           customer_id: string | null
           dob: string | null
           email: string
+          emergency_contact_name: string | null
+          emergency_contact_phone: string | null
           first_name: string
           id: string
           last_name: string
@@ -546,6 +614,7 @@ export type Database = {
           license_expiry: string | null
           license_number: string | null
           mobile: string | null
+          occupation: string | null
           passport_number: string | null
           phone: string | null
           postcode: string | null
@@ -562,6 +631,8 @@ export type Database = {
           customer_id?: string | null
           dob?: string | null
           email: string
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
           first_name: string
           id?: string
           last_name: string
@@ -569,6 +640,7 @@ export type Database = {
           license_expiry?: string | null
           license_number?: string | null
           mobile?: string | null
+          occupation?: string | null
           passport_number?: string | null
           phone?: string | null
           postcode?: string | null
@@ -585,6 +657,8 @@ export type Database = {
           customer_id?: string | null
           dob?: string | null
           email?: string
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
           first_name?: string
           id?: string
           last_name?: string
@@ -592,6 +666,7 @@ export type Database = {
           license_expiry?: string | null
           license_number?: string | null
           mobile?: string | null
+          occupation?: string | null
           passport_number?: string | null
           phone?: string | null
           postcode?: string | null
@@ -770,6 +845,48 @@ export type Database = {
           id?: string
           provider?: string | null
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      saved_payment_methods: {
+        Row: {
+          card_brand: string | null
+          card_expiry: string | null
+          card_last4: string | null
+          created_at: string
+          id: string
+          provider: string
+          provider_consent_id: string | null
+          provider_customer_id: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          card_brand?: string | null
+          card_expiry?: string | null
+          card_last4?: string | null
+          created_at?: string
+          id?: string
+          provider?: string
+          provider_consent_id?: string | null
+          provider_customer_id: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          card_brand?: string | null
+          card_expiry?: string | null
+          card_last4?: string | null
+          created_at?: string
+          id?: string
+          provider?: string
+          provider_consent_id?: string | null
+          provider_customer_id?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
