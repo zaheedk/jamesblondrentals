@@ -10,12 +10,6 @@ import { useMyBookings } from '@/hooks/use-bookings';
 import { rcmApi } from '@/lib/api/rcm-api';
 import { toast } from 'sonner';
 
-import seaterVanImg from '@/assets/12-seater-van-auckland-sky-tower.jpg';
-import suvImg from '@/assets/awd-suv-nz-mountain-adventure.jpg';
-import vanImg from '@/assets/cargo-van-south-auckland-skyline.jpg';
-import truckImg from '@/assets/family-unloading-removal-truck.jpg';
-import carImg from '@/assets/eco-hybrid-car-nz-landscape.jpg';
-
 const statusStyles: Record<string, string> = {
   pending: 'bg-primary/10 text-primary',
   confirmed: 'bg-portal-emerald-soft text-portal-emerald',
@@ -52,33 +46,44 @@ const paymentLabels: Record<string, string> = {
 
 const pill = 'inline-flex items-center rounded-full px-3 py-1 text-[11px] font-semibold leading-none';
 
-function vehicleImageFor(name?: string | null): string | null {
-  if (!name) return null;
-  const n = name.toLowerCase();
-  if (/12\s*seater|minibus|bus/.test(n)) return seaterVanImg;
-  if (/suv|4wd|awd|4x4|hatch|sedan|hybrid|economy|corolla|car/.test(n)) return suvImg;
-  if (/ton|box|tail\s*lift|truck|tipper|curtain|flatbed|deck/.test(n)) return truckImg;
-  if (/van/.test(n)) return vanImg;
-  return null;
+const RCM_IMAGE_BASE = 'https://rentalcarmanagerau.blob.core.windows.net/public/nzkuzarentals493';
+
+function getRcmVehicleImage(vehicleImage?: string, documentPath?: string): string | null {
+  const image = vehicleImage?.trim();
+  if (!image) return null;
+
+  if (/^https?:\/\//i.test(image)) return image;
+
+  const base = documentPath?.trim() || RCM_IMAGE_BASE;
+  return `${base.replace(/\/$/, '')}/${image.replace(/^\//, '')}`;
 }
 
-const VehiclePhoto = ({ name }: { name?: string | null }) => {
-  const img = vehicleImageFor(name);
-  if (img) {
+const VehiclePhoto = ({ name, imageUrl }: { name?: string | null; imageUrl?: string | null }) => {
+  const [imageFailed, setImageFailed] = useState(false);
+
+  if (!imageUrl || imageFailed) {
     return (
-      <img
-        src={img}
-        alt={name || 'Vehicle'}
-        loading="lazy"
-        className="h-28 w-44 shrink-0 rounded-lg bg-muted object-cover"
-      />
+      <div className="flex h-28 w-44 shrink-0 items-center justify-center rounded-lg bg-muted">
+        <Truck className="h-8 w-8 text-muted-foreground/40" />
+      </div>
     );
   }
+
   return (
-    <div className="flex h-28 w-44 shrink-0 items-center justify-center rounded-lg bg-muted">
-      <Truck className="h-8 w-8 text-muted-foreground/40" />
-    </div>
+    <img
+      src={imageUrl}
+      alt={name || 'Vehicle'}
+      loading="lazy"
+      className="h-28 w-44 shrink-0 rounded-lg bg-muted object-contain"
+      onError={() => setImageFailed(true)}
+    />
   );
+};
+
+type RcmBookingDetails = {
+  status: string;
+  imageUrl: string | null;
+  loading: boolean;
 };
 
 const SupabaseBookingHistory = () => {
@@ -87,7 +92,7 @@ const SupabaseBookingHistory = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [dateRange, setDateRange] = useState('all');
   const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [rcmStatuses, setRcmStatuses] = useState<Record<string, { status: string; loading: boolean }>>({});
+  const [rcmDetails, setRcmDetails] = useState<Record<string, RcmBookingDetails>>({});
 
   // Fetch RCM status for bookings that have a reservation_reference
   useEffect(() => {
@@ -102,18 +107,20 @@ const SupabaseBookingHistory = () => {
       const ref = booking.reservation_reference;
       if (!ref) return;
       // Skip if already fetched
-      if (rcmStatuses[ref] && !rcmStatuses[ref].loading) return;
+      if (rcmDetails[ref] && !rcmDetails[ref].loading) return;
 
-      setRcmStatuses(prev => ({ ...prev, [ref]: { status: '', loading: true } }));
+      setRcmDetails(prev => ({ ...prev, [ref]: { status: '', imageUrl: null, loading: true } }));
 
       try {
         const response = await rcmApi.getBookingInfoByReference(ref);
-        const bookingInfo = response?.results?.bookinginfo?.[0] as Record<string, any> | undefined;
+        const bookingInfoResult = response?.results?.bookinginfo;
+        const bookingInfo = (Array.isArray(bookingInfoResult) ? bookingInfoResult[0] : bookingInfoResult) as Record<string, any> | undefined;
         const rcmStatus = bookingInfo?.status || bookingInfo?.bookingstatus || bookingInfo?.reservationstatus || '';
-        setRcmStatuses(prev => ({ ...prev, [ref]: { status: rcmStatus, loading: false } }));
+        const imageUrl = getRcmVehicleImage(bookingInfo?.vehicleimage, bookingInfo?.urlpathfordocuments);
+        setRcmDetails(prev => ({ ...prev, [ref]: { status: rcmStatus, imageUrl, loading: false } }));
       } catch (err) {
-        console.error('Failed to fetch RCM status for', ref, err);
-        setRcmStatuses(prev => ({ ...prev, [ref]: { status: '', loading: false } }));
+        console.error('Failed to fetch RCM booking details for', ref, err);
+        setRcmDetails(prev => ({ ...prev, [ref]: { status: '', imageUrl: null, loading: false } }));
       }
     });
   }, [bookings]);
@@ -126,7 +133,7 @@ const SupabaseBookingHistory = () => {
   const matchesStatus = (booking: any) => {
     if (statusFilter === 'all') return true;
     const ref = booking.reservation_reference;
-    const live = ref ? rcmStatuses[ref]?.status : '';
+    const live = ref ? rcmDetails[ref]?.status : '';
     const status = (live || booking.booking_status || '').toLowerCase();
     return status === statusFilter || status.includes(statusFilter);
   };
@@ -275,7 +282,7 @@ const SupabaseBookingHistory = () => {
         <div className="space-y-4">
           {filteredBookings.map((booking) => {
             const ref = booking.reservation_reference;
-            const rcmData = ref ? rcmStatuses[ref] : null;
+            const rcmData = ref ? rcmDetails[ref] : null;
             const displayStatus = rcmData?.status || booking.booking_status;
             const isOpen = expandedId === booking.id;
 
@@ -285,7 +292,7 @@ const SupabaseBookingHistory = () => {
                 className="rounded-xl border border-border bg-card p-5 transition-colors hover:border-primary/25"
               >
                 <div className="flex flex-col gap-4 md:flex-row md:gap-5">
-                  <VehiclePhoto name={booking.vehicle_name} />
+                  <VehiclePhoto name={booking.vehicle_name} imageUrl={rcmData?.imageUrl} />
 
                   <div className="min-w-0 flex-1">
                     {/* Title, ref, badges */}
