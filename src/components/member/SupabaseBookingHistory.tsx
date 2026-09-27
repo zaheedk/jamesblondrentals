@@ -1,19 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
-import { CarIcon, Loader2, Search } from 'lucide-react';
+import { CalendarDays, CalendarRange, CarIcon, Clock, Loader2, MapPin, Search, Truck } from 'lucide-react';
 import { useMyBookings } from '@/hooks/use-bookings';
 import { rcmApi } from '@/lib/api/rcm-api';
 import { toast } from 'sonner';
 
+import seaterVanImg from '@/assets/12-seater-van-auckland-sky-tower.jpg';
+import suvImg from '@/assets/awd-suv-nz-mountain-adventure.jpg';
+import vanImg from '@/assets/cargo-van-south-auckland-skyline.jpg';
+import truckImg from '@/assets/family-unloading-removal-truck.jpg';
+import carImg from '@/assets/eco-hybrid-car-nz-landscape.jpg';
+
 const statusStyles: Record<string, string> = {
-  pending: 'bg-portal-alert-soft text-portal-alert',
+  pending: 'bg-primary/10 text-primary',
   confirmed: 'bg-portal-emerald-soft text-portal-emerald',
   active: 'bg-portal-emerald-soft text-portal-emerald',
   'checked out': 'bg-portal-emerald-soft text-portal-emerald',
   completed: 'bg-muted text-muted-foreground',
   'checked in': 'bg-muted text-muted-foreground',
   cancelled: 'bg-destructive/10 text-destructive',
+};
+
+const statusLabels: Record<string, string> = {
+  pending: 'Reservation Request',
+  confirmed: 'Confirmed',
+  active: 'Active',
+  completed: 'Completed',
+  cancelled: 'Cancelled',
+  'checked out': 'Checked Out',
+  'checked in': 'Checked In',
 };
 
 const paymentStyles: Record<string, string> = {
@@ -23,11 +43,50 @@ const paymentStyles: Record<string, string> = {
   refunded: 'bg-muted text-muted-foreground',
 };
 
-const pill = 'inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-semibold leading-none';
+const paymentLabels: Record<string, string> = {
+  pending: 'Payment Pending',
+  paid: 'Paid',
+  failed: 'Payment Failed',
+  refunded: 'Refunded',
+};
+
+const pill = 'inline-flex items-center rounded-full px-3 py-1 text-[11px] font-semibold leading-none';
+
+function vehicleImageFor(name?: string | null): string | null {
+  if (!name) return null;
+  const n = name.toLowerCase();
+  if (/12\s*seater|minibus|bus/.test(n)) return seaterVanImg;
+  if (/suv|4wd|awd|4x4|hatch|sedan|hybrid|economy|corolla|car/.test(n)) return suvImg;
+  if (/ton|box|tail\s*lift|truck|tipper|curtain|flatbed|deck/.test(n)) return truckImg;
+  if (/van/.test(n)) return vanImg;
+  return null;
+}
+
+const VehiclePhoto = ({ name }: { name?: string | null }) => {
+  const img = vehicleImageFor(name);
+  if (img) {
+    return (
+      <img
+        src={img}
+        alt={name || 'Vehicle'}
+        loading="lazy"
+        className="h-28 w-44 shrink-0 rounded-lg bg-muted object-cover"
+      />
+    );
+  }
+  return (
+    <div className="flex h-28 w-44 shrink-0 items-center justify-center rounded-lg bg-muted">
+      <Truck className="h-8 w-8 text-muted-foreground/40" />
+    </div>
+  );
+};
 
 const SupabaseBookingHistory = () => {
   const { data: bookings, isLoading, error } = useMyBookings();
   const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [dateRange, setDateRange] = useState('all');
+  const [expandedId, setExpandedId] = useState<string | null>(null);
   const [rcmStatuses, setRcmStatuses] = useState<Record<string, { status: string; loading: boolean }>>({});
 
   // Fetch RCM status for bookings that have a reservation_reference
@@ -64,38 +123,44 @@ const SupabaseBookingHistory = () => {
     toast.error('Failed to load booking history');
   }
 
+  const matchesStatus = (booking: any) => {
+    if (statusFilter === 'all') return true;
+    const ref = booking.reservation_reference;
+    const live = ref ? rcmStatuses[ref]?.status : '';
+    const status = (live || booking.booking_status || '').toLowerCase();
+    return status === statusFilter || status.includes(statusFilter);
+  };
+
+  const matchesDateRange = (booking: any) => {
+    if (dateRange === 'all') return true;
+    const pickup = booking.pickup_date ? new Date(booking.pickup_date) : null;
+    if (!pickup || isNaN(pickup.getTime())) return dateRange === 'past';
+    const now = new Date();
+    if (dateRange === 'upcoming') return pickup >= new Date(now.toDateString());
+    if (dateRange === 'past') return pickup < new Date(now.toDateString());
+    if (dateRange === 'thisyear') return pickup.getFullYear() === now.getFullYear();
+    return true;
+  };
+
   const filteredBookings = bookings?.filter((booking) =>
-    booking.reservation_reference?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    booking.vehicle_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    booking.pickup_location_name?.toLowerCase().includes(searchQuery.toLowerCase())
+    (booking.reservation_reference?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      booking.vehicle_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      booking.pickup_location_name?.toLowerCase().includes(searchQuery.toLowerCase())) &&
+    matchesStatus(booking) &&
+    matchesDateRange(booking)
   ) || [];
 
   const getStatusBadge = (status?: string) => {
-    if (!status) return <span className={`${pill} bg-muted text-muted-foreground`}>Unknown</span>;
+    if (!status) return null;
     const lower = status.toLowerCase();
-    const labelMap: Record<string, string> = {
-      pending: 'Pending',
-      confirmed: 'Confirmed',
-      active: 'Active',
-      completed: 'Completed',
-      cancelled: 'Cancelled',
-      'checked out': 'Checked Out',
-      'checked in': 'Checked In',
-    };
     const style = statusStyles[lower] || 'bg-muted text-muted-foreground';
-    return <span className={`${pill} ${style}`}>{labelMap[lower] || status}</span>;
+    return <span className={`${pill} ${style}`}>{statusLabels[lower] || status}</span>;
   };
 
   const getPaymentStatusBadge = (status?: string) => {
     if (!status) return null;
-    const labelMap: Record<string, string> = {
-      pending: 'Payment Pending',
-      paid: 'Paid',
-      failed: 'Payment Failed',
-      refunded: 'Refunded',
-    };
     const style = paymentStyles[status] || 'bg-muted text-muted-foreground';
-    return <span className={`${pill} ${style}`}>{labelMap[status] || status}</span>;
+    return <span className={`${pill} ${style}`}>{paymentLabels[status] || status}</span>;
   };
 
   const formatDate = (dateString: string) => {
@@ -106,24 +171,35 @@ const SupabaseBookingHistory = () => {
     });
   };
 
+  const formatTime = (timeString?: string) => {
+    if (!timeString) return '';
+    // Accept "10:30:00" or "10:30" — trim seconds for a cleaner look
+    const parts = timeString.split(':');
+    return parts.length >= 2 ? `${parts[0]}:${parts[1]}` : timeString;
+  };
+
   const formatDateTime = (dateString: string, timeString?: string) => {
     const date = formatDate(dateString);
-    return timeString ? `${date} at ${timeString}` : date;
+    const time = formatTime(timeString);
+    return time ? `${date} at ${time}` : date;
   };
 
   const formatCurrency = (amount?: number) => {
-    return amount ? `$${amount.toFixed(2)}` : '—';
+    return amount != null ? `$${amount.toFixed(2)}` : '—';
   };
 
   if (isLoading) {
     return (
-      <div className="space-y-3">
+      <div className="space-y-4">
         {[...Array(3)].map((_, i) => (
-          <div key={i} className="rounded-lg border border-border bg-card px-5 py-4">
-            <div className="space-y-3">
-              <Skeleton className="h-4 w-1/4" />
-              <Skeleton className="h-4 w-1/2" />
-              <Skeleton className="h-4 w-3/4" />
+          <div key={i} className="rounded-xl border border-border bg-card p-5">
+            <div className="flex gap-4">
+              <Skeleton className="h-28 w-44 rounded-lg" />
+              <div className="flex-1 space-y-3 py-1">
+                <Skeleton className="h-5 w-1/3" />
+                <Skeleton className="h-4 w-1/4" />
+                <Skeleton className="h-4 w-2/3" />
+              </div>
             </div>
           </div>
         ))}
@@ -133,7 +209,7 @@ const SupabaseBookingHistory = () => {
 
   if (error) {
     return (
-      <div className="rounded-2xl border border-border/70 bg-card p-8 text-center text-muted-foreground">
+      <div className="rounded-xl border border-border bg-card p-8 text-center text-muted-foreground">
         Failed to load booking history. Please try again later.
       </div>
     );
@@ -152,77 +228,168 @@ const SupabaseBookingHistory = () => {
 
   return (
     <div className="space-y-4">
-      <div className="relative max-w-sm">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <Input
-          placeholder="Search bookings..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full rounded-lg bg-card pl-9 shadow-none"
-        />
+      {/* Search + filters */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            placeholder="Search bookings by reference, vehicle, or location..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full rounded-lg bg-card pl-9 shadow-none"
+          />
+        </div>
+        <div className="flex gap-3">
+          <Select value={dateRange} onValueChange={setDateRange}>
+            <SelectTrigger className="w-full rounded-lg bg-card sm:w-[150px]">
+              <CalendarRange className="h-4 w-4 text-muted-foreground" />
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All dates</SelectItem>
+              <SelectItem value="upcoming">Upcoming</SelectItem>
+              <SelectItem value="past">Past</SelectItem>
+              <SelectItem value="thisyear">This year</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-full rounded-lg bg-card sm:w-[150px]">
+              <SelectValue placeholder="All status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All status</SelectItem>
+              <SelectItem value="pending">Reservation Request</SelectItem>
+              <SelectItem value="confirmed">Confirmed</SelectItem>
+              <SelectItem value="completed">Completed</SelectItem>
+              <SelectItem value="cancelled">Cancelled</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {filteredBookings.length === 0 ? (
-        <div className="rounded-2xl border border-border/70 bg-card p-8 text-center text-sm text-muted-foreground">
-          No bookings match your search criteria.
+        <div className="rounded-xl border border-border bg-card p-8 text-center text-sm text-muted-foreground">
+          No bookings match your search or filters.
         </div>
       ) : (
-        <div className="space-y-2.5">
+        <div className="space-y-4">
           {filteredBookings.map((booking) => {
             const ref = booking.reservation_reference;
             const rcmData = ref ? rcmStatuses[ref] : null;
             const displayStatus = rcmData?.status || booking.booking_status;
+            const isOpen = expandedId === booking.id;
 
             return (
               <div
                 key={booking.id}
-                className="rounded-lg border border-border bg-card px-5 py-4 transition-colors hover:border-primary/25"
+                className="rounded-xl border border-border bg-card p-5 transition-colors hover:border-primary/25"
               >
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="min-w-0 space-y-1">
-                    <div className="flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-0.5">
-                      <h3 className="truncate font-portalHeading text-sm font-semibold leading-5 text-foreground">
-                        {booking.vehicle_name || 'Vehicle Rental'}
-                      </h3>
-                      <span className="font-mono text-[10px] text-muted-foreground">
-                        {booking.reservation_reference || booking.booking_reference || 'N/A'}
-                      </span>
+                <div className="flex flex-col gap-4 md:flex-row md:gap-5">
+                  <VehiclePhoto name={booking.vehicle_name} />
+
+                  <div className="min-w-0 flex-1">
+                    {/* Title, ref, badges */}
+                    <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
+                      <div className="min-w-0">
+                        <h3 className="font-portalHeading text-base font-bold leading-6 text-foreground md:text-lg">
+                          {booking.vehicle_name || 'Vehicle Rental'}
+                        </h3>
+                        <p className="mt-0.5 text-xs text-muted-foreground">
+                          Ref. {booking.reservation_reference || booking.booking_reference || 'N/A'}
+                        </p>
+                      </div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        {rcmData?.loading ? (
+                          <span className={`${pill} bg-muted text-muted-foreground`}>
+                            <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                            Checking...
+                          </span>
+                        ) : (
+                          getStatusBadge(displayStatus)
+                        )}
+                        {getPaymentStatusBadge(booking.payment_status)}
+                      </div>
                     </div>
-                    <p className="text-xs leading-5 text-muted-foreground">
-                      <span className="font-medium text-foreground/80">Rental:</span>{' '}
-                      {formatDateTime(booking.pickup_date, booking.pickup_time)}
-                      {' · '}{booking.pickup_location_name || 'Location pending'}
-                      <span className="mx-1.5 text-border">→</span>
-                      {formatDateTime(booking.dropoff_date, booking.dropoff_time)}
-                      {' · '}{booking.dropoff_location_name || 'Location pending'}
-                    </p>
-                    <p className="text-[11px] leading-4 text-muted-foreground">
-                      {booking.total_days} day{booking.total_days !== 1 ? 's' : ''}
-                      <span className="mx-1.5 text-border">•</span>
-                      <span className="font-semibold text-foreground">{formatCurrency(booking.total_amount)}</span>
-                      {booking.created_at && (
-                        <>
-                          <span className="mx-1.5 text-border">•</span>
-                          Booked {formatDate(booking.created_at)}
-                        </>
-                      )}
-                    </p>
-                    {booking.special_requirements && (
-                      <p className="line-clamp-1 text-[11px] text-muted-foreground">
-                        <span className="font-medium text-foreground/80">Notes:</span> {booking.special_requirements}
+
+                    {/* Detail columns */}
+                    <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-4 md:grid-cols-4">
+                      <div>
+                        <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                          <CalendarDays className="h-3.5 w-3.5" /> Pickup
+                        </p>
+                        <p className="mt-1 text-sm font-medium text-foreground">
+                          {formatDateTime(booking.pickup_date, booking.pickup_time)}
+                        </p>
+                        <p className="mt-0.5 text-xs text-muted-foreground">
+                          {booking.pickup_location_name || 'Location pending'}
+                        </p>
+                      </div>
+                      <div className="md:border-l md:border-border md:pl-4">
+                        <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                          <MapPin className="h-3.5 w-3.5" /> Drop-off
+                        </p>
+                        <p className="mt-1 text-sm font-medium text-foreground">
+                          {formatDateTime(booking.dropoff_date, booking.dropoff_time)}
+                        </p>
+                        <p className="mt-0.5 text-xs text-muted-foreground">
+                          {booking.dropoff_location_name || 'Location pending'}
+                        </p>
+                      </div>
+                      <div className="md:border-l md:border-border md:pl-4">
+                        <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                          <Clock className="h-3.5 w-3.5" /> Duration
+                        </p>
+                        <p className="mt-1 text-sm font-medium text-foreground">
+                          {booking.total_days} day{booking.total_days !== 1 ? 's' : ''}
+                        </p>
+                      </div>
+                      <div className="md:border-l md:border-border md:pl-4">
+                        <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                          Total
+                        </p>
+                        <p className="mt-1 font-portalHeading text-xl font-bold text-foreground">
+                          {formatCurrency(booking.total_amount)}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Footer row */}
+                    <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-3">
+                      <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                        <CalendarDays className="h-3.5 w-3.5" />
+                        Booked on {booking.created_at ? formatDate(booking.created_at) : '—'}
                       </p>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="gap-1.5 rounded-full border-primary/30 px-4 text-primary hover:bg-primary/5 hover:text-primary"
+                        onClick={() => setExpandedId(isOpen ? null : booking.id)}
+                      >
+                        {isOpen ? 'Hide details' : 'View details'}
+                      </Button>
+                    </div>
+
+                    {/* Expanded details */}
+                    {isOpen && (
+                      <div className="mt-3 space-y-2 rounded-lg bg-muted/50 p-4 text-sm">
+                        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                          <p className="text-muted-foreground">
+                            <span className="font-medium text-foreground">Booking reference:</span>{' '}
+                            {booking.booking_reference || 'N/A'}
+                          </p>
+                          <p className="text-muted-foreground">
+                            <span className="font-medium text-foreground">Payment status:</span>{' '}
+                            {booking.payment_status ? paymentLabels[booking.payment_status] || booking.payment_status : '—'}
+                          </p>
+                        </div>
+                        {booking.special_requirements && (
+                          <p className="text-muted-foreground">
+                            <span className="font-medium text-foreground">Notes:</span>{' '}
+                            {booking.special_requirements}
+                          </p>
+                        )}
+                      </div>
                     )}
-                  </div>
-                  <div className="flex shrink-0 flex-wrap items-center gap-1.5 sm:max-w-40 sm:justify-end">
-                    {rcmData?.loading ? (
-                      <span className={`${pill} bg-muted text-muted-foreground`}>
-                        <Loader2 className="mr-1 h-3 w-3 animate-spin" />
-                        Checking...
-                      </span>
-                    ) : (
-                      getStatusBadge(displayStatus)
-                    )}
-                    {getPaymentStatusBadge(booking.payment_status)}
                   </div>
                 </div>
               </div>
