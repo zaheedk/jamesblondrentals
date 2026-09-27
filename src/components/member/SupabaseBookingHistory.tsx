@@ -13,7 +13,7 @@ import { toast } from 'sonner';
 import seaterVanImg from '@/assets/12-seater-van-auckland-sky-tower.jpg';
 import suvImg from '@/assets/awd-suv-nz-mountain-adventure.jpg';
 import vanImg from '@/assets/cargo-van-south-auckland-skyline.jpg';
-import truckImg from '@/assets/truck-moving-boxes-household-items.jpg';
+import truckImg from '@/assets/family-unloading-removal-truck.jpg';
 import carImg from '@/assets/eco-hybrid-car-nz-landscape.jpg';
 
 const statusStyles: Record<string, string> = {
