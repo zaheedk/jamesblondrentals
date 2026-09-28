@@ -319,31 +319,6 @@ export default function ProfileForm() {
         </div>
       </section>
 
-      <Separator />
-
-      <section>
-        <div className="flex items-center gap-2 mb-4">
-          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10">
-            <Phone className="w-4 h-4 text-primary" />
-          </div>
-          <h3 className="text-lg font-bold text-foreground">Rental Agreement Details</h3>
-        </div>
-        <div className="rounded-lg border bg-card p-6 space-y-5">
-          <FieldWithIcon icon={User} label="Occupation">
-            <Input value={form.occupation} onChange={e => handleChange('occupation', e.target.value)} className="h-11" />
-          </FieldWithIcon>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <FieldWithIcon icon={User} label="Emergency Contact Name">
-              <Input value={form.emergency_contact_name} onChange={e => handleChange('emergency_contact_name', e.target.value)} className="h-11" />
-            </FieldWithIcon>
-            <FieldWithIcon icon={Phone} label="Emergency Contact Phone">
-              <Input value={form.emergency_contact_phone} onChange={e => handleChange('emergency_contact_phone', e.target.value)} className="h-11" />
-            </FieldWithIcon>
-          </div>
-        </div>
-      </section>
-
-
       {/* Save Button */}
       <div className="flex justify-end pt-2 pb-4">
         <Button onClick={handleSave} disabled={saving} size="lg" className="min-w-[160px]">
