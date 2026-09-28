@@ -283,24 +283,27 @@ export default function MemberDashboard() {
                 </p>
               </div>
 
-              <div className="flex items-start gap-3.5 rounded-xl border border-primary/15 bg-primary/5 p-4 lg:max-w-md">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-white">
-                  <AlertTriangle className="h-5 w-5" />
-                </span>
-                <div>
-                  <h2 className="text-sm font-semibold text-foreground">Had an accident?</h2>
-                  <p className="mt-0.5 text-sm text-muted-foreground">
-                    Report it quickly through our accident reporting tool.{' '}
-                    <button
-                      onClick={handleReportAccident}
-                      disabled={savoLoading}
-                      className="font-semibold text-primary hover:underline disabled:opacity-50"
-                    >
-                      {savoLoading ? 'Opening…' : 'Start a report'}
-                    </button>
-                  </p>
+              {/* Accident report card hidden for now — re-enable later */}
+              {false && (
+                <div className="flex items-start gap-3.5 rounded-xl border border-primary/15 bg-primary/5 p-4 lg:max-w-md">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-white">
+                    <AlertTriangle className="h-5 w-5" />
+                  </span>
+                  <div>
+                    <h2 className="text-sm font-semibold text-foreground">Had an accident?</h2>
+                    <p className="mt-0.5 text-sm text-muted-foreground">
+                      Report it quickly through our accident reporting tool.{' '}
+                      <button
+                        onClick={handleReportAccident}
+                        disabled={savoLoading}
+                        className="font-semibold text-primary hover:underline disabled:opacity-50"
+                      >
+                        {savoLoading ? 'Opening…' : 'Start a report'}
+                      </button>
+                    </p>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
             {isAdmin && (
