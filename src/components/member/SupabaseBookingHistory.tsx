@@ -85,6 +85,13 @@ type RcmBookingDetails = {
   imageUrl: string | null;
   reservationNo: string;
   loading: boolean;
+  totalCost?: number;
+  paid?: number;
+  balanceDue?: number;
+  rentalSubtotal?: number;
+  pickupLocation?: string;
+  dropoffLocation?: string;
+  fees?: { name: string; amount: number; insurance: boolean; bond: boolean }[];
 };
 
 const SupabaseBookingHistory = () => {
@@ -122,9 +129,28 @@ const SupabaseBookingHistory = () => {
         const rcmStatus = bookingInfo?.status || bookingInfo?.bookingstatus || bookingInfo?.reservationstatus || '';
         const imageUrl = getRcmVehicleImage(bookingInfo?.vehicleimage, bookingInfo?.urlpathfordocuments);
         const reservationNo = String(bookingInfo?.reservationno || '');
+        const results = response?.results as Record<string, any> | undefined;
+        const payments = Array.isArray(results?.paymentinfo) ? results!.paymentinfo : [];
+        const rates = Array.isArray(results?.rateinfo) ? results!.rateinfo : [];
+        const extras = Array.isArray(results?.extrafees) ? results!.extrafees : [];
+        const num = (v: any) => (v === null || v === undefined || v === '' || isNaN(Number(v)) ? undefined : Number(v));
         setRcmDetails(prev => ({
           ...prev,
-          [ref]: { status: rcmStatus, imageUrl, reservationNo, loading: false },
+          [ref]: {
+            status: rcmStatus, imageUrl, reservationNo, loading: false,
+            totalCost: num(bookingInfo?.totalcost),
+            balanceDue: num(bookingInfo?.balancedue),
+            paid: payments.reduce((sum: number, p: any) => sum + (Number(p?.paidamount) || 0), 0),
+            rentalSubtotal: rates.reduce((sum: number, r: any) => sum + (Number(r?.ratesubtotal) || 0), 0),
+            pickupLocation: bookingInfo?.pickuplocationname || undefined,
+            dropoffLocation: bookingInfo?.dropofflocationname || undefined,
+            fees: extras.map((f: any) => ({
+              name: String(f?.name || 'Extra'),
+              amount: Number(f?.totalfeeamount) || 0,
+              insurance: !!f?.isinsurancefee,
+              bond: !!f?.isbondfee,
+            })),
+          },
         }));
       } catch (err) {
         console.error('Failed to fetch RCM booking details for', ref, err);
@@ -328,7 +354,11 @@ const SupabaseBookingHistory = () => {
                         ) : (
                           getStatusBadge(displayStatus)
                         )}
-                        {getPaymentStatusBadge(booking.payment_status)}
+                        {rcmData && !rcmData.loading && rcmData.totalCost !== undefined
+                          ? getPaymentStatusBadge(
+                              (rcmData.paid || 0) <= 0 ? 'unpaid'
+                                : (rcmData.balanceDue ?? rcmData.totalCost - (rcmData.paid || 0)) > 0.009 ? 'partial' : 'paid')
+                          : getPaymentStatusBadge(booking.payment_status)}
                       </div>
                     </div>
 
@@ -342,7 +372,7 @@ const SupabaseBookingHistory = () => {
                           {formatDateTime(booking.pickup_date, booking.pickup_time)}
                         </p>
                         <p className="mt-0.5 text-xs text-muted-foreground">
-                          {booking.pickup_location_name || 'Location pending'}
+                          {rcmData?.pickupLocation || booking.pickup_location_name || 'Location pending'}
                         </p>
                       </div>
                       <div className="md:border-l md:border-border md:pl-4">
@@ -353,7 +383,7 @@ const SupabaseBookingHistory = () => {
                           {formatDateTime(booking.dropoff_date, booking.dropoff_time)}
                         </p>
                         <p className="mt-0.5 text-xs text-muted-foreground">
-                          {booking.dropoff_location_name || 'Location pending'}
+                          {rcmData?.dropoffLocation || booking.dropoff_location_name || 'Location pending'}
                         </p>
                       </div>
                       <div className="md:border-l md:border-border md:pl-4">
@@ -369,8 +399,13 @@ const SupabaseBookingHistory = () => {
                           Total
                         </p>
                         <p className="mt-1 font-portalHeading text-xl font-bold text-foreground">
-                          {formatCurrency(booking.total_amount)}
+                          {formatCurrency(rcmData?.totalCost ?? booking.total_amount)}
                         </p>
+                        {rcmData?.totalCost !== undefined && (
+                          <p className="mt-0.5 text-xs text-muted-foreground">
+                            Paid {formatCurrency(rcmData.paid || 0)} · Due {formatCurrency(rcmData.balanceDue ?? 0)}
+                          </p>
+                        )}
                       </div>
                     </div>
 
@@ -400,8 +435,42 @@ const SupabaseBookingHistory = () => {
                           </p>
                           <p className="text-muted-foreground">
                             <span className="font-medium text-foreground">Payment status:</span>{' '}
-                            {booking.payment_status ? paymentLabels[booking.payment_status] || booking.payment_status : '—'}
+                            {rcmData?.totalCost !== undefined
+                              ? (rcmData.paid || 0) <= 0 ? 'Unpaid' : (rcmData.balanceDue || 0) > 0.009 ? 'Part paid' : 'Paid in full'
+                              : booking.payment_status ? paymentLabels[booking.payment_status] || booking.payment_status : '—'}
                           </p>
+                        </div>
+                        {rcmData?.totalCost !== undefined && (
+                          <div className="mt-2 divide-y divide-border rounded-md border border-border bg-card">
+                            <div className="flex justify-between px-3 py-2">
+                              <span className="text-muted-foreground">Vehicle hire</span>
+                              <span className="text-foreground">{formatCurrency(rcmData.rentalSubtotal || 0)}</span>
+                            </div>
+                            {(rcmData.fees || []).map((f, i) => (
+                              <div key={i} className="flex justify-between gap-4 px-3 py-2">
+                                <span className="text-muted-foreground">
+                                  {f.insurance && <span className="mr-1.5 font-medium text-foreground">Insurance:</span>}
+                                  {f.name}
+                                  {f.bond && <span className="ml-1 text-xs">(refundable)</span>}
+                                </span>
+                                <span className="shrink-0 text-foreground">{f.amount > 0 ? formatCurrency(f.amount) : 'Included'}</span>
+                              </div>
+                            ))}
+                            <div className="flex justify-between px-3 py-2 font-medium">
+                              <span className="text-foreground">Total</span>
+                              <span className="text-foreground">{formatCurrency(rcmData.totalCost)}</span>
+                            </div>
+                            <div className="flex justify-between px-3 py-2">
+                              <span className="text-muted-foreground">Paid</span>
+                              <span className="text-portal-emerald">{formatCurrency(rcmData.paid || 0)}</span>
+                            </div>
+                            <div className="flex justify-between px-3 py-2 font-semibold">
+                              <span className="text-foreground">Balance due</span>
+                              <span className="text-foreground">{formatCurrency(rcmData.balanceDue ?? 0)}</span>
+                            </div>
+                          </div>
+                        )}
+                        <div className="hidden">
                         </div>
                         {booking.special_requirements && (
                           <p className="text-muted-foreground">
