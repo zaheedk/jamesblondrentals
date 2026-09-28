@@ -8,7 +8,7 @@ const corsHeaders = {
 };
 
 const SITE_URL = "https://www.jamesblond.co.nz";
-const LOGO_URL = "https://jlwvqbrtdzwrcwelyylv.supabase.co/storage/v1/object/public/blog-images/jb-logo.png";
+const LOGO_URL = "https://www.jamesblond.co.nz/lovable-uploads/900107e8-dbcb-44ce-96a9-0588959abf24.png";
 
 function buildInviteEmailHtml(activateUrl: string): string {
   return `<!DOCTYPE html>
