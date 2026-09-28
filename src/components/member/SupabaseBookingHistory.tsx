@@ -5,7 +5,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
-import { CalendarDays, CalendarRange, CarIcon, Clock, Loader2, MapPin, Search, Truck } from 'lucide-react';
+import { CalendarDays, CalendarRange, CarIcon, Clock, Loader2, Mail, MapPin, Phone, Search, Truck } from 'lucide-react';
 import { useMyBookings } from '@/hooks/use-bookings';
 import { rcmApi } from '@/lib/api/rcm-api';
 import { toast } from 'sonner';
