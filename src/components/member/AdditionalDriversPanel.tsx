@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { Loader2, Plus, Trash2, UserPlus, Camera, CheckCircle2 } from 'lucide-react';
+import { syncToRcm } from '@/lib/rcm-sync';
 
 const schema = z.object({
   first_name: z.string().trim().min(1, 'First name is required').max(100),
@@ -88,6 +89,7 @@ export default function AdditionalDriversPanel() {
     setForm(null);
     setEditingId(null);
     load();
+    syncToRcm('drivers');
   };
 
   const remove = async (d: Driver) => {
@@ -96,6 +98,7 @@ export default function AdditionalDriversPanel() {
     const paths = [d.licence_front_path, d.licence_back_path].filter(Boolean) as string[];
     if (paths.length) await supabase.storage.from('customer-documents').remove(paths);
     load();
+    syncToRcm('drivers', { first_name: d.first_name, last_name: d.last_name });
   };
 
   const upload = async (d: Driver, side: 'front' | 'back', file: File) => {

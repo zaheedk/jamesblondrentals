@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
 import { Loader2, Save, User, CreditCard, MapPin, Phone, Mail, Globe, Calendar, Hash } from 'lucide-react';
+import { syncToRcm } from '@/lib/rcm-sync';
 
 interface ProfileData {
   first_name: string;
@@ -189,6 +190,7 @@ export default function ProfileForm() {
       }
 
       toast.success('Profile saved successfully');
+      await syncToRcm('profile');
     } catch (err: any) {
       console.error('Error saving profile:', err);
       toast.error(err.message || 'Failed to save profile');
