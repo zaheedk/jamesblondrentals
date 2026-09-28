@@ -103,6 +103,34 @@ export default function ProfileForm() {
           emergency_contact_name: (data as any).emergency_contact_name || '',
           emergency_contact_phone: (data as any).emergency_contact_phone || '',
         });
+      } else {
+        // No saved profile yet — pre-fill from the customer's most recent booking
+        const { data: booking } = await supabase
+          .from('bookings')
+          .select('customer_first_name, customer_last_name, customer_mobile, customer_phone, customer_dob, customer_license_number, license_exp_date, license_issued, customer_address, customer_suburb, customer_state, customer_postcode, customer_country, occupation')
+          .or(`user_id.eq.${user!.id},customer_email.ilike.${user!.email}`)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (booking) {
+          setForm(prev => ({
+            ...prev,
+            first_name: booking.customer_first_name || '',
+            last_name: booking.customer_last_name || '',
+            mobile: booking.customer_mobile || booking.customer_phone || '',
+            dob: booking.customer_dob || '',
+            license_number: booking.customer_license_number || '',
+            license_expiry: booking.license_exp_date || '',
+            license_country: booking.license_issued || 'New Zealand',
+            address: booking.customer_address || '',
+            suburb: booking.customer_suburb || '',
+            city: booking.customer_state || '',
+            postcode: booking.customer_postcode || '',
+            country: booking.customer_country || 'New Zealand',
+            occupation: booking.occupation || '',
+          }));
+        }
       }
     } catch (err) {
       console.error('Error loading profile:', err);
