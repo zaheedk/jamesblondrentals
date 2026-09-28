@@ -24,8 +24,6 @@ interface DocRow {
 const DOC_META: { type: DocType; label: string; hint: string; required: boolean }[] = [
   { type: 'licence_front', label: "Driver's licence — front", hint: 'Photo of the front of your licence', required: true },
   { type: 'licence_back', label: "Driver's licence — back", hint: 'Photo of the back of your licence', required: true },
-  { type: 'passport', label: 'Passport or photo ID', hint: 'Required for overseas licences', required: false },
-  { type: 'proof_of_address', label: 'Proof of address', hint: 'Utility bill or bank statement (optional)', required: false },
 ];
 
 const MAX_BYTES = 8 * 1024 * 1024;
