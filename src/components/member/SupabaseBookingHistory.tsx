@@ -83,6 +83,7 @@ const VehiclePhoto = ({ name, imageUrl }: { name?: string | null; imageUrl?: str
 type RcmBookingDetails = {
   status: string;
   imageUrl: string | null;
+  reservationNo: string;
   loading: boolean;
 };
 
@@ -109,7 +110,10 @@ const SupabaseBookingHistory = () => {
       // Skip if already fetched
       if (rcmDetails[ref] && !rcmDetails[ref].loading) return;
 
-      setRcmDetails(prev => ({ ...prev, [ref]: { status: '', imageUrl: null, loading: true } }));
+      setRcmDetails(prev => ({
+        ...prev,
+        [ref]: { status: '', imageUrl: null, reservationNo: '', loading: true },
+      }));
 
       try {
         const response = await rcmApi.getBookingInfoByReference(ref);
@@ -117,10 +121,17 @@ const SupabaseBookingHistory = () => {
         const bookingInfo = (Array.isArray(bookingInfoResult) ? bookingInfoResult[0] : bookingInfoResult) as Record<string, any> | undefined;
         const rcmStatus = bookingInfo?.status || bookingInfo?.bookingstatus || bookingInfo?.reservationstatus || '';
         const imageUrl = getRcmVehicleImage(bookingInfo?.vehicleimage, bookingInfo?.urlpathfordocuments);
-        setRcmDetails(prev => ({ ...prev, [ref]: { status: rcmStatus, imageUrl, loading: false } }));
+        const reservationNo = String(bookingInfo?.reservationno || '');
+        setRcmDetails(prev => ({
+          ...prev,
+          [ref]: { status: rcmStatus, imageUrl, reservationNo, loading: false },
+        }));
       } catch (err) {
         console.error('Failed to fetch RCM booking details for', ref, err);
-        setRcmDetails(prev => ({ ...prev, [ref]: { status: '', imageUrl: null, loading: false } }));
+        setRcmDetails(prev => ({
+          ...prev,
+          [ref]: { status: '', imageUrl: null, reservationNo: '', loading: false },
+        }));
       }
     });
   }, [bookings]);
@@ -150,7 +161,9 @@ const SupabaseBookingHistory = () => {
   };
 
   const filteredBookings = bookings?.filter((booking) =>
-    (booking.reservation_reference?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    ((booking.reservation_reference ? rcmDetails[booking.reservation_reference]?.reservationNo : '')
+        ?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      booking.booking_reference?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       booking.vehicle_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       booking.pickup_location_name?.toLowerCase().includes(searchQuery.toLowerCase())) &&
     matchesStatus(booking) &&
@@ -283,6 +296,7 @@ const SupabaseBookingHistory = () => {
           {filteredBookings.map((booking) => {
             const ref = booking.reservation_reference;
             const rcmData = ref ? rcmDetails[ref] : null;
+            const displayReference = rcmData?.reservationNo || booking.booking_reference || 'N/A';
             const displayStatus = rcmData?.status || booking.booking_status;
             const isOpen = expandedId === booking.id;
 
@@ -302,7 +316,7 @@ const SupabaseBookingHistory = () => {
                           {booking.vehicle_name || 'Vehicle Rental'}
                         </h3>
                         <p className="mt-0.5 text-xs text-muted-foreground">
-                          Ref. {booking.reservation_reference || booking.booking_reference || 'N/A'}
+                          Ref. {displayReference}
                         </p>
                       </div>
                       <div className="flex flex-wrap items-center gap-2">
@@ -382,7 +396,7 @@ const SupabaseBookingHistory = () => {
                         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                           <p className="text-muted-foreground">
                             <span className="font-medium text-foreground">Booking reference:</span>{' '}
-                            {booking.booking_reference || 'N/A'}
+                            {displayReference}
                           </p>
                           <p className="text-muted-foreground">
                             <span className="font-medium text-foreground">Payment status:</span>{' '}
