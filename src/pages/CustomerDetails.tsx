@@ -296,7 +296,15 @@ const CustomerDetails = () => {
           ...(profileExtras.city ? { city: profileExtras.city } : {}),
           ...(profileExtras.state ? { state: profileExtras.state } : {}),
           ...(profileExtras.postcode ? { postcode: profileExtras.postcode } : {}),
-          ...(profileExtras.countryid ? { countryid: profileExtras.countryid } : {})
+          // RCM needs a numeric country ID, never a name like "New Zealand".
+          ...(() => {
+            const raw = String(profileExtras.countryid || '').trim();
+            if (!raw) return {};
+            if (/^\d+$/.test(raw)) return { countryid: raw };
+            const ids: Record<string, string> = { 'new zealand': '2', nz: '2' };
+            const id = ids[raw.toLowerCase()];
+            return id ? { countryid: id } : {};
+          })()
         },
         flightin: formData.flightNumber,
         emailoption: 1, // 1=default behavior
