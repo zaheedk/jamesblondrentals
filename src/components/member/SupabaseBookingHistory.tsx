@@ -5,8 +5,14 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
+} from '@/components/ui/dialog';
 import { CalendarDays, CalendarRange, CarIcon, Clock, Loader2, Mail, MapPin, Phone, Search, Truck } from 'lucide-react';
 import { useMyBookings } from '@/hooks/use-bookings';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 import { rcmApi } from '@/lib/api/rcm-api';
 import { toast } from 'sonner';
 
