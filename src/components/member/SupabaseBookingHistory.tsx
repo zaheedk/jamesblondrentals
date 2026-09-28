@@ -35,6 +35,8 @@ const paymentStyles: Record<string, string> = {
   paid: 'bg-portal-emerald-soft text-portal-emerald',
   failed: 'bg-destructive/10 text-destructive',
   refunded: 'bg-muted text-muted-foreground',
+  partial: 'bg-portal-alert-soft text-portal-alert',
+  unpaid: 'bg-destructive/10 text-destructive',
 };
 
 const paymentLabels: Record<string, string> = {
@@ -42,6 +44,8 @@ const paymentLabels: Record<string, string> = {
   paid: 'Paid',
   failed: 'Payment Failed',
   refunded: 'Refunded',
+  partial: 'Part Paid',
+  unpaid: 'Unpaid',
 };
 
 const pill = 'inline-flex items-center rounded-full px-3 py-1 text-[11px] font-semibold leading-none';
@@ -470,8 +474,6 @@ const SupabaseBookingHistory = () => {
                             </div>
                           </div>
                         )}
-                        <div className="hidden">
-                        </div>
                         {booking.special_requirements && (
                           <p className="text-muted-foreground">
                             <span className="font-medium text-foreground">Notes:</span>{' '}
