@@ -537,6 +537,33 @@ const SupabaseBookingHistory = () => {
           })}
         </div>
       )}
+
+      <Dialog open={!!emailDialog} onOpenChange={(open) => { if (!open) setEmailDialog(null); }}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Email us about booking {emailDialog?.ref}</DialogTitle>
+            <DialogDescription>
+              Send a message to our team from {user?.email}. We'll reply to your email address.
+            </DialogDescription>
+          </DialogHeader>
+          <Textarea
+            value={emailMessage}
+            onChange={(e) => setEmailMessage(e.target.value)}
+            placeholder="Tell us what you'd like to change — dates, vehicle, extras, pick-up time…"
+            rows={5}
+            maxLength={5000}
+          />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEmailDialog(null)} disabled={emailSending}>
+              Cancel
+            </Button>
+            <Button onClick={sendBookingUpdate} disabled={emailSending || !emailMessage.trim()} className="gap-1.5">
+              {emailSending && <Loader2 className="h-4 w-4 animate-spin" />}
+              Send message
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
