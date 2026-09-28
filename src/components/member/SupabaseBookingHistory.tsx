@@ -5,8 +5,14 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
+} from '@/components/ui/dialog';
 import { CalendarDays, CalendarRange, CarIcon, Clock, Loader2, Mail, MapPin, Phone, Search, Truck } from 'lucide-react';
 import { useMyBookings } from '@/hooks/use-bookings';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 import { rcmApi } from '@/lib/api/rcm-api';
 import { toast } from 'sonner';
 
@@ -105,6 +111,30 @@ const SupabaseBookingHistory = () => {
   const [dateRange, setDateRange] = useState('all');
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [rcmDetails, setRcmDetails] = useState<Record<string, RcmBookingDetails>>({});
+  const { user } = useAuth();
+  const [emailDialog, setEmailDialog] = useState<{ ref: string } | null>(null);
+  const [emailMessage, setEmailMessage] = useState('');
+  const [emailSending, setEmailSending] = useState(false);
+
+  const sendBookingUpdate = async () => {
+    if (!emailDialog || !emailMessage.trim()) return;
+    setEmailSending(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('send-booking-update', {
+        body: { bookingRef: emailDialog.ref, message: emailMessage.trim() },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      toast.success('Message sent — our team will be in touch shortly.');
+      setEmailDialog(null);
+      setEmailMessage('');
+    } catch (err) {
+      console.error('Failed to send booking update request:', err);
+      toast.error('Could not send your message. Please call us on 0800 525 663.');
+    } finally {
+      setEmailSending(false);
+    }
+  };
 
   // Fetch RCM status for bookings that have a reservation_reference
   useEffect(() => {
@@ -427,13 +457,14 @@ const SupabaseBookingHistory = () => {
                           <Phone className="h-3.5 w-3.5" />
                           Call 0800 525 663
                         </a>
-                        <a
-                          href={`mailto:info@jamesblond.co.nz?subject=${encodeURIComponent(`Booking update request – ${displayReference}`)}`}
+                        <button
+                          type="button"
+                          onClick={() => { setEmailDialog({ ref: displayReference }); setEmailMessage(''); }}
                           className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 px-3.5 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary/5"
                         >
                           <Mail className="h-3.5 w-3.5" />
                           Email us
-                        </a>
+                        </button>
                         <Button
                           variant="outline"
                           size="sm"
@@ -506,6 +537,33 @@ const SupabaseBookingHistory = () => {
           })}
         </div>
       )}
+
+      <Dialog open={!!emailDialog} onOpenChange={(open) => { if (!open) setEmailDialog(null); }}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Email us about booking {emailDialog?.ref}</DialogTitle>
+            <DialogDescription>
+              Send a message to our team from {user?.email}. We'll reply to your email address.
+            </DialogDescription>
+          </DialogHeader>
+          <Textarea
+            value={emailMessage}
+            onChange={(e) => setEmailMessage(e.target.value)}
+            placeholder="Tell us what you'd like to change — dates, vehicle, extras, pick-up time…"
+            rows={5}
+            maxLength={5000}
+          />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEmailDialog(null)} disabled={emailSending}>
+              Cancel
+            </Button>
+            <Button onClick={sendBookingUpdate} disabled={emailSending || !emailMessage.trim()} className="gap-1.5">
+              {emailSending && <Loader2 className="h-4 w-4 animate-spin" />}
+              Send message
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
