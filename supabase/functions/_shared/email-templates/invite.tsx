@@ -34,7 +34,7 @@ export const InviteEmail = ({
       <Container style={container}>
         <Section style={headerSection}>
           <Img
-            src="https://jlwvqbrtdzwrcwelyylv.supabase.co/storage/v1/object/public/blog-images/jb-logo.png"
+            src="https://www.jamesblond.co.nz/lovable-uploads/900107e8-dbcb-44ce-96a9-0588959abf24.png"
             width="160"
             height="auto"
             alt="James Blond Rentals"
