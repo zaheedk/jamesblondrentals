@@ -480,6 +480,29 @@ const SupabaseBookingHistory = () => {
                             {booking.special_requirements}
                           </p>
                         )}
+
+                        {/* Need to change this booking? */}
+                        <div className="mt-3 flex flex-col gap-2 rounded-md border border-border bg-card px-3 py-2.5 sm:flex-row sm:items-center sm:justify-between">
+                          <p className="text-muted-foreground">
+                            Need to change this booking? Our team can update it for you:
+                          </p>
+                          <div className="flex shrink-0 gap-2">
+                            <a
+                              href="tel:0800525663"
+                              className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 px-3.5 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary/5"
+                            >
+                              <Phone className="h-3.5 w-3.5" />
+                              Call 0800 525 663
+                            </a>
+                            <a
+                              href={`mailto:info@jamesblond.co.nz?subject=${encodeURIComponent(`Booking update request – ${displayReference}`)}`}
+                              className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 px-3.5 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary/5"
+                            >
+                              <Mail className="h-3.5 w-3.5" />
+                              Email us
+                            </a>
+                          </div>
+                        </div>
                       </div>
                     )}
                   </div>
