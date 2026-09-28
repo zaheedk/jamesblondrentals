@@ -111,6 +111,30 @@ const SupabaseBookingHistory = () => {
   const [dateRange, setDateRange] = useState('all');
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [rcmDetails, setRcmDetails] = useState<Record<string, RcmBookingDetails>>({});
+  const { user } = useAuth();
+  const [emailDialog, setEmailDialog] = useState<{ ref: string } | null>(null);
+  const [emailMessage, setEmailMessage] = useState('');
+  const [emailSending, setEmailSending] = useState(false);
+
+  const sendBookingUpdate = async () => {
+    if (!emailDialog || !emailMessage.trim()) return;
+    setEmailSending(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('send-booking-update', {
+        body: { bookingRef: emailDialog.ref, message: emailMessage.trim() },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      toast.success('Message sent — our team will be in touch shortly.');
+      setEmailDialog(null);
+      setEmailMessage('');
+    } catch (err) {
+      console.error('Failed to send booking update request:', err);
+      toast.error('Could not send your message. Please call us on 0800 525 663.');
+    } finally {
+      setEmailSending(false);
+    }
+  };
 
   // Fetch RCM status for bookings that have a reservation_reference
   useEffect(() => {
