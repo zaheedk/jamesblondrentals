@@ -108,12 +108,22 @@ function customerData(p: Person, existing: any, keepEmail: boolean) {
 }
 
 function extraDriverData(p: Person, existing: any) {
-  // RCM's extradriver method does not support the editbooking `lce` column.
-  // Keep licence expiry in the portal record, but omit it from this request.
-  return customerData(p, existing, false)
-    .split(',')
-    .filter((field) => !field.startsWith('lce:'))
-    .join(',');
+  const values = new Map(
+    customerData(p, existing, false)
+      .split(',')
+      .map((field) => {
+        const separator = field.indexOf(':');
+        return [field.slice(0, separator), field.slice(separator + 1)] as const;
+      }),
+  );
+
+  // RCM's extradriver parser requires both date columns to exist. Valid
+  // sentinel dates keep optional portal fields from causing SQL date errors.
+  if (!values.get('dob')) values.set('dob', '01/01/1900');
+  if (!values.get('lce')) values.set('lce', '01/01/3000');
+
+  const order = ['fnm', 'lnm', 'eml', 'phn', 'mob', 'dob', 'lcn', 'lci', 'lce', 'adr', 'cty', 'sta', 'pcd', 'cnt', 'fax'];
+  return order.map((key) => `${key}:${values.get(key) || ''}`).join(',');
 }
 
 Deno.serve(async (req) => {
