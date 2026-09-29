@@ -15,6 +15,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { rcmApi } from '@/lib/api/rcm-api';
 import { toast } from 'sonner';
+import AdditionalDriversPanel from '@/components/member/AdditionalDriversPanel';
 
 const statusStyles: Record<string, string> = {
   pending: 'bg-primary/10 text-primary',
@@ -527,7 +528,11 @@ const SupabaseBookingHistory = () => {
                             {booking.special_requirements}
                           </p>
                         )}
-
+                        <AdditionalDriversPanel
+                          bookingId={booking.id}
+                          reservationReference={booking.reservation_reference}
+                          readOnly={['completed', 'cancelled', 'returned', 'closed', 'checked in'].includes((displayStatus || '').toLowerCase())}
+                        />
                       </div>
                     )}
                   </div>

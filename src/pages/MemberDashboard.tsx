@@ -20,7 +20,6 @@ import { useState } from 'react';
 import SupabaseBookingHistory from '@/components/member/SupabaseBookingHistory';
 import ProfileForm from '@/components/member/ProfileForm';
 import DocumentsPanel from '@/components/member/DocumentsPanel';
-import AdditionalDriversPanel from '@/components/member/AdditionalDriversPanel';
 import PaymentCardPanel from '@/components/member/PaymentCardPanel';
 import { useUserRole } from '@/hooks/use-user-role';
 import PageSEO from '@/components/PageSEO';
@@ -29,7 +28,6 @@ const sections = [
   { id: 'bookings', label: 'Bookings', icon: Car, subtitle: 'Manage and view all your vehicle bookings in one place.' },
   { id: 'profile', label: 'Profile', icon: UserCircle, subtitle: 'Keep your personal details up to date.' },
   { id: 'licence', label: 'Licence', icon: IdCard, subtitle: 'Upload your licence documents for faster pick-up.' },
-  { id: 'drivers', label: 'Drivers', icon: Users, subtitle: 'Add extra drivers to your rentals.' },
   { id: 'card', label: 'Card', icon: CreditCard, subtitle: 'Manage your saved payment card.' },
 ] as const;
 
@@ -67,7 +65,7 @@ export default function MemberDashboard() {
   const [savoLoading, setSavoLoading] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const rawTab: string = searchParams.get('tab') || 'bookings';
-  const active = (rawTab === 'documents' ? 'licence' : rawTab) as SectionId;
+  const active = (rawTab === 'documents' ? 'licence' : rawTab === 'drivers' ? 'bookings' : rawTab) as SectionId;
 
   const setActive = (id: SectionId) => {
     setSearchParams(prev => {
@@ -117,8 +115,6 @@ export default function MemberDashboard() {
         return <ProfileForm />;
       case 'licence':
         return <DocumentsPanel />;
-      case 'drivers':
-        return <AdditionalDriversPanel />;
       case 'card':
         return <PaymentCardPanel />;
       default:

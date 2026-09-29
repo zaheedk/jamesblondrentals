@@ -1,16 +1,12 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors';
+import { z } from 'npm:zod@3.23.8';
 
 // Pushes a customer's portal profile and additional drivers onto their open
 // bookings in RCM (editbooking / extradriver, API v3.1, URL-signed HMAC).
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-};
-
-const RCM_KEY = Deno.env.get('RCM_API_KEY') || 'TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq';
-const RCM_SECRET = Deno.env.get('RCM_API_SECRET') || 'tsdavpoP51o6AcLIdorqgtFJ0ullAimg';
+const RCM_KEY = Deno.env.get('RCM_API_KEY');
+const RCM_SECRET = Deno.env.get('RCM_API_SECRET');
 const RCM_HOST = 'https://apis.rentalcarmanager.com';
 const CLOSED = ['returned', 'cancelled', 'canceled', 'completed', 'closed', 'no show'];
 const COUNTRY_IDS: Record<string, number> = { 'new zealand': 2, nz: 2 };
@@ -19,6 +15,7 @@ const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
 async function hmacHex(msg: string) {
+  if (!RCM_SECRET) throw new Error('RCM is not configured');
   const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(RCM_SECRET), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
   const sig = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(msg));
   return Array.from(new Uint8Array(sig)).map((b) => b.toString(16).padStart(2, '0')).join('').toUpperCase();
@@ -43,6 +40,7 @@ const rcmDate = (v?: string) => {
 const b64 = (s: string) => btoa(String.fromCharCode(...new TextEncoder().encode(s)));
 
 async function bookingInfo(reservationref: string) {
+  if (!RCM_KEY) throw new Error('RCM is not configured');
   const body = JSON.stringify({ method: 'bookinginfo', reservationref });
   const res = await fetch(`${RCM_HOST}/booking/v3.2?apikey=${RCM_KEY}`, {
     method: 'POST',
@@ -67,6 +65,17 @@ type Person = {
   dob?: string | null; license_number?: string | null; license_country?: string | null; license_expiry?: string | null;
   address?: string | null; suburb?: string | null; city?: string | null; postcode?: string | null; country?: string | null;
 };
+
+const BodySchema = z.discriminatedUnion('action', [
+  z.object({ action: z.literal('profile') }),
+  z.object({
+    action: z.literal('drivers'),
+    bookingId: z.string().uuid(),
+    reservationReference: z.string().min(1).max(100),
+    driverId: z.string().uuid(),
+    removed: z.object({ first_name: z.string().max(100), last_name: z.string().max(100) }).optional(),
+  }),
+]);
 
 function customerData(p: Person, existing: any, keepEmail: boolean) {
   const country = (p.country || '').trim().toLowerCase();
@@ -103,9 +112,11 @@ Deno.serve(async (req) => {
     if (authErr || !userData.user) return json({ error: 'Not signed in' }, 401);
     const user = userData.user;
 
-    const body = await req.json().catch(() => ({}));
-    const action = body?.action === 'drivers' ? 'drivers' : 'profile';
-    const removed = body?.removed && typeof body.removed === 'object'
+    const parsed = BodySchema.safeParse(await req.json().catch(() => null));
+    if (!parsed.success) return json({ error: 'Invalid request' }, 400);
+    const body = parsed.data;
+    const action = body.action;
+    const removed = action === 'drivers' && body.removed
       ? { first: clean(body.removed.first_name).toLowerCase(), last: clean(body.removed.last_name).toLowerCase() }
       : null;
 
@@ -114,12 +125,17 @@ Deno.serve(async (req) => {
     const email = (user.email || '').toLowerCase();
     const { data: bookings, error: bErr } = await admin
       .from('bookings')
-      .select('reservation_reference, dropoff_date')
+      .select('id, reservation_reference, dropoff_date')
       .or(`user_id.eq.${user.id},customer_email.ilike.${email}`)
       .not('reservation_reference', 'is', null)
       .gte('dropoff_date', today);
     if (bErr) throw bErr;
-    const refs = [...new Set((bookings || []).map((b) => b.reservation_reference as string).filter(Boolean))];
+    let refs = [...new Set((bookings || []).map((b) => b.reservation_reference as string).filter(Boolean))];
+    if (action === 'drivers') {
+      const ownedBooking = (bookings || []).find((booking) => booking.id === body.bookingId && booking.reservation_reference === body.reservationReference);
+      if (!ownedBooking) return json({ error: 'Booking not found' }, 403);
+      refs = [body.reservationReference];
+    }
 
     let profile: Person | null = null;
     let drivers: Person[] = [];
@@ -128,8 +144,15 @@ Deno.serve(async (req) => {
       profile = data;
       if (!profile) return json({ synced: [], skipped: [], failed: [], message: 'No saved profile' });
     } else {
-      const { data } = await admin.from('additional_drivers').select('*').eq('user_id', user.id);
-      drivers = data || [];
+      const { data: driver } = await admin.from('additional_drivers').select('*')
+        .eq('id', body.driverId).eq('user_id', user.id).maybeSingle();
+      if (!driver) return json({ error: 'Driver not found' }, 403);
+      if (!removed) {
+        const { data: assignment } = await admin.from('booking_additional_drivers').select('id')
+          .eq('booking_id', body.bookingId).eq('driver_id', body.driverId).eq('user_id', user.id).maybeSingle();
+        if (!assignment) return json({ error: 'Driver is not assigned to this booking' }, 403);
+      }
+      drivers = [driver];
     }
 
     const synced: string[] = [], skipped: string[] = [], failed: { booking: string; error: string }[] = [];
