@@ -94,6 +94,11 @@ Deno.serve(async (req) => {
       if (r?.Status !== 'Approved' || !r?.RebillingToken) {
         return json({ status: 'failed', message: r?.ResponseText || 'Card was not accepted' })
       }
+      const { data: prior } = await admin.from('saved_payment_methods')
+        .select('provider_consent_id, status').eq('user_id', user.id).maybeSingle()
+      if (prior?.provider_consent_id === r.RebillingToken && prior?.status === 'active') {
+        return json({ status: 'active', attached: [], failed: [], duplicate: true })
+      }
       const attached: string[] = []
       const failed: string[] = []
       for (const b of openRefs) {

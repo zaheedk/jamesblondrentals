@@ -35,7 +35,9 @@ export default function PaymentCardPanel() {
     const ref = params.get('card_ref');
     const result = params.get('result');
     (async () => {
-      if (ref && result) {
+      const onceKey = `card-confirm-${result}`;
+      if (ref && result && !sessionStorage.getItem(onceKey)) {
+        sessionStorage.setItem(onceKey, '1');
         setBusy(true);
         const { data, error } = await supabase.functions.invoke('rcm-save-card', { body: { action: 'confirm', ref, result } });
         if (error) toast.error('We could not confirm your card yet. Please try again.');
