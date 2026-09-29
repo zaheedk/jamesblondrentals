@@ -6,6 +6,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { toast } from 'sonner';
 import { Camera, CheckCircle2, Loader2, Plus, Trash2, UserPlus } from 'lucide-react';
 import { syncToRcm } from '@/lib/rcm-sync';
@@ -27,7 +31,7 @@ const schema = z.object({
 }).refine((data) => data.first_name || data.last_name, { message: 'Enter at least a first or last name', path: ['first_name'] });
 
 type Form = z.infer<typeof schema>;
-type Driver = Form & { id: string; licence_front_path: string | null; licence_back_path: string | null };
+type Driver = Form & { id: string; licence_front_path: string | null; licence_back_path: string | null; created_at: string };
 
 const empty: Form = {
   first_name: '', last_name: '', dob: '', email: '', phone: '', address: '', suburb: '', city: '',
@@ -44,6 +48,15 @@ const FIELDS: { key: keyof Form; label: string; type?: string; span?: boolean }[
   { key: 'license_country', label: 'Licence issued in', span: true },
 ];
 
+const driverDetails = (driver: Driver) => {
+  const details = [
+    driver.dob ? `DOB ${driver.dob}` : '',
+    driver.email || driver.phone || '',
+    driver.license_number ? `Licence ${driver.license_number}` : '',
+  ].filter(Boolean);
+  return details.length ? details.join(' · ') : `Saved ${new Date(driver.created_at).toLocaleString('en-NZ', { dateStyle: 'medium', timeStyle: 'short' })}`;
+};
+
 type Props = { bookingId: string; reservationReference: string | null; readOnly?: boolean };
 
 export default function AdditionalDriversPanel({ bookingId, reservationReference, readOnly = false }: Props) {
@@ -55,6 +68,7 @@ export default function AdditionalDriversPanel({ bookingId, reservationReference
   const [editingId, setEditingId] = useState<string | null>(null);
   const [selectedDriver, setSelectedDriver] = useState('');
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [uploading, setUploading] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -131,6 +145,19 @@ export default function AdditionalDriversPanel({ bookingId, reservationReference
     await sync(driver, true);
   };
 
+  const deleteSavedDriver = async (driver: Driver) => {
+    if (!user) return;
+    setDeleting(true);
+    const paths = [driver.licence_front_path, driver.licence_back_path].filter((path): path is string => Boolean(path));
+    const { error } = await supabase.from('additional_drivers').delete().eq('id', driver.id).eq('user_id', user.id);
+    if (!error && paths.length) await supabase.storage.from('customer-documents').remove(paths);
+    setDeleting(false);
+    if (error) return toast.error(error.message);
+    setSelectedDriver('');
+    toast.success('Saved driver removed');
+    await load();
+  };
+
   const upload = async (driver: Driver, side: 'front' | 'back', file: File) => {
     if (!user) return;
     if (!file.type.startsWith('image/') && file.type !== 'application/pdf') return toast.error('Please upload a photo or PDF');
@@ -168,7 +195,7 @@ export default function AdditionalDriversPanel({ bookingId, reservationReference
             <div className="flex flex-wrap items-start justify-between gap-2">
               <div>
                 <p className="font-medium text-foreground">{driver.first_name} {driver.last_name}</p>
-                <p className="text-xs text-muted-foreground">Licence {driver.license_number} · expires {driver.license_expiry}</p>
+                <p className="text-xs text-muted-foreground">{driverDetails(driver)}</p>
               </div>
               {!readOnly && (
                 <div className="flex gap-1">
@@ -212,10 +239,39 @@ export default function AdditionalDriversPanel({ bookingId, reservationReference
               <Select value={selectedDriver} onValueChange={setSelectedDriver}>
                 <SelectTrigger><SelectValue placeholder="Choose a past driver" /></SelectTrigger>
                 <SelectContent>
-                  {available.map((driver) => <SelectItem key={driver.id} value={driver.id}>{driver.first_name} {driver.last_name}</SelectItem>)}
+                  {available.map((driver) => (
+                    <SelectItem key={driver.id} value={driver.id}>
+                      <span className="flex min-w-0 flex-col text-left">
+                        <span>{driver.first_name} {driver.last_name}</span>
+                        <span className="max-w-[15rem] truncate text-xs text-muted-foreground">{driverDetails(driver)}</span>
+                      </span>
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <Button variant="outline" disabled={!selectedDriver || saving} onClick={() => assign(selectedDriver)}>Add</Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="ghost" size="icon" disabled={!selectedDriver || deleting} aria-label="Delete selected saved driver">
+                    {deleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Delete this saved driver?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This removes the driver from your saved list. It does not alter completed rental records in RCM.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={() => {
+                      const driver = available.find((item) => item.id === selectedDriver);
+                      if (driver) void deleteSavedDriver(driver);
+                    }}>Delete driver</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           )}
           <Button onClick={() => { setEditingId(null); setForm(empty); }}><Plus className="mr-2 h-4 w-4" />New driver</Button>

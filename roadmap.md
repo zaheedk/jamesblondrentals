@@ -5,6 +5,7 @@
   - [x] Move driver management from the profile navigation into individual bookings
   - [x] Let customers reuse drivers retained from earlier bookings
   - [x] Sync add, edit, and removal only to the selected open RCM booking
+  - [x] Distinguish duplicate names and allow saved past drivers to be deleted
 - Earn-from-your-van prospectus (PDF artifact)
   - [x] Remove utes, tipper trucks and trailers from all data, charts and copy
   - [ ] Put the real James Blond logo on the cover
