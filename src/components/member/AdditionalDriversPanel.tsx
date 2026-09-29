@@ -129,7 +129,13 @@ export default function AdditionalDriversPanel({ bookingId, reservationReference
       if (assignmentError) { setSaving(false); return toast.error(assignmentError.message); }
     }
     setSaving(false);
-    const saved = { ...parsed.data, id: driverId as string, licence_front_path: null, licence_back_path: null };
+    const saved = {
+      ...parsed.data,
+      id: driverId as string,
+      licence_front_path: null,
+      licence_back_path: null,
+      created_at: new Date().toISOString(),
+    };
     toast.success(editingId ? 'Driver updated for this booking' : 'Driver added to this booking');
     setForm(null);
     setEditingId(null);
