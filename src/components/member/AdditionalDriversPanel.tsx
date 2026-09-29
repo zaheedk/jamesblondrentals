@@ -53,8 +53,9 @@ const driverDetails = (driver: Driver) => {
     driver.dob ? `DOB ${driver.dob}` : '',
     driver.email || driver.phone || '',
     driver.license_number ? `Licence ${driver.license_number}` : '',
+    `Saved ${new Date(driver.created_at).toLocaleString('en-NZ', { dateStyle: 'medium', timeStyle: 'short' })}`,
   ].filter(Boolean);
-  return details.length ? details.join(' · ') : `Saved ${new Date(driver.created_at).toLocaleString('en-NZ', { dateStyle: 'medium', timeStyle: 'short' })}`;
+  return details.join(' · ');
 };
 
 type Props = { bookingId: string; reservationReference: string | null; readOnly?: boolean };
@@ -266,7 +267,7 @@ export default function AdditionalDriversPanel({ bookingId, reservationReference
                   <AlertDialogHeader>
                     <AlertDialogTitle>Delete this saved driver?</AlertDialogTitle>
                     <AlertDialogDescription>
-                      This removes the driver from your saved list. It does not alter completed rental records in RCM.
+                      This removes the driver from your saved list and future portal selections. It does not alter completed rental records in RCM.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
