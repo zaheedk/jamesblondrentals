@@ -111,7 +111,7 @@ Deno.serve(async (req) => {
         user_id: user.id, provider: 'windcave', provider_customer_id: ref,
         provider_consent_id: r.RebillingToken,
         card_brand: r.CardName || r.CardType || null,
-        card_last4: num ? num.slice(-2).padStart(4, '•') : null,
+        card_last4: num ? num.slice(-2) : null,
         card_expiry: r.DateExpiry ? `${String(r.DateExpiry).slice(0, 2)}/${String(r.DateExpiry).slice(2)}` : null,
         status: attached.length ? 'active' : 'pending',
       }

@@ -29,3 +29,5 @@ project_id = "jlwvqbrtdzwrcwelyylv"
     verify_jwt = false
   [functions.airwallex-save-card]
     verify_jwt = false
+  [functions.rcm-save-card]
+    verify_jwt = false

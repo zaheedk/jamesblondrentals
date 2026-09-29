@@ -94,7 +94,7 @@ export default function PaymentCardPanel() {
               </p>
             ) : (
               <p className="text-sm text-muted-foreground mt-1">
-                Save a card now so pick-up is quicker. We only charge it for your rental at the counter — nothing is charged today.
+                Save a card now so pick-up is quicker. It's saved on your booking and only charged at the counter — nothing is charged today.
               </p>
             )}
             <Button className="mt-4" onClick={start} disabled={busy}>
@@ -105,7 +105,7 @@ export default function PaymentCardPanel() {
         </div>
       </div>
       <p className="flex items-center gap-2 text-xs text-muted-foreground">
-        <Lock className="w-3 h-3" /> Card details are entered on Airwallex's secure page. James Blond never sees or stores your card number.
+        <Lock className="w-3 h-3" /> Card details are entered on Windcave's secure page. James Blond never sees or stores your card number.
       </p>
     </div>
   );
