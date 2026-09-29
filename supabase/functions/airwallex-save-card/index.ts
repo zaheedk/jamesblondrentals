@@ -19,8 +19,14 @@ Deno.serve(async (req) => {
   const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!
   const authHeader = req.headers.get('Authorization') || ''
   const userClient = createClient(url, anonKey, { global: { headers: { Authorization: authHeader } } })
-  const { data: { user } } = await userClient.auth.getUser()
-  if (!user) return json({ error: 'Please sign in first' }, 401)
+  const token = authHeader.replace(/^Bearer\s+/i, '')
+  const { data: { user }, error: authErr } = await createClient(url, serviceKey).auth.getUser(token)
+  void userClient
+  if (!user) {
+    console.error('save-card auth failed', authErr?.message, 'hasHeader', !!token)
+    return json({ error: 'Please sign in again and retry' }, 401)
+  }
+  console.log('save-card request', user.id)
 
   let body: Record<string, unknown>
   try { body = await req.json() } catch { return json({ error: 'Invalid JSON' }, 400) }

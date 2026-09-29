@@ -59,7 +59,12 @@ export default function PaymentCardPanel() {
       const { data, error } = await supabase.functions.invoke('airwallex-save-card', {
         body: { action: 'start', returnUrl },
       });
-      if (error || !data?.checkoutUrl) throw new Error(data?.error || error?.message || 'Could not open secure link');
+      if (error || !data?.checkoutUrl) {
+        let msg = data?.error || '';
+        try { msg = msg || (await (error as any)?.context?.json?.())?.error || ''; } catch { /* ignore */ }
+        console.error('airwallex-save-card failed', error, data);
+        throw new Error(msg || 'Could not open the secure card page. Please try again.');
+      }
       window.location.href = data.checkoutUrl;
     } catch (e: any) {
       toast.error(e.message);
