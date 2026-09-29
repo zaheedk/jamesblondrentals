@@ -107,6 +107,15 @@ function customerData(p: Person, existing: any, keepEmail: boolean) {
   return fields.filter(([k, v]) => !((k === 'dob' || k === 'lce') && !v)).map(([k, v]) => `${k}:${v}`).join(',');
 }
 
+function extraDriverData(p: Person, existing: any) {
+  // RCM's extradriver method does not support the editbooking `lce` column.
+  // Keep licence expiry in the portal record, but omit it from this request.
+  return customerData(p, existing, false)
+    .split(',')
+    .filter((field) => !field.startsWith('lce:'))
+    .join(',');
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
 
@@ -185,7 +194,7 @@ Deno.serve(async (req) => {
           for (const d of drivers) {
             const match = existing.find((e) => key(e.firstname, e.lastname) === key(d.first_name, d.last_name));
             const person = { ...d, mobile: d.phone, phone: '' };
-            const data = b64(`${customerData(person, match, false)}|${Date.now()}`);
+            const data = b64(`${extraDriverData(person, match)}|${Date.now()}`);
             await rcmGet(`/booking/v3.1/${RCM_KEY}/extradriver/${b.reservationref}/${match ? match.customerid : 0}/?${data}`);
           }
           if (removed) {
