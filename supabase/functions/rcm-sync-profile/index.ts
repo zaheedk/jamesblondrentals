@@ -103,7 +103,8 @@ function customerData(p: Person, existing: any, keepEmail: boolean) {
     ['cnt', String(cnt || '')],
     ['fax', ''],
   ];
-  return fields.map(([k, v]) => `${k}:${v}`).join(',');
+  // RCM rejects blank dates (SqlDateTime overflow) — leave them out when unknown.
+  return fields.filter(([k, v]) => !((k === 'dob' || k === 'lce') && !v)).map(([k, v]) => `${k}:${v}`).join(',');
 }
 
 Deno.serve(async (req) => {
