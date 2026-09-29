@@ -11,9 +11,9 @@ import { Camera, CheckCircle2, Loader2, Plus, Trash2, UserPlus } from 'lucide-re
 import { syncToRcm } from '@/lib/rcm-sync';
 
 const schema = z.object({
-  first_name: z.string().trim().min(1, 'First name is required').max(100),
-  last_name: z.string().trim().min(1, 'Last name is required').max(100),
-  dob: z.string().min(1, 'Date of birth is required'),
+  first_name: z.string().trim().max(100),
+  last_name: z.string().trim().max(100),
+  dob: z.string(),
   email: z.string().trim().email('Enter a valid email').max(255).or(z.literal('')),
   phone: z.string().trim().max(30),
   address: z.string().trim().max(200),
@@ -21,10 +21,10 @@ const schema = z.object({
   city: z.string().trim().max(100),
   postcode: z.string().trim().max(20),
   country: z.string().trim().max(60),
-  license_number: z.string().trim().min(1, 'Licence number is required').max(40),
-  license_expiry: z.string().min(1, 'Licence expiry is required'),
+  license_number: z.string().trim().max(40),
+  license_expiry: z.string(),
   license_country: z.string().trim().max(60),
-});
+}).refine((data) => data.first_name || data.last_name, { message: 'Enter at least a first or last name', path: ['first_name'] });
 
 type Form = z.infer<typeof schema>;
 type Driver = Form & { id: string; licence_front_path: string | null; licence_back_path: string | null };
