@@ -134,6 +134,45 @@ export type Database = {
         }
         Relationships: []
       }
+      booking_additional_drivers: {
+        Row: {
+          booking_id: string
+          created_at: string
+          driver_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          booking_id: string
+          created_at?: string
+          driver_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          booking_id?: string
+          created_at?: string
+          driver_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "booking_additional_drivers_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "booking_additional_drivers_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "additional_drivers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       booking_feedback: {
         Row: {
           booking_reference: string | null
