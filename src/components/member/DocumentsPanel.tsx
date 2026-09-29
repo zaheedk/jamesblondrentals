@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
+import VehicleCamera from '@/components/VehicleCamera';
 import {
   Loader2, Upload, Camera, CheckCircle2, Clock, XCircle, Trash2, ShieldCheck, FileText,
 } from 'lucide-react';
@@ -56,6 +57,7 @@ export default function DocumentsPanel() {
   const [previews, setPreviews] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<DocType | null>(null);
+  const [cameraFor, setCameraFor] = useState<DocType | null>(null);
   const inputs = useRef<Record<string, HTMLInputElement | null>>({});
 
   const load = useCallback(async () => {
@@ -226,12 +228,11 @@ export default function DocumentsPanel() {
                   )}
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <input
                     ref={(el) => { inputs.current[meta.type] = el; }}
                     type="file"
                     accept="image/*,application/pdf"
-                    capture="environment"
                     className="hidden"
                     onChange={(e) => {
                       const file = e.target.files?.[0];
@@ -242,16 +243,23 @@ export default function DocumentsPanel() {
                     variant={row ? 'outline' : 'default'}
                     size="sm"
                     disabled={isBusy || row?.status === 'approved'}
+                    onClick={() => setCameraFor(meta.type)}
+                  >
+                    <Camera className="w-4 h-4 mr-2" />
+                    Take photo
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={isBusy || row?.status === 'approved'}
                     onClick={() => inputs.current[meta.type]?.click()}
                   >
                     {isBusy ? (
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    ) : row ? (
-                      <Upload className="w-4 h-4 mr-2" />
                     ) : (
-                      <Camera className="w-4 h-4 mr-2" />
+                      <Upload className="w-4 h-4 mr-2" />
                     )}
-                    {row ? 'Replace' : 'Upload'}
+                    {row ? 'Replace' : 'Upload file'}
                   </Button>
                   {row && row.status !== 'approved' && (
                     <Button variant="ghost" size="sm" disabled={isBusy} onClick={() => handleRemove(row)}>
@@ -264,6 +272,17 @@ export default function DocumentsPanel() {
           );
         })}
       </div>
+      {cameraFor && (
+        <VehicleCamera
+          photoCount={0}
+          onClose={() => setCameraFor(null)}
+          onPhotoCaptured={(file) => {
+            const type = cameraFor;
+            setCameraFor(null);
+            handleFile(type, file);
+          }}
+        />
+      )}
     </div>
   );
 }
