@@ -1,6 +1,10 @@
 # Roadmap
 
 ## In progress
+- Customer portal additional drivers
+  - [ ] Move driver management from the profile navigation into individual bookings
+  - [ ] Let customers reuse drivers retained from earlier bookings
+  - [ ] Sync add, edit, and removal only to the selected open RCM booking
 - Earn-from-your-van prospectus (PDF artifact)
   - [x] Remove utes, tipper trucks and trailers from all data, charts and copy
   - [ ] Put the real James Blond logo on the cover
