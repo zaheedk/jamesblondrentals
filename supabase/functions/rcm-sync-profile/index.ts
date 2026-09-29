@@ -1,9 +1,14 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
-import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors';
 import { z } from 'npm:zod@3.23.8';
 
 // Pushes a customer's portal profile and additional drivers onto their open
 // bookings in RCM (editbooking / extradriver, API v3.1, URL-signed HMAC).
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+};
 
 const RCM_KEY = Deno.env.get('RCM_API_KEY');
 const RCM_SECRET = Deno.env.get('RCM_API_SECRET');
