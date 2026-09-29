@@ -91,7 +91,8 @@ export default function PaymentCardPanel() {
             </div>
             {active ? (
               <p className="text-sm text-muted-foreground mt-1">
-                {(card?.card_brand || 'Card').toUpperCase()} ending {card?.card_last4 ?? '••••'}
+                {(card?.card_brand || 'Card').toUpperCase()}
+                {card?.card_last4 ? ` ending in •••• ${card.card_last4}` : ' saved securely'}
                 {card?.card_expiry ? ` · expires ${card.card_expiry}` : ''}
               </p>
             ) : (
