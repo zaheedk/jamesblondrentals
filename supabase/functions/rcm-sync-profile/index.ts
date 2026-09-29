@@ -204,11 +204,10 @@ Deno.serve(async (req) => {
           for (const d of drivers) {
             const match = existing.find((e) => key(e.firstname, e.lastname) === key(d.first_name, d.last_name));
             const person = { ...d, mobile: d.phone, phone: '' };
-            // RCM expects the same four payload sections as editbooking:
-            // customer data | extra fees | referrals | request timestamp.
-            // Missing empty sections shifts the timestamp into a date field and
-            // produces the misleading ExtraDriverSqlDateTime overflow error.
-            const data = b64(`${extraDriverData(person, match)}|||${Date.now()}`);
+            // RCM extradriver accepts only customer data | cache-busting value.
+            // Extra empty sections shift values into its date columns and cause
+            // the misleading ExtraDriverSqlDateTime overflow error.
+            const data = b64(`${extraDriverData(person, match)}|${Date.now()}`);
             await rcmGet(`/booking/v3.1/${RCM_KEY}/extradriver/${b.reservationref}/${match ? match.customerid : 0}/?${data}`);
           }
           if (removed) {
