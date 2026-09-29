@@ -18,6 +18,27 @@ const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
 const str = (v: unknown, max = 200) => (typeof v === 'string' ? v.slice(0, max) : '')
 
+function paymentValue(result: Record<string, unknown>, ...names: string[]) {
+  const sources = [result]
+  for (const value of Object.values(result)) {
+    if (value && typeof value === 'object' && !Array.isArray(value)) {
+      sources.push(value as Record<string, unknown>)
+    }
+  }
+  for (const source of sources) {
+    for (const [key, value] of Object.entries(source)) {
+      if (names.some((name) => key.toLowerCase() === name.toLowerCase()) && value != null) return value
+    }
+  }
+  return null
+}
+
+function cardLast4(result: Record<string, unknown>) {
+  const masked = String(paymentValue(result, 'CardNumber', 'CardNumber2', 'MaskedCardNumber', 'CardNumberMasked') || '')
+  const digits = masked.replace(/\D/g, '')
+  return digits.length >= 4 ? digits.slice(-4) : null
+}
+
 async function rcm(body: Record<string, unknown>) {
   const s = JSON.stringify(body)
   const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(RCM_SECRET), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign'])
@@ -94,9 +115,19 @@ Deno.serve(async (req) => {
       if (r?.Status !== 'Approved' || !r?.RebillingToken) {
         return json({ status: 'failed', message: r?.ResponseText || 'Card was not accepted' })
       }
+      const last4 = cardLast4(r)
+      const cardBrand = paymentValue(r, 'CardName', 'CardType')
+      const expiry = String(paymentValue(r, 'DateExpiry', 'CardExpiry') || '')
       const { data: prior } = await admin.from('saved_payment_methods')
         .select('provider_consent_id, status').eq('user_id', user.id).maybeSingle()
       if (prior?.provider_consent_id === r.RebillingToken && prior?.status === 'active') {
+        if (last4) {
+          await admin.from('saved_payment_methods').update({
+            card_brand: cardBrand || null,
+            card_last4: last4,
+            card_expiry: expiry ? `${expiry.slice(0, 2)}/${expiry.slice(2)}` : null,
+          }).eq('user_id', user.id)
+        }
         return json({ status: 'active', attached: [], failed: [], duplicate: true })
       }
       const attached: string[] = []
@@ -111,13 +142,12 @@ Deno.serve(async (req) => {
           attached.push(b)
         } catch (e) { console.error('attach failed', b, e); failed.push(b) }
       }
-      const num = String(r.CardNumber || r.CardNumber2 || '')
       const update = {
         user_id: user.id, provider: 'windcave', provider_customer_id: ref,
         provider_consent_id: r.RebillingToken,
-        card_brand: r.CardName || r.CardType || null,
-        card_last4: num ? num.slice(-2) : null,
-        card_expiry: r.DateExpiry ? `${String(r.DateExpiry).slice(0, 2)}/${String(r.DateExpiry).slice(2)}` : null,
+        card_brand: cardBrand || null,
+        card_last4: last4,
+        card_expiry: expiry ? `${expiry.slice(0, 2)}/${expiry.slice(2)}` : null,
         status: attached.length ? 'active' : 'pending',
       }
       await admin.from('saved_payment_methods').upsert(update, { onConflict: 'user_id' })
