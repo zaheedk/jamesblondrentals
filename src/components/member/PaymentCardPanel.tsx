@@ -32,21 +32,21 @@ export default function PaymentCardPanel() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const result = params.get('card_result');
+    const ref = params.get('card_ref');
+    const result = params.get('result');
     (async () => {
-      if (result === 'success') {
+      if (ref && result) {
         setBusy(true);
-        const { error } = await supabase.functions.invoke('airwallex-save-card', { body: { action: 'confirm' } });
-        if (error) toast.error('We could not confirm your card yet — please refresh in a minute');
-        else toast.success('Card saved securely');
+        const { data, error } = await supabase.functions.invoke('rcm-save-card', { body: { action: 'confirm', ref, result } });
+        if (error) toast.error('We could not confirm your card yet. Please try again.');
+        else if (data?.status === 'active') toast.success('Card saved securely on your booking');
+        else toast.error(data?.message || 'Card was not saved. Please try again.');
         setBusy(false);
-      } else if (result === 'failed') {
-        toast.error('Card was not saved. Please try again.');
       }
-      if (result) {
-        params.delete('card_result');
+      if (ref || result) {
+        ['card_ref', 'result', 'userid'].forEach((k) => params.delete(k));
         const q = params.toString();
-        window.history.replaceState({}, '', window.location.pathname + (q ? `?${q}` : '') + '#card');
+        window.history.replaceState({}, '', window.location.pathname + (q ? `?${q}` : ''));
       }
       await load();
     })();
@@ -56,13 +56,12 @@ export default function PaymentCardPanel() {
     setBusy(true);
     try {
       const returnUrl = `${window.location.origin}/member-dashboard?tab=card`;
-      const { data, error } = await supabase.functions.invoke('airwallex-save-card', {
+      const { data, error } = await supabase.functions.invoke('rcm-save-card', {
         body: { action: 'start', returnUrl },
       });
       if (error || !data?.checkoutUrl) {
         let msg = data?.error || '';
         try { msg = msg || (await (error as any)?.context?.json?.())?.error || ''; } catch { /* ignore */ }
-        console.error('airwallex-save-card failed', error, data);
         throw new Error(msg || 'Could not open the secure card page. Please try again.');
       }
       window.location.href = data.checkoutUrl;
@@ -95,7 +94,7 @@ export default function PaymentCardPanel() {
               </p>
             ) : (
               <p className="text-sm text-muted-foreground mt-1">
-                Save a card now so pick-up is quicker. We only charge it for your rental at the counter — nothing is charged today.
+                Save a card now so pick-up is quicker. It's saved on your booking and only charged at the counter — nothing is charged today.
               </p>
             )}
             <Button className="mt-4" onClick={start} disabled={busy}>
@@ -106,7 +105,7 @@ export default function PaymentCardPanel() {
         </div>
       </div>
       <p className="flex items-center gap-2 text-xs text-muted-foreground">
-        <Lock className="w-3 h-3" /> Card details are entered on Airwallex's secure page. James Blond never sees or stores your card number.
+        <Lock className="w-3 h-3" /> Card details are entered on Windcave's secure page. James Blond never sees or stores your card number.
       </p>
     </div>
   );
