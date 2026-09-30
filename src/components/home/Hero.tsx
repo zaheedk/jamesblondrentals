@@ -10,13 +10,13 @@ const Hero = () => {
       {/* Responsive WebP hero image with JPEG fallback */}
       <picture>
         <source
-          srcSet="/hero-spring-768w.webp 768w, /hero-spring-1200w.webp 1200w, /hero-spring-1920w.webp 1920w"
+          srcSet="/hero-summer-768w.webp 768w, /hero-summer-1200w.webp 1200w, /hero-summer-1920w.webp 1920w"
           sizes="100vw"
           type="image/webp"
         />
         <img
-          src="/hero-spring.jpg"
-          alt="Car rental in New Zealand - scenic spring drive through green hills and mountain roads"
+          src="/hero-summer.jpg"
+          alt="Summer road trip in New Zealand - SUV driving along a scenic coastal road"
           className="hero-image"
           width="1920"
           height="960"
