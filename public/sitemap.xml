@@ -895,6 +895,12 @@
     <changefreq>monthly</changefreq>
   </url>
   <url>
+    <loc>https://jamesblond.co.nz/nz-self-drive-holiday</loc>
+    <lastmod>2026-09-30</lastmod>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
     <loc>https://jamesblond.co.nz/hot-deals/mobil-fuel-discount</loc>
     <lastmod>2026-09-30</lastmod>
     <priority>0.8</priority>

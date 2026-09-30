@@ -175,6 +175,7 @@ import SouthAucklandCargoVanRentals from "./pages/SouthAucklandCargoVanRentals";
 import CentralAucklandCargoVanRentals from "./pages/CentralAucklandCargoVanRentals"; // Import the new Central Auckland Cargo Van Rentals page
 import PayWithKlarna from "./pages/PayWithKlarna";
 import OnlineCheckIn from "./pages/OnlineCheckIn";
+import NZSelfDriveHoliday from "./pages/NZSelfDriveHoliday";
 import PriceGuide from "./pages/PriceGuide"; // Import the new Price Guide page
 import PeopleMover from "./pages/PeopleMover";
 import Airport from "./pages/Airport";
@@ -377,6 +378,7 @@ const App = () => {
                 {/* Keep existing routes */}
                 <Route path="/pay-with-klarna" element={<PayWithKlarna />} />
                 <Route path="/online-check-in" element={<OnlineCheckIn />} />
+                <Route path="/nz-self-drive-holiday" element={<NZSelfDriveHoliday />} />
                 <Route path="/price-guide" element={<PriceGuide />} />
                 <Route path="/people-mover" element={<PeopleMover />} />
                 <Route path="/hot-deals/mobil-fuel-discount" element={<MobilFuelDiscount />} />
