@@ -118,9 +118,9 @@ Deno.serve(async (req) => {
   let upstream: Response | null = null;
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
-      upstream = await fetch(`${RCM_AGENT_URL}?apikey=${encodeURIComponent(rcmKey)}`, {
+      upstream = await fetch(`${RCM_AGENT_URL}?apikey=${rcmKey.trim()}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json", signature: await hmacHex(rcmSecret, rawBody) },
+        headers: { "Content-Type": "application/json", Accept: "application/json", signature: await hmacHex(rcmSecret.trim(), rawBody) },
         body: rawBody,
       });
       if (![502, 503, 504].includes(upstream.status)) break;
