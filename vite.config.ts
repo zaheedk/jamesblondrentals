@@ -10,7 +10,7 @@ import type { ConfigEnv, UserConfig, ViteDevServer } from 'vite';
 import { sitemapRoutes } from './src/sitemap-routes';
 import { staticPageMetadata } from './src/seo/static-page-metadata';
 
-const SITE_URL = 'https://jamesblond.co.nz';
+const SITE_URL = 'https://www.jamesblond.co.nz';
 
 const escapeHtml = (value: string) =>
   value
@@ -45,10 +45,8 @@ function sitemapPlugin() {
   return {
     name: 'generate-sitemap',
     buildStart() {
-      const today = new Date().toISOString().split('T')[0];
       const urls = sitemapRoutes.map(route => `  <url>
     <loc>${SITE_URL}${route.path}</loc>
-    <lastmod>${today}</lastmod>
     <priority>${route.priority.toFixed(1)}</priority>
     <changefreq>${route.changefreq}</changefreq>
   </url>`).join('\n');
