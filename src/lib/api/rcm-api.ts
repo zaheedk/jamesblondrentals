@@ -79,7 +79,7 @@ class RCMApiClient {
 
   // Retries transient edge-runtime failures (502/503/504 or dropped
   // connections) so a brief Supabase outage doesn't break the page.
-  private async fetchProxyWithRetry(requestBody: any, signature: string, maxAttempts = 3): Promise<Response> {
+  private async fetchProxyWithRetry(method: string, requestBody: any, signature: string, maxAttempts = 3): Promise<Response> {
     let lastError: unknown;
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
@@ -89,7 +89,7 @@ class RCMApiClient {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            method: this.lastRequestDetails.method === 'POST' ? undefined : undefined,
+            method: method,
             apiKey: this.config.apiKey,
             signature: signature,
             body: requestBody,
@@ -236,7 +236,7 @@ class RCMApiClient {
       const fetchStartTime = Date.now();
       // Retry transient edge-runtime failures (502/503/504 or network blips)
       // so a brief Supabase outage doesn't break the page for customers.
-      const response = await this.fetchProxyWithRetry(requestBody, signature);
+      const response = await this.fetchProxyWithRetry(method, requestBody, signature);
       const fetchEndTime = Date.now();
       
       console.log(`Fetch completed in ${fetchEndTime - fetchStartTime}ms`);
