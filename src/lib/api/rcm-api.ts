@@ -77,6 +77,46 @@ class RCMApiClient {
     return this.useMockData || this.apiConnectionFailed;
   }
 
+  // Retries transient edge-runtime failures (502/503/504 or dropped
+  // connections) so a brief Supabase outage doesn't break the page.
+  private async fetchProxyWithRetry(requestBody: any, signature: string, maxAttempts = 3): Promise<Response> {
+    let lastError: unknown;
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      try {
+        const response = await fetch(RCM_PROXY_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            method: this.lastRequestDetails.method === 'POST' ? undefined : undefined,
+            apiKey: this.config.apiKey,
+            signature: signature,
+            body: requestBody,
+          }),
+        });
+        if (response.status === 502 || response.status === 503 || response.status === 504) {
+          lastError = new Error(`Edge function returned ${response.status}`);
+          console.warn(`Proxy returned ${response.status} (attempt ${attempt}/${maxAttempts})`);
+          if (attempt < maxAttempts) {
+            await new Promise((r) => setTimeout(r, attempt * 600));
+            continue;
+          }
+        }
+        return response;
+      } catch (err) {
+        lastError = err;
+        console.warn(`Proxy request failed (attempt ${attempt}/${maxAttempts}):`, err);
+        if (attempt < maxAttempts) {
+          await new Promise((r) => setTimeout(r, attempt * 600));
+          continue;
+        }
+        throw err;
+      }
+    }
+    throw lastError instanceof Error ? lastError : new Error('Proxy request failed after retries');
+  }
+
   private createHeaders(method: string, body?: any): Headers {
     this.ensureInitialized();
 
