@@ -16,3 +16,7 @@
   - [ ] Re-run booking analysis once numbers arrive: F2D recovery trajectory vs 2024 baseline ($204k/yr West Auckland)
   - [ ] Cost-reduction review (rent 34% + wages 44% of income were the two big items flagged)
   - [ ] Profit-growth opportunities: F2D re-marketing scale-up, Wellington growth, repeat-customer win-back (excluding F2D from "lost" business)
+
+## In progress (new)
+- [x] Simplify Midweek popup: photo + overlay text only, heading in white box, remove buttons/condition
+- [ ] Search Console: publish www sitemap, submit to www property, confirm data flowing

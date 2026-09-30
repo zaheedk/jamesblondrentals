@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { X, CalendarCheck, ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { X } from 'lucide-react';
 import midweekHappyLady from '@/assets/midweek-happy-lady.jpg';
 
 const STORAGE_KEY = 'jb-midweek50-popup-seen-v1';
@@ -58,23 +56,6 @@ const MidweekDiscountPopup = () => {
           <p className="text-xl font-bold text-foreground leading-tight">
             Half price moves, Monday to Thursday
           </p>
-          <p className="mt-2 text-sm text-muted-foreground flex items-start gap-2">
-            <CalendarCheck className="w-4 h-4 mt-0.5 shrink-0 text-primary" aria-hidden="true" />
-            <span>Your hire must start and end between Monday and Thursday. Subject to availability.</span>
-          </p>
-
-          <div className="mt-4 flex flex-col sm:flex-row gap-2">
-            <Button asChild className="flex-1 font-semibold">
-              <Link to="/vehicles" onClick={dismiss}>
-                Book &amp; save 50% <ArrowRight className="w-4 h-4 ml-1" aria-hidden="true" />
-              </Link>
-            </Button>
-            <Button asChild variant="outline" className="flex-1">
-              <Link to="/hot-deals/midweek-truck-van-discount" onClick={dismiss}>
-                See the details
-              </Link>
-            </Button>
-          </div>
         </div>
 
         <button
