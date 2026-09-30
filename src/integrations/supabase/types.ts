@@ -80,6 +80,83 @@ export type Database = {
         }
         Relationships: []
       }
+      agent_api_log: {
+        Row: {
+          api_key_prefix: string | null
+          broker_id: string | null
+          created_at: string
+          duration_ms: number | null
+          error: string | null
+          id: string
+          method: string | null
+          status: string
+        }
+        Insert: {
+          api_key_prefix?: string | null
+          broker_id?: string | null
+          created_at?: string
+          duration_ms?: number | null
+          error?: string | null
+          id?: string
+          method?: string | null
+          status: string
+        }
+        Update: {
+          api_key_prefix?: string | null
+          broker_id?: string | null
+          created_at?: string
+          duration_ms?: number | null
+          error?: string | null
+          id?: string
+          method?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_api_log_broker_id_fkey"
+            columns: ["broker_id"]
+            isOneToOne: false
+            referencedRelation: "agent_brokers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      agent_brokers: {
+        Row: {
+          active: boolean
+          api_key: string
+          created_at: string
+          id: string
+          name: string
+          rate_limit_per_min: number
+          rcm_credential_ref: string
+          shared_secret: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          api_key: string
+          created_at?: string
+          id?: string
+          name: string
+          rate_limit_per_min?: number
+          rcm_credential_ref: string
+          shared_secret: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          api_key?: string
+          created_at?: string
+          id?: string
+          name?: string
+          rate_limit_per_min?: number
+          rcm_credential_ref?: string
+          shared_secret?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       blog_articles: {
         Row: {
           author: string
