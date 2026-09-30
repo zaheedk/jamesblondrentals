@@ -31,3 +31,9 @@ project_id = "jlwvqbrtdzwrcwelyylv"
     verify_jwt = false
   [functions.rcm-save-card]
     verify_jwt = false
+
+[functions.agent-api]
+verify_jwt = false
+
+[functions.agent-admin]
+verify_jwt = false

@@ -1,0 +1,1 @@
+CREATE POLICY "No client access to broker secrets" ON public.agent_brokers FOR ALL TO authenticated, anon USING (false) WITH CHECK (false);
