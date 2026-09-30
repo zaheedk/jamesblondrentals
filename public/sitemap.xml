@@ -889,6 +889,12 @@
     <changefreq>weekly</changefreq>
   </url>
   <url>
+    <loc>https://jamesblond.co.nz/online-check-in</loc>
+    <lastmod>2026-09-30</lastmod>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
     <loc>https://jamesblond.co.nz/hot-deals/mobil-fuel-discount</loc>
     <lastmod>2026-09-30</lastmod>
     <priority>0.8</priority>

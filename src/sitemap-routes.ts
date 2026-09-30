@@ -196,6 +196,7 @@ export const sitemapRoutes: SitemapRoute[] = [
 
   // Special / Deals Pages
   { path: '/hot-deals', priority: 0.8, changefreq: 'weekly' },
+  { path: '/online-check-in', priority: 0.8, changefreq: 'monthly' },
   { path: '/hot-deals/mobil-fuel-discount', priority: 0.8, changefreq: 'monthly' },
   { path: '/hot-deals/midweek-truck-van-discount', priority: 0.8, changefreq: 'monthly' },
   { path: '/hot-deals/courier-operator-deals', priority: 0.8, changefreq: 'monthly' },
