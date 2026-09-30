@@ -3,7 +3,7 @@
 // request body, same HMAC-SHA256 "signature" header, same response shapes.
 import { createClient } from "npm:@supabase/supabase-js@2";
 
-const RCM_AGENT_URL = "https://apis.rentalcarmanager.com/agent/booking/v3.2";
+const RCM_AGENT_URL = "https://apis.rentalcarmanager.com/agent/booking/v3.2/";
 
 // Pricing hook — OFF until RCM is confirmed to book at adjusted prices.
 const PRICING_ENABLED = false;
@@ -118,9 +118,9 @@ Deno.serve(async (req) => {
   let upstream: Response | null = null;
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
-      upstream = await fetch(`${RCM_AGENT_URL}?apikey=${encodeURIComponent(rcmKey)}`, {
+      upstream = await fetch(`${RCM_AGENT_URL}?apikey=${rcmKey.trim()}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json", signature: await hmacHex(rcmSecret, rawBody) },
+        headers: { "Content-Type": "application/json", Accept: "application/json", signature: await hmacHex(rcmSecret.trim(), rawBody) },
         body: rawBody,
       });
       if (![502, 503, 504].includes(upstream.status)) break;
