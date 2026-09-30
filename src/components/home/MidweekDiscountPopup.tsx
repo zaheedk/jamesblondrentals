@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { X, CalendarCheck, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import midweekTrucks from '@/assets/midweek-trucks.jpg';
+import midweekHappyLady from '@/assets/midweek-happy-lady.jpg';
 
 const STORAGE_KEY = 'jb-midweek50-popup-seen-v1';
 
@@ -35,8 +35,8 @@ const MidweekDiscountPopup = () => {
         {/* Image banner with badge overlay */}
         <div className="relative">
           <img
-            src={midweekTrucks}
-            alt="James Blond Rentals truck and jumbo van"
+            src={midweekHappyLady}
+            alt="Happy customer celebrating moving day"
             className="w-full h-36 sm:h-40 object-cover"
             width={1024}
             height={640}
