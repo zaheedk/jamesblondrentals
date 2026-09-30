@@ -194,18 +194,9 @@ class RCMApiClient {
       };
       
       const fetchStartTime = Date.now();
-      const response = await fetch(RCM_PROXY_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          method: method,
-          apiKey: this.config.apiKey,
-          signature: signature,
-          body: requestBody,
-        }),
-      });
+      // Retry transient edge-runtime failures (502/503/504 or network blips)
+      // so a brief Supabase outage doesn't break the page for customers.
+      const response = await this.fetchProxyWithRetry();
       const fetchEndTime = Date.now();
       
       console.log(`Fetch completed in ${fetchEndTime - fetchStartTime}ms`);
