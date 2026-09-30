@@ -128,6 +128,9 @@ const Footer = () => {
                 <Link to="/online-check-in" className="text-gray-300 hover:text-white transition-colors">Fast Pick-Up / Online Check-In</Link>
               </li>
               <li>
+                <Link to="/nz-self-drive-holiday" className="text-gray-300 hover:text-white transition-colors">NZ Self-Drive Holiday Guide</Link>
+              </li>
+              <li>
                 <Link to="/pay-with-klarna" className="text-gray-300 hover:text-white transition-colors">Pay in 4 with Klarna</Link>
               </li>
               <li>

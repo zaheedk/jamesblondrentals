@@ -232,6 +232,57 @@ const CarHireChristchurchAirportFromAustralia = () => (
       </div>
     </section>
 
+    {/* Seasons */}
+    <section className="border-t pt-8">
+      <h2 className="text-3xl font-bold mb-2">When to visit the South Island from Australia</h2>
+      <p className="text-muted-foreground mb-6">
+        NZ seasons match Australia's, but the South Island runs cooler. Book early for Christmas and the ski season — cars go fast.
+      </p>
+      <div className="grid md:grid-cols-4 gap-4">
+        {[
+          ['Summer (Dec–Feb)', 'Long days and lake swims. Christmas to mid-January is our busiest period, with a 3-day minimum hire from 24 December — book months ahead.'],
+          ['Autumn (Mar–May)', 'Golden colours around Tekapo and settled weather. Quieter roads and better rates, apart from Easter and the April school holidays.'],
+          ['Winter (Jun–Aug)', 'Ski season at Mt Hutt and Porters. Pick an AWD SUV, carry chains on alpine passes and allow extra driving time.'],
+          ['Spring (Sep–Nov)', 'Lupins, lambs and fewer crowds. Great value outside the late-September school holidays.'],
+        ].map(([t, b]) => (
+          <Card key={t}><CardContent className="p-5">
+            <h3 className="font-semibold mb-2">{t}</h3>
+            <p className="text-sm text-muted-foreground">{b}</p>
+          </CardContent></Card>
+        ))}
+      </div>
+    </section>
+
+    {/* Which vehicle */}
+    <section>
+      <h2 className="text-3xl font-bold mb-6">Which vehicle suits your trip?</h2>
+      <div className="grid md:grid-cols-3 gap-5">
+        {[
+          ['Couples', 'A Premium Compact or Midsize is economical on fuel and easy to park in towns.', '/fleet/cars'],
+          ['Families & ski trips', 'A Premium SUV or 7-Seater SUV gives room for luggage, ski gear and kids, plus AWD options for winter roads.', '/fleet/cars'],
+          ['Groups of 8–12', 'Our 8-seaters and 10–12 seat minibuses keep everyone together. Quotes on request.', '/christchurch-minibus-hire'],
+        ].map(([t, b, to]) => (
+          <Card key={t}><CardContent className="p-6">
+            <h3 className="font-semibold text-lg mb-2">{t}</h3>
+            <p className="text-sm text-muted-foreground mb-3">{b}</p>
+            <Link to={to} className="text-primary hover:underline text-sm font-medium">→ See options</Link>
+          </CardContent></Card>
+        ))}
+      </div>
+    </section>
+
+    {/* Online check-in */}
+    <section className="bg-muted/30 rounded-lg p-6 md:p-8">
+      <h2 className="text-2xl font-bold mb-2">Check in online before your flight</h2>
+      <p className="text-muted-foreground mb-4">
+        After a 3–4 hour flight, nobody wants paperwork. Upload your Australian licence, confirm your details,
+        add extra drivers and save your card in your customer portal before you fly — pick-up takes minutes.
+      </p>
+      <Link to="/online-check-in" className="text-primary hover:underline font-medium">→ How online check-in works</Link>
+      <span className="mx-3 text-muted-foreground">·</span>
+      <Link to="/nz-self-drive-holiday" className="text-primary hover:underline font-medium">→ NZ self-drive holiday guide</Link>
+    </section>
+
     {/* Shuttle */}
     <section className="border-t pt-8">
       <h2 className="text-2xl font-bold mb-4">Free shuttle from Christchurch International Terminal</h2>
