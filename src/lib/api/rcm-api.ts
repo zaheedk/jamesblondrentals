@@ -196,7 +196,7 @@ class RCMApiClient {
       const fetchStartTime = Date.now();
       // Retry transient edge-runtime failures (502/503/504 or network blips)
       // so a brief Supabase outage doesn't break the page for customers.
-      const response = await this.fetchProxyWithRetry();
+      const response = await this.fetchProxyWithRetry(requestBody, signature);
       const fetchEndTime = Date.now();
       
       console.log(`Fetch completed in ${fetchEndTime - fetchStartTime}ms`);
