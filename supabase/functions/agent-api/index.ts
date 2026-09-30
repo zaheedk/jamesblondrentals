@@ -3,7 +3,7 @@
 // request body, same HMAC-SHA256 "signature" header, same response shapes.
 import { createClient } from "npm:@supabase/supabase-js@2";
 
-const RCM_AGENT_URL = "https://apis.rentalcarmanager.com/agent/booking/v3.2";
+const RCM_AGENT_URL = "https://apis.rentalcarmanager.com/agent/booking/v3.2/";
 
 // Pricing hook — OFF until RCM is confirmed to book at adjusted prices.
 const PRICING_ENABLED = false;
