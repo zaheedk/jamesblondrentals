@@ -54,6 +54,11 @@
   ],
   "rewrites": [
     {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "api.jamesblond.co.nz" }],
+      "destination": "https://jlwvqbrtdzwrcwelyylv.supabase.co/functions/v1/agent-api/:path*"
+    },
+    {
       "source": "/api/rcm/:path*",
       "destination": "https://apis.rentalcarmanager.com/:path*"
     },
