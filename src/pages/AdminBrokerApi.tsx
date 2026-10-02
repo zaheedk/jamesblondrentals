@@ -12,7 +12,7 @@ import { format } from "date-fns";
 interface Broker { id: string; name: string; api_key: string; rcm_credential_ref: string; active: boolean; rate_limit_per_min: number; }
 interface LogRow { id: string; broker_id: string | null; method: string | null; status: string; error: string | null; duration_ms: number | null; created_at: string; }
 
-const ENDPOINT = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/agent-api/agent/booking/v3.2`;
+const ENDPOINT = `https://api.jamesblond.co.nz/agent/booking/v3.2/`;
 
 const AdminBrokerApi = () => {
   const [brokers, setBrokers] = useState<Broker[]>([]);
