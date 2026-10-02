@@ -59,6 +59,10 @@
       "destination": "https://jlwvqbrtdzwrcwelyylv.supabase.co/functions/v1/agent-api/:path*"
     },
     {
+      "source": "/agent/:path*",
+      "destination": "https://jlwvqbrtdzwrcwelyylv.supabase.co/functions/v1/agent-api/agent/:path*"
+    },
+    {
       "source": "/api/rcm/:path*",
       "destination": "https://apis.rentalcarmanager.com/:path*"
     },
