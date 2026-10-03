@@ -259,8 +259,12 @@
   ],
   "rewrites": [
     {
-      "source": "/agent/:path*",
-      "destination": "/api/agent-proxy?__p=:path*"
+      "source": "/agent/(.*)/",
+      "destination": "/api/agent-proxy?__p=$1/"
+    },
+    {
+      "source": "/agent/(.*)",
+      "destination": "/api/agent-proxy?__p=$1"
     },
     {
       "source": "/api/rcm/:path*",
