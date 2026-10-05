@@ -1,5 +1,10 @@
 # Roadmap
 
+## Wellington search improvements
+- [x] Prioritise available vans for Wellington van-page searches without hiding other categories
+- [x] Hide unavailable vehicle prices and discount badges; use the 0800 contact number
+- [x] Verify ordering and the booking selection flow
+
 ## In progress
 - Customer portal additional drivers
   - [x] Move driver management from the profile navigation into individual bookings

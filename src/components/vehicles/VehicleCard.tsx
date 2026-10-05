@@ -7,6 +7,7 @@ import BookingForm from "./BookingForm";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Users, Luggage, Gauge, Info, Cog, AlertTriangle } from "lucide-react";
 import { isMidweekEligibleVehicle, datesQualifyForMidweek } from "@/lib/midweek-discount";
+import { isVehicleAvailable } from "@/lib/vehicle-search-display";
 
 interface VehicleCardProps {
   vehicle: Vehicle;
@@ -98,17 +99,7 @@ const VehicleCard = ({
     totalAmount
   });
   
-  const isAvailable = (() => {
-    console.log(`Vehicle ${vehicle.make} ${vehicle.model} availability:`, vehicle.available, typeof vehicle.available);
-    
-    if (typeof vehicle.available === 'boolean') {
-      return vehicle.available === true;
-    }
-    if (typeof vehicle.available === 'number') {
-      return vehicle.available === 1 || vehicle.available === 2;
-    }
-    return false;
-  })();
+  const isAvailable = isVehicleAvailable(vehicle);
 
   const getNumberOfHours = () => {
     if (!vehicle.numberofhours) return null;
@@ -168,12 +159,12 @@ const VehicleCard = ({
             Electric Vehicle
           </Badge>
         )}
-        {hasLocationDiscount && (
+        {isAvailable && hasLocationDiscount && (
           <Badge className="w-fit mb-2 bg-orange-100 text-orange-800 border-orange-200">
             25% Airport Discount Applied
           </Badge>
         )}
-        {hasMidweekDiscount && (
+        {isAvailable && hasMidweekDiscount && (
           <Badge
             className="w-fit mb-2 bg-primary/10 text-primary border-primary/20"
             title="Applies because your hire starts and ends Mon–Thu in the same week"
@@ -221,7 +212,7 @@ const VehicleCard = ({
               </div>
             </div>
             
-            <div className="text-right">
+            {isAvailable && <div className="text-right">
               <div className="text-2xl font-bold">
                 ${displayRate.toFixed(2)} <span className="text-sm font-normal text-muted-foreground">NZD</span>
               </div>
@@ -230,7 +221,7 @@ const VehicleCard = ({
                   ${avgRate.toFixed(2)}/day
                 </div>
               )}
-            </div>
+            </div>}
           </div>
         </div>
       </CardHeader>
@@ -265,7 +256,7 @@ const VehicleCard = ({
               </p>
             ) : (
               <p className="text-xs">
-                Contact us: <a href="tel:098134134" className="text-primary font-semibold hover:underline">09 813 4134</a>
+                Contact us: <a href="tel:0800525663" className="text-primary font-semibold hover:underline">0800 525 663</a>
               </p>
             )}
           </div>
