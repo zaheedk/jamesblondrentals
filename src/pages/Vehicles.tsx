@@ -23,6 +23,7 @@ import PageSEO from '@/components/PageSEO';
 import BookingSteps from "@/components/booking/BookingSteps";
 import TrustGuaranteeBanner from "@/components/booking/TrustGuaranteeBanner";
 import { parse, format, addDays } from "date-fns";
+import { orderVehicleSearchResults } from "@/lib/vehicle-search-display";
 
 interface RcmVehicleWithPricing {
   vehicle: RCMAvailableCar;
@@ -94,6 +95,12 @@ const Vehicles = () => {
   const age = searchParams.get("age") || "";
   const carCategory = searchParams.get("carCategory") || "0";
   const campaignCode = searchParams.get("campaignCode") || "";
+  const searchFrom = searchParams.get("searchFrom") || "";
+  const isWellingtonSearch = locations.some(loc =>
+    String(loc.id) === pickupLocation && loc.name.toLowerCase().includes("wellington")
+  );
+  const isVanSearch = carCategory === "11" || carCategory === "24" ||
+    (carCategory === "0" && searchFrom.includes("wellington") && searchFrom.includes("van") && !searchFrom.includes("minibus"));
 
   console.log('Current search params:', {
     pickupLocation,
@@ -565,8 +572,8 @@ const Vehicles = () => {
     }
     
     console.log(`Filtered vehicles: ${results.length} out of ${vehicles.length}`);
-    setFilteredVehicles(results);
-  }, [vehicles, selectedVehicleTypes, priceRange, searchTerm]);
+    setFilteredVehicles(orderVehicleSearchResults(results, isWellingtonSearch, isVanSearch));
+  }, [vehicles, selectedVehicleTypes, priceRange, searchTerm, isWellingtonSearch, isVanSearch]);
 
   useEffect(() => {
     if (categoryTypes?.length) {

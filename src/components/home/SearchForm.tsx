@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -48,6 +48,7 @@ const SearchForm = ({
   defaultCategoryName
 }: SearchFormProps = {}) => {
   const navigate = useNavigate();
+  const searchPage = useLocation();
   
   // Check cookies immediately on component mount
   const savedPickupLocationId = Cookies.get('pickupLocation');
@@ -459,8 +460,8 @@ const SearchForm = ({
       return;
     }
     
-    const formattedPickupDate = formatDateForApi(pickupDate!);
-    const formattedDropoffDate = formatDateForApi(dropoffDate!);
+    const formattedPickupDate = formatDateForApi(pickupDate);
+    const formattedDropoffDate = formatDateForApi(dropoffDate);
     
     const ageParam = age || getDefaultAgeId();
     
@@ -473,7 +474,8 @@ const SearchForm = ({
       pickupTime,
       dropoffTime,
       age: ageParam,
-      carCategory
+      carCategory,
+      searchFrom: searchPage.pathname
     };
 
     // Only add campaign code if it's not empty
