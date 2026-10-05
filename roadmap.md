@@ -3,7 +3,7 @@
 ## Wellington search improvements
 - [x] Prioritise available vans for Wellington van-page searches without hiding other categories
 - [x] Hide unavailable vehicle prices and discount badges; use the 0800 contact number
-- [ ] Verify ordering and the booking selection flow
+- [x] Verify ordering and the booking selection flow
 
 ## In progress
 - Customer portal additional drivers

@@ -677,7 +677,7 @@ const Vehicles = () => {
 
       <div className="container mx-auto px-4 py-8">
         {/* Filter Dropdown */}
-        <div className="mb-6 flex items-center gap-4">
+        <div className="mb-6 flex flex-wrap items-center gap-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="flex items-center gap-2">
