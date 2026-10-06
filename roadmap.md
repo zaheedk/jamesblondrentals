@@ -2,9 +2,10 @@
 
 ## Caprice broker integration
 - [x] Review Caprice's published API contract and existing RCM broker architecture
-- [ ] Verify Caprice-specific RCM operation mappings
-- [ ] Implement and test the supported integration
-- [ ] Configure broker credentials and verify the connection with Caprice
+- [x] Record contract, endpoint requirements and onboarding checklist
+- [ ] Verify Caprice-specific RCM operation mappings — blocked by missing Caprice RCM agency credentials
+- [ ] Implement and test the supported integration — blocked by declined secure setup form (appId, shared password, vendor code, RCM credentials)
+- [ ] Configure broker credentials and verify the connection with Caprice — blocked by missing credentials, agreed commercial terms and test contact; hosted management read also returned an authorization error
 
 ## Hamilton hire page
 - [x] Add a car, van and truck hire hub with Hamilton booking search and search-focused FAQs
