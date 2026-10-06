@@ -56,7 +56,7 @@ const TwelveSeaterVanHireWellington = () => {
         name: 'How much does a 12 seater van cost to hire in Wellington?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: "Minibus and 12-seater rates change with demand and season, so we don't publish a fixed price guide. Ring 0800 525 663 or use the booking form for a live quote on your dates.",
+          text: "Minibus and 12-seater rates change with demand and season, so we don't publish a fixed price guide. Ring 0800 525 663 or use the booking form for a live quote on your dates. Schools get a flat $210 per day.",
         },
       },
       {
@@ -64,7 +64,7 @@ const TwelveSeaterVanHireWellington = () => {
         name: 'Where do I pick up the 12 seater in Wellington?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Pick-up is from our Wellington branch — a short drive from the CBD and Wellington Airport. Free shuttle from the airport terminal on request.',
+          text: 'Pick-up is from our Wellington CBD branch in Te Aro, about 10 minutes from Wellington Airport. Book online and check in ahead so the keys are ready when you arrive.',
         },
       },
       {
@@ -73,6 +73,14 @@ const TwelveSeaterVanHireWellington = () => {
         acceptedAnswer: {
           '@type': 'Answer',
           text: 'Behind the last row of seats there is space for soft bags and day packs. For a full airport or ski-trip load with twelve people, add a luggage trailer at pick-up — every 12 seater is fitted with a tow bar.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Do you offer a school rate for 12 seater vans?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Yes — schools pay a flat $210 per day for a 12 seater, whatever the season. Ideal for sports exchanges, camps and field trips. Call 0800 525 663 to book on the school rate.',
         },
       },
       {
@@ -90,7 +98,7 @@ const TwelveSeaterVanHireWellington = () => {
     <div className="bg-background text-foreground">
       <PageSEO
         title="12 Seater Van Hire Wellington | Toyota Hiace | James Blond"
-        description="12 seater van hire in Wellington — Toyota Hiace and LDV Deliver 9. Automatic, car-licence, tow bar and unlimited kms.."
+        description="12 seater van hire in Wellington — Toyota Hiace and LDV Deliver 9. Automatic, car-licence, tow bar and unlimited kms. Schools $210/day flat."
         canonical="/12-seater-van-hire-wellington"
         ogImage="https://www.jamesblond.co.nz/lovable-uploads/bdd5521d-5fab-4187-8d79-fcf80b3f46db.png"
       />
@@ -101,7 +109,7 @@ const TwelveSeaterVanHireWellington = () => {
           <div className="grid md:grid-cols-12 gap-10 items-end">
             <div className="md:col-span-7">
               <p className="text-sm tracking-[0.25em] uppercase text-muted-foreground mb-6">
-                Wellington · Airport shuttle
+                Wellington CBD · Te Aro
               </p>
               <h1 className="font-serif text-5xl md:text-7xl leading-[1.02] tracking-tight">
                 12 seater van hire in Wellington,
@@ -142,6 +150,7 @@ const TwelveSeaterVanHireWellington = () => {
                 <div className="absolute -bottom-6 -left-6 bg-background border border-border px-5 py-3">
                   <p className="text-xs uppercase tracking-widest text-muted-foreground">Rates</p>
                   <p className="font-serif text-2xl">On request</p>
+                  <p className="text-xs text-muted-foreground mt-1">Schools: $210/day flat</p>
                 </div>
               </div>
             </div>
@@ -234,6 +243,7 @@ const TwelveSeaterVanHireWellington = () => {
               {[
                 'Wedding shuttles from Wellington CBD to the Wairarapa',
                 'Sports-team travel around the lower North Island',
+                'School camps, sports exchanges and field trips — $210/day flat',
                 'Corporate airport transfers from Wellington Airport',
                 'Ski weekends to Whakapapa and Tūroa',
                 'Wellington to Napier and Taupō tour groups',
@@ -281,7 +291,7 @@ const TwelveSeaterVanHireWellington = () => {
         </dl>
         <div className="mt-12 flex items-center gap-3 text-sm text-muted-foreground">
           <MapPin className="h-4 w-4 text-primary" />
-          Wellington branch · free shuttle from Wellington Airport
+          Wellington CBD branch, Te Aro · 10 minutes from Wellington Airport
         </div>
       </section>
     </div>
