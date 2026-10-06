@@ -1,5 +1,11 @@
 # Roadmap
 
+## Caprice broker integration
+- [x] Review Caprice's published API contract and existing RCM broker architecture
+- [ ] Verify Caprice-specific RCM operation mappings
+- [ ] Implement and test the supported integration
+- [ ] Configure broker credentials and verify the connection with Caprice
+
 ## Hamilton hire page
 - [x] Add a car, van and truck hire hub with Hamilton booking search and search-focused FAQs
 - [x] Add navigation, page metadata and sitemap entry
