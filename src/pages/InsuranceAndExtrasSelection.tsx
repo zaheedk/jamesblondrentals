@@ -157,8 +157,13 @@ const InsuranceAndExtrasSelection = () => {
         }
         
         // Fall back to defaults if no saved selections
-        if (!insuranceToSelect) {
-          insuranceToSelect = insuranceoptions?.find(i => i.isdefault) || null;
+        // Opt-in cover: default to the cheapest (basic) option, never a paid upgrade
+        if (!insuranceToSelect && insuranceoptions?.length) {
+          insuranceToSelect = [...insuranceoptions].sort(
+            (a, b) =>
+              (parseFloat(String(a.totalinsuranceamount)) || 0) -
+              (parseFloat(String(b.totalinsuranceamount)) || 0)
+          )[0];
         }
         
         if (!kmChargeToSelect) {
