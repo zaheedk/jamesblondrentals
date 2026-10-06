@@ -1,9 +1,9 @@
 # Roadmap
 
 ## Hamilton hire page
-- [ ] Add a car, van and truck hire hub with Hamilton booking search and search-focused FAQs
-- [ ] Add navigation, page metadata and sitemap entry
-- [ ] Verify the page and Hamilton search flow
+- [x] Add a car, van and truck hire hub with Hamilton booking search and search-focused FAQs
+- [x] Add navigation, page metadata and sitemap entry
+- [x] Verify the page and Hamilton search flow
 
 ## Wellington search improvements
 - [x] Prioritise available vans for Wellington van-page searches without hiding other categories
