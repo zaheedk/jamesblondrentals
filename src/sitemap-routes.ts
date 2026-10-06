@@ -113,6 +113,7 @@ export const sitemapRoutes: SitemapRoute[] = [
   { path: '/van-hire-ashburton', priority: 0.7, changefreq: 'monthly' },
   { path: '/van-hire-timaru', priority: 0.7, changefreq: 'monthly' },
   { path: '/truck-hire-hamilton', priority: 0.9, changefreq: 'weekly' },
+  { path: '/vehicle-hire-hamilton', priority: 0.9, changefreq: 'weekly' },
   { path: '/van-hire-hamilton', priority: 0.9, changefreq: 'weekly' },
   { path: '/car-hire-hamilton', priority: 0.9, changefreq: 'weekly' },
   { path: '/furniture-truck-hire-hamilton', priority: 0.9, changefreq: 'weekly' },

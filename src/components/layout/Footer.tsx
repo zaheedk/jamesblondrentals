@@ -201,6 +201,9 @@ const Footer = () => {
                 <Link to="/hamilton-truck-rentals-hire" className="text-gray-300 hover:text-white transition-colors text-sm">Hamilton Truck Rentals</Link>
               </li>
               <li>
+                <Link to="/vehicle-hire-hamilton" className="text-muted-foreground hover:text-primary-foreground transition-colors text-sm">Hamilton Car, Van &amp; Truck Hire</Link>
+              </li>
+              <li>
                 <Link to="/hamilton-van-hire" className="text-gray-300 hover:text-white transition-colors text-sm">Hamilton Van Hire</Link>
               </li>
               <li>

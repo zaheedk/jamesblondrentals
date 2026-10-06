@@ -1,5 +1,7 @@
 # Project Architecture Rules
 
+- The Hamilton vehicle-hire hub reuses SearchForm with Hamilton location defaults and links to existing category pages; this preserves live RCM quoting without duplicating booking logic.
+
 - Vehicle search display uses shared availability and ordering helpers; the originating search page travels in the URL so Wellington van intent survives navigation without changing RCM pricing or availability.
 
 - Customer portal booking cards must use the `vehicleimage` and `urlpathfordocuments` returned by RCM `bookinginfo`, never infer vehicle photos from names; this keeps displayed vehicles aligned with live booking data.

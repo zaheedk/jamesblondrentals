@@ -162,6 +162,7 @@ import WestAucklandCarHire from "./pages/WestAucklandCarHire";
 import LongTermCarHireAuckland from "./pages/LongTermCarHireAuckland";
 import LongTermCarHireChristchurch from "./pages/LongTermCarHireChristchurch";
 import HamiltonCarHire from "./pages/HamiltonCarHire";
+import HamiltonHire from "./pages/HamiltonHire";
 import UteHireNZ from "./pages/UteHireNZ";
 import PickupTruckRental from "./pages/PickupTruckRental";
 import TipperTruckHire from "./pages/TipperTruckHire";
@@ -441,6 +442,7 @@ const App = () => {
                   <Route key={p.path} path={p.path} element={<WellingtonVanTruckSubPage page={p} />} />
                 ))}
                 <Route path="/car-hire-hamilton" element={<HamiltonCarHire />} />
+                <Route path="/vehicle-hire-hamilton" element={<HamiltonHire />} />
                 <Route path="/car-hire-auckland" element={<AucklandCarHire />} />
                 <Route path="/car-hire-christchurch" element={<ChristchurchCarHire />} />
                 <Route path="/ute-hire" element={<UteHireNZ />} />
