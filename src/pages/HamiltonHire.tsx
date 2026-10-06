@@ -86,7 +86,7 @@ const HamiltonHire = () => (
             <div><h3 className="font-semibold">Get ready before pickup</h3><p className="mt-2 text-muted-foreground">Complete your details and licence information online ahead of collection.</p><Button asChild variant="link" className="h-auto px-0"><Link to="/online-check-in">Online check-in <ArrowRight className="ml-2 h-4 w-4" /></Link></Button></div>
           </div>
         </div>
-        <SearchForm defaultPickupLocation="17" defaultDropoffLocation="17" />
+        <SearchForm defaultPickupLocation="17" defaultDropoffLocation="17" preferDefaultLocation />
       </div>
     </section>
 

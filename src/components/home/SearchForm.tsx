@@ -10,6 +10,7 @@ import { useRcmApi } from "@/hooks/use-rcm-api";
 import Cookies from "js-cookie";
 import { trackEvent } from "@/lib/analytics";
 import { logSearchEvent } from "@/lib/search-logging";
+import { searchLocationDefault } from "@/lib/search-location-default";
 
 import { LocationSelect } from "./form-components/LocationSelect";
 import { DateSelect } from "./form-components/DateSelect";
@@ -28,6 +29,7 @@ import {
 const DEFAULT_LOCATION_ID = ""; // Empty to force finding Kelston
 
 interface SearchFormProps {
+  preferDefaultLocation?: boolean;
   defaultPickupLocation?: string;
   defaultDropoffLocation?: string;
   defaultCarCategory?: string;
@@ -41,6 +43,7 @@ interface SearchFormProps {
 }
 
 const SearchForm = ({ 
+  preferDefaultLocation = false,
   defaultPickupLocation,
   defaultDropoffLocation,
   defaultCarCategory = "0",
@@ -60,8 +63,8 @@ const SearchForm = ({
     sameLocation: savedSameLocation
   });
   
-  const [pickupLocation, setPickupLocation] = useState(savedPickupLocationId || "");
-  const [dropoffLocation, setDropoffLocation] = useState(savedDropoffLocationId || "");
+  const [pickupLocation, setPickupLocation] = useState(searchLocationDefault(savedPickupLocationId, defaultPickupLocation, preferDefaultLocation));
+  const [dropoffLocation, setDropoffLocation] = useState(searchLocationDefault(savedDropoffLocationId, defaultDropoffLocation, preferDefaultLocation));
   const [pickupDate, setPickupDate] = useState<Date>();
   const [dropoffDate, setDropoffDate] = useState<Date>();
   const [pickupTime, setPickupTime] = useState("");
