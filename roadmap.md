@@ -1,7 +1,8 @@
 # Roadmap
 
 ## Caprice broker integration
-- [ ] Review Caprice's published API contract and map it to RCM
+- [x] Review Caprice's published API contract and existing RCM broker architecture
+- [ ] Verify Caprice-specific RCM operation mappings
 - [ ] Implement and test the supported integration
 - [ ] Configure broker credentials and verify the connection with Caprice
 
