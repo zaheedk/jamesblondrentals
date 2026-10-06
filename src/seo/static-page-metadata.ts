@@ -47,6 +47,12 @@ const makeDefaultMetadata = (path: string): StaticPageMetadata => {
 };
 
 const overrides: Record<string, Partial<Omit<StaticPageMetadata, 'path'>>> = {
+  '/vehicle-hire-hamilton': {
+    title: 'Car, Van & Truck Hire Hamilton | James Blond Rentals',
+    description: 'Compare car rental, cargo van and moving truck hire in Hamilton. Check live prices and availability, collect in Frankton and check in online before pickup.',
+    heading: 'Car, van & truck hire Hamilton',
+    body: 'Hamilton car rental, cargo van hire and moving truck hire from James Blond Rentals. Pick up at 17 Bandon Street, Frankton, Hamilton. Search your dates for live availability and prices. Explore our Hamilton car, van and truck pages, one-way hire options and online pre-check-in. Vehicle availability depends on your dates; contact the team about collection arrangements for Hamilton Airport arrivals.',
+  },
   '/booking': {
     title: 'Book Your Rental Vehicle | James Blond Rentals',
     description: 'Complete your vehicle booking with James Blond Rentals. Choose from cars, vans, trucks and utes across Auckland, Wellington and Christchurch.',
