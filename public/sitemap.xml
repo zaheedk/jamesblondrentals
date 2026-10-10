@@ -711,6 +711,16 @@
     <changefreq>monthly</changefreq>
   </url>
   <url>
+    <loc>https://www.jamesblond.co.nz/contact/mt-wellington</loc>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.jamesblond.co.nz/contact/new-plymouth</loc>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
     <loc>https://www.jamesblond.co.nz/airport</loc>
     <priority>0.7</priority>
     <changefreq>monthly</changefreq>
