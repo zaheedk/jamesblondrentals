@@ -25,6 +25,7 @@ const ContactMtWellington = () => {
         priceRange: "$$",
         address: {
           "@type": "PostalAddress",
+          streetAddress: "6C McLennan Road",
           addressLocality: "Mt Wellington",
           addressRegion: "Auckland",
           addressCountry: "NZ",
@@ -85,7 +86,7 @@ const ContactMtWellington = () => {
       }}
     />
     <JsonLd data={bookingHowTo("https://www.jamesblond.co.nz/contact/mt-wellington")} />
-    <JsonLd data={pickupHowTo({ pageUrl: "https://www.jamesblond.co.nz/contact/mt-wellington", locationName: "Mt Wellington", address: "Mt Wellington, Auckland", isAirport: false })} />
+    <JsonLd data={pickupHowTo({ pageUrl: "https://www.jamesblond.co.nz/contact/mt-wellington", locationName: "Mt Wellington", address: "6C McLennan Road, Mt Wellington, Auckland", isAirport: false })} />
       <h1 className="text-4xl font-bold mb-8 text-center">Mt Wellington Branch</h1>
       <p className="text-center text-gray-600 mb-8 max-w-2xl mx-auto">
         Our newest Auckland branch, serving Mt Wellington, Sylvia Park, Penrose and Ellerslie with cars, vans and trucks.
@@ -101,6 +102,7 @@ const ContactMtWellington = () => {
                 <MapPin className="w-5 h-5 mt-1 text-primary" />
                 <div>
                   <p className="font-medium">Address:</p>
+                  <p>6C McLennan Road</p>
                   <p>Mt Wellington</p>
                   <p>Auckland</p>
                 </div>
@@ -164,6 +166,25 @@ const ContactMtWellington = () => {
       {/* Contact Form */}
       <div className="max-w-2xl mx-auto mb-12">
         <ContactForm />
+      </div>
+
+      {/* Map */}
+      <div className="mt-12 max-w-5xl mx-auto">
+        <Card>
+          <CardContent className="p-6">
+            <h2 className="text-2xl font-semibold mb-6">Location</h2>
+            <div className="aspect-video">
+              <iframe
+                title="James Blond Rentals Mt Wellington location map"
+                src="https://maps.google.com/maps?q=6C+McLennan+Road,+Mt+Wellington,+Auckland,+New+Zealand&z=14&output=embed"
+                className="w-full h-full border-0"
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              ></iframe>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

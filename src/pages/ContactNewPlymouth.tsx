@@ -25,7 +25,8 @@ const ContactNewPlymouth = () => {
         priceRange: "$$",
         address: {
           "@type": "PostalAddress",
-          addressLocality: "New Plymouth Airport",
+          streetAddress: "192 Airport Drive",
+          addressLocality: "Bell Block",
           addressRegion: "Taranaki",
           addressCountry: "NZ",
         },
@@ -85,7 +86,7 @@ const ContactNewPlymouth = () => {
       }}
     />
     <JsonLd data={bookingHowTo("https://www.jamesblond.co.nz/contact/new-plymouth")} />
-    <JsonLd data={pickupHowTo({ pageUrl: "https://www.jamesblond.co.nz/contact/new-plymouth", locationName: "New Plymouth Airport", address: "New Plymouth Airport, Taranaki", isAirport: true })} />
+    <JsonLd data={pickupHowTo({ pageUrl: "https://www.jamesblond.co.nz/contact/new-plymouth", locationName: "New Plymouth Airport", address: "192 Airport Drive, Bell Block, New Plymouth", isAirport: true })} />
       <h1 className="text-4xl font-bold mb-8 text-center">New Plymouth Airport Branch</h1>
       <p className="text-center text-gray-600 mb-8 max-w-2xl mx-auto">
         Our Taranaki branch at New Plymouth Airport, with cars, vans and trucks for the coast, the mountain and everything in between.
@@ -101,8 +102,8 @@ const ContactNewPlymouth = () => {
                 <MapPin className="w-5 h-5 mt-1 text-primary" />
                 <div>
                   <p className="font-medium">Address:</p>
-                  <p>New Plymouth Airport</p>
-                  <p>New Plymouth, Taranaki</p>
+                  <p>192 Airport Drive</p>
+                  <p>Bell Block, New Plymouth</p>
                 </div>
               </div>
 
@@ -174,7 +175,7 @@ const ContactNewPlymouth = () => {
             <div className="aspect-video">
               <iframe
                 title="James Blond Rentals New Plymouth Airport location map"
-                src="https://maps.google.com/maps?q=New+Plymouth+Airport,+New+Plymouth,+New+Zealand&z=14&output=embed"
+                src="https://maps.google.com/maps?q=192+Airport+Drive,+Bell+Block,+New+Plymouth,+New+Zealand&z=14&output=embed"
                 className="w-full h-full border-0"
                 allowFullScreen
                 loading="lazy"
