@@ -186,6 +186,8 @@ export const sitemapRoutes: SitemapRoute[] = [
   { path: '/contact/christchurch', priority: 0.7, changefreq: 'monthly' },
   { path: '/contact/christchurch-central', priority: 0.7, changefreq: 'monthly' },
   { path: '/contact/hamilton', priority: 0.7, changefreq: 'monthly' },
+  { path: '/contact/mt-wellington', priority: 0.7, changefreq: 'monthly' },
+  { path: '/contact/new-plymouth', priority: 0.7, changefreq: 'monthly' },
 
   // Airport Pages
   { path: '/airport', priority: 0.7, changefreq: 'monthly' },

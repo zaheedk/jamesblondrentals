@@ -28,6 +28,8 @@ import ContactWellington from "./pages/ContactWellington";
 import ContactChristchurch from "./pages/ContactChristchurch";
 import ContactChristchurchCentral from "./pages/ContactChristchurchCentral";
 import ContactHamilton from "./pages/ContactHamilton";
+import ContactMtWellington from "./pages/ContactMtWellington";
+import ContactNewPlymouth from "./pages/ContactNewPlymouth";
 
 // Auth Pages
 import Login from "./pages/Login";
@@ -525,6 +527,8 @@ const App = () => {
                 <Route path="/contact/christchurch" element={<ContactChristchurch />} />
                 <Route path="/contact/christchurch-central" element={<ContactChristchurchCentral />} />
                 <Route path="/contact/hamilton" element={<ContactHamilton />} />
+                <Route path="/contact/mt-wellington" element={<ContactMtWellington />} />
+                <Route path="/contact/new-plymouth" element={<ContactNewPlymouth />} />
                 <Route path="/winz-quotes" element={<WinzQuotes />} />
                 <Route path="/12-seater-van-hire-auckland" element={<AucklandVanHire />} />
                 <Route path="/14-seater-van-hire-auckland" element={<FourteenSeaterVanHireAuckland />} />

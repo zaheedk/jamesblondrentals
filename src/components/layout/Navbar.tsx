@@ -209,11 +209,23 @@ const Navbar = () => {
                       >
                         Christchurch Central
                       </Link>
-                      <Link 
-                        to="/contact/hamilton" 
+                      <Link
+                        to="/contact/hamilton"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
                       >
                         Hamilton
+                      </Link>
+                      <Link
+                        to="/contact/mt-wellington"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
+                      >
+                        Mt Wellington
+                      </Link>
+                      <Link
+                        to="/contact/new-plymouth"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
+                      >
+                        New Plymouth
                       </Link>
                     </div>
                   </NavigationMenuContent>
@@ -353,6 +365,12 @@ const Navbar = () => {
                     </Link>
                     <Link to="/contact/hamilton" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
                       Hamilton
+                    </Link>
+                    <Link to="/contact/mt-wellington" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
+                      Mt Wellington
+                    </Link>
+                    <Link to="/contact/new-plymouth" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
+                      New Plymouth
                     </Link>
                   </div>
                 </AccordionContent>
