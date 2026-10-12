@@ -57,23 +57,29 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   const started = Date.now();
   const url = new URL(req.url);
-  const apiKey = url.searchParams.get("apikey") ?? req.headers.get("apikey-broker") ?? "";
-  const keyPrefix = apiKey.slice(0, 6);
-
   if (req.method !== "POST") return rcmError("Invalid request method");
   const rawBody = await req.text();
   if (rawBody.length > 200_000) return rcmError("Request too large");
 
   let method = "";
+  let bodyKey = "";
   try {
     const parsed = JSON.parse(rawBody);
     method = typeof parsed?.method === "string" ? parsed.method : "";
+    bodyKey = typeof parsed?.apikey === "string" ? parsed.apikey : "";
   } catch {
-    await log({ api_key_prefix: keyPrefix, status: "ERR", error: "invalid json", duration_ms: Date.now() - started });
+    await log({ status: "ERR", error: "invalid json", duration_ms: Date.now() - started });
     return rcmError("Invalid JSON request");
   }
+  // Accept the key from query (RCM standard), header, or body; trim stray whitespace/newlines.
+  const apiKey = (url.searchParams.get("apikey") || req.headers.get("apikey-broker") ||
+    req.headers.get("x-api-key") || bodyKey || "").trim();
+  const keyPrefix = apiKey.slice(0, 6);
   if (!method) return rcmError("Parameter[Method] 'method'. Missing");
-  if (!apiKey) return rcmError("Invalid API Key");
+  if (!apiKey) {
+    await log({ method, status: "ERR", error: `missing apikey (query: ${[...url.searchParams.keys()].join(",") || "none"})`, duration_ms: Date.now() - started });
+    return rcmError("Invalid API Key");
+  }
 
   const { data: broker } = await admin
     .from("agent_brokers")
