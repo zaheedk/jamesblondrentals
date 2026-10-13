@@ -121,6 +121,7 @@ Deno.serve(async (req) => {
   const body = await req.json().catch(() => ({}))
   const dryRun = body?.dryRun === true
   const limit = Math.min(Math.max(Number(body?.limit) || 100, 1), 200)
+  const offset = Math.max(Number(body?.offset) || 0, 0)
 
   // Pending quotes, more than 2 days old, future pickup
   const cutoff = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
