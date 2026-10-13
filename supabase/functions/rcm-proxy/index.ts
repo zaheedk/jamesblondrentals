@@ -24,15 +24,26 @@ Deno.serve(async (req: Request) => {
     
     console.log(`Proxying RCM API request: ${rcmMethod || "unknown"} to ${rcmUrl}`);
 
-    const rcmResponse = await fetch(rcmUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "signature": signature,
-      },
-      body: JSON.stringify(body),
-    });
+    // Retry on RCM rate limits (429) with backoff so concurrent site traffic
+    // doesn't surface as errors to users.
+    const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+    let rcmResponse: Response | null = null;
+    for (let attempt = 0; attempt < 4; attempt++) {
+      rcmResponse = await fetch(rcmUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "signature": signature,
+        },
+        body: JSON.stringify(body),
+      });
+      if (rcmResponse.status !== 429) break;
+      const wait = Math.min(2000 * Math.pow(2, attempt), 8000);
+      console.log(`RCM 429 rate limit, retrying in ${wait}ms (attempt ${attempt + 1})`);
+      await sleep(wait);
+    }
+    if (!rcmResponse) throw new Error("RCM request failed");
 
     const contentType = rcmResponse.headers.get("content-type") || "";
     
