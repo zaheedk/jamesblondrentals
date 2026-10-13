@@ -117,6 +117,38 @@ const AdminBookings = () => {
     return matchesSearch;
   }) || [];
 
+  // Booking journey funnel: created -> confirmed -> paid, by creation date
+  const funnel = useMemo(() => {
+    const all = bookings || [];
+    const days = funnelPeriod === "all" ? null : Number(funnelPeriod);
+    const cutoff = days ? Date.now() - days * 24 * 60 * 60 * 1000 : null;
+    const inPeriod = all.filter((b) => !cutoff || (b.created_at && new Date(b.created_at).getTime() >= cutoff));
+
+    const isQuote = (b: (typeof inPeriod)[number]) =>
+      b.booking_status === 'pending' && b.payment_status === 'pending';
+    const isCancelled = (b: (typeof inPeriod)[number]) => b.booking_status === 'cancelled';
+    const isConfirmed = (b: (typeof inPeriod)[number]) => !isQuote(b) && !isCancelled(b);
+    const isPaid = (b: (typeof inPeriod)[number]) =>
+      ['paid', 'succeeded', 'completed'].includes((b.payment_status || '').toLowerCase());
+
+    const created = inPeriod.length;
+    const confirmed = inPeriod.filter(isConfirmed);
+    const paid = confirmed.filter(isPaid);
+    const stillQuotes = inPeriod.filter(isQuote).length;
+    const cancelled = inPeriod.filter(isCancelled).length;
+    const paidValue = paid.reduce((s, b) => s + Number(b.total_amount || 0), 0);
+
+    return {
+      created,
+      confirmed: confirmed.length,
+      paid: paid.length,
+      stillQuotes,
+      cancelled,
+      paidValue,
+      pct: (n: number) => (created ? `${Math.round((n / created) * 100)}%` : "0%"),
+    };
+  }, [bookings, funnelPeriod]);
+
   const quotes = filteredBookings.filter(
     (booking) => booking.booking_status === 'pending' && booking.payment_status === 'pending'
   );
