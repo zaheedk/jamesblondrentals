@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { useBookings } from "@/hooks/use-bookings";
+import { useAdminBookingsPage, useBookingFunnelRows, type AdminBookingRow } from "@/hooks/use-bookings";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -24,30 +24,23 @@ import { Link } from "react-router-dom";
 const AdminBookings = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sendingEmail, setSendingEmail] = useState<string | null>(null);
-  const [signedAgreements, setSignedAgreements] = useState<Set<string>>(new Set());
   const [bookingsPage, setBookingsPage] = useState(1);
   const [quotesPage, setQuotesPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
   const [funnelPeriod, setFunnelPeriod] = useState("30");
-  const { data: bookings, isLoading, error } = useBookings();
-
-  // Fetch which reservation refs have signed agreements
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   useEffect(() => {
-    const fetchSignedAgreements = async () => {
-      const { data } = await supabase
-        .from("bookings")
-        .select("reservation_reference")
-        .not("hirer_signature", "is", null);
-      if (data) {
-        setSignedAgreements(new Set(data.map((d) => d.reservation_reference).filter(Boolean) as string[]));
-      }
-    };
-    fetchSignedAgreements();
-  }, []);
+    const t = setTimeout(() => setDebouncedSearch(searchQuery), 350);
+    return () => clearTimeout(t);
+  }, [searchQuery]);
+  const bookingsQuery = useAdminBookingsPage("bookings", bookingsPage, pageSize, debouncedSearch);
+  const quotesQuery = useAdminBookingsPage("quotes", quotesPage, pageSize, debouncedSearch);
+  const isLoading = (bookingsQuery.isLoading && !bookingsQuery.data) || (quotesQuery.isLoading && !quotesQuery.data);
+  const error = bookingsQuery.error || quotesQuery.error;
 
   const siteUrl = window.location.origin;
 
-  const handleSendRentalAgreementLink = async (booking: typeof bookings extends (infer T)[] | undefined ? T : never) => {
+  const handleSendRentalAgreementLink = async (booking: AdminBookingRow) => {
     const email = booking.customer_email;
     const resRef = booking.reservation_reference;
     
@@ -95,34 +88,10 @@ const AdminBookings = () => {
     }
   };
 
-  const filteredBookings = bookings?.filter((booking) => {
-    const searchLower = searchQuery.toLowerCase();
-    const matchesSearch = 
-      booking.booking_reference?.toLowerCase().includes(searchLower) ||
-      booking.reservation_reference?.toLowerCase().includes(searchLower) ||
-      booking.customer_first_name?.toLowerCase().includes(searchLower) ||
-      booking.customer_last_name?.toLowerCase().includes(searchLower) ||
-      booking.customer_email?.toLowerCase().includes(searchLower) ||
-      booking.vehicle_name?.toLowerCase().includes(searchLower) ||
-      booking.vehicle_rego?.toLowerCase().includes(searchLower) ||
-      booking.pickup_location_name?.toLowerCase().includes(searchLower) ||
-      (booking as any).car_id?.toLowerCase().includes(searchLower) ||
-      (booking as any).brand?.toLowerCase().includes(searchLower) ||
-      (booking as any).agency?.toLowerCase().includes(searchLower) ||
-      (booking as any).agent_name?.toLowerCase().includes(searchLower) ||
-      (booking as any).rcm_ref_no?.toLowerCase().includes(searchLower) ||
-      (booking as any).company_name?.toLowerCase().includes(searchLower) ||
-      (booking as any).rcm_customer_id?.toLowerCase().includes(searchLower);
-    
-    return matchesSearch;
-  }) || [];
-
   // Booking journey funnel: created -> confirmed -> paid, by creation date
+  const { data: funnelRows = [] } = useBookingFunnelRows(funnelPeriod === "all" ? null : Number(funnelPeriod));
   const funnel = useMemo(() => {
-    const all = bookings || [];
-    const days = funnelPeriod === "all" ? null : Number(funnelPeriod);
-    const cutoff = days ? Date.now() - days * 24 * 60 * 60 * 1000 : null;
-    const inPeriod = all.filter((b) => !cutoff || (b.created_at && new Date(b.created_at).getTime() >= cutoff));
+    const inPeriod = funnelRows;
 
     const isQuote = (b: (typeof inPeriod)[number]) =>
       b.booking_status === 'pending' && b.payment_status === 'pending';
@@ -147,27 +116,24 @@ const AdminBookings = () => {
       paidValue,
       pct: (n: number) => (created ? `${Math.round((n / created) * 100)}%` : "0%"),
     };
-  }, [bookings, funnelPeriod]);
-
-  const quotes = filteredBookings.filter(
-    (booking) => booking.booking_status === 'pending' && booking.payment_status === 'pending'
-  );
-
-  const confirmedBookings = filteredBookings.filter(
-    (booking) => !(booking.booking_status === 'pending' && booking.payment_status === 'pending')
-  );
+  }, [funnelRows]);
 
   // Reset pages when search or page size changes
   useEffect(() => {
     setBookingsPage(1);
     setQuotesPage(1);
-  }, [searchQuery, pageSize]);
+  }, [debouncedSearch, pageSize]);
 
-  const bookingsTotalPages = Math.max(1, Math.ceil(confirmedBookings.length / pageSize));
-  const quotesTotalPages = Math.max(1, Math.ceil(quotes.length / pageSize));
+  const bookingsCount = bookingsQuery.data?.count ?? 0;
+  const quotesCount = quotesQuery.data?.count ?? 0;
+  const bookingsTotalPages = Math.max(1, Math.ceil(bookingsCount / pageSize));
+  const quotesTotalPages = Math.max(1, Math.ceil(quotesCount / pageSize));
 
-  const paginatedBookings = confirmedBookings.slice((bookingsPage - 1) * pageSize, bookingsPage * pageSize);
-  const paginatedQuotes = quotes.slice((quotesPage - 1) * pageSize, quotesPage * pageSize);
+  const paginatedBookings = bookingsQuery.data?.rows ?? [];
+  const paginatedQuotes = quotesQuery.data?.rows ?? [];
+  const signedAgreements = new Set(
+    [...paginatedBookings, ...paginatedQuotes].filter((b) => b.hirer_signature && b.reservation_reference).map((b) => b.reservation_reference as string)
+  );
 
   const getStatusBadge = (status?: string) => {
     const statusColors: Record<string, string> = {
@@ -321,10 +287,10 @@ const AdminBookings = () => {
           <Tabs defaultValue="bookings" className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-4">
               <TabsTrigger value="bookings">
-                Bookings ({confirmedBookings.length})
+                Bookings ({bookingsCount})
               </TabsTrigger>
               <TabsTrigger value="quotes">
-                Quotes ({quotes.length})
+                Quotes ({quotesCount})
               </TabsTrigger>
             </TabsList>
             
@@ -460,7 +426,7 @@ const AdminBookings = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-muted-foreground">
-                    {confirmedBookings.length === 0 ? 0 : (bookingsPage - 1) * pageSize + 1}–{Math.min(bookingsPage * pageSize, confirmedBookings.length)} of {confirmedBookings.length}
+                    {bookingsCount === 0 ? 0 : (bookingsPage - 1) * pageSize + 1}–{Math.min(bookingsPage * pageSize, bookingsCount)} of {bookingsCount}
                   </span>
                   <Button variant="outline" size="icon" className="h-8 w-8" disabled={bookingsPage <= 1} onClick={() => setBookingsPage(p => p - 1)}>
                     <ChevronLeft className="h-4 w-4" />
@@ -572,7 +538,7 @@ const AdminBookings = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-muted-foreground">
-                    {quotes.length === 0 ? 0 : (quotesPage - 1) * pageSize + 1}–{Math.min(quotesPage * pageSize, quotes.length)} of {quotes.length}
+                    {quotesCount === 0 ? 0 : (quotesPage - 1) * pageSize + 1}–{Math.min(quotesPage * pageSize, quotesCount)} of {quotesCount}
                   </span>
                   <Button variant="outline" size="icon" className="h-8 w-8" disabled={quotesPage <= 1} onClick={() => setQuotesPage(p => p - 1)}>
                     <ChevronLeft className="h-4 w-4" />
