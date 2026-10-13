@@ -102,7 +102,12 @@ Deno.serve(async (req) => {
   const admin = createClient(url, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!)
   const batchToken = Deno.env.get('QUOTE_REMINDER_TOKEN')
   const providedToken = req.headers.get('x-quote-reminder-token')
-  const tokenOk = batchToken && providedToken && batchToken === providedToken
+  let tokenOk = !!(batchToken && providedToken && batchToken === providedToken)
+  const cronToken = req.headers.get('x-cron-token')
+  if (!tokenOk && cronToken) {
+    const { data: ok } = await admin.rpc('verify_quote_reminder_cron_token', { _token: cronToken })
+    tokenOk = ok === true
+  }
   if (!tokenOk) {
     const auth = req.headers.get('Authorization')
     if (!auth?.startsWith('Bearer ')) return json({ error: 'Unauthorized' }, 401)
