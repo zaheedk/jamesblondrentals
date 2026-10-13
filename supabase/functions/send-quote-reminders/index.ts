@@ -1,6 +1,7 @@
 // Admin-only: sends follow-up reminders for unconverted quotes.
-// Only emails quotes whose vehicle is still available in RCM for the quoted
-// dates/location, and includes a "Confirm my booking" link so the customer can
+// Emails quotes whose exact vehicle is still available in RCM for the quoted
+// dates/location; if it's gone, emails once offering similar available
+// vehicles (bigger first). // dates/location, and includes a "Confirm my booking" link so the customer can
 // convert the quote online. One email per customer (latest quote wins).
 import * as React from 'npm:react@18.3.1'
 import { renderAsync } from 'npm:@react-email/components@0.0.22'
@@ -8,6 +9,7 @@ import { createClient } from 'npm:@supabase/supabase-js@2'
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
 import { TEMPLATES } from '../_shared/transactional-email-templates/registry.ts'
 import { nzToday, reminderDue, type ReminderKind } from './schedule.ts'
+import { findQuotedCar, isAvailable, pickAlternatives, type RcmCar } from './alternatives.ts'
 
 const FROM_EMAIL = 'James Blond Rentals <info@jamesblond.co.nz>'
 const SITE_URL = 'https://www.jamesblond.co.nz'
@@ -40,6 +42,8 @@ type QuoteRow = {
   customer_last_name: string | null
   customer_email: string | null
   vehicle_name: string | null
+  vehicle_id: string | null
+  vehicle_total: number | null
   vehicle_category: string | null
   pickup_location_id: string | null
   dropoff_location_id: string | null
@@ -79,11 +83,10 @@ async function defaultAgeId() {
   return def.id
 }
 
-// A quote is sendable when RCM step2 still shows an available car in the
-// quoted category for the quoted dates and location (available 1 or 2, the
-// same rule the website search uses).
-async function quoteStillAvailable(q: QuoteRow): Promise<boolean> {
-  if (!q.vehicle_category || !q.pickup_location_id) return false
+// Checks the exact quoted vehicle in RCM step2 for the quoted dates/location.
+// If it is gone, returns similar available vehicles to offer instead.
+async function checkQuote(q: QuoteRow): Promise<{ available: boolean; alternatives: RcmCar[] }> {
+  if (!q.vehicle_category || !q.pickup_location_id) return { available: false, alternatives: [] }
   const s2 = await rcmPost({
     method: 'step2',
     pickuplocationid: q.pickup_location_id,
@@ -93,10 +96,16 @@ async function quoteStillAvailable(q: QuoteRow): Promise<boolean> {
     dropoffdate: isoToDmy(q.dropoff_date),
     dropofftime: q.dropoff_time?.slice(0, 5) || '10:00',
     ageid: await defaultAgeId(),
-    vehiclecategorytypeid: q.vehicle_category,
+    vehiclecategorytypeid: 0,
   })
-  const cars = s2?.results?.availablecars ?? []
-  return cars.some((c: any) => c?.available === 1 || c?.available === 2)
+  const cars: RcmCar[] = s2?.results?.availablecars ?? []
+  const quoted = findQuotedCar(cars, q.vehicle_id, q.vehicle_name)
+  if (quoted && isAvailable(quoted)) return { available: true, alternatives: [] }
+  const referencePrice = Number(quoted?.totalrateafterdiscount) || Number(q.vehicle_total) || Number(q.total_amount) || 0
+  return {
+    available: false,
+    alternatives: pickAlternatives(cars, { typeId: String(q.vehicle_category), vehicleId: q.vehicle_id, vehicleName: q.vehicle_name, referencePrice }),
+  }
 }
 
 Deno.serve(async (req) => {
@@ -139,7 +148,7 @@ Deno.serve(async (req) => {
   const today = nzToday()
   const { data: rows, error } = await admin
     .from('bookings')
-    .select('id, booking_reference, reservation_reference, customer_first_name, customer_last_name, customer_email, vehicle_name, vehicle_category, pickup_location_id, dropoff_location_id, pickup_date, dropoff_date, pickup_time, dropoff_time, total_amount, created_at')
+    .select('id, booking_reference, reservation_reference, customer_first_name, customer_last_name, customer_email, vehicle_name, vehicle_id, vehicle_total, vehicle_category, pickup_location_id, dropoff_location_id, pickup_date, dropoff_date, pickup_time, dropoff_time, total_amount, created_at')
     .eq('booking_status', 'pending')
     .eq('payment_status', 'pending')
     .gte('pickup_date', today)
@@ -172,13 +181,62 @@ Deno.serve(async (req) => {
 
   const sent: any[] = []
   const skippedUnavailable: any[] = []
+  const sentAlternatives: any[] = []
   const skippedNotDue: any[] = []
   const errors: any[] = []
+
+  // Vehicle gone: offer similar available vehicles once, then stop reminding.
+  async function sendAlternatives(q: QuoteRow, alts: RcmCar[], dry: boolean): Promise<{ error?: string; claimed?: boolean }> {
+    if (dry) return {}
+    const email = q.customer_email!.toLowerCase().trim()
+    const { data: claimed, error: claimErr } = await admin.from('quote_reminder_log')
+      .insert([{ booking_reference: q.booking_reference, customer_email: email, kind: 'alternatives' }]).select('id').single()
+    if (claimErr || !claimed) return { claimed: false }
+    const ageid = await defaultAgeId()
+    const trackBase = `${url}/functions/v1/quote-reminder-track?id=${claimed.id}`
+    const alternatives = alts.map((c) => {
+      const search = new URLSearchParams({
+        pickupLocation: String(q.pickup_location_id), dropoffLocation: String(q.dropoff_location_id || q.pickup_location_id),
+        pickupDate: isoToDmy(q.pickup_date), dropoffDate: isoToDmy(q.dropoff_date),
+        pickupTime: q.pickup_time?.slice(0, 5) || '10:00', dropoffTime: q.dropoff_time?.slice(0, 5) || '10:00',
+        age: String(ageid), carCategory: String(c.vehiclecategorytypeid ?? 0),
+      })
+      return {
+        name: c.vehiclecategory || 'Similar vehicle',
+        price: `$${Number(c.totalrateafterdiscount).toFixed(2)}`,
+        imageUrl: c.imageurl || undefined,
+        url: `${trackBase}&e=click&s=${encodeURIComponent(search.toString())}`,
+      }
+    })
+    const template = TEMPLATES['quote-alternatives']
+    const data = {
+      customerName: q.customer_first_name || '', vehicleName: q.vehicle_name || 'vehicle',
+      pickupDate: isoToDmy(q.pickup_date), dropoffDate: isoToDmy(q.dropoff_date),
+      reservationRef: q.reservation_reference,
+      vehicleType: isCommercialVehicle(q.vehicle_name || '') ? 'commercial' : 'passenger',
+      alternatives, openPixelUrl: `${trackBase}&e=open`,
+    }
+    const html = await renderAsync(React.createElement(template.component, data))
+    const subject = typeof template.subject === 'function' ? template.subject(data) : template.subject
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${resendApiKey}` },
+      body: JSON.stringify({ from: FROM_EMAIL, to: [q.customer_email], subject, html }),
+    })
+    const rd = await res.json().catch(() => ({}))
+    if (!res.ok) {
+      await admin.from('quote_reminder_log').delete().eq('id', claimed.id)
+      return { error: JSON.stringify(rd) }
+    }
+    await admin.from('quote_reminder_log').update({ email_id: rd.id }).eq('id', claimed.id)
+    return {}
+  }
 
   const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
   let first = true
   for (const q of quotes) {
     const label = { email: q.customer_email, ref: q.booking_reference, vehicle: q.vehicle_name, pickup: q.pickup_date }
+    if (sentKinds.get(q.booking_reference)?.has('alternatives' as ReminderKind)) { skippedNotDue.push(label); continue }
     const kind = reminderDue(today, q.pickup_date, sentKinds.get(q.booking_reference) ?? new Set())
     if (!kind) { skippedNotDue.push(label); continue }
     const template = TEMPLATES[kind === 'final' ? 'quote-final-reminder' : 'quote-reminder']
@@ -186,8 +244,13 @@ Deno.serve(async (req) => {
       // Pace RCM calls — bursts trip its 429 rate limit
       if (!first) await sleep(1000)
       first = false
-      if (!(await quoteStillAvailable(q))) {
-        skippedUnavailable.push(label)
+      const check = await checkQuote(q)
+      if (!check.available) {
+        if (!check.alternatives.length) { skippedUnavailable.push(label); continue }
+        const r = await sendAlternatives(q, check.alternatives, dryRun)
+        if (r.error) errors.push({ ...label, error: r.error })
+        else if (r.claimed === false) skippedNotDue.push({ ...label, reason: 'already claimed' })
+        else sentAlternatives.push({ ...label, kind: 'alternatives', offered: check.alternatives.map((c) => c.vehiclecategory), dryRun })
         continue
       }
       const completeUrl = `${SITE_URL}/complete-booking/${encodeURIComponent(q.reservation_reference!)}`
@@ -250,9 +313,10 @@ Deno.serve(async (req) => {
     quotesFound: quotes.length,
     totalQuotes: allQuotes.length,
     sent: sent.length,
+    sentAlternatives: sentAlternatives.length,
     skippedUnavailable: skippedUnavailable.length,
     skippedNotDue: skippedNotDue.length,
     errors: errors.length,
-    details: { sent, skippedUnavailable, errors },
+    details: { sent, sentAlternatives, skippedUnavailable, errors },
   })
 })
