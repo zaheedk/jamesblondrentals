@@ -28,6 +28,7 @@ const AdminBookings = () => {
   const [bookingsPage, setBookingsPage] = useState(1);
   const [quotesPage, setQuotesPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
+  const [funnelPeriod, setFunnelPeriod] = useState("30");
   const { data: bookings, isLoading, error } = useBookings();
 
   // Fetch which reservation refs have signed agreements
@@ -115,6 +116,38 @@ const AdminBookings = () => {
     
     return matchesSearch;
   }) || [];
+
+  // Booking journey funnel: created -> confirmed -> paid, by creation date
+  const funnel = useMemo(() => {
+    const all = bookings || [];
+    const days = funnelPeriod === "all" ? null : Number(funnelPeriod);
+    const cutoff = days ? Date.now() - days * 24 * 60 * 60 * 1000 : null;
+    const inPeriod = all.filter((b) => !cutoff || (b.created_at && new Date(b.created_at).getTime() >= cutoff));
+
+    const isQuote = (b: (typeof inPeriod)[number]) =>
+      b.booking_status === 'pending' && b.payment_status === 'pending';
+    const isCancelled = (b: (typeof inPeriod)[number]) => b.booking_status === 'cancelled';
+    const isConfirmed = (b: (typeof inPeriod)[number]) => !isQuote(b) && !isCancelled(b);
+    const isPaid = (b: (typeof inPeriod)[number]) =>
+      ['paid', 'succeeded', 'completed'].includes((b.payment_status || '').toLowerCase());
+
+    const created = inPeriod.length;
+    const confirmed = inPeriod.filter(isConfirmed);
+    const paid = confirmed.filter(isPaid);
+    const stillQuotes = inPeriod.filter(isQuote).length;
+    const cancelled = inPeriod.filter(isCancelled).length;
+    const paidValue = paid.reduce((s, b) => s + Number(b.total_amount || 0), 0);
+
+    return {
+      created,
+      confirmed: confirmed.length,
+      paid: paid.length,
+      stillQuotes,
+      cancelled,
+      paidValue,
+      pct: (n: number) => (created ? `${Math.round((n / created) * 100)}%` : "0%"),
+    };
+  }, [bookings, funnelPeriod]);
 
   const quotes = filteredBookings.filter(
     (booking) => booking.booking_status === 'pending' && booking.payment_status === 'pending'
@@ -217,6 +250,58 @@ const AdminBookings = () => {
         <h1 className="text-3xl font-bold mb-2">Quotes & Bookings</h1>
         <p className="text-muted-foreground">Manage and view all customer quotes and bookings</p>
       </div>
+
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <div>
+              <CardTitle>Booking journey funnel</CardTitle>
+              <CardDescription>Quotes created through to confirmed and paid bookings, by date created.</CardDescription>
+            </div>
+            <Select value={funnelPeriod} onValueChange={setFunnelPeriod}>
+              <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="7">Last 7 days</SelectItem>
+                <SelectItem value="30">Last 30 days</SelectItem>
+                <SelectItem value="90">Last 90 days</SelectItem>
+                <SelectItem value="all">All time</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {[
+            { label: "Quotes created", count: funnel.created, prev: null as number | null },
+            { label: "Confirmed", count: funnel.confirmed, prev: funnel.created },
+            { label: "Paid", count: funnel.paid, prev: funnel.confirmed },
+          ].map((s) => {
+            const width = funnel.created ? Math.max((s.count / funnel.created) * 100, s.count > 0 ? 4 : 0) : 0;
+            const stepPct = s.prev ? Math.round((s.count / s.prev) * 100) : null;
+            const dropped = s.prev != null ? s.prev - s.count : 0;
+            return (
+              <div key={s.label}>
+                <div className="flex items-baseline justify-between text-sm mb-1">
+                  <span className="font-medium">{s.label}</span>
+                  <span className="text-muted-foreground">
+                    {s.count} ({funnel.pct(s.count)} of created)
+                    {stepPct != null && ` · ${stepPct}% of previous step`}
+                    {s.prev != null && dropped > 0 && ` · ${dropped} dropped off`}
+                  </span>
+                </div>
+                <div className="h-7 w-full rounded bg-muted overflow-hidden">
+                  <div className="h-full rounded bg-primary transition-all" style={{ width: `${width}%` }} />
+                </div>
+              </div>
+            );
+          })}
+          <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-muted-foreground pt-1">
+            <span>Still open quotes: {funnel.stillQuotes}</span>
+            <span>Cancelled: {funnel.cancelled}</span>
+            <span>Paid value: ${funnel.paidValue.toLocaleString("en-NZ", { maximumFractionDigits: 0 })}</span>
+          </div>
+          <p className="text-xs text-muted-foreground">A quote counts as confirmed once it leaves the pending state; paid means the payment was completed. Recent quotes may still convert, so the latest days always look lower.</p>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>
