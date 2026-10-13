@@ -34,7 +34,9 @@ export function pickAlternatives(
     isAvailable(c) && price(c) > 0 &&
     types.has(String(c.vehiclecategorytypeid)) &&
     !(quoted.vehicleId && String(c.vehiclecategoryid) === String(quoted.vehicleId)) &&
-    norm(c.vehiclecategory) !== norm(quoted.vehicleName ?? ''))
+    norm(c.vehiclecategory) !== norm(quoted.vehicleName ?? '') &&
+    // Tippers are a different job from box trucks — only offer tipper for tipper
+    /tipper/i.test(c.vehiclecategory ?? '') === /tipper/i.test(quoted.vehicleName ?? ''))
   const bigger = candidates.filter((c) => price(c) >= quoted.referencePrice).sort((a, b) => price(a) - price(b))
   const smaller = candidates.filter((c) => price(c) < quoted.referencePrice).sort((a, b) => price(b) - price(a))
   return [...bigger, ...smaller].slice(0, max)
