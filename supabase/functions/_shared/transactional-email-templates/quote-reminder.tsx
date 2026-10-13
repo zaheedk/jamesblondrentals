@@ -1,6 +1,7 @@
 /// <reference types="npm:@types/react@18.3.1" />
 import * as React from 'npm:react@18.3.1'
 import {
+  Img,
   Body, Button, Container, Head, Heading, Html, Preview, Text, Hr, Link, Section,
 } from 'npm:@react-email/components@0.0.22'
 import type { TemplateEntry } from './registry.ts'
@@ -13,13 +14,17 @@ interface QuoteReminderProps {
   totalCost?: string
   reservationRef?: string
   completeUrl?: string
+  /** Tracked redirect used for the button/link href (falls back to completeUrl) */
+  clickUrl?: string
+  /** 1x1 open-tracking image URL */
+  openPixelUrl?: string
   /** 'commercial' for trucks, cargo vans and utes; anything else uses passenger wording */
   vehicleType?: string
 }
 
 const QuoteReminderEmail = ({
   customerName, vehicleName, pickupDate, dropoffDate, totalCost,
-  reservationRef, completeUrl, vehicleType,
+  reservationRef, completeUrl, vehicleType, clickUrl, openPixelUrl,
 }: QuoteReminderProps) => {
   const isCommercial = vehicleType === 'commercial'
   return (
@@ -54,11 +59,11 @@ const QuoteReminderEmail = ({
 
           {completeUrl ? (
             <>
-              <Button style={button} href={completeUrl}>
+              <Button style={button} href={clickUrl || completeUrl}>
                 Confirm my booking
               </Button>
               <Text style={smallText}>If the button doesn't work, copy and paste this link:</Text>
-              <Link href={completeUrl} style={link}>{completeUrl}</Link>
+              <Link href={clickUrl || completeUrl} style={link}>{completeUrl}</Link>
             </>
           ) : null}
 
@@ -80,6 +85,7 @@ const QuoteReminderEmail = ({
             James Blond Rentals · 0800 525 663 · info@jamesblond.co.nz · www.jamesblond.co.nz
             {reservationRef ? ` · Quote ref ${reservationRef}` : ''}
           </Text>
+          {openPixelUrl ? <Img src={openPixelUrl} width="1" height="1" alt="" style={{ display: 'block', border: 0 }} /> : null}
         </Container>
       </Body>
     </Html>
