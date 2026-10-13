@@ -38,6 +38,7 @@ const staffLinks = [
   { to: '/admin/vehicle-rates', label: 'Price Scraping', icon: TrendingUp },
   { to: '/admin/feedback', label: 'Customer Feedback', icon: MessageSquare },
   { to: '/admin/bookings', label: 'All Bookings', icon: Calendar },
+  { to: '/admin/quote-reminders', label: 'Quote Reminders', icon: Bell },
   { to: '/admin/customers', label: 'Customers', icon: Users },
   { to: '/admin/customer-documents', label: 'Verify Documents', icon: IdCard },
   { to: '/admin/import-bookings', label: 'Import Bookings', icon: Upload },
