@@ -24,7 +24,16 @@ Deno.serve(async (req) => {
   }
 
   if (event === 'click') {
-    const dest = REF.test(to) ? `${SITE_URL}/complete-booking/${encodeURIComponent(to)}` : SITE_URL
+    // s=<search query> sends the customer to vehicle search (alternatives email)
+    const search = u.searchParams.get('s')
+    let dest = REF.test(to) ? `${SITE_URL}/complete-booking/${encodeURIComponent(to)}` : SITE_URL
+    if (search) {
+      const allowed = ['pickupLocation', 'dropoffLocation', 'pickupDate', 'dropoffDate', 'pickupTime', 'dropoffTime', 'age', 'carCategory']
+      const src = new URLSearchParams(search)
+      const qs = new URLSearchParams()
+      for (const k of allowed) { const v = src.get(k); if (v && v.length <= 32) qs.set(k, v) }
+      dest = `${SITE_URL}/vehicles?${qs.toString()}`
+    }
     return new Response(null, { status: 302, headers: { Location: dest, 'Cache-Control': 'no-store' } })
   }
   return new Response(GIF, { headers: { 'Content-Type': 'image/gif', 'Cache-Control': 'no-store, max-age=0' } })
