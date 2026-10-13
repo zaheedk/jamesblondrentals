@@ -50,40 +50,47 @@ type QuoteRow = {
   created_at: string
 }
 
-async function rcmAvailableVehicles(q: QuoteRow): Promise<any[]> {
-  const body = JSON.stringify({
-    method: 'vehicles/available',
-    pickupLocationId: q.pickup_location_id,
-    dropoffLocationId: q.dropoff_location_id || q.pickup_location_id,
-    pickupDate: q.pickup_date,
-    dropoffDate: q.dropoff_date,
-    pickupTime: q.pickup_time?.slice(0, 5) || '10:00',
-    dropoffTime: q.dropoff_time?.slice(0, 5) || '10:00',
-  })
+async function rcmPost(body: Record<string, unknown>) {
+  const raw = JSON.stringify(body)
   const res = await fetch(`${RCM_HOST}/booking/v3.2?apikey=${RCM_KEY}`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', signature: await hmacHex(body) },
-    body,
+    headers: { 'Content-Type': 'application/json', signature: await hmacHex(raw) },
+    body: raw,
   })
   const data = await res.json().catch(() => null)
-  if (!res.ok || data?.status !== 'OK') throw new Error(`RCM availability failed: ${res.status}`)
-  const results = data?.results
-  return Array.isArray(results) ? results : (results?.vehicles ?? [])
+  if (!res.ok || data?.status !== 'OK') throw new Error(`RCM ${body.method} failed: ${res.status} ${data?.error ?? ''}`)
+  return data
 }
 
-// A quote is sendable when RCM still offers a vehicle in the quoted category
-// (or with the quoted name) for the quoted dates and location.
-function quoteStillAvailable(q: QuoteRow, vehicles: any[]): boolean {
-  const wantedName = (q.vehicle_name || '').toLowerCase().replace(/\s+/g, ' ').trim()
-  const wantedCat = String(q.vehicle_category || '')
-  return vehicles.some((v) => {
-    if (v?.available === false) return false
-    const vName = String(v?.name ?? v?.vehicledescription1 ?? '').toLowerCase().replace(/\s+/g, ' ').trim()
-    const vCat = String(v?.vehiclecategorytypeid ?? v?.categoryid ?? v?.category ?? '')
-    if (wantedCat && vCat && vCat === wantedCat) return true
-    if (wantedName && vName && (vName.includes(wantedName) || wantedName.includes(vName))) return true
-    return false
+let cachedAgeId: string | number | null = null
+async function defaultAgeId() {
+  if (cachedAgeId != null) return cachedAgeId
+  const s1 = await rcmPost({ method: 'step1' })
+  const ages = s1?.results?.driverages ?? []
+  const def = ages.find((a: any) => a.isdefault) ?? ages[ages.length - 1]
+  if (!def?.id) throw new Error('RCM returned no driver age options')
+  cachedAgeId = def.id
+  return def.id
+}
+
+// A quote is sendable when RCM step2 still shows an available car in the
+// quoted category for the quoted dates and location (available 1 or 2, the
+// same rule the website search uses).
+async function quoteStillAvailable(q: QuoteRow): Promise<boolean> {
+  if (!q.vehicle_category || !q.pickup_location_id) return false
+  const s2 = await rcmPost({
+    method: 'step2',
+    pickuplocationid: q.pickup_location_id,
+    dropofflocationid: q.dropoff_location_id || q.pickup_location_id,
+    pickupdate: isoToDmy(q.pickup_date),
+    pickuptime: q.pickup_time?.slice(0, 5) || '10:00',
+    dropoffdate: isoToDmy(q.dropoff_date),
+    dropofftime: q.dropoff_time?.slice(0, 5) || '10:00',
+    ageid: await defaultAgeId(),
+    vehiclecategorytypeid: q.vehicle_category,
   })
+  const cars = s2?.results?.availablecars ?? []
+  return cars.some((c: any) => c?.available === 1 || c?.available === 2)
 }
 
 Deno.serve(async (req) => {
