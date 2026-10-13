@@ -200,7 +200,9 @@ Deno.serve(async (req) => {
 
   return json({
     dryRun,
+    offset,
     quotesFound: quotes.length,
+    totalQuotes: allQuotes.length,
     sent: sent.length,
     skippedUnavailable: skippedUnavailable.length,
     errors: errors.length,
