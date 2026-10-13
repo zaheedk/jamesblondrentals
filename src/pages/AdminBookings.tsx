@@ -253,6 +253,58 @@ const AdminBookings = () => {
 
       <Card>
         <CardHeader>
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <div>
+              <CardTitle>Booking journey funnel</CardTitle>
+              <CardDescription>Quotes created through to confirmed and paid bookings, by date created.</CardDescription>
+            </div>
+            <Select value={funnelPeriod} onValueChange={setFunnelPeriod}>
+              <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="7">Last 7 days</SelectItem>
+                <SelectItem value="30">Last 30 days</SelectItem>
+                <SelectItem value="90">Last 90 days</SelectItem>
+                <SelectItem value="all">All time</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {[
+            { label: "Quotes created", count: funnel.created, prev: null as number | null },
+            { label: "Confirmed", count: funnel.confirmed, prev: funnel.created },
+            { label: "Paid", count: funnel.paid, prev: funnel.confirmed },
+          ].map((s) => {
+            const width = funnel.created ? Math.max((s.count / funnel.created) * 100, s.count > 0 ? 4 : 0) : 0;
+            const stepPct = s.prev ? Math.round((s.count / s.prev) * 100) : null;
+            const dropped = s.prev != null ? s.prev - s.count : 0;
+            return (
+              <div key={s.label}>
+                <div className="flex items-baseline justify-between text-sm mb-1">
+                  <span className="font-medium">{s.label}</span>
+                  <span className="text-muted-foreground">
+                    {s.count} ({funnel.pct(s.count)} of created)
+                    {stepPct != null && ` · ${stepPct}% of previous step`}
+                    {s.prev != null && dropped > 0 && ` · ${dropped} dropped off`}
+                  </span>
+                </div>
+                <div className="h-7 w-full rounded bg-muted overflow-hidden">
+                  <div className="h-full rounded bg-primary transition-all" style={{ width: `${width}%` }} />
+                </div>
+              </div>
+            );
+          })}
+          <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-muted-foreground pt-1">
+            <span>Still open quotes: {funnel.stillQuotes}</span>
+            <span>Cancelled: {funnel.cancelled}</span>
+            <span>Paid value: ${funnel.paidValue.toLocaleString("en-NZ", { maximumFractionDigits: 0 })}</span>
+          </div>
+          <p className="text-xs text-muted-foreground">A quote counts as confirmed once it leaves the pending state; paid means the payment was completed. Recent quotes may still convert, so the latest days always look lower.</p>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
           <div className="flex items-center gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
