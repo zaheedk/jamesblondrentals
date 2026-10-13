@@ -53,11 +53,16 @@ type QuoteRow = {
 
 async function rcmPost(body: Record<string, unknown>) {
   const raw = JSON.stringify(body)
-  const res = await fetch(`${RCM_HOST}/booking/v3.2?apikey=${RCM_KEY}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', signature: await hmacHex(raw) },
-    body: raw,
-  })
+  let res!: Response
+  for (let attempt = 0; attempt < 4; attempt++) {
+    res = await fetch(`${RCM_HOST}/booking/v3.2?apikey=${RCM_KEY}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', signature: await hmacHex(raw) },
+      body: raw,
+    })
+    if (res.status !== 429) break
+    await new Promise((r) => setTimeout(r, 2000 * (attempt + 1)))
+  }
   const data = await res.json().catch(() => null)
   if (!res.ok || data?.status !== 'OK') throw new Error(`RCM ${body.method} failed: ${res.status} ${data?.error ?? ''}`)
   return data
@@ -179,7 +184,7 @@ Deno.serve(async (req) => {
     const template = TEMPLATES[kind === 'final' ? 'quote-final-reminder' : 'quote-reminder']
     try {
       // Pace RCM calls — bursts trip its 429 rate limit
-      if (!first) await sleep(300)
+      if (!first) await sleep(1000)
       first = false
       if (!(await quoteStillAvailable(q))) {
         skippedUnavailable.push(label)
