@@ -157,7 +157,7 @@ Deno.serve(async (req) => {
     const label = { email: q.customer_email, ref: q.booking_reference, vehicle: q.vehicle_name, pickup: q.pickup_date }
     try {
       // Pace RCM calls — bursts trip its 429 rate limit
-      if (!first) await sleep(1200)
+      if (!first) await sleep(600)
       first = false
       if (!(await quoteStillAvailable(q))) {
         skippedUnavailable.push(label)
