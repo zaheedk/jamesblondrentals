@@ -145,7 +145,8 @@ Deno.serve(async (req) => {
     const email = row.customer_email!.toLowerCase().trim()
     if (!byEmail.has(email)) byEmail.set(email, row)
   }
-  const quotes = [...byEmail.values()].slice(0, limit)
+  const allQuotes = [...byEmail.values()]
+  const quotes = allQuotes.slice(offset, offset + limit)
 
   const template = TEMPLATES['quote-reminder']
   const sent: any[] = []
