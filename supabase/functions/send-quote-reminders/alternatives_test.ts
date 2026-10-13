@@ -31,3 +31,7 @@ Deno.test('cargo vans and large vans are offered for each other', () => {
 Deno.test('quoted vehicle found by name when id differs', () => {
   assertEquals(findQuotedCar(trucks, '999', '3 ton box  16m3')?.vehiclecategoryid, 2)
 })
+Deno.test('tipper is not offered for a box truck quote', () => {
+  const t = [car(2, '3 Ton Box 16m3', 400, 0), car(7, '2 Ton Tipper', 350), car(1, '2 Ton Box', 300)]
+  assertEquals(pickAlternatives(t, quoted).map((c) => c.vehiclecategoryid), [1])
+})
