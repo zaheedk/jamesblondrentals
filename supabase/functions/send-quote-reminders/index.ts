@@ -121,6 +121,7 @@ Deno.serve(async (req) => {
   const body = await req.json().catch(() => ({}))
   const dryRun = body?.dryRun === true
   const limit = Math.min(Math.max(Number(body?.limit) || 100, 1), 200)
+  const offset = Math.max(Number(body?.offset) || 0, 0)
 
   // Pending quotes, more than 2 days old, future pickup
   const cutoff = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
@@ -144,16 +145,22 @@ Deno.serve(async (req) => {
     const email = row.customer_email!.toLowerCase().trim()
     if (!byEmail.has(email)) byEmail.set(email, row)
   }
-  const quotes = [...byEmail.values()].slice(0, limit)
+  const allQuotes = [...byEmail.values()]
+  const quotes = allQuotes.slice(offset, offset + limit)
 
   const template = TEMPLATES['quote-reminder']
   const sent: any[] = []
   const skippedUnavailable: any[] = []
   const errors: any[] = []
 
+  const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
+  let first = true
   for (const q of quotes) {
     const label = { email: q.customer_email, ref: q.booking_reference, vehicle: q.vehicle_name, pickup: q.pickup_date }
     try {
+      // Pace RCM calls — bursts trip its 429 rate limit
+      if (!first) await sleep(300)
+      first = false
       if (!(await quoteStillAvailable(q))) {
         skippedUnavailable.push(label)
         continue
@@ -193,7 +200,9 @@ Deno.serve(async (req) => {
 
   return json({
     dryRun,
+    offset,
     quotesFound: quotes.length,
+    totalQuotes: allQuotes.length,
     sent: sent.length,
     skippedUnavailable: skippedUnavailable.length,
     errors: errors.length,
