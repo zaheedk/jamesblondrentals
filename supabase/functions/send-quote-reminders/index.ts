@@ -7,6 +7,7 @@ import { renderAsync } from 'npm:@react-email/components@0.0.22'
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
 import { TEMPLATES } from '../_shared/transactional-email-templates/registry.ts'
+import { nzToday, reminderDue, type ReminderKind } from './schedule.ts'
 
 const FROM_EMAIL = 'James Blond Rentals <info@jamesblond.co.nz>'
 const SITE_URL = 'https://www.jamesblond.co.nz'
@@ -102,7 +103,12 @@ Deno.serve(async (req) => {
   const admin = createClient(url, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!)
   const batchToken = Deno.env.get('QUOTE_REMINDER_TOKEN')
   const providedToken = req.headers.get('x-quote-reminder-token')
-  const tokenOk = batchToken && providedToken && batchToken === providedToken
+  let tokenOk = !!(batchToken && providedToken && batchToken === providedToken)
+  const cronToken = req.headers.get('x-cron-token')
+  if (!tokenOk && cronToken) {
+    const { data: ok } = await admin.rpc('verify_quote_reminder_cron_token', { _token: cronToken })
+    tokenOk = ok === true
+  }
   if (!tokenOk) {
     const auth = req.headers.get('Authorization')
     if (!auth?.startsWith('Bearer ')) return json({ error: 'Unauthorized' }, 401)
@@ -125,7 +131,7 @@ Deno.serve(async (req) => {
 
   // Pending quotes, more than 2 days old, future pickup
   const cutoff = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
-  const today = new Date().toISOString().slice(0, 10)
+  const today = nzToday()
   const { data: rows, error } = await admin
     .from('bookings')
     .select('id, booking_reference, reservation_reference, customer_first_name, customer_last_name, customer_email, vehicle_name, vehicle_category, pickup_location_id, dropoff_location_id, pickup_date, dropoff_date, pickup_time, dropoff_time, total_amount, created_at')
@@ -148,15 +154,29 @@ Deno.serve(async (req) => {
   const allQuotes = [...byEmail.values()]
   const quotes = allQuotes.slice(offset, offset + limit)
 
-  const template = TEMPLATES['quote-reminder']
+  // Reminders already sent for these quotes (never resend the same kind)
+  const refs = quotes.map((q) => q.booking_reference)
+  const { data: logs } = refs.length
+    ? await admin.from('quote_reminder_log').select('booking_reference, kind').in('booking_reference', refs)
+    : { data: [] as any[] }
+  const sentKinds = new Map<string, Set<ReminderKind>>()
+  for (const l of logs ?? []) {
+    if (!sentKinds.has(l.booking_reference)) sentKinds.set(l.booking_reference, new Set())
+    sentKinds.get(l.booking_reference)!.add(l.kind as ReminderKind)
+  }
+
   const sent: any[] = []
   const skippedUnavailable: any[] = []
+  const skippedNotDue: any[] = []
   const errors: any[] = []
 
   const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
   let first = true
   for (const q of quotes) {
     const label = { email: q.customer_email, ref: q.booking_reference, vehicle: q.vehicle_name, pickup: q.pickup_date }
+    const kind = reminderDue(today, q.pickup_date, sentKinds.get(q.booking_reference) ?? new Set())
+    if (!kind) { skippedNotDue.push(label); continue }
+    const template = TEMPLATES[kind === 'final' ? 'quote-final-reminder' : 'quote-reminder']
     try {
       // Pace RCM calls — bursts trip its 429 rate limit
       if (!first) await sleep(300)
@@ -177,9 +197,18 @@ Deno.serve(async (req) => {
         vehicleType: isCommercialVehicle(q.vehicle_name || '') ? 'commercial' : 'passenger',
       }
       if (dryRun) {
-        sent.push({ ...label, dryRun: true, completeUrl })
+        sent.push({ ...label, kind, dryRun: true, completeUrl })
         continue
       }
+      // Claim the send first so overlapping runs can never double-send
+      const email = q.customer_email!.toLowerCase().trim()
+      const claim = [{ booking_reference: q.booking_reference, customer_email: email, kind }]
+      if (kind === 'final' && !sentKinds.get(q.booking_reference)?.has('first')) {
+        claim.push({ booking_reference: q.booking_reference, customer_email: email, kind: 'first' })
+      }
+      const { error: claimErr } = await admin.from('quote_reminder_log').insert(claim)
+      if (claimErr) { skippedNotDue.push({ ...label, reason: 'already claimed' }); continue }
+
       const html = await renderAsync(React.createElement(template.component, templateData))
       const subject = typeof template.subject === 'function' ? template.subject(templateData) : template.subject
       const resendRes = await fetch('https://api.resend.com/emails', {
@@ -189,10 +218,12 @@ Deno.serve(async (req) => {
       })
       const resendData = await resendRes.json().catch(() => ({}))
       if (!resendRes.ok) {
+        await admin.from('quote_reminder_log').delete().eq('booking_reference', q.booking_reference).in('kind', claim.map((c) => c.kind))
         errors.push({ ...label, error: JSON.stringify(resendData) })
         continue
       }
-      sent.push({ ...label, emailId: resendData.id })
+      await admin.from('quote_reminder_log').update({ email_id: resendData.id }).eq('booking_reference', q.booking_reference).eq('kind', kind)
+      sent.push({ ...label, kind, emailId: resendData.id })
     } catch (e) {
       errors.push({ ...label, error: String(e) })
     }
@@ -205,6 +236,7 @@ Deno.serve(async (req) => {
     totalQuotes: allQuotes.length,
     sent: sent.length,
     skippedUnavailable: skippedUnavailable.length,
+    skippedNotDue: skippedNotDue.length,
     errors: errors.length,
     details: { sent, skippedUnavailable, errors },
   })
