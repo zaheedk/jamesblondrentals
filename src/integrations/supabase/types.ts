@@ -964,6 +964,33 @@ export type Database = {
         }
         Relationships: []
       }
+      quote_reminder_log: {
+        Row: {
+          booking_reference: string
+          customer_email: string
+          email_id: string | null
+          id: string
+          kind: string
+          sent_at: string
+        }
+        Insert: {
+          booking_reference: string
+          customer_email: string
+          email_id?: string | null
+          id?: string
+          kind: string
+          sent_at?: string
+        }
+        Update: {
+          booking_reference?: string
+          customer_email?: string
+          email_id?: string | null
+          id?: string
+          kind?: string
+          sent_at?: string
+        }
+        Relationships: []
+      }
       saved_payment_methods: {
         Row: {
           card_brand: string | null
@@ -1276,6 +1303,10 @@ export type Database = {
           _reservation_reference?: string
         }
         Returns: number
+      }
+      verify_quote_reminder_cron_token: {
+        Args: { _token: string }
+        Returns: boolean
       }
     }
     Enums: {
