@@ -28,6 +28,7 @@ const AdminBookings = () => {
   const [bookingsPage, setBookingsPage] = useState(1);
   const [quotesPage, setQuotesPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
+  const [funnelPeriod, setFunnelPeriod] = useState("30");
   const { data: bookings, isLoading, error } = useBookings();
 
   // Fetch which reservation refs have signed agreements
