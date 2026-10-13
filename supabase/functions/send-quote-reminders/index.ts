@@ -148,8 +148,7 @@ Deno.serve(async (req) => {
   for (const q of quotes) {
     const label = { email: q.customer_email, ref: q.booking_reference, vehicle: q.vehicle_name, pickup: q.pickup_date }
     try {
-      const vehicles = await rcmAvailableVehicles(q)
-      if (!quoteStillAvailable(q, vehicles)) {
+      if (!(await quoteStillAvailable(q))) {
         skippedUnavailable.push(label)
         continue
       }
