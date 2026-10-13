@@ -15,6 +15,7 @@ import { template as feedbackNotification } from './feedback-notification.tsx'
 import { template as rentalAgreementLink } from './rental-agreement-link.tsx'
 import { template as quoteFollowUp } from './quote-follow-up.tsx'
 import { template as quoteReminder } from './quote-reminder.tsx'
+import { template as quoteFinalReminder } from './quote-final-reminder.tsx'
 
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'contact-form-notification': contactFormNotification,
@@ -23,4 +24,5 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'rental-agreement-link': rentalAgreementLink,
   'quote-follow-up': quoteFollowUp,
   'quote-reminder': quoteReminder,
+  'quote-final-reminder': quoteFinalReminder,
 }
