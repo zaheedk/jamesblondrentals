@@ -177,7 +177,7 @@ export default function MemberDashboard() {
               <p className="px-4 pt-5 pb-2 text-[11px] font-semibold uppercase tracking-widest text-white/40">
                 {isAdmin ? 'Admin Tools' : 'Office Tools'}
               </p>
-              <div className="space-y-0.5 max-h-72 overflow-y-auto pr-1">
+              <div className="space-y-0.5 pr-1">
                 {staff.map(l => {
                   const Icon = l.icon;
                   return (
@@ -266,6 +266,30 @@ export default function MemberDashboard() {
               );
             })}
           </div>
+
+          {/* Mobile admin links */}
+          {staff.length > 0 && (
+            <div className="border-b border-border bg-card px-3 py-2 md:hidden">
+              <p className="px-1 pb-1 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+                {isAdmin ? 'Admin Tools' : 'Office Tools'}
+              </p>
+              <div className="flex gap-1.5 overflow-x-auto pb-1">
+                {staff.map(l => {
+                  const Icon = l.icon;
+                  return (
+                    <Link
+                      key={l.to + l.label}
+                      to={l.to}
+                      className="flex items-center gap-1.5 whitespace-nowrap rounded-lg border border-border px-3 py-2 text-sm text-muted-foreground hover:bg-muted"
+                    >
+                      <Icon className="w-4 h-4" />
+                      {l.label}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* Content */}
           <main className="px-4 py-6 md:px-8 md:py-8">
