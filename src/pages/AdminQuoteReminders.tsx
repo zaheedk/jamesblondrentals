@@ -108,6 +108,38 @@ export default function AdminQuoteReminders() {
         ))}
       </div>
 
+      <Card>
+        <CardHeader><CardTitle>Conversion funnel</CardTitle></CardHeader>
+        <CardContent className="space-y-3">
+          {[
+            { label: "Reminders sent", count: total, prev: null as number | null },
+            { label: "Opened", count: opened, prev: total },
+            { label: "Clicked confirm", count: clicked, prev: opened },
+            { label: "Confirmed booking", count: confirmed.length, prev: clicked },
+          ].map((s) => {
+            const width = total ? Math.max((s.count / total) * 100, s.count > 0 ? 4 : 0) : 0;
+            const stepPct = s.prev ? Math.round((s.count / s.prev) * 100) : null;
+            const dropped = s.prev != null ? s.prev - s.count : 0;
+            return (
+              <div key={s.label}>
+                <div className="flex items-baseline justify-between text-sm mb-1">
+                  <span className="font-medium">{s.label}</span>
+                  <span className="text-muted-foreground">
+                    {s.count} ({pct(s.count)} of sent)
+                    {stepPct != null && ` · ${stepPct}% of previous step`}
+                    {s.prev != null && dropped > 0 && ` · ${dropped} dropped off`}
+                  </span>
+                </div>
+                <div className="h-7 w-full rounded bg-muted overflow-hidden">
+                  <div className="h-full rounded bg-primary transition-all" style={{ width: `${width}%` }} />
+                </div>
+              </div>
+            );
+          })}
+          <p className="text-xs text-muted-foreground">Opens are approximate (some email apps block images); clicks and confirmations are exact.</p>
+        </CardContent>
+      </Card>
+
       <div className="flex justify-end">
         <Select value={filter} onValueChange={setFilter}>
           <SelectTrigger className="w-48"><SelectValue /></SelectTrigger>
