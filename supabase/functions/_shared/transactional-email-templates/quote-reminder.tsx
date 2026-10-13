@@ -1,7 +1,7 @@
 /// <reference types="npm:@types/react@18.3.1" />
 import * as React from 'npm:react@18.3.1'
 import {
-  Body, Container, Head, Heading, Html, Preview, Text, Hr, Section,
+  Body, Button, Container, Head, Heading, Html, Preview, Text, Hr, Link, Section,
 } from 'npm:@react-email/components@0.0.22'
 import type { TemplateEntry } from './registry.ts'
 
@@ -11,12 +11,15 @@ interface QuoteReminderProps {
   pickupDate?: string
   dropoffDate?: string
   totalCost?: string
+  reservationRef?: string
+  completeUrl?: string
   /** 'commercial' for trucks, cargo vans and utes; anything else uses passenger wording */
   vehicleType?: string
 }
 
 const QuoteReminderEmail = ({
-  customerName, vehicleName, pickupDate, dropoffDate, totalCost, vehicleType,
+  customerName, vehicleName, pickupDate, dropoffDate, totalCost,
+  reservationRef, completeUrl, vehicleType,
 }: QuoteReminderProps) => {
   const isCommercial = vehicleType === 'commercial'
   return (
@@ -37,22 +40,32 @@ const QuoteReminderEmail = ({
             <Text style={text}>
               If you still need the vehicle for your move or work, we'd love to help you get
               booked in. <strong>Our commercial rates don't change with demand, but availability
-              can become limited.</strong> Your quote does not reserve a vehicle, so please get
-              in touch to check availability and complete your booking.
+              can become limited.</strong> Your quote does not reserve a vehicle, so please
+              confirm it soon to secure it.
             </Text>
           ) : (
             <Text style={text}>
               If you're still planning your trip, we'd love to help you get booked in.{' '}
               <strong>Availability can become limited, and prices can change as demand picks
-              up.</strong> Your quote does not reserve a vehicle, so please get in touch to
-              check availability and complete your booking.
+              up.</strong> Your quote does not reserve a vehicle, so please confirm it soon to
+              secure it.
             </Text>
           )}
 
+          {completeUrl ? (
+            <>
+              <Button style={button} href={completeUrl}>
+                Confirm my booking
+              </Button>
+              <Text style={smallText}>If the button doesn't work, copy and paste this link:</Text>
+              <Link href={completeUrl} style={link}>{completeUrl}</Link>
+            </>
+          ) : null}
+
           <Section style={box}>
             <Text style={boxLine}>
-              <strong>Ready to go ahead?</strong> Reply to this email or call{' '}
-              <strong>0800 525 663</strong>.
+              <strong>Prefer to talk?</strong> Reply to this email or call{' '}
+              <strong>0800 525 663</strong> and we'll finish the booking for you.
             </Text>
             <Text style={boxLine}>
               If your plans have changed or you need different dates or a different-sized
@@ -65,6 +78,7 @@ const QuoteReminderEmail = ({
           <Hr style={hr} />
           <Text style={footer}>
             James Blond Rentals · 0800 525 663 · info@jamesblond.co.nz · www.jamesblond.co.nz
+            {reservationRef ? ` · Quote ref ${reservationRef}` : ''}
           </Text>
         </Container>
       </Body>
@@ -83,6 +97,8 @@ export const template = {
     pickupDate: '20/Oct/2026',
     dropoffDate: '24/Oct/2026',
     totalCost: '$312.00',
+    reservationRef: '0358332E6BC88E0',
+    completeUrl: 'https://www.jamesblond.co.nz/complete-booking/0358332E6BC88E0',
     vehicleType: 'passenger',
   },
 } satisfies TemplateEntry
@@ -91,7 +107,10 @@ const main = { backgroundColor: '#ffffff', fontFamily: "'Segoe UI', Arial, sans-
 const container = { padding: '30px 25px' }
 const h1 = { fontSize: '24px', fontWeight: 'bold' as const, color: '#002244', margin: '0 0 20px' }
 const text = { fontSize: '15px', color: '#334155', lineHeight: '1.6', margin: '0 0 20px' }
-const box = { backgroundColor: '#f8fafc', borderRadius: '8px', padding: '16px 18px', margin: '0 0 24px' }
+const box = { backgroundColor: '#f8fafc', borderRadius: '8px', padding: '16px 18px', margin: '24px 0 24px' }
 const boxLine = { fontSize: '14px', color: '#334155', lineHeight: '1.6', margin: '0 0 10px' }
+const button = { backgroundColor: '#0a7a3b', color: '#ffffff', fontSize: '15px', fontWeight: 'bold' as const, borderRadius: '8px', padding: '14px 28px', textDecoration: 'none' }
+const smallText = { fontSize: '12px', color: '#94a3b8', margin: '20px 0 4px' }
+const link = { fontSize: '12px', color: '#0a7a3b', wordBreak: 'break-all' as const }
 const hr = { border: 'none', borderTop: '1px solid #e2e8f0', margin: '24px 0' }
 const footer = { fontSize: '12px', color: '#94a3b8', margin: '0' }
