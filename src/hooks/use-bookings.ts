@@ -184,3 +184,57 @@ export async function updateBookingPaymentStatus(
     references: uniqueReferences,
   };
 }
+const ADMIN_LIST_COLUMNS = 'id, booking_reference, reservation_reference, customer_first_name, customer_last_name, customer_email, vehicle_name, vehicle_rego, vehicle_category, pickup_date, pickup_time, dropoff_date, dropoff_time, pickup_location_name, total_amount, booking_status, payment_status, created_at, hirer_signature';
+const SEARCH_COLUMNS = ['booking_reference', 'reservation_reference', 'customer_first_name', 'customer_last_name', 'customer_email', 'vehicle_name', 'vehicle_rego', 'pickup_location_name', 'car_id', 'brand', 'agency', 'agent_name', 'rcm_ref_no', 'company_name', 'rcm_customer_id'];
+const sel = (s: string): string => s;
+
+export type AdminBookingRow = Pick<Booking, 'id' | 'booking_reference' | 'reservation_reference' | 'customer_first_name' | 'customer_last_name' | 'customer_email' | 'vehicle_name' | 'vehicle_rego' | 'vehicle_category' | 'pickup_date' | 'pickup_time' | 'dropoff_date' | 'dropoff_time' | 'pickup_location_name' | 'total_amount' | 'booking_status' | 'payment_status' | 'created_at' | 'hirer_signature'>;
+
+/** Loads one page of admin bookings (kind "bookings") or quotes (pending + unpaid) from the server. */
+export function useAdminBookingsPage(kind: 'bookings' | 'quotes', page: number, pageSize: number, search: string) {
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: ['admin-bookings-page', kind, page, pageSize, search],
+    enabled: !!user?.id,
+    placeholderData: (prev) => prev,
+    queryFn: async () => {
+      let q = supabase.from('bookings').select(sel(ADMIN_LIST_COLUMNS), { count: 'exact' });
+      if (kind === 'quotes') {
+        q = q.eq('booking_status', 'pending').eq('payment_status', 'pending');
+      } else {
+        q = q.or('booking_status.neq.pending,payment_status.neq.pending,booking_status.is.null,payment_status.is.null');
+      }
+      const term = search.trim().replace(/[,()*%\\]/g, ' ').trim();
+      if (term) q = q.or(SEARCH_COLUMNS.map((c) => `${c}.ilike.*${term}*`).join(','));
+      const from = (page - 1) * pageSize;
+      const { data, error, count } = await q
+        .order('pickup_date', { ascending: false })
+        .range(from, from + pageSize - 1)
+        .returns<AdminBookingRow[]>();
+      if (error) throw error;
+      return { rows: data || [], count: count || 0 };
+    },
+  });
+}
+
+/** Lightweight rows for the booking journey funnel (only the columns it needs). */
+export function useBookingFunnelRows(periodDays: number | null) {
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: ['admin-booking-funnel', periodDays],
+    enabled: !!user?.id,
+    queryFn: async () => {
+      const rows: Pick<Booking, 'created_at' | 'booking_status' | 'payment_status' | 'total_amount'>[] = [];
+      const cutoff = periodDays ? new Date(Date.now() - periodDays * 86400000).toISOString() : null;
+      for (let from = 0; ; from += 1000) {
+        let q = supabase.from('bookings').select('created_at, booking_status, payment_status, total_amount');
+        if (cutoff) q = q.gte('created_at', cutoff);
+        const { data, error } = await q.order('created_at', { ascending: false }).range(from, from + 999);
+        if (error) throw error;
+        rows.push(...(data || []));
+        if (!data || data.length < 1000) break;
+      }
+      return rows;
+    },
+  });
+}
