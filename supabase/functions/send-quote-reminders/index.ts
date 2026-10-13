@@ -211,8 +211,18 @@ Deno.serve(async (req) => {
       if (kind === 'final' && !sentKinds.get(q.booking_reference)?.has('first')) {
         claim.push({ booking_reference: q.booking_reference, customer_email: email, kind: 'first' })
       }
-      const { error: claimErr } = await admin.from('quote_reminder_log').insert(claim)
+      const { data: claimed, error: claimErr } = await admin.from('quote_reminder_log').insert(claim).select('id, kind')
       if (claimErr) { skippedNotDue.push({ ...label, reason: 'already claimed' }); continue }
+
+      // Open/click tracking tied to this reminder's log row
+      const logId = claimed?.find((c: any) => c.kind === kind)?.id
+      if (logId) {
+        const trackBase = `${url}/functions/v1/quote-reminder-track?id=${logId}`
+        Object.assign(templateData, {
+          openPixelUrl: `${trackBase}&e=open`,
+          clickUrl: `${trackBase}&e=click&to=${encodeURIComponent(q.reservation_reference!)}`,
+        })
+      }
 
       const html = await renderAsync(React.createElement(template.component, templateData))
       const subject = typeof template.subject === 'function' ? template.subject(templateData) : template.subject

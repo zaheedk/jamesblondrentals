@@ -967,26 +967,38 @@ export type Database = {
       quote_reminder_log: {
         Row: {
           booking_reference: string
+          click_count: number
+          clicked_at: string | null
           customer_email: string
           email_id: string | null
           id: string
           kind: string
+          open_count: number
+          opened_at: string | null
           sent_at: string
         }
         Insert: {
           booking_reference: string
+          click_count?: number
+          clicked_at?: string | null
           customer_email: string
           email_id?: string | null
           id?: string
           kind: string
+          open_count?: number
+          opened_at?: string | null
           sent_at?: string
         }
         Update: {
           booking_reference?: string
+          click_count?: number
+          clicked_at?: string | null
           customer_email?: string
           email_id?: string | null
           id?: string
           kind?: string
+          open_count?: number
+          opened_at?: string | null
           sent_at?: string
         }
         Relationships: []
@@ -1293,6 +1305,10 @@ export type Database = {
         Returns: boolean
       }
       is_admin_user: { Args: never; Returns: boolean }
+      track_quote_reminder: {
+        Args: { _event: string; _id: string }
+        Returns: undefined
+      }
       update_booking_payment_status_by_reference: {
         Args: {
           _booking_reference?: string
