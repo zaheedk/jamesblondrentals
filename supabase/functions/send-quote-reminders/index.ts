@@ -96,17 +96,23 @@ async function quoteStillAvailable(q: QuoteRow): Promise<boolean> {
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
 
-  // Admin-only
-  const auth = req.headers.get('Authorization')
-  if (!auth?.startsWith('Bearer ')) return json({ error: 'Unauthorized' }, 401)
+  // Admin-only: either an admin user's session, or the batch token (used by
+  // scheduled/operator-triggered runs).
   const url = Deno.env.get('SUPABASE_URL')!
-  const userClient = createClient(url, Deno.env.get('SUPABASE_ANON_KEY')!, { global: { headers: { Authorization: auth } } })
-  const { data: claims } = await userClient.auth.getClaims(auth.slice(7))
-  const uid = claims?.claims?.sub
-  if (!uid) return json({ error: 'Unauthorized' }, 401)
   const admin = createClient(url, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!)
-  const { data: isAdmin } = await admin.rpc('has_role', { _user_id: uid, _role: 'admin' })
-  if (!isAdmin) return json({ error: 'Forbidden' }, 403)
+  const batchToken = Deno.env.get('QUOTE_REMINDER_TOKEN')
+  const providedToken = req.headers.get('x-quote-reminder-token')
+  const tokenOk = batchToken && providedToken && batchToken === providedToken
+  if (!tokenOk) {
+    const auth = req.headers.get('Authorization')
+    if (!auth?.startsWith('Bearer ')) return json({ error: 'Unauthorized' }, 401)
+    const userClient = createClient(url, Deno.env.get('SUPABASE_ANON_KEY')!, { global: { headers: { Authorization: auth } } })
+    const { data: claims } = await userClient.auth.getClaims(auth.slice(7))
+    const uid = claims?.claims?.sub
+    if (!uid) return json({ error: 'Unauthorized' }, 401)
+    const { data: isAdmin } = await admin.rpc('has_role', { _user_id: uid, _role: 'admin' })
+    if (!isAdmin) return json({ error: 'Forbidden' }, 403)
+  }
 
   const resendApiKey = Deno.env.get('RESEND_API_KEY')
   if (!resendApiKey) return json({ error: 'Email service not configured' }, 500)
