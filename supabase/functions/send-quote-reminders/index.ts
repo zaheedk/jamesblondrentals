@@ -236,6 +236,7 @@ Deno.serve(async (req) => {
     totalQuotes: allQuotes.length,
     sent: sent.length,
     skippedUnavailable: skippedUnavailable.length,
+    skippedNotDue: skippedNotDue.length,
     errors: errors.length,
     details: { sent, skippedUnavailable, errors },
   })
