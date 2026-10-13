@@ -63,6 +63,7 @@ const AdminRentalAgreements = lazyWithRetry(() => import("./pages/AdminRentalAgr
 const AdminBookingImport = lazyWithRetry(() => import("./pages/AdminBookingImport"));
 const AdminInfringements = lazyWithRetry(() => import("./pages/AdminInfringements"));
 const AdminSearchEvents = lazyWithRetry(() => import("./pages/AdminSearchEvents"));
+const AdminQuoteReminders = lazyWithRetry(() => import("./pages/AdminQuoteReminders"));
 const AdminBrokerApi = lazyWithRetry(() => import("./pages/AdminBrokerApi"));
 const AdminVehicles = lazyWithRetry(() => import("./pages/AdminVehicles"));
 const AdminReferenceData = lazyWithRetry(() => import("./pages/AdminReferenceData"));
@@ -330,6 +331,11 @@ const App = () => {
           <Route path="/admin/infringements" element={
             <ProtectedRoute>
               <AdminInfringements />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/quote-reminders" element={
+            <ProtectedRoute>
+              <AdminQuoteReminders />
             </ProtectedRoute>
           } />
           <Route path="/admin/search-events" element={
