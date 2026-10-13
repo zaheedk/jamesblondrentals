@@ -151,9 +151,14 @@ Deno.serve(async (req) => {
   const skippedUnavailable: any[] = []
   const errors: any[] = []
 
+  const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
+  let first = true
   for (const q of quotes) {
     const label = { email: q.customer_email, ref: q.booking_reference, vehicle: q.vehicle_name, pickup: q.pickup_date }
     try {
+      // Pace RCM calls — bursts trip its 429 rate limit
+      if (!first) await sleep(1200)
+      first = false
       if (!(await quoteStillAvailable(q))) {
         skippedUnavailable.push(label)
         continue
