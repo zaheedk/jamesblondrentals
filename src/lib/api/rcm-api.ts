@@ -79,7 +79,7 @@ class RCMApiClient {
 
   // Retries transient edge-runtime failures (502/503/504 or dropped
   // connections) so a brief Supabase outage doesn't break the page.
-  private async fetchProxyWithRetry(method: string, requestBody: any, signature: string, maxAttempts = 3): Promise<Response> {
+  private async fetchProxyWithRetry(method: string, requestBody: any, signature: string, maxAttempts = 4): Promise<Response> {
     let lastError: unknown;
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
@@ -99,7 +99,7 @@ class RCMApiClient {
           lastError = new Error(`Edge function returned ${response.status}`);
           console.warn(`Proxy returned ${response.status} (attempt ${attempt}/${maxAttempts})`);
           if (attempt < maxAttempts) {
-            await new Promise((r) => setTimeout(r, attempt * 600));
+            await new Promise((r) => setTimeout(r, 1000 * 2 ** (attempt - 1)));
             continue;
           }
         }
@@ -108,7 +108,7 @@ class RCMApiClient {
         lastError = err;
         console.warn(`Proxy request failed (attempt ${attempt}/${maxAttempts}):`, err);
         if (attempt < maxAttempts) {
-          await new Promise((r) => setTimeout(r, attempt * 600));
+          await new Promise((r) => setTimeout(r, 1000 * 2 ** (attempt - 1)));
           continue;
         }
         throw err;
@@ -326,7 +326,9 @@ class RCMApiClient {
         throw new Error(`Failed to parse API response: ${parseError instanceof Error ? parseError.message : String(parseError)}`);
       }
     } catch (error) {
-      console.error('RCM API request failed:', error);
+      // Transient outages are retried and handled by callers; warn instead of
+      // error so a brief backend blip doesn't surface as a page crash.
+      console.warn('RCM API request failed:', error);
       
       if (!this.lastRequestDetails.error) {
         this.lastRequestDetails.error = error instanceof Error ? error.message : String(error);
