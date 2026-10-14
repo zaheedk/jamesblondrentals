@@ -1,9 +1,9 @@
 # Roadmap
 
 ## Truck hire nearby and city search
-- [ ] Strengthen the existing national and moving-truck pages for broad and nearby searches
-- [ ] Add accurate collection addresses and related-city links to existing truck pages
-- [ ] Align city and national search descriptions and verify the pages
+- [x] Strengthen the existing national and moving-truck pages for broad and nearby searches
+- [x] Add accurate collection addresses and related-city links to existing truck pages
+- [x] Align city and national search descriptions and verify the pages
 
 ## Truck licence consistency
 - [x] Replace blanket 3-tonne licence claims across pages, FAQs and search descriptions with vehicle-specific guidance
