@@ -1,4 +1,5 @@
 import React from 'react';
+import TruckHireLocations from '@/components/TruckHireLocations';
 import { Link } from 'react-router-dom';
 import { Truck, Home, Box, Package, MapPin, ArrowRight, CheckCircle2, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -13,11 +14,11 @@ const PAGE_URL = `${SITE_URL}/truck-hire`;
 
 const cityLinks = [
   { name: 'Auckland', path: '/auckland-truck-rentals-hire', blurb: 'North Shore to South Auckland — 2-tonne and 3-tonne trucks for house moves and trade jobs.' },
-  { name: 'West Auckland', path: '/west-auckland-truck-rentals-hire', blurb: 'Henderson, Te Atatū and Westgate pickup options for furniture and house moves.' },
+  { name: 'West Auckland', path: '/west-auckland-truck-rentals-hire', blurb: 'Collect in Glen Eden for furniture and house moves around Henderson, Te Atatū and Westgate.' },
   { name: 'Wellington', path: '/truck-hire-wellington', blurb: 'CBD-friendly truck sizes for inner-city apartments, Hutt Valley and Porirua moves.' },
   { name: 'Christchurch', path: '/truck-hire-christchurch', blurb: 'Affordable furniture and moving trucks across greater Christchurch.' },
   { name: 'Central Christchurch', path: '/central-christchurch-truck-hire', blurb: 'Inner-city CBD branch, easy pickup for short urban moves.' },
-  { name: 'Hamilton', path: '/hamilton-truck-rentals-hire', blurb: 'Waikato truck hire for residential, commercial and trade jobs.' },
+  { name: 'Hamilton', path: '/truck-hire-hamilton', blurb: 'Waikato truck hire for residential, commercial and trade jobs.' },
 ];
 
 const truckClasses = [
@@ -91,7 +92,7 @@ const faqs = [
   },
   {
     q: 'Where can I pick up a rental truck near me?',
-    a: 'James Blond has truck rental branches in Auckland (city and West Auckland), Wellington, Christchurch (greater area and central CBD) and Hamilton. Choose the closest branch from our locations list to book.',
+    a: 'Choose Auckland, Wellington, Christchurch or Hamilton, then compare the actual collection address with where you are loading. Our West Auckland collection point is in Glen Eden, Wellington collection is in Te Aro, Christchurch has Waltham and Harewood options, and Hamilton collection is in Frankton. Check your dates for live availability.',
   },
   {
     q: 'Can I hire a truck with a tail lift?',
@@ -141,8 +142,8 @@ const TruckHire = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <PageSEO
-        title="Truck Hire NZ from $35/Hr | Moving & Furniture Trucks — Same-Day"
-        description="Truck hire from $35/hr across Auckland, Wellington, Christchurch & Hamilton. 2-tonne and 3-tonne box, tail-lift and tipper trucks. Car licence for 2-tonne models; confirm 3-tonne requirements."
+        title="Truck Hire NZ | Moving Truck Hire Near You | James Blond"
+        description="Find truck hire near you in Auckland, Wellington, Christchurch and Hamilton. Compare moving trucks, tail lifts and collection locations. Check live availability."
         canonical="/truck-hire"
       />
       <JsonLd data={faqLd} />
@@ -153,8 +154,8 @@ const TruckHire = () => {
       <PageHero
         eyebrow="Truck hire · New Zealand"
         EyebrowIcon={Truck}
-        heading="Truck Hire NZ — Furniture, Moving & Commercial Trucks"
-        intro="James Blond Rentals has affordable truck hire across Auckland, Wellington, Christchurch and Hamilton. Choose from 2-tonne and 3-tonne box trucks, tail-lift trucks and tippers — car licence for 2-tonne models. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking."
+        heading="Truck Hire NZ — Moving Trucks Near You"
+        intro="Looking for truck hire near you? James Blond Rentals offers moving, furniture and commercial truck hire in Auckland, Wellington, Christchurch and Hamilton. Choose from 2-tonne and 3-tonne box trucks, tail-lift trucks and tippers — car licence for 2-tonne models. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking."
         primaryTo="/booking"
         primaryLabel="Book a truck"
         features={[
@@ -196,7 +197,7 @@ const TruckHire = () => {
       {/* Locations */}
       <section className="mb-12">
         <h2 className="text-2xl md:text-3xl font-bold mb-2">Truck Hire Near You</h2>
-        <p className="text-muted-foreground mb-6">Pick the closest James Blond branch for the best rates and easy pickup.</p>
+        <p className="text-muted-foreground mb-6">Choose your city for local truck options, collection details and live quotes for your dates.</p>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {cityLinks.map((c) => (
             <Card key={c.path} className="hover:shadow-lg transition-shadow">
@@ -218,6 +219,8 @@ const TruckHire = () => {
           ))}
         </div>
       </section>
+
+      <TruckHireLocations />
 
       {/* Truck classes */}
       <section className="mb-12 bg-muted/30 rounded-xl p-6 md:p-8">

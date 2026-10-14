@@ -1,5 +1,6 @@
 
 import React from 'react';
+import TruckHireLocations from '@/components/TruckHireLocations';
 import { Truck, Home, Box, Package, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -505,6 +506,8 @@ const WestAucklandTruckRentals = () => {
           ))}
         </div>
       </section>
+
+      <TruckHireLocations city="auckland" />
 
       {/* Related */}
       <section className="mb-12">

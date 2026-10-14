@@ -1,4 +1,5 @@
 import React from 'react';
+import TruckHireLocations from '@/components/TruckHireLocations';
 import RelatedLocations from '@/components/RelatedLocations';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Phone, MapPin } from 'lucide-react';
@@ -124,8 +125,8 @@ const faqJsonLd = {
   return (
     <div className="bg-background text-foreground">
       <PageSEO
-        title="Truck Hire Hamilton from $35/hr — Same-Day Moving Truck Rental"
-        description="Book a moving truck rental in Hamilton from $35/hr. 2-tonne & 3-tonne trucks with tail lifts, same-day pickup, no hidden fees. 3-tonne licence requirements vary by vehicle."
+        title="Truck Hire Hamilton | Moving Trucks in Frankton | James Blond"
+        description="Truck hire in Hamilton with pickup at 17 Bandon Street, Frankton. Compare moving trucks and tail lifts for Waikato house moves and deliveries. Check availability."
         canonical="/truck-hire-hamilton"
       />
       <JsonLd data={faqJsonLd} />
@@ -433,6 +434,8 @@ const faqJsonLd = {
           </div>
         </div>
       </section>
+
+      <div className="container mx-auto px-6"><TruckHireLocations city="hamilton" /></div>
 
       {/* Related Hamilton services — internal linking */}
       <section className="container mx-auto px-6 py-20 border-t border-border">
