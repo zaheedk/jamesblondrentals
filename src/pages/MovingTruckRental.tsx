@@ -11,10 +11,10 @@ const cities = [
 const MovingTruckRental = () => (
   <SimpleHubPage
     slug="/moving-truck-rental"
-    title="Moving Truck Rental NZ from $35/hr — Same-Day Moving Truck Hire"
-    description="Moving truck rental near you from $35/hr. 2-tonne and 3-tonne moving trucks with tail lifts, ramps and tie-down points. Same-day pickup at Auckland, Wellington, Christchurch and Hamilton — 3-tonne licence requirements vary by vehicle."
-    h1="Moving Truck Rental — Same-Day Moving Truck Hire"
-    intro="Renting a moving truck shouldn't take a week of phone calls. James Blond moving trucks come ready to load — tail lift or ramp, tie-down points, blankets available, hourly rates from $35/hr. Our 2-tonne trucks can be driven on a car licence. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking."
+    title="Moving Truck Hire Near You | NZ Truck Rental | James Blond"
+    description="Find moving truck hire near you in Auckland, Wellington, Christchurch and Hamilton. Compare 2-tonne and 3-tonne trucks, tail lifts and local collection options."
+    h1="Moving Truck Hire Near You"
+    intro="Looking for moving truck hire near you? Choose your city, compare truck sizes and check your dates before arranging your move. James Blond moving trucks come ready to load — tail lift or ramp, tie-down points, blankets available, hourly rates from $35/hr. Our 2-tonne trucks can be driven on a car licence. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking."
     bullets={[
       '2-tonne and 3-tonne moving trucks',
       'Tail lifts and ramps available',
@@ -26,6 +26,10 @@ const MovingTruckRental = () => (
     primaryCtaTo="/booking"
     primaryCtaLabel="Book a moving truck"
     cities={cities}
+    sections={[
+      { h2: 'Where can I collect a moving truck near me?', body: 'Auckland customers can collect in Glen Eden; Wellington collection is in Te Aro; Christchurch has Waltham and Harewood collection options; Hamilton collection is in Frankton. Use the city links below for local trucks and booking. Same-day collection depends on availability.', points: ['West Auckland: 4004 Great North Road, Glen Eden', 'Wellington: 24 Abel Smith Street, Te Aro', 'Central Christchurch: 515 Moorhouse Avenue, Waltham', 'Christchurch Airport: 25 Logistics Drive, Harewood', 'Hamilton: 17 Bandon Street, Frankton'] },
+      { h2: 'Choosing a moving truck for your house move', body: 'Compare box volume, load weight and the size of your largest items rather than bedrooms alone. A 12m³ truck can suit a small flat; 16m³ and 18–19m³ options provide more space for larger moves. A tail lift helps with heavy appliances. Confirm the specific 3-tonne truck’s Class 1 or Class 2 licence requirement with the branch before booking.' },
+    ]}
     faq={[
       { q: 'How much does it cost to rent a moving truck in NZ?', a: 'James Blond moving trucks start from $35/hr and around $129/day for a 2-tonne, with 3-tonne and tail-lift trucks slightly higher. Same-day quotes are available from any branch.' },
       { q: 'What size moving truck should I rent?', a: 'For a one-bedroom apartment a 2-tonne 12m³ truck is usually plenty. For a two- or three-bedroom house a 2-tonne 16m³ or 3-tonne 19m³ with tail lift is the right call.' },

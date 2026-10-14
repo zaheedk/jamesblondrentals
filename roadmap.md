@@ -1,5 +1,10 @@
 # Roadmap
 
+## Truck hire nearby and city search
+- [x] Strengthen the existing national and moving-truck pages for broad and nearby searches
+- [x] Add accurate collection addresses and related-city links to existing truck pages
+- [x] Align city and national search descriptions and verify the pages
+
 ## Truck licence consistency
 - [x] Replace blanket 3-tonne licence claims across pages, FAQs and search descriptions with vehicle-specific guidance
 - [x] Verify Auckland and 3-tonne detail pages show consistent guidance

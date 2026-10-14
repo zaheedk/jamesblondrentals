@@ -1,6 +1,7 @@
 import RelatedLocations from '@/components/RelatedLocations';
 
 import React from 'react';
+import TruckHireLocations from '@/components/TruckHireLocations';
 import { Helmet } from 'react-helmet-async';
 import { Truck, Home, Box, Package, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -22,8 +23,8 @@ const WellingtonTruckRentals = () => {
   return (
     <>
       <Helmet>
-        <title>Cheap Truck Hire Wellington — From $35/Hr, No Hidden Fees</title>
-        <meta name="description" content="Compare cheap truck hire prices in Wellington: from $35/hr or $119/day for 2 & 3-tonne trucks with tail lift. Insurance included, no hidden fees. CBD, Lower Hutt, Porirua & Kāpiti pickup — book online in 60 seconds." />
+        <title>Truck Hire Wellington | Moving Trucks in Te Aro | James Blond</title>
+        <meta name="description" content="Truck hire in Wellington with pickup at 24 Abel Smith Street, Te Aro. Moving trucks and tail lifts for CBD, Hutt Valley and Porirua moves. Check live availability." />
         <meta name="keywords" content="truck hire Wellington, truck rental Wellington, moving truck Lower Hutt, truck hire Upper Hutt, truck hire Petone, truck rental Porirua, Kapiti truck hire" />
         <link rel="canonical" href="https://www.jamesblond.co.nz/truck-hire-wellington" />
       </Helmet>
@@ -701,6 +702,8 @@ const WellingtonTruckRentals = () => {
           </div>
         </div>
       </section>
+
+      <TruckHireLocations city="wellington" />
 
       {/* CTA */}
       <section className="mb-12 text-center">

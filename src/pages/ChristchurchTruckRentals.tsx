@@ -1,6 +1,7 @@
 import RelatedLocations from '@/components/RelatedLocations';
 
 import React from 'react';
+import TruckHireLocations from '@/components/TruckHireLocations';
 import { Helmet } from 'react-helmet-async';
 import { Truck, Home, Box, Package, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -20,8 +21,8 @@ const ChristchurchTruckRentals = () => {
   return (
     <>
       <Helmet>
-        <title>Cheapest Truck Hire Christchurch — From $35/Hr, Prices Upfront</title>
-        <meta name="description" content="Cheap truck hire prices in Christchurch: from $35/hr or $119/day for 2 & 3-tonne trucks with tail lift. Insurance included, no hidden fees, same-day pickup — see rates and book online." />
+        <title>Truck Hire Christchurch | Moving Trucks Near You | James Blond</title>
+        <meta name="description" content="Truck hire in Christchurch with collection in Waltham or Harewood. Compare moving trucks and tail lifts for house moves and deliveries. Check your dates online." />
         <meta name="keywords" content="Christchurch truck rentals, moving trucks Christchurch, furniture truck hire, Christchurch moving, truck hire Canterbury" />
         <link rel="canonical" href="https://www.jamesblond.co.nz/truck-hire-christchurch" />
       </Helmet>
@@ -735,6 +736,8 @@ const ChristchurchTruckRentals = () => {
           </div>
         </div>
       </section>
+
+      <TruckHireLocations city="christchurch" />
 
       {/* CTA */}
       <section className="mb-12 text-center">

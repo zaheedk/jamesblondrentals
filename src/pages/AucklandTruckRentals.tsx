@@ -1,6 +1,7 @@
 import RelatedLocations from '@/components/RelatedLocations';
 
 import React from 'react';
+import TruckHireLocations from '@/components/TruckHireLocations';
 import { Truck, Home, Box, Package, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -18,7 +19,7 @@ import { MapPin, Phone, Clock } from 'lucide-react';
 const AucklandTruckRentals = () => {
   return (
     <div className="container mx-auto px-4 py-8">
-      <PageSEO title="Cheapest Truck Hire Auckland from $35/hr — 5 Branches, Same Day" description="Cheap Auckland truck hire from $35/hr or $125/day. 12m³ to 19m³ trucks with 400kg tail lifts for house moves, deliveries and trades. Five branches, vehicle-specific licence requirements, no hidden fees — book online in 2 minutes." canonical="/auckland-truck-rentals-hire" />
+      <PageSEO title="Truck Hire Auckland | Moving Truck Rental Near You | James Blond" description="Truck hire in Auckland for moving house, furniture and deliveries. Compare 12m³ to 19m³ trucks, tail lifts and local collection options. Check live availability." canonical="/auckland-truck-rentals-hire" />
       <JsonLd
         data={{
           '@context': 'https://schema.org',
@@ -572,6 +573,8 @@ const AucklandTruckRentals = () => {
           ))}
         </div>
       </section>
+
+      <TruckHireLocations city="auckland" />
 
       {/* CTA */}
       <section className="mb-12 text-center">
