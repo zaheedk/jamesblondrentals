@@ -14,6 +14,7 @@ import NotFound from "./pages/NotFound";
 import Vehicles from "./pages/Vehicles";
 import VehicleDetail from "./pages/VehicleDetail";
 import Booking from "./pages/Booking";
+import BookAlternative from "./pages/BookAlternative";
 import InsuranceAndExtrasSelection from "./pages/InsuranceAndExtrasSelection";
 import CustomerDetails from "./pages/CustomerDetails";
 import PaymentOptions from "./pages/PaymentOptions";
@@ -252,6 +253,7 @@ const App = () => {
                 <Route path="/vehicles" element={<Vehicles />} />
                 <Route path="/vehicle/:id" element={<VehicleDetail />} />
                 <Route path="/booking" element={<Booking />} />
+                <Route path="/book-alternative" element={<BookAlternative />} />
                 <Route path="/insurance-and-extras" element={<InsuranceAndExtrasSelection />} />
                 <Route path="/customer-details" element={<CustomerDetails />} />
                 <Route path="/payment-options" element={<PaymentOptions />} />
