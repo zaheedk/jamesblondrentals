@@ -44,8 +44,10 @@ const QuoteAlternativesEmail = ({
           ))}
           <Text style={text}>
             {isCommercial
-              ? 'Our commercial rates stay the same, but availability can change quickly, so we recommend booking soon.'
-              : 'Prices can change with demand and vehicles aren’t held until you book, so we recommend booking soon.'}
+              ? 'Our commercial rates stay the same regardless of demand — the main concern is securing availability for your move or work.'
+              : 'Prices can change with demand, so we recommend confirming sooner rather than leaving it until the last minute.'}{' '}
+            Other customers can book these vehicles too, so if you wait too long they may no
+            longer be available.
           </Text>
           <Section style={box}>
             <Text style={boxLine}>

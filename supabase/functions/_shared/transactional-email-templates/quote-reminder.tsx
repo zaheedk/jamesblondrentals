@@ -41,19 +41,22 @@ const QuoteReminderEmail = ({
             quoted total of <strong>{totalCost}</strong>.
           </Text>
 
+          <Text style={text}>
+            Your quoted vehicle was available when we checked just before sending this email,
+            but your quote <strong>does not reserve it</strong>. Other customers can book
+            vehicles for the same dates, so if you wait too long your chosen vehicle may no
+            longer be available. Please confirm your booking soon to avoid missing out.
+          </Text>
+
           {isCommercial ? (
             <Text style={text}>
-              If you still need the vehicle for your move or work, we'd love to help you get
-              booked in. <strong>Our commercial rates don't change with demand, but availability
-              can become limited.</strong> Your quote does not reserve a vehicle, so please
-              confirm it soon to secure it.
+              Our commercial rates stay the same regardless of demand — the main concern is
+              securing availability for your move or work.
             </Text>
           ) : (
             <Text style={text}>
-              If you're still planning your trip, we'd love to help you get booked in.{' '}
-              <strong>Availability can become limited, and prices can change as demand picks
-              up.</strong> Your quote does not reserve a vehicle, so please confirm it soon to
-              secure it.
+              Prices can also change with demand, so we recommend confirming sooner rather than
+              leaving it until the last minute.
             </Text>
           )}
 
@@ -95,7 +98,7 @@ const QuoteReminderEmail = ({
 export const template = {
   component: QuoteReminderEmail,
   subject: (data: Record<string, any>) =>
-    `Your James Blond quote — ${data.vehicleName || 'your vehicle'} from ${data.pickupDate || ''}`,
+    `Your ${data.vehicleName || 'vehicle'} quote — confirm soon to avoid missing out`,
   displayName: 'Quote reminder',
   previewData: {
     customerName: 'Jane',

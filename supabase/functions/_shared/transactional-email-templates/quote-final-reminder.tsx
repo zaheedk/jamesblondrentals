@@ -39,17 +39,20 @@ const QuoteFinalReminderEmail = ({
             <strong>{pickupDate}</strong> and returning <strong>{dropoffDate}</strong>, is still
             open at <strong>{totalCost}</strong> — and the vehicle is still available right now.
           </Text>
+          <Text style={text}>
+            Your quote <strong>does not hold the vehicle</strong>. Other customers can book
+            vehicles for the same dates, so if you wait too long your chosen vehicle may no
+            longer be available.
+          </Text>
           {isCommercial ? (
             <Text style={text}>
-              Our commercial rates stay the same, but with only a few days to go{' '}
-              <strong>availability is tight and the vehicle isn't held for you</strong> until you
-              confirm.
+              Our commercial rates stay the same regardless of demand — the main concern is
+              securing the vehicle for your move or work.
             </Text>
           ) : (
             <Text style={text}>
-              With only a few days to go, <strong>last-minute demand can take the remaining
-              vehicles and lift prices</strong>. Your quote doesn't hold the vehicle until you
-              confirm.
+              Prices can also change with demand, so we recommend confirming now rather than
+              leaving it until the last minute.
             </Text>
           )}
           {completeUrl ? (
