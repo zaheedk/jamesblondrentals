@@ -182,7 +182,6 @@ Deno.serve(async (req) => {
       if (!booked.has(e)) booked.set(e, [])
       booked.get(e)!.push({ created_at: b.created_at, pickup_date: b.pickup_date, ref: b.booking_reference })
     }
-    // also catch emails stored with different casing
   }
   for (const [email, q] of byEmail) {
     const hit = (booked.get(email) ?? []).find((b) => b.created_at >= q.created_at || b.pickup_date >= today)
