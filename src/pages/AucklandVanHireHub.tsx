@@ -60,6 +60,7 @@ const relatedLinks = [
   { label: '12-seater van hire Auckland', to: '/12-seater-van-hire-auckland' },
   { label: 'Auckland Airport minibus rentals', to: '/auckland-airport-minibus-rentals' },
   { label: 'Truck hire Auckland', to: '/auckland-truck-rentals-hire' },
+  { label: 'Truck hire West Auckland', to: '/west-auckland-truck-rentals-hire' },
   { label: 'Car hire Auckland', to: '/car-hire-auckland' },
   { label: 'Van hire Wellington', to: '/van-hire-wellington' },
   { label: 'Van hire Christchurch', to: '/van-hire-christchurch' },
