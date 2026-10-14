@@ -263,7 +263,7 @@ const faqData = [
     question: "Do I need a special driver's licence to rent a truck or van?",
     answer: (
       <>
-        No, you don't need a special licence. A full NZ or overseas driver's licence is all you need to hire and drive our trucks and vans.
+        Our vans and 2-tonne trucks can be driven on a full Class 1 car licence or an accepted overseas equivalent. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking.
       </>
     ),
   },
@@ -271,7 +271,7 @@ const faqData = [
     question: "Is there anything special I need to know before driving a truck?",
     answer: (
       <>
-        While no special licence is needed, trucks are larger and higher than cars. Always watch your overhead clearance, take wider turns, and allow more braking distance.
+        Make sure you hold the correct licence for your allocated vehicle. Trucks are larger and higher than cars. Always watch your overhead clearance, take wider turns, and allow more braking distance.
       </>
     ),
   },
@@ -416,7 +416,7 @@ const FAQ = () => (
           { q: "What is your cancellation policy?", a: "Contact us as soon as possible to cancel or change a booking. Cancellations less than 24 hours in advance may incur charges." },
           { q: "What about insurance?", a: "All hires include standard insurance with an excess starting at $2,000. Optional excess reduction is available during booking." },
           { q: "Do you provide one-way hires?", a: "Yes. Select pickup and drop-off locations on the booking page to see applicable one-way fees." },
-          { q: "Do I need a special licence to rent a truck or van?", a: "No, a full NZ or overseas driver's licence is all you need to hire and drive our trucks and vans." },
+          { q: "Do I need a special licence to rent a truck or van?", a: "Our vans and 2-tonne trucks can be driven on a full Class 1 car licence or an accepted overseas equivalent. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking." },
           { q: "Are Road User Charges (RUCs) included?", a: "Yes, all RUCs are included in pricing — the price you see is the price you pay." },
           { q: "How do I book a vehicle?", a: "Book online via jamesblond.co.nz or call 0800 525 663." },
         ].map(({ q, a }) => ({

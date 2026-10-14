@@ -45,7 +45,7 @@ const trucks = [
     img: '/lovable-uploads/e4f29c45-82c9-460d-a508-4abd64ca9dd4.png',
     blurb:
       'Our largest mover. Family homes, country relocations and commercial moves from Hamilton to Auckland, Tauranga or Wellington — all in a single load.',
-    spec: '4800 × 2100 × 2100 mm · Class 2',
+    spec: '4800 × 2100 × 2100 mm · Licence varies by vehicle — confirm with branch',
   },
 ];
 
@@ -59,7 +59,7 @@ const faqJsonLd = {
         name: 'Do I need a special licence to hire a truck in Hamilton?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'A standard New Zealand car (Class 1) licence is enough for all of our 2-tonne trucks. A Class 2 (HT) licence is required for the 3-tonne truck.',
+          text: 'A standard New Zealand car (Class 1) licence is enough for all of our 2-tonne trucks. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking.',
         },
       },
       {
@@ -125,7 +125,7 @@ const faqJsonLd = {
     <div className="bg-background text-foreground">
       <PageSEO
         title="Truck Hire Hamilton from $35/hr — Same-Day Moving Truck Rental"
-        description="Book a moving truck rental in Hamilton from $35/hr. 2-tonne & 3-tonne trucks with tail lifts, same-day pickup, no hidden fees. Drive on a car licence."
+        description="Book a moving truck rental in Hamilton from $35/hr. 2-tonne & 3-tonne trucks with tail lifts, same-day pickup, no hidden fees. 3-tonne licence requirements vary by vehicle."
         canonical="/truck-hire-hamilton"
       />
       <JsonLd data={faqJsonLd} />

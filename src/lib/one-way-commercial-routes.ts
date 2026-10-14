@@ -131,13 +131,13 @@ export const variantConfig: Record<CommercialVariant, {
     fleetPath: '/fleet/trucks',
     fromPrice: '$129/day',
     intro:
-      "One-way truck hire moves your household or business between our branches without you paying for the empty return leg. Choose from 2-tonne 12–16m³ box trucks, 3-tonne 19m³ furniture trucks and tail-lift models — all automatic and driveable on a standard car licence.",
+      "One-way truck hire moves your household or business between our branches without you paying for the empty return leg. Choose from 2-tonne 12–16m³ box trucks, 3-tonne 19m³ furniture trucks and tail-lift models — all automatic. Car licence for 2-tonne models. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking.",
     vehicleBullets: [
       '2-tonne 12m³ box truck — small 1–2 bedroom moves',
       '2-tonne 16m³ box truck — full 2 bedroom moves',
       '3-tonne 19m³ furniture truck — 3+ bedroom moves',
       'Tail-lift options — heavy appliances, no ramp lifting',
-      'All automatic, car licence, GPS included',
+      'All automatic, GPS included; confirm 3-tonne licence requirements',
     ],
   },
   van: {

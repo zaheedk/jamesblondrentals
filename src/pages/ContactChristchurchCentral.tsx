@@ -97,7 +97,7 @@ const ContactChristchurchCentral = () => {
         Looking for a rental vehicle? <Link to="/car-hire-christchurch" className="text-primary hover:underline font-medium">Explore our Christchurch car hire range</Link> — cars, SUVs, vans and trucks.
       </p>
       <p className="text-center text-gray-600 mb-8 max-w-2xl mx-auto">
-        Moving house from the central city? See our <Link to="/truck-hire-christchurch" className="text-primary hover:underline font-medium">truck hire Christchurch</Link> options — 2-tonne and 3-tonne moving trucks, drive on a car licence.
+        Moving house from the central city? See our <Link to="/truck-hire-christchurch" className="text-primary hover:underline font-medium">truck hire Christchurch</Link> options — 2-tonne and 3-tonne moving trucks. Car licence for 2-tonne models. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking.
       </p>
       
       <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">

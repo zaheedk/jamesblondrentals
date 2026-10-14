@@ -33,7 +33,7 @@ const baseFaqs = [
   {
     question: 'Do I need a special licence?',
     answer:
-      'No. Every van and the 2-tonne and 3-tonne trucks in our Wellington fleet are automatic and can be driven on a standard New Zealand Class 1 car licence — no truck endorsement required.',
+      'Our vans and 2-tonne trucks can be driven on a standard New Zealand Class 1 car licence. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking.',
   },
   {
     question: 'Is there a one-way drop-off available?',
@@ -304,7 +304,7 @@ export const wellingtonVanTruckPages: WellingtonSubPage[] = [
       {
         question: 'Can I drive a small truck on a car licence in New Zealand?',
         answer:
-          'Yes. Our 2-tonne and 3-tonne box trucks are under 6,000 kg GVM, so they\'re drivable on a standard Class 1 car licence with no truck endorsement required.',
+          'Our 2-tonne trucks can be driven on a standard Class 1 car licence. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking.',
       },
       {
         question: 'What size small truck do I need?',
@@ -324,7 +324,7 @@ export const wellingtonVanTruckPages: WellingtonSubPage[] = [
     kind: 'truck',
     metaTitle: 'Moving Truck Hire Wellington — Box Trucks for House Moves',
     metaDescription:
-      'Moving truck hire in Wellington for one, two and three-bedroom house moves. 2 and 3 tonne box trucks, tail lifts available, car licence only. From $129/day.',
+      'Moving truck hire in Wellington for one, two and three-bedroom house moves. 2 and 3 tonne box trucks, tail lifts available. 3-tonne licence requirements vary by vehicle. From $129/day.',
     eyebrow: 'Wellington · Moving Truck',
     h1: 'Moving Truck Hire in Wellington',
     intro:
@@ -356,7 +356,7 @@ export const wellingtonVanTruckPages: WellingtonSubPage[] = [
     ],
     bodyParagraphs: [
       'Wellington moves test a truck. Steep driveways in Kelburn, tight terraces in Mt Vic, weather that turns on a dime — you want a truck that\'s easy to handle, easy to park, and sized for the actual job. Our moving truck range covers everything from a studio shift to a three-bedroom family move.',
-      'All trucks are automatic, drive on a Class 1 car licence and can be picked up from our Te Aro branch. Add a hand trolley, ratchet straps and moving blankets at checkout, and book a tail-lift truck if you\'re dealing with apartments or heavy white-ware.',
+      'All trucks are automatic and can be picked up from our Te Aro branch. Car licence for 2-tonne models. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking. Add a hand trolley, ratchet straps and moving blankets at checkout, and book a tail-lift truck if you\'re dealing with apartments or heavy white-ware.',
     ],
   },
   {
@@ -365,11 +365,11 @@ export const wellingtonVanTruckPages: WellingtonSubPage[] = [
     kind: 'truck',
     metaTitle: 'Furniture Truck Hire Wellington — Box Trucks with Hand Trolleys',
     metaDescription:
-      'Furniture truck hire in Wellington. Box trucks from 12 m³ to 19 m³, walk-through cargo, hand trolleys and moving blankets available. Car licence only.',
+      'Furniture truck hire in Wellington. Box trucks from 12 m³ to 19 m³, walk-through cargo, hand trolleys and moving blankets available. Confirm the licence required for your selected truck.',
     eyebrow: 'Wellington · Furniture Truck',
     h1: 'Furniture Truck Hire in Wellington',
     intro:
-      'Bought a sofa from a Wellington warehouse, picked up a dining suite from Trade Me, or clearing out a parents\' place in Khandallah? Our furniture trucks make the job a one-trip job — and you can drive them on your car licence.',
+      'Bought a sofa from a Wellington warehouse, picked up a dining suite from Trade Me, or clearing out a parents\' place in Khandallah? Our furniture trucks make the job a one-trip job — with car-licence options for 2-tonne models. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking.',
     heroImage: couplemoving,
     heroAlt: 'Furniture truck loaded for a Wellington pickup',
     fromPrice: '$129',
@@ -397,7 +397,7 @@ export const wellingtonVanTruckPages: WellingtonSubPage[] = [
     ],
     bodyParagraphs: [
       'Furniture is the most common reason Wellingtonians hire a truck for the day. A new sofa from a Tory Street warehouse, a Trade Me dining suite in Petone, a wardrobe pickup from a friend in Newtown — it almost always needs more than a car can carry, but rarely needs a removalist.',
-      'Our 2-tonne and 3-tonne box trucks are sized for exactly that job, and the tail-lift option turns the heavy items into a one-person job. All drivable on a Class 1 car licence.',
+      'Our 2-tonne and 3-tonne box trucks are sized for exactly that job, and the tail-lift option turns the heavy items into a one-person job. Car licence for 2-tonne models. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking.',
     ],
   },
   {
@@ -406,7 +406,7 @@ export const wellingtonVanTruckPages: WellingtonSubPage[] = [
     kind: 'truck',
     metaTitle: 'Truck Hire Lower Hutt — Moving & Furniture Trucks from Wellington',
     metaDescription:
-      'Truck hire serving Lower Hutt, Petone and the Hutt Valley. 2 and 3 tonne box trucks from our Wellington Te Aro branch — car licence drives.',
+      'Truck hire serving Lower Hutt, Petone and the Hutt Valley. 2 and 3 tonne box trucks from our Wellington Te Aro branch — car licence for 2-tonne models; confirm 3-tonne requirements.',
     eyebrow: 'Hutt Valley · Lower Hutt',
     h1: 'Truck Hire in Lower Hutt',
     intro:
@@ -432,7 +432,7 @@ export const wellingtonVanTruckPages: WellingtonSubPage[] = [
       {
         question: 'Can I drive your trucks on a car licence?',
         answer:
-          'Yes. Our 2-tonne and 3-tonne box trucks are under 6,000 kg GVM and drive on a standard Class 1 car licence.',
+          'Our 2-tonne trucks can be driven on a standard Class 1 car licence. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking.',
       },
       ...baseFaqs,
     ],
@@ -447,7 +447,7 @@ export const wellingtonVanTruckPages: WellingtonSubPage[] = [
     kind: 'truck',
     metaTitle: 'Truck Hire Porirua — Moving Trucks from Wellington',
     metaDescription:
-      'Truck hire for Porirua, Tawa, Whitby and Cannons Creek. 2 and 3 tonne box trucks from our Wellington Te Aro branch — car licence only.',
+      'Truck hire for Porirua, Tawa, Whitby and Cannons Creek. 2 and 3 tonne box trucks from our Wellington Te Aro branch — car licence for 2-tonne models; confirm 3-tonne requirements.',
     eyebrow: 'Wellington Region · Porirua',
     h1: 'Truck Hire in Porirua',
     intro:
@@ -474,7 +474,7 @@ export const wellingtonVanTruckPages: WellingtonSubPage[] = [
     ],
     bodyParagraphs: [
       'Porirua keeps adding new homes, new families and new moving jobs to the calendar — and SH1 puts our Wellington truck fleet within easy reach. Most Porirua moves fit a 2-tonne box truck; family moves and bigger subdivisions step up to the 3-tonne range.',
-      'All trucks drive on a Class 1 car licence and can be picked up from our Te Aro branch.',
+      'Our trucks can be picked up from our Te Aro branch. Car licence for 2-tonne models. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking.',
     ],
   },
 ];

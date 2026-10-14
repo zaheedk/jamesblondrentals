@@ -114,7 +114,7 @@ Headlines: max 30 chars · Descriptions: max 90 chars. All counts verified ≤ l
 2. Moving Truck Hire $35/Hr
 3. 2 & 3 Tonne Box Trucks
 4. Tail-Lift Trucks Available
-5. Drive on a Car Licence
+5. 2-Tonne Car Licence Options
 6. Same-Day Truck Pickup
 7. Auckland Wellington Chch
 8. Auto Trucks Available
@@ -127,7 +127,7 @@ Headlines: max 30 chars · Descriptions: max 90 chars. All counts verified ≤ l
 15. Call James Blond Today
 
 ### Descriptions (4)
-1. Moving trucks from $35/hr — 9m³, 12m³, 16m³, 19m³ box trucks. Drive on a car licence.
+1. Moving trucks from $35/hr. Car licence for 2-tonne trucks; confirm 3-tonne requirements.
 2. Auto trucks with tail lift, perfect for furniture moves. Same-day pickup nationwide.
 3. Auckland, Wellington, Christchurch & Hamilton. Local branches, friendly local team.
 4. Transparent pricing, no hidden fees. Book in 60 seconds online or call us today.

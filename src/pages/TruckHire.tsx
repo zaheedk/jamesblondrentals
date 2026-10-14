@@ -83,7 +83,7 @@ const faqs = [
   },
   {
     q: 'Do I need a special licence to drive a hire truck?',
-    a: 'Most of our 2-tonne box trucks and tippers can be driven on a standard NZ Class 1 car licence. The largest 3-tonne trucks may require a Class 2 licence depending on gross vehicle mass — our team will confirm when you book.',
+    a: 'Most of our 2-tonne box trucks and tippers can be driven on a standard NZ Class 1 car licence. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking.',
   },
   {
     q: 'How much can a 4.2m / 12m³ truck fit?',
@@ -142,7 +142,7 @@ const TruckHire = () => {
     <div className="container mx-auto px-4 py-8">
       <PageSEO
         title="Truck Hire NZ from $35/Hr | Moving & Furniture Trucks — Same-Day"
-        description="Truck hire from $35/hr across Auckland, Wellington, Christchurch & Hamilton. 2-tonne and 3-tonne box, tail-lift and tipper trucks. Drive on a car licence. Book online."
+        description="Truck hire from $35/hr across Auckland, Wellington, Christchurch & Hamilton. 2-tonne and 3-tonne box, tail-lift and tipper trucks. Car licence for 2-tonne models; confirm 3-tonne requirements."
         canonical="/truck-hire"
       />
       <JsonLd data={faqLd} />
@@ -154,7 +154,7 @@ const TruckHire = () => {
         eyebrow="Truck hire · New Zealand"
         EyebrowIcon={Truck}
         heading="Truck Hire NZ — Furniture, Moving & Commercial Trucks"
-        intro="James Blond Rentals has affordable truck hire across Auckland, Wellington, Christchurch and Hamilton. Choose from 2-tonne and 3-tonne box trucks, tail-lift trucks and tippers — drive on a standard car licence on most models."
+        intro="James Blond Rentals has affordable truck hire across Auckland, Wellington, Christchurch and Hamilton. Choose from 2-tonne and 3-tonne box trucks, tail-lift trucks and tippers — car licence for 2-tonne models. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking."
         primaryTo="/booking"
         primaryLabel="Book a truck"
         features={[

@@ -53,7 +53,7 @@ const OneWayCommercialRoutePage: React.FC<Props> = ({ variant }) => {
       {
         '@type': 'Question',
         name: `Do I need a special licence?`,
-        acceptedAnswer: { '@type': 'Answer', text: `No. Every ${label.toLowerCase()} in our fleet — including our largest 3-tonne 19m³ furniture trucks — is driveable on a standard NZ Class 1 car licence or equivalent overseas licence. All vehicles are automatic.` },
+        acceptedAnswer: { '@type': 'Answer', text: `Our vans and 2-tonne trucks can be driven on a standard NZ Class 1 car licence or an accepted overseas equivalent. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking. All vehicles are automatic.` },
       },
     ],
   };

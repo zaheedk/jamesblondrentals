@@ -206,7 +206,7 @@ const TwoTonneTipperDetail = () => {
             <div>
               <h3 className="font-bold text-lg">Do I need a special licence to drive a tipper truck in Hamilton?</h3>
               <p className="text-gray-700">
-                No — our 2-tonne tipper trucks can be driven on a standard car licence in Hamilton and all other NZ locations. For larger 3-tonne trucks, a Class-2 (HT) licence is required. See our <Link to="/hamilton-truck-rentals" className="text-primary hover:underline">Hamilton truck hire page</Link> for more details.
+                No — our 2-tonne tipper trucks can be driven on a standard car licence in Hamilton and all other NZ locations. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking. See our <Link to="/hamilton-truck-rentals" className="text-primary hover:underline">Hamilton truck hire page</Link> for more details.
               </p>
             </div>
           </div>

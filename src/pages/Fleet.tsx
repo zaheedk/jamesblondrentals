@@ -17,7 +17,7 @@ const fleetLinks = [
 const fleetCategories = [
   {
     title: "🚚 Trucks & Moving Vans",
-    description: "From compact 2-ton trucks to powerful 6-ton curtain siders with tail lifts, our truck selection is ideal for house moves, furniture transport, or commercial deliveries. All our moving trucks can be driven on a standard car licence, and we offer options with trolleys, blankets, and tie-downs for added convenience."
+    description: "From compact 2-ton trucks to powerful 6-ton curtain siders with tail lifts, our truck selection is ideal for house moves, furniture transport, or commercial deliveries. Our 2-tonne trucks can be driven on a car licence. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking. We offer options with trolleys, blankets, and tie-downs for added convenience."
   },
   {
     title: "🚐 Vans & Minibuses",
