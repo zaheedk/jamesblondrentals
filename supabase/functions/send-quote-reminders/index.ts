@@ -175,7 +175,7 @@ Deno.serve(async (req) => {
     const { data: other } = await admin
       .from('bookings')
       .select('customer_email, created_at, pickup_date, booking_reference, booking_status')
-      .or(chunk.map((e) => `customer_email.ilike.${e.replace(/[,()%_*]/g, '')}`).join(','))
+      .or(chunk.map((e) => `customer_email.ilike.${e.replace(/[,()%*]/g, '')}`).join(','))
       .not('booking_status', 'in', '("pending","cancelled","Cancelled","test1","test2")')
     for (const b of other ?? []) {
       const e = String(b.customer_email).toLowerCase().trim()
