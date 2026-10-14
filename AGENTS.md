@@ -1,5 +1,7 @@
 # Project Architecture Rules
 
+- Truck-hire hubs and city pages reuse TruckHireLocations for collection addresses and city links; this keeps nearby-search content consistent without changing live RCM search or inventing additional branches.
+
 - The Hamilton vehicle-hire hub reuses SearchForm with explicit branch defaults via the shared search-location-default helper and links to existing category pages; this keeps its search local without changing other forms' saved-location behaviour or live RCM quoting.
 
 - Vehicle search display uses shared availability and ordering helpers; the originating search page travels in the URL so Wellington van intent survives navigation without changing RCM pricing or availability.
