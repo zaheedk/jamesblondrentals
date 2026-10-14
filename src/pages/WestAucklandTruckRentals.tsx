@@ -22,7 +22,7 @@ const truckPrices = [
 
 const sizeGuide = [
   { load: 'Single items, a sofa or fridge, a studio or 1-bedroom flat', truck: '2T Box (12m³)' },
-  { load: 'Heavy appliances, washing machine, piano-free 1–2 bedroom moves', truck: '2T Box + Tail Lift (12m³)' },
+  { load: 'Heavy appliances or a 1–2 bedroom flat', truck: '2T Box + Tail Lift (12m³)' },
   { load: '2–3 bedroom house', truck: '2T Box (16m³)' },
   { load: '3–4 bedroom house or office relocation', truck: '3T Box + Tail Lift (18–19m³)' },
   { load: 'Garden waste, soil, gravel, building rubbish', truck: '2T Tipper' },
