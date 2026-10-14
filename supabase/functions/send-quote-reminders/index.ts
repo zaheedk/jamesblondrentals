@@ -165,6 +165,32 @@ Deno.serve(async (req) => {
     const email = row.customer_email!.toLowerCase().trim()
     if (!byEmail.has(email)) byEmail.set(email, row)
   }
+  // Skip customers who already booked (via another quote or directly):
+  // any non-pending booking made since this quote, or with an upcoming pickup.
+  const skippedAlreadyBooked: any[] = []
+  const emails = [...byEmail.keys()]
+  const booked = new Map<string, { created_at: string; pickup_date: string; ref: string }[]>()
+  for (let i = 0; i < emails.length; i += 100) {
+    const chunk = emails.slice(i, i + 100)
+    const { data: other } = await admin
+      .from('bookings')
+      .select('customer_email, created_at, pickup_date, booking_reference, booking_status')
+      .in('customer_email', chunk)
+      .not('booking_status', 'in', '("pending","cancelled","Cancelled","test1","test2")')
+    for (const b of other ?? []) {
+      const e = String(b.customer_email).toLowerCase().trim()
+      if (!booked.has(e)) booked.set(e, [])
+      booked.get(e)!.push({ created_at: b.created_at, pickup_date: b.pickup_date, ref: b.booking_reference })
+    }
+    // also catch emails stored with different casing
+  }
+  for (const [email, q] of byEmail) {
+    const hit = (booked.get(email) ?? []).find((b) => b.created_at >= q.created_at || b.pickup_date >= today)
+    if (hit) {
+      skippedAlreadyBooked.push({ email, ref: q.booking_reference, bookedRef: hit.ref })
+      byEmail.delete(email)
+    }
+  }
   const allQuotes = [...byEmail.values()]
   const quotes = allQuotes.slice(offset, offset + limit)
 
