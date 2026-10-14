@@ -9,23 +9,59 @@ import { Link } from 'react-router-dom';
 import familyUnloadingTruck from '@/assets/family-unloading-removal-truck.jpg';
 import familyUnpacking from '@/assets/family-unpacking-moving-truck.jpg';
 import PageSEO from '@/components/PageSEO';
+import JsonLd from '@/components/JsonLd';
+
+// Prices mirror the /price-guide truck table (NZD inc. GST, plus $/km on hourly/daily hires).
+const truckPrices = [
+  { name: '2T Box (12m³)', size: '3 x 1.6 x 1.8m', hours: '$70', day: '$125', km: '$0.42', slug: '/fleet/trucks/2-tonne-box-12m3' },
+  { name: '2T Box + Tail Lift (12m³)', size: '3.1 x 1.8 x 2m', hours: '$80', day: '$140', km: '$0.44', slug: '/fleet/trucks/2-tonne-box-12m3-tail' },
+  { name: '2T Box (16m³)', size: '4 x 2 x 2m', hours: '$80', day: '$130', km: '$0.47', slug: '/fleet/trucks/2-tonne-box-16m3' },
+  { name: '3T Box + Tail Lift (18–19m³)', size: '4.5 x 2 x 2m', hours: '$100', day: '$160', km: '$0.61', slug: '/fleet/trucks/3-tonne-box-19m3' },
+  { name: '2T Tipper', size: '3.1 x 1.6m tray', hours: '$70', day: '$115', km: '$0.39', slug: '/fleet/trucks/2-tonne-tipper' },
+];
+
+const sizeGuide = [
+  { load: 'Single items, a sofa or fridge, a studio or 1-bedroom flat', truck: '2T Box (12m³)' },
+  { load: 'Heavy appliances or a 1–2 bedroom flat', truck: '2T Box + Tail Lift (12m³)' },
+  { load: '2–3 bedroom house', truck: '2T Box (16m³)' },
+  { load: '3–4 bedroom house or office relocation', truck: '3T Box + Tail Lift (18–19m³)' },
+  { load: 'Garden waste, soil, gravel, building rubbish', truck: '2T Tipper' },
+];
+
+const faqs = [
+  { q: 'How much does truck hire cost in Auckland?', a: 'Truck hire from our West Auckland branch starts at $70 for up to 4 hours or $125 per day for a 2-tonne 12m³ box truck, plus a per-km charge. Hire Monday to Thursday and save 50% on trucks with our midweek deal. See the price guide for every size.' },
+  { q: 'Do I need a special licence to drive your trucks?', a: 'Our 2-tonne trucks can be driven on a standard New Zealand car licence. The 3-tonne 19m³ truck requires a Class 2 (HT) licence.' },
+  { q: 'What size truck do I need to move house?', a: 'A 2-tonne 12m³ truck suits a studio or 1-bedroom flat, a 16m³ truck suits a 2–3 bedroom house, and the 3-tonne 18–19m³ tail-lift truck suits a 3–4 bedroom house. Use our moving cost calculator for an estimate.' },
+  { q: 'Can I hire a truck by the hour?', a: 'Yes. Short hires are charged in 2, 4 and 8 hour blocks, so a quick furniture pick-up costs far less than a full day.' },
+  { q: 'Do you offer one-way truck hire from Auckland?', a: 'Yes, one-way truck hire between James Blond branches is available on request — see our one-way truck hire page.' },
+  { q: 'Where is your West Auckland branch?', a: 'Our branch is at 4004 Great North Road, Glen Eden, close to Henderson, New Lynn, Kelston, Avondale and Titirangi.' },
+  { q: 'How far in advance should I book?', a: 'Book at least 7 days ahead for weekend and month-end moves, especially in summer. Midweek dates usually have better availability.' },
+  { q: 'Do you rent moving accessories?', a: 'Yes. Hand trolleys, furniture blankets and straps can be added during booking.' },
+];
+
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+};
 
 
 const WestAucklandTruckRentals = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <PageSEO
-        title="Truck Hire West Auckland from $35/hr — Moving Truck Rental Near You"
-        description="Truck rental & hire in West Auckland from $35/hr — Henderson, New Lynn, Swanson, Waitakere, Lower Hutt-style suburbs. Same-day moving truck pickup, drive on a car licence."
+        title="Truck Hire Auckland West — Moving Trucks from $125/day | James Blond"
+        description="Truck hire in West Auckland from $70 (4 hrs) or $125/day. 12m³ to 19m³ moving trucks with tail lifts and a 2T tipper, 50% off midweek. Glen Eden branch near Henderson & New Lynn."
         canonical="/west-auckland-truck-rentals-hire"
       />
+      <JsonLd data={faqJsonLd} />
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-6 mb-8">
         <div className="grid md:grid-cols-2 gap-6 items-center">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold mb-4">Truck Hire & Moving Truck Rental — West Auckland</h1>
+            <h1 className="text-3xl md:text-4xl font-bold mb-4">Truck Hire Auckland — West Auckland Moving Truck Rental</h1>
             <p className="text-lg text-gray-700 mb-6">
-              Same-day truck rental and moving truck hire across West Auckland — Henderson, Henderson Valley, New Lynn, Swanson, Te Atatu, Massey, Westgate, Hobsonville, Waitakere and Titirangi. Drive on a standard car licence.
+              Same-day truck rental and moving truck hire across West Auckland — Henderson, Henderson Valley, New Lynn, Swanson, Te Atatu, Massey, Westgate, Hobsonville, Waitakere and Titirangi. 2-tonne trucks drive on a standard car licence. From $70 for 4 hours or $125 per day, and 50% off Monday–Thursday.
             </p>
             <div className="flex items-center gap-2">
               <Button asChild size="lg">
@@ -248,6 +284,56 @@ const WestAucklandTruckRentals = () => {
         </Tabs>
       </section>
 
+      {/* Prices */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold mb-2">Truck Hire Prices — West Auckland</h2>
+        <p className="text-muted-foreground mb-4">NZD including GST. Hourly and daily hires add a per-km charge. Save 50% when pickup and return are both Monday–Thursday.</p>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm border rounded-lg">
+            <thead className="bg-muted">
+              <tr>
+                <th className="text-left p-3">Truck</th>
+                <th className="text-left p-3">Box size (LxWxH)</th>
+                <th className="text-left p-3">Up to 4 hours</th>
+                <th className="text-left p-3">Per day</th>
+                <th className="text-left p-3">Per km</th>
+              </tr>
+            </thead>
+            <tbody>
+              {truckPrices.map((t) => (
+                <tr key={t.name} className="border-t">
+                  <td className="p-3 font-medium"><Link to={t.slug} className="text-primary underline">{t.name}</Link></td>
+                  <td className="p-3">{t.size}</td>
+                  <td className="p-3">{t.hours}</td>
+                  <td className="p-3">{t.day}</td>
+                  <td className="p-3">{t.km}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="text-sm mt-3">
+          Full rates including multi-day and unlimited-km prices are in our <Link to="/price-guide" className="text-primary underline">price guide</Link>.
+          Midweek details: <Link to="/hot-deals/midweek-truck-van-discount" className="text-primary underline">50% off truck and van hire</Link>.
+        </p>
+      </section>
+
+      {/* Size guide */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold mb-4">What Size Moving Truck Do I Need?</h2>
+        <div className="grid gap-3">
+          {sizeGuide.map((g) => (
+            <div key={g.truck} className="border rounded-lg p-4 flex flex-col md:flex-row md:justify-between gap-1">
+              <span>{g.load}</span>
+              <span className="font-semibold text-primary">{g.truck}</span>
+            </div>
+          ))}
+        </div>
+        <p className="text-sm mt-3">
+          Not sure? Get an estimate with our <Link to="/moving-cost-calculator" className="text-primary underline">moving cost calculator</Link>.
+        </p>
+      </section>
+
       {/* Customer Experience Section */}
       <section className="mb-12">
         <div className="grid md:grid-cols-2 gap-8 items-center">
@@ -409,41 +495,28 @@ const WestAucklandTruckRentals = () => {
 
       {/* FAQs */}
       <section className="mb-12">
-        <h2 className="text-2xl font-bold mb-6">Frequently Asked Questions</h2>
-        
+        <h2 className="text-2xl font-bold mb-6">Truck Hire FAQs</h2>
         <div className="space-y-4">
-          <div className="border rounded-lg p-4">
-            <h3 className="font-bold mb-2">Do I need a special license to drive your trucks in West Auckland?</h3>
-            <p className="text-gray-600">
-              For our 2-tonne trucks, a standard New Zealand car license is sufficient. For our 3-tonne trucks, 
-              a Class 2 (HT) license is required by law.
-            </p>
-          </div>
-          
-          <div className="border rounded-lg p-4">
-            <h3 className="font-bold mb-2">How much does it cost to rent a truck in West Auckland?</h3>
-            <p className="text-gray-600">
-              Our trucks are charged at hourly rates starting from $35/hour plus kilometer charge. 
-              The exact rate depends on the truck size and features like tail lifts. Check each truck listing for specific pricing.
-            </p>
-          </div>
-          
-          <div className="border rounded-lg p-4">
-            <h3 className="font-bold mb-2">How far in advance should I book a truck for moving in West Auckland?</h3>
-            <p className="text-gray-600">
-              We recommend booking at least 7 days in advance for weekend moves, especially during summer months 
-              and at month-end when demand is highest. Mid-week bookings often have better availability.
-            </p>
-          </div>
-          
-          <div className="border rounded-lg p-4">
-            <h3 className="font-bold mb-2">Do you offer moving accessories for rent in West Auckland?</h3>
-            <p className="text-gray-600">
-              Yes, we offer moving accessories including hand trolleys, furniture blankets, straps, and tie-downs. 
-              These can be added during the booking process. We recommend our hand trolleys for navigating West Auckland's hilly terrain.
-            </p>
-          </div>
+          {faqs.map((f) => (
+            <div key={f.q} className="border rounded-lg p-4">
+              <h3 className="font-bold mb-2">{f.q}</h3>
+              <p className="text-muted-foreground">{f.a}</p>
+            </div>
+          ))}
         </div>
+      </section>
+
+      {/* Related */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold mb-4">More Truck and Van Hire</h2>
+        <nav aria-label="Related hire pages" className="flex flex-wrap gap-x-6 gap-y-2">
+          <Link to="/auckland-truck-rentals-hire" className="text-primary underline">Truck hire Auckland (all branches)</Link>
+          <Link to="/van-hire-auckland" className="text-primary underline">Van hire Auckland</Link>
+          <Link to="/west-auckland-van-hire" className="text-primary underline">West Auckland van hire</Link>
+          <Link to="/one-way-truck-hire" className="text-primary underline">One-way truck hire</Link>
+          <Link to="/fleet/trucks" className="text-primary underline">All trucks</Link>
+          <Link to="/moving-cost-calculator" className="text-primary underline">Moving cost calculator</Link>
+        </nav>
       </section>
 
       {/* CTA */}

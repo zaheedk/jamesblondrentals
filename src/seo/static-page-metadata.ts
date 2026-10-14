@@ -90,8 +90,8 @@ const overrides: Record<string, Partial<Omit<StaticPageMetadata, 'path'>>> = {
     description: 'Rent trucks in Auckland for house moves, business deliveries and construction. 2-tonne and 3-tonne trucks available daily.',
   },
   '/west-auckland-truck-rentals-hire': {
-    title: 'Truck Hire West Auckland | James Blond Rentals',
-    description: 'Rent trucks in West Auckland including Henderson, New Lynn and Waitakere. Convenient pickup for moving and deliveries.',
+    title: 'Truck Hire Auckland West — Moving Trucks from $125/day | James Blond',
+    description: 'Truck hire in West Auckland from $70 (4 hrs) or $125/day. 12m³ to 19m³ moving trucks with tail lifts and a 2T tipper, 50% off midweek. Glen Eden branch near Henderson & New Lynn.',
   },
   '/truck-hire-wellington': {
     title: 'Truck Hire Wellington | James Blond Rentals',
