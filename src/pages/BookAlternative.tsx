@@ -56,9 +56,12 @@ const BookAlternative = () => {
           ageid: age,
         });
         const cars = response?.results?.availablecars ?? [];
+        const vehicleId = searchParams.get('vehicleId') || '';
         const car = cars.find(
           (c) =>
-            String(c.vehiclecategorytypeid) === carCategory &&
+            (vehicleId
+              ? String(c.vehiclecategoryid) === vehicleId
+              : String(c.vehiclecategorytypeid) === carCategory) &&
             (c.available === 1 || c.available === 2)
         );
         if (!car) {

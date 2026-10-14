@@ -30,7 +30,7 @@ Deno.serve(async (req) => {
     const search = u.searchParams.get('s')
     let dest = REF.test(to) ? `${SITE_URL}/complete-booking/${encodeURIComponent(to)}` : SITE_URL
     if (search) {
-      const allowed = ['pickupLocation', 'dropoffLocation', 'pickupDate', 'dropoffDate', 'pickupTime', 'dropoffTime', 'age', 'carCategory']
+      const allowed = ['pickupLocation', 'dropoffLocation', 'pickupDate', 'dropoffDate', 'pickupTime', 'dropoffTime', 'age', 'carCategory', 'vehicleId']
       const src = new URLSearchParams(search)
       const qs = new URLSearchParams()
       for (const k of allowed) { const v = src.get(k); if (v && v.length <= 32) qs.set(k, v) }
