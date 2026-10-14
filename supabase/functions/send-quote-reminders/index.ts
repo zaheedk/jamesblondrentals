@@ -170,12 +170,12 @@ Deno.serve(async (req) => {
   const skippedAlreadyBooked: any[] = []
   const emails = [...byEmail.keys()]
   const booked = new Map<string, { created_at: string; pickup_date: string; ref: string }[]>()
-  for (let i = 0; i < emails.length; i += 100) {
-    const chunk = emails.slice(i, i + 100)
+  for (let i = 0; i < emails.length; i += 20) {
+    const chunk = emails.slice(i, i + 20)
     const { data: other } = await admin
       .from('bookings')
       .select('customer_email, created_at, pickup_date, booking_reference, booking_status')
-      .in('customer_email', chunk)
+      .or(chunk.map((e) => `customer_email.ilike.${e.replace(/[,()%_*]/g, '')}`).join(','))
       .not('booking_status', 'in', '("pending","cancelled","Cancelled","test1","test2")')
     for (const b of other ?? []) {
       const e = String(b.customer_email).toLowerCase().trim()
