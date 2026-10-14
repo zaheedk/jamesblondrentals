@@ -24,7 +24,9 @@ Deno.serve(async (req) => {
   }
 
   if (event === 'click') {
-    // s=<search query> sends the customer to vehicle search (alternatives email)
+    // s=<search query> sends the customer straight into step 3 of the booking
+    // flow via /book-alternative (alternatives email); that page re-checks
+    // availability and falls back to the pre-filtered search if needed
     const search = u.searchParams.get('s')
     let dest = REF.test(to) ? `${SITE_URL}/complete-booking/${encodeURIComponent(to)}` : SITE_URL
     if (search) {
@@ -32,7 +34,7 @@ Deno.serve(async (req) => {
       const src = new URLSearchParams(search)
       const qs = new URLSearchParams()
       for (const k of allowed) { const v = src.get(k); if (v && v.length <= 32) qs.set(k, v) }
-      dest = `${SITE_URL}/vehicles?${qs.toString()}`
+      dest = `${SITE_URL}/book-alternative?${qs.toString()}`
     }
     return new Response(null, { status: 302, headers: { Location: dest, 'Cache-Control': 'no-store' } })
   }
