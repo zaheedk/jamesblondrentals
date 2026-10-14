@@ -49,6 +49,8 @@ const Hero = () => {
           <Link to="/auckland-airport-car-rentals" className="text-white/90 underline hover:text-white">Auckland Airport car rental</Link>
           <Link to="/auckland-truck-rentals-hire" className="text-white/90 underline hover:text-white">Truck hire Auckland</Link>
           <Link to="/van-hire-auckland" className="text-white/90 underline hover:text-white">Van hire Auckland</Link>
+          <Link to="/van-hire" className="text-white/90 underline hover:text-white">Van hire</Link>
+          <Link to="/truck-hire" className="text-white/90 underline hover:text-white">Truck hire</Link>
         </nav>
       </div>
     </div>
