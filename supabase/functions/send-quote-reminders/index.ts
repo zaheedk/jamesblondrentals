@@ -340,9 +340,10 @@ Deno.serve(async (req) => {
     totalQuotes: allQuotes.length,
     sent: sent.length,
     sentAlternatives: sentAlternatives.length,
+    skippedAlreadyBooked: skippedAlreadyBooked.length,
     skippedUnavailable: skippedUnavailable.length,
     skippedNotDue: skippedNotDue.length,
     errors: errors.length,
-    details: { sent, sentAlternatives, skippedUnavailable, errors },
+    details: { sent, sentAlternatives, skippedUnavailable, skippedAlreadyBooked, errors },
   })
 })
