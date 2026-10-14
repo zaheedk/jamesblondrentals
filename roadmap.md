@@ -1,5 +1,9 @@
 # Roadmap
 
+## Truck licence consistency
+- [ ] Replace blanket 3-tonne licence claims across pages, FAQs and search descriptions with vehicle-specific guidance
+- [ ] Verify Auckland and 3-tonne detail pages show consistent guidance
+
 ## Caprice broker integration
 - [x] Review Caprice's published API contract and existing RCM broker architecture
 - [x] Record contract, endpoint requirements and onboarding checklist
