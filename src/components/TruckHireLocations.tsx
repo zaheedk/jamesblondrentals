@@ -30,7 +30,8 @@ export default function TruckHireLocations({ city }: { city?: string }) {
         ))}
       </div>
       <nav aria-label="Truck hire by city" className="flex flex-wrap gap-x-6 gap-y-3 mt-8 text-sm">
-        <Link className="text-primary underline" to="/truck-hire">Truck hire NZ</Link>
+        <Link className="text-primary underline" to="/truck-hire">Truck hire</Link>
+        <Link className="text-primary underline" to="/van-hire">Van hire</Link>
         <Link className="text-primary underline" to="/auckland-truck-rentals-hire">Truck hire Auckland</Link>
         <Link className="text-primary underline" to="/truck-hire-wellington">Truck hire Wellington</Link>
         <Link className="text-primary underline" to="/truck-hire-christchurch">Truck hire Christchurch</Link>

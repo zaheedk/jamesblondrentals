@@ -96,6 +96,7 @@ export const sitemapRoutes: SitemapRoute[] = [
   { path: '/truck-hire-wellington', priority: 0.9, changefreq: 'weekly' },
   { path: '/truck-hire-christchurch', priority: 0.9, changefreq: 'weekly' },
   { path: '/small-truck-hire-christchurch', priority: 0.9, changefreq: 'weekly' },
+  { path: '/van-hire', priority: 0.95, changefreq: 'weekly' },
   { path: '/cargo-van-hire', priority: 0.9, changefreq: 'weekly' },
   { path: '/cargo-van-hire-auckland', priority: 0.9, changefreq: 'weekly' },
   { path: '/list-your-vehicle', priority: 0.8, changefreq: 'monthly' },

@@ -297,6 +297,8 @@ const Index = () => {
                   { label: 'Truck hire Hamilton', to: '/truck-hire-hamilton' },
                   { label: 'Van hire Hamilton', to: '/van-hire-hamilton' },
                   { label: 'Car hire Hamilton', to: '/car-hire-hamilton' },
+                  { label: 'Van hire NZ', to: '/van-hire' },
+                  { label: 'Truck hire NZ', to: '/truck-hire' },
                   { label: 'Ute hire NZ', to: '/ute-hire' },
                   { label: 'Pickup truck rental', to: '/pickup-truck-rental' },
                   { label: 'Moving truck rental', to: '/moving-truck-rental' },

@@ -85,6 +85,12 @@ const overrides: Record<string, Partial<Omit<StaticPageMetadata, 'path'>>> = {
     title: 'Jumbo Van Hire – Extra Large Cargo Van | James Blond',
     description: 'Rent a jumbo van for maximum cargo capacity. Ideal for large deliveries, furniture moves and commercial logistics.',
   },
+  '/van-hire': {
+    title: 'Van Hire NZ from $115/day | Cargo & Moving Vans | James Blond',
+    description: 'Van hire in Auckland, Wellington, Christchurch and Hamilton. Cargo vans from $115/day, jumbo and high-roof vans, crew vans and 12-seaters. Car licence, GST included.',
+    heading: 'Van Hire NZ — Cargo, Moving and Passenger Vans',
+    body: 'Van hire at James Blond branches in Auckland, Wellington, Christchurch and Hamilton. 6m³ cargo vans from $115/day, 9m³ jumbo and high-roof vans from $130/day, crew vans and 10–12 seat passenger vans on request. Cargo vans drive on a standard NZ car licence.',
+  },
   '/truck-hire': {
     title: 'Truck Hire NZ | Moving Truck Hire Near You | James Blond',
     description: 'Find truck hire near you in Auckland, Wellington, Christchurch and Hamilton. Compare moving trucks, tail lifts and collection locations. Check live availability.',
