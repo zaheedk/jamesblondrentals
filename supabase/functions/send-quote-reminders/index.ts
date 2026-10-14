@@ -200,6 +200,7 @@ Deno.serve(async (req) => {
         pickupDate: isoToDmy(q.pickup_date), dropoffDate: isoToDmy(q.dropoff_date),
         pickupTime: q.pickup_time?.slice(0, 5) || '10:00', dropoffTime: q.dropoff_time?.slice(0, 5) || '10:00',
         age: String(ageid), carCategory: String(c.vehiclecategorytypeid ?? 0),
+        vehicleId: String(c.vehiclecategoryid ?? ''),
       })
       return {
         name: c.vehiclecategory || 'Similar vehicle',
