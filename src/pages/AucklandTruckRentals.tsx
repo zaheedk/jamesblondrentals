@@ -18,7 +18,7 @@ import { MapPin, Phone, Clock } from 'lucide-react';
 const AucklandTruckRentals = () => {
   return (
     <div className="container mx-auto px-4 py-8">
-      <PageSEO title="Cheapest Truck Hire Auckland from $35/hr — 5 Branches, Same Day" description="Cheap Auckland truck hire from $35/hr or $125/day. 12m³ to 19m³ trucks with 400kg tail lifts for house moves, deliveries and trades. Five branches, car licence only, no hidden fees — book online in 2 minutes." canonical="/auckland-truck-rentals-hire" />
+      <PageSEO title="Cheapest Truck Hire Auckland from $35/hr — 5 Branches, Same Day" description="Cheap Auckland truck hire from $35/hr or $125/day. 12m³ to 19m³ trucks with 400kg tail lifts for house moves, deliveries and trades. Five branches, vehicle-specific licence requirements, no hidden fees — book online in 2 minutes." canonical="/auckland-truck-rentals-hire" />
       <JsonLd
         data={{
           '@context': 'https://schema.org',
@@ -52,7 +52,7 @@ const AucklandTruckRentals = () => {
           <div>
             <h1 className="text-3xl md:text-4xl font-bold mb-4">Truck Hire Auckland — Moving Truck Rental Near You</h1>
             <p className="text-lg text-gray-700 mb-6">
-              Same-day truck rental and moving truck hire across Auckland — CBD, Penrose, Auckland Airport, North Shore, South Auckland and West Auckland. 2-tonne and 3-tonne trucks from $35/hr, drive on a standard car licence.
+              Same-day truck rental and moving truck hire across Auckland — CBD, Penrose, Auckland Airport, North Shore, South Auckland and West Auckland. 2-tonne and 3-tonne trucks from $35/hr. Our 2-tonne trucks can be driven on a car licence. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking.
             </p>
             <div className="flex items-center gap-2">
               <Button asChild variant="cta" size="lg">
@@ -439,8 +439,7 @@ const AucklandTruckRentals = () => {
           <div className="border rounded-lg p-4">
             <h3 className="font-bold mb-2">Do I need a special license to drive your trucks in Auckland?</h3>
             <p className="text-gray-600">
-              For our 2-tonne trucks, a standard New Zealand car license is sufficient. For our 3-tonne trucks, 
-              a Class 2 (HT) license is required by law.
+              For our 2-tonne trucks, a standard New Zealand car license is sufficient. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking.
             </p>
           </div>
           

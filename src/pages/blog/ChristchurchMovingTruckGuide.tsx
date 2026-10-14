@@ -81,10 +81,7 @@ const ChristchurchMovingTruckGuide = () => (
 
       <h2>Can I drive a moving truck on a car licence?</h2>
       <p>
-        Yes. Every truck in our Christchurch fleet — including 2-tonne and 3-tonne box trucks with
-        tail lifts — is under the 6,000&nbsp;kg GVM limit, so a standard NZ Class 1 (car) licence
-        is all you need. No truck licence, no dangerous-goods endorsement, no age surcharge above
-        21.
+        Our 2-tonne box trucks can be driven on a standard NZ Class 1 (car) licence. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking.
       </p>
 
       <h2>2-tonne truck — 1 to 2 bedroom moves</h2>

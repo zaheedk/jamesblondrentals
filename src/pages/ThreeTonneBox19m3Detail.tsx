@@ -15,7 +15,7 @@ const ThreeTonneBox19m3Detail = () => {
     { label: "Mileage Charges", value: "62c per km mileage charge" },
     { label: "Max Load", value: "3800kg" },
     { label: "Box Dimensions", value: "4800(L) x 2100(W) x 2100(H)" },
-    { label: "License Required", value: "Class-2 (HT) license" }
+    { label: "License Required", value: "Class 1 or Class 2 — confirm with branch" }
   ];
 
   const additionalFeatures = [
@@ -29,7 +29,7 @@ const ThreeTonneBox19m3Detail = () => {
     },
     {
       question: "What license is required to drive this truck?",
-      answer: "This vehicle requires a Class-2 (HT) license to operate legally. This is because the truck exceeds the weight limits for a standard car license. Please ensure you or your designated driver has the appropriate license before renting."
+      answer: "For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking."
     },
     {
       question: "What is the maximum weight the tail lift can handle?",
@@ -72,7 +72,7 @@ const ThreeTonneBox19m3Detail = () => {
               Our 3 Tonne Box Truck (19m³) with Tail Lift is designed for large cargo transport, removals, and commercial deliveries. Powered by a 3.0L diesel turbo engine and equipped with an automatic transmission, this truck provides a powerful and fuel-efficient transport solution. The hydraulic tail lift makes loading and unloading heavy cargo effortless.
             </p>
             <p>
-              With a 4800mm (L) x 2100mm (W) x 2100mm (H) box size and a maximum load capacity of 3800kg, this truck is perfect for businesses and individuals needing a high-capacity vehicle. A Class-2 (HT) license is required to operate this vehicle. Rent one today and move heavy loads with ease!
+              With a 4800mm (L) x 2100mm (W) x 2100mm (H) box size and a maximum load capacity of 3800kg, this truck is perfect for businesses and individuals needing a high-capacity vehicle. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking. Rent one today and move heavy loads with ease!
             </p>
           </div>
         </div>
@@ -182,7 +182,7 @@ const ThreeTonneBox19m3Detail = () => {
             <div>
               <h3 className="font-bold text-lg">Do I need a Class-2 licence to hire a 3-tonne truck in Auckland?</h3>
               <p className="text-gray-700">
-                Yes, our 3-tonne trucks require a Class-2 (HT) licence to operate legally in Auckland and all other NZ locations. Please ensure your driver holds the correct licence before booking. Visit our <Link to="/auckland-truck-rentals" className="text-primary hover:underline">Auckland truck hire page</Link> for details.
+                For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking. Visit our <Link to="/auckland-truck-rentals" className="text-primary hover:underline">Auckland truck hire page</Link> for details.
               </p>
             </div>
           </div>
@@ -235,7 +235,7 @@ const ThreeTonneBox19m3Detail = () => {
       <div className="mt-12 bg-primary text-primary-foreground rounded-xl p-8 text-center">
         <h2 className="text-2xl font-bold mb-3">Get a Quote & Book Now</h2>
         <p className="mb-6 opacity-90 max-w-2xl mx-auto">
-          Ready to hire this 3-tonne truck? A Class-2 (HT) licence is required. Choose your nearest branch for local rates, live availability, and instant booking.
+          Ready to hire this 3-tonne truck? For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking. Choose your nearest branch for local rates, live availability, and instant booking.
         </p>
         <div className="flex flex-wrap justify-center gap-3 mb-6">
           <Button asChild className="bg-white text-primary hover:bg-white/90 font-semibold">

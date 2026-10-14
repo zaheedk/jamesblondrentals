@@ -65,7 +65,7 @@ const WellingtonTruckRentals = () => {
           mainEntity: [
             { "@type": "Question", name: "How much does it cost to hire a truck in Wellington?", acceptedAnswer: { "@type": "Answer", text: "Wellington truck hire starts from $35/hr, with daily rates for longer moves. Price depends on truck size (2-tonne vs 3-tonne), tail-lift option and hire duration. Call 0800 525 663 or book online for a firm quote." } },
             { "@type": "Question", name: "Do you offer same-day truck rentals in Wellington?", acceptedAnswer: { "@type": "Answer", text: "Yes — same-day truck rental is available from our Te Aro branch and covers Wellington CBD, Lower Hutt, Upper Hutt, Petone, Porirua, Kapiti and the wider region, subject to availability." } },
-            { "@type": "Question", name: "Can I drive a moving truck on a car licence in Wellington?", acceptedAnswer: { "@type": "Answer", text: "Yes. Our 2-tonne and 3-tonne Wellington moving trucks are all drivable on a standard NZ Class 1 car licence — no truck endorsement needed." } },
+            { "@type": "Question", name: "Can I drive a moving truck on a car licence in Wellington?", acceptedAnswer: { "@type": "Answer", text: "Our 2-tonne trucks can be driven on a standard NZ Class 1 car licence. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking." } },
             { "@type": "Question", name: "Which Wellington suburbs do you cover?", acceptedAnswer: { "@type": "Answer", text: "We hire trucks to customers across Wellington CBD, Te Aro, Newtown, Kilbirnie, Johnsonville, Karori, Miramar, Petone, Lower Hutt, Upper Hutt, Porirua, Tawa and the Kapiti Coast." } },
             { "@type": "Question", name: "Do your trucks come with insurance?", acceptedAnswer: { "@type": "Answer", text: "Yes — every Wellington truck rental includes standard insurance cover, with Premium and Ultimate upgrades available at booking to reduce your excess." } },
           ],
@@ -91,7 +91,7 @@ const WellingtonTruckRentals = () => {
           <div>
             <h1 className="text-3xl md:text-4xl font-bold mb-4">Truck Hire & Moving Truck Rental — Wellington</h1>
             <p className="text-lg text-gray-700 mb-6">
-              Same-day truck rental and moving truck hire across the Wellington region — Wellington CBD, Te Aro, Newtown, Kilbirnie, Johnsonville, Petone, Lower Hutt, Upper Hutt, Porirua, Tawa and the Kapiti Coast. 2-tonne and 3-tonne trucks from $35/hr, drive on a standard car licence.
+              Same-day truck rental and moving truck hire across the Wellington region — Wellington CBD, Te Aro, Newtown, Kilbirnie, Johnsonville, Petone, Lower Hutt, Upper Hutt, Porirua, Tawa and the Kapiti Coast. 2-tonne and 3-tonne trucks from $35/hr. Car licence for 2-tonne models. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking.
             </p>
             <div className="flex items-center gap-2">
               <Button asChild variant="cta" size="lg">
@@ -684,7 +684,7 @@ const WellingtonTruckRentals = () => {
           <div className="border rounded-lg p-5">
             <h3 className="font-bold mb-2">Moving truck hire Wellington</h3>
             <p className="text-gray-600">
-              For a full house move try our <Link to="/moving-truck-hire" className="text-primary hover:underline">3-tonne 19m³ moving truck with tail lift</Link> — fits a 3-bedroom home in one trip. Much cheaper than a Wellington removalist and drivable on a car licence.
+              For a full house move try our <Link to="/moving-truck-hire" className="text-primary hover:underline">3-tonne 19m³ moving truck with tail lift</Link> — fits a 3-bedroom home in one trip. A self-drive alternative to a Wellington removalist. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking.
             </p>
           </div>
           <div className="border rounded-lg p-5">

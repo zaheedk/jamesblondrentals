@@ -14,7 +14,7 @@ const trucks = [
     specs: [
       "Box: 4800(L) x 2100(W) x 2100(H)",
       "Max Load: 3800kg",
-      "62c per km mileage charge (Requires class-2 (HT) license)"
+      "62c per km mileage charge (Class 1 or Class 2 — confirm with branch)"
     ],
     image: "/lovable-uploads/e4f29c45-82c9-460d-a508-4abd64ca9dd4.png",
     badge: "Largest Load"

@@ -73,7 +73,7 @@ const ChristchurchDriveMovingTruck = () => (
       <p className="lead text-xl leading-relaxed">
         If you've only ever driven a hatchback, sliding behind the wheel of a 3-tonne moving truck
         can feel intimidating. It shouldn't — every truck we hire in Christchurch is automatic,
-        power-steered, and drivable on a normal car licence. The tricks below will have you
+        power-steered. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking. The tricks below will have you
         confident within the first 10 minutes of pickup.
       </p>
 

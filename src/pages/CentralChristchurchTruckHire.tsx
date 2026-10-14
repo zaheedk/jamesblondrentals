@@ -44,7 +44,7 @@ const trucks = [
     img: '/lovable-uploads/e4f29c45-82c9-460d-a508-4abd64ca9dd4.png',
     blurb:
       'Our largest mover. Family homes in Fendalton and Cashmere, country relocations and commercial moves out to Rangiora, Rolleston or Ashburton in one load.',
-    spec: '4800 × 2100 × 2100 mm · Class 2',
+    spec: '4800 × 2100 × 2100 mm · Licence varies by vehicle — confirm with branch',
   },
 ];
 
@@ -66,7 +66,7 @@ const CentralChristchurchTruckHire = () => {
         name: 'Do I need a special licence to hire a truck in Christchurch?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'A standard New Zealand car (Class 1) licence is enough for all of our 2-tonne trucks. A Class 2 (HT) licence is required for the 3-tonne truck.',
+          text: 'A standard New Zealand car (Class 1) licence is enough for all of our 2-tonne trucks. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking.',
         },
       },
       {

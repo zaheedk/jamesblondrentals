@@ -464,7 +464,7 @@ const HamiltonVanHire = () => {
         </h2>
         <div className="grid md:grid-cols-3 gap-8">
           {[
-            { to: '/truck-hire-hamilton', t: 'Truck hire Hamilton', d: '2-tonne and 3-tonne moving trucks from $35/hr — drive on a car licence.' },
+            { to: '/truck-hire-hamilton', t: 'Truck hire Hamilton', d: '2-tonne and 3-tonne moving trucks from $35/hr. Car licence for 2-tonne models; confirm vehicle-specific Class 1 or Class 2 requirements for 3-tonne trucks.' },
             { to: '/contact-hamilton', t: 'Hamilton branch', d: 'Address, hours, phone and directions to our Hamilton depot.' },
             { to: '/fleet/minibuses', t: '12-seat minibus', d: 'Sports teams, weddings, Hobbiton trips and airport runs.' },
           ].map((c) => (
