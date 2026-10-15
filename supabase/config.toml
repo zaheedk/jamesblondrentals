@@ -39,3 +39,5 @@ verify_jwt = false
 verify_jwt = false
   [functions.quote-reminder-track]
     verify_jwt = false
+  [functions.send-pickup-activation-reminders]
+    verify_jwt = false
