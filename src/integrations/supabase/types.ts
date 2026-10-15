@@ -934,6 +934,33 @@ export type Database = {
         }
         Relationships: []
       }
+      pickup_activation_reminder_log: {
+        Row: {
+          booking_reference: string
+          channel: string
+          customer_email: string
+          id: string
+          provider_id: string | null
+          sent_at: string
+        }
+        Insert: {
+          booking_reference: string
+          channel: string
+          customer_email: string
+          id?: string
+          provider_id?: string | null
+          sent_at?: string
+        }
+        Update: {
+          booking_reference?: string
+          channel?: string
+          customer_email?: string
+          id?: string
+          provider_id?: string | null
+          sent_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
