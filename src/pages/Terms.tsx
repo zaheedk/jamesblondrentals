@@ -228,6 +228,17 @@ const Terms = () => {
             </ul>
           </AccordionContent>
         </AccordionItem>
+        <AccordionItem value="sms-messaging">
+          <AccordionTrigger>22. Text Message (SMS) Terms</AccordionTrigger>
+          <AccordionContent>
+            <ul className="list-disc pl-6 space-y-2">
+              <li>When you make a booking or request a quote with James Blond Rentals and provide your mobile number, you agree to receive text messages about that booking, such as pick-up reminders, account activation reminders and quote follow-ups.</li>
+              <li>Message frequency varies, typically 1–3 messages per booking. Message and data rates may apply.</li>
+              <li>Reply STOP to opt out at any time. Reply HELP for help, or call 0800 525 663 or email info@jamesblond.co.nz.</li>
+              <li>We do not send marketing texts under this programme, and mobile numbers are never sold or shared with third parties for their marketing. See our <a href="/privacy" className="underline">Privacy Policy</a>.</li>
+            </ul>
+          </AccordionContent>
+        </AccordionItem>
       </Accordion>
 
       <div className="mt-8 p-4 bg-gray-50 rounded-lg">

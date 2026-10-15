@@ -90,6 +90,17 @@ const Privacy = () => {
             </AccordionContent>
           </AccordionItem>
 
+          <AccordionItem value="sms">
+            <AccordionTrigger>Text Messages (SMS)</AccordionTrigger>
+            <AccordionContent>
+              <ul className="list-disc pl-6 space-y-2">
+                <li>If you give us your mobile number when booking or requesting a quote, James Blond Rentals uses it to send booking-related texts (pick-up reminders, account activation and quote follow-ups).</li>
+                <li>Mobile numbers and SMS opt-in consent are not shared with or sold to third parties or affiliates for marketing purposes.</li>
+                <li>Reply STOP to any message to opt out, or HELP for help. Message frequency varies; message and data rates may apply.</li>
+              </ul>
+            </AccordionContent>
+          </AccordionItem>
+
           <AccordionItem value="contact">
             <AccordionTrigger>Contact Information</AccordionTrigger>
             <AccordionContent>
