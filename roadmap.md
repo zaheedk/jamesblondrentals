@@ -5,7 +5,7 @@
 - [x] Replace Twilio for day-before pickup texts, preserving email and deduplication
 - [x] Run eight phone/provider tests and deploy the TNZ reminder sender
 - [x] Add a Send test text dialog to desktop and mobile Admin Tools using the existing admin session
-- [ ] Send sample and verify TNZ delivery — external Supabase sessions are unavailable to testing tools; owner can send through Admin Tools
+- [x] Send sample and verify TNZ delivery — owner received the test text on their mobile (17 Oct)
 
 ## Truck hire nearby and city search
 - [x] Strengthen the existing national and moving-truck pages for broad and nearby searches
