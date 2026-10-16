@@ -4,8 +4,9 @@ import { sendTnzSms } from './tnz.ts'
 Deno.test('TNZ sends to NZ mobile using assigned short code and records MessageID', async () => {
   const fetcher: typeof fetch = async (input, init) => {
     assertEquals(input, 'https://api.tnz.co.nz/api/v3.00/sms')
-    assertEquals(init?.method, 'POST')
-    const payload = JSON.parse(String(init?.body))
+    const requestInit = init as { method?: string; body?: unknown } | undefined
+    assertEquals(requestInit?.method, 'POST')
+    const payload = JSON.parse(String(requestInit?.body))
     assertEquals(payload.Destination, '+64275353037')
     assertEquals(payload.FromNumber, undefined)
     return new Response(JSON.stringify({ MessageID: 'message-123' }), { status: 200 })
