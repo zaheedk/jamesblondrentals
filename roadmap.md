@@ -1,5 +1,11 @@
 # Roadmap
 
+## TNZ pickup reminders
+- [x] Securely store TNZ authentication
+- [x] Replace Twilio for day-before pickup texts, preserving email and deduplication
+- [x] Run eight phone/provider tests and deploy the TNZ reminder sender
+- [ ] Send sample and verify TNZ delivery — blocked by missing authorised admin preview session (test request returned 401)
+
 ## Truck hire nearby and city search
 - [x] Strengthen the existing national and moving-truck pages for broad and nearby searches
 - [x] Add accurate collection addresses and related-city links to existing truck pages
