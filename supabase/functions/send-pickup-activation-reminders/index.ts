@@ -164,8 +164,8 @@ Deno.serve(async (req) => {
         results.errors.push({ ...detail, channel: 'email', error: String(e) })
       }
     }
-    // Text
-    if (phone) {
+    // Text — paused until the TNZ account is live (set PICKUP_SMS_ENABLED=true to resume)
+    if (phone && Deno.env.get('PICKUP_SMS_ENABLED') === 'true') {
       const { data: cs } = await admin.from('pickup_activation_reminder_log')
         .insert({ booking_reference: b.booking_reference, customer_email: email, channel: 'sms' }).select('id').maybeSingle()
       if (cs) {
