@@ -14,3 +14,4 @@
 - Quote reminders run daily via pg_cron calling send-quote-reminders with a vault-stored token; quote_reminder_log claims each (quote, kind) before sending so reminders are never duplicated.
 - Quote reminder opens/clicks are tracked by the public quote-reminder-track function keyed on the quote_reminder_log row id (pixel + redirect to /complete-booking); keeps tracking in our DB without depending on Resend webhooks.
 - Pickup activation texts use TNZ REST with a server-only Auth Token and TNZ-assigned NZ short code; store its MessageID in the existing per-booking channel log so switching providers preserves deduplication.
+- Admin Tools sends sample pickup texts through the existing authenticated reminder function, never directly to TNZ from the browser; this preserves server-side credentials and admin checks.
