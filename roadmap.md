@@ -53,3 +53,5 @@
 ## In progress (new)
 - [x] Simplify Midweek popup: photo + overlay text only, heading in white box, remove buttons/condition
 - [ ] Search Console: publish www sitemap, submit to www property, confirm data flowing
+
+- [ ] Resume day-before pickup texts (paused: TNZ trial account; finalise message wording, make TNZ live, then set PICKUP_SMS_ENABLED=true)
