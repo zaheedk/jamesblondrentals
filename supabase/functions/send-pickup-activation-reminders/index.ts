@@ -4,12 +4,12 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
 import { toE164NZ } from './phone.ts'
+import { pickupSms, sendTnzSms, tnzSmsStatus } from './tnz.ts'
+import { z } from 'npm:zod@3'
 
 const SITE_URL = 'https://www.jamesblond.co.nz'
 const FROM_EMAIL = 'James Blond Rentals <info@jamesblond.co.nz>'
-const SMS_FROM = '+14787072381'
 const LOGO_URL = 'https://www.jamesblond.co.nz/lovable-uploads/900107e8-dbcb-44ce-96a9-0588959abf24.png'
-const GATEWAY = 'https://connector-gateway.lovable.dev/twilio'
 
 const json = (b: unknown, s = 200) =>
   new Response(JSON.stringify(b), { status: s, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
@@ -43,8 +43,11 @@ ${tick('Add any additional drivers')}
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
-  const url = Deno.env.get('SUPABASE_URL')!
-  const admin = createClient(url, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!)
+  const url = Deno.env.get('SUPABASE_URL')
+  const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+  const anonKey = Deno.env.get('SUPABASE_ANON_KEY')
+  if (!url || !serviceKey || !anonKey) return json({ error: 'Reminder service not configured' }, 500)
+  const admin = createClient(url, serviceKey)
 
   // Auth: cron vault token, or an admin session
   let ok = false
@@ -56,7 +59,7 @@ Deno.serve(async (req) => {
   if (!ok) {
     const auth = req.headers.get('Authorization')
     if (!auth?.startsWith('Bearer ')) return json({ error: 'Unauthorized' }, 401)
-    const uc = createClient(url, Deno.env.get('SUPABASE_ANON_KEY')!, { global: { headers: { Authorization: auth } } })
+    const uc = createClient(url, anonKey, { global: { headers: { Authorization: auth } } })
     const { data: claims } = await uc.auth.getClaims(auth.slice(7))
     const uid = claims?.claims?.sub
     if (!uid) return json({ error: 'Unauthorized' }, 401)
@@ -65,13 +68,21 @@ Deno.serve(async (req) => {
   }
 
   const resendKey = Deno.env.get('RESEND_API_KEY')
-  const lovableKey = Deno.env.get('LOVABLE_API_KEY')
-  const twilioKey = Deno.env.get('TWILIO_API_KEY')
-  const body = await req.json().catch(() => ({}))
+  const tnzToken = Deno.env.get('TNZ_AUTH_TOKEN')
+  const parsed = z.object({ dryRun: z.boolean().optional(), testEmail: z.string().email().optional(),
+    testPhone: z.string().min(1).max(30).optional(), smsStatusId: z.string().regex(/^[a-zA-Z0-9-]{1,40}$/).optional() })
+    .strict().safeParse(await req.json().catch(() => ({})))
+  if (!parsed.success) return json({ error: 'Invalid reminder request' }, 400)
+  const body = parsed.data
   const dryRun = body?.dryRun === true
   // Sample mode: send to a test email/phone with fictitious details, no logging
   const testEmail: string | undefined = body?.testEmail
   const testPhone: string | undefined = body?.testPhone
+  if (body.smsStatusId) {
+    if (!tnzToken) return json({ error: 'TNZ text messaging not configured' }, 503)
+    try { return json(await tnzSmsStatus(tnzToken, body.smsStatusId)) }
+    catch (e) { return json({ error: String(e) }, 502) }
+  }
 
   async function sendEmail(to: string, subject: string, html: string) {
     if (!resendKey) throw new Error('RESEND_API_KEY missing')
@@ -84,29 +95,24 @@ Deno.serve(async (req) => {
     return d.id as string
   }
   async function sendSms(to: string, text: string) {
-    if (!lovableKey || !twilioKey) throw new Error('Text messaging not configured')
-    const r = await fetch(`${GATEWAY}/Messages.json`, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${lovableKey}`, 'X-Connection-Api-Key': twilioKey, 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({ To: to, From: SMS_FROM, Body: text }),
-    })
-    const d = await r.json().catch(() => ({}))
-    if (!r.ok) throw new Error(`Text failed [${r.status}]: ${JSON.stringify(d)}`)
-    return d.sid as string
+    if (!tnzToken) throw new Error('TNZ text messaging not configured')
+    return sendTnzSms(tnzToken, to, text)
   }
-  const smsText = (name: string, date: string, time: string) =>
-    `Hi ${name || 'there'}, your James Blond Rentals pick-up is tomorrow (${date}${time ? ` ${time}` : ''}). Activate your account to add your licence & details for a faster pick-up: ${SITE_URL}/login?activate=1 (check your email for the link). Reply or call 0800 525 663.`
+  const smsText = pickupSms
 
   if (testEmail || testPhone) {
     const out: Record<string, unknown> = {}
+    const sampleDate = dmy(nzDate(1))
+    try {
     if (testEmail) out.email = await sendEmail(testEmail, '[SAMPLE] Your pick-up is tomorrow – activate your account for a faster pick-up',
-      emailHtml('Alex', '3 Ton Box Truck', '16/10/2026', '09:00', 'West Auckland – Kelston', `${SITE_URL}/login`))
+      emailHtml('Alex', '3 Ton Box Truck', sampleDate, '09:00', 'West Auckland – Kelston', `${SITE_URL}/login`))
     if (testPhone) {
       const to = toE164NZ(testPhone)
       if (!to) return json({ error: 'Invalid NZ mobile' }, 400)
-      out.sms = await sendSms(to, smsText('Alex', '16/10/2026', '09:00'))
+      out.sms = await sendSms(to, `[SAMPLE] ${smsText('Zaheed', sampleDate, '09:00')}`)
     }
-    return json({ sample: true, ...out })
+    return json({ sample: true, provider: 'TNZ', ...out })
+    } catch (e) { return json({ error: String(e) }, 502) }
   }
 
   const tomorrow = nzDate(1)
