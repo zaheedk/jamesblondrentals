@@ -109,10 +109,11 @@ Deno.serve(async (req) => {
     if (testPhone) {
       const to = toE164NZ(testPhone)
       if (!to) return json({ error: 'Invalid NZ mobile' }, 400)
+      console.log(`Sending sample pickup text to ${to.slice(0, 5)}***`)
       out.sms = await sendSms(to, `[SAMPLE] ${smsText('Zaheed', sampleDate, '09:00')}`)
     }
     return json({ sample: true, provider: 'TNZ', ...out })
-    } catch (e) { return json({ error: String(e) }, 502) }
+    } catch (e) { console.error('Sample send failed:', String(e)); return json({ error: String(e) }, 502) }
   }
 
   const tomorrow = nzDate(1)

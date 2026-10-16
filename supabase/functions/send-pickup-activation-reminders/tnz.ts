@@ -11,9 +11,13 @@ export async function sendTnzSms(token: string, to: string, message: string, fet
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
     // Omit FromNumber: TNZ supplies its NZ short code, not a fabricated brand sender.
     body: JSON.stringify({ Destination: to, Message: message, Reference: 'James Blond pickup activation', SMSEmailReply: 'info@jamesblond.co.nz' }),
+    signal: AbortSignal.timeout(20000),
   })
-  if (!response.ok) throw new Error(`TNZ text submission failed [${response.status}]; check TNZ account settings`)
-  const data = await response.json()
+  const raw = await response.text()
+  console.log(`TNZ SMS response [${response.status}]: ${raw.slice(0, 500)}`)
+  if (!response.ok) throw new Error(`TNZ text submission failed [${response.status}]: ${raw.slice(0, 200)}`)
+  let data: { Result?: string; MessageID?: string } = {}
+  try { data = JSON.parse(raw) } catch { /* handled below */ }
   if (data.Result === 'Failed' || typeof data.MessageID !== 'string' || !data.MessageID) {
     throw new Error('TNZ did not confirm text submission; check TNZ message results')
   }
