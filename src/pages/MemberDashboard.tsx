@@ -23,6 +23,7 @@ import DocumentsPanel from '@/components/member/DocumentsPanel';
 import PaymentCardPanel from '@/components/member/PaymentCardPanel';
 import { useUserRole } from '@/hooks/use-user-role';
 import PageSEO from '@/components/PageSEO';
+import TestPickupTextDialog from '@/components/member/TestPickupTextDialog';
 
 const sections = [
   { id: 'bookings', label: 'Bookings', icon: Car, subtitle: 'Manage and view all your vehicle bookings in one place.' },
@@ -179,6 +180,7 @@ export default function MemberDashboard() {
                 {isAdmin ? 'Admin Tools' : 'Office Tools'}
               </p>
               <div className="space-y-0.5 pr-1">
+                {isAdmin && <TestPickupTextDialog />}
                 {staff.map(l => {
                   const Icon = l.icon;
                   return (
@@ -275,6 +277,7 @@ export default function MemberDashboard() {
                 {isAdmin ? 'Admin Tools' : 'Office Tools'}
               </p>
               <div className="flex gap-1.5 overflow-x-auto pb-1">
+                {isAdmin && <div className="shrink-0"><TestPickupTextDialog /></div>}
                 {staff.map(l => {
                   const Icon = l.icon;
                   return (
