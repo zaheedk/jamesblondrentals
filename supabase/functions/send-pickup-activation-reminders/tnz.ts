@@ -15,7 +15,7 @@ export async function sendTnzSms(token: string, to: string, message: string, fet
   })
   const raw = await response.text()
   console.log(`TNZ SMS response [${response.status}]: ${raw.slice(0, 500)}`)
-  if (!response.ok) throw new Error(`TNZ text submission failed [${response.status}]: ${raw.slice(0, 200)}`)
+  if (!response.ok) throw new Error(`TNZ text submission failed [${response.status}]; check TNZ account settings`)
   let data: { Result?: string; MessageID?: string } = {}
   try { data = JSON.parse(raw) } catch { /* handled below */ }
   if (data.Result === 'Failed' || typeof data.MessageID !== 'string' || !data.MessageID) {
