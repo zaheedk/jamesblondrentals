@@ -55,8 +55,8 @@ export default function TestPickupTextDialog() {
           <Label htmlFor="pickup-test-phone">NZ mobile number</Label>
           <Input id="pickup-test-phone" type="tel" value={phone} onChange={event => setPhone(event.target.value)} disabled={sending} autoComplete="tel" />
         </div>
-        <blockquote className="border-l-2 border-primary pl-4 text-sm leading-relaxed text-muted-foreground break-words">
-          [SAMPLE] James Blond Rentals: Hi Zaheed, you have a pick-up tomorrow at 09:00 (next day). Add your details here for a faster pick-up: https://www.jamesblond.co.nz/login?activate=1 Call 0800 525 663 if you need help. Reply STOP to opt out.
+        <blockquote className="border-l-2 border-primary pl-4 text-sm leading-relaxed text-muted-foreground break-words whitespace-pre-line">
+          [SAMPLE] James Blond Rentals{'\n'}Hi Zaheed, you have a pick-up tomorrow at 09:00 (next day). Add your details here for a faster pick-up: https://www.jamesblond.co.nz/login?activate=1 Call 0800 525 663 if you need assistance. Reply STOP to opt out.
         </blockquote>
         {result && <p role={failed ? 'alert' : 'status'} className={`text-sm ${failed ? 'text-destructive' : 'text-foreground'}`}>{result}</p>}
         <Button onClick={sendTest} disabled={sending || !phone.trim()} className="gap-2">
