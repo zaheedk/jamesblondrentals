@@ -1,5 +1,6 @@
 import { assertEquals, assertRejects } from 'jsr:@std/assert@1'
 import { LOGIN_URL, pickupAccountLink } from './account-link.ts'
+import { pickupSms } from './tnz.ts'
 
 Deno.test('unactivated customer receives generated activation link reused for email and SMS', async () => {
   let generated = 0
@@ -8,6 +9,8 @@ Deno.test('unactivated customer receives generated activation link reused for em
     return 'https://auth.example.test/verify?token=test-only&type=recovery'
   })
   assertEquals(await resolve(), 'https://auth.example.test/verify?token=test-only&type=recovery')
+  const smsUrl = pickupSms('Zaheed', '09:00', await resolve()).match(/https:\/\/\S+/)?.[0]
+  assertEquals(smsUrl, 'https://auth.example.test/verify?token=test-only&type=recovery')
   assertEquals(await resolve(), 'https://auth.example.test/verify?token=test-only&type=recovery')
   assertEquals(generated, 1)
 })
