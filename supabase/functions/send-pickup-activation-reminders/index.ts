@@ -123,7 +123,7 @@ Deno.serve(async (req) => {
     .not('customer_email', 'is', null).not('booking_reference', 'is', null)
   if (error) return json({ error: error.message }, 500)
 
-  const results = { tomorrow, bookings: rows?.length ?? 0, emailed: 0, texted: 0, skippedActivated: 0, skippedNoAccount: 0, alreadySent: 0, errors: [] as any[], details: [] as any[] }
+  const results = { tomorrow, bookings: rows?.length ?? 0, emailed: 0, texted: 0, skippedActivated: 0, skippedNoAccount: 0, skippedDetailsEntered: 0, alreadySent: 0, errors: [] as any[], details: [] as any[] }
   const seenEmails = new Set<string>()
 
   for (const b of rows ?? []) {
