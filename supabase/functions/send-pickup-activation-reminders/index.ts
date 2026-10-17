@@ -110,7 +110,7 @@ Deno.serve(async (req) => {
       const to = toE164NZ(testPhone)
       if (!to) return json({ error: 'Invalid NZ mobile' }, 400)
       console.log(`Sending sample pickup text to ${to.slice(0, 5)}***`)
-      out.sms = await sendSms(to, `[SAMPLE] ${smsText('Zaheed', sampleDate, '09:00')}`)
+      out.sms = await sendSms(to, `[SAMPLE] ${smsText('Zaheed', '09:00')}`)
     }
     return json({ sample: true, provider: 'TNZ', ...out })
     } catch (e) { console.error('Sample send failed:', String(e)); return json({ error: String(e) }, 502) }
@@ -175,7 +175,7 @@ Deno.serve(async (req) => {
         .insert({ booking_reference: b.booking_reference, customer_email: email, channel: 'sms' }).select('id').maybeSingle()
       if (cs) {
         try {
-          const sid = await sendSms(phone, smsText(name, date, time))
+          const sid = await sendSms(phone, smsText(name, time))
           await admin.from('pickup_activation_reminder_log').update({ provider_id: sid }).eq('id', cs.id)
           results.texted++; detail.sms_sent = true
         } catch (e) {
