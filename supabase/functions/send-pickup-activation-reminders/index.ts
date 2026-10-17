@@ -123,7 +123,7 @@ Deno.serve(async (req) => {
     .not('customer_email', 'is', null).not('booking_reference', 'is', null)
   if (error) return json({ error: error.message }, 500)
 
-  const results = { tomorrow, bookings: rows?.length ?? 0, emailed: 0, texted: 0, skippedActivated: 0, skippedNoAccount: 0, alreadySent: 0, errors: [] as any[], details: [] as any[] }
+  const results = { tomorrow, bookings: rows?.length ?? 0, emailed: 0, texted: 0, skippedActivated: 0, skippedNoAccount: 0, skippedDetailsEntered: 0, alreadySent: 0, errors: [] as any[], details: [] as any[] }
   const seenEmails = new Set<string>()
 
   for (const b of rows ?? []) {
@@ -139,6 +139,11 @@ Deno.serve(async (req) => {
     const { data: u } = await admin.auth.admin.getUserById(userId)
     if (!u?.user) { results.skippedNoAccount++; continue }
     if (u.user.last_sign_in_at) { results.skippedActivated++; continue }
+    // Only text customers who haven't added their licence/details yet
+    const { data: docs } = await admin.from('customer_documents').select('id').eq('user_id', userId).limit(1)
+    const { data: cust } = await admin.from('customers').select('license_number').eq('user_id', userId).limit(1).maybeSingle()
+    const hasDetails = (docs && docs.length > 0) || !!cust?.license_number
+    if (hasDetails) { results.skippedDetailsEntered = (results.skippedDetailsEntered ?? 0) + 1; continue }
 
     const name = b.customer_first_name || ''
     const date = dmy(b.pickup_date)
