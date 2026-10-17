@@ -1,5 +1,10 @@
 # Roadmap
 
+## Password activation journey
+- [x] Keep customers signed in after password saving and open their profile directly
+- [x] Replace hash-only link checks with user verification and test successful/failed completion
+- [ ] Verify a real activation link end-to-end — blocked: external Supabase session unavailable to testing tools
+
 ## TNZ pickup reminders
 - [x] Use secure activation links for unactivated customers and login links for activated customers with missing details; routing tests passed, real activation unverified on external Supabase
 - [x] Securely store TNZ authentication

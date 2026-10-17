@@ -16,3 +16,4 @@
 - Pickup activation texts use TNZ REST with a server-only Auth Token and TNZ-assigned NZ short code; store its MessageID in the existing per-booking channel log so switching providers preserves deduplication.
 - Pickup reminders resolve account destinations server-side and reuse one generated recovery link across email/SMS for never-signed-in users; activated users receive the login URL so reminders never reset their credentials.
 - Admin Tools sends sample pickup texts through the existing authenticated reminder function, never directly to TNZ from the browser; this preserves server-side credentials and admin checks.
+- Password recovery retains the recovery session, verifies the user after password saving, and opens the portal profile directly; avoid hash-only checks because the auth client consumes recovery URLs during initialization.
