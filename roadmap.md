@@ -6,6 +6,8 @@
 - [x] Run eight phone/provider tests and deploy the TNZ reminder sender
 - [x] Add a Send test text dialog to desktop and mobile Admin Tools using the existing admin session
 - [x] Send sample and verify TNZ delivery — owner received the test text on their mobile (17 Oct)
+- [x] Put the brand on its own first line and use "assistance" wording in the pick-up text
+- [ ] Turn day-before texts back on — blocked: TNZ account is trial only; user will confirm when it is live
 
 ## Truck hire nearby and city search
 - [x] Strengthen the existing national and moving-truck pages for broad and nearby searches

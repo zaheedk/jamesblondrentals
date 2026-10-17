@@ -1,7 +1,7 @@
 const TNZ_URL = 'https://api.tnz.co.nz/api/v3.00'
 
 export function pickupSms(name: string, date: string, time: string) {
-  return `James Blond Rentals: Hi ${name || 'there'}, you have a pick-up tomorrow at ${time || '9:00 am'} (${date}). Add your details here for a faster pick-up: https://www.jamesblond.co.nz/login?activate=1 Call 0800 525 663 if you need help. Reply STOP to opt out.`
+  return `James Blond Rentals\nHi ${name || 'there'}, you have a pick-up tomorrow at ${time || '9:00 am'} (${date}). Add your details here for a faster pick-up: https://www.jamesblond.co.nz/login?activate=1 Call 0800 525 663 if you need assistance. Reply STOP to opt out.`
 }
 
 export async function sendTnzSms(token: string, to: string, message: string, fetcher: typeof fetch = fetch): Promise<string> {
