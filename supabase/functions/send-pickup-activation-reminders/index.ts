@@ -70,11 +70,12 @@ Deno.serve(async (req) => {
 
   const resendKey = Deno.env.get('RESEND_API_KEY')
   const tnzToken = Deno.env.get('TNZ_AUTH_TOKEN')
-  const parsed = z.object({ dryRun: z.boolean().optional(), testEmail: z.string().email().optional(),
+  const parsed = z.object({ settings: z.boolean().optional(), dryRun: z.boolean().optional(), testEmail: z.string().email().optional(),
     testPhone: z.string().min(1).max(30).optional(), smsStatusId: z.string().regex(/^[a-zA-Z0-9-]{1,40}$/).optional() })
     .strict().safeParse(await req.json().catch(() => ({})))
   if (!parsed.success) return json({ error: 'Invalid reminder request' }, 400)
   const body = parsed.data
+  if (body.settings) return json({ smsEnabled: Deno.env.get('PICKUP_SMS_ENABLED') === 'true' })
   const dryRun = body?.dryRun === true
   // Sample mode: send to a test email/phone with fictitious details, no logging
   const testEmail: string | undefined = body?.testEmail
@@ -177,7 +178,7 @@ Deno.serve(async (req) => {
         results.errors.push({ ...detail, channel: 'email', error: String(e) })
       }
     }
-    // Text — paused until the TNZ account is live (set PICKUP_SMS_ENABLED=true to resume)
+    // Text — the owner controls live sending through PICKUP_SMS_ENABLED.
     if (phone && Deno.env.get('PICKUP_SMS_ENABLED') === 'true') {
       const { data: cs } = await admin.from('pickup_activation_reminder_log')
         .insert({ booking_reference: b.booking_reference, customer_email: email, channel: 'sms' }).select('id').maybeSingle()
