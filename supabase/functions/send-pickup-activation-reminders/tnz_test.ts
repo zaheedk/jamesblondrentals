@@ -2,11 +2,12 @@ import { assert, assertEquals, assertRejects } from 'jsr:@std/assert@1'
 import { pickupSms, sendTnzSms } from './tnz.ts'
 
 Deno.test('pick-up text leads with the brand on its own line and offers assistance', () => {
-  const message = pickupSms('Zaheed', '18/10/2026', '09:00')
+  const message = pickupSms('Zaheed', '09:00')
   assertEquals(message.split('\n')[0], 'James Blond Rentals')
   assert(message.startsWith('James Blond Rentals\nHi Zaheed,'))
   assert(message.includes('if you need assistance'))
   assert(!message.includes('if you need help'))
+  assert(!message.includes('('), 'message must not contain the date')
 })
 
 Deno.test('TNZ sends to NZ mobile using assigned short code and records MessageID', async () => {
