@@ -6,7 +6,7 @@
 - [ ] Verify a real activation link end-to-end — blocked: external Supabase session unavailable to testing tools
 
 ## TNZ pickup reminders
-- [ ] Show paginated pickup email/text records and TNZ delivery checks in Admin Tools
+- [x] Show paginated pickup email/text records and TNZ delivery checks in Admin Tools; build and sender tests passed, signed-in panel verification unavailable on external Supabase
 - [x] Use secure activation links for unactivated customers and login links for activated customers with missing details; routing tests passed, real activation unverified on external Supabase
 - [x] Securely store TNZ authentication
 - [x] Replace Twilio for day-before pickup texts, preserving email and deduplication
