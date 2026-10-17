@@ -26,6 +26,7 @@ import {
 } from '@/components/ui/form';
 import { Lock, EyeOff, Eye } from 'lucide-react';
 import PageSEO from '@/components/PageSEO';
+import { completePasswordRecovery } from '@/lib/complete-password-recovery';
 
 
 const formSchema = z.object({
@@ -44,16 +45,29 @@ export default function ResetPassword() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
+  const [checkingLink, setCheckingLink] = useState(true);
+  const [validLink, setValidLink] = useState(false);
 
   useEffect(() => {
-    // Check if we have the hash fragment from the reset email
-    const hash = window.location.hash.substring(1);
-    const params = new URLSearchParams(hash);
-    
-    if (!params.get('access_token')) {
-      setError('Invalid password reset link. Please request a new password reset link.');
-    }
+    let active = true;
+    // The auth client may already have consumed and cleared the recovery URL.
+    // Wait for initialization and verify the user instead of checking that hash.
+    const checkLink = async () => {
+      try {
+        const { data, error: authError } = await supabase.auth.getUser();
+        if (!active) return;
+        setValidLink(!authError && !!data.user);
+        if (authError || !data.user) {
+          setError('This link is invalid or has expired. Please request a new password reset link.');
+        }
+      } catch {
+        if (active) setError('Unable to verify your link. Please refresh and try again.');
+      } finally {
+        if (active) setCheckingLink(false);
+      }
+    };
+    void checkLink();
+    return () => { active = false; };
   }, []);
 
   const form = useForm<FormValues>({
@@ -65,27 +79,22 @@ export default function ResetPassword() {
   });
 
   const onSubmit = async (data: FormValues) => {
+    if (checkingLink || !validLink) return;
     try {
       setIsSubmitting(true);
       setError(null);
       
-      const { error: updateError } = await supabase.auth.updateUser({
-        password: data.password
-      });
-      
-      if (updateError) {
-        setError(updateError.message);
-        return;
-      }
-      
-      setSuccess(true);
-      
-      // Redirect to login after 3 seconds
-      setTimeout(() => {
-        navigate('/login', { 
-          state: { message: 'Your password has been reset successfully. You can now log in with your new password.' } 
-        });
-      }, 3000);
+      await completePasswordRecovery(
+        data.password,
+        password => supabase.auth.updateUser({ password }),
+        async () => {
+          const { data: verified, error: authError } = await supabase.auth.getUser();
+          return !authError && !!verified.user;
+        },
+        destination => navigate(destination, { replace: true }),
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unable to save your password. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -108,13 +117,6 @@ export default function ResetPassword() {
             </Alert>
           )}
           
-          {success ? (
-            <Alert className="bg-green-50 border-green-200">
-              <AlertDescription className="text-green-800">
-                Your password has been reset successfully. Redirecting to login page...
-              </AlertDescription>
-            </Alert>
-          ) : (
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <FormField
@@ -186,13 +188,12 @@ export default function ResetPassword() {
                 <Button 
                   type="submit" 
                   className="w-full" 
-                  disabled={isSubmitting || success}
+                  disabled={isSubmitting || checkingLink || !validLink}
                 >
-                  {isSubmitting ? "Saving..." : "Reset Password"}
+                  {checkingLink ? 'Checking link...' : isSubmitting ? 'Saving...' : 'Save password & continue'}
                 </Button>
               </form>
             </Form>
-          )}
         </CardContent>
       </Card>
     </div>
