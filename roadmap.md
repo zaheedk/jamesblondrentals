@@ -6,6 +6,7 @@
 - [ ] Verify a real activation link end-to-end — blocked: external Supabase session unavailable to testing tools
 
 ## TNZ pickup reminders
+- [ ] Show paginated pickup email/text records and TNZ delivery checks in Admin Tools
 - [x] Use secure activation links for unactivated customers and login links for activated customers with missing details; routing tests passed, real activation unverified on external Supabase
 - [x] Securely store TNZ authentication
 - [x] Replace Twilio for day-before pickup texts, preserving email and deduplication
@@ -13,7 +14,7 @@
 - [x] Add a Send test text dialog to desktop and mobile Admin Tools using the existing admin session
 - [x] Send sample and verify TNZ delivery — owner received the test text on their mobile (17 Oct)
 - [x] Put the brand on its own first line and use "assistance" wording in the pick-up text
-- [ ] Turn day-before texts back on — blocked: TNZ account is trial only; user will confirm when it is live
+- [x] Turn day-before texts back on — owner confirmed paid TNZ account; PICKUP_SMS_ENABLED=true
 
 ## Truck hire nearby and city search
 - [x] Strengthen the existing national and moving-truck pages for broad and nearby searches
@@ -62,4 +63,4 @@
 - [x] Simplify Midweek popup: photo + overlay text only, heading in white box, remove buttons/condition
 - [ ] Search Console: publish www sitemap, submit to www property, confirm data flowing
 
-- [ ] Resume day-before pickup texts (paused: TNZ trial account; finalise message wording, make TNZ live, then set PICKUP_SMS_ENABLED=true)
+- [x] Resume day-before pickup texts after paid TNZ account confirmation

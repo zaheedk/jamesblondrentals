@@ -17,3 +17,4 @@
 - Pickup reminders resolve account destinations server-side and reuse one generated recovery link across email/SMS for never-signed-in users; activated users receive the login URL so reminders never reset their credentials.
 - Admin Tools sends sample pickup texts through the existing authenticated reminder function, never directly to TNZ from the browser; this preserves server-side credentials and admin checks.
 - Password recovery retains the recovery session, verifies the user after password saving, and opens the portal profile directly; avoid hash-only checks because the auth client consumes recovery URLs during initialization.
+- Admin pickup reminder logs read the existing admin-only log with pagination and check TNZ delivery through the authenticated reminder function; never label provider acceptance as confirmed delivery or display activation tokens.

@@ -24,6 +24,7 @@ import PaymentCardPanel from '@/components/member/PaymentCardPanel';
 import { useUserRole } from '@/hooks/use-user-role';
 import PageSEO from '@/components/PageSEO';
 import TestPickupTextDialog from '@/components/member/TestPickupTextDialog';
+import PickupReminderLogDialog from '@/components/member/PickupReminderLogDialog';
 
 const sections = [
   { id: 'bookings', label: 'Bookings', icon: Car, subtitle: 'Manage and view all your vehicle bookings in one place.' },
@@ -181,6 +182,7 @@ export default function MemberDashboard() {
               </p>
               <div className="space-y-0.5 pr-1">
                 {isAdmin && <TestPickupTextDialog />}
+                {isAdmin && <PickupReminderLogDialog />}
                 {staff.map(l => {
                   const Icon = l.icon;
                   return (
@@ -278,6 +280,7 @@ export default function MemberDashboard() {
               </p>
               <div className="flex gap-1.5 overflow-x-auto pb-1">
                 {isAdmin && <div className="shrink-0"><TestPickupTextDialog /></div>}
+                {isAdmin && <div className="shrink-0"><PickupReminderLogDialog /></div>}
                 {staff.map(l => {
                   const Icon = l.icon;
                   return (
