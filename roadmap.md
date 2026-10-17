@@ -1,6 +1,7 @@
 # Roadmap
 
 ## TNZ pickup reminders
+- [x] Use secure activation links for unactivated customers and login links for activated customers with missing details; routing tests passed, real activation unverified on external Supabase
 - [x] Securely store TNZ authentication
 - [x] Replace Twilio for day-before pickup texts, preserving email and deduplication
 - [x] Run eight phone/provider tests and deploy the TNZ reminder sender
