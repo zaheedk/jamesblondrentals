@@ -1,4 +1,4 @@
-import { assertEquals, assertRejects } from 'jsr:@std/assert@1'
+import { assert, assertEquals, assertRejects } from 'jsr:@std/assert@1'
 import { LOGIN_URL, pickupAccountLink, pickupActivationUrl } from './account-link.ts'
 import { pickupSms } from './tnz.ts'
 
