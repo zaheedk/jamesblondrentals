@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { MapPin, Phone, Mail, Facebook } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import ContactForm from '@/components/ContactForm';
@@ -11,7 +12,7 @@ const ContactMtWellington = () => {
     <div className="container mx-auto px-4 py-12">
     <PageSEO
       title="Contact Mt Wellington – James Blond Rentals"
-      description="Contact our Mt Wellington branch for car, van and truck rentals in East Auckland. Find our phone number, opening hours and directions."
+      description="Contact our Mt Wellington branch for car and van rentals in East Auckland. Find our phone number, opening hours and directions."
       canonical="/contact/mt-wellington"
     />
     <JsonLd
@@ -88,6 +89,7 @@ const ContactMtWellington = () => {
     <JsonLd data={bookingHowTo("https://www.jamesblond.co.nz/contact/mt-wellington")} />
     <JsonLd data={pickupHowTo({ pageUrl: "https://www.jamesblond.co.nz/contact/mt-wellington", locationName: "Mt Wellington", address: "6C McLennan Road, Mt Wellington, Auckland", isAirport: false })} />
       <h1 className="text-4xl font-bold mb-8 text-center">Mt Wellington Branch</h1>
+      <p className="text-center mb-8 -mt-4"><Link className="text-primary underline" to="/car-van-hire-east-auckland">Car &amp; van hire East Auckland — check prices and availability</Link></p>
       <p className="text-center text-gray-600 mb-8 max-w-2xl mx-auto">
         Our newest Auckland branch, serving Mt Wellington, Sylvia Park, Penrose and Ellerslie with cars, vans and trucks.
       </p>

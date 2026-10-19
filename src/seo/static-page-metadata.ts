@@ -47,6 +47,12 @@ const makeDefaultMetadata = (path: string): StaticPageMetadata => {
 };
 
 const overrides: Record<string, Partial<Omit<StaticPageMetadata, 'path'>>> = {
+  '/car-van-hire-east-auckland': {
+    title: 'Car & Van Hire East Auckland – Mt Wellington | James Blond Rentals',
+    description: 'Car hire and van hire in East Auckland from our Mt Wellington branch. Handy for Panmure, Ellerslie, Howick and Botany. Live prices and availability online.',
+    heading: 'Car & van hire East Auckland',
+    body: 'Car hire and cargo van hire in East Auckland from James Blond Rentals. Pick up at 6C McLennan Road, Mt Wellington — close to Penrose, Ellerslie, Panmure, Glen Innes, Pakuranga, Howick, Botany and East Tamaki. Search your dates for live availability and prices.',
+  },
   '/vehicle-hire-hamilton': {
     title: 'Car, Van & Truck Hire Hamilton | James Blond Rentals',
     description: 'Compare car rental, cargo van and moving truck hire in Hamilton. Check live prices and availability, collect in Frankton and check in online before pickup.',

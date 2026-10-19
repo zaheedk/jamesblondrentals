@@ -189,6 +189,7 @@ const AucklandCarHire = () => {
             sedans, SUVs, 7-seat people movers and 12-seat minibuses — for customers across the CBD, West
             Auckland, South Auckland, the North Shore and Auckland Airport.
           </p>
+          <p className="text-sm text-muted-foreground mb-6">In East Auckland? See <Link className="text-primary underline" to="/car-van-hire-east-auckland">car &amp; van hire in Mt Wellington</Link>.</p>
           <ul className="grid sm:grid-cols-2 gap-2 text-sm">
             {[
               'Cars from $49/day, no hidden fees',

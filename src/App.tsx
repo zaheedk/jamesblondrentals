@@ -168,6 +168,7 @@ import LongTermCarHireAuckland from "./pages/LongTermCarHireAuckland";
 import LongTermCarHireChristchurch from "./pages/LongTermCarHireChristchurch";
 import HamiltonCarHire from "./pages/HamiltonCarHire";
 import HamiltonHire from "./pages/HamiltonHire";
+import EastAucklandHire from "./pages/EastAucklandHire";
 import UteHireNZ from "./pages/UteHireNZ";
 import PickupTruckRental from "./pages/PickupTruckRental";
 import TipperTruckHire from "./pages/TipperTruckHire";
@@ -455,6 +456,7 @@ const App = () => {
                 ))}
                 <Route path="/car-hire-hamilton" element={<HamiltonCarHire />} />
                 <Route path="/vehicle-hire-hamilton" element={<HamiltonHire />} />
+                <Route path="/car-van-hire-east-auckland" element={<EastAucklandHire />} />
                 <Route path="/car-hire-auckland" element={<AucklandCarHire />} />
                 <Route path="/car-hire-christchurch" element={<ChristchurchCarHire />} />
                 <Route path="/ute-hire" element={<UteHireNZ />} />
