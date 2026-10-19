@@ -54,6 +54,19 @@ export default function ResetPassword() {
     // Wait for initialization and verify the user instead of checking that hash.
     const checkLink = async () => {
       try {
+        // Activation links carry token_hash on our own domain; verify it to establish the session.
+        const params = new URLSearchParams(window.location.search);
+        const tokenHash = params.get('token_hash');
+        if (tokenHash && params.get('type') === 'recovery') {
+          const { error: otpError } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: 'recovery' });
+          if (otpError) {
+            if (!active) return;
+            setValidLink(false);
+            setError('This link is invalid or has expired. Please request a new password reset link.');
+            setCheckingLink(false);
+            return;
+          }
+        }
         const { data, error: authError } = await supabase.auth.getUser();
         if (!active) return;
         setValidLink(!authError && !!data.user);
