@@ -11,7 +11,7 @@ const ContactMtWellington = () => {
     <div className="container mx-auto px-4 py-12">
     <PageSEO
       title="Contact Mt Wellington – James Blond Rentals"
-      description="Contact our Mt Wellington branch for car, van and truck rentals in East Auckland. Find our phone number, opening hours and directions."
+      description="Contact our Mt Wellington branch for car and van rentals in East Auckland. Find our phone number, opening hours and directions."
       canonical="/contact/mt-wellington"
     />
     <JsonLd
