@@ -10,7 +10,7 @@ import cargoVan from '@/assets/truck-open-doors-loading-boxes.jpg';
 
 const hireOptions = [
   { title: 'Car hire East Auckland', icon: Car, image: roadTrip, alt: 'SUV on a New Zealand road trip', to: '/car-hire-auckland', description: 'Everyday cars and SUVs for work, visiting family or a weekend away. Compare what is available for your dates.', uses: 'Business travel · Weekends away · Replacement vehicle' },
-  { title: 'Van hire East Auckland', icon: Package, image: cargoVan, alt: 'Cargo van with open rear doors and moving boxes', to: '/auckland-van-hire', description: 'Room for furniture, tools and deliveries. Cargo vans drive on a standard NZ car licence.', uses: 'Furniture runs · Trades · Small moves' },
+  { title: 'Van hire East Auckland', icon: Package, image: cargoVan, alt: 'Cargo van with open rear doors and moving boxes', to: '/van-hire', description: 'Room for furniture, tools and deliveries. Cargo vans drive on a standard NZ car licence.', uses: 'Furniture runs · Trades · Small moves' },
 ];
 
 const faqs = [
@@ -95,7 +95,7 @@ const EastAucklandHire = () => (
         </Accordion>
       </div>
       <div className="mt-12 flex flex-wrap gap-x-6 gap-y-3 border-t border-border pt-8">
-        {[['/car-hire-auckland', 'Auckland car hire'], ['/auckland-van-hire', 'Auckland van hire'], ['/van-hire', 'Van hire NZ'], ['/west-auckland-truck-rentals-hire', 'West Auckland truck hire']].map(([to, label]) => <Link key={to} to={to} className="inline-flex items-center gap-2 text-sm font-medium text-primary underline-offset-4 hover:underline">{label}<ArrowRight className="h-4 w-4" /></Link>)}
+        {[['/car-hire-auckland', 'Auckland car hire'], ['/van-hire', 'Van hire NZ'], ['/west-auckland-truck-rentals-hire', 'West Auckland truck hire']].map(([to, label]) => <Link key={to} to={to} className="inline-flex items-center gap-2 text-sm font-medium text-primary underline-offset-4 hover:underline">{label}<ArrowRight className="h-4 w-4" /></Link>)}
       </div>
     </section>
   </main>
