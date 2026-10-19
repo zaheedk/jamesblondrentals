@@ -5,7 +5,7 @@ import { createClient } from 'npm:@supabase/supabase-js@2'
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
 import { toE164NZ } from './phone.ts'
 import { pickupSms, sendTnzSms, tnzSmsStatus } from './tnz.ts'
-import { ACTIVATION_REDIRECT_URL, pickupAccountLink } from './account-link.ts'
+import { pickupAccountLink, pickupActivationUrl } from './account-link.ts'
 import { z } from 'npm:zod@3'
 
 const SITE_URL = 'https://www.jamesblond.co.nz'
@@ -155,11 +155,10 @@ Deno.serve(async (req) => {
     if (dryRun) { results.details.push({ ...detail, dryRun: true }); continue }
 
     const accountLink = pickupAccountLink(activated, async () => {
-      const { data: link, error: linkError } = await admin.auth.admin.generateLink({
-        type: 'recovery', email, options: { redirectTo: ACTIVATION_REDIRECT_URL },
-      })
-      if (linkError) throw new Error('Could not create account activation link; reminder not sent')
-      return link?.properties?.action_link
+      const { data: link, error: linkError } = await admin.auth.admin.generateLink({ type: 'recovery', email })
+      const tokenHash = link?.properties?.hashed_token
+      if (linkError || !tokenHash) throw new Error('Could not create account activation link; reminder not sent')
+      return pickupActivationUrl(tokenHash)
     })
 
     // Email
