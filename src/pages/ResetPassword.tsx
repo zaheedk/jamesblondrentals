@@ -58,13 +58,10 @@ export default function ResetPassword() {
         const params = new URLSearchParams(window.location.search);
         const tokenHash = params.get('token_hash');
         if (tokenHash && params.get('type') === 'recovery') {
+          // Single-use token: on reload it fails, so fall through to the stored session check.
           const { error: otpError } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: 'recovery' });
-          if (otpError) {
-            if (!active) return;
-            setValidLink(false);
-            setError('This link is invalid or has expired. Please request a new password reset link.');
-            setCheckingLink(false);
-            return;
+          if (!otpError) {
+            window.history.replaceState(null, '', window.location.pathname);
           }
         }
         const { data, error: authError } = await supabase.auth.getUser();
