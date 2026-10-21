@@ -9,7 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { ApiRecord, apiSucceeded, asRecord, createRehearsalApi, idOf, money, resultOf, rows, safeInspection } from "@/lib/broker-demo";
-import carPhoto from "@/assets/christchurch-car-rental-coastal.jpg";
+import carPhoto from "@/assets/auckland-car-rental-coastal-road.jpg";
 
 const dateAhead = (days: number) => { const d = new Date(); d.setDate(d.getDate() + days); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; };
 const apiDate = (date: string) => date.split("-").reverse().join("/");
@@ -103,6 +103,9 @@ export default function BrokerDemo() {
     if (live && (!confirmed || uncertain)) { setError("Confirm this approved production booking first."); return; }
     const priced = await call({ method: "step3", ...itinerary(), vehiclecategoryid: car.vehiclecategoryid });
     if (!priced) return;
+    const coverExists = rows(priced.insuranceoptions).some(i => idOf(i) === insurance);
+    const extraOptions = rows(priced.optionalfees ?? priced.extras);
+    if (!coverExists || extras.some(id => !extraOptions.some(e => idOf(e) === id))) { setError("Cover or extras changed. Review the current options before booking."); setDetails(priced); setConfirmed(false); setStep(2); return; }
     const result = await call({ method: "booking", ...itinerary(), vehiclecategoryid: car.vehiclecategoryid, bookingtype: 2, insuranceid: insurance, ...(km ? { extrakmsid: km } : {}), optionalfees: extras.map(id => ({ id, qty: 1 })), customer, refno: order }, true);
     if (!result) return;
     const info = rows(result.bookinginfo)[0] ?? {};
