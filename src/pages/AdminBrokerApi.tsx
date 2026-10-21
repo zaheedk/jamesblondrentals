@@ -8,6 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { Link } from "react-router-dom";
 
 interface Broker { id: string; name: string; api_key: string; rcm_credential_ref: string; active: boolean; rate_limit_per_min: number; }
 interface LogRow { id: string; broker_id: string | null; method: string | null; status: string; error: string | null; duration_ms: number | null; created_at: string; }
@@ -45,6 +46,7 @@ const AdminBrokerApi = () => {
     <div className="container mx-auto p-6 space-y-6">
       <div>
         <h1 className="text-3xl font-bold">Broker API</h1>
+        <Button asChild variant="outline" size="sm" className="my-3"><Link to="/broker-demo">Open broker booking demo</Link></Button>
         <p className="text-muted-foreground">RCM-compatible agent API. Brokers only change the endpoint and keys.</p>
         <p className="text-sm mt-2 break-all">Endpoint: <code className="bg-muted px-2 py-1 rounded">{ENDPOINT}?apikey=&lt;KEY&gt;</code></p>
       </div>

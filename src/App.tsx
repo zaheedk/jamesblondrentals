@@ -66,6 +66,7 @@ const AdminInfringements = lazyWithRetry(() => import("./pages/AdminInfringement
 const AdminSearchEvents = lazyWithRetry(() => import("./pages/AdminSearchEvents"));
 const AdminQuoteReminders = lazyWithRetry(() => import("./pages/AdminQuoteReminders"));
 const AdminBrokerApi = lazyWithRetry(() => import("./pages/AdminBrokerApi"));
+const BrokerDemo = lazyWithRetry(() => import("./pages/BrokerDemo"));
 const AdminVehicles = lazyWithRetry(() => import("./pages/AdminVehicles"));
 const AdminReferenceData = lazyWithRetry(() => import("./pages/AdminReferenceData"));
 const AdminGroomChecklists = lazyWithRetry(() => import("./pages/AdminGroomChecklists"));
@@ -352,6 +353,7 @@ const App = () => {
               <AdminBrokerApi />
             </ProtectedRoute>
           } />
+          <Route path="/broker-demo" element={<BrokerDemo />} />
 
           <Route path="/admin/vehicles" element={
             <ProtectedRoute>
