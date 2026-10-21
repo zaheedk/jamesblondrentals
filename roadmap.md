@@ -1,9 +1,10 @@
 # Roadmap
 
 ## Broker booking demo
-- [ ] Build a shareable rehearsal flow and credential-protected live API test mode
-- [ ] Add request/response inspection, lookup and cancellation, with explicit live-write confirmation
-- [ ] Test the rehearsal end-to-end and validate API safeguards; live writes require approved broker test credentials
+- [x] Build a shareable rehearsal flow and credential-protected live API test mode
+- [x] Add request/response inspection, lookup and cancellation, with explicit live-write confirmation
+- [x] Test the rehearsal end-to-end and validate API safeguards
+- [ ] Verify live booking and cancellation — blocked: dedicated approved broker test credentials and test-booking authorization are needed; live updates need a separate approved maintenance endpoint
 
 ## Password activation journey
 - [x] Keep customers signed in after password saving and open their profile directly
