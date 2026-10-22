@@ -138,23 +138,32 @@ async function toolCheckAvailability(p: Record<string, unknown>) {
     return { error: "Availability check failed — please offer a callback." };
   }
 
-  const cars: any[] = matchingVehicles(step2?.results?.availablecars || [], vehicleType);
-
-  const vehicles = cars.slice(0, 6).map((c) => ({
+  const allCars: any[] = step2?.results?.availablecars || [];
+  const cars: any[] = matchingVehicles(allCars, vehicleType);
+  const summarise = (c: any) => ({
     name: c.vehiclecategory || "Vehicle",
     example: c.categoryfriendlydescription || "",
     daily_rate_nzd: Number(c.avgrate),
     total_rate_nzd: Number(c.totalrateafterdiscount) > 0 ? Number(c.totalrateafterdiscount) : null,
     days: Number(c.numberofdays) || null,
-  }));
+  });
+
+  const vehicles = cars.slice(0, 6).map(summarise);
+  // When the requested wording matches nothing, show what IS free so the
+  // assistant never tells a caller "nothing available" when similar stock exists.
+  const otherAvailable = cars.length === 0 && vehicleType
+    ? matchingVehicles(allCars, "").slice(0, 8).map(summarise)
+    : undefined;
 
   return {
     branch: loc.location,
     pickup_date: pickupDate,
     dropoff_date: dropoffDate,
+    vehicle_type_requested: vehicleType || null,
     vehicles_found: cars.length,
     vehicles,
-    note: "Rates are in NZD including GST, before optional extras such as insurance upgrades. Final total is confirmed at booking. If nothing suitable is listed, offer a callback.",
+    ...(otherAvailable ? { other_available_vehicles: otherAvailable } : {}),
+    note: "Rates are in NZD including GST, before optional extras such as insurance upgrades. Final total is confirmed at booking. Trucks are listed by size, e.g. '2 Ton Box'. If vehicles_found is 0 but other_available_vehicles lists something close, offer it. If nothing suitable is listed, offer a callback.",
   };
 }
 
