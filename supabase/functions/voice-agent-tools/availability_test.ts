@@ -1,5 +1,5 @@
 import { assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
-import { matchingVehicles } from "./availability.ts";
+import { matchingVehicles, perKmCharge } from "./availability.ts";
 
 // Shapes taken from the live Hamilton result for 25–26 Oct 2026.
 const fleet = [
@@ -35,4 +35,30 @@ Deno.test("'12 seater' finds the minibus, not trucks or vans", () => {
 
 Deno.test("'van' finds cargo vans only", () => {
   assertEquals(names("van"), ["Standard Cargo Van"]);
+});
+
+// Per-km charges mirror the published price guide.
+Deno.test("per-km charge: 2 Ton Box 9-12m3 is $0.42, 16-18m3 is $0.47", () => {
+  assertEquals(perKmCharge({ vehiclecategory: "2 Ton Box (9m³ - 12m³)", vehiclecategorytypeid: 12 }), 0.42);
+  assertEquals(perKmCharge({ vehiclecategory: "2 Ton Box (16m³-18m³)", vehiclecategorytypeid: 12 }), 0.47);
+});
+
+Deno.test("per-km charge: tail lift, tipper and 3-tonne trucks", () => {
+  assertEquals(perKmCharge({ vehiclecategory: "2 Ton Box (9m³-12m³) Tail Lift", vehiclecategorytypeid: 12 }), 0.44);
+  assertEquals(perKmCharge({ vehiclecategory: "2 Ton Tipper", vehiclecategorytypeid: 12 }), 0.39);
+  assertEquals(perKmCharge({ vehiclecategory: "3 Ton Box (16m³-18m³)Tail Lift", vehiclecategorytypeid: 12 }), 0.61);
+  assertEquals(perKmCharge({ vehiclecategory: "3 Ton Tail Lift Class2 (19m³)", vehiclecategorytypeid: 12 }), 0.62);
+});
+
+Deno.test("per-km charge: vans and utes", () => {
+  assertEquals(perKmCharge({ vehiclecategory: "Jumbo Van (9m³)", vehiclecategorytypeid: 24 }), 0.39);
+  assertEquals(perKmCharge({ vehiclecategory: "High Roof Van", vehiclecategorytypeid: 11 }), 0.35);
+  assertEquals(perKmCharge({ vehiclecategory: "Standard Cargo Van", vehiclecategorytypeid: 11 }), null);
+  assertEquals(perKmCharge({ vehiclecategory: "Ute Double Cab 4WD (Diesel)", vehiclecategorytypeid: 10 }), 0.3);
+  assertEquals(perKmCharge({ vehiclecategory: "Ute Single Cab Diesel", vehiclecategorytypeid: 10 }), 0.25);
+});
+
+Deno.test("per-km charge: cars and minibuses have unlimited kilometres", () => {
+  assertEquals(perKmCharge({ vehiclecategory: "Compact Car", vehiclecategorytypeid: 1 }), null);
+  assertEquals(perKmCharge({ vehiclecategory: "Premium 12 Seat Minibus", vehiclecategorytypeid: 4 }), null);
 });
