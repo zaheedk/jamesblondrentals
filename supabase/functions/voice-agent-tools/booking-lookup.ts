@@ -11,9 +11,13 @@ export async function checkBookingByNumber(p: Record<string, unknown>, rcm: RcmC
   if (!/^\d{4,7}$/.test(reservationNo)) {
     return { error: "Ask the caller for the 5-digit booking number from their confirmation email, then retry." };
   }
-  const response = await rcm("bookinginfo", { reservationno: reservationNo });
+  const lastName = String(p.last_name || "").trim();
+  const response = await rcm("bookinginfo", { reservationno: reservationNo, ...(lastName ? { lastname: lastName } : {}) });
   if (response?.status !== "OK" || !response?.results?.bookinginfo?.length) {
-    return { error: `No booking found for number ${reservationNo}. Ask the caller to double-check the number from their confirmation email; if it still fails, offer a callback.` };
+    if (!lastName) {
+      return { error: `Booking ${reservationNo} was not found on the number alone. Ask the caller for the last name on the booking, then retry with last_name.` };
+    }
+    return { error: `No booking found for number ${reservationNo} under that last name. Ask the caller to double-check both from their confirmation email; if it still fails, offer a callback.` };
   }
   const info = response.results.bookinginfo[0];
   const status = String(info.reservationstatus || "unknown");
