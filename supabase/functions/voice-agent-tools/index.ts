@@ -208,10 +208,10 @@ async function toolCheckAvailability(p: Record<string, unknown>) {
   const step2 = await rcmCall("step2", {
     pickuplocationid: loc.id,
     pickupdate: toRcmDate(pickupDate),
-    pickuptime: pickupTime,
+    pickuptime: adjPickupTime,
     dropofflocationid: loc.id,
     dropoffdate: toRcmDate(dropoffDate),
-    dropofftime: dropoffTime,
+    dropofftime: adjDropoffTime,
     ...(ageid ? { ageid } : {}),
     vehiclecategorytypeid: 0,
   });
