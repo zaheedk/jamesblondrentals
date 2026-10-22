@@ -1,6 +1,7 @@
 # Project Architecture Rules
 
 - Voice-agent webhooks use persisted ElevenLabs tool IDs with api_schema.request_headers, preserve tool failures for the model, and confirm callback success only from the tool response; this prevents silent authentication failures becoming invented answers.
+- Voice website knowledge uses dated, source-linked public-page snapshots with error/private pages excluded; agent updates preserve knowledge attachments and retrieval settings, while live tools remain authoritative for availability and date-specific prices.
 
 - Broker demo uses an isolated in-memory rehearsal API by default and a fixed-destination server signing relay for assigned broker credentials; no secrets are persisted, live writes require explicit confirmation, and live updates remain disabled until separate maintenance access exists.
 

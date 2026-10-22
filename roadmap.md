@@ -72,6 +72,7 @@
 - [x] Resume day-before pickup texts after paid TNZ account confirmation
 
 ## Voice agent (3CX / phone assistant)
+- [x] Scan 249 public URLs, generate dated knowledge base from 224 content pages, attach six indexed references to ElevenLabs and verify Wellington address/hours and Mt Wellington cars/vans-only answers; excludes errors, placeholders and duplicates
 - [x] Correct rejected tool authentication and prevent invented branch/callback answers; live conversation asked for return date and successfully checked Wellington CBD trucks
 - [x] Build voice-agent-tools edge function (business info, live availability, callback requests)
 - [x] Build voice-agent-admin edge function (creates/updates ElevenLabs agent, wires tools)
