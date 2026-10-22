@@ -40,21 +40,45 @@ async function hmacHex(secret: string, body: string): Promise<string> {
   return Array.from(new Uint8Array(sig)).map((b) => b.toString(16).padStart(2, "0")).join("").toUpperCase();
 }
 
+// The booking system's edge occasionally returns transient 5xx (e.g. 520)
+// or drops the connection; a single blip must not end a caller's quote.
+const RETRYABLE = new Set([429, 500, 502, 503, 504, 520, 521, 522, 523, 524]);
+const MAX_ATTEMPTS = 4;
+
 async function rcmCall(method: string, payload: Record<string, unknown>): Promise<any> {
   const body = JSON.stringify({ method, ...payload });
   const signature = await hmacHex(RCM_API_SECRET, body);
-  let res: Response | null = null;
-  for (let attempt = 0; attempt < 3; attempt++) {
-    res = await fetch(`${RCM_API_URL}?apikey=${RCM_API_KEY}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json", signature },
-      body,
-    });
-    if (res.status !== 429) break;
-    await new Promise((r) => setTimeout(r, 1500 * (attempt + 1)));
+  let lastError = "no response";
+  for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+    if (attempt > 0) await new Promise((r) => setTimeout(r, 700 * attempt));
+    try {
+      const res = await fetch(`${RCM_API_URL}?apikey=${RCM_API_KEY}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json", signature },
+        body,
+        signal: AbortSignal.timeout(8000),
+      });
+      if (res.ok) return await res.json();
+      lastError = String(res.status);
+      await res.body?.cancel();
+      if (!RETRYABLE.has(res.status)) break;
+      console.warn(`RCM ${method} returned ${res.status}, attempt ${attempt + 1}/${MAX_ATTEMPTS}`);
+    } catch (e) {
+      lastError = e instanceof Error ? e.message : String(e);
+      console.warn(`RCM ${method} request failed (${lastError}), attempt ${attempt + 1}/${MAX_ATTEMPTS}`);
+    }
   }
-  if (!res || !res.ok) throw new Error(`Booking system error (${res?.status ?? "no response"})`);
-  return res.json();
+  throw new Error(`Booking system error (${lastError})`);
+}
+
+// Branch list and driver ages change rarely; caching them halves the
+// booking-system calls per quote and the chance of hitting a transient error.
+let step1Cache: { at: number; data: any } | null = null;
+async function getStep1(): Promise<any> {
+  if (step1Cache && Date.now() - step1Cache.at < 15 * 60_000) return step1Cache.data;
+  const data = await rcmCall("step1", {});
+  if (data?.status === "OK" || data?.results?.locations?.length) step1Cache = { at: Date.now(), data };
+  return data;
 }
 
 // DD/MM/YYYY for the booking system
@@ -121,7 +145,7 @@ async function toolCheckAvailability(p: Record<string, unknown>) {
   const dropoffDate = dates.dropoff;
   const datesCorrected = pickupDate !== rawPickup || dropoffDate !== rawDropoff;
 
-  const step1 = await rcmCall("step1", {});
+  const step1 = await getStep1();
   const locations = step1?.results?.locations || [];
   const loc = resolveLocation(locations, branch);
   if (!loc) {
@@ -251,6 +275,11 @@ Deno.serve(async (req) => {
     }
   } catch (e) {
     console.error(`tool ${tool} failed:`, e);
-    return json({ error: "Tool failed — please offer the caller a callback." }, 200);
+    const transient = tool === "check_availability" && e instanceof Error && e.message.startsWith("Booking system error");
+    return json({
+      error: transient
+        ? "The booking system had a temporary connection problem. Tell the caller you'll try once more, then call check_availability again with the same details. If it fails a second time, offer a callback."
+        : "Tool failed — please offer the caller a callback.",
+    }, 200);
   }
 });
