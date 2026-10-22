@@ -7,6 +7,7 @@ import { corsHeaders } from "./cors.ts";
 import { matchingVehicles, normaliseHireDates, nzDate, perKmCharge, resolveLocation } from "./availability.ts";
 import { callbackSchema } from "./booking-policy.ts";
 import { createPhoneQuote, checkPhoneBooking } from "./phone-booking.ts";
+import { checkBookingByNumber } from "./booking-lookup.ts";
 
 const RCM_API_URL = "https://apis.rentalcarmanager.com/booking/v3.2";
 // Same credentials the public website uses (already public in frontend code).
@@ -284,6 +285,8 @@ Deno.serve(async (req) => {
         return json(await createPhoneQuote(params, rcmCall, getStep1));
       case "check_phone_booking":
         return json(await checkPhoneBooking(params, rcmCall));
+      case "check_booking":
+        return json(await checkBookingByNumber(params, rcmCall));
       default:
         return json({ error: `Unknown tool "${tool}"` }, 404);
     }
