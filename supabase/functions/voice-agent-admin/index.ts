@@ -149,6 +149,21 @@ function toolSchemas(toolsUrl: string, secret: string) {
         request_body_schema: { type: "object", properties: { request_id: { type: "string", description: "Same id used by create_phone_quote" } }, required: ["request_id"] },
       },
     },
+    {
+      type: "webhook", name: "check_booking",
+      description: "Look up ANY existing booking or quote by its 5-digit reservation number from the customer's confirmation email, however it was made (website, staff or phone). Returns status, vehicle, pickup/return details and amounts only. Use this when a caller asks about an existing booking. For changes, cancellations or details not returned, take a callback request.",
+      response_timeout_secs: 60, tool_error_handling_mode: "passthrough",
+      api_schema: {
+        url: `${toolsUrl}?tool=check_booking`, method: "POST", request_headers: headers,
+        request_body_schema: {
+          type: "object",
+          properties: {
+            reservation_number: { type: "string", description: "The 5-digit booking number from the customer's confirmation email, e.g. 33669" },
+          },
+          required: ["reservation_number"],
+        },
+      },
+    },
   ];
 }
 
