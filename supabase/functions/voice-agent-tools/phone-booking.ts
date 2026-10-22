@@ -76,6 +76,13 @@ export async function createPhoneQuote(params: Record<string, unknown>, rcm: Rcm
     // Booking writes are never automatically retried: a timeout may still create a quote.
     const booking = await rcm("booking", { ...hire, vehiclecategoryid: p.vehicle_category_id, vehiclecategorytypeid: vehicle.vehiclecategorytypeid, bookingtype: 1, emailoption: 0, insuranceid: 0, extrakmsid: 0, optionalfees: [], customer: { firstname: p.first_name, lastname: p.last_name, email: p.email.toLowerCase(), phone: p.phone, mobile: p.phone }, remark: `Phone quote request ${p.request_id}; details confirmed by caller.` });
     if (booking?.status !== "OK" || !booking.results?.reservationref) {
+      console.error("phone quote booking write failed", JSON.stringify({
+        request_id: p.request_id,
+        status: booking?.status ?? null,
+        error: booking?.error ?? null,
+        message: booking?.message ?? null,
+        result_keys: booking?.results ? Object.keys(booking.results) : null,
+      }));
       await db.from("voice_booking_requests").update({ state: "needs_review" }).eq("id", row.id);
       return { error: "Quote creation could not be confirmed. Do not retry with a new request; ask staff to check for an existing quote." };
     }
