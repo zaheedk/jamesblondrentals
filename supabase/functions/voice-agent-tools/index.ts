@@ -1,0 +1,261 @@
+// James Blond Rentals — voice agent tools.
+// Webhook endpoints called by the ElevenLabs phone agent during a call.
+// Auth: header x-voice-agent-key must match VOICE_AGENT_TOOLS_SECRET
+// (configured on the agent by voice-agent-admin), or x-admin-key must
+// match ELEVENLABS_API_KEY (admin/testing only).
+import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
+
+const RCM_API_URL = "https://apis.rentalcarmanager.com/booking/v3.2";
+// Same credentials the public website uses (already public in frontend code).
+const RCM_API_KEY = Deno.env.get("RCM_SITE_API_KEY") || "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq";
+const RCM_API_SECRET = Deno.env.get("RCM_SITE_API_SECRET") || "tsdavpoP51o6AcLIdorqgtFJ0ullAimg";
+
+const CALLBACK_EMAIL = "zaheedk@jamesblond.co.nz";
+
+function json(data: unknown, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
+}
+
+function authorized(req: Request): boolean {
+  const toolKey = Deno.env.get("VOICE_AGENT_TOOLS_SECRET") || "";
+  const adminKey = Deno.env.get("ELEVENLABS_API_KEY") || "";
+  const gotTool = req.headers.get("x-voice-agent-key") || "";
+  const gotAdmin = req.headers.get("x-admin-key") || "";
+  return (toolKey && gotTool === toolKey) || (adminKey && gotAdmin === adminKey);
+}
+
+// ---------- RCM helpers ----------
+
+const enc = new TextEncoder();
+
+async function hmacHex(secret: string, body: string): Promise<string> {
+  const key = await crypto.subtle.importKey(
+    "raw", enc.encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"],
+  );
+  const sig = await crypto.subtle.sign("HMAC", key, enc.encode(body));
+  return Array.from(new Uint8Array(sig)).map((b) => b.toString(16).padStart(2, "0")).join("").toUpperCase();
+}
+
+async function rcmCall(method: string, payload: Record<string, unknown>): Promise<any> {
+  const body = JSON.stringify({ method, ...payload });
+  const signature = await hmacHex(RCM_API_SECRET, body);
+  let res: Response | null = null;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    res = await fetch(`${RCM_API_URL}?apikey=${RCM_API_KEY}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json", signature },
+      body,
+    });
+    if (res.status !== 429) break;
+    await new Promise((r) => setTimeout(r, 1500 * (attempt + 1)));
+  }
+  if (!res || !res.ok) throw new Error(`Booking system error (${res?.status ?? "no response"})`);
+  return res.json();
+}
+
+// DD/MM/YYYY for the booking system
+function toRcmDate(iso: string): string {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso.trim());
+  if (!m) throw new Error("invalid date");
+  return `${m[3]}/${m[2]}/${m[1]}`;
+}
+
+const BRANCH_KEYWORDS: [string, string[]][] = [
+  ["west auckland", ["west auckland", "henderson"]],
+  ["auckland airport", ["auckland airport"]],
+  ["south auckland", ["south auckland", "manukau", "papatoetoe"]],
+  ["mt wellington", ["mt wellington", "mount wellington", "east auckland", "mclennan"]],
+  ["hamilton", ["hamilton"]],
+  ["wellington cbd", ["wellington cbd", "wellington city", "wellington central"]],
+  ["wellington airport", ["wellington airport"]],
+  ["christchurch central", ["christchurch central", "christchurch city", "christchurch cbd"]],
+  ["christchurch airport", ["christchurch airport"]],
+  ["new plymouth", ["new plymouth"]],
+  ["palmerston north", ["palmerston north"]],
+];
+
+function findLocation(locations: any[], branch: string): any | null {
+  const q = branch.toLowerCase();
+  for (const [, keywords] of BRANCH_KEYWORDS) {
+    if (keywords.some((k) => q.includes(k))) {
+      const loc = locations.find((l: any) =>
+        keywords.some((k) => String(l.location || "").toLowerCase().includes(k)));
+      if (loc) return loc;
+    }
+  }
+  // fall back to any partial match
+  return locations.find((l: any) =>
+    String(l.location || "").toLowerCase().includes(q) ||
+    String(l.city || "").toLowerCase().includes(q)) || null;
+}
+
+// ---------- Tools ----------
+
+const BUSINESS_INFO = {
+  company: "James Blond Rentals",
+  founded: 2004,
+  phone: "0800 525 663",
+  website: "https://www.jamesblond.co.nz",
+  family_run: true,
+  branches: [
+    { name: "West Auckland (Henderson)", vehicles: "cars, vans, utes, trucks, minibuses" },
+    { name: "Auckland Airport", vehicles: "cars, vans, utes, trucks, minibuses" },
+    { name: "South Auckland", vehicles: "cars, vans, utes, trucks" },
+    { name: "Mt Wellington (East Auckland)", vehicles: "cars and vans only — no trucks" },
+    { name: "Hamilton", vehicles: "cars, vans, trucks" },
+    { name: "Wellington CBD", vehicles: "cars, vans, utes, trucks" },
+    { name: "Wellington Airport", vehicles: "cars, vans" },
+    { name: "Christchurch Central", vehicles: "cars, vans, utes, trucks" },
+    { name: "Christchurch Airport", vehicles: "cars, vans, utes, trucks" },
+    { name: "New Plymouth Airport", vehicles: "cars, vans" },
+    { name: "Palmerston North", vehicles: "cars, vans" },
+  ],
+  licence_rules: {
+    cars_vans: "A standard full car licence (Class 1) is fine for cars, vans, utes and minibuses up to 12 seats.",
+    trucks_3_tonne: "For 3-tonne trucks it depends on the specific truck — some can be driven on a car licence, others need a Class 2 licence. Confirm the allocated truck's requirement with the branch before booking.",
+  },
+  insurance: "Standard insurance is included with an excess. An optional excess-reduction upgrade is available at $39 per day — it is opt-in, never pre-selected.",
+  pricing: {
+    general: "Prices are live and demand-based for passenger vehicles; commercial vehicle rates are fixed and do not change with demand.",
+    minibus: "Minibus and 12-seater rates are quoted on request, except schools: $210 per day flat rate for 12-seaters.",
+    long_hire: "Discounted rates apply for hires of 21 days or more.",
+  },
+  payment: "Visa and Mastercard accepted. A bond or pre-authorisation may apply depending on the vehicle.",
+  pre_checkin: "Customers can complete pre-check-in online before pickup to save time at the branch.",
+  one_way: "One-way hires between branches are available on many routes, especially commercial vehicles — ask for a quote.",
+};
+
+async function toolCheckAvailability(p: Record<string, unknown>) {
+  const branch = String(p.branch || "").trim();
+  const pickupDate = String(p.pickup_date || "").trim();
+  const dropoffDate = String(p.dropoff_date || "").trim();
+  const pickupTime = String(p.pickup_time || "10:00").trim();
+  const dropoffTime = String(p.dropoff_time || "10:00").trim();
+  const vehicleType = String(p.vehicle_type || "").toLowerCase().trim();
+
+  if (!branch || !pickupDate || !dropoffDate) {
+    return { error: "branch, pickup_date and dropoff_date are required" };
+  }
+
+  const step1 = await rcmCall("step1", {});
+  const locations = step1?.results?.locations || [];
+  const loc = findLocation(locations, branch);
+  if (!loc) {
+    return { error: `Could not find a branch matching "${branch}". Branches: ${locations.map((l: any) => l.location).join(", ")}` };
+  }
+
+  const ages = step1?.results?.ages || step1?.results?.agegroups || [];
+  const ageid = ages[0]?.id ?? ages[0]?.ageid;
+
+  const step2 = await rcmCall("step2", {
+    pickuplocationid: loc.id,
+    pickupdate: toRcmDate(pickupDate),
+    pickuptime: pickupTime,
+    dropofflocationid: loc.id,
+    dropoffdate: toRcmDate(dropoffDate),
+    dropofftime: dropoffTime,
+    ...(ageid ? { ageid } : {}),
+    vehiclecategorytypeid: 0,
+  });
+
+  if (step2?.status !== "OK") {
+    return { error: "Availability check failed — please offer a callback." };
+  }
+
+  let cars: any[] = step2?.results?.availablecars || [];
+  if (vehicleType) {
+    const kw = vehicleType.split(/\s+/);
+    const matched = cars.filter((c) => {
+      const hay = `${c.vehiclecategory || ""} ${c.vehiclecategorytype || ""} ${c.name || ""}`.toLowerCase();
+      return kw.some((k) => hay.includes(k));
+    });
+    if (matched.length) cars = matched;
+  }
+
+  const vehicles = cars.slice(0, 6).map((c) => ({
+    name: c.vehiclecategory || c.name || "Vehicle",
+    type: c.vehiclecategorytype || "",
+    daily_rate_nzd: Number(c.avgrate) > 0 ? Number(c.avgrate) : null,
+  }));
+
+  return {
+    branch: loc.location,
+    pickup_date: pickupDate,
+    dropoff_date: dropoffDate,
+    vehicles_found: cars.length,
+    vehicles,
+    note: "Rates are per day in NZD including GST, before optional extras. Final total is confirmed at booking. If nothing suitable is listed, offer a callback.",
+  };
+}
+
+async function toolRequestCallback(p: Record<string, unknown>) {
+  const name = String(p.name || "").trim();
+  const phone = String(p.phone || "").trim();
+  const topic = String(p.topic || "General enquiry").trim();
+  const preferredTime = String(p.preferred_time || "any time").trim();
+  if (!name || !phone) return { error: "name and phone are required" };
+
+  const resendKey = Deno.env.get("RESEND_API_KEY");
+  if (!resendKey) return { error: "Email service not configured" };
+
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      from: "James Blond Rentals <info@jamesblond.co.nz>",
+      to: [CALLBACK_EMAIL],
+      subject: `Voice agent callback request — ${name}`,
+      text: [
+        `A caller asked for a callback via the phone voice agent.`,
+        ``,
+        `Name: ${name}`,
+        `Phone: ${phone}`,
+        `Topic: ${topic}`,
+        `Preferred time: ${preferredTime}`,
+        ``,
+        `Please call them back.`,
+      ].join("\n"),
+    }),
+  });
+  if (!res.ok) {
+    console.error("callback email failed", res.status, await res.text());
+    return { error: "Could not send the callback request — please take the details manually." };
+  }
+  return { success: true, message: `Callback request noted for ${name} on ${phone}. The team will call back.` };
+}
+
+// ---------- Handler ----------
+
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+  if (req.method !== "POST") return json({ error: "POST only" }, 405);
+  if (!authorized(req)) return json({ error: "Unauthorized" }, 401);
+
+  const url = new URL(req.url);
+  const tool = url.searchParams.get("tool") || "";
+  let params: Record<string, unknown> = {};
+  try {
+    params = await req.json();
+  } catch {
+    return json({ error: "Invalid JSON body" }, 400);
+  }
+
+  try {
+    switch (tool) {
+      case "get_business_info":
+        return json(BUSINESS_INFO);
+      case "check_availability":
+        return json(await toolCheckAvailability(params));
+      case "request_callback":
+        return json(await toolRequestCallback(params));
+      default:
+        return json({ error: `Unknown tool "${tool}"` }, 404);
+    }
+  } catch (e) {
+    console.error(`tool ${tool} failed:`, e);
+    return json({ error: "Tool failed — please offer the caller a callback." }, 200);
+  }
+});
