@@ -317,6 +317,8 @@ Deno.serve(async (req) => {
         return json(await createPhoneQuote(params, rcmCall, getStep1));
       case "check_phone_booking":
         return json(await checkPhoneBooking(params, rcmCall));
+      case "check_booking":
+        return json(await toolCheckBooking(params));
       default:
         return json({ error: `Unknown tool "${tool}"` }, 404);
     }
