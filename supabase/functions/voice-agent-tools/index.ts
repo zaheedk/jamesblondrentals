@@ -175,6 +175,7 @@ async function toolCheckAvailability(p: Record<string, unknown>) {
     branch: loc.location,
     pickup_date: pickupDate,
     dropoff_date: dropoffDate,
+    ...(datesCorrected ? { dates_corrected_note: `Dates were adjusted to the upcoming ${pickupDate} to ${dropoffDate} (today in NZ is ${today}). Confirm these dates with the caller.` } : {}),
     vehicle_type_requested: vehicleType || null,
     vehicles_found: cars.length,
     vehicles,
