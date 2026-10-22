@@ -72,6 +72,7 @@
 - [x] Resume day-before pickup texts after paid TNZ account confirmation
 
 ## Voice agent (3CX / phone assistant)
+- [ ] Scan public website, generate dated knowledge base, attach to ElevenLabs and verify retrieval
 - [x] Correct rejected tool authentication and prevent invented branch/callback answers; live conversation asked for return date and successfully checked Wellington CBD trucks
 - [x] Build voice-agent-tools edge function (business info, live availability, callback requests)
 - [x] Build voice-agent-admin edge function (creates/updates ElevenLabs agent, wires tools)
