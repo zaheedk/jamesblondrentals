@@ -29,7 +29,7 @@ test("phone flow creates one quote, emails once, waits for live payment and conf
   const info = () => ({ reservationstatus: paid ? "Reservation" : "Reservation Request", isquotation: !paid, isonrequest: !paid, payment: paid ? 260 : 0, totalcost: 460, vehiclecategory: "2 Ton Box 16-18m3", pickupdate: "25/10/2099", dropoffdate: "27/10/2099", pickuptime: "09:00", dropofftime: "09:00" });
   const rcm = async (method: string, payload: any) => {
     if (method === "step2") return { status: "OK", results: { availablecars: [{ vehiclecategoryid: 31, vehiclecategorytypeid: 12, available: 1, avgrate: 130 }] } };
-    if (method === "booking") { writes++; expect(payload.bookingtype).toBe(1); expect(payload.customer.email).toBe("zaheedk@gmail.com"); return { status: "OK", results: { reservationref: "TEST-REFERENCE", reservationno: "12345" } }; }
+    if (method === "booking") { writes++; expect(payload.bookingtype).toBe(1); expect(payload.transmission).toBe(0); expect(payload.customer.email).toBe("zaheedk@gmail.com"); return { status: "OK", results: { reservationref: "TEST-REFERENCE", reservationno: "12345" } }; }
     if (method === "bookinginfo") return { status: "OK", results: { bookinginfo: [info()], extrafees: [{ isbondfee: true, fees: 200 }] } };
     throw new Error("Unexpected booking method");
   };

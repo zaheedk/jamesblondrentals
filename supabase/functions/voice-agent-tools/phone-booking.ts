@@ -74,7 +74,8 @@ export async function createPhoneQuote(params: Record<string, unknown>, rcm: Rcm
     if (claimError || !claimed) return { error: "This request is already being processed. Check its status instead of creating another quote." };
     row = claimed;
     // Booking writes are never automatically retried: a timeout may still create a quote.
-    const booking = await rcm("booking", { ...hire, vehiclecategoryid: p.vehicle_category_id, vehiclecategorytypeid: vehicle.vehiclecategorytypeid, bookingtype: 1, emailoption: 0, insuranceid: 0, extrakmsid: 0, optionalfees: [], customer: { firstname: p.first_name, lastname: p.last_name, email: p.email.toLowerCase(), phone: p.phone, mobile: p.phone }, remark: `Phone quote request ${p.request_id}; details confirmed by caller.` });
+    // transmission is mandatory for the booking system: 0 = no preference.
+    const booking = await rcm("booking", { ...hire, vehiclecategoryid: p.vehicle_category_id, vehiclecategorytypeid: vehicle.vehiclecategorytypeid, bookingtype: 1, emailoption: 0, transmission: 0, insuranceid: 0, extrakmsid: 0, optionalfees: [], customer: { firstname: p.first_name, lastname: p.last_name, email: p.email.toLowerCase(), phone: p.phone, mobile: p.phone }, remark: `Phone quote request ${p.request_id}; details confirmed by caller.` });
     if (booking?.status !== "OK" || !booking.results?.reservationref) {
       console.error("phone quote booking write failed", JSON.stringify({
         request_id: p.request_id,
@@ -83,7 +84,10 @@ export async function createPhoneQuote(params: Record<string, unknown>, rcm: Rcm
         message: booking?.message ?? null,
         result_keys: booking?.results ? Object.keys(booking.results) : null,
       }));
-      await db.from("voice_booking_requests").update({ state: "needs_review" }).eq("id", row.id);
+      // An explicit ERR response is a definite rejection (no quote exists); only unclear outcomes need staff review.
+      const rejected = booking?.status === "ERR";
+      await db.from("voice_booking_requests").update({ state: rejected ? "rejected" : "needs_review" }).eq("id", row.id);
+      if (rejected) return { error: "The booking system rejected this quote, so no quote was created. Apologise and offer a callback; do not retry." };
       return { error: "Quote creation could not be confirmed. Do not retry with a new request; ask staff to check for an existing quote." };
     }
     const reference = String(booking.results.reservationref);
