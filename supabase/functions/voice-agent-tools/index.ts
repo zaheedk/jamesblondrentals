@@ -4,6 +4,7 @@
 // (configured on the agent by voice-agent-admin), or x-admin-key must
 // match ELEVENLABS_API_KEY (admin/testing only).
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
+import { matchingVehicles, nzDate, resolveLocation } from "./availability.ts";
 
 const RCM_API_URL = "https://apis.rentalcarmanager.com/booking/v3.2";
 // Same credentials the public website uses (already public in frontend code).
@@ -142,7 +143,7 @@ async function toolCheckAvailability(p: Record<string, unknown>) {
 
   const step1 = await rcmCall("step1", {});
   const locations = step1?.results?.locations || [];
-  const loc = findLocation(locations, branch);
+  const loc = resolveLocation(locations, branch);
   if (!loc) {
     return { error: `Could not find a branch matching "${branch}". Branches: ${locations.map((l: any) => l.location).join(", ")}` };
   }
@@ -166,16 +167,7 @@ async function toolCheckAvailability(p: Record<string, unknown>) {
     return { error: "Availability check failed — please offer a callback." };
   }
 
-  let cars: any[] = (step2?.results?.availablecars || []).filter((c: any) =>
-    Number(c.available) > 0 && Number(c.avgrate) > 0);
-  if (vehicleType) {
-    const kw = vehicleType.split(/\s+/);
-    const matched = cars.filter((c) => {
-      const hay = `${c.vehiclecategory || ""} ${c.categoryfriendlydescription || ""}`.toLowerCase();
-      return kw.some((k) => hay.includes(k));
-    });
-    if (matched.length) cars = matched;
-  }
+  const cars: any[] = matchingVehicles(step2?.results?.availablecars || [], vehicleType);
 
   const vehicles = cars.slice(0, 6).map((c) => ({
     name: c.vehiclecategory || "Vehicle",
@@ -235,22 +227,24 @@ async function toolRequestCallback(p: Record<string, unknown>) {
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
-  if (req.method !== "POST") return json({ error: "POST only" }, 405);
+  if (!["POST", "GET"].includes(req.method)) return json({ error: "Method not allowed" }, 405);
   if (!authorized(req)) return json({ error: "Unauthorized" }, 401);
 
   const url = new URL(req.url);
   const tool = url.searchParams.get("tool") || "";
   let params: Record<string, unknown> = {};
-  try {
-    params = await req.json();
-  } catch {
-    return json({ error: "Invalid JSON body" }, 400);
+  if (req.method === "GET" && tool !== "get_business_info") return json({ error: "POST required" }, 405);
+  if (req.method === "POST") {
+    const raw = await req.text();
+    try { params = raw.trim() ? JSON.parse(raw) : {}; }
+    catch { return json({ error: "Invalid JSON body" }, 400); }
   }
 
   try {
     switch (tool) {
       case "get_business_info":
-        return json(BUSINESS_INFO);
+        console.info("voice tool get_business_info succeeded");
+        return json({ ...BUSINESS_INFO, current_date_nz: nzDate(), timezone: "Pacific/Auckland" });
       case "check_availability":
         return json(await toolCheckAvailability(params));
       case "request_callback":
