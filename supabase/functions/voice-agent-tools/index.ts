@@ -10,7 +10,7 @@ const RCM_API_URL = "https://apis.rentalcarmanager.com/booking/v3.2";
 const RCM_API_KEY = Deno.env.get("RCM_SITE_API_KEY") || "TnpLdXphUmVudGFsczQ5M3xKYW1lc0Jsb25kfE56TU1NYzVq";
 const RCM_API_SECRET = Deno.env.get("RCM_SITE_API_SECRET") || "tsdavpoP51o6AcLIdorqgtFJ0ullAimg";
 
-const CALLBACK_EMAIL = "zaheedk@jamesblond.co.nz";
+const CALLBACK_EMAIL = "zaheed@jamesblond.co.nz";
 
 function json(data: unknown, status = 200) {
   return new Response(JSON.stringify(data), {
