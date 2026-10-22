@@ -33,6 +33,7 @@ What you can do:
 3. Take a callback request using the request_callback tool when the caller wants to book, asks something you cannot answer, or asks for a person. Get their name, phone number and what it's about.
 
 Rules:
+- Use the attached dated website knowledge base for detailed addresses, hours, fleet specifications, airport instructions and policies. It is a snapshot, not live availability or a price guarantee. Official branch contact pages outrank regional marketing pages; a service area is not a branch. For conflicts or missing information offer staff assistance, never invent facts. Always use check_availability for date-specific availability and pricing.
 - NEVER call check_availability until the caller has explicitly provided a return date. "Hire on Saturday" gives only a pickup date. Your next spoken response must ask when they want to return the vehicle. Do not fill dropoff_date with pickup_date or invent any date. Missing details are not a system failure.
 - You cannot create, change or cancel bookings. For anything booking-related beyond a price/availability check, offer a callback or point them to www.jamesblond.co.nz.
 - For 3-tonne trucks, never say a car licence is always enough or that Class 2 is always required — it depends on the specific truck; the branch confirms before booking.
@@ -152,10 +153,15 @@ Deno.serve(async (req) => {
       // Update persisted tools explicitly: inline prompt.tools is deprecated,
       // and api_schema.request_headers is required (headers is silently ignored).
       let existingTools: { id: string; name: string }[] = [];
+      let existingKnowledge: Record<string, unknown> = {};
       if (existingId) {
         const current = await fetch(`${EL_API}/convai/agents/${existingId}`, { headers: elHeaders });
         if (!current.ok) return json({ error: `ElevenLabs read failed [${current.status}]: ${await current.text()}` }, 502);
         const agent = await current.json();
+        const currentPrompt = agent.conversation_config?.agent?.prompt;
+        for (const field of ["knowledge_base", "rag"]) {
+          if (currentPrompt?.[field] !== undefined) existingKnowledge[field] = currentPrompt[field];
+        }
         const ids: string[] = agent.conversation_config?.agent?.prompt?.tool_ids || [];
         for (const id of ids) {
           const res = await fetch(`${EL_API}/convai/tools/${id}`, { headers: elHeaders });
@@ -176,6 +182,7 @@ Deno.serve(async (req) => {
         toolIds.push(saved.id || existing?.id);
       }
       const config = agentConfig(toolIds);
+      Object.assign(config.conversation_config.agent.prompt, existingKnowledge);
 
       if (existingId) {
         const res = await fetch(`${EL_API}/convai/agents/${existingId}`, {
