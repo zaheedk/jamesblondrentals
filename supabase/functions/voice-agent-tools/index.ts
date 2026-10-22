@@ -3,7 +3,7 @@
 // Auth: header x-voice-agent-key must match VOICE_AGENT_TOOLS_SECRET
 // (configured on the agent by voice-agent-admin), or x-admin-key must
 // match ELEVENLABS_API_KEY (admin/testing only).
-import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
+import { corsHeaders } from "./cors.ts";
 import { matchingVehicles, nzDate, resolveLocation } from "./availability.ts";
 
 const RCM_API_URL = "https://apis.rentalcarmanager.com/booking/v3.2";
@@ -25,7 +25,7 @@ function authorized(req: Request): boolean {
   const adminKey = Deno.env.get("ELEVENLABS_API_KEY") || "";
   const gotTool = req.headers.get("x-voice-agent-key") || "";
   const gotAdmin = req.headers.get("x-admin-key") || "";
-  return (toolKey && gotTool === toolKey) || (adminKey && gotAdmin === adminKey);
+  return (toolKey.length > 0 && gotTool === toolKey) || (adminKey.length > 0 && gotAdmin === adminKey);
 }
 
 // ---------- RCM helpers ----------
@@ -62,35 +62,6 @@ function toRcmDate(iso: string): string {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso.trim());
   if (!m) throw new Error("invalid date");
   return `${m[3]}/${m[2]}/${m[1]}`;
-}
-
-const BRANCH_KEYWORDS: [string, string[]][] = [
-  ["west auckland", ["west auckland", "henderson"]],
-  ["auckland airport", ["auckland airport"]],
-  ["south auckland", ["south auckland", "manukau", "papatoetoe"]],
-  ["mt wellington", ["mt wellington", "mount wellington", "east auckland", "mclennan"]],
-  ["hamilton", ["hamilton"]],
-  ["wellington cbd", ["wellington cbd", "wellington city", "wellington central"]],
-  ["wellington airport", ["wellington airport"]],
-  ["christchurch central", ["christchurch central", "christchurch city", "christchurch cbd"]],
-  ["christchurch airport", ["christchurch airport"]],
-  ["new plymouth", ["new plymouth"]],
-  ["palmerston north", ["palmerston north"]],
-];
-
-function findLocation(locations: any[], branch: string): any | null {
-  const q = branch.toLowerCase();
-  for (const [, keywords] of BRANCH_KEYWORDS) {
-    if (keywords.some((k) => q.includes(k))) {
-      const loc = locations.find((l: any) =>
-        keywords.some((k) => String(l.location || "").toLowerCase().includes(k)));
-      if (loc) return loc;
-    }
-  }
-  // fall back to any partial match
-  return locations.find((l: any) =>
-    String(l.location || "").toLowerCase().includes(q) ||
-    String(l.city || "").toLowerCase().includes(q)) || null;
 }
 
 // ---------- Tools ----------

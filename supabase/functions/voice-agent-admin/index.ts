@@ -3,7 +3,7 @@
 // to voice-agent-tools. The tools secret is read from env and written into
 // the ElevenLabs tool config — it is never returned to any caller.
 // Auth: header x-admin-key must match ELEVENLABS_API_KEY.
-import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
+import { corsHeaders } from "../voice-agent-tools/cors.ts";
 
 const EL_API = "https://api.elevenlabs.io/v1";
 
