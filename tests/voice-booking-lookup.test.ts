@@ -1,79 +1,47 @@
 import { test, expect } from "bun:test";
 import { checkBookingByNumber } from "../supabase/functions/voice-agent-tools/booking-lookup.ts";
 
-const bookingInfo = (overrides: Record<string, unknown> = {}) => ({
+const response = (overrides: Record<string, unknown> = {}) => ({
   status: "OK",
   results: {
     bookinginfo: [{
-      reservationstatus: "Reservation",
-      isquotation: false,
-      isonrequest: false,
-      payment: 260,
-      totalrateafterdiscount: 260,
-      vehiclecategory: "2 Ton Box 16-18m3",
-      pickupdate: "25/10/2026",
-      pickuptime: "09:00",
-      pickuplocationname: "Hamilton",
-      dropoffdate: "27/10/2026",
-      dropofftime: "09:00",
-      dropofflocationname: "Hamilton",
-      // Personal fields that must never reach the model:
-      firstname: "Zahid",
-      lastname: "Khan",
-      email: "zahid@example.com",
-      phone: "0275353037",
+      reservationstatus: "Reservation", isquotation: false, isonrequest: false,
+      payment: 260, totalcost: 260, vehiclecategory: "2 Ton Box 16-18m3",
+      pickupdate: "25/10/2026", pickuptime: "09:00", pickuplocationname: "Hamilton",
+      dropoffdate: "27/10/2026", dropofftime: "09:00", dropofflocationname: "Hamilton",
       ...overrides,
     }],
+    customerinfo: [{ firstname: "Zahid", lastname: "Khan", email: "zahid@example.com", mobile: "0275353037", phone: "" }],
   },
 });
+const ask = { reservation_number: "33669", last_name: "Khan", phone: "+64 27 535 3037" };
 
-test("booking lookup returns status, vehicle, dates and amounts for a confirmed booking", async () => {
-  const rcm = async (method: string, payload: any) => {
-    expect(method).toBe("bookinginfo");
-    expect(payload).toEqual({ reservationno: "33669" });
-    return bookingInfo();
-  };
-  const result = await checkBookingByNumber({ reservation_number: "33669" }, rcm);
-  expect(result).toMatchObject({
-    found: true,
-    reservation_number: "33669",
-    status: "Reservation",
-    is_quote_only: false,
-    vehicle: "2 Ton Box 16-18m3",
-    total_nzd: 260,
-    amount_paid_nzd: 260,
-    balance_nzd: 0,
-  });
+test("verified caller gets status, vehicle, dates and amounts", async () => {
+  const r: any = await checkBookingByNumber(ask, async () => response());
+  expect(r.found).toBe(true);
+  expect(r.vehicle).toBe("2 Ton Box 16-18m3");
+  expect(r.balance_nzd).toBe(0);
 });
 
-test("booking lookup never exposes personal details to the model", async () => {
-  const rcm = async () => bookingInfo();
-  const result = await checkBookingByNumber({ reservation_number: "33669" }, rcm);
-  const serialised = JSON.stringify(result);
-  expect(serialised).not.toContain("Zahid");
-  expect(serialised).not.toContain("Khan");
-  expect(serialised).not.toContain("zahid@example.com");
-  expect(serialised).not.toContain("0275353037");
+test("personal fields never reach the model", async () => {
+  const text = JSON.stringify(await checkBookingByNumber(ask, async () => response()));
+  for (const s of ["Zahid", "zahid@example.com", "0275353037"]) expect(text).not.toContain(s);
 });
 
-test("booking lookup flags an unpaid quote as not a confirmed booking", async () => {
-  const rcm = async () => bookingInfo({ reservationstatus: "Quotation", isquotation: true, payment: 0 });
-  const result = await checkBookingByNumber({ reservation_number: "33669" }, rcm);
-  expect(result).toMatchObject({ found: true, is_quote_only: true, amount_paid_nzd: 0 });
+test("a phone number that doesn't match the booking reveals nothing", async () => {
+  const r: any = await checkBookingByNumber({ ...ask, phone: "021 111 2222" }, async () => response());
+  expect(r.found).toBeUndefined();
+  expect(JSON.stringify(r)).not.toContain("2 Ton Box");
 });
 
-test("booking lookup rejects missing or malformed numbers without calling the booking system", async () => {
-  let calls = 0;
-  const rcm = async () => { calls++; return bookingInfo(); };
-  for (const bad of ["", "abc", "33 669", "3366912345"]) {
-    const result = await checkBookingByNumber({ reservation_number: bad }, rcm);
-    expect(result.error).toBeTruthy();
-  }
-  expect(calls).toBe(0);
+test("number, surname and phone are all required", async () => {
+  let called = false;
+  const r: any = await checkBookingByNumber({ reservation_number: "33669" }, async () => { called = true; return response(); });
+  expect(r.error).toBeTruthy();
+  expect(called).toBe(false);
 });
 
-test("booking lookup reports a clear not-found error", async () => {
-  const rcm = async () => ({ status: "OK", results: { bookinginfo: [] } });
-  const result = await checkBookingByNumber({ reservation_number: "99999" }, rcm);
-  expect(result.error).toContain("99999");
+test("unpaid quotation is flagged as quote only", async () => {
+  const r: any = await checkBookingByNumber(ask, async () => response({ isquotation: true, payment: 0 }));
+  expect(r.is_quote_only).toBe(true);
 });

@@ -141,7 +141,7 @@ function toolSchemas(toolsUrl: string, secret: string) {
             vehicle_category_id: { type: "integer", description: "Exact selected vehicle_category_id returned by live availability" },
             driver_age_id: { type: "integer", description: "Age band id explicitly confirmed and used in availability recheck" },
             insurance_id: { type: "integer", description: "insurance_id from get_quote_options, only if the caller explicitly chose it" },
-            extra_ids: { type: "array", items: { type: "integer" }, description: "extra_id values from get_quote_options the caller explicitly chose" },
+            extra_ids: { type: "array", items: { type: "integer", description: "An extra_id" }, description: "extra_id values from get_quote_options the caller explicitly chose" },
             confirmed_details: { type: "boolean", description: "True only after readback and customer permission to create quote/send payment email" },
           },
           required: ["request_id", "first_name", "last_name", "email", "phone", "branch", "pickup_date", "dropoff_date", "pickup_time", "dropoff_time", "vehicle_category_id", "driver_age_id", "confirmed_details"],
