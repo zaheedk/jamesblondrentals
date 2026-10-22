@@ -15,7 +15,7 @@ function dbClient() {
   return createClient(url, key, { auth: { persistSession: false } });
 }
 
-async function sendEmail(to: string, subject: string, text: string, idempotencyKey: string) {
+export async function sendEmail(to: string, subject: string, text: string, idempotencyKey: string) {
   const key = Deno.env.get("RESEND_API_KEY");
   if (!key) throw new Error("Email service is not configured");
   const response = await fetch("https://api.resend.com/emails", {
@@ -75,7 +75,7 @@ export async function createPhoneQuote(params: Record<string, unknown>, rcm: Rcm
     row = claimed;
     // Booking writes are never automatically retried: a timeout may still create a quote.
     // transmission is mandatory for the booking system: 0 = no preference.
-    const booking = await rcm("booking", { ...hire, vehiclecategoryid: p.vehicle_category_id, vehiclecategorytypeid: vehicle.vehiclecategorytypeid, bookingtype: 1, emailoption: 0, transmission: 0, insuranceid: 0, extrakmsid: 0, optionalfees: [], customer: { firstname: p.first_name, lastname: p.last_name, email: p.email.toLowerCase(), phone: p.phone, mobile: p.phone }, remark: `Phone quote request ${p.request_id}; details confirmed by caller.` });
+    const booking = await rcm("booking", { ...hire, vehiclecategoryid: p.vehicle_category_id, vehiclecategorytypeid: vehicle.vehiclecategorytypeid, bookingtype: 1, emailoption: 0, transmission: 0, insuranceid: p.insurance_id ?? 0, extrakmsid: 0, optionalfees: (p.extra_ids || []).map((id) => ({ id, qty: 1 })), customer: { firstname: p.first_name, lastname: p.last_name, email: p.email.toLowerCase(), phone: p.phone, mobile: p.phone }, remark: `Phone quote request ${p.request_id}; details confirmed by caller.` });
     if (booking?.status !== "OK" || !booking.results?.reservationref) {
       console.error("phone quote booking write failed", JSON.stringify({
         request_id: p.request_id,

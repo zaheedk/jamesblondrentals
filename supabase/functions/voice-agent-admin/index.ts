@@ -25,21 +25,26 @@ Style:
 - Warm, plain New Zealand English. Never use bullet points or markdown.
 - Never invent prices, availability, policies or branch details. Use your tools.
 - James Blond has branches in Auckland, Wellington, Hamilton, Christchurch, New Plymouth Airport and Palmerston North. Never say we only operate in Auckland. Wellington CBD is a truck-hire branch; Wellington Airport is a separate branch.
-- If a tool fails, say you could not retrieve the information right now. An error is NOT evidence that a branch does not exist. Never replace failed tool results with guesses.
+- Ask one question at a time, acknowledge what the caller says, and use their name once you have it. If a tool fails, say you could not retrieve the information right now. An error is NOT evidence that a branch does not exist. Never replace failed tool results with guesses.
 
 What you can do:
 1. Answer general questions (branches, vehicles, licence rules, insurance, payments, one-way hires) using the get_business_info tool.
 2. For an availability enquiry, call get_business_info to confirm branches and today's New Zealand date, then collect pickup date, return date and branch. For "Saturday", resolve the upcoming Saturday from the tool's current NZ date and confirm that date aloud. If return date is missing, ask when they will return it; do not abandon the enquiry or assume a hire duration. For trucks in Wellington, offer Wellington CBD, not Auckland. Once you have the details, you MUST call check_availability before stating availability or prices. Times default to 10:00 if not specified. Summarise at most three matching options, cheapest first, and say rates are per day including GST before extras. If there are no matching vehicles, say none were returned for the requested dates, not that the branch does not exist.
-3. Help callers book by creating a quote and emailing a secure payment link with create_phone_quote. Collect first name, last name, email, contact number, pickup/return branches, dates and times, and exact vehicle selection from check_availability. You MUST ask the caller for their preferred pickup time and return time and use exactly what they say — never assume or default a time for a quote; if they have not given a time, ask before calling create_phone_quote. Ask the driver age band and recheck availability using the corresponding driver_age_id. Read back the full details and spell the email local part, then obtain explicit agreement before creating the quote. Generate one request_id for this quote and reuse it for all retries and checks. Never guess a category id or age id: use the tool results. Quote includes standard insurance only; optional upgrades can be reviewed in secure checkout, never add them without consent.
+3. Help callers book by creating a quote and emailing a secure payment link with create_phone_quote. Collect first name, last name, email, contact number, pickup/return branches, dates and times, and exact vehicle selection from check_availability. You MUST ask the caller for their preferred pickup time and return time and use exactly what they say — never assume or default a time for a quote; if they have not given a time, ask before calling create_phone_quote. Ask the driver age band and recheck availability using the corresponding driver_age_id. Read back the full details and spell the email local part, then obtain explicit agreement before creating the quote. Generate one request_id for this quote and reuse it for all retries and checks. Never guess a category id or age id: use the tool results. After the caller picks a vehicle, call get_quote_options and briefly offer the insurance options (cheapest first, with each excess) and any extras such as child seats. Never push or pre-select an upgrade; only pass insurance_id and extra_ids the caller explicitly chose, and include them in the readback. If they decline or are unsure, quote with standard insurance — they can still add options in secure checkout.
 4. After create_phone_quote returns success and payment_link_sent, say the quote and secure payment link have been emailed. The customer pays on their own device; NEVER ask for card numbers, CVV or banking credentials. You may stay on the call while they pay. When they say checkout is finished, call check_phone_booking with the same request_id. Only say the booking is confirmed and confirmation emailed if booking_confirmed, payment_verified and confirmation_email_sent are all true. If they have paid but confirmation is pending, offer staff assistance; never ask them to pay again. A payment-link send is not a booking confirmation.
-5. Answer questions about an existing booking with check_booking. When a caller mentions a booking or reservation number (a 5-digit number from their confirmation email), call check_booking with it — this works for any booking, whether made on the website, by staff or as a phone quote. Tell the caller its status, vehicle, pickup and return date/time/branch and amounts from the tool result. If the number is not found, ask them to double-check it and retry once before offering a callback. You cannot change or cancel bookings; for that, or for details the tool does not return, take a callback request.
+5. Existing bookings — verify first. Before sharing ANY booking details, resending links or requesting changes, collect three things: the 5-digit booking number, the last name on the booking, and the phone number on the booking. Pass all three to every booking tool. If verification fails, do not reveal anything or hint at the correct details; let them retry once, then offer a callback.
+   - Booking questions: check_booking tells you status, vehicle, rego, pickup/return and amounts.
+   - "I lost my email" / payment link / pre-check-in link: resend_booking_links emails them to the address on the booking only.
+   - Changes to dates, times, vehicle, extras or insurance on an existing booking: if they want new dates or a different vehicle, use check_availability to discuss options first, then read back the change and call request_booking_change. Say clearly the request has gone to the team, who will update the booking and confirm — never say the booking has been changed.
+   - Cancellations and refunds: take a callback; do not process them.
+   - Breakdowns, accidents or vehicle problems during a hire: first ask if everyone is safe; if anyone is hurt or in danger, tell them to call 111 now. Then collect name, contact number, exact location, what happened, whether the vehicle can be driven, and the booking number or rego if they know it, and call report_breakdown straight away. Tell them to stay safe, use hazard lights and not attempt repairs. Do not promise a tow, a replacement vehicle or an arrival time.
 6. Take callback requests with request_callback when the caller wants a person or needs help beyond your tools. Collect name, phone, topic and any email they want included. You CAN accept email addresses, including after an earlier callback was submitted: read back and confirm the latest corrected address, then submit an updated callback noting it supersedes the earlier contact details. Spelled letters such as Z-A-H-E-E-D-K at gmail dot com mean zaheedk@gmail.com; never keep an earlier misheard email after correction.
 
 Rules:
 - Use the attached dated website knowledge base for detailed addresses, hours, fleet specifications, airport instructions and policies. It is a snapshot, not live availability or a price guarantee. Official branch contact pages outrank regional marketing pages; a service area is not a branch. For conflicts or missing information offer staff assistance, never invent facts. Always use check_availability for date-specific availability and pricing.
 - NEVER call check_availability until the caller has explicitly provided a return date. "Hire on Saturday" gives only a pickup date. Your next spoken response must ask when they want to return the vehicle. Do not fill dropoff_date with pickup_date or invent any date. Missing details are not a system failure.
 - Callers rarely say the year. Always use the next upcoming occurrence of the date, based on today's NZ date (from get_business_info current_date_nz); never use a past year. If check_availability returns dates_corrected_note, use the corrected dates it gives.
-- You can create phone quotes, verify bookings completed through secure payment checkout, and look up any existing booking by its 5-digit number with check_booking. You cannot change or cancel existing bookings. For changes/cancellations or payment reconciliation, offer a callback. Never claim payment was received based on the caller's words alone.
+- Behave like a capable, friendly front-desk team member: take ownership, use your tools to actually solve the caller's problem, and only hand off what tools cannot do. You can give quotes, create phone quotes with insurance and extras, verify payment, look up bookings, resend links, send change requests to the team and report breakdowns. You cannot directly edit, cancel or refund bookings; for cancellations, refunds or payment reconciliation, offer a callback. Never claim payment was received based on the caller's words alone.
 - For 3-tonne trucks, never say a car licence is always enough or that Class 2 is always required — it depends on the specific truck; the branch confirms before booking.
 - Minibus and 12-seater prices are on request, except schools at $210 per day.
 - Commercial vehicle rates are fixed; passenger vehicle prices change with demand.
@@ -135,6 +140,8 @@ function toolSchemas(toolsUrl: string, secret: string) {
             dropoff_time: { type: "string", description: "Confirmed HH:MM return time" },
             vehicle_category_id: { type: "integer", description: "Exact selected vehicle_category_id returned by live availability" },
             driver_age_id: { type: "integer", description: "Age band id explicitly confirmed and used in availability recheck" },
+            insurance_id: { type: "integer", description: "insurance_id from get_quote_options, only if the caller explicitly chose it" },
+            extra_ids: { type: "array", items: { type: "integer", description: "An extra_id" }, description: "extra_id values from get_quote_options the caller explicitly chose" },
             confirmed_details: { type: "boolean", description: "True only after readback and customer permission to create quote/send payment email" },
           },
           required: ["request_id", "first_name", "last_name", "email", "phone", "branch", "pickup_date", "dropoff_date", "pickup_time", "dropoff_time", "vehicle_category_id", "driver_age_id", "confirmed_details"],
@@ -152,18 +159,85 @@ function toolSchemas(toolsUrl: string, secret: string) {
     },
     {
       type: "webhook", name: "check_booking",
-      description: "Look up ANY existing booking or quote by its 5-digit reservation number from the customer's confirmation email, however it was made (website, staff or phone). Returns status, vehicle, pickup/return details and amounts only. Use this when a caller asks about an existing booking. If the number alone is not found, ask for the last name on the booking and retry with last_name. For changes, cancellations or details not returned, take a callback request.",
+      description: "Look up an existing booking or quote after the caller gives the booking number, last name AND phone number on the booking. Returns status, vehicle, rego, pickup/return and amounts.",
       response_timeout_secs: 60, tool_error_handling_mode: "passthrough",
       api_schema: {
         url: `${toolsUrl}?tool=check_booking`, method: "POST", request_headers: headers,
-        request_body_schema: {
-          type: "object",
-          properties: {
-            reservation_number: { type: "string", description: "The 5-digit booking number from the customer's confirmation email, e.g. 33669" },
-            last_name: { type: "string", description: "Last name on the booking — ask the caller and include it when the number alone is not found" },
-          },
-          required: ["reservation_number"],
-        },
+        request_body_schema: { type: "object", properties: {
+            reservation_number: { type: "string", description: "5-digit booking number from the confirmation email" },
+            last_name: { type: "string", description: "Last name on the booking, as given by the caller" },
+            phone: { type: "string", description: "Phone number on the booking, as digits, given by the caller" },
+        }, required: ["reservation_number", "last_name", "phone"] },
+      },
+    },
+    {
+      type: "webhook", name: "resend_booking_links",
+      description: "Email the booking summary, secure payment link (if anything is owing or it is a quote), pre-check-in link and account link to the email already on the booking. Requires verification details.",
+      response_timeout_secs: 60, tool_error_handling_mode: "passthrough",
+      api_schema: {
+        url: `${toolsUrl}?tool=resend_booking_links`, method: "POST", request_headers: headers,
+        request_body_schema: { type: "object", properties: {
+            reservation_number: { type: "string", description: "5-digit booking number from the confirmation email" },
+            last_name: { type: "string", description: "Last name on the booking, as given by the caller" },
+            phone: { type: "string", description: "Phone number on the booking, as digits, given by the caller" },
+        }, required: ["reservation_number", "last_name", "phone"] },
+      },
+    },
+    {
+      type: "webhook", name: "request_booking_change",
+      description: "Send a verified change request for an existing booking (new dates/times, different vehicle, add extras or insurance) to the team, with a live availability and price check for new dates or vehicle. Does NOT change the booking itself.",
+      response_timeout_secs: 60, tool_error_handling_mode: "passthrough",
+      api_schema: {
+        url: `${toolsUrl}?tool=request_booking_change`, method: "POST", request_headers: headers,
+        request_body_schema: { type: "object", properties: {
+            reservation_number: { type: "string", description: "5-digit booking number from the confirmation email" },
+            last_name: { type: "string", description: "Last name on the booking, as given by the caller" },
+            phone: { type: "string", description: "Phone number on the booking, as digits, given by the caller" },
+          new_pickup_date: { type: "string", description: "New pickup date YYYY-MM-DD, only if changing" },
+          new_dropoff_date: { type: "string", description: "New return date YYYY-MM-DD, only if changing" },
+          new_pickup_time: { type: "string", description: "New pickup time HH:MM, only if changing" },
+          new_dropoff_time: { type: "string", description: "New return time HH:MM, only if changing" },
+          new_vehicle_category_id: { type: "integer", description: "vehicle_category_id from check_availability, only if changing vehicle" },
+          extras_or_insurance: { type: "string", description: "Extras or insurance the caller wants added or removed, e.g. 'add child seat, upgrade to zero excess'" },
+          details: { type: "string", description: "Short summary of the requested change in the caller's words" },
+        }, required: ["reservation_number", "last_name", "phone", "details"] },
+      },
+    },
+    {
+      type: "webhook", name: "get_quote_options",
+      description: "List live insurance options (with excess and price) and optional extras for a chosen vehicle and hire, before creating a phone quote.",
+      response_timeout_secs: 60, tool_error_handling_mode: "passthrough",
+      api_schema: {
+        url: `${toolsUrl}?tool=get_quote_options`, method: "POST", request_headers: headers,
+        request_body_schema: { type: "object", properties: {
+          branch: { type: "string", description: "Pickup branch" },
+          dropoff_branch: { type: "string", description: "Return branch if different" },
+          pickup_date: { type: "string", description: "YYYY-MM-DD" },
+          dropoff_date: { type: "string", description: "YYYY-MM-DD" },
+          pickup_time: { type: "string", description: "HH:MM given by caller" },
+          dropoff_time: { type: "string", description: "HH:MM given by caller" },
+          vehicle_category_id: { type: "integer", description: "From check_availability" },
+          driver_age_id: { type: "integer", description: "From check_availability" },
+        }, required: ["branch", "pickup_date", "dropoff_date", "pickup_time", "dropoff_time", "vehicle_category_id", "driver_age_id"] },
+      },
+    },
+    {
+      type: "webhook", name: "report_breakdown",
+      description: "Urgently alert the team by email and text about a breakdown, accident or vehicle problem during a hire. Call as soon as the key details are collected.",
+      response_timeout_secs: 30, tool_error_handling_mode: "passthrough",
+      api_schema: {
+        url: `${toolsUrl}?tool=report_breakdown`, method: "POST", request_headers: headers,
+        request_body_schema: { type: "object", properties: {
+          name: { type: "string", description: "Caller's name" },
+          phone: { type: "string", description: "Best contact number, digits" },
+          location: { type: "string", description: "Exact location: road, suburb/town, landmarks" },
+          description: { type: "string", description: "What happened / the problem" },
+          reservation_number: { type: "string", description: "Booking number if known" },
+          registration: { type: "string", description: "Vehicle rego if known" },
+          is_safe: { type: "boolean", description: "Caller says everyone is in a safe place" },
+          anyone_injured: { type: "boolean", description: "Anyone hurt" },
+          vehicle_drivable: { type: "boolean", description: "Vehicle can still be driven, if known" },
+        }, required: ["name", "phone", "location", "description", "is_safe"] },
       },
     },
   ];

@@ -22,6 +22,8 @@ export const quoteSchema = z.object({
   dropoff_time: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/),
   vehicle_category_id: z.coerce.number().int().positive(),
   driver_age_id: z.coerce.number().int().positive(),
+  insurance_id: z.coerce.number().int().positive().optional(),
+  extra_ids: z.array(z.coerce.number().int().positive()).max(10).optional(),
   confirmed_details: z.literal(true),
 });
 
