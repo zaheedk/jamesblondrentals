@@ -179,6 +179,32 @@ async function toolCheckAvailability(p: Record<string, unknown>) {
   if (!chosenAge) return { error: "Select a valid driver_age_id from driver_age_options." };
   const ageid = chosenAge?.id ?? chosenAge?.ageid;
 
+  // The booking system returns zero vehicles when pickup/return times fall
+  // outside the branch's office hours, so clamp to the published hours for
+  // the actual pickup/return weekdays and tell the agent what changed.
+  const officeTimes: any[] = step1?.results?.officetimes || [];
+  const branchHours = (dateStr: string, kind: "pickup" | "dropoff") => {
+    const dow = new Date(`${dateStr}T12:00:00Z`).getUTCDay() + 1; // booking system: 1 = Sunday
+    const rows = officeTimes.filter((o: any) => Number(o.locationid) === Number(loc.id));
+    const row = rows.find((o: any) => Number(o.dayofweek) === dow) || rows[0];
+    if (!row) return null;
+    const start = (kind === "pickup" ? row.startpickup : row.startdropoff) || row.openingtime || "09:00";
+    const end = (kind === "pickup" ? row.endpickup : row.enddropoff) || row.closingtime || "17:00";
+    return { start: String(start).slice(0, 5), end: String(end).slice(0, 5) };
+  };
+  const clampTime = (t: string, start: string, end: string) => (t < start ? start : t > end ? end : t);
+  const pickupHours = branchHours(pickupDate, "pickup");
+  const dropoffHours = branchHours(dropoffDate, "dropoff");
+  const adjPickupTime = pickupHours ? clampTime(pickupTime, pickupHours.start, pickupHours.end) : pickupTime;
+  const adjDropoffTime = dropoffHours ? clampTime(dropoffTime, dropoffHours.start, dropoffHours.end) : dropoffTime;
+  const timeNotes: string[] = [];
+  if (adjPickupTime !== pickupTime) {
+    timeNotes.push(`Pickup time ${pickupTime} is outside ${loc.location} hours for that day (${pickupHours!.start}–${pickupHours!.end}), so ${adjPickupTime} was used. Confirm this with the caller.`);
+  }
+  if (adjDropoffTime !== dropoffTime) {
+    timeNotes.push(`Return time ${dropoffTime} is outside ${loc.location} hours for that day (${dropoffHours!.start}–${dropoffHours!.end}), so ${adjDropoffTime} was used. Confirm this with the caller.`);
+  }
+
   const step2 = await rcmCall("step2", {
     pickuplocationid: loc.id,
     pickupdate: toRcmDate(pickupDate),
