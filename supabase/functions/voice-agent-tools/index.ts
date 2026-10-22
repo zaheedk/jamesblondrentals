@@ -8,6 +8,22 @@ import { matchingVehicles, normaliseHireDates, nzDate, perKmCharge, resolveLocat
 import { callbackSchema } from "./booking-policy.ts";
 import { createPhoneQuote, checkPhoneBooking } from "./phone-booking.ts";
 import { checkBookingByNumber } from "./booking-lookup.ts";
+import { getQuoteOptions, reportBreakdown, requestBookingChange, resendBookingLinks } from "./front-desk.ts";
+import { sendEmail } from "./phone-booking.ts";
+
+async function sendStaffSms(to: string, message: string): Promise<string> {
+  const token = Deno.env.get("TNZ_AUTH_TOKEN");
+  if (!token) throw new Error("TNZ not configured");
+  const res = await fetch("https://api.tnz.co.nz/api/v3.00/sms", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ Destination: to, Message: message, Reference: "James Blond breakdown alert" }),
+    signal: AbortSignal.timeout(15000),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok || !data?.MessageID) throw new Error(`TNZ rejected [${res.status}]`);
+  return String(data.MessageID);
+}
 
 const RCM_API_URL = "https://apis.rentalcarmanager.com/booking/v3.2";
 // Same credentials the public website uses (already public in frontend code).
@@ -287,6 +303,14 @@ Deno.serve(async (req) => {
         return json(await checkPhoneBooking(params, rcmCall));
       case "check_booking":
         return json(await checkBookingByNumber(params, rcmCall));
+      case "get_quote_options":
+        return json(await getQuoteOptions(params, rcmCall, getStep1));
+      case "resend_booking_links":
+        return json(await resendBookingLinks(params, rcmCall, sendEmail));
+      case "request_booking_change":
+        return json(await requestBookingChange(params, rcmCall, sendEmail));
+      case "report_breakdown":
+        return json(await reportBreakdown(params, sendEmail, sendStaffSms));
       default:
         return json({ error: `Unknown tool "${tool}"` }, 404);
     }
