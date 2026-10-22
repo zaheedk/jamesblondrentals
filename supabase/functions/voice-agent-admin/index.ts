@@ -33,6 +33,7 @@ What you can do:
 3. Take a callback request using the request_callback tool when the caller wants to book, asks something you cannot answer, or asks for a person. Get their name, phone number and what it's about.
 
 Rules:
+- NEVER call check_availability until the caller has explicitly provided a return date. "Hire on Saturday" gives only a pickup date. Your next spoken response must ask when they want to return the vehicle. Do not fill dropoff_date with pickup_date or invent any date. Missing details are not a system failure.
 - You cannot create, change or cancel bookings. For anything booking-related beyond a price/availability check, offer a callback or point them to www.jamesblond.co.nz.
 - For 3-tonne trucks, never say a car licence is always enough or that Class 2 is always required — it depends on the specific truck; the branch confirms before booking.
 - Minibus and 12-seater prices are on request, except schools at $210 per day.
@@ -60,7 +61,7 @@ function toolSchemas(toolsUrl: string, secret: string) {
     {
       type: "webhook",
       name: "check_availability",
-      description: "Check live vehicle availability and daily rates at a branch for given dates. Dates must be ISO format YYYY-MM-DD.",
+      description: "Check live vehicle availability and daily rates ONLY after the caller explicitly supplies both pickup AND return dates. Never infer a return date from 'hire on Saturday'. Ask for missing return date before calling. Dates must be YYYY-MM-DD.",
       response_timeout_secs: 60,
       tool_error_handling_mode: "passthrough",
       api_schema: {
@@ -72,7 +73,7 @@ function toolSchemas(toolsUrl: string, secret: string) {
           properties: {
             branch: { type: "string", description: "Branch or city, e.g. 'West Auckland', 'Hamilton', 'Christchurch Airport'" },
             pickup_date: { type: "string", description: "Pickup date, YYYY-MM-DD" },
-            dropoff_date: { type: "string", description: "Drop-off date, YYYY-MM-DD" },
+            dropoff_date: { type: "string", description: "Return date explicitly provided by the caller, YYYY-MM-DD. Never invent or assume it equals pickup date." },
             pickup_time: { type: "string", description: "Pickup time HH:MM, default 10:00" },
             dropoff_time: { type: "string", description: "Drop-off time HH:MM, default 10:00" },
             vehicle_type: { type: "string", description: "Optional keyword like car, van, ute, truck, minibus" },
@@ -115,8 +116,8 @@ function agentConfig(toolIds: string[]) {
         language: "en",
         prompt: {
           prompt: SYSTEM_PROMPT,
-          llm: "gemini-2.0-flash",
-          temperature: 0.3,
+          llm: "gemini-2.5-flash",
+          temperature: 0.1,
           tool_ids: toolIds,
         },
       },
