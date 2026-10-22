@@ -111,7 +111,7 @@ function agentConfig(toolsUrl: string, secret: string) {
           tools: toolSchemas(toolsUrl, secret),
         },
       },
-      tts: { model_id: "eleven_turbo_v2_5", voice_id: "EXAVITQu4vr4xnSDxMaL" },
+      tts: { model_id: "eleven_turbo_v2", voice_id: "EXAVITQu4vr4xnSDxMaL" },
     },
   };
 }
