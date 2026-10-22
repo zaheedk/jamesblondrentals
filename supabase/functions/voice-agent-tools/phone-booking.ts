@@ -45,8 +45,7 @@ export async function createPhoneQuote(params: Record<string, unknown>, rcm: Rcm
   const db = dbClient();
   const { data: existing, error: lookupError } = await db.from("voice_booking_requests").select("*").eq("request_id", p.request_id).maybeSingle();
   if (lookupError) throw new Error("Could not read phone request tracking");
-  if (existing && JSON.stringify(existing.request_data) !== JSON.stringify(JSON.parse(JSON.stringify(p)))) {
-    // JSONB key ordering is not stable; compare the validated fields individually.
+  if (existing) {
     if (Object.keys(p).some((key) => JSON.stringify(existing.request_data[key]) !== JSON.stringify(p[key as keyof typeof p]))) {
       return { error: "This request already exists with different details. Do not create a duplicate; ask the team to amend it." };
     }
@@ -55,6 +54,10 @@ export async function createPhoneQuote(params: Record<string, unknown>, rcm: Rcm
   if (!row) {
     const dates = normaliseHireDates(p.pickup_date, p.dropoff_date, nzDate());
     if (!dates || dates.pickup !== p.pickup_date || dates.dropoff !== p.dropoff_date) return { error: "Confirm the corrected future dates with the customer first, then retry with those dates." };
+    for (const date of [p.pickup_date, p.dropoff_date]) {
+      const value = new Date(`${date}T00:00:00Z`);
+      if (!Number.isFinite(value.getTime()) || value.toISOString().slice(0, 10) !== date) return { error: "Confirm valid calendar dates before creating a quote." };
+    }
     if (new Date(`${p.dropoff_date}T${p.dropoff_time}:00Z`).getTime() <= new Date(`${p.pickup_date}T${p.pickup_time}:00Z`).getTime()) return { error: "Return must be after pickup." };
     const s1 = await step1();
     const pickup = resolveLocation(s1?.results?.locations || [], p.branch);
@@ -91,7 +94,7 @@ export async function createPhoneQuote(params: Record<string, unknown>, rcm: Rcm
       `Pickup: ${info.pickupdate} ${info.pickuptime} — ${info.pickuplocationname || p.branch}`,
       `Return: ${info.dropoffdate} ${info.dropofftime} — ${info.dropofflocationname || p.dropoff_branch || p.branch}`,
       `Rental total: NZD ${total.toFixed(2)} including GST, before any additional mileage or optional upgrades.`,
-      "", `Review your quote and pay securely: ${paymentUrl}`, "", "This quote does not reserve a vehicle. Availability is checked again when completing your booking.",
+      "", `Review your quote and pay securely: ${paymentUrl}`, "", "This quote does not reserve a vehicle and availability may change before booking.",
       "Never share card details over the phone. Call 0800 525 663 for assistance.", "", "James Blond Rentals",
     ].join("\n"), `voice-quote/${row.id}`);
     const { error } = await db.from("voice_booking_requests").update({ quote_email_id: id, expected_amount: total }).eq("id", row.id);

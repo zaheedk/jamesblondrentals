@@ -16,7 +16,10 @@ test("phone quote requires confirmed first and last name, email, phone and both 
   assert.equal(quoteSchema.safeParse({ ...input, dropoff_time: "9am" }).success, false);
 });
 test("customer saying paid or a paid quote cannot confirm a booking", () => {
-  assert.equal(verifiedBooking({ bookingtype: "Quote", payment: 260 }, 260), false);
-  assert.equal(verifiedBooking({ bookingtype: "Booking", payment: 0 }, 260), false);
-  assert.equal(verifiedBooking({ bookingtype: "Booking", payment: 260 }, 260), true);
+  assert.equal(verifiedBooking({ reservationstatus: "Quotation", isquotation: true, isonrequest: false, payment: 260 }, 260), false);
+  assert.equal(verifiedBooking({ reservationstatus: "Reservation", isquotation: false, isonrequest: false, payment: 0 }, 260), false);
+  assert.equal(verifiedBooking({ reservationstatus: "Reservation", isquotation: false, isonrequest: false, payment: 260 }, 260), true);
+  assert.equal(verifiedBooking({ reservationstatus: "Cancelled", isquotation: false, isonrequest: false, payment: 260 }, 260), false);
+  assert.equal(verifiedBooking({ reservationstatus: "Reservation", isquotation: false, isonrequest: true, payment: 260 }, 260), false);
+  assert.equal(verifiedBooking({ reservationstatus: "Reservation", payment: 260 }, 260), false);
 });

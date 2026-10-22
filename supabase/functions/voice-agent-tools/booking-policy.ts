@@ -26,8 +26,9 @@ export const quoteSchema = z.object({
 });
 
 export function verifiedBooking(info: Record<string, unknown>, expectedAmount: number) {
-  const status = String(info.bookingtype ?? info.bookingstatus ?? info.status ?? "").toLowerCase();
+  const status = String(info.reservationstatus ?? "").toLowerCase();
   const paid = Number(info.payment);
   return Number.isFinite(paid) && paid + 0.005 >= expectedAmount && expectedAmount > 0
-    && ["2", "booking", "reservation", "confirmed", "confirmed booking"].includes(status);
+    && info.isquotation === false && info.isonrequest === false
+    && ["reservation", "confirmed", "hired", "booking"].includes(status);
 }
