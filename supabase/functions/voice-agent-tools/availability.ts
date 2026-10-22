@@ -75,6 +75,37 @@ export function matchingVehicles<T extends Vehicle>(vehicles: T[], requestedType
   }).sort((a, b) => Number(a.avgrate) - Number(b.avgrate));
 }
 
+/**
+ * Published per-kilometre mileage charge (NZD, inc. GST) from the website
+ * price guide. Cars and minibuses include unlimited kilometres; most
+ * commercial vehicles charge per km. Returns null when the guide lists
+ * no per-km rate for that category.
+ */
+export function perKmCharge(v: Vehicle): number | null {
+  const type = Number(v.vehiclecategorytypeid);
+  if (type === TYPE.car || type === TYPE.peopleMover) return null; // unlimited kms
+  const text = normaliseVehicleRequest(`${v.vehiclecategory || ""} ${v.categoryfriendlydescription || ""}`);
+  if (type === TYPE.truck) {
+    if (text.includes("tipper")) return 0.39;
+    if (/\b3 ton\b/.test(text)) return text.includes("19m") || text.includes("class 2") || text.includes("class2") ? 0.62 : 0.61;
+    if (text.includes("tail lift")) return 0.44;
+    if (text.includes("16m") || text.includes("18m")) return 0.47;
+    return 0.42; // 2 Ton Box 9-12m3
+  }
+  if (type === TYPE.ute) {
+    if (text.includes("4wd") || text.includes("double") || text.includes("dble")) return 0.3;
+    if (text.includes("diesel")) return 0.25;
+    return null; // petrol single cab — no per-km rate published
+  }
+  if (type === TYPE.jumboVan) return 0.39;
+  if (type === TYPE.van) {
+    if (text.includes("high roof")) return 0.35;
+    if (text.includes("jumbo")) return 0.39;
+    return null; // standard/premium/rear-seat vans — no per-km rate published
+  }
+  return null;
+}
+
 export function nzDate(now = new Date()): string {
   const parts = new Intl.DateTimeFormat("en-NZ", {
     timeZone: "Pacific/Auckland", year: "numeric", month: "2-digit", day: "2-digit",
