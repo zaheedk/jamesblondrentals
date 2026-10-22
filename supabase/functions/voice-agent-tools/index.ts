@@ -4,7 +4,7 @@
 // (configured on the agent by voice-agent-admin), or x-admin-key must
 // match ELEVENLABS_API_KEY (admin/testing only).
 import { corsHeaders } from "./cors.ts";
-import { matchingVehicles, nzDate, resolveLocation } from "./availability.ts";
+import { matchingVehicles, nzDate, perKmCharge, resolveLocation } from "./availability.ts";
 
 const RCM_API_URL = "https://apis.rentalcarmanager.com/booking/v3.2";
 // Same credentials the public website uses (already public in frontend code).
@@ -140,13 +140,19 @@ async function toolCheckAvailability(p: Record<string, unknown>) {
 
   const allCars: any[] = step2?.results?.availablecars || [];
   const cars: any[] = matchingVehicles(allCars, vehicleType);
-  const summarise = (c: any) => ({
-    name: c.vehiclecategory || "Vehicle",
-    example: c.categoryfriendlydescription || "",
-    daily_rate_nzd: Number(c.avgrate),
-    total_rate_nzd: Number(c.totalrateafterdiscount) > 0 ? Number(c.totalrateafterdiscount) : null,
-    days: Number(c.numberofdays) || null,
-  });
+  const summarise = (c: any) => {
+    const km = perKmCharge(c);
+    const unlimitedKm = [1, 4].includes(Number(c.vehiclecategorytypeid));
+    return {
+      name: c.vehiclecategory || "Vehicle",
+      example: c.categoryfriendlydescription || "",
+      daily_rate_nzd: Number(c.avgrate),
+      total_rate_nzd: Number(c.totalrateafterdiscount) > 0 ? Number(c.totalrateafterdiscount) : null,
+      days: Number(c.numberofdays) || null,
+      per_km_charge_nzd: km,
+      kilometres: unlimitedKm ? "unlimited" : km !== null ? `${km.toFixed(2)} NZD per km` : "no per-km charge published — confirm with the branch",
+    };
+  };
 
   const vehicles = cars.slice(0, 6).map(summarise);
   // When the requested wording matches nothing, show what IS free so the
@@ -163,7 +169,7 @@ async function toolCheckAvailability(p: Record<string, unknown>) {
     vehicles_found: cars.length,
     vehicles,
     ...(otherAvailable ? { other_available_vehicles: otherAvailable } : {}),
-    note: "Rates are in NZD including GST, before optional extras such as insurance upgrades. Final total is confirmed at booking. Trucks are listed by size, e.g. '2 Ton Box'. If vehicles_found is 0 but other_available_vehicles lists something close, offer it. If nothing suitable is listed, offer a callback.",
+    note: "Rates are in NZD including GST, before optional extras such as insurance upgrades. Final total is confirmed at booking. When quoting a vehicle, also mention its kilometres: the per-km charge for commercial vehicles, or that cars and minibuses include unlimited kilometres. Do NOT mention the bond unprompted — only if the caller asks about bonds, deposits or further charges; then say a refundable bond or card pre-authorisation applies, with the amount depending on the vehicle and insurance option, confirmed at booking. Trucks are listed by size, e.g. '2 Ton Box'. If vehicles_found is 0 but other_available_vehicles lists something close, offer it. If nothing suitable is listed, offer a callback.",
   };
 }
 
