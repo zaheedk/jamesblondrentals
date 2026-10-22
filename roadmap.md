@@ -70,3 +70,10 @@
 - [ ] Search Console: publish www sitemap, submit to www property, confirm data flowing
 
 - [x] Resume day-before pickup texts after paid TNZ account confirmation
+
+## Voice agent (3CX / phone assistant)
+- [x] Build voice-agent-tools edge function (business info, live availability, callback requests)
+- [x] Build voice-agent-admin edge function (creates/updates ElevenLabs agent, wires tools)
+- [ ] Create the ElevenLabs agent and verify tools end-to-end
+- [ ] Connect a phone number (3CX AI Edition upgrade vs separate number + overflow forwarding — user checking upgrade cost with Logical Solutions)
+- [ ] Test a real phone call, then go live
