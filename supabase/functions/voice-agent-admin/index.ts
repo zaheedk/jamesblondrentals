@@ -20,10 +20,12 @@ Style:
 - Speak naturally and briefly — this is a phone call, not an email. One or two short sentences per answer.
 - Warm, plain New Zealand English. Never use bullet points or markdown.
 - Never invent prices, availability, policies or branch details. Use your tools.
+- James Blond has branches in Auckland, Wellington, Hamilton, Christchurch, New Plymouth Airport and Palmerston North. Never say we only operate in Auckland. Wellington CBD is a truck-hire branch; Wellington Airport is a separate branch.
+- If a tool fails, say you could not retrieve the information right now. An error is NOT evidence that a branch does not exist. Never replace failed tool results with guesses.
 
 What you can do:
 1. Answer general questions (branches, vehicles, licence rules, insurance, payments, one-way hires) using the get_business_info tool.
-2. Check live availability and daily rates using the check_availability tool. You need the branch, pickup date and drop-off date; ask for them if the caller hasn't given them. Times default to 10:00 if not specified. Summarise at most three options, cheapest first, and say rates are per day including GST before extras.
+2. For an availability enquiry, call get_business_info to confirm branches and today's New Zealand date, then collect pickup date, return date and branch. For "Saturday", resolve the upcoming Saturday from the tool's current NZ date and confirm that date aloud. If return date is missing, ask when they will return it; do not abandon the enquiry or assume a hire duration. For trucks in Wellington, offer Wellington CBD, not Auckland. Once you have the details, you MUST call check_availability before stating availability or prices. Times default to 10:00 if not specified. Summarise at most three matching options, cheapest first, and say rates are per day including GST before extras. If there are no matching vehicles, say none were returned for the requested dates, not that the branch does not exist.
 3. Take a callback request using the request_callback tool when the caller wants to book, asks something you cannot answer, or asks for a person. Get their name, phone number and what it's about.
 
 Rules:
@@ -33,6 +35,7 @@ Rules:
 - Commercial vehicle rates are fixed; passenger vehicle prices change with demand.
 - Mt Wellington (East Auckland) hires cars and vans only — no trucks there.
 - If the caller is upset or the request is complex, take a callback request rather than guessing.
+- A callback is only recorded when request_callback returns success: true. On an error, explain that the request could not be submitted and give 0800 525 663; never promise a callback was arranged. Send phone numbers to the tool as digits, not spoken number words.
 - The main phone number is 0800 525 663 if the caller prefers to talk to the team during office hours.`;
 
 function toolSchemas(toolsUrl: string, secret: string) {
@@ -43,22 +46,23 @@ function toolSchemas(toolsUrl: string, secret: string) {
       name: "get_business_info",
       description: "Get James Blond Rentals company information: branches and what each hires, licence rules, insurance, pricing rules, payment, one-way hires. Call this before answering any general question.",
       response_timeout_secs: 10,
+      tool_error_handling_mode: "passthrough",
       api_schema: {
         url: `${toolsUrl}?tool=get_business_info`,
-        method: "POST",
-        headers,
-        request_body_schema: { type: "object", properties: {}, required: [] },
+        method: "GET",
+        request_headers: headers,
       },
     },
     {
       type: "webhook",
       name: "check_availability",
       description: "Check live vehicle availability and daily rates at a branch for given dates. Dates must be ISO format YYYY-MM-DD.",
-      response_timeout_secs: 20,
+      response_timeout_secs: 60,
+      tool_error_handling_mode: "passthrough",
       api_schema: {
         url: `${toolsUrl}?tool=check_availability`,
         method: "POST",
-        headers,
+        request_headers: headers,
         request_body_schema: {
           type: "object",
           properties: {
@@ -78,10 +82,11 @@ function toolSchemas(toolsUrl: string, secret: string) {
       name: "request_callback",
       description: "Record a callback request when the caller wants to book, asks something you cannot answer, or wants to speak to the team.",
       response_timeout_secs: 10,
+      tool_error_handling_mode: "passthrough",
       api_schema: {
         url: `${toolsUrl}?tool=request_callback`,
         method: "POST",
-        headers,
+        request_headers: headers,
         request_body_schema: {
           type: "object",
           properties: {
@@ -97,7 +102,7 @@ function toolSchemas(toolsUrl: string, secret: string) {
   ];
 }
 
-function agentConfig(toolsUrl: string, secret: string) {
+function agentConfig(toolIds: string[]) {
   return {
     name: "James Blond Rentals Phone Assistant",
     conversation_config: {
@@ -108,7 +113,7 @@ function agentConfig(toolsUrl: string, secret: string) {
           prompt: SYSTEM_PROMPT,
           llm: "gemini-2.0-flash",
           temperature: 0.3,
-          tools: toolSchemas(toolsUrl, secret),
+          tool_ids: toolIds,
         },
       },
       tts: { model_id: "eleven_turbo_v2", voice_id: "EXAVITQu4vr4xnSDxMaL" },
@@ -139,7 +144,33 @@ Deno.serve(async (req) => {
     if (action === "create_or_update") {
       // Update existing agent if we have its id, otherwise create.
       const existingId = String(body.agent_id || Deno.env.get("VOICE_AGENT_ID") || "");
-      const config = agentConfig(toolsUrl, toolsSecret);
+      // Update persisted tools explicitly: inline prompt.tools is deprecated,
+      // and api_schema.request_headers is required (headers is silently ignored).
+      let existingTools: { id: string; name: string }[] = [];
+      if (existingId) {
+        const current = await fetch(`${EL_API}/convai/agents/${existingId}`, { headers: elHeaders });
+        if (!current.ok) return json({ error: `ElevenLabs read failed [${current.status}]: ${await current.text()}` }, 502);
+        const agent = await current.json();
+        const ids: string[] = agent.conversation_config?.agent?.prompt?.tool_ids || [];
+        for (const id of ids) {
+          const res = await fetch(`${EL_API}/convai/tools/${id}`, { headers: elHeaders });
+          if (!res.ok) return json({ error: `ElevenLabs tool read failed [${res.status}]: ${await res.text()}` }, 502);
+          const tool = await res.json();
+          existingTools.push({ id, name: tool.tool_config?.name || "" });
+        }
+      }
+      const toolIds: string[] = [];
+      for (const tool of toolSchemas(toolsUrl, toolsSecret)) {
+        const existing = existingTools.find((t) => t.name === tool.name);
+        const res = await fetch(`${EL_API}/convai/tools${existing ? `/${existing.id}` : ""}`, {
+          method: existing ? "PATCH" : "POST", headers: elHeaders,
+          body: JSON.stringify({ tool_config: tool }),
+        });
+        if (!res.ok) return json({ error: `ElevenLabs tool save failed [${res.status}]: ${await res.text()}` }, 502);
+        const saved = await res.json();
+        toolIds.push(saved.id || existing?.id);
+      }
+      const config = agentConfig(toolIds);
 
       if (existingId) {
         const res = await fetch(`${EL_API}/convai/agents/${existingId}`, {
@@ -169,7 +200,18 @@ Deno.serve(async (req) => {
       const res = await fetch(`${EL_API}/convai/agents/${id}`, { headers: elHeaders });
       const text = await res.text();
       if (!res.ok) return json({ error: `ElevenLabs get failed [${res.status}]: ${text}` }, 502);
-      return json(JSON.parse(text));
+      const agent = JSON.parse(text);
+      // Never return webhook authentication headers to callers.
+      const prompt = agent.conversation_config?.agent?.prompt;
+      if (prompt?.tools) {
+        for (const tool of prompt.tools) {
+          if (tool.api_schema) {
+            delete tool.api_schema.request_headers;
+            delete tool.api_schema.headers;
+          }
+        }
+      }
+      return json(agent);
     }
 
     if (action === "test_tool") {
@@ -177,9 +219,9 @@ Deno.serve(async (req) => {
       const tool = String(body.tool || "get_business_info");
       const params = body.params && typeof body.params === "object" ? body.params : {};
       const res = await fetch(`${toolsUrl}?tool=${encodeURIComponent(tool)}`, {
-        method: "POST",
+        method: tool === "get_business_info" ? "GET" : "POST",
         headers: { "x-voice-agent-key": toolsSecret, "Content-Type": "application/json" },
-        body: JSON.stringify(params),
+        ...(tool === "get_business_info" ? {} : { body: JSON.stringify(params) }),
       });
       const text = await res.text();
       return json({ status: res.status, response: JSON.parse(text) });
