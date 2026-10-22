@@ -6,6 +6,7 @@
 import { corsHeaders } from "./cors.ts";
 import { matchingVehicles, normaliseHireDates, nzDate, perKmCharge, resolveLocation } from "./availability.ts";
 import { callbackSchema } from "./booking-policy.ts";
+import { createPhoneQuote, checkPhoneBooking } from "./phone-booking.ts";
 
 const RCM_API_URL = "https://apis.rentalcarmanager.com/booking/v3.2";
 // Same credentials the public website uses (already public in frontend code).
@@ -50,7 +51,8 @@ async function rcmCall(method: string, payload: Record<string, unknown>): Promis
   const body = JSON.stringify({ method, ...payload });
   const signature = await hmacHex(RCM_API_SECRET, body);
   let lastError = "no response";
-  for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+  const maxAttempts = method === "booking" || method === "confirmpayment" ? 1 : MAX_ATTEMPTS;
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
     if (attempt > 0) await new Promise((r) => setTimeout(r, 700 * attempt));
     try {
       const res = await fetch(`${RCM_API_URL}?apikey=${RCM_API_KEY}`, {
@@ -132,6 +134,7 @@ async function toolCheckAvailability(p: Record<string, unknown>) {
   const pickupTime = String(p.pickup_time || "10:00").trim();
   const dropoffTime = String(p.dropoff_time || "10:00").trim();
   const vehicleType = String(p.vehicle_type || "").toLowerCase().trim();
+  const driverAgeId = p.driver_age_id === undefined ? undefined : Number(p.driver_age_id);
 
   if (!branch || !rawPickup || !rawDropoff) {
     return { error: "branch, pickup_date and dropoff_date are required" };
@@ -155,7 +158,9 @@ async function toolCheckAvailability(p: Record<string, unknown>) {
 
   const ages = step1?.results?.driverages || [];
   const defaultAge = ages.find((a: any) => a.isdefault) || ages.find((a: any) => Number(a.driverage) >= 25) || ages[0];
-  const ageid = defaultAge?.id ?? defaultAge?.ageid;
+  const chosenAge = driverAgeId === undefined ? defaultAge : ages.find((a: any) => Number(a.id ?? a.ageid) === driverAgeId);
+  if (!chosenAge) return { error: "Select a valid driver_age_id from driver_age_options." };
+  const ageid = chosenAge?.id ?? chosenAge?.ageid;
 
   const step2 = await rcmCall("step2", {
     pickuplocationid: loc.id,
@@ -180,6 +185,8 @@ async function toolCheckAvailability(p: Record<string, unknown>) {
     const unlimitedKm = [1, 4].includes(Number(c.vehiclecategorytypeid));
     return {
       name: c.vehiclecategory || "Vehicle",
+      vehicle_category_id: Number(c.vehiclecategoryid ?? c.id),
+      vehicle_category_type_id: Number(c.vehiclecategorytypeid),
       example: c.categoryfriendlydescription || "",
       daily_rate_nzd: Number(c.avgrate),
       total_rate_nzd: Number(c.totalrateafterdiscount) > 0 ? Number(c.totalrateafterdiscount) : null,
@@ -198,6 +205,8 @@ async function toolCheckAvailability(p: Record<string, unknown>) {
 
   return {
     branch: loc.location,
+    driver_age_id_used: Number(ageid),
+    driver_age_options: ages.map((a: any) => ({ id: Number(a.id ?? a.ageid), label: String(a.driverage ?? a.description ?? a.age ?? "") })),
     pickup_date: pickupDate,
     dropoff_date: dropoffDate,
     ...(datesCorrected ? { dates_corrected_note: `Dates were adjusted to the upcoming ${pickupDate} to ${dropoffDate} (today in NZ is ${today}). Confirm these dates with the caller.` } : {}),
@@ -271,6 +280,10 @@ Deno.serve(async (req) => {
         return json(await toolCheckAvailability(params));
       case "request_callback":
         return json(await toolRequestCallback(params));
+      case "create_phone_quote":
+        return json(await createPhoneQuote(params, rcmCall, getStep1));
+      case "check_phone_booking":
+        return json(await checkPhoneBooking(params, rcmCall));
       default:
         return json({ error: `Unknown tool "${tool}"` }, 404);
     }

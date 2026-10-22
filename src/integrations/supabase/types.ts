@@ -1317,6 +1317,48 @@ export type Database = {
         }
         Relationships: []
       }
+      voice_booking_requests: {
+        Row: {
+          confirmation_email_id: string | null
+          created_at: string
+          expected_amount: number | null
+          id: string
+          quote_email_id: string | null
+          request_data: Json
+          request_id: string
+          reservation_number: string | null
+          reservation_reference: string | null
+          state: string
+          updated_at: string
+        }
+        Insert: {
+          confirmation_email_id?: string | null
+          created_at?: string
+          expected_amount?: number | null
+          id?: string
+          quote_email_id?: string | null
+          request_data: Json
+          request_id: string
+          reservation_number?: string | null
+          reservation_reference?: string | null
+          state?: string
+          updated_at?: string
+        }
+        Update: {
+          confirmation_email_id?: string | null
+          created_at?: string
+          expected_amount?: number | null
+          id?: string
+          quote_email_id?: string | null
+          request_data?: Json
+          request_id?: string
+          reservation_number?: string | null
+          reservation_reference?: string | null
+          state?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

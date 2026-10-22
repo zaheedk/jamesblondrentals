@@ -1,6 +1,8 @@
-import { test } from "node:test";
+import { test, mock } from "bun:test";
 import assert from "node:assert/strict";
-import { callbackSchema, quoteSchema, verifiedBooking } from "../supabase/functions/voice-agent-tools/booking-policy.ts";
+import { z } from "zod";
+mock.module("npm:zod@3.23.8", () => ({ z }));
+const { callbackSchema, quoteSchema, verifiedBooking } = await import("../supabase/functions/voice-agent-tools/booking-policy.ts");
 
 test("callback accepts the corrected spelled-out email", () => {
   assert.equal(callbackSchema.parse({ name: "Zaheed", phone: "0275353037", email: "zaheedk@gmail.com" }).email, "zaheedk@gmail.com");
@@ -14,7 +16,10 @@ test("phone quote requires confirmed first and last name, email, phone and both 
   assert.equal(quoteSchema.safeParse({ ...input, dropoff_time: "9am" }).success, false);
 });
 test("customer saying paid or a paid quote cannot confirm a booking", () => {
-  assert.equal(verifiedBooking({ bookingtype: "Quote", payment: 260 }, 260), false);
-  assert.equal(verifiedBooking({ bookingtype: "Booking", payment: 0 }, 260), false);
-  assert.equal(verifiedBooking({ bookingtype: "Booking", payment: 260 }, 260), true);
+  assert.equal(verifiedBooking({ reservationstatus: "Quotation", isquotation: true, isonrequest: false, payment: 260 }, 260), false);
+  assert.equal(verifiedBooking({ reservationstatus: "Reservation", isquotation: false, isonrequest: false, payment: 0 }, 260), false);
+  assert.equal(verifiedBooking({ reservationstatus: "Reservation", isquotation: false, isonrequest: false, payment: 260 }, 260), true);
+  assert.equal(verifiedBooking({ reservationstatus: "Cancelled", isquotation: false, isonrequest: false, payment: 260 }, 260), false);
+  assert.equal(verifiedBooking({ reservationstatus: "Reservation", isquotation: false, isonrequest: true, payment: 260 }, 260), false);
+  assert.equal(verifiedBooking({ reservationstatus: "Reservation", payment: 260 }, 260), false);
 });
