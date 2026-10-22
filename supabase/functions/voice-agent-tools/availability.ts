@@ -113,3 +113,30 @@ export function nzDate(now = new Date()): string {
   const get = (type: string) => parts.find((p) => p.type === type)?.value || "";
   return `${get("year")}-${get("month")}-${get("day")}`;
 }
+
+/**
+ * Callers say "25th October" without a year and the model sometimes fills in
+ * a past year. Move any past YYYY-MM-DD date forward by whole years until it is
+ * today or later (NZ time). Returns null for malformed dates.
+ */
+export function rollForwardDate(date: string, today: string): string | null {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(date.trim());
+  if (!m) return null;
+  let year = Number(m[1]);
+  const [, , mm, dd] = m;
+  const todayYear = Number(today.slice(0, 4));
+  if (year < todayYear) year = todayYear;
+  let candidate = `${year}-${mm}-${dd}`;
+  if (candidate < today) candidate = `${year + 1}-${mm}-${dd}`;
+  return candidate;
+}
+
+/** Roll pickup forward, then keep the return date on/after pickup. */
+export function normaliseHireDates(pickup: string, dropoff: string, today: string) {
+  const p = rollForwardDate(pickup, today);
+  if (!p) return null;
+  let d = rollForwardDate(dropoff, today);
+  if (!d) return null;
+  if (d < p) d = rollForwardDate(dropoff, p);
+  return d ? { pickup: p, dropoff: d } : null;
+}

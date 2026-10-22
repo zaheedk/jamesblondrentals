@@ -62,3 +62,14 @@ Deno.test("per-km charge: cars and minibuses have unlimited kilometres", () => {
   assertEquals(perKmCharge({ vehiclecategory: "Compact Car", vehiclecategorytypeid: 1 }), null);
   assertEquals(perKmCharge({ vehiclecategory: "Premium 12 Seat Minibus", vehiclecategorytypeid: 4 }), null);
 });
+
+import { normaliseHireDates, rollForwardDate } from "./availability.ts";
+
+Deno.test("past year from the model is rolled to the upcoming date", () => {
+  assertEquals(rollForwardDate("2024-10-25", "2026-10-22"), "2026-10-25");
+  assertEquals(rollForwardDate("2026-10-25", "2026-10-22"), "2026-10-25");
+  assertEquals(rollForwardDate("2026-01-05", "2026-10-22"), "2027-01-05");
+  assertEquals(normaliseHireDates("2024-10-25", "2024-10-27", "2026-10-22"), { pickup: "2026-10-25", dropoff: "2026-10-27" });
+  assertEquals(normaliseHireDates("2026-12-30", "2026-01-02", "2026-10-22"), { pickup: "2026-12-30", dropoff: "2027-01-02" });
+  assertEquals(rollForwardDate("25 Oct", "2026-10-22"), null);
+});

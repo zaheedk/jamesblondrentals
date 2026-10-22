@@ -4,7 +4,7 @@
 // (configured on the agent by voice-agent-admin), or x-admin-key must
 // match ELEVENLABS_API_KEY (admin/testing only).
 import { corsHeaders } from "./cors.ts";
-import { matchingVehicles, nzDate, perKmCharge, resolveLocation } from "./availability.ts";
+import { matchingVehicles, normaliseHireDates, nzDate, perKmCharge, resolveLocation } from "./availability.ts";
 
 const RCM_API_URL = "https://apis.rentalcarmanager.com/booking/v3.2";
 // Same credentials the public website uses (already public in frontend code).
@@ -102,15 +102,24 @@ const BUSINESS_INFO = {
 
 async function toolCheckAvailability(p: Record<string, unknown>) {
   const branch = String(p.branch || "").trim();
-  const pickupDate = String(p.pickup_date || "").trim();
-  const dropoffDate = String(p.dropoff_date || "").trim();
+  const rawPickup = String(p.pickup_date || "").trim();
+  const rawDropoff = String(p.dropoff_date || "").trim();
   const pickupTime = String(p.pickup_time || "10:00").trim();
   const dropoffTime = String(p.dropoff_time || "10:00").trim();
   const vehicleType = String(p.vehicle_type || "").toLowerCase().trim();
 
-  if (!branch || !pickupDate || !dropoffDate) {
+  if (!branch || !rawPickup || !rawDropoff) {
     return { error: "branch, pickup_date and dropoff_date are required" };
   }
+
+  const today = nzDate();
+  const dates = normaliseHireDates(rawPickup, rawDropoff, today);
+  if (!dates) {
+    return { error: `Dates must be YYYY-MM-DD. Today in New Zealand is ${today}. Retry with corrected dates.` };
+  }
+  const pickupDate = dates.pickup;
+  const dropoffDate = dates.dropoff;
+  const datesCorrected = pickupDate !== rawPickup || dropoffDate !== rawDropoff;
 
   const step1 = await rcmCall("step1", {});
   const locations = step1?.results?.locations || [];
@@ -135,7 +144,8 @@ async function toolCheckAvailability(p: Record<string, unknown>) {
   });
 
   if (step2?.status !== "OK") {
-    return { error: "Availability check failed — please offer a callback." };
+    console.error("check_availability step2 failed", JSON.stringify({ branch: loc.id, pickupDate, dropoffDate, pickupTime, dropoffTime, status: step2?.status, error: step2?.error }));
+    return { error: `Availability check failed (${step2?.error || "booking system error"}) for ${pickupDate} to ${dropoffDate}. Please offer a callback.` };
   }
 
   const allCars: any[] = step2?.results?.availablecars || [];
@@ -165,6 +175,7 @@ async function toolCheckAvailability(p: Record<string, unknown>) {
     branch: loc.location,
     pickup_date: pickupDate,
     dropoff_date: dropoffDate,
+    ...(datesCorrected ? { dates_corrected_note: `Dates were adjusted to the upcoming ${pickupDate} to ${dropoffDate} (today in NZ is ${today}). Confirm these dates with the caller.` } : {}),
     vehicle_type_requested: vehicleType || null,
     vehicles_found: cars.length,
     vehicles,

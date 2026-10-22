@@ -2,6 +2,7 @@
 
 - Voice-agent webhooks use persisted ElevenLabs tool IDs with api_schema.request_headers, preserve tool failures for the model, and confirm callback success only from the tool response; this prevents silent authentication failures becoming invented answers.
 - Voice availability matching filters by the booking system's vehicle category type id plus normalised size words (tonnage, seats), not raw text matching; category names like "2 Ton Box" never contain caller words like "truck".
+- Voice availability normalises caller dates server-side to the next upcoming occurrence (NZ time) and reports any correction; the model often fills in a past year when callers omit it.
 - Voice website knowledge uses dated, source-linked public-page snapshots with error/private pages excluded; agent updates preserve knowledge attachments and retrieval settings, while live tools remain authoritative for availability and date-specific prices.
 
 - Broker demo uses an isolated in-memory rehearsal API by default and a fixed-destination server signing relay for assigned broker credentials; no secrets are persisted, live writes require explicit confirmation, and live updates remain disabled until separate maintenance access exists.
