@@ -147,8 +147,9 @@ async function toolCheckAvailability(p: Record<string, unknown>) {
     return { error: `Could not find a branch matching "${branch}". Branches: ${locations.map((l: any) => l.location).join(", ")}` };
   }
 
-  const ages = step1?.results?.ages || step1?.results?.agegroups || [];
-  const ageid = ages[0]?.id ?? ages[0]?.ageid;
+  const ages = step1?.results?.driverages || [];
+  const defaultAge = ages.find((a: any) => a.isdefault) || ages.find((a: any) => Number(a.driverage) >= 25) || ages[0];
+  const ageid = defaultAge?.id ?? defaultAge?.ageid;
 
   const step2 = await rcmCall("step2", {
     pickuplocationid: loc.id,
@@ -165,20 +166,23 @@ async function toolCheckAvailability(p: Record<string, unknown>) {
     return { error: "Availability check failed — please offer a callback." };
   }
 
-  let cars: any[] = step2?.results?.availablecars || [];
+  let cars: any[] = (step2?.results?.availablecars || []).filter((c: any) =>
+    Number(c.available) > 0 && Number(c.avgrate) > 0);
   if (vehicleType) {
     const kw = vehicleType.split(/\s+/);
     const matched = cars.filter((c) => {
-      const hay = `${c.vehiclecategory || ""} ${c.vehiclecategorytype || ""} ${c.name || ""}`.toLowerCase();
+      const hay = `${c.vehiclecategory || ""} ${c.categoryfriendlydescription || ""}`.toLowerCase();
       return kw.some((k) => hay.includes(k));
     });
     if (matched.length) cars = matched;
   }
 
   const vehicles = cars.slice(0, 6).map((c) => ({
-    name: c.vehiclecategory || c.name || "Vehicle",
-    type: c.vehiclecategorytype || "",
-    daily_rate_nzd: Number(c.avgrate) > 0 ? Number(c.avgrate) : null,
+    name: c.vehiclecategory || "Vehicle",
+    example: c.categoryfriendlydescription || "",
+    daily_rate_nzd: Number(c.avgrate),
+    total_rate_nzd: Number(c.totalrateafterdiscount) > 0 ? Number(c.totalrateafterdiscount) : null,
+    days: Number(c.numberofdays) || null,
   }));
 
   return {
@@ -187,7 +191,7 @@ async function toolCheckAvailability(p: Record<string, unknown>) {
     dropoff_date: dropoffDate,
     vehicles_found: cars.length,
     vehicles,
-    note: "Rates are per day in NZD including GST, before optional extras. Final total is confirmed at booking. If nothing suitable is listed, offer a callback.",
+    note: "Rates are in NZD including GST, before optional extras such as insurance upgrades. Final total is confirmed at booking. If nothing suitable is listed, offer a callback.",
   };
 }
 
