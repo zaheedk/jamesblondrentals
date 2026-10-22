@@ -7,6 +7,7 @@ import { corsHeaders } from "./cors.ts";
 import { matchingVehicles, normaliseHireDates, nzDate, perKmCharge, resolveLocation } from "./availability.ts";
 import { callbackSchema } from "./booking-policy.ts";
 import { createPhoneQuote, checkPhoneBooking } from "./phone-booking.ts";
+import { checkBookingByNumber } from "./booking-lookup.ts";
 
 const RCM_API_URL = "https://apis.rentalcarmanager.com/booking/v3.2";
 // Same credentials the public website uses (already public in frontend code).
