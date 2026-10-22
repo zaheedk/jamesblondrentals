@@ -72,6 +72,10 @@
 - [x] Resume day-before pickup texts after paid TNZ account confirmation
 
 ## Voice agent (3CX / phone assistant)
+- [ ] Accept and correct callback email addresses
+- [ ] Create phone quotes from confirmed customer and hire details and email secure payment links
+- [ ] Verify payment before phone booking confirmation and send confirmation emails
+- [ ] Test and deploy the phone quote/payment tools and update the live agent
 - [x] Scan 249 public URLs, generate dated knowledge base from 224 content pages, attach six indexed references to ElevenLabs and verify Wellington address/hours and Mt Wellington cars/vans-only answers; excludes errors, placeholders and duplicates
 - [x] Correct rejected tool authentication and prevent invented branch/callback answers; live conversation asked for return date and successfully checked Wellington CBD trucks
 - [x] Build voice-agent-tools edge function (business info, live availability, callback requests)

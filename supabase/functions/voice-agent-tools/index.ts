@@ -5,6 +5,7 @@
 // match ELEVENLABS_API_KEY (admin/testing only).
 import { corsHeaders } from "./cors.ts";
 import { matchingVehicles, normaliseHireDates, nzDate, perKmCharge, resolveLocation } from "./availability.ts";
+import { callbackSchema } from "./booking-policy.ts";
 
 const RCM_API_URL = "https://apis.rentalcarmanager.com/booking/v3.2";
 // Same credentials the public website uses (already public in frontend code).
@@ -209,11 +210,9 @@ async function toolCheckAvailability(p: Record<string, unknown>) {
 }
 
 async function toolRequestCallback(p: Record<string, unknown>) {
-  const name = String(p.name || "").trim();
-  const phone = String(p.phone || "").trim();
-  const topic = String(p.topic || "General enquiry").trim();
-  const preferredTime = String(p.preferred_time || "any time").trim();
-  if (!name || !phone) return { error: "name and phone are required" };
+  const parsed = callbackSchema.safeParse(p);
+  if (!parsed.success) return { error: "Please confirm the name, phone number and a valid email if supplied." };
+  const { name, phone, email, topic, preferred_time: preferredTime } = parsed.data;
 
   const resendKey = Deno.env.get("RESEND_API_KEY");
   if (!resendKey) return { error: "Email service not configured" };
@@ -230,6 +229,7 @@ async function toolRequestCallback(p: Record<string, unknown>) {
         ``,
         `Name: ${name}`,
         `Phone: ${phone}`,
+        ...(email ? [`Email: ${email}`] : []),
         `Topic: ${topic}`,
         `Preferred time: ${preferredTime}`,
         ``,
@@ -237,11 +237,12 @@ async function toolRequestCallback(p: Record<string, unknown>) {
       ].join("\n"),
     }),
   });
-  if (!res.ok) {
-    console.error("callback email failed", res.status, await res.text());
+  const result = await res.json().catch(() => null);
+  if (!res.ok || !result?.id) {
+    console.error("callback email failed", res.status);
     return { error: "Could not send the callback request — please take the details manually." };
   }
-  return { success: true, message: `Callback request noted for ${name} on ${phone}. The team will call back.` };
+  return { success: true, email_recorded: Boolean(email), message: `Callback request noted for ${name} on ${phone}${email ? `, email ${email}` : ""}. The team will call back.` };
 }
 
 // ---------- Handler ----------
