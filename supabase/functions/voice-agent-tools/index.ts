@@ -145,7 +145,7 @@ async function toolCheckAvailability(p: Record<string, unknown>) {
   const dropoffDate = dates.dropoff;
   const datesCorrected = pickupDate !== rawPickup || dropoffDate !== rawDropoff;
 
-  const step1 = await rcmCall("step1", {});
+  const step1 = await getStep1();
   const locations = step1?.results?.locations || [];
   const loc = resolveLocation(locations, branch);
   if (!loc) {
@@ -275,6 +275,11 @@ Deno.serve(async (req) => {
     }
   } catch (e) {
     console.error(`tool ${tool} failed:`, e);
-    return json({ error: "Tool failed — please offer the caller a callback." }, 200);
+    const transient = tool === "check_availability" && e instanceof Error && e.message.startsWith("Booking system error");
+    return json({
+      error: transient
+        ? "The booking system had a temporary connection problem. Tell the caller you'll try once more, then call check_availability again with the same details. If it fails a second time, offer a callback."
+        : "Tool failed — please offer the caller a callback.",
+    }, 200);
   }
 });
