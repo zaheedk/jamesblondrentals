@@ -30,13 +30,15 @@ Style:
 What you can do:
 1. Answer general questions (branches, vehicles, licence rules, insurance, payments, one-way hires) using the get_business_info tool.
 2. For an availability enquiry, call get_business_info to confirm branches and today's New Zealand date, then collect pickup date, return date and branch. For "Saturday", resolve the upcoming Saturday from the tool's current NZ date and confirm that date aloud. If return date is missing, ask when they will return it; do not abandon the enquiry or assume a hire duration. For trucks in Wellington, offer Wellington CBD, not Auckland. Once you have the details, you MUST call check_availability before stating availability or prices. Times default to 10:00 if not specified. Summarise at most three matching options, cheapest first, and say rates are per day including GST before extras. If there are no matching vehicles, say none were returned for the requested dates, not that the branch does not exist.
-3. Take a callback request using the request_callback tool when the caller wants to book, asks something you cannot answer, or asks for a person. Get their name, phone number and what it's about.
+3. Help callers book by creating a quote and emailing a secure payment link with create_phone_quote. Collect first name, last name, email, contact number, pickup/return branches, dates and times, and exact vehicle selection from check_availability. Ask the driver age band and recheck availability using the corresponding driver_age_id. Read back the full details and spell the email local part, then obtain explicit agreement before creating the quote. Generate one request_id for this quote and reuse it for all retries and checks. Never guess a category id or age id: use the tool results. Quote includes standard insurance only; optional upgrades can be reviewed in secure checkout, never add them without consent.
+4. After create_phone_quote returns success and payment_link_sent, say the quote and secure payment link have been emailed. The customer pays on their own device; NEVER ask for card numbers, CVV or banking credentials. You may stay on the call while they pay. When they say checkout is finished, call check_phone_booking with the same request_id. Only say the booking is confirmed and confirmation emailed if booking_confirmed, payment_verified and confirmation_email_sent are all true. If they have paid but confirmation is pending, offer staff assistance; never ask them to pay again. A payment-link send is not a booking confirmation.
+5. Take callback requests with request_callback when the caller wants a person or needs help beyond your tools. Collect name, phone, topic and any email they want included. You CAN accept email addresses, including after an earlier callback was submitted: read back and confirm the latest corrected address, then submit an updated callback noting it supersedes the earlier contact details. Spelled letters such as Z-A-H-E-E-D-K at gmail dot com mean zaheedk@gmail.com; never keep an earlier misheard email after correction.
 
 Rules:
 - Use the attached dated website knowledge base for detailed addresses, hours, fleet specifications, airport instructions and policies. It is a snapshot, not live availability or a price guarantee. Official branch contact pages outrank regional marketing pages; a service area is not a branch. For conflicts or missing information offer staff assistance, never invent facts. Always use check_availability for date-specific availability and pricing.
 - NEVER call check_availability until the caller has explicitly provided a return date. "Hire on Saturday" gives only a pickup date. Your next spoken response must ask when they want to return the vehicle. Do not fill dropoff_date with pickup_date or invent any date. Missing details are not a system failure.
 - Callers rarely say the year. Always use the next upcoming occurrence of the date, based on today's NZ date (from get_business_info current_date_nz); never use a past year. If check_availability returns dates_corrected_note, use the corrected dates it gives.
-- You cannot create, change or cancel bookings. For anything booking-related beyond a price/availability check, offer a callback or point them to www.jamesblond.co.nz.
+- You can create phone quotes and verify bookings completed through secure payment checkout. You cannot change or cancel existing bookings. For changes/cancellations or payment reconciliation, offer a callback. Never claim payment was received based on the caller's words alone.
 - For 3-tonne trucks, never say a car licence is always enough or that Class 2 is always required — it depends on the specific truck; the branch confirms before booking.
 - Minibus and 12-seater prices are on request, except schools at $210 per day.
 - Commercial vehicle rates are fixed; passenger vehicle prices change with demand.
@@ -81,6 +83,7 @@ function toolSchemas(toolsUrl: string, secret: string) {
             pickup_time: { type: "string", description: "Pickup time HH:MM, default 10:00" },
             dropoff_time: { type: "string", description: "Drop-off time HH:MM, default 10:00" },
             vehicle_type: { type: "string", description: "Optional keyword like car, van, ute, truck, minibus" },
+            driver_age_id: { type: "integer", description: "Confirmed driver age band id from driver_age_options; recheck with this before creating the phone quote" },
           },
           required: ["branch", "pickup_date", "dropoff_date"],
         },
@@ -89,7 +92,7 @@ function toolSchemas(toolsUrl: string, secret: string) {
     {
       type: "webhook",
       name: "request_callback",
-      description: "Record a callback request when the caller wants to book, asks something you cannot answer, or wants to speak to the team.",
+      description: "Record a callback request including optional email. Accept corrected or spelled email addresses and send an updated request if a caller adds/corrects their email after submission.",
       response_timeout_secs: 10,
       tool_error_handling_mode: "passthrough",
       api_schema: {
@@ -101,11 +104,49 @@ function toolSchemas(toolsUrl: string, secret: string) {
           properties: {
             name: { type: "string", description: "Caller's name" },
             phone: { type: "string", description: "Caller's phone number" },
+            email: { type: "string", description: "Optional confirmed email address. Use latest correction; convert spoken spelling to a normal address, e.g. zaheedk@gmail.com" },
             topic: { type: "string", description: "What the call is about" },
             preferred_time: { type: "string", description: "Preferred callback time, optional" },
           },
           required: ["name", "phone", "topic"],
         },
+      },
+    },
+    {
+      type: "webhook", name: "create_phone_quote",
+      description: "Create one phone quote and email its branded secure payment link after the customer confirms all hire/contact details and exact vehicle/age band. Reuse request_id on retries. Does not confirm a booking or take card details.",
+      response_timeout_secs: 60, tool_error_handling_mode: "passthrough",
+      api_schema: {
+        url: `${toolsUrl}?tool=create_phone_quote`, method: "POST", request_headers: headers,
+        request_body_schema: {
+          type: "object",
+          properties: {
+            request_id: { type: "string", description: "Unique id for this call's quote, at least 8 characters. Keep the same on retries and status checks." },
+            first_name: { type: "string", description: "Confirmed customer first name" },
+            last_name: { type: "string", description: "Confirmed customer last name" },
+            email: { type: "string", description: "Confirmed email, use latest spelling/correction" },
+            phone: { type: "string", description: "Confirmed contact number as digits" },
+            branch: { type: "string", description: "Confirmed pickup branch" },
+            dropoff_branch: { type: "string", description: "Return branch; omit only when caller confirmed same branch" },
+            pickup_date: { type: "string", description: "Confirmed upcoming date YYYY-MM-DD" },
+            dropoff_date: { type: "string", description: "Confirmed return date YYYY-MM-DD" },
+            pickup_time: { type: "string", description: "Confirmed HH:MM pickup time" },
+            dropoff_time: { type: "string", description: "Confirmed HH:MM return time" },
+            vehicle_category_id: { type: "integer", description: "Exact selected vehicle_category_id returned by live availability" },
+            driver_age_id: { type: "integer", description: "Age band id explicitly confirmed and used in availability recheck" },
+            confirmed_details: { type: "boolean", description: "True only after readback and customer permission to create quote/send payment email" },
+          },
+          required: ["request_id", "first_name", "last_name", "email", "phone", "branch", "pickup_date", "dropoff_date", "pickup_time", "dropoff_time", "vehicle_category_id", "driver_age_id", "confirmed_details"],
+        },
+      },
+    },
+    {
+      type: "webhook", name: "check_phone_booking",
+      description: "Independently read live booking/payment state for a tracked phone quote and email confirmation only when verified. Customer saying they paid is not proof. Never request a second payment when verification is pending.",
+      response_timeout_secs: 60, tool_error_handling_mode: "passthrough",
+      api_schema: {
+        url: `${toolsUrl}?tool=check_phone_booking`, method: "POST", request_headers: headers,
+        request_body_schema: { type: "object", properties: { request_id: { type: "string", description: "Same id used by create_phone_quote" } }, required: ["request_id"] },
       },
     },
   ];

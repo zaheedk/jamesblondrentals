@@ -1,4 +1,5 @@
 # Project Architecture Rules
+- Phone quotes use the booking API's quote mode plus the existing branded checkout; durable request claims prevent duplicate write retries, and live booking/payment reads gate confirmation emails because caller claims and redirects are not proof of payment. Never automatically retry booking writes after ambiguous timeouts.
 
 - Voice-agent webhooks use persisted ElevenLabs tool IDs with api_schema.request_headers, preserve tool failures for the model, and confirm callback success only from the tool response; this prevents silent authentication failures becoming invented answers.
 - Voice availability matching filters by the booking system's vehicle category type id plus normalised size words (tonnage, seats), not raw text matching; category names like "2 Ton Box" never contain caller words like "truck".

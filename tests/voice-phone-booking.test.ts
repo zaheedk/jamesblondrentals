@@ -1,6 +1,8 @@
-import { test } from "node:test";
+import { test, mock } from "bun:test";
 import assert from "node:assert/strict";
-import { callbackSchema, quoteSchema, verifiedBooking } from "../supabase/functions/voice-agent-tools/booking-policy.ts";
+import { z } from "zod";
+mock.module("npm:zod@3.23.8", () => ({ z }));
+const { callbackSchema, quoteSchema, verifiedBooking } = await import("../supabase/functions/voice-agent-tools/booking-policy.ts");
 
 test("callback accepts the corrected spelled-out email", () => {
   assert.equal(callbackSchema.parse({ name: "Zaheed", phone: "0275353037", email: "zaheedk@gmail.com" }).email, "zaheedk@gmail.com");
