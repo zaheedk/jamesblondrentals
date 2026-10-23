@@ -247,6 +247,15 @@ function toolSchemas(toolsUrl: string, secret: string) {
 }
 
 function agentConfig(toolIds: string[]) {
+  // English agents must use turbo/flash v2 voices; other languages are added
+  // as presets using the multilingual turbo v2.5 voice. Latency optimisation
+  // level 3 trades a little quality for faster first audio.
+  const multilingualPreset = (lang: string) => ({
+    overrides: {
+      agent: { language: lang },
+      tts: { model_id: "eleven_turbo_v2_5" },
+    },
+  });
   return {
     name: "James Blond Rentals Phone Assistant",
     conversation_config: {
@@ -260,9 +269,15 @@ function agentConfig(toolIds: string[]) {
           tool_ids: toolIds,
         },
       },
-      // turbo_v2_5 is multilingual and lower-latency than turbo_v2; latency
-      // optimisation level 3 trades a little quality for faster first audio.
-      tts: { model_id: "eleven_turbo_v2_5", voice_id: "EXAVITQu4vr4xnSDxMaL", optimize_streaming_latency: 3 },
+      tts: { model_id: "eleven_flash_v2", voice_id: "EXAVITQu4vr4xnSDxMaL", optimize_streaming_latency: 3 },
+      language_presets: {
+        hi: multilingualPreset("hi"),
+        zh: multilingualPreset("zh"),
+        pa: multilingualPreset("pa"),
+        sm: multilingualPreset("sm"),
+        to: multilingualPreset("to"),
+        mi: multilingualPreset("mi"),
+      },
     },
   };
 }
