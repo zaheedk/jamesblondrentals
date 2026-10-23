@@ -274,8 +274,6 @@ function agentConfig(toolIds: string[]) {
         hi: multilingualPreset("hi"),
         zh: multilingualPreset("zh"),
         pa: multilingualPreset("pa"),
-        sm: multilingualPreset("sm"),
-        to: multilingualPreset("to"),
         mi: multilingualPreset("mi"),
       },
     },
