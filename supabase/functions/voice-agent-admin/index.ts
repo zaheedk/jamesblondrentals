@@ -275,8 +275,8 @@ function agentConfig(toolIds: string[]) {
       },
       tts: { model_id: "eleven_flash_v2", voice_id: "EXAVITQu4vr4xnSDxMaL", optimize_streaming_latency: 3 },
       language_presets: {
-        hi: multilingualPreset("hi"),
-        zh: multilingualPreset("zh"),
+        hi: multilingualPreset("hi", "1H72DEBQwEbyKT5J6Nul"), // Niraj - Hindi Customer Care
+        zh: multilingualPreset("zh", "AwQL7jPTLzD7hSLmirIM"), // BoHai - Mandarin Friendly
         ta: multilingualPreset("ta"),
         ko: multilingualPreset("ko"),
         fil: multilingualPreset("fil"),
