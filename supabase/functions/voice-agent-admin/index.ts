@@ -250,10 +250,14 @@ function agentConfig(toolIds: string[]) {
   // English agents must use turbo/flash v2 voices; other languages are added
   // as presets using the multilingual turbo v2.5 voice. Latency optimisation
   // level 3 trades a little quality for faster first audio.
-  const multilingualPreset = (lang: string) => ({
+  // Languages with a native voice in the account use the higher-quality
+  // multilingual v2 model with that voice; the rest keep turbo v2.5.
+  const multilingualPreset = (lang: string, voiceId?: string) => ({
     overrides: {
       agent: { language: lang },
-      tts: { model_id: "eleven_turbo_v2_5" },
+      tts: voiceId
+        ? { model_id: "eleven_multilingual_v2", voice_id: voiceId }
+        : { model_id: "eleven_turbo_v2_5" },
     },
   });
   return {
@@ -271,8 +275,8 @@ function agentConfig(toolIds: string[]) {
       },
       tts: { model_id: "eleven_flash_v2", voice_id: "EXAVITQu4vr4xnSDxMaL", optimize_streaming_latency: 3 },
       language_presets: {
-        hi: multilingualPreset("hi"),
-        zh: multilingualPreset("zh"),
+        hi: multilingualPreset("hi", "1H72DEBQwEbyKT5J6Nul"), // Niraj - Hindi Customer Care
+        zh: multilingualPreset("zh", "AwQL7jPTLzD7hSLmirIM"), // BoHai - Mandarin Friendly
         ta: multilingualPreset("ta"),
         ko: multilingualPreset("ko"),
         fil: multilingualPreset("fil"),
