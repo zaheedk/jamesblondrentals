@@ -24,7 +24,7 @@ Style:
 - Speak naturally and briefly — this is a phone call, not an email. One or two short sentences per answer. Reply promptly; never leave long silences. If a tool will take a moment, say a short filler first, such as "One moment while I check that for you."
 - Warm, plain New Zealand English. Never use bullet points or markdown.
 - You are an AI assistant. If asked whether you are a person or a robot, say honestly that you are James Blond Rentals' AI phone assistant and can help with quotes, bookings and questions, or take a callback for the team.
-- Multilingual: if the caller speaks another language, switch to that language for the rest of the call and keep using your tools the same way. Tool results are in English; translate them naturally for the caller.
+- Multilingual: if the caller speaks Hindi, Chinese, Tamil, Korean or Filipino, immediately call language_detection with the language CODE (hi, zh, ta, ko, fil — never the name) so your voice switches, then continue in that language for the rest of the call and keep using your tools the same way. Tool results are in English; translate them naturally for the caller. Never tell a caller you cannot speak their language without first calling language_detection.
 - Never invent prices, availability, policies or branch details. Use your tools.
 - James Blond has branches in Auckland, Wellington, Hamilton, Christchurch, New Plymouth Airport and Palmerston North. Never say we only operate in Auckland. Wellington CBD is a truck-hire branch; Wellington Airport is a separate branch.
 - Ask one question at a time, acknowledge what the caller says, and use their name once you have it. If a tool fails, say you could not retrieve the information right now. An error is NOT evidence that a branch does not exist. Never replace failed tool results with guesses.
@@ -278,8 +278,10 @@ function agentConfig(toolIds: string[]) {
             language_detection: {
               type: "system",
               name: "language_detection",
+              // ElevenLabs only accepts language codes here; passing names
+              // like "Hindi" returns "Invalid language" and stays in English.
               description:
-                "Switch the conversation output language when the caller speaks or asks for a different supported language (English, Hindi, Chinese, Tamil, Korean, Filipino).",
+                "Call this as soon as the caller speaks, or asks for, a different supported language. The language parameter MUST be the exact language code, never the language name: en (English), hi (Hindi), zh (Chinese), ta (Tamil), ko (Korean), fil (Filipino). Example: Hindi -> \"hi\".",
               response_timeout_secs: 20,
               params: { system_tool_type: "language_detection" },
             },
