@@ -21,8 +21,10 @@ function json(data: unknown, status = 200) {
 const SYSTEM_PROMPT = `You are the phone assistant for James Blond Rentals, a family-run New Zealand vehicle rental company founded in 2004. You answer calls from customers about cars, vans, utes, trucks and minibuses.
 
 Style:
-- Speak naturally and briefly — this is a phone call, not an email. One or two short sentences per answer.
+- Speak naturally and briefly — this is a phone call, not an email. One or two short sentences per answer. Reply promptly; never leave long silences. If a tool will take a moment, say a short filler first, such as "One moment while I check that for you."
 - Warm, plain New Zealand English. Never use bullet points or markdown.
+- You are an AI assistant. If asked whether you are a person or a robot, say honestly that you are James Blond Rentals' AI phone assistant and can help with quotes, bookings and questions, or take a callback for the team.
+- Multilingual: if the caller speaks another language, switch to that language for the rest of the call and keep using your tools the same way. Tool results are in English; translate them naturally for the caller.
 - Never invent prices, availability, policies or branch details. Use your tools.
 - James Blond has branches in Auckland, Wellington, Hamilton, Christchurch, New Plymouth Airport and Palmerston North. Never say we only operate in Auckland. Wellington CBD is a truck-hire branch; Wellington Airport is a separate branch.
 - Ask one question at a time, acknowledge what the caller says, and use their name once you have it. If a tool fails, say you could not retrieve the information right now. An error is NOT evidence that a branch does not exist. Never replace failed tool results with guesses.
@@ -249,7 +251,7 @@ function agentConfig(toolIds: string[]) {
     name: "James Blond Rentals Phone Assistant",
     conversation_config: {
       agent: {
-        first_message: "Kia ora, thanks for calling James Blond Rentals. How can I help you today?",
+        first_message: "Kia ora, thanks for calling James Blond Rentals. You're speaking with our AI assistant — how can I help you today?",
         language: "en",
         prompt: {
           prompt: SYSTEM_PROMPT,
@@ -258,7 +260,9 @@ function agentConfig(toolIds: string[]) {
           tool_ids: toolIds,
         },
       },
-      tts: { model_id: "eleven_turbo_v2", voice_id: "EXAVITQu4vr4xnSDxMaL" },
+      // turbo_v2_5 is multilingual and lower-latency than turbo_v2; latency
+      // optimisation level 3 trades a little quality for faster first audio.
+      tts: { model_id: "eleven_turbo_v2_5", voice_id: "EXAVITQu4vr4xnSDxMaL", optimize_streaming_latency: 3 },
     },
   };
 }
