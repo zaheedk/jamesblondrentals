@@ -271,6 +271,19 @@ function agentConfig(toolIds: string[]) {
           llm: "gemini-2.5-flash",
           temperature: 0.1,
           tool_ids: toolIds,
+          // Language presets alone do not switch languages mid-call; the
+          // language_detection system tool must be enabled or the agent keeps
+          // speaking with the default English voice.
+          built_in_tools: {
+            language_detection: {
+              type: "system",
+              name: "language_detection",
+              description:
+                "Switch the conversation output language when the caller speaks or asks for a different supported language (English, Hindi, Chinese, Tamil, Korean, Filipino).",
+              response_timeout_secs: 20,
+              params: { system_tool_type: "language_detection" },
+            },
+          },
         },
       },
       tts: { model_id: "eleven_flash_v2", voice_id: "EXAVITQu4vr4xnSDxMaL", optimize_streaming_latency: 3 },
