@@ -46,8 +46,17 @@ export async function createPhoneQuote(params: Record<string, unknown>, rcm: Rcm
   const { data: existing, error: lookupError } = await db.from("voice_booking_requests").select("*").eq("request_id", p.request_id).maybeSingle();
   if (lookupError) throw new Error("Could not read phone request tracking");
   if (existing) {
-    if (Object.keys(p).some((key) => JSON.stringify(existing.request_data[key]) !== JSON.stringify(p[key as keyof typeof p]))) {
+    if (Object.keys(p).some((key) => key !== "email" && JSON.stringify(existing.request_data[key]) !== JSON.stringify(p[key as keyof typeof p]))) {
       return { error: "This request already exists with different details. Do not create a duplicate; ask the team to amend it." };
+    }
+    if (existing.request_data.email.toLowerCase() !== p.email.toLowerCase()) {
+      if (!existing.reservation_reference || existing.state !== "quoted") return { error: "Email corrections through this tool apply only to an existing phone quote. Ask staff to amend a confirmed booking or review an incomplete request; do not create another quote." };
+      const requestData = { ...existing.request_data, email: p.email.toLowerCase() };
+      const { error: correctionError } = await db.from("voice_booking_requests").update({ request_data: requestData, quote_email_id: null }).eq("id", existing.id).eq("request_data->>email", existing.request_data.email);
+      if (correctionError) throw new Error("Could not save the corrected quote email. Do not promise it was sent.");
+      const { data: corrected, error: rereadError } = await db.from("voice_booking_requests").select("*").eq("id", existing.id).maybeSingle();
+      if (rereadError || corrected?.request_data?.email !== requestData.email) return { error: "Another correction is being processed. Check the same request before resending; do not create a new quote." };
+      Object.assign(existing, corrected);
     }
   }
   let row = existing;
@@ -107,11 +116,11 @@ export async function createPhoneQuote(params: Record<string, unknown>, rcm: Rcm
       `Rental total: NZD ${total.toFixed(2)} including GST, before any additional mileage or optional upgrades.`,
       "", `Review your quote and pay securely: ${paymentUrl}`, "", "This quote does not reserve a vehicle and availability may change before booking.",
       "Never share card details over the phone. Call 0800 525 663 for assistance.", "", "James Blond Rentals",
-    ].join("\n"), `voice-quote/${row.id}`);
+    ].join("\n"), `voice-quote/${row.id}/${p.email.toLowerCase()}`);
     const { error } = await db.from("voice_booking_requests").update({ quote_email_id: id, expected_amount: total }).eq("id", row.id);
     if (error) throw new Error("Email accepted but tracking could not be saved. Ask staff to check before resending.");
   }
-  return { success: true, request_id: p.request_id, reservation_number: row.reservation_number, quote_total_nzd: total, payment_link_sent: true, email: p.email, booking_confirmed: false, instruction: "Say the quote and secure payment link have been emailed, not that the booking is confirmed. Ask the caller to pay using the link, then call check_phone_booking. Never collect card details." };
+  return { success: true, request_id: p.request_id, reservation_number: row.reservation_number, quote_total_nzd: total, payment_link_sent: true, email: p.email, booking_confirmed: false, booking_customer_email_updated: false, instruction: "The existing quote and secure payment link were accepted for sending to the confirmed email, not proof of inbox delivery or booking confirmation. If reading the address aloud, spell the local part and say at for @ and dot for each period. The booking system customer email was not edited; ask staff to correct that separately if required. Ask the caller to pay using the link, then call check_phone_booking. Never collect card details." };
 }
 
 export async function checkPhoneBooking(params: Record<string, unknown>, rcm: RcmCall) {

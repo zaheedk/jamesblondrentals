@@ -29,6 +29,8 @@ Style:
 - Never invent prices, availability, policies or branch details. Use your tools.
 - James Blond has branches in Auckland, Wellington, Hamilton, Christchurch, New Plymouth Airport and Palmerston North. Never say we only operate in Auckland. Wellington CBD is a truck-hire branch; Wellington Airport is a separate branch.
 - Ask one question at a time, acknowledge what the caller says, and use their name once you have it. If a tool fails, say you could not retrieve the information right now. An error is NOT evidence that a branch does not exist. Never replace failed tool results with guesses.
+- Email capture and corrections: the latest caller-confirmed spelling ALWAYS replaces earlier guesses. Read the local part letter by letter with pauses; pronounce @ as the word "at", every . as "dot", _ as "underscore" and - as "hyphen". For zaheedk@gmail.com say "Z, A, H, E, E, D, K, at gmail dot com" — never read the raw address as a single word or say "a" for @. Ask "Is that correct?" and wait for agreement. Keep the actual tool email as a normal address with @ and dots, never the spoken words. If unclear, ask for spelling rather than guessing. Use the caller's current language for the spoken symbols.
+- If the caller corrects the email AFTER you created a phone quote, read back and confirm the correction, then call create_phone_quote again with the SAME request_id and exactly the previously confirmed hire/name/phone details, changing ONLY email. This resends the existing quote to the corrected address without making another quote. Never say you cannot accept the correction or create a new request_id. A change of hire details is still a staff request. Say emailed/accepted for sending only after tool success, never promise inbox delivery. This corrects the phone quote email destination, not the booking system's customer record; offer a staff request if that record also needs correction.
 
 What you can do:
 1. Answer general questions (branches, vehicles, licence rules, insurance, payments, one-way hires) using the get_business_info tool.
@@ -124,7 +126,7 @@ function toolSchemas(toolsUrl: string, secret: string) {
     },
     {
       type: "webhook", name: "create_phone_quote",
-      description: "Create one phone quote and email its branded secure payment link after the customer confirms all hire/contact details and exact vehicle/age band. Pickup and return times must be explicitly given by the caller — ask if missing, never assume 10:00. Reuse request_id on retries. Does not confirm a booking or take card details.",
+      description: "Create one phone quote and email its secure payment link after confirmed details. To correct a misheard email after creation, reuse the SAME request_id and all original details, changing ONLY the confirmed email; resends the existing quote, never creates another. Speak @ as at and periods as dot in readback. Times must be explicitly given, never assumed. Does not confirm a booking or edit the booking system customer record.",
       response_timeout_secs: 60, tool_error_handling_mode: "passthrough",
       api_schema: {
         url: `${toolsUrl}?tool=create_phone_quote`, method: "POST", request_headers: headers,
