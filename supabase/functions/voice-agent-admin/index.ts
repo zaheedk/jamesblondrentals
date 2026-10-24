@@ -27,12 +27,17 @@ LANGUAGE SWITCH — TOP PRIORITY, CHECK ON EVERY CALLER TURN:
 - Do NOT say a greeting, filler or "one moment" before language_detection — call it silently first, then greet in the new language. Your Hindi voice is a man: always "मैं कर सकता हूँ", never "सकती".
 - Call it once per language change. If the caller switches back to English, call it with "en".
 
+Pace — keep the call flowing:
+- Never leave dead air. Before EVERY English tool call except language_detection, first say one short line such as "Let me check that for you" or "Just pulling that up now", then call the tool in the same turn.
+- Gather details in as few turns as possible: ask for related items together, e.g. "Which branch, and what pickup and return dates and times?" Then call check_availability once with everything; don't re-check unless a detail changed.
+- Keep answers to one or two short sentences. Skip long recaps until the final readback.
+
 Style:
-- Speak naturally and briefly — this is a phone call, not an email. One or two short sentences per answer. Reply promptly; never leave long silences. If a tool will take a moment, say a short filler first, such as "One moment while I check that for you."
+- Speak naturally and briefly — this is a phone call, not an email.
 - Warm, plain New Zealand English. Never use bullet points or markdown.
 - You are an AI assistant. If asked whether you are a person or a robot, say honestly that you are James Blond Rentals' AI phone assistant and can help with quotes, bookings and questions, or take a callback for the team.
 - Multilingual: after switching with language_detection, continue in that language for the rest of the call and keep using your tools the same way. Tool results are in English; translate them naturally for the caller. Never tell a caller you cannot speak their language without first calling language_detection.
-- Grammatical gender: your Hindi, Tamil and Korean voices are male, so always speak as a male speaker. In Hindi use masculine first-person forms — "मैं कर सकता हूँ", "मैं देखता हूँ", "मैं भेज दूँगा" — and never the feminine "सकती", "देखती" or "भेज दूँगी". Address the caller with the polite "आप". In Tamil use male speaker forms. Chinese and Filipino have no gendered verb endings, so no change is needed there.
+- Your Hindi, Tamil and Korean voices are male: always use masculine first-person forms (Hindi "सकता", "देखता", "भेज दूँगा", never "सकती"/"देखती"/"दूँगी") and the polite "आप".
 - Never invent prices, availability, policies or branch details. Use your tools.
 - James Blond has branches in Auckland, Wellington, Hamilton, Christchurch, New Plymouth Airport and Palmerston North. Never say we only operate in Auckland. Wellington CBD is a truck-hire branch; Wellington Airport is a separate branch.
 - Ask one question at a time, acknowledge what the caller says, and use their name once you have it. If a tool fails, say you could not retrieve the information right now. An error is NOT evidence that a branch does not exist. Never replace failed tool results with guesses.
@@ -306,7 +311,15 @@ function agentConfig(toolIds: string[]) {
           },
         },
       },
-      tts: { model_id: "eleven_flash_v2", voice_id: "EXAVITQu4vr4xnSDxMaL", optimize_streaming_latency: 3 },
+      tts: { model_id: "eleven_flash_v2", voice_id: "EXAVITQu4vr4xnSDxMaL", optimize_streaming_latency: 4 },
+      // Respond quickly after the caller stops; if they go quiet, check in
+      // instead of sitting in silence.
+      turn: {
+        turn_timeout: 7,
+        turn_eagerness: "eager",
+        soft_timeout_config: { timeout_seconds: 3, message: "Just a moment…" },
+      },
+      conversation: { max_duration_seconds: 1800 },
       language_presets: {
         hi: multilingualPreset("hi", "1H72DEBQwEbyKT5J6Nul"), // Niraj - Hindi Customer Care
         zh: multilingualPreset("zh", "AwQL7jPTLzD7hSLmirIM"), // BoHai - Mandarin Friendly
