@@ -47,6 +47,20 @@ test("phone flow creates one quote, emails once, waits for live payment and conf
     expect(await checkPhoneBooking({ request_id: details.request_id }, rcm)).toMatchObject({ booking_confirmed: true, payment_verified: true, confirmation_email_sent: true });
     await checkPhoneBooking({ request_id: details.request_id }, rcm);
     expect(emails).toBe(2);
+    paid = false;
+    row.state = "quoted";
+    row.request_data.email = "zahedk@gmail.com";
+    expect(await createPhoneQuote(details, rcm, step1)).toMatchObject({ success: true, email: "zaheedk@gmail.com", booking_customer_email_updated: false });
+    expect(row.request_data.email).toBe("zaheedk@gmail.com");
+    expect(writes).toBe(1);
+    expect(emails).toBe(3);
+    await createPhoneQuote(details, rcm, step1);
+    expect(emails).toBe(3);
+    expect(await createPhoneQuote({ ...details, email: "another@example.com", phone: "0211111111" }, rcm, step1)).toHaveProperty("error");
+    expect(emails).toBe(3);
+    row.state = "confirmed";
+    expect(await createPhoneQuote({ ...details, email: "another@example.com" }, rcm, step1)).toHaveProperty("error");
+    expect(writes).toBe(1);
   } finally {
     globalThis.fetch = originalFetch;
     (globalThis as any).Deno = originalDeno;

@@ -72,6 +72,8 @@
 - [x] Resume day-before pickup texts after paid TNZ account confirmation
 
 ## Voice agent (3CX / phone assistant)
+- [x] Accept confirmed email-only corrections on the same saved phone quote without duplicate booking writes; live read-back explicitly instructs "at" and "dot"; real spoken pronunciation remains caller-tested
+- [x] Resend quote 17422 to the owner's confirmed corrected address and verify live assistant settings; email provider accepted sending, inbox delivery unverified
 - [x] Accept and correct callback email addresses; email field deployed and attached to ElevenLabs
 - [x] Create phone quotes from confirmed customer and hire details and email existing branded checkout links, with durable duplicate prevention
 - [x] Read live payment and non-quotation/non-request booking status before sending phone confirmation emails
