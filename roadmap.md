@@ -72,6 +72,9 @@
 - [x] Resume day-before pickup texts after paid TNZ account confirmation
 
 ## Voice agent (3CX / phone assistant)
+- [x] Inventory seven uploaded recording archives: 646 audio files, 641 unique, approximately 21.7 hours; expected 676 leaves 30 missing
+- [ ] Transcribe and analyse every unique supplied recording, with explicit coverage and privacy-safe customer/supplier separation
+- [ ] Apply supported conversation improvements and test them; supplier transfers require a verified routing list and working transfer capability
 - [x] Accept confirmed email-only corrections on the same saved phone quote without duplicate booking writes; live read-back explicitly instructs "at" and "dot"; real spoken pronunciation remains caller-tested
 - [x] Resend quote 17422 to the owner's confirmed corrected address and verify live assistant settings; email provider accepted sending, inbox delivery unverified
 - [x] Accept and correct callback email addresses; email field deployed and attached to ElevenLabs
