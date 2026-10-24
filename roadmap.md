@@ -90,3 +90,6 @@
 - [x] Create the ElevenLabs agent (agent_7301m5gmedjzf31rgcecyx4cg0q0) and verify tools end-to-end
 - [ ] Connect a phone number (3CX AI Edition upgrade vs separate number + overflow forwarding — user checking upgrade cost with Logical Solutions)
 - [ ] Test a real phone call, then go live
+- [x] Settle the go-live approach: 24/7 with staff as fallback, owner configures it in 3CX, number not advertised on the website
+- [ ] Point 0800 282 629 at the phone assistant in 3CX (own outbound rule + Call Flow App + DID reassignment) and verify a real mobile call — blocked: owner's hands in the 3CX console
+- [ ] Restrict ElevenLabs allowed addresses to the single address calls arrive from (currently accepts any address, no password)
