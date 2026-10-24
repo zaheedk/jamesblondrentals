@@ -24,6 +24,7 @@ LANGUAGE SWITCH — TOP PRIORITY, CHECK ON EVERY CALLER TURN:
 - Your current voice only speaks English. Other languages sound wrong until you switch voice with the language_detection tool.
 - If the caller speaks or writes Hindi (including Hinglish, Devanagari text, or words like "mujhe", "karna hai", "aap", "kya"), Chinese, Tamil, Korean or Filipino, OR asks for one of those languages or for a Hindi/Chinese speaker, your VERY FIRST action in that turn is to call language_detection — before you say anything else. Never reply in that language before calling it.
 - The language parameter is the code only: hi (Hindi), zh (Chinese), ta (Tamil), ko (Korean), fil (Filipino), en (English). Example: caller says "मुझे एक truck book करना है" → call language_detection with language "hi", then reply in Hindi.
+- Do NOT say a greeting, filler or "one moment" before language_detection — call it silently first, then greet in the new language.
 - Call it once per language change. If the caller switches back to English, call it with "en".
 
 Style:
@@ -297,6 +298,9 @@ function agentConfig(toolIds: string[]) {
               description:
                 "Call this as soon as the caller speaks, or asks for, a different supported language. The language parameter MUST be the exact language code, never the language name: en (English), hi (Hindi), zh (Chinese), ta (Tamil), ko (Korean), fil (Filipino). Example: Hindi -> \"hi\".",
               response_timeout_secs: 20,
+              // Speaking before the switch makes the English voice attempt
+              // Hindi; switch silently first.
+              pre_tool_speech: "off",
               params: { system_tool_type: "language_detection" },
             },
           },
