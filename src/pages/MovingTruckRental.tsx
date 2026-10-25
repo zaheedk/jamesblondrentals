@@ -28,7 +28,7 @@ const MovingTruckRental = () => (
     cities={cities}
     sections={[
       { h2: 'Where can I collect a moving truck near me?', body: 'Auckland customers can collect in Glen Eden; Wellington collection is in Te Aro; Christchurch has Waltham and Harewood collection options; Hamilton collection is in Frankton. Use the city links below for local trucks and booking. Same-day collection depends on availability.', points: ['West Auckland: 4004 Great North Road, Glen Eden', 'Wellington: 24 Abel Smith Street, Te Aro', 'Central Christchurch: 515 Moorhouse Avenue, Waltham', 'Christchurch Airport: 25 Logistics Drive, Harewood', 'Hamilton: 17 Bandon Street, Frankton'] },
-      { h2: 'Choosing a moving truck for your house move', body: 'Compare box volume, load weight and the size of your largest items rather than bedrooms alone. A 12m³ truck can suit a small flat; 16m³ and 18–19m³ options provide more space for larger moves. A tail lift helps with heavy appliances. Confirm the specific 3-tonne truck’s Class 1 or Class 2 licence requirement with the branch before booking.' },
+      { h2: 'Choosing a moving truck for your house move', body: 'Compare box volume, load weight and the size of your largest items rather than bedrooms alone. A 12m³ truck can suit a small flat; 16m³ and 18–19m³ options provide more space for larger moves. A tail lift helps with heavy appliances. ' },
     ]}
     faq={[
       { q: 'How much does it cost to rent a moving truck in NZ?', a: 'James Blond moving trucks start from $35/hr and around $129/day for a 2-tonne, with 3-tonne and tail-lift trucks slightly higher. Same-day quotes are available from any branch.' },
