@@ -82,7 +82,7 @@ const MovingTruckHire = () => {
   const faqs = [
     {
       q: "Do I need a special licence to drive a moving truck?",
-      a: "Our 2-tonne trucks can be driven on a standard NZ Class 1 car licence. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking.",
+      a: "Our 2-tonne trucks can be driven on a standard NZ Class 1 car licence. All our trucks up to 18m³ — including the 16m³ and 18m³ 3-tonne models — can be driven on a standard Class 1 car licence. Only the 19–20m³ truck requires a Class 2 licence.",
     },
     {
       q: "How much does it cost to hire a moving truck in Auckland?",
@@ -221,7 +221,7 @@ const MovingTruckHire = () => {
         <div className="max-w-2xl mb-10">
           <h2 className="text-3xl font-bold mb-3">Pick the right truck for your move</h2>
           <p className="text-muted-foreground">
-            All three are automatic and include insurance. Our 2-tonne trucks can be driven on a car licence. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking.
+            All three are automatic and include insurance. Our 2-tonne trucks can be driven on a car licence. All our trucks up to 18m³ — including the 16m³ and 18m³ 3-tonne models — can be driven on a standard Class 1 car licence. Only the 19–20m³ truck requires a Class 2 licence.
             Not sure which size? Most 2–3 bedroom moves fit our 12m³ tail-lift truck.
           </p>
         </div>

@@ -27,7 +27,7 @@ const FAQS = [
   },
   {
     q: 'Do I need a special licence to drive a moving truck?',
-    a: 'Our 2T box and tail lift trucks are driveable on a full New Zealand class 1 car licence (or an accepted overseas equivalent). Larger class 2 trucks require a class 2 licence.',
+    a: 'Our 2T box and tail lift trucks are driveable on a full New Zealand class 1 car licence (or an accepted overseas equivalent). Only the 19–20m³ truck requires a Class 2 licence.',
   },
 ];
 

@@ -31,7 +31,7 @@ const sizeGuide = [
 
 const faqs = [
   { q: 'How much does truck hire cost in Auckland?', a: 'Truck hire from our West Auckland branch starts at $70 for up to 4 hours or $125 per day for a 2-tonne 12m³ box truck, plus a per-km charge. Hire Monday to Thursday and save 50% on trucks with our midweek deal. See the price guide for every size.' },
-  { q: 'Do I need a special licence to drive your trucks?', a: 'Our 2-tonne trucks can be driven on a standard New Zealand car licence. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking.' },
+  { q: 'Do I need a special licence to drive your trucks?', a: 'Our 2-tonne trucks can be driven on a standard New Zealand car licence. All our trucks up to 18m³ — including the 16m³ and 18m³ 3-tonne models — can be driven on a standard Class 1 car licence. Only the 19–20m³ truck requires a Class 2 licence.' },
   { q: 'What size truck do I need to move house?', a: 'A 2-tonne 12m³ truck suits a studio or 1-bedroom flat, a 16m³ truck suits a 2–3 bedroom house, and the 3-tonne 18–19m³ tail-lift truck suits a 3–4 bedroom house. Use our moving cost calculator for an estimate.' },
   { q: 'Can I hire a truck by the hour?', a: 'Yes. Short hires are charged in 2, 4 and 8 hour blocks, so a quick furniture pick-up costs far less than a full day.' },
   { q: 'Do you offer one-way truck hire from Auckland?', a: 'Yes, one-way truck hire between James Blond branches is available on request — see our one-way truck hire page.' },

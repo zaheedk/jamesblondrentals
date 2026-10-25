@@ -63,7 +63,7 @@ const ChristchurchTruckRentals = () => {
           mainEntity: [
             { "@type": "Question", name: "How much does it cost to hire a truck in Christchurch?", acceptedAnswer: { "@type": "Answer", text: "Truck hire in Christchurch starts from $35/hr with daily rates for longer moves. The final cost depends on truck size (2-tonne vs 3-tonne), tail-lift option and hire duration. Call 0800 525 663 or book online for an exact quote." } },
             { "@type": "Question", name: "Do you offer same-day truck rentals in Christchurch?", acceptedAnswer: { "@type": "Answer", text: "Yes — same-day truck hire is available at both our Harewood (Airport) and Central Christchurch branches, subject to availability. Most customers can book and drive away the same day." } },
-            { "@type": "Question", name: "Can I drive a moving truck on a car licence?", acceptedAnswer: { "@type": "Answer", text: "Our 2-tonne trucks can be driven on a standard NZ Class 1 car licence. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking." } },
+            { "@type": "Question", name: "Can I drive a moving truck on a car licence?", acceptedAnswer: { "@type": "Answer", text: "Our 2-tonne trucks can be driven on a standard NZ Class 1 car licence. All our trucks up to 18m³ — including the 16m³ and 18m³ 3-tonne models — can be driven on a standard Class 1 car licence. Only the 19–20m³ truck requires a Class 2 licence." } },
             { "@type": "Question", name: "Which Christchurch branch should I pick up from?", acceptedAnswer: { "@type": "Answer", text: "Our Airport branch at 17/25 Logistics Drive, Harewood is best for moves in the north and west (Rangiora, Rolleston, Belfast, Papanui). Our Central branch at 515 Moorhouse Avenue suits CBD, south and east Christchurch moves." } },
             { "@type": "Question", name: "Do your trucks come with insurance?", acceptedAnswer: { "@type": "Answer", text: "Yes, every Christchurch truck rental includes standard insurance cover. You can upgrade to Premium or Ultimate cover at booking to reduce your excess." } },
           ],
@@ -88,7 +88,7 @@ const ChristchurchTruckRentals = () => {
           <div>
             <h1 className="text-3xl md:text-4xl font-bold mb-4">Truck Hire Christchurch — Moving Truck Rental from $35/hr</h1>
             <p className="text-lg text-muted-foreground mb-6">
-              Same-day <strong>truck hire in Christchurch</strong> from our Harewood (Airport) and central branches. 2-tonne and 3-tonne moving trucks with tail lifts, hourly and daily rates, no hidden fees. Car licence for 2-tonne models. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking. Serving Christchurch CBD, Riccarton, Addington, Hornby, Rangiora, Rolleston and greater Canterbury.
+              Same-day <strong>truck hire in Christchurch</strong> from our Harewood (Airport) and central branches. 2-tonne and 3-tonne moving trucks with tail lifts, hourly and daily rates, no hidden fees. Car licence for 2-tonne models. All our trucks up to 18m³ — including the 16m³ and 18m³ 3-tonne models — can be driven on a standard Class 1 car licence. Only the 19–20m³ truck requires a Class 2 licence. Serving Christchurch CBD, Riccarton, Addington, Hornby, Rangiora, Rolleston and greater Canterbury.
             </p>
             <div className="flex items-center gap-2">
               <Button asChild variant="cta" size="lg">
@@ -513,7 +513,7 @@ const ChristchurchTruckRentals = () => {
         <div className="max-w-3xl mb-8">
           <h2 className="text-3xl font-bold mb-4">Moving truck hire in Christchurch</h2>
           <p className="text-lg text-muted-foreground">
-            Hiring a removal truck is a practical option for Christchurch house moves, furniture pickups and office relocations. Our 2-tonne and 3-tonne box trucks have tail lifts to make heavy sofas, appliances and packed boxes easier to load, with car-licence options for 2-tonne models. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking.
+            Hiring a removal truck is a practical option for Christchurch house moves, furniture pickups and office relocations. Our 2-tonne and 3-tonne box trucks have tail lifts to make heavy sofas, appliances and packed boxes easier to load, with car-licence options for 2-tonne models. All our trucks up to 18m³ — including the 16m³ and 18m³ 3-tonne models — can be driven on a standard Class 1 car licence. Only the 19–20m³ truck requires a Class 2 licence.
           </p>
         </div>
         <div className="grid md:grid-cols-3 gap-6">
@@ -713,7 +713,7 @@ const ChristchurchTruckRentals = () => {
           <div className="border rounded-lg p-5">
             <h3 className="font-bold mb-2">Hire a truck in Christchurch</h3>
             <p className="text-muted-foreground">
-              Hire a truck in Christchurch by the hour or the day. Our 2-tonne box trucks drive on a standard NZ car licence. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking.
+              Hire a truck in Christchurch by the hour or the day. Our 2-tonne box trucks drive on a standard NZ car licence. All our trucks up to 18m³ — including the 16m³ and 18m³ 3-tonne models — can be driven on a standard Class 1 car licence. Only the 19–20m³ truck requires a Class 2 licence.
             </p>
           </div>
           <div className="border rounded-lg p-5">

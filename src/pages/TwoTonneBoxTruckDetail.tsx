@@ -205,7 +205,7 @@ const TwoTonneBoxTruckDetail = () => {
             <div>
               <h3 className="font-bold text-lg">Do I need a special licence to hire a truck in Wellington?</h3>
               <p className="text-gray-600">
-                No — our 2-tonne box trucks can be driven on a standard car licence in Wellington and all other NZ locations. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking. See our <Link to="/wellington-truck-rentals" className="text-primary hover:underline">Wellington truck hire page</Link> for more details.
+                No — our 2-tonne box trucks can be driven on a standard car licence in Wellington and all other NZ locations. All our trucks up to 18m³ — including the 16m³ and 18m³ 3-tonne models — can be driven on a standard Class 1 car licence. Only the 19–20m³ truck requires a Class 2 licence. See our <Link to="/wellington-truck-rentals" className="text-primary hover:underline">Wellington truck hire page</Link> for more details.
               </p>
             </div>
           </div>

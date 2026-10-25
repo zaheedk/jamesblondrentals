@@ -119,7 +119,7 @@ const AirportChristchurch = () => (
             Browse our full range of <Link to="/car-hire-christchurch" className="text-primary hover:underline font-medium">Christchurch car hire vehicles</Link> — from economy cars to AWD SUVs for South Island road trips.
           </p>
           <p className="text-gray-600 mb-4">
-            Moving house or shifting stock? See our <Link to="/truck-hire-christchurch" className="text-primary hover:underline font-medium">truck hire Christchurch</Link> range — 2-tonne and 3-tonne moving trucks with tail lifts. Car licence for 2-tonne models; for 3-tonne trucks, confirm with the branch whether your allocated vehicle requires Class 1 or Class 2 before booking.
+            Moving house or shifting stock? See our <Link to="/truck-hire-christchurch" className="text-primary hover:underline font-medium">truck hire Christchurch</Link> range — 2-tonne and 3-tonne moving trucks with tail lifts. Car licence for 2-tonne models; all trucks up to 18m³ drive on a car licence; only the 19–20m³ truck needs a Class 2 licence.
           </p>
           <div className="mt-6">
             <h3 className="text-xl font-semibold mb-2">Contact Information</h3>

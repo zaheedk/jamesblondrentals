@@ -141,7 +141,7 @@ const OneWayCarHire: React.FC = () => {
           <Link to="/one-way-truck-hire" className="border border-border rounded-2xl p-6 hover:border-primary hover:shadow-lg transition-all bg-card group">
             <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">Moving house?</p>
             <h3 className="font-sans font-bold text-xl tracking-tight">One-way truck hire NZ <span className="text-primary group-hover:ml-1 transition-all">→</span></h3>
-            <p className="mt-2 text-sm text-muted-foreground">Same routes, automatic 2–3 tonne box &amp; furniture trucks. Car licence for 2-tonne models; confirm the vehicle-specific Class 1 or Class 2 requirement for 3-tonne trucks.</p>
+            <p className="mt-2 text-sm text-muted-foreground">Same routes, automatic 2–3 tonne box &amp; furniture trucks. Car licence for all trucks up to 18m³; only the 19–20m³ truck needs Class 2.</p>
           </Link>
           <Link to="/one-way-van-hire" className="border border-border rounded-2xl p-6 hover:border-primary hover:shadow-lg transition-all bg-card group">
             <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">Studio or 1-bed move?</p>

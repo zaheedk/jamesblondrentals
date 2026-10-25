@@ -16,7 +16,7 @@ const ThreeTonneBoxTailLiftDetail = () => {
     { label: "Max Load", value: "3000kg" },
     { label: "Box Dimensions", value: "4400(L) x 2100(W) x 2050(H)" },
     { label: "Max Tail Lift Load", value: "400kg" },
-    { label: "License Required", value: "Class 1 or Class 2 — confirm with branch" }
+    { label: "License Required", value: "Class 1 car licence" }
   ];
 
   const additionalFeatures = [
@@ -30,7 +30,7 @@ const ThreeTonneBoxTailLiftDetail = () => {
     },
     {
       question: "What license is required to drive this truck?",
-      answer: "For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking."
+      answer: "All our trucks up to 18m³ — including the 16m³ and 18m³ 3-tonne models — can be driven on a standard Class 1 car licence. Only the 19–20m³ truck requires a Class 2 licence."
     },
     {
       question: "What is the maximum weight the tail lift can handle?",
@@ -73,7 +73,7 @@ const ThreeTonneBoxTailLiftDetail = () => {
               Our 3 Tonne Box Truck (18m³) with Tail Lift is the ideal solution for large cargo transport, removals, and business deliveries. Equipped with an automatic transmission and a hydraulic tail lift with a 400kg capacity, this truck makes loading and unloading heavy items effortless.
             </p>
             <p>
-              With a 4400mm (L) x 2100mm (W) x 2050mm (H) box size and a maximum load capacity of 3000kg, it provides ample space for bulkier goods while ensuring smooth handling on the road. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking. Rent one today for efficient and stress-free transportation!
+              With a 4400mm (L) x 2100mm (W) x 2050mm (H) box size and a maximum load capacity of 3000kg, it provides ample space for bulkier goods while ensuring smooth handling on the road. All our trucks up to 18m³ — including the 16m³ and 18m³ 3-tonne models — can be driven on a standard Class 1 car licence. Only the 19–20m³ truck requires a Class 2 licence. Rent one today for efficient and stress-free transportation!
             </p>
           </div>
         </div>
@@ -183,7 +183,7 @@ const ThreeTonneBoxTailLiftDetail = () => {
             <div>
               <h3 className="font-bold text-lg">Do I need a Class-2 licence to hire a 3-tonne truck in Auckland?</h3>
               <p className="text-gray-700">
-                For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking. Visit our <Link to="/auckland-truck-rentals" className="text-primary hover:underline">Auckland truck hire page</Link> for details.
+                All our trucks up to 18m³ — including the 16m³ and 18m³ 3-tonne models — can be driven on a standard Class 1 car licence. Only the 19–20m³ truck requires a Class 2 licence. Visit our <Link to="/auckland-truck-rentals" className="text-primary hover:underline">Auckland truck hire page</Link> for details.
               </p>
             </div>
           </div>
@@ -236,7 +236,7 @@ const ThreeTonneBoxTailLiftDetail = () => {
       <div className="mt-12 bg-primary text-primary-foreground rounded-xl p-8 text-center">
         <h2 className="text-2xl font-bold mb-3">Get a Quote & Book Now</h2>
         <p className="mb-6 opacity-90 max-w-2xl mx-auto">
-          Ready to hire this 3-tonne truck? For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking. Choose your nearest branch for local rates, live availability, and instant booking.
+          Ready to hire this 3-tonne truck? All our trucks up to 18m³ — including the 16m³ and 18m³ 3-tonne models — can be driven on a standard Class 1 car licence. Only the 19–20m³ truck requires a Class 2 licence. Choose your nearest branch for local rates, live availability, and instant booking.
         </p>
         <div className="flex flex-wrap justify-center gap-3 mb-6">
           <Button asChild className="bg-white text-primary hover:bg-white/90 font-semibold">
