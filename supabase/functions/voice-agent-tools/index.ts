@@ -131,7 +131,7 @@ const BUSINESS_INFO = {
   ],
   licence_rules: {
     cars_vans: "A standard full car licence (Class 1) is fine for cars, vans, utes and minibuses up to 12 seats.",
-    trucks_3_tonne: "For 3-tonne trucks it depends on the specific truck — some can be driven on a car licence, others need a Class 2 licence. Confirm the allocated truck's requirement with the branch before booking.",
+    trucks_3_tonne: "All trucks up to 18 cubic metres (including the 16m³ and 18m³ 3-tonne trucks) can be driven on a standard Class 1 car licence. Only the 19–20m³ truck requires a Class 2 licence.",
   },
   insurance: "Standard insurance is included with an excess. An optional excess-reduction upgrade is available at $39 per day — it is opt-in, never pre-selected.",
   pricing: {
