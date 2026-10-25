@@ -31,7 +31,7 @@ const FurnitureTruckHireAuckland = () => (
   <SimpleHubPage
     slug="/furniture-truck-hire-auckland"
     title="Furniture Truck Hire Auckland from $125/day — Tail Lift Trucks"
-    description="Furniture truck hire in Auckland from $125/day or $70 for 2 hours. 12m³ to 19m³ furniture trucks with 400kg tail lifts, blankets and trolleys. Five branches, vehicle-specific licence requirements, same-day pickup."
+    description="Furniture truck hire in Auckland from $125/day or $70 for 2 hours. 12m³ to 19m³ furniture trucks with 400kg tail lifts, blankets and trolleys. Five branches, car licence up to 18m³, same-day pickup."
     h1="Furniture Truck Hire Auckland — Tail-Lift Trucks from $125/day"
     intro="Shifting a lounge suite, a fridge or a whole three-bedroom house across Auckland? Our furniture trucks are set up for it: hydraulic tail lifts, ply-lined walls, tie-down rails and moving blankets. Five Auckland branches, hourly or daily rates, with car-licence options for 2-tonne models. All our trucks up to 18m³ — including the 16m³ and 18m³ 3-tonne models — can be driven on a standard Class 1 car licence. Only the 19–20m³ truck requires a Class 2 licence."
     bullets={[
@@ -53,7 +53,7 @@ const FurnitureTruckHireAuckland = () => (
         { item: '2T Box 12m³ — 1–2 bedroom move', daily: '$125/day', weekend: '$110/day', best: '$70 for 2 hours' },
         { item: '2T Tail Lift 12m³ — whiteware & heavy furniture', daily: '$140/day', weekend: '$120/day', best: '$80 for 2 hours' },
         { item: '2T Box 16m³ — 2–3 bedroom move', daily: 'From $150/day', weekend: 'Ask us', best: 'Half-day rates available' },
-        { item: '3T Tail Lift 19m³ — full house move', daily: 'From $170/day', weekend: 'Ask us', best: 'Confirm vehicle-specific licence' },
+        { item: '3T Tail Lift 19m³ — full house move', daily: 'From $170/day', weekend: 'Ask us', best: 'Requires Class 2 licence' },
       ],
     }}
     sections={[
@@ -64,7 +64,7 @@ const FurnitureTruckHireAuckland = () => (
           '12m³ — studio or one-bedroom apartment: queen bed, sofa, fridge and around 30 boxes.',
           '12m³ tail lift — same volume, but for fridges, washers, dryers, pianos and heavy dressers.',
           '16m³ — two- to three-bedroom home with whiteware and a full lounge suite.',
-          '19m³ with tail lift — a full three-bedroom-plus house in one load (Confirm vehicle-specific licence).',
+          '19m³ with tail lift — a full three-bedroom-plus house in one load (requires Class 2 licence).',
         ],
       },
       {
