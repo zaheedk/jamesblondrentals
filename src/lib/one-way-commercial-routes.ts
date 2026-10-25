@@ -137,7 +137,7 @@ export const variantConfig: Record<CommercialVariant, {
       '2-tonne 16m³ box truck — full 2 bedroom moves',
       '3-tonne 19m³ furniture truck — 3+ bedroom moves',
       'Tail-lift options — heavy appliances, no ramp lifting',
-      'All automatic, GPS included; confirm 3-tonne licence requirements',
+      'All automatic, GPS included; car licence for trucks up to 18m³',
     ],
   },
   van: {

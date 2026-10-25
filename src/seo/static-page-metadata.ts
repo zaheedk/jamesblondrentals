@@ -101,7 +101,7 @@ const overrides: Record<string, Partial<Omit<StaticPageMetadata, 'path'>>> = {
     title: 'Truck Hire NZ | Moving Truck Hire Near You | James Blond',
     description: 'Find truck hire near you in Auckland, Wellington, Christchurch and Hamilton. Compare moving trucks, tail lifts and collection locations. Check live availability.',
     heading: 'Truck Hire NZ — Moving Trucks Near You',
-    body: 'Truck hire and moving truck rental in Auckland, Wellington, Christchurch and Hamilton. Collect in Glen Eden, Te Aro, Waltham, Harewood or Frankton. Compare 9m³ to 19m³ trucks and tail-lift options, check the price guide and search your dates for availability. For 3-tonne trucks, confirm the vehicle-specific Class 1 or Class 2 licence requirement with the branch before booking.',
+    body: 'Truck hire and moving truck rental in Auckland, Wellington, Christchurch and Hamilton. Collect in Glen Eden, Te Aro, Waltham, Harewood or Frankton. Compare 9m³ to 19m³ trucks and tail-lift options, check the price guide and search your dates for availability. All trucks up to 18m³ drive on a standard car licence; only the 19–20m³ truck requires Class 2.',
   },
   '/moving-truck-rental': {
     title: 'Moving Truck Hire Near You | NZ Truck Rental | James Blond',
