@@ -313,11 +313,14 @@ function agentConfig(toolIds: string[]) {
       },
       tts: { model_id: "eleven_flash_v2", voice_id: "EXAVITQu4vr4xnSDxMaL", optimize_streaming_latency: 4 },
       // Respond quickly after the caller stops; if they go quiet, check in
-      // instead of sitting in silence.
+      // instead of sitting in silence. Speculative turns draft the reply
+      // before the caller finishes, cutting response latency; spelling
+      // patience keeps spelled-out email addresses intact.
       turn: {
-        turn_timeout: 7,
+        turn_timeout: 4,
         turn_eagerness: "eager",
-        soft_timeout_config: { timeout_seconds: 3, message: "Just a moment…" },
+        speculative_turn: true,
+        soft_timeout_config: { timeout_seconds: 2, message: "Just a moment…" },
       },
       conversation: { max_duration_seconds: 1800 },
       language_presets: {
