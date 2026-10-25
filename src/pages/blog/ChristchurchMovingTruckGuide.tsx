@@ -81,7 +81,7 @@ const ChristchurchMovingTruckGuide = () => (
 
       <h2>Can I drive a moving truck on a car licence?</h2>
       <p>
-        Our 2-tonne box trucks can be driven on a standard NZ Class 1 (car) licence. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking.
+        Our 2-tonne box trucks can be driven on a standard NZ Class 1 (car) licence. All our trucks up to 18m³ — including the 16m³ and 18m³ 3-tonne models — can be driven on a standard Class 1 car licence. Only the 19–20m³ truck requires a Class 2 licence.
       </p>
 
       <h2>2-tonne truck — 1 to 2 bedroom moves</h2>

@@ -33,7 +33,7 @@ const baseFaqs = [
   {
     question: 'Do I need a special licence?',
     answer:
-      'Our vans and 2-tonne trucks can be driven on a standard New Zealand Class 1 car licence. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking.',
+      'Our vans and 2-tonne trucks can be driven on a standard New Zealand Class 1 car licence. All our trucks up to 18m³ — including the 16m³ and 18m³ 3-tonne models — can be driven on a standard Class 1 car licence. Only the 19–20m³ truck requires a Class 2 licence.',
   },
   {
     question: 'Is there a one-way drop-off available?',
@@ -304,7 +304,7 @@ export const wellingtonVanTruckPages: WellingtonSubPage[] = [
       {
         question: 'Can I drive a small truck on a car licence in New Zealand?',
         answer:
-          'Our 2-tonne trucks can be driven on a standard Class 1 car licence. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking.',
+          'Our 2-tonne trucks can be driven on a standard Class 1 car licence. All our trucks up to 18m³ — including the 16m³ and 18m³ 3-tonne models — can be driven on a standard Class 1 car licence. Only the 19–20m³ truck requires a Class 2 licence.',
       },
       {
         question: 'What size small truck do I need?',
@@ -356,7 +356,7 @@ export const wellingtonVanTruckPages: WellingtonSubPage[] = [
     ],
     bodyParagraphs: [
       'Wellington moves test a truck. Steep driveways in Kelburn, tight terraces in Mt Vic, weather that turns on a dime — you want a truck that\'s easy to handle, easy to park, and sized for the actual job. Our moving truck range covers everything from a studio shift to a three-bedroom family move.',
-      'All trucks are automatic and can be picked up from our Te Aro branch. Car licence for 2-tonne models. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking. Add a hand trolley, ratchet straps and moving blankets at checkout, and book a tail-lift truck if you\'re dealing with apartments or heavy white-ware.',
+      'All trucks are automatic and can be picked up from our Te Aro branch. Car licence for 2-tonne models. All our trucks up to 18m³ — including the 16m³ and 18m³ 3-tonne models — can be driven on a standard Class 1 car licence. Only the 19–20m³ truck requires a Class 2 licence. Add a hand trolley, ratchet straps and moving blankets at checkout, and book a tail-lift truck if you\'re dealing with apartments or heavy white-ware.',
     ],
   },
   {
@@ -369,7 +369,7 @@ export const wellingtonVanTruckPages: WellingtonSubPage[] = [
     eyebrow: 'Wellington · Furniture Truck',
     h1: 'Furniture Truck Hire in Wellington',
     intro:
-      'Bought a sofa from a Wellington warehouse, picked up a dining suite from Trade Me, or clearing out a parents\' place in Khandallah? Our furniture trucks make the job a one-trip job — with car-licence options for 2-tonne models. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking.',
+      'Bought a sofa from a Wellington warehouse, picked up a dining suite from Trade Me, or clearing out a parents\' place in Khandallah? Our furniture trucks make the job a one-trip job — with car-licence options for 2-tonne models. All our trucks up to 18m³ — including the 16m³ and 18m³ 3-tonne models — can be driven on a standard Class 1 car licence. Only the 19–20m³ truck requires a Class 2 licence.',
     heroImage: couplemoving,
     heroAlt: 'Furniture truck loaded for a Wellington pickup',
     fromPrice: '$129',
@@ -397,7 +397,7 @@ export const wellingtonVanTruckPages: WellingtonSubPage[] = [
     ],
     bodyParagraphs: [
       'Furniture is the most common reason Wellingtonians hire a truck for the day. A new sofa from a Tory Street warehouse, a Trade Me dining suite in Petone, a wardrobe pickup from a friend in Newtown — it almost always needs more than a car can carry, but rarely needs a removalist.',
-      'Our 2-tonne and 3-tonne box trucks are sized for exactly that job, and the tail-lift option turns the heavy items into a one-person job. Car licence for 2-tonne models. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking.',
+      'Our 2-tonne and 3-tonne box trucks are sized for exactly that job, and the tail-lift option turns the heavy items into a one-person job. Car licence for 2-tonne models. All our trucks up to 18m³ — including the 16m³ and 18m³ 3-tonne models — can be driven on a standard Class 1 car licence. Only the 19–20m³ truck requires a Class 2 licence.',
     ],
   },
   {
@@ -432,7 +432,7 @@ export const wellingtonVanTruckPages: WellingtonSubPage[] = [
       {
         question: 'Can I drive your trucks on a car licence?',
         answer:
-          'Our 2-tonne trucks can be driven on a standard Class 1 car licence. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking.',
+          'Our 2-tonne trucks can be driven on a standard Class 1 car licence. All our trucks up to 18m³ — including the 16m³ and 18m³ 3-tonne models — can be driven on a standard Class 1 car licence. Only the 19–20m³ truck requires a Class 2 licence.',
       },
       ...baseFaqs,
     ],
@@ -474,7 +474,7 @@ export const wellingtonVanTruckPages: WellingtonSubPage[] = [
     ],
     bodyParagraphs: [
       'Porirua keeps adding new homes, new families and new moving jobs to the calendar — and SH1 puts our Wellington truck fleet within easy reach. Most Porirua moves fit a 2-tonne box truck; family moves and bigger subdivisions step up to the 3-tonne range.',
-      'Our trucks can be picked up from our Te Aro branch. Car licence for 2-tonne models. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking.',
+      'Our trucks can be picked up from our Te Aro branch. Car licence for 2-tonne models. All our trucks up to 18m³ — including the 16m³ and 18m³ 3-tonne models — can be driven on a standard Class 1 car licence. Only the 19–20m³ truck requires a Class 2 licence.',
     ],
   },
 ];

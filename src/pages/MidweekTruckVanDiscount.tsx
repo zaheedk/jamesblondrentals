@@ -156,7 +156,7 @@ const MidweekTruckVanDiscount = () => {
               <AccordionItem value="item-2">
                 <AccordionTrigger>What type of license is required to drive trucks?</AccordionTrigger>
                 <AccordionContent>
-                  Our 2 Ton 9 & 12m3 trucks can be driven on a NZ full Class 1 licence. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking. You must have held your license for at least 1 year and be comfortable driving larger vehicles in various conditions.
+                  Our 2 Ton 9 & 12m3 trucks can be driven on a NZ full Class 1 licence. All our trucks up to 18m³ — including the 16m³ and 18m³ 3-tonne models — can be driven on a standard Class 1 car licence. Only the 19–20m³ truck requires a Class 2 licence. You must have held your license for at least 1 year and be comfortable driving larger vehicles in various conditions.
                 </AccordionContent>
               </AccordionItem>
 

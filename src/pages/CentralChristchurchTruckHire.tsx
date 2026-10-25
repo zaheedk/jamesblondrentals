@@ -66,7 +66,7 @@ const CentralChristchurchTruckHire = () => {
         name: 'Do I need a special licence to hire a truck in Christchurch?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'A standard New Zealand car (Class 1) licence is enough for all of our 2-tonne trucks. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking.',
+          text: 'A standard New Zealand car (Class 1) licence is enough for all of our 2-tonne trucks. All our trucks up to 18m³ — including the 16m³ and 18m³ 3-tonne models — can be driven on a standard Class 1 car licence. Only the 19–20m³ truck requires a Class 2 licence.',
         },
       },
       {

@@ -14,7 +14,7 @@ const MovingTruckRental = () => (
     title="Moving Truck Hire Near You | NZ Truck Rental | James Blond"
     description="Find moving truck hire near you in Auckland, Wellington, Christchurch and Hamilton. Compare 2-tonne and 3-tonne trucks, tail lifts and local collection options."
     h1="Moving Truck Hire Near You"
-    intro="Looking for moving truck hire near you? Choose your city, compare truck sizes and check your dates before arranging your move. James Blond moving trucks come ready to load — tail lift or ramp, tie-down points, blankets available, hourly rates from $35/hr. Our 2-tonne trucks can be driven on a car licence. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking."
+    intro="Looking for moving truck hire near you? Choose your city, compare truck sizes and check your dates before arranging your move. James Blond moving trucks come ready to load — tail lift or ramp, tie-down points, blankets available, hourly rates from $35/hr. Our 2-tonne trucks can be driven on a car licence. All our trucks up to 18m³ — including the 16m³ and 18m³ 3-tonne models — can be driven on a standard Class 1 car licence. Only the 19–20m³ truck requires a Class 2 licence."
     bullets={[
       '2-tonne and 3-tonne moving trucks',
       'Tail lifts and ramps available',
@@ -33,7 +33,7 @@ const MovingTruckRental = () => (
     faq={[
       { q: 'How much does it cost to rent a moving truck in NZ?', a: 'James Blond moving trucks start from $35/hr and around $129/day for a 2-tonne, with 3-tonne and tail-lift trucks slightly higher. Same-day quotes are available from any branch.' },
       { q: 'What size moving truck should I rent?', a: 'For a one-bedroom apartment a 2-tonne 12m³ truck is usually plenty. For a two- or three-bedroom house a 2-tonne 16m³ or 3-tonne 19m³ with tail lift is the right call.' },
-      { q: 'Do I need a truck licence to drive a moving truck?', a: 'Our 2-tonne trucks can be driven on a car licence. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking.' },
+      { q: 'Do I need a truck licence to drive a moving truck?', a: 'Our 2-tonne trucks can be driven on a car licence. All our trucks up to 18m³ — including the 16m³ and 18m³ 3-tonne models — can be driven on a standard Class 1 car licence. Only the 19–20m³ truck requires a Class 2 licence.' },
       { q: 'Can I do a one-way move?', a: 'One-way and long-distance moves between Auckland, Hamilton, Wellington and Christchurch are available on request when booking.' },
     ]}
   />

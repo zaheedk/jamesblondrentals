@@ -53,7 +53,7 @@ const AucklandTruckRentals = () => {
           <div>
             <h1 className="text-3xl md:text-4xl font-bold mb-4">Truck Hire Auckland — Moving Truck Rental Near You</h1>
             <p className="text-lg text-gray-700 mb-6">
-              Same-day truck rental and moving truck hire across Auckland — CBD, Penrose, Auckland Airport, North Shore, South Auckland and West Auckland. 2-tonne and 3-tonne trucks from $35/hr. Our 2-tonne trucks can be driven on a car licence. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking.
+              Same-day truck rental and moving truck hire across Auckland — CBD, Penrose, Auckland Airport, North Shore, South Auckland and West Auckland. 2-tonne and 3-tonne trucks from $35/hr. Our 2-tonne trucks can be driven on a car licence. All our trucks up to 18m³ — including the 16m³ and 18m³ 3-tonne models — can be driven on a standard Class 1 car licence. Only the 19–20m³ truck requires a Class 2 licence.
             </p>
             <div className="flex items-center gap-2">
               <Button asChild variant="cta" size="lg">
@@ -440,7 +440,7 @@ const AucklandTruckRentals = () => {
           <div className="border rounded-lg p-4">
             <h3 className="font-bold mb-2">Do I need a special license to drive your trucks in Auckland?</h3>
             <p className="text-gray-600">
-              For our 2-tonne trucks, a standard New Zealand car license is sufficient. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking.
+              For our 2-tonne trucks, a standard New Zealand car license is sufficient. All our trucks up to 18m³ — including the 16m³ and 18m³ 3-tonne models — can be driven on a standard Class 1 car licence. Only the 19–20m³ truck requires a Class 2 licence.
             </p>
           </div>
           

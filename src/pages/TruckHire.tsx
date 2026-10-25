@@ -84,7 +84,7 @@ const faqs = [
   },
   {
     q: 'Do I need a special licence to drive a hire truck?',
-    a: 'Most of our 2-tonne box trucks and tippers can be driven on a standard NZ Class 1 car licence. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking.',
+    a: 'Most of our 2-tonne box trucks and tippers can be driven on a standard NZ Class 1 car licence. All our trucks up to 18m³ — including the 16m³ and 18m³ 3-tonne models — can be driven on a standard Class 1 car licence. Only the 19–20m³ truck requires a Class 2 licence.',
   },
   {
     q: 'How much can a 4.2m / 12m³ truck fit?',
@@ -155,7 +155,7 @@ const TruckHire = () => {
         eyebrow="Truck hire · New Zealand"
         EyebrowIcon={Truck}
         heading="Truck Hire NZ — Moving Trucks Near You"
-        intro="Looking for truck hire near you? James Blond Rentals offers moving, furniture and commercial truck hire in Auckland, Wellington, Christchurch and Hamilton. Choose from 2-tonne and 3-tonne box trucks, tail-lift trucks and tippers — car licence for 2-tonne models. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking."
+        intro="Looking for truck hire near you? James Blond Rentals offers moving, furniture and commercial truck hire in Auckland, Wellington, Christchurch and Hamilton. Choose from 2-tonne and 3-tonne box trucks, tail-lift trucks and tippers — car licence for 2-tonne models. All our trucks up to 18m³ — including the 16m³ and 18m³ 3-tonne models — can be driven on a standard Class 1 car licence. Only the 19–20m³ truck requires a Class 2 licence."
         primaryTo="/booking"
         primaryLabel="Book a truck"
         features={[

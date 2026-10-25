@@ -45,7 +45,7 @@ const OneWayCommercialHire: React.FC<Props> = ({ variant }) => {
       {
         '@type': 'Question',
         name: `Do I need a special licence for the ${label.toLowerCase()}?`,
-        acceptedAnswer: { '@type': 'Answer', text: `Our vans and 2-tonne trucks can be driven on a standard NZ Class 1 car licence or an accepted overseas equivalent. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking. All vehicles are automatic.` },
+        acceptedAnswer: { '@type': 'Answer', text: `Our vans and 2-tonne trucks can be driven on a standard NZ Class 1 car licence or an accepted overseas equivalent. All our trucks up to 18m³ — including the 16m³ and 18m³ 3-tonne models — can be driven on a standard Class 1 car licence. Only the 19–20m³ truck requires a Class 2 licence. All vehicles are automatic.` },
       },
     ],
   };
@@ -110,7 +110,7 @@ const OneWayCommercialHire: React.FC<Props> = ({ variant }) => {
           {[
             { n: '01', t: 'No return leg', d: `Move one direction and skip the empty drive back — a full day and tank of fuel saved.` },
             { n: '02', t: 'Ferry-approved fleet', d: `All ${cfg.pluralLabel.toLowerCase()} cross Cook Strait — we help book Interislander/Bluebridge at the right vehicle length.` },
-            { n: '03', t: 'Vehicle-specific licence', d: `Car licence for vans and 2-tonne trucks. For 3-tonne trucks, the licence required depends on the specific vehicle: a Class 1 (car) or Class 2 (HT) licence may be needed. Confirm the allocated truck’s licence requirement with the branch before booking.` },
+            { n: '03', t: 'Vehicle-specific licence', d: `Car licence for vans and 2-tonne trucks. All our trucks up to 18m³ — including the 16m³ and 18m³ 3-tonne models — can be driven on a standard Class 1 car licence. Only the 19–20m³ truck requires a Class 2 licence.` },
           ].map((row, i) => (
             <div key={row.n} className={`flex gap-6 py-6 md:py-2 ${i > 0 ? 'md:border-l md:pl-10 border-border' : ''}`}>
               <span className="font-sans font-extrabold text-3xl text-primary leading-none">{row.n}</span>
