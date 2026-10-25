@@ -16,7 +16,7 @@ const ThreeTonneBoxTailLiftDetail = () => {
     { label: "Max Load", value: "3000kg" },
     { label: "Box Dimensions", value: "4400(L) x 2100(W) x 2050(H)" },
     { label: "Max Tail Lift Load", value: "400kg" },
-    { label: "License Required", value: "Class 1 or Class 2 — confirm with branch" }
+    { label: "License Required", value: "Class 1 car licence" }
   ];
 
   const additionalFeatures = [
