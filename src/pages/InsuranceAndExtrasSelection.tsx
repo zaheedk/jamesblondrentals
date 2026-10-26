@@ -477,23 +477,13 @@ const InsuranceAndExtrasSelection = () => {
             </Button>
           </div>
           
-          {/* Mobile navigation */}
-          <div className="md:hidden pt-4">
-            <Button 
-              variant="outline" 
-              onClick={handleBack}
-              className="w-full mb-4"
-            >
-              Back
-            </Button>
-          </div>
         </div>
         
         {/* Mobile fixed bottom continue button */}
         <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t">
           <Button 
             onClick={handleProceedToDetails}
-            className="w-full bg-cta hover:bg-cta/90 text-cta-foreground font-bold py-4 text-lg rounded-none"
+            className="w-full bg-cta hover:bg-cta/90 text-cta-foreground font-bold py-4 text-lg rounded-full"
           >
             Continue to Details
           </Button>
