@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { RCMInsuranceOption, RCMKmCharge, RCMExtra, RCMOptionalFee } from '@/lib/api/rcm-api-types';
 import { useRcmApi } from '@/hooks/use-rcm-api';
 import { BookingSessionData, getBookingData, updateBookingData } from '@/lib/booking-session';
-import InsuranceOptions from '@/components/booking/InsuranceOptions';
+import InsuranceOptions, { filterRealInsuranceOptions } from '@/components/booking/InsuranceOptions';
 import KmCharges from '@/components/booking/KmCharges';
 import ExtrasSelection from '@/components/booking/ExtrasSelection';
 import BookingRentalAccordion from '@/components/booking/BookingRentalAccordion';
@@ -402,15 +402,17 @@ const InsuranceAndExtrasSelection = () => {
         <div className="space-y-8 pt-6">
           {/* Insurance Section */}
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold">Insurance Options</h2>
-            {insuranceOptions.length > 0 && (
-              <InsuranceOptions 
-                insuranceOptions={insuranceOptions}
-                selectedInsuranceId={selectedInsurance?.id || null}
-                onSelectInsurance={handleInsuranceChange}
-                currencySymbol="$"
-                numberOfDays={calculateNumberOfDays()}
-              />
+            {filterRealInsuranceOptions(insuranceOptions).length > 0 && (
+              <>
+                <h2 className="text-2xl font-bold">Insurance Options</h2>
+                <InsuranceOptions
+                  insuranceOptions={insuranceOptions}
+                  selectedInsuranceId={selectedInsurance?.id || null}
+                  onSelectInsurance={handleInsuranceChange}
+                  currencySymbol="$"
+                  numberOfDays={calculateNumberOfDays()}
+                />
+              </>
             )}
             
             <div className="bg-gray-50 rounded-lg p-6">
