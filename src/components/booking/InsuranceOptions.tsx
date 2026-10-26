@@ -34,6 +34,25 @@ const parseLines = (html: string): Line[] => {
     });
 };
 
+/**
+ * RCM returns a blank placeholder row (id 0, no name, no cover text, $0) when a
+ * vehicle has no cover tiers configured. That row is not a choice the customer
+ * can make, so it must never be rendered as a card.
+ */
+export const filterRealInsuranceOptions = (
+  options?: RCMInsuranceOption[] | null
+): RCMInsuranceOption[] =>
+  (options ?? []).filter((option) => {
+    const hasName = Boolean(
+      (option.name || option.description || option.feedescription || "").trim()
+    );
+    const hasCoverText = Boolean(
+      (option.feedescription1 || option.feedescription2 || option.feedescription3 || "").trim()
+    );
+    const hasPrice = (parseFloat(String(option.totalinsuranceamount)) || 0) > 0;
+    return hasName || hasCoverText || hasPrice;
+  });
+
 const InsuranceOptions = ({
   insuranceOptions,
   selectedInsuranceId,
@@ -44,25 +63,20 @@ const InsuranceOptions = ({
   // Accordion state shared across all cards: only one option's details open at a time.
   const [openId, setOpenId] = useState<string | null>(null);
 
-  if (!insuranceOptions || insuranceOptions.length === 0) {
-    return (
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold">Insurance Options</h3>
-        <Card className="p-4">
-          <div className="text-sm text-muted-foreground italic">No insurance options available</div>
-        </Card>
-      </div>
-    );
+  const options = filterRealInsuranceOptions(insuranceOptions);
+
+  if (options.length === 0) {
+    return null;
   }
 
-  const sorted = [...insuranceOptions].sort(
+  const sorted = [...options].sort(
     (a, b) =>
       (parseFloat(a.totalinsuranceamount?.toString() || "0") || 0) -
       (parseFloat(b.totalinsuranceamount?.toString() || "0") || 0)
   );
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 mt-10">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6">
       {sorted.map((insurance, index) => {
         const total = parseFloat(insurance.totalinsuranceamount?.toString() || "0") || 0;
         const dailyRate = numberOfDays > 0 ? total / numberOfDays : total;
@@ -101,6 +115,19 @@ const InsuranceOptions = ({
                 : "border border-border hover:border-primary/40 hover:shadow-md hover:-translate-y-0.5"
             )}
           >
+            {/* Selection tick: the only control, the card itself is the button */}
+            <span
+              className={cn(
+                "absolute right-4 top-4 z-10 w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-colors",
+                isSelected
+                  ? "bg-primary text-primary-foreground"
+                  : "border-2 border-border bg-background"
+              )}
+              aria-hidden
+            >
+              {isSelected && <Check className="w-3.5 h-3.5" strokeWidth={3} />}
+            </span>
+
             {badge && (
               <div className="flex justify-center pt-4">
                 <span
@@ -126,18 +153,20 @@ const InsuranceOptions = ({
                   e.stopPropagation();
                   setOpenId(isOpen ? null : insurance.id.toString());
                 }}
-                className="flex w-full items-center justify-between gap-3 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md"
+                className="flex w-full items-start justify-between gap-3 text-left pr-8 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md"
               >
                 <h3 className="text-base md:text-lg font-semibold text-foreground leading-snug">
                   {title}
                 </h3>
-                <ChevronDown
-                  className={cn(
-                    "w-4 h-4 shrink-0 text-muted-foreground transition-transform duration-200",
-                    isOpen && "rotate-180"
-                  )}
-                  aria-hidden
-                />
+                {lines.length > 0 && (
+                  <ChevronDown
+                    className={cn(
+                      "w-4 h-4 shrink-0 mt-1 text-muted-foreground transition-transform duration-200",
+                      isOpen && "rotate-180"
+                    )}
+                    aria-hidden
+                  />
+                )}
               </button>
 
               {isOpen && lines.length > 0 && (
@@ -161,7 +190,8 @@ const InsuranceOptions = ({
                 {dailyRate > 0 ? (
                   <div className="flex items-baseline gap-1.5">
                     <span className="text-2xl font-bold text-foreground tracking-tight">
-                      ${dailyRate.toFixed(2)}
+                      {currencySymbol}
+                      {dailyRate.toFixed(2)}
                     </span>
                     <span className="text-sm text-muted-foreground">per day</span>
                   </div>
@@ -169,41 +199,6 @@ const InsuranceOptions = ({
                   <div className="text-2xl font-bold text-foreground tracking-tight">Included</div>
                 )}
               </div>
-            </div>
-
-            {/* Option button with tick mark */}
-            <div
-              role="button"
-              tabIndex={0}
-              aria-pressed={isSelected}
-              className={cn(
-                "w-full flex items-center justify-center gap-2 py-3 text-sm font-semibold transition-colors cursor-pointer",
-                isSelected
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-cta text-cta-foreground hover:bg-cta/90"
-              )}
-              onClick={(e) => {
-                e.stopPropagation();
-                onSelectInsurance(insurance.id);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  onSelectInsurance(insurance.id);
-                }
-              }}
-            >
-              <span
-                className={cn(
-                  "w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-colors",
-                  isSelected ? "bg-background text-primary" : "border-2 border-current/60"
-                )}
-                aria-hidden
-              >
-                {isSelected && <Check className="w-3.5 h-3.5" strokeWidth={3} />}
-              </span>
-              {isSelected ? "Selected" : "Select"}
             </div>
           </Card>
         );
