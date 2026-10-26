@@ -29,6 +29,7 @@ interface PaymentSummaryProps {
   bookingInfoTotalCost?: number;
   payment: number;
   balanceDue: number;
+  totalLabel?: string;
 }
 
 const PaymentSummary = ({
@@ -44,6 +45,7 @@ const PaymentSummary = ({
   bookingInfoTotalCost,
   payment,
   balanceDue,
+  totalLabel = "Total Cost",
 }: PaymentSummaryProps) => {
   const effectiveRentalDays = Math.max(1, rentalDays || 1);
   
@@ -84,7 +86,7 @@ const PaymentSummary = ({
     : calculatedBalanceDue;
 
   return (
-    <div className="bg-gray-50 rounded-lg p-4 mb-6">
+    <div className="bg-muted/50 rounded-lg p-4 mb-6">
       <h3 className="text-lg font-semibold mb-4">Payment Summary</h3>
       <div className="space-y-2">
         <div className="flex justify-between">
@@ -99,7 +101,7 @@ const PaymentSummary = ({
         )}
         
         {(mandatoryFees.length > 0) && (
-          <div className="border-t border-gray-300 mt-2 pt-2">
+          <div className="border-t border-border mt-2 pt-2">
             <div className="font-medium mb-2">Mandatory Fees</div>
             {mandatoryFees.map((fee, index) => (
               <div key={index} className="flex justify-between text-sm">
@@ -108,7 +110,7 @@ const PaymentSummary = ({
               </div>
             ))}
             {mandatoryFeesTotal > 0 && (
-              <div className="flex justify-between font-medium text-sm mt-1 pt-1 border-t border-dashed border-gray-200">
+              <div className="flex justify-between font-medium text-sm mt-1 pt-1 border-t border-dashed border-border">
                 <span>Total Mandatory Fees</span>
                 <span>{formatCurrency(mandatoryFeesTotal)}</span>
               </div>
@@ -117,7 +119,7 @@ const PaymentSummary = ({
         )}
 
         {(insurancePrice > 0 || extraKmsPrice > 0 || selectedExtras.length > 0) && (
-          <div className="border-t border-gray-300 mt-2 pt-2">
+          <div className="border-t border-border mt-2 pt-2">
             <div className="font-medium mb-2">Optional Extras & Fees</div>
             {insurancePrice > 0 && (
               <div className="flex justify-between text-sm">
@@ -140,7 +142,7 @@ const PaymentSummary = ({
               </div>
             ))}
             {totalOptionalFees > 0 && (
-              <div className="flex justify-between font-medium text-sm mt-1 pt-1 border-t border-dashed border-gray-200">
+              <div className="flex justify-between font-medium text-sm mt-1 pt-1 border-t border-dashed border-border">
                 <span>Total Optional Fees</span>
                 <span>{formatCurrency(totalOptionalFees)}</span>
               </div>
@@ -148,10 +150,10 @@ const PaymentSummary = ({
           </div>
         )}
         
-        <div className="border-t border-gray-300 mt-2 pt-2">
-          <div className="flex justify-between font-semibold">
-            <span>Total Cost</span>
-            <span>{formatCurrency(displayTotalCost)}</span>
+        <div className="border-t border-border mt-2 pt-2">
+          <div className="flex justify-between gap-4 font-semibold">
+            <span>{totalLabel}</span>
+            <span className="shrink-0">{formatCurrency(displayTotalCost)}</span>
           </div>
           
           {payment > 0 && (
