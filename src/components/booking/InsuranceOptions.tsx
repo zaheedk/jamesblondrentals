@@ -157,7 +157,7 @@ const InsuranceOptions = ({
                 </ul>
               )}
 
-              <div className="mt-6 pt-4 border-t border-border mt-auto">
+              <div className="mt-auto pt-4 border-t border-border">
                 {dailyRate > 0 ? (
                   <div className="flex items-baseline gap-1.5">
                     <span className="text-2xl font-bold text-foreground tracking-tight">
