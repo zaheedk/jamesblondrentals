@@ -30,7 +30,7 @@ export default function CheckoutChoices(props: CheckoutChoicesProps) {
   const instalments = provider === "airwallex";
   const amount = instalments || paymentType === "full" ? total : Math.min(depositAmount, total);
   const remaining = Math.max(total - amount, 0);
-  const bondLabel = bond > 0 ? formatCurrency(bond) : "$200–$300";
+  const bondLabel = bond > 0 ? `${formatCurrency(bond)} refundable bond at pickup` : "Refundable bond at pickup";
 
   return (
     <form onSubmit={props.onSubmit} className="space-y-6">
@@ -97,7 +97,7 @@ export default function CheckoutChoices(props: CheckoutChoicesProps) {
         )}
         <div className="flex items-start gap-2 pt-2">
           <ShieldCheck className="h-4 w-4 text-primary shrink-0 mt-1" />
-          <p className="text-sm"><strong>{bondLabel} refundable bond at pickup</strong><span className="block text-muted-foreground">Held on your card, not charged online today. Bring a credit/debit card in the hirer’s name.</span></p>
+          <p className="text-sm"><strong>{bondLabel}</strong><span className="block text-muted-foreground">Held on your card, not charged online today. Bring a credit/debit card in the hirer’s name.{bond <= 0 ? " The bond amount will be confirmed before pickup." : ""}</span></p>
         </div>
       </section>
 
