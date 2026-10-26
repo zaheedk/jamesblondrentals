@@ -5,6 +5,7 @@
 - [x] Clarify consent and separate the pickup bond from rental charges without changing payment processing
 - [x] Verify card, deposit, Klarna and consent states on desktop and narrow screens
 - [x] Collapse rental details and price breakdown into one-line accordions using a simulated booking; no real charge made
+- [x] Show insurance choice as a card tick with details in an accordion, and hide the section when the booking returns no cover tiers
 
 ## Broker booking demo
 - [x] Build a shareable rehearsal flow and credential-protected live API test mode

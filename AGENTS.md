@@ -1,5 +1,6 @@
 # Project Architecture Rules
 - PaymentOptions delegates presentation and consent to CheckoutChoices while retaining existing payment handlers; pickup bonds stay outside its rental fee list and unpaid checkout must never display a fabricated payment.
+- InsuranceOptions shows selection as a card tick rather than a separate button, keeps cover details in an accordion, and renders only tiers carrying a real name, cover text or price, because the booking API returns a blank placeholder row for vehicles with no cover tiers and an empty card reads as a missing option.
 - Phone quotes use the booking API's quote mode plus the existing branded checkout; durable request claims prevent duplicate write retries, and live booking/payment reads gate confirmation emails because caller claims and redirects are not proof of payment. Never automatically retry booking writes after ambiguous timeouts.
 - Confirmed email-only corrections reuse the saved phone quote request and identical other details, with recipient-scoped send idempotency; customer records in RCM are not edited by this resend path, preventing duplicate quotes and false record-update claims.
 
