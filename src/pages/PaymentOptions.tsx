@@ -1,25 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { getBookingData, updateBookingData } from "@/lib/booking-session";
-import { Label } from "@/components/ui/label";
 import { formatCurrency, getCampaignCode } from "@/lib/utils";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Car, Save, CreditCard, Wallet, Banknote, Check } from "lucide-react";
+import { Car } from "lucide-react";
 import PaymentSummary from "@/components/payment/PaymentSummary";
+import CheckoutChoices from "@/components/payment/CheckoutChoices";
 import RentalDetails from "@/components/payment/RentalDetails";
 import { rcmApi } from "@/lib/api/rcm-api";
 import { RCMBookingResponse } from "@/lib/api/rcm-api-types";
 import { format, addDays } from "date-fns";
 import { useRcmApi } from "@/hooks/use-rcm-api";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Card, CardContent } from "@/components/ui/card";
 import PageSEO from '@/components/PageSEO';
 import { supabase } from "@/integrations/supabase/client";
-import cardBrandsImg from "@/assets/payment-cards.svg";
-import klarnaImg from "@/assets/klarna-badge.svg";
 import TrustGuaranteeBanner from '@/components/booking/TrustGuaranteeBanner';
 
 const DEPOSIT_AMOUNT = 50;
@@ -623,10 +619,11 @@ const PaymentOptions = () => {
     <div className="container mx-auto px-4 py-8">
       <ExitIntentPopup />
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6">Payment Options</h1>
+        <h1 className="text-3xl font-bold tracking-normal mb-2">Complete your booking</h1>
+        <p className="text-muted-foreground mb-6">Review your rental, choose how to pay and confirm your details.</p>
         <TrustGuaranteeBanner className="mb-6 rounded-lg border" />
         
-        <div className="bg-white shadow-md rounded-lg p-6">
+        <div className="bg-background py-2 sm:px-2">
           {(() => {
             const imageUrl = bookingDetails?.vehicleImage && !imageError 
               ? (bookingDetails.vehicleImage.startsWith('http') 
@@ -643,7 +640,7 @@ const PaymentOptions = () => {
             
             return imageUrl ? (
               <div className="w-full mb-6">
-                <AspectRatio ratio={4/3} className="bg-gray-100 rounded-lg overflow-hidden">
+                <AspectRatio ratio={4/3} className="bg-muted rounded-lg overflow-hidden">
                   <img
                     src={imageUrl}
                     alt={bookingDetails.vehicleName}
@@ -655,8 +652,8 @@ const PaymentOptions = () => {
               </div>
             ) : (
               <div className="w-full mb-6">
-                <AspectRatio ratio={4/3} className="bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
-                  <Car className="h-24 w-24 text-gray-300" />
+                <AspectRatio ratio={4/3} className="bg-muted rounded-lg overflow-hidden flex items-center justify-center">
+                  <Car className="h-24 w-24 text-muted-foreground" />
                 </AspectRatio>
               </div>
             );
@@ -684,7 +681,7 @@ const PaymentOptions = () => {
             extraKmsPrice={bookingDetails?.extraKmsPrice}
             selectedExtras={bookingDetails?.selectedExtras}
             mandatoryFees={bookingDetails?.mandatoryFees ? 
-              bookingDetails.mandatoryFees.reduce((acc: any[], current: any) => {
+              bookingDetails.mandatoryFees.filter((fee: any) => !/bond/i.test(fee.name || "")).reduce((acc: any[], current: any) => {
                 const existingFee = acc.find(fee => fee.name === current.name);
                 if (!existingFee) {
                   acc.push(current);
@@ -694,233 +691,30 @@ const PaymentOptions = () => {
             }
             totalCost={totalCost}
             bookingInfoTotalCost={bookingInfoTotalCost}
-            payment={totalCost}
+            payment={0}
             balanceDue={0}
+            totalLabel="Rental total (excludes pickup bond)"
           />
           
-          {/* Complete your booking section */}
-          <Card className={`mb-6 bg-primary text-primary-foreground ${showConsentError ? 'ring-2 ring-destructive' : ''}`}>
-            <CardContent className="p-6">
-              <h3 className="text-xl font-semibold mb-4">Complete your booking</h3>
-
-              <div className="flex items-start space-x-3">
-                <Checkbox
-                  id="terms"
-                  checked={acceptedTerms}
-                  onCheckedChange={(checked) => {
-                    setAcceptedTerms(checked as boolean);
-                    if (checked) setShowConsentError(false);
-                  }}
-                  className="mt-1 border-primary-foreground data-[state=checked]:bg-primary-foreground data-[state=checked]:text-primary"
-                />
-                <Label htmlFor="terms" className="text-sm leading-relaxed cursor-pointer">
-                  I agree to the{" "}
-                  <Link to="/terms" className="font-semibold underline hover:text-primary-foreground/80" target="_blank">
-                    Terms &amp; Conditions
-                  </Link>
-                  , the driver licence requirements, and the refundable security bond{securityBond > 0 ? ` of ${formatCurrency(securityBond)}` : ' of $200–$300'} held on my card at pick up.
-                </Label>
-              </div>
-
-              {showConsentError && (
-                <p className="text-sm font-medium mt-3 bg-primary-foreground text-destructive rounded px-3 py-2">
-                  Please tick this box to continue to payment.
-                </p>
-              )}
-
-              <details className="mt-4 text-sm">
-                <summary className="cursor-pointer underline font-medium">What am I agreeing to?</summary>
-                <div className="mt-3 space-y-3 leading-relaxed text-primary-foreground/90">
-                  <p>
-                    <strong>Driver licence:</strong> you need a valid full or restricted driver licence for the vehicle type you are hiring. You consent to James Blond verifying your licence details with authorised third-party services for identity verification and rental eligibility.
-                  </p>
-                  <p>
-                    <strong>Security bond:</strong> a credit/debit card in the hirer's name must be presented at pick up. A bond of {securityBond > 0 ? formatCurrency(securityBond) : '$200 or $300 (depending on vehicle type)'} is held on that card at pick up and released after the vehicle is returned.
-                  </p>
-                </div>
-              </details>
-            </CardContent>
-          </Card>
-          
-          <div className="mb-6">
-            <p className="font-semibold mb-3">Choose a payment method</p>
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                type="button"
-                onClick={() => setPaymentProvider("windcave")}
-                className={`relative flex items-center justify-center min-h-[64px] border p-2 rounded-lg bg-muted text-left transition-all ${
-                  paymentProvider === "windcave"
-                    ? "border-primary ring-1 ring-primary bg-primary/5"
-                    : "hover:border-primary/30"
-                }`}
-              >
-                <img src={cardBrandsImg} alt="Visa and Mastercard" className="h-10 w-auto" />
-                {paymentProvider === "windcave" && (
-                  <span className="absolute top-2 right-2 w-5 h-5 rounded-md bg-primary text-primary-foreground flex items-center justify-center">
-                    <Check className="w-3.5 h-3.5" />
-                  </span>
-                )}
-              </button>
-              {canUseAirwallex && (
-                <button
-                  type="button"
-                  onClick={() => setPaymentProvider("airwallex")}
-                  className={`relative flex flex-col justify-center gap-2 min-h-[72px] border p-3 rounded-lg bg-muted text-left transition-all ${
-                    paymentProvider === "airwallex"
-                      ? "border-primary ring-1 ring-primary bg-primary/5"
-                      : "hover:border-primary/30"
-                  }`}
-                >
-                  <div className="flex items-center justify-between w-full">
-                    <img src={klarnaImg} alt="Klarna" className="h-10 w-auto" />
-                    <span className="font-bold text-sm">{formatCurrency(totalCost)}</span>
-                  </div>
-                  <span className="inline-flex items-center justify-center gap-1.5 w-full px-3 py-1.5 rounded-full bg-[#FFC0CB] text-[#0A0B09] text-xs font-semibold leading-none">
-                    4 payments of {formatCurrency(totalCost / 4)}
-                  </span>
-                  {paymentProvider === "airwallex" && (
-                    <span className="absolute top-2 right-2 w-5 h-5 rounded-md bg-primary text-primary-foreground flex items-center justify-center">
-                      <Check className="w-3.5 h-3.5" />
-                    </span>
-                  )}
-                </button>
-              )}
-            </div>
-          </div>
-
-
-          {paymentProvider === "windcave" && (
-            <div className="mb-6">
-              <p className="font-semibold mb-3">Choose how much to pay now</p>
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() => setPaymentType("full")}
-                  className={`flex items-center gap-2 border p-2 rounded-lg bg-muted text-left transition-all ${
-                    paymentType === "full"
-                      ? "border-primary ring-1 ring-primary bg-primary/5"
-                      : "hover:border-primary/30"
-                  }`}
-                >
-                  <div className="w-8 h-8 rounded-md bg-background border border-border flex items-center justify-center shrink-0">
-                    <Banknote className="w-4 h-4 text-primary" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <span className="block font-medium text-sm">Pay in Full</span>
-                    <span className="block text-xs text-muted-foreground">
-                      Rental total
-                    </span>
-                  </div>
-                  <div className="text-right shrink-0">
-                    <span className="block font-bold text-sm">{formatCurrency(totalCost)}</span>
-                    <div
-                      className={`w-4 h-4 rounded-full border-2 flex items-center justify-center mt-1 ml-auto transition-colors ${
-                        paymentType === "full"
-                          ? "border-primary bg-primary text-primary-foreground"
-                          : "border-muted-foreground/30"
-                      }`}
-                    >
-                      {paymentType === "full" && <Check className="w-3 h-3" />}
-                    </div>
-                  </div>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setPaymentType("deposit")}
-                  className={`flex items-center gap-2 border p-2 rounded-lg bg-muted text-left transition-all ${
-                    paymentType === "deposit"
-                      ? "border-primary ring-1 ring-primary bg-primary/5"
-                      : "hover:border-primary/30"
-                  }`}
-                >
-                  <div className="w-8 h-8 rounded-md bg-background border border-border flex items-center justify-center shrink-0">
-                    <Wallet className="w-4 h-4 text-primary" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <span className="block font-medium text-sm">
-                      Pay {formatCurrency(DEPOSIT_AMOUNT)} non-refundable deposit
-                    </span>
-                    <span className="block text-xs text-muted-foreground">
-                      Balance at pick up
-                    </span>
-                  </div>
-                  <div className="text-right shrink-0">
-                    <span className="block font-bold text-sm">{formatCurrency(Math.min(DEPOSIT_AMOUNT, totalCost))}</span>
-                    <div
-                      className={`w-4 h-4 rounded-full border-2 flex items-center justify-center mt-1 ml-auto transition-colors ${
-                        paymentType === "deposit"
-                          ? "border-primary bg-primary text-primary-foreground"
-                          : "border-muted-foreground/30"
-                      }`}
-                    >
-                      {paymentType === "deposit" && <Check className="w-3 h-3" />}
-                    </div>
-                  </div>
-                </button>
-              </div>
-            </div>
-          )}
-
-          {paymentProvider === "airwallex" && (
-            <div className="mb-6">
-              <div className="flex items-center gap-3 border border-primary/20 p-3 rounded-lg bg-[#FFC0CB]/10">
-                <div className="w-8 h-8 rounded-md bg-background border border-border flex items-center justify-center shrink-0">
-                  <img src={klarnaImg} alt="Klarna" className="h-4 w-auto" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <span className="block font-medium text-sm text-foreground">Total amount {formatCurrency(totalCost)}</span>
-                  <span className="block text-xs text-muted-foreground">
-                    4 interest-free payments of {formatCurrency(totalCost / 4)}. First payment today.
-                  </span>
-                </div>
-              </div>
-            </div>
-          )}
-          
-
-          
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <Button 
-              type="submit"
-              disabled={isLoading}
-              className="w-full"
-            >
-              {isLoading ? (
-                <>
-                  <span className="animate-spin mr-2">◌</span> Processing...
-                </>
-              ) : (
-                `Proceed to Pay ${formatCurrency(paymentType === "deposit" ? Math.min(DEPOSIT_AMOUNT, totalCost) : totalCost)}`
-              )}
-            </Button>
-            
-            <div className="text-center">
-              <button
-                type="button"
-                onClick={handleSaveQuotation}
-                disabled={isSavingQuote}
-                className="inline-flex items-center text-sm text-gray-600 underline hover:text-gray-900 disabled:opacity-60 disabled:cursor-not-allowed"
-              >
-                {isSavingQuote ? (
-                  <>
-                    <span className="animate-spin mr-2">◌</span>
-                    Saving your quote…
-                  </>
-                ) : (
-                  <>
-                    <Save className="mr-2 h-4 w-4" />
-                    Email me this quote instead
-                  </>
-                )}
-              </button>
-              {isSavingQuote && (
-                <p className="mt-2 text-xs text-muted-foreground">
-                  Please wait — we're creating your quote and emailing it to you.
-                </p>
-              )}
-            </div>
-          </form>
+          <CheckoutChoices
+            total={totalCost}
+            bond={securityBond}
+            depositAmount={DEPOSIT_AMOUNT}
+            provider={paymentProvider}
+            paymentType={paymentType}
+            onProviderChange={setPaymentProvider}
+            onPaymentTypeChange={setPaymentType}
+            acceptedTerms={acceptedTerms}
+            onAcceptTerms={(accepted) => {
+              setAcceptedTerms(accepted);
+              if (accepted) setShowConsentError(false);
+            }}
+            showConsentError={showConsentError}
+            isLoading={isLoading}
+            isSavingQuote={isSavingQuote}
+            onSaveQuote={handleSaveQuotation}
+            onSubmit={handleSubmit}
+          />
         </div>
       </div>
     </div>
