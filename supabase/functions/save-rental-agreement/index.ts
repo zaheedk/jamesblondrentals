@@ -21,6 +21,38 @@ const asPositiveInteger = (value: unknown, fallback = 1) => {
 
 const todayIsoDate = () => new Date().toISOString().slice(0, 10)
 
+const RCM_KEY = Deno.env.get("RCM_API_KEY")
+const RCM_SECRET = Deno.env.get("RCM_API_SECRET")
+
+async function hmacHex(msg: string) {
+  const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(RCM_SECRET!), { name: "HMAC", hash: "SHA-256" }, false, ["sign"])
+  const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(msg))
+  return Array.from(new Uint8Array(sig)).map((b) => b.toString(16).padStart(2, "0")).join("").toUpperCase()
+}
+
+// Live booking-system read: client-supplied booking_data is never proof of payment.
+async function livePaymentFields(reservationref: string): Promise<JsonRecord> {
+  if (!RCM_KEY || !RCM_SECRET) return {}
+  try {
+    const body = JSON.stringify({ method: "bookinginfo", reservationref })
+    const res = await fetch(`https://apis.rentalcarmanager.com/booking/v3.2?apikey=${RCM_KEY}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", signature: await hmacHex(body) },
+      body,
+      signal: AbortSignal.timeout(8000),
+    })
+    const info = (await res.json().catch(() => null))?.results?.bookinginfo?.[0]
+    const total = Number(info?.totalcost)
+    const balance = Number(info?.balancedue)
+    if (!info || !Number.isFinite(total) || !Number.isFinite(balance)) return {}
+    if (total > 0 && balance <= 0) return { payment_status: "paid", total_amount: total }
+    return {}
+  } catch (e) {
+    console.warn("Live payment check failed", e)
+    return {}
+  }
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders })
@@ -76,6 +108,7 @@ serve(async (req) => {
       fuel_out: asString(signatureData.fuel_out),
       fuel_in: asString(signatureData.fuel_in),
       vehicle_rego: asString(signatureData.vehicle_rego),
+      ...(await livePaymentFields(reservationRef)),
     }
 
     const serviceClient = createClient(supabaseUrl, serviceRoleKey, {
