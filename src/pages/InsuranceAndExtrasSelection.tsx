@@ -407,7 +407,7 @@ const InsuranceAndExtrasSelection = () => {
                 <h2 className="text-2xl font-bold">Insurance Options</h2>
                 <InsuranceOptions
                   insuranceOptions={insuranceOptions}
-                  selectedInsuranceId={selectedInsurance?.id || null}
+                  selectedInsuranceId={selectedInsurance?.id ?? null}
                   onSelectInsurance={handleInsuranceChange}
                   currencySymbol="$"
                   numberOfDays={calculateNumberOfDays()}
