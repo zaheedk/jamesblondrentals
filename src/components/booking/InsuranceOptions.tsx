@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { RCMInsuranceOption } from "@/lib/api/rcm-api-types";
-import { Check, X, ShieldCheck } from "lucide-react";
+import { Check, X, ShieldCheck, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface InsuranceOptionsProps {
@@ -21,7 +21,7 @@ const parseLines = (html: string): Line[] => {
     .replace(/<\s*(br|\/li|\/p|\/div)\s*\/?\s*>/gi, "\n")
     .replace(/<[^>]+>/g, "")
     .replace(/&nbsp;/gi, " ")
-    .replace(/&amp;/gi, "&");
+    .replace(/&/gi, "&");
 
   return normalised
     .split("\n")
@@ -38,8 +38,12 @@ const InsuranceOptions = ({
   insuranceOptions,
   selectedInsuranceId,
   onSelectInsurance,
+  currencySymbol,
   numberOfDays,
 }: InsuranceOptionsProps) => {
+  // Accordion state shared across all cards: only one option's details open at a time.
+  const [openId, setOpenId] = useState<string | null>(null);
+
   if (!insuranceOptions || insuranceOptions.length === 0) {
     return (
       <div className="space-y-4">
@@ -65,6 +69,7 @@ const InsuranceOptions = ({
         const title = (insurance.feedescription || insurance.name || "Insurance Option").trim();
         const lines = parseLines(insurance.feedescription1 || "");
         const isSelected = selectedInsuranceId?.toString() === insurance.id.toString();
+        const isOpen = openId === insurance.id.toString();
 
         const lowerTitle = title.toLowerCase();
         const isPeaceOfMind = lowerTitle.includes("peace of mind");
@@ -113,11 +118,29 @@ const InsuranceOptions = ({
             )}
 
             <div className={cn("flex-1 flex flex-col px-5 pb-5", badge ? "pt-3" : "pt-6")}>
-              <h3 className="text-base md:text-lg font-semibold text-foreground leading-snug">
-                {title}
-              </h3>
+              {/* Accordion trigger: the option name opens/closes the details */}
+              <button
+                type="button"
+                aria-expanded={isOpen}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setOpenId(isOpen ? null : insurance.id.toString());
+                }}
+                className="flex w-full items-center justify-between gap-3 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md"
+              >
+                <h3 className="text-base md:text-lg font-semibold text-foreground leading-snug">
+                  {title}
+                </h3>
+                <ChevronDown
+                  className={cn(
+                    "w-4 h-4 shrink-0 text-muted-foreground transition-transform duration-200",
+                    isOpen && "rotate-180"
+                  )}
+                  aria-hidden
+                />
+              </button>
 
-              {lines.length > 0 && (
+              {isOpen && lines.length > 0 && (
                 <ul className="mt-4 space-y-2.5">
                   {lines.map((line, i) => (
                     <li key={i} className="flex items-start gap-2.5 text-sm text-muted-foreground">
@@ -134,7 +157,7 @@ const InsuranceOptions = ({
                 </ul>
               )}
 
-              <div className="mt-6 pt-4 border-t border-border">
+              <div className="mt-auto pt-4 border-t border-border">
                 {dailyRate > 0 ? (
                   <div className="flex items-baseline gap-1.5">
                     <span className="text-2xl font-bold text-foreground tracking-tight">
@@ -148,9 +171,13 @@ const InsuranceOptions = ({
               </div>
             </div>
 
+            {/* Option button with tick mark */}
             <div
+              role="button"
+              tabIndex={0}
+              aria-pressed={isSelected}
               className={cn(
-                "w-full text-center py-3 text-sm font-semibold transition-colors",
+                "w-full flex items-center justify-center gap-2 py-3 text-sm font-semibold transition-colors cursor-pointer",
                 isSelected
                   ? "bg-primary text-primary-foreground"
                   : "bg-cta text-cta-foreground hover:bg-cta/90"
@@ -159,14 +186,24 @@ const InsuranceOptions = ({
                 e.stopPropagation();
                 onSelectInsurance(insurance.id);
               }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onSelectInsurance(insurance.id);
+                }
+              }}
             >
-              {isSelected ? (
-                <span className="inline-flex items-center justify-center gap-1.5">
-                  <Check className="w-4 h-4" /> Selected
-                </span>
-              ) : (
-                "Select"
-              )}
+              <span
+                className={cn(
+                  "w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-colors",
+                  isSelected ? "bg-background text-primary" : "border-2 border-current/60"
+                )}
+                aria-hidden
+              >
+                {isSelected && <Check className="w-3.5 h-3.5" strokeWidth={3} />}
+              </span>
+              {isSelected ? "Selected" : "Select"}
             </div>
           </Card>
         );
