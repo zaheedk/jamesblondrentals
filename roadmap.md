@@ -1,5 +1,10 @@
 # Roadmap
 
+## Checkout clarity
+- [ ] Replace competing payment tiles with a card/four-installments toggle and contextual amount choices
+- [ ] Clarify consent and separate the pickup bond from rental charges without changing payment processing
+- [ ] Verify card, deposit, Klarna and consent states on desktop and narrow screens
+
 ## Broker booking demo
 - [x] Build a shareable rehearsal flow and credential-protected live API test mode
 - [x] Add request/response inspection, lookup and cancellation, with explicit live-write confirmation
