@@ -1,8 +1,8 @@
 # Roadmap
 
 ## Activation email eligibility
-- [ ] Stop quote-only activation emails at all send paths and match activation status by email
-- [ ] Test booked/unactivated, quote-only, and already-activated cases; deploy and verify sender
+- [x] Stop quote-only activation emails at all send paths and match activation status by email
+- [x] Test booked/unactivated, quote-only, and already-activated cases; both senders deployed, live no-booking skip verified, four eligibility tests passed; no customer email sent during testing
 
 ## Checkout clarity
 - [x] Replace competing payment tiles with a card/four-installments toggle and contextual amount choices
