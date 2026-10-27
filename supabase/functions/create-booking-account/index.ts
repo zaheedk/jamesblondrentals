@@ -1,11 +1,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.50.0";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors';
+import { z } from 'npm:zod@3';
+import { ACTIVATION_BOOKING_STATUSES, normalizeAccountEmail, hasActualBooking, accountWasActivated, findAccountByEmail } from '../_shared/activation-eligibility.ts';
+import { pickupActivationUrl } from '../send-pickup-activation-reminders/account-link.ts';
 
 const SITE_URL = "https://www.jamesblond.co.nz";
 const LOGO_URL = "https://www.jamesblond.co.nz/lovable-uploads/900107e8-dbcb-44ce-96a9-0588959abf24.png";
@@ -70,21 +68,34 @@ serve(async (req) => {
   }
 
   try {
-    const { email, firstName, lastName } = await req.json();
-
-    if (!email) {
+    const parsed = z.object({ email: z.string().trim().email().max(254), firstName: z.string().max(100).optional(), lastName: z.string().max(100).optional() }).strict().safeParse(await req.json());
+    if (!parsed.success) {
       return new Response(
-        JSON.stringify({ error: "email is required" }),
+        JSON.stringify({ error: "Valid email and customer details are required" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const emailLower = email.toLowerCase();
-
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const { firstName, lastName } = parsed.data;
+    const email = normalizeAccountEmail(parsed.data.email);
+    const emailLower = email;
+    const emailPattern = email.replace(/[\\%_]/g, '\\$&');
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    if (!supabaseUrl || !serviceRoleKey) throw new Error('Account service not configured');
     const resendApiKey = Deno.env.get("RESEND_API_KEY");
     const supabase = createClient(supabaseUrl, serviceRoleKey);
+
+    // A quote reference or browser payment claim is not an actual booking.
+    // Check persisted booking status before creating accounts or sending emails.
+    const { data: bookings, error: bookingError } = await supabase.from('bookings')
+      .select('customer_email, booking_status').ilike('customer_email', emailPattern)
+      .in('booking_status', ACTIVATION_BOOKING_STATUSES).limit(1);
+    if (bookingError) throw new Error('Unable to verify booking eligibility');
+    if (!hasActualBooking(bookings ?? [], email)) {
+      return new Response(JSON.stringify({ skipped: true, message: 'No eligible booking' }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
 
     if (!resendApiKey) {
       console.error("RESEND_API_KEY not configured");
@@ -100,7 +111,7 @@ serve(async (req) => {
         .from("bookings")
         .update({ user_id: userId })
         .is("user_id", null)
-        .ilike("customer_email", emailLower);
+        .ilike("customer_email", emailPattern);
       if (linkError) {
         console.error("Error linking bookings:", linkError);
       } else if (count) {
@@ -109,21 +120,15 @@ serve(async (req) => {
     };
 
     // Check if user already exists
-    const { data: existingUsers } = await supabase.auth.admin.listUsers();
-    const userExists = existingUsers?.users?.some(
-      (u) => u.email?.toLowerCase() === emailLower
-    );
-
-    if (userExists) {
-      const existingUser = existingUsers?.users?.find(
-        (u) => u.email?.toLowerCase() === emailLower
-      );
-      console.log(`User ${email} already exists, userId: ${existingUser?.id}`);
-      if (existingUser?.id) {
-        await linkBookings(existingUser.id);
-      }
+    const existingUser = await findAccountByEmail(emailLower, async page => {
+      const { data, error } = await supabase.auth.admin.listUsers({ page, perPage: 1000 });
+      if (error) throw new Error('Unable to verify account activation');
+      return data.users;
+    });
+    if (existingUser) await linkBookings(existingUser.id);
+    if (existingUser && accountWasActivated(existingUser, emailLower)) {
       return new Response(
-        JSON.stringify({ skipped: true, message: "User already exists", userId: existingUser?.id }),
+        JSON.stringify({ skipped: true, message: "Account already activated" }),
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -132,7 +137,7 @@ serve(async (req) => {
     const tempPassword = crypto.randomUUID();
     const fullName = `${firstName || ""} ${lastName || ""}`.trim();
 
-    const { data, error } = await supabase.auth.admin.createUser({
+    const { data, error } = existingUser ? { data: { user: existingUser }, error: null } : await supabase.auth.admin.createUser({
       email,
       password: tempPassword,
       email_confirm: true,
@@ -174,7 +179,9 @@ serve(async (req) => {
     }
 
     // Build the activation URL from the generated link properties
-    const activateUrl = linkData?.properties?.action_link || `${SITE_URL}/reset-password`;
+    const tokenHash = linkData?.properties?.hashed_token;
+    if (!tokenHash) throw new Error('Unable to generate activation link');
+    const activateUrl = pickupActivationUrl(tokenHash);
     console.log(`Recovery link generated for ${email}`);
 
     // Send the invite email to every new customer
@@ -186,6 +193,7 @@ serve(async (req) => {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${resendApiKey}`,
+        'Idempotency-Key': `booking-activation/${data.user?.id}`,
       },
       body: JSON.stringify({
         from: "James Blond Rentals <info@jamesblond.co.nz>",
@@ -211,7 +219,7 @@ serve(async (req) => {
     // Note: Savo sync is now triggered only after successful payment (PaymentSuccess page)
 
     return new Response(
-      JSON.stringify({ success: true, userId: data.user?.id, emailId }),
+      JSON.stringify({ success: true, emailId }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {

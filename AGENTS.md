@@ -1,4 +1,5 @@
 # Project Architecture Rules
+- Account activation senders must verify a persisted actual booking and same-email auth activation server-side; quote collection never triggers invitations, and auth lookup is paginated because existing accounts can be beyond the first page.
 - PaymentOptions delegates presentation and consent to CheckoutChoices while retaining existing payment handlers; pickup bonds stay outside its rental fee list and unpaid checkout must never display a fabricated payment.
 - InsuranceOptions shows selection as a card tick rather than a separate button, keeps cover details in an accordion, and renders only tiers carrying a real name, cover text or price, because the booking API returns a blank placeholder row for vehicles with no cover tiers and an empty card reads as a missing option.
 - Phone quotes use the booking API's quote mode plus the existing branded checkout; durable request claims prevent duplicate write retries, and live booking/payment reads gate confirmation emails because caller claims and redirects are not proof of payment. Never automatically retry booking writes after ambiguous timeouts.
