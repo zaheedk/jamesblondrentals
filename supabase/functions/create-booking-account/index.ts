@@ -3,7 +3,6 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.50.0";
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors';
 import { z } from 'npm:zod@3';
 import { ACTIVATION_BOOKING_STATUSES, normalizeAccountEmail, hasActualBooking, accountWasActivated, findAccountByEmail } from '../_shared/activation-eligibility.ts';
-import { pickupActivationUrl } from '../send-pickup-activation-reminders/account-link.ts';
 
 const SITE_URL = "https://www.jamesblond.co.nz";
 const LOGO_URL = "https://www.jamesblond.co.nz/lovable-uploads/900107e8-dbcb-44ce-96a9-0588959abf24.png";
@@ -181,7 +180,7 @@ serve(async (req) => {
     // Build the activation URL from the generated link properties
     const tokenHash = linkData?.properties?.hashed_token;
     if (!tokenHash) throw new Error('Unable to generate activation link');
-    const activateUrl = pickupActivationUrl(tokenHash);
+    const activateUrl = `${SITE_URL}/reset-password?token_hash=${encodeURIComponent(tokenHash)}&type=recovery`;
     console.log(`Recovery link generated for ${email}`);
 
     // Send the invite email to every new customer
@@ -193,7 +192,6 @@ serve(async (req) => {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${resendApiKey}`,
-        'Idempotency-Key': `booking-activation/${data.user?.id}`,
       },
       body: JSON.stringify({
         from: "James Blond Rentals <info@jamesblond.co.nz>",
