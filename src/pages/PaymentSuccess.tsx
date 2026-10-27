@@ -359,6 +359,18 @@ const PaymentSuccess = () => {
 
       if (result) {
         console.log("Booking payment status updated successfully:", result);
+        // The sender independently checks the saved booking and same-email
+        // account activation; never invite customers at the quote/details step.
+        if (status === 'success' && bookingDetails.customerEmail) {
+          const { error } = await supabase.functions.invoke('create-booking-account', {
+            body: {
+              email: bookingDetails.customerEmail,
+              firstName: bookingDetails.customerFirstName,
+              lastName: bookingDetails.customerLastName,
+            },
+          });
+          if (error) console.error('Booking account invitation failed (non-fatal)', error);
+        }
       } else {
         console.log("Could not update booking - may not exist in database yet");
       }

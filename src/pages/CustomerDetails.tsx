@@ -453,50 +453,8 @@ const CustomerDetails = () => {
           await saveCustomerToWebsite(user.id, formData);
         }
 
-        // Auto-create user account for booking and sync to Savo
-        // These must be awaited so requests complete before page navigation
-        if (formData.email) {
-          const fullName = `${formData.firstName || ''} ${formData.lastName || ''}`.trim();
-          
-          // Create user account (Savo sync happens after payment on PaymentSuccess page)
-          const [accountRes] = await Promise.allSettled([
-            supabase.functions.invoke('create-booking-account', {
-              body: {
-                email: formData.email,
-                firstName: formData.firstName,
-                lastName: formData.lastName,
-              },
-            }),
-          ]);
+        // Account invitations are sent only after booking confirmation, never at quote collection.
 
-          // Link booking to created/existing user account
-          if (accountRes.status === 'fulfilled' && accountRes.value?.data) {
-            const returnedUserId = accountRes.value.data.userId;
-            const bookingRef = response.bookingReference || response.results?.bookingref;
-            const reservationRef = response.reservationRef || response.results?.reservationref;
-            if (returnedUserId && (bookingRef || reservationRef)) {
-              const filter = bookingRef
-                ? `booking_reference.eq.${bookingRef}`
-                : `reservation_reference.eq.${reservationRef}`;
-              const { error: updateError } = await supabase
-                .from('bookings')
-                .update({ user_id: returnedUserId })
-                .or(filter)
-                .is('user_id', null);
-              if (updateError) {
-                console.error('Error linking booking to user:', updateError);
-              } else {
-                console.log(`Booking linked to user ${returnedUserId}`);
-              }
-            }
-            console.log('Auto account creation result:', accountRes.value.data);
-          } else if (accountRes.status === 'rejected') {
-            console.error('Auto account creation error:', accountRes.reason);
-          }
-
-          // Savo sync now happens after payment on PaymentSuccess page
-        }
-        
         toast.success("Booking created successfully", {
           description: response.confirmationNumber 
             ? `Confirmation #: ${response.confirmationNumber}` 

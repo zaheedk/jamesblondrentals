@@ -7,6 +7,7 @@ import { toE164NZ } from './phone.ts'
 import { pickupSms, sendTnzSms, tnzSmsStatus } from './tnz.ts'
 import { pickupAccountLink, pickupActivationUrl } from './account-link.ts'
 import { z } from 'npm:zod@3'
+import { accountWasActivated, normalizeAccountEmail } from '../_shared/activation-eligibility.ts'
 
 const SITE_URL = 'https://www.jamesblond.co.nz'
 const FROM_EMAIL = 'James Blond Rentals <info@jamesblond.co.nz>'
@@ -129,7 +130,7 @@ Deno.serve(async (req) => {
   const seenEmails = new Set<string>()
 
   for (const b of rows ?? []) {
-    const email = String(b.customer_email).toLowerCase().trim()
+    const email = normalizeAccountEmail(String(b.customer_email))
     if (seenEmails.has(email)) continue
     seenEmails.add(email)
     let userId = b.user_id as string | null
@@ -139,8 +140,8 @@ Deno.serve(async (req) => {
     }
     if (!userId) { results.skippedNoAccount++; continue }
     const { data: u } = await admin.auth.admin.getUserById(userId)
-    if (!u?.user) { results.skippedNoAccount++; continue }
-    const activated = !!u.user.last_sign_in_at
+    if (!u?.user || normalizeAccountEmail(u.user.email ?? '') !== email) { results.skippedNoAccount++; continue }
+    const activated = accountWasActivated(u.user, email)
     // Only text customers who haven't added their licence/details yet
     const { data: docs } = await admin.from('customer_documents').select('id').eq('user_id', userId).limit(1)
     const { data: cust } = await admin.from('customers').select('license_number').eq('user_id', userId).limit(1).maybeSingle()
