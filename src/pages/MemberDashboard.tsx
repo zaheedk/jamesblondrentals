@@ -38,6 +38,7 @@ type SectionId = (typeof sections)[number]['id'];
 const staffLinks = [
   { to: '/admin/bookings', label: 'Booking Funnel', icon: TrendingUp },
   { to: '/admin/quote-reminders', label: 'Reminder Report & Funnel', icon: Bell },
+  { to: '/admin/voice-calls', label: 'Phone Assistant Calls', icon: Phone },
   { to: '/admin/blog', label: 'Blog Management', icon: BookOpen },
   { to: '/admin/vehicle-rates', label: 'Price Scraping', icon: TrendingUp },
   { to: '/admin/feedback', label: 'Customer Feedback', icon: MessageSquare },
