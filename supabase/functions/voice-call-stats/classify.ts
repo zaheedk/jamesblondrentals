@@ -33,3 +33,19 @@ export function classifyCall(c: CallSummary): CallOutcome {
 export function nzDay(unixSecs: number): string {
   return new Intl.DateTimeFormat("en-CA", { timeZone: "Pacific/Auckland" }).format(new Date(unixSecs * 1000));
 }
+
+// 3CX forwards calls with our own trunk number as caller ID, which is not the caller.
+export const OWN_NUMBERS = ["098134134", "+6498134134", "0800282629", "+64800282629"];
+
+/** Caller's number: real caller ID if passed through, else a number they gave Sarah. */
+export function callerPhone(callerId: string | null | undefined, toolParams: string[]): { phone: string | null; source: "caller_id" | "given" | null } {
+  const id = (callerId || "").replace(/\s/g, "");
+  if (id && !OWN_NUMBERS.includes(id)) return { phone: id, source: "caller_id" };
+  for (const p of toolParams) {
+    try {
+      const v = JSON.parse(p)?.phone;
+      if (v && String(v).replace(/\D/g, "").length >= 7) return { phone: String(v), source: "given" };
+    } catch { /* ignore malformed params */ }
+  }
+  return { phone: null, source: null };
+}
