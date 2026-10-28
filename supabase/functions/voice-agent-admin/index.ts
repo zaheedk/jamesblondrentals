@@ -26,9 +26,11 @@ WHO YOU ARE:
 
 LANGUAGE SWITCH — TOP PRIORITY, CHECK ON EVERY CALLER TURN:
 - Your current voice only speaks English. Other languages sound wrong until you switch voice with the language_detection tool.
-- If the caller speaks or writes Hindi (including Hinglish, Devanagari text, or words like "mujhe", "karna hai", "aap", "kya"), Chinese, Tamil, Korean or Filipino, OR asks for one of those languages or for a Hindi/Chinese speaker, your VERY FIRST action in that turn is to call language_detection — before you say anything else. Never reply in that language before calling it.
-- The language parameter is the code only: hi (Hindi), zh (Chinese), ta (Tamil), ko (Korean), fil (Filipino), en (English). Example: caller says "मुझे एक truck book करना है" → call language_detection with language "hi", then reply in Hindi.
-- Do NOT say a greeting, filler or "one moment" before language_detection — call it silently first, then greet in the new language. Your Hindi voice is a man: always "मैं कर सकता हूँ", never "सकती".
+- Watch for signs the caller may be more comfortable in another language: they speak or mix in Hindi (Hinglish, words like "mujhe", "karna hai", "aap", "kya", "haan", "accha"), Chinese (Mandarin words like "nǐ hǎo", "duōshǎo qián", "shì", "wèi"), Tamil, Korean or Filipino; you hear those languages spoken in the background; or their English is noticeably broken (missing words, wrong grammar, struggling to find words, repeatedly not understanding you).
+- When you notice these hints, ASK first in simple, slow English before switching, e.g. "Would you be more comfortable speaking in Hindi?" or "Would you like to continue in Chinese?" (pick the language you heard; if unsure, ask "Would another language be easier — Hindi or Chinese?"). Ask only once per call; if they say no or keep going in English, stay in English and speak simply and clearly. Never suggest it in a way that sounds like their English is bad.
+- If the caller says yes, OR they clearly ask for a language or a Hindi/Chinese speaker themselves, your VERY FIRST action in that turn is to call language_detection — before you say anything else. Never reply in that language before calling it.
+- The language parameter is the code only: hi (Hindi), zh (Chinese), ta (Tamil), ko (Korean), fil (Filipino), en (English). Example: caller agrees to Hindi → call language_detection with language "hi", then reply in Hindi.
+- Do NOT say a greeting, filler or "one moment" before language_detection — call it silently first, then greet in the new language. Your Hindi and Chinese voices are men: in Hindi always "मैं कर सकता हूँ", never "सकती".
 - Call it once per language change. If the caller switches back to English, call it with "en".
 
 Pace — keep the call flowing:
@@ -305,7 +307,7 @@ function agentConfig(toolIds: string[]) {
               // ElevenLabs only accepts language codes here; passing names
               // like "Hindi" returns "Invalid language" and stays in English.
               description:
-                "Call this as soon as the caller speaks, or asks for, a different supported language. The language parameter MUST be the exact language code, never the language name: en (English), hi (Hindi), zh (Chinese), ta (Tamil), ko (Korean), fil (Filipino). Example: Hindi -> \"hi\".",
+                "Call this only after the caller agrees to switch (or explicitly asks for) a different supported language. The language parameter MUST be the exact language code, never the language name: en (English), hi (Hindi), zh (Chinese), ta (Tamil), ko (Korean), fil (Filipino). Example: Hindi -> \"hi\".",
               response_timeout_secs: 20,
               // Speaking before the switch makes the English voice attempt
               // Hindi; switch silently first.
@@ -329,7 +331,7 @@ function agentConfig(toolIds: string[]) {
       conversation: { max_duration_seconds: 1800 },
       language_presets: {
         hi: multilingualPreset("hi", "1H72DEBQwEbyKT5J6Nul"), // Niraj - Hindi Customer Care
-        zh: multilingualPreset("zh", "AwQL7jPTLzD7hSLmirIM"), // BoHai - Mandarin Friendly
+        zh: multilingualPreset("zh", "DowyQ68vDpgFYdWVGjc3"), // Jason Chen - Mandarin
         ta: multilingualPreset("ta"),
         ko: multilingualPreset("ko"),
         fil: multilingualPreset("fil"),
