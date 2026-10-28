@@ -8,5 +8,5 @@ export const AGENT_DISPLAY_NAME = `${AGENT_NAME} — James Blond Rentals Phone A
 
 // The caller hears this first, so it must carry the name and the AI disclosure.
 export function openingMessage(name = AGENT_NAME) {
-  return `Kia ora, thanks for calling James Blond Rentals. This is ${name}, your AI assistant — how can I help you today?`;
+  return `Kia ora, thanks for calling James Blond Rentals. All our team members are busy right now, but I'm ${name}, your AI assistant, and I'm fully able to help with your enquiries, new bookings or changes to an existing booking. How can I help you today?`;
 }
