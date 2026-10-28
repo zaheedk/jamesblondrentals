@@ -307,7 +307,7 @@ function agentConfig(toolIds: string[]) {
               // ElevenLabs only accepts language codes here; passing names
               // like "Hindi" returns "Invalid language" and stays in English.
               description:
-                "Call this as soon as the caller speaks, or asks for, a different supported language. The language parameter MUST be the exact language code, never the language name: en (English), hi (Hindi), zh (Chinese), ta (Tamil), ko (Korean), fil (Filipino). Example: Hindi -> \"hi\".",
+                "Call this only after the caller agrees to switch (or explicitly asks for) a different supported language. The language parameter MUST be the exact language code, never the language name: en (English), hi (Hindi), zh (Chinese), ta (Tamil), ko (Korean), fil (Filipino). Example: Hindi -> \"hi\".",
               response_timeout_secs: 20,
               // Speaking before the switch makes the English voice attempt
               // Hindi; switch silently first.
@@ -331,7 +331,7 @@ function agentConfig(toolIds: string[]) {
       conversation: { max_duration_seconds: 1800 },
       language_presets: {
         hi: multilingualPreset("hi", "1H72DEBQwEbyKT5J6Nul"), // Niraj - Hindi Customer Care
-        zh: multilingualPreset("zh", "AwQL7jPTLzD7hSLmirIM"), // BoHai - Mandarin Friendly
+        zh: multilingualPreset("zh", "DowyQ68vDpgFYdWVGjc3"), // Jason Chen - Mandarin
         ta: multilingualPreset("ta"),
         ko: multilingualPreset("ko"),
         fil: multilingualPreset("fil"),
