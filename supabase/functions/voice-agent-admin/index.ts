@@ -399,7 +399,8 @@ Deno.serve(async (req) => {
         const res = await fetch(`${EL_API}/convai/agents/${existingId}`, {
           method: "PATCH",
           headers: elHeaders,
-          body: JSON.stringify({ conversation_config: config.conversation_config }),
+          // conversation_config alone leaves the dashboard display name stale.
+          body: JSON.stringify({ name: config.name, conversation_config: config.conversation_config }),
         });
         const text = await res.text();
         if (!res.ok) return json({ error: `ElevenLabs update failed [${res.status}]: ${text}` }, 502);
