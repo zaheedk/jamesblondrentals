@@ -13,6 +13,7 @@ import {
   Settings, BookOpen, TrendingUp, MessageSquare, Calendar, Users, Car,
   UserCircle, AlertTriangle, Camera, ImageIcon, Upload, ClipboardList,
   ClipboardCheck, IdCard, Bell, ChevronDown, HelpCircle, LogOut, CreditCard,
+  Phone,
 } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/integrations/supabase/client';
