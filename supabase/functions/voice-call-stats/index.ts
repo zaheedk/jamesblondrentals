@@ -1,7 +1,7 @@
 // Admin-only daily report of phone assistant calls, read live from ElevenLabs.
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
-import { classifyCall, nzDay } from "./classify.ts";
+import { callerPhone, classifyCall, nzDay } from "./classify.ts";
 
 const json = (d: unknown, status = 200) =>
   new Response(JSON.stringify(d), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
@@ -56,5 +56,21 @@ Deno.serve(async (req) => {
       title: c.call_summary_title || null, language: c.main_language, outcome, tools: c.tool_names || [],
     };
   });
+  // Caller numbers live in each call's detail; fetch for the 150 most recent calls.
+  const recent = list.slice(0, 150);
+  for (let i = 0; i < recent.length; i += 10) {
+    await Promise.all(recent.slice(i, i + 10).map(async (c: any) => {
+      try {
+        const r = await fetch(`https://api.elevenlabs.io/v1/convai/conversations/${c.id}`, { headers: { "xi-api-key": key } });
+        if (!r.ok) return;
+        const d = await r.json();
+        const params: string[] = [];
+        for (const m of d.transcript || []) for (const t of m.tool_calls || []) if (t.params_as_json) params.push(t.params_as_json);
+        const p = callerPhone(d.metadata?.phone_call?.external_number, params);
+        c.phone = p.phone; c.phone_source = p.source;
+        c.summary = d.analysis?.transcript_summary || null;
+      } catch { /* leave without phone */ }
+    }));
+  }
   return json({ days: Object.values(byDay).sort((a, b) => b.date.localeCompare(a.date)), calls: list });
 });

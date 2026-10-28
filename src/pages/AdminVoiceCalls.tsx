@@ -10,7 +10,7 @@ import { format } from "date-fns";
 
 type Outcome = "dropped" | "partial" | "completed";
 interface Day { date: string; answered: number; dropped: number; partial: number; completed: number }
-interface Call { id: string; start: number; duration: number; title: string | null; language: string; outcome: Outcome }
+interface Call { id: string; start: number; duration: number; title: string | null; language: string; outcome: Outcome; phone?: string | null; phone_source?: "caller_id" | "given" | null; summary?: string | null }
 
 const outcomeLabel: Record<Outcome, string> = { dropped: "Dropped", partial: "Partial", completed: "Completed" };
 const outcomeVariant: Record<Outcome, "destructive" | "secondary" | "default"> = { dropped: "destructive", partial: "secondary", completed: "default" };
@@ -105,17 +105,21 @@ export default function AdminVoiceCalls() {
       </Card>
 
       <Card>
-        <CardHeader><CardTitle>Recent calls</CardTitle></CardHeader>
+        <CardHeader><CardTitle>Calls &amp; callback list</CardTitle><p className="text-sm text-muted-foreground">Dropped and partial calls are the ones to call back.</p></CardHeader>
         <CardContent>
           <Table>
             <TableHeader><TableRow>
-              <TableHead>Time</TableHead><TableHead>Topic</TableHead><TableHead>Length</TableHead><TableHead>Language</TableHead><TableHead>Outcome</TableHead>
+              <TableHead>Time</TableHead><TableHead>Phone</TableHead><TableHead>Topic</TableHead><TableHead>Length</TableHead><TableHead>Language</TableHead><TableHead>Outcome</TableHead>
             </TableRow></TableHeader>
             <TableBody>
-              {calls.slice(0, 100).map((c) => (
+              {calls.slice(0, 150).map((c) => (
                 <TableRow key={c.id}>
                   <TableCell>{format(new Date(c.start * 1000), "d MMM, h:mma")}</TableCell>
-                  <TableCell>{c.title || "—"}</TableCell>
+                  <TableCell className="whitespace-nowrap">
+                    {c.phone ? <a className="font-medium text-primary underline" href={`tel:${c.phone}`}>{c.phone}</a> : <span className="text-muted-foreground">Not available</span>}
+                    {c.phone_source === "given" && <div className="text-xs text-muted-foreground">given during call</div>}
+                  </TableCell>
+                  <TableCell className="max-w-md"><div className="font-medium">{c.title || "—"}</div>{c.summary && <div className="text-xs text-muted-foreground">{c.summary}</div>}</TableCell>
                   <TableCell>{Math.floor(c.duration / 60)}m {c.duration % 60}s</TableCell>
                   <TableCell className="uppercase">{c.language}</TableCell>
                   <TableCell><Badge variant={outcomeVariant[c.outcome]}>{outcomeLabel[c.outcome]}</Badge></TableCell>
