@@ -8,6 +8,7 @@ import { Calendar, User, ArrowLeft, Clock } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import ReactMarkdown from 'react-markdown';
 import { isWellingtonVanArticle } from '@/seo/wellington';
+import { aucklandArticleHirePath, aucklandHirePaths } from '@/seo/auckland';
 
 const blogPosts = {
   'furniture-truck-vs-traditional-moving-van-detailed-comparison': {
@@ -1260,6 +1261,16 @@ const BlogPost = () => {
         </div>
 
         {/* Blog Post Content */}
+        {aucklandArticleHirePath(article.title, article.slug || slug) && (
+          <section className="mb-8 border-y border-border py-6">
+            <h2 className="text-2xl font-bold mb-3">Hire a vehicle in Auckland</h2>
+            <p className="text-muted-foreground mb-4">Compare vehicles and check availability for your dates. Cars and vans have Glen Eden, Auckland Airport and Mt Wellington collection options; moving trucks are collected from West Auckland.</p>
+            <div className="flex flex-wrap gap-4">
+              <Button asChild><Link to={aucklandArticleHirePath(article.title, article.slug || slug) ?? aucklandHirePaths.vans}>Auckland {aucklandArticleHirePath(article.title, article.slug || slug) === aucklandHirePaths.trucks ? 'truck' : aucklandArticleHirePath(article.title, article.slug || slug) === aucklandHirePaths.cars ? 'car' : 'van'} hire &amp; availability</Link></Button>
+              <Button asChild variant="outline"><Link to="/price-guide">Current hire rates</Link></Button>
+            </div>
+          </section>
+        )}
         {isWellingtonVanArticle(article.title, article.slug || slug) && (
           <section className="mb-8 border-y border-border py-6">
             <h2 className="text-2xl font-bold mb-3">Book van hire in Wellington</h2>

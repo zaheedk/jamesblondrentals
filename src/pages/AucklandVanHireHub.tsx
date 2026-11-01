@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import SearchForm from '@/components/home/SearchForm';
 import PageSEO from '@/components/PageSEO';
 import JsonLd from '@/components/JsonLd';
+import { aucklandVanSEO } from '@/seo/auckland';
 import vanHero from '@/assets/cargo-van-south-auckland-skyline.jpg';
 import vanInterior from '@/assets/cargo-van-interior-south-auckland.jpg';
 import vanFleet from '@/assets/south-auckland-cargo-van-fleet.jpg';
@@ -58,7 +59,8 @@ const relatedLinks = [
   { label: 'Van hire West Auckland', to: '/west-auckland-van-hire' },
   { label: 'Cargo van hire Auckland Airport', to: '/auckland-airport-cargo-van-rentals-hire' },
   { label: '12-seater van hire Auckland', to: '/12-seater-van-hire-auckland' },
-  { label: 'Auckland Airport minibus rentals', to: '/auckland-airport-minibus-rentals' },
+  { label: 'Auckland Airport minibus rentals', to: '/auckland-airport-minibus-rentals-hire' },
+  { label: 'Car & van hire Mt Wellington', to: '/car-van-hire-east-auckland' },
   { label: 'Truck hire Auckland', to: '/auckland-truck-rentals-hire' },
   { label: 'Truck hire West Auckland', to: '/west-auckland-truck-rentals-hire' },
   { label: 'Car hire Auckland', to: '/car-hire-auckland' },
@@ -94,7 +96,7 @@ const AucklandVanHireHub = () => {
         name: 'Where do I pick up my Auckland van?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Vans can be picked up from our Central Auckland, South Auckland, West Auckland and Auckland Airport branches — pick the closest at booking.',
+          text: 'Explore van collection at 4004 Great North Road, Glen Eden; 203 Kirkbride Road, Māngere near Auckland Airport; or 6C McLennan Road, Mt Wellington. Choose a branch and your dates to check availability. Central Auckland and North Shore customers collect from an available James Blond branch rather than a CBD or North Shore depot.',
         },
       },
       {
@@ -122,7 +124,7 @@ const AucklandVanHireHub = () => {
     name: 'James Blond Rentals — Auckland Van Hire',
     image: `${SITE_URL}/lovable-uploads/6213906e-4949-494b-b006-8d6e516cdd9a.png`,
     url: PAGE_URL,
-    telephone: '+64-9-3661-122',
+    telephone: '+64800525663',
     priceRange: '$$',
     address: {
       '@type': 'PostalAddress',
@@ -130,20 +132,15 @@ const AucklandVanHireHub = () => {
       addressRegion: 'Auckland',
       addressCountry: 'NZ',
     },
-    areaServed: ['Auckland', 'Central Auckland', 'South Auckland', 'West Auckland', 'North Shore', 'Auckland Airport'],
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: '4.8',
-      reviewCount: '1247',
-    },
+    areaServed: ['Auckland', 'Central Auckland', 'South Auckland', 'West Auckland', 'East Auckland', 'North Shore', 'Auckland Airport'],
   };
 
   return (
     <div className="bg-background text-foreground">
       <PageSEO
-        title="Cheap Van Hire Auckland — Prices From $95/Day, No Hidden Fees"
-        description="Compare cheap van hire prices in Auckland from $95/day — cargo, jumbo and 12-seat vans. No hidden fees, same-day pickup at Penrose, Airport, South & West Auckland. See rates and book online."
-        canonical="/van-hire-auckland"
+        title={aucklandVanSEO.title}
+        description={aucklandVanSEO.description}
+        canonical={aucklandVanSEO.path}
       />
       <JsonLd data={faqJsonLd} />
       <JsonLd data={localBusinessLd} />
@@ -169,7 +166,7 @@ const AucklandVanHireHub = () => {
                 <a href="#booking" className="inline-flex items-center gap-2">Check availability <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" /></a>
               </Button>
               <a
-                href="tel:+6493661122"
+                href="tel:0800525663"
                 className="inline-flex items-center gap-2 text-sm font-semibold hover:text-primary"
               >
                 <Phone className="h-4 w-4" /> Call our Auckland branch
@@ -198,7 +195,7 @@ const AucklandVanHireHub = () => {
         <div className="container mx-auto px-6 py-12 grid md:grid-cols-3">
           {[
             { n: '01', t: 'Car-licence friendly', d: 'Every van is automatic — no special licence needed.' },
-            { n: '02', t: 'Four Auckland pickup points', d: 'Central, South, West and Airport — collect from the closest.' },
+            { n: '02', t: 'Auckland collection options', d: 'Glen Eden, Airport and Mt Wellington — search your preferred branch.' },
             { n: '03', t: 'Daily or weekly hire', d: 'A van for the morning, the weekend or the whole month.' },
           ].map((row, i) => (
             <div
@@ -475,6 +472,11 @@ const AucklandVanHireHub = () => {
               lines: ['203 Kirkbride Road', 'Māngere', 'Auckland 2022'],
               to: '/contact/auckland-airport',
             },
+            {
+              name: 'East Auckland — Mt Wellington',
+              lines: ['6C McLennan Road', 'Mt Wellington', 'Auckland'],
+              to: '/contact/mt-wellington',
+            },
           ].map((b) => (
             <div key={b.name} className="border border-border rounded-2xl p-6 space-y-3">
               <h3 className="text-xl font-semibold">{b.name}</h3>
@@ -508,8 +510,8 @@ const AucklandVanHireHub = () => {
           <p className="text-muted-foreground max-w-3xl mb-6">
             Arriving from Australia, the UK or further afield? A full overseas licence in English
             is accepted in New Zealand for up to 12 months, so no International Driving Permit is
-            needed to drive one of our Auckland vans. Every van is automatic, drives on a standard
-            car licence, and includes unlimited kilometres — useful whether you are moving into a
+            needed to drive one of our Auckland vans. Vans drive on a standard
+            car licence; transmission and kilometre charges depend on the vehicle — useful whether you are moving into a
             new flat, shifting gear for a working holiday, or carrying a group and their luggage
             from Auckland Airport.
           </p>

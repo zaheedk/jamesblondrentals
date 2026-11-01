@@ -9,6 +9,7 @@ import PageSEO from '@/components/PageSEO';
 import JsonLd from '@/components/JsonLd';
 import BreadcrumbsJsonLd from '@/components/BreadcrumbsJsonLd';
 import RelatedLocations from '@/components/RelatedLocations';
+import { aucklandCarSEO } from '@/seo/auckland';
 
 const SITE_URL = 'https://www.jamesblond.co.nz';
 const PAGE_URL = `${SITE_URL}/car-hire-auckland`;
@@ -80,7 +81,7 @@ const faqs = [
   {
     question: 'Where are your Auckland car rental branches?',
     answer:
-      'We have two Auckland branches: 4004 Great North Road, Glen Eden, Auckland 0602 (West Auckland) and 203 Kirkbride Road, Māngere, Auckland 2022 (minutes from Auckland Airport). Both are open 8am–5pm daily and can be reached on 0800 525 663.',
+      'Explore collection at 4004 Great North Road, Glen Eden (West Auckland), 203 Kirkbride Road, Māngere (near Auckland Airport), and 6C McLennan Road, Mt Wellington (East Auckland). Choose your branch and dates to check live availability. Call 0800 525 663 for collection details.',
   },
   {
     question: 'Do you hire cars at Auckland Airport?',
@@ -116,6 +117,12 @@ const branches = [
     address: ['203 Kirkbride Road', 'Māngere', 'Auckland 2022'],
     email: 'aucklandairport@jamesblond.co.nz',
     contact: '/contact/auckland-airport',
+  },
+  {
+    name: 'East Auckland — Mt Wellington',
+    address: ['6C McLennan Road', 'Mt Wellington', 'Auckland'],
+    email: 'info@jamesblond.co.nz',
+    contact: '/contact/mt-wellington',
   },
 ];
 
@@ -172,9 +179,9 @@ const AucklandCarHire = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <PageSEO
-        title="Car Hire Auckland from $49/Day — Car Rental, No Hidden Fees"
-        description="Car hire in Auckland from $49/day. Economy cars, SUVs, 7-seaters and minibuses from our Glen Eden and Auckland Airport branches. No hidden fees — book online or call 0800 525 663."
-        canonical="/car-hire-auckland"
+        title={aucklandCarSEO.title}
+        description={aucklandCarSEO.description}
+        canonical={aucklandCarSEO.path}
       />
       <BreadcrumbsJsonLd />
       <JsonLd data={faqLd} />
@@ -183,9 +190,9 @@ const AucklandCarHire = () => {
       {/* Hero */}
       <section className="bg-primary/5 rounded-lg p-6 md:p-10 mb-12">
         <div className="max-w-3xl mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">Car Hire Auckland — Car Rental from $49 a Day</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">{aucklandCarSEO.heading}</h1>
           <p className="text-lg text-muted-foreground mb-6">
-            Local Auckland car rental from our Glen Eden and Auckland Airport branches. Economy cars, midsize
+            Local Auckland car rental from our Glen Eden, Auckland Airport and Mt Wellington branches. Economy cars, midsize
             sedans, SUVs, 7-seat people movers and 12-seat minibuses — for customers across the CBD, West
             Auckland, South Auckland, the North Shore and Auckland Airport.
           </p>
@@ -312,7 +319,7 @@ const AucklandCarHire = () => {
       <section className="mb-12">
         <h2 className="text-2xl font-bold mb-2">Car rental across Auckland</h2>
         <p className="text-muted-foreground mb-6 max-w-3xl">
-          Two branches, the whole region. Here is how customers across Auckland usually use us.
+          Choose Glen Eden, Auckland Airport or Mt Wellington for collection. We serve the wider region without claiming a depot in every suburb.
         </p>
         <div className="grid md:grid-cols-2 gap-6">
           {areas.map((a) => (
