@@ -55,6 +55,9 @@
 - [x] Verify the page and Hamilton search flow
 
 ## Wellington search improvements
+- [x] Strengthen Wellington car/van search metadata and local collection copy without changing rates or booking handlers
+- [x] Add clean car-hire aliases and consolidate Wellington navigation/blog links on existing canonical pages
+- [x] Verify Wellington links, aliases, metadata and booking entry points — eight tests passed; browser checked canonical redirects, contact/menu links and van booking anchor with no runtime errors; production 301 rollout and ranking effects not yet verified
 - [x] Prioritise available vans for Wellington van-page searches without hiding other categories
 - [x] Hide unavailable vehicle prices and discount badges; use the 0800 contact number
 - [x] Verify ordering and the booking selection flow

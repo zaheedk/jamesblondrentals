@@ -1,7 +1,7 @@
 # Project Architecture Rules
 - Account activation senders must verify a persisted actual booking and same-email auth activation server-side; quote collection never triggers invitations, and auth lookup is paginated because existing accounts can be beyond the first page.
 - PaymentOptions delegates presentation and consent to CheckoutChoices while retaining existing payment handlers; pickup bonds stay outside its rental fee list and unpaid checkout must never display a fabricated payment.
-- InsuranceOptions shows selection as a card tick rather than a separate button, keeps cover details in an accordion, and renders only tiers carrying a real name, cover text or price, because the booking API returns a blank placeholder row for vehicles with no cover tiers and an empty card reads as a missing option.
+- InsuranceOptions uses card ticks and an accordion; hide tiers without a name, cover text or price because RCM returns blank placeholders.
 - Phone quotes use the booking API's quote mode plus the existing branded checkout; durable request claims prevent duplicate write retries, and live booking/payment reads gate confirmation emails because caller claims and redirects are not proof of payment. Never automatically retry booking writes after ambiguous timeouts.
 - Confirmed email-only corrections reuse the saved phone quote request and identical other details, with recipient-scoped send idempotency; customer records in RCM are not edited by this resend path, preventing duplicate quotes and false record-update claims.
 
@@ -16,7 +16,8 @@
 
 - Truck-hire hubs and city pages reuse TruckHireLocations for collection addresses and city links; this keeps nearby-search content consistent without changing live RCM search or inventing additional branches.
 
-- The Hamilton vehicle-hire hub reuses SearchForm with explicit branch defaults via the shared search-location-default helper and links to existing category pages; this keeps its search local without changing other forms' saved-location behaviour or live RCM quoting.
+- Hamilton's hub reuses SearchForm and search-location-default for local branch defaults without changing other forms' saved locations or live quoting.
+- Wellington car/van heads and static SEO share metadata; aliases use query-preserving preview redirects and Vercel 301s to existing canonicals, retaining search equity without duplicate pages.
 
 - Vehicle search display uses shared availability and ordering helpers; the originating search page travels in the URL so Wellington van intent survives navigation without changing RCM pricing or availability.
 

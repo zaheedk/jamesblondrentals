@@ -123,6 +123,12 @@ const AirportWellington = () => (
           <p className="text-gray-600 mb-4">
             Landing with a big load? See our <Link to="/truck-hire-wellington" className="text-primary hover:underline font-medium">truck hire Wellington</Link> range — 2-tonne and 3-tonne moving trucks with tail lifts, ready to collect from our Te Aro branch.
           </p>
+          <p className="text-muted-foreground mb-4">
+            Prefer city collection? Compare{' '}
+            <Link to="/car-rental-wellington-new-zealand" className="text-primary hover:underline font-medium">Wellington CBD car rental</Link>{' '}
+            or <Link to="/van-hire-wellington" className="text-primary hover:underline font-medium">Wellington cargo van hire</Link>{' '}
+            at our Te Aro branch. Select the pickup location that suits your trip when searching.
+          </p>
           <div className="mt-6">
             <h3 className="text-xl font-semibold mb-2">Contact Information</h3>
             <p className="text-gray-600">Address:</p>

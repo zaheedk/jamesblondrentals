@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Calendar, User, ArrowLeft, Clock } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import ReactMarkdown from 'react-markdown';
+import { isWellingtonVanArticle } from '@/seo/wellington';
 
 const blogPosts = {
   'furniture-truck-vs-traditional-moving-van-detailed-comparison': {
@@ -1259,6 +1260,19 @@ const BlogPost = () => {
         </div>
 
         {/* Blog Post Content */}
+        {isWellingtonVanArticle(article.title, article.slug || slug) && (
+          <section className="mb-8 border-y border-border py-6">
+            <h2 className="text-2xl font-bold mb-3">Book van hire in Wellington</h2>
+            <p className="text-muted-foreground mb-4">
+              Compare cargo and moving vans from our Te Aro branch at 24 Abel Smith Street.
+              Check the current price guide for rental rates and kilometre charges, then search your dates for availability.
+            </p>
+            <div className="flex flex-wrap gap-4">
+              <Button asChild><Link to="/van-hire-wellington">Wellington van hire &amp; availability</Link></Button>
+              <Button asChild variant="outline"><Link to="/price-guide">Current van hire rates</Link></Button>
+            </div>
+          </section>
+        )}
         <Card>
           <CardContent className="p-8">
             {article.content.includes('<') ? (

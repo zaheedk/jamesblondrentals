@@ -197,6 +197,8 @@ const Navbar = () => {
                       >
                         Wellington
                       </Link>
+                      <Link to="/car-rental-wellington-new-zealand" className="block px-4 py-2 text-sm text-muted-foreground hover:text-primary rounded-md">Car hire Wellington</Link>
+                      <Link to="/van-hire-wellington" className="block px-4 py-2 text-sm text-muted-foreground hover:text-primary rounded-md">Van hire Wellington</Link>
                       <Link 
                         to="/contact/christchurch" 
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
@@ -357,6 +359,8 @@ const Navbar = () => {
                     <Link to="/contact/wellington" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
                       Wellington
                     </Link>
+                    <Link to="/car-rental-wellington-new-zealand" className="block text-muted-foreground hover:text-primary py-1" onClick={() => setIsMobileMenuOpen(false)}>Car hire Wellington</Link>
+                    <Link to="/van-hire-wellington" className="block text-muted-foreground hover:text-primary py-1" onClick={() => setIsMobileMenuOpen(false)}>Van hire Wellington</Link>
                     <Link to="/contact/christchurch" className="block text-gray-600 hover:text-primary transition-colors py-1" onClick={() => setIsMobileMenuOpen(false)}>
                       Christchurch Airport
                     </Link>

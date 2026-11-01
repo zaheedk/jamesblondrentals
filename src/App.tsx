@@ -4,6 +4,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Suspense } from "react";
+import WellingtonAliasRedirect from "./components/WellingtonAliasRedirect";
+import { wellingtonAliases } from "./seo/wellington";
 import { lazyWithRetry } from "@/lib/lazy-with-retry";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
@@ -414,6 +416,9 @@ const App = () => {
                 <Route path="/hot-deals/courier-operator-deals" element={<CourierOperatorDeals />} />
                 <Route path="/hot-deals" element={<HotDeals />} />
                 <Route path="/car-rental-wellington-new-zealand" element={<CarRentalWellington />} />
+                {Object.entries(wellingtonAliases).map(([path, to]) => (
+                  <Route key={path} path={path} element={<WellingtonAliasRedirect to={to} />} />
+                ))}
                 <Route path="/car-rental-auckland-airport-new-zealand" element={<CarRentalAucklandAirport />} />
                 <Route path="/auckland-airport-minibus-rentals-hire" element={<AucklandAirportMinibusRentals />} />
                 <Route path="/auckland-airport-car-rentals" element={<AucklandAirportCarRentals />} />

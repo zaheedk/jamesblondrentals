@@ -9,6 +9,7 @@ import { Separator } from '@/components/ui/separator';
 import SearchForm from '@/components/home/SearchForm';
 import PageSEO from '@/components/PageSEO';
 import JsonLd from '@/components/JsonLd';
+import { wellingtonCarSEO } from '@/seo/wellington';
 
 const SITE_URL = 'https://www.jamesblond.co.nz';
 
@@ -141,9 +142,9 @@ const CarRentalWellington = () => {
       <div className="container mx-auto px-4 py-8">
         <WellingtonBreadcrumb currentLabel="Wellington" isHub={true} />
         <PageSEO
-          title="Car Hire Wellington from $45/Day — Car Rental, No Hidden Fees"
-          description="Car hire in Wellington from $45/day. Economy cars, SUVs, 7-seaters and people movers from our Te Aro branch, serving Lower Hutt, Petone, Porirua and Kāpiti. No hidden fees — book online or call 0800 525 663."
-          canonical="/car-rental-wellington-new-zealand"
+          title={wellingtonCarSEO.title}
+          description={wellingtonCarSEO.description}
+          canonical={wellingtonCarSEO.path}
         />
         <JsonLd data={faqLd} />
         <JsonLd data={businessLd} />
@@ -152,13 +153,12 @@ const CarRentalWellington = () => {
         <section className="bg-primary/5 rounded-lg p-6 md:p-10 mb-12">
           <div className="max-w-3xl mb-8">
             <h1 className="text-3xl md:text-4xl font-bold mb-4">
-              Car Hire Wellington — Car Rental from $45 a Day
+              {wellingtonCarSEO.heading}
             </h1>
             <p className="text-lg text-muted-foreground mb-6">
-              Local car rental from our Te Aro branch, five minutes from the Wellington CBD and ten from Wellington
-              Airport. Economy cars, family cars, SUVs, 7-seat people movers and 12-seat minibuses — with pickup for
-              customers across Wellington city, Lower Hutt, Petone, Upper Hutt, Porirua, Tawa, Johnsonville and the
-              Kāpiti Coast.
+              Collect your rental car at 24 Abel Smith Street, Te Aro, in Wellington CBD. Compare economy cars,
+              family cars and SUVs for city visits, business travel and trips to the Hutt Valley, Porirua or the
+              Kāpiti Coast. Search your dates for availability and the current rental price.
             </p>
             <ul className="grid sm:grid-cols-2 gap-2 text-sm">
               {[

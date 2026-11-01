@@ -1,4 +1,5 @@
 import { sitemapRoutes, type SitemapRoute } from '../sitemap-routes';
+import { wellingtonCarSEO, wellingtonVanSEO } from './wellington';
 
 export interface StaticPageMetadata {
   path: string;
@@ -138,12 +139,10 @@ const overrides: Record<string, Partial<Omit<StaticPageMetadata, 'path'>>> = {
     body: 'Truck hire Christchurch with collection at 515 Moorhouse Avenue, Waltham, or 25 Logistics Drive, Harewood. Moving trucks and tail lifts for Christchurch house moves and Canterbury deliveries. Compare 2-tonne and 3-tonne vehicles and check availability for your dates. Confirm the specific vehicle’s licence requirement before booking.',
   },
   '/van-hire-wellington': {
-    title: 'Van Hire Wellington from $95/Day | Van Rental Wellington',
-    description: 'Van hire in Wellington from $95/day — cargo vans, jumbo vans and moving vans on a car licence. Serving Lower Hutt, Petone, Porirua and Kāpiti from our Te Aro branch.',
+    ...wellingtonVanSEO,
   },
   '/car-rental-wellington-new-zealand': {
-    title: 'Car Hire Wellington from $45/Day | Car Rental Wellington',
-    description: 'Car hire in Wellington from $45/day — economy cars, SUVs, 7-seaters and people movers from our Te Aro branch. No hidden fees, one-way hire available.',
+    ...wellingtonCarSEO,
   },
 
   '/auckland-airport-cargo-van-rentals-hire': {

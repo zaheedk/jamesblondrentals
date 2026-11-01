@@ -34,10 +34,10 @@ const MATRIX: Record<CityKey, Partial<Record<VehicleType, { to: string; label?: 
     trailers: { to: "/trailer-hire-auckland" },
   },
   wellington: {
-    vans: { to: "/wellington-cargo-van-rentals", label: "Van Hire" },
-    trucks: { to: "/wellington-truck-rentals" },
+    vans: { to: "/van-hire-wellington", label: "Van Hire" },
+    trucks: { to: "/truck-hire-wellington" },
     minibuses: { to: "/wellington-minibus-hire" },
-    cars: { to: "/wellington-car-rental" },
+    cars: { to: "/car-rental-wellington-new-zealand" },
     trailers: { to: "/trailer-hire-wellington" },
   },
   christchurch: {
@@ -116,21 +116,27 @@ const RelatedLocations = ({
 }: RelatedLocationsProps) => {
   const cityLinks = vehicleType
     ? (Object.keys(MATRIX) as CityKey[])
-        .filter((c) => c !== currentCity && MATRIX[c][vehicleType])
-        .map((c) => ({
-          to: MATRIX[c][vehicleType]!.to,
+        .flatMap((c) => {
+          const entry = MATRIX[c][vehicleType];
+          if (c === currentCity || !entry) return [];
+          return [{
+          to: entry.to,
           label: `${VEHICLE_LABEL[vehicleType]} ${CITY_LABEL[c]}`,
           city: CITY_LABEL[c],
-        }))
+        }];
+        })
     : [];
 
   const vehicleLinks = currentCity
     ? (Object.keys(VEHICLE_LABEL) as VehicleType[])
-        .filter((v) => v !== vehicleType && MATRIX[currentCity][v])
-        .map((v) => ({
-          to: MATRIX[currentCity][v]!.to,
+        .flatMap((v) => {
+          const entry = MATRIX[currentCity][v];
+          if (v === vehicleType || !entry) return [];
+          return [{
+          to: entry.to,
           label: `${VEHICLE_LABEL[v]} ${CITY_LABEL[currentCity]}`,
-        }))
+        }];
+        })
     : [];
 
   const extras = vehicleType ? EXTRA_LINKS[vehicleType] ?? [] : [];

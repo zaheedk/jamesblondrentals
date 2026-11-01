@@ -9,7 +9,6 @@ const WELLINGTON_LINKS = [
   { to: "/wellington-10-12-seat-van-minibus-rental", label: "10 & 12 Seat Van Rental — Wellington" },
   { to: "/wellington-minibus-hire-cbd", label: "Wellington CBD Minibus Hire" },
   // Van satellites
-  { to: "/cargo-van-hire-wellington", label: "Cargo Van Hire Wellington" },
   { to: "/moving-van-hire-wellington", label: "Moving Van Hire Wellington" },
   { to: "/van-hire-wellington-airport", label: "Van Hire Wellington Airport" },
   { to: "/van-hire-lower-hutt", label: "Van Hire Lower Hutt" },
@@ -37,7 +36,7 @@ export default function WellingtonInternalLinks({ currentPath, heading = "Other 
       <div className="container mx-auto container-padding max-w-5xl">
         <h2 className="text-balance mb-2">{heading}</h2>
         <p className="text-muted-foreground mb-6">
-          Browse our full Wellington fleet — covering CBD, Lower Hutt, Upper Hutt, Petone, Porirua, Tawa, Johnsonville, and Kapiti Coast.
+          Collect at our Te Aro branch for trips and moves around Wellington CBD, Lower Hutt, Upper Hutt, Petone, Porirua and the Kāpiti Coast.
         </p>
         <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {links.map((l) => (
