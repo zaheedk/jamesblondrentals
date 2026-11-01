@@ -1,6 +1,31 @@
 {
   "redirects": [
     {
+      "source": "/car-hire-wellington",
+      "destination": "/car-rental-wellington-new-zealand",
+      "statusCode": 301
+    },
+    {
+      "source": "/car-rental-wellington",
+      "destination": "/car-rental-wellington-new-zealand",
+      "statusCode": 301
+    },
+    {
+      "source": "/wellington-car-rental",
+      "destination": "/car-rental-wellington-new-zealand",
+      "statusCode": 301
+    },
+    {
+      "source": "/wellington-cargo-van-rentals",
+      "destination": "/van-hire-wellington",
+      "statusCode": 301
+    },
+    {
+      "source": "/wellington-truck-rentals",
+      "destination": "/truck-hire-wellington",
+      "statusCode": 301
+    },
+    {
       "source": "/:path*",
       "has": [
         {
