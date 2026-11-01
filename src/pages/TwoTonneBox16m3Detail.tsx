@@ -152,13 +152,13 @@ const TwoTonneBox16m3Detail = () => {
             <div>
               <h3 className="font-bold text-lg">Where can I hire a 2-tonne box truck in New Zealand?</h3>
               <p className="text-lg text-gray-700">
-                James Blond Rentals offers 2-tonne box trucks across multiple locations including <Link to="/auckland-truck-rentals" className="text-primary hover:underline">Auckland</Link>, <Link to="/west-auckland-truck-rentals" className="text-primary hover:underline">West Auckland</Link>, <Link to="/wellington-truck-rentals" className="text-primary hover:underline">Wellington</Link>, <Link to="/christchurch-truck-rentals" className="text-primary hover:underline">Christchurch</Link>, <Link to="/central-christchurch-truck-hire" className="text-primary hover:underline">Central Christchurch</Link>, and <Link to="/hamilton-truck-rentals" className="text-primary hover:underline">Hamilton</Link>. Book online or call your nearest branch.
+                James Blond Rentals offers 2-tonne box trucks across multiple locations including <Link to="/auckland-truck-rentals-hire" className="text-primary hover:underline">Auckland</Link>, <Link to="/west-auckland-truck-rentals-hire" className="text-primary hover:underline">West Auckland</Link>, <Link to="/wellington-truck-rentals" className="text-primary hover:underline">Wellington</Link>, <Link to="/christchurch-truck-rentals" className="text-primary hover:underline">Christchurch</Link>, <Link to="/central-christchurch-truck-hire" className="text-primary hover:underline">Central Christchurch</Link>, and <Link to="/hamilton-truck-rentals" className="text-primary hover:underline">Hamilton</Link>. Book online or call your nearest branch.
               </p>
             </div>
             <div>
               <h3 className="font-bold text-lg">How much does it cost to hire a truck in Auckland?</h3>
               <p className="text-lg text-gray-700">
-                2-tonne truck hire rates in Auckland depend on rental duration and mileage. Daily rates are competitive with a per-km charge (47c/km for this model). Visit our <Link to="/auckland-truck-rentals" className="text-primary hover:underline">Auckland truck hire page</Link> for current pricing or request a quote.
+                2-tonne truck hire rates in Auckland depend on rental duration and mileage. Daily rates are competitive with a per-km charge (47c/km for this model). Visit our <Link to="/auckland-truck-rentals-hire" className="text-primary hover:underline">Auckland truck hire page</Link> for current pricing or request a quote.
               </p>
             </div>
           </div>
@@ -185,8 +185,8 @@ const TwoTonneBox16m3Detail = () => {
           The 2 Tonne Box Truck (16m³) offers maximum cargo space on a car licence, making it a top choice for large house moves. Find local availability in these popular locations.
         </p>
         <div className="flex flex-wrap gap-x-4 gap-y-2">
-          <Link to="/auckland-truck-rentals" className="text-primary hover:underline">Auckland Truck Hire</Link>
-          <Link to="/west-auckland-truck-rentals" className="text-primary hover:underline">West Auckland</Link>
+          <Link to="/auckland-truck-rentals-hire" className="text-primary hover:underline">Auckland Truck Hire</Link>
+          <Link to="/west-auckland-truck-rentals-hire" className="text-primary hover:underline">West Auckland</Link>
           <Link to="/wellington-truck-rentals" className="text-primary hover:underline">Wellington Truck Hire</Link>
           <Link to="/christchurch-truck-rentals" className="text-primary hover:underline">Christchurch Truck Hire</Link>
           <Link to="/central-christchurch-truck-hire" className="text-primary hover:underline">Central Christchurch</Link>
@@ -201,8 +201,8 @@ const TwoTonneBox16m3Detail = () => {
         </p>
         <div className="flex flex-wrap gap-x-4 gap-y-2">
           <Link to="/truck-hire" className="text-primary hover:underline">Truck Hire NZ</Link>
-          <Link to="/auckland-truck-rentals" className="text-primary hover:underline">Auckland Truck Hire</Link>
-          <Link to="/west-auckland-truck-rentals" className="text-primary hover:underline">West Auckland</Link>
+          <Link to="/auckland-truck-rentals-hire" className="text-primary hover:underline">Auckland Truck Hire</Link>
+          <Link to="/west-auckland-truck-rentals-hire" className="text-primary hover:underline">West Auckland</Link>
           <Link to="/wellington-truck-rentals" className="text-primary hover:underline">Wellington Truck Hire</Link>
           <Link to="/christchurch-truck-rentals" className="text-primary hover:underline">Christchurch Truck Hire</Link>
           <Link to="/central-christchurch-truck-hire" className="text-primary hover:underline">Central Christchurch</Link>
@@ -217,10 +217,10 @@ const TwoTonneBox16m3Detail = () => {
         </p>
         <div className="flex flex-wrap justify-center gap-3 mb-6">
           <Button asChild className="bg-white text-primary hover:bg-white/90 font-semibold">
-            <Link to="/auckland-truck-rentals?truck=2-tonne-box-16m3#booking">Auckland Truck Hire</Link>
+            <Link to="/auckland-truck-rentals-hire?truck=2-tonne-box-16m3#booking">Auckland Truck Hire</Link>
           </Button>
           <Button asChild className="bg-white text-primary hover:bg-white/90 font-semibold">
-            <Link to="/west-auckland-truck-rentals?truck=2-tonne-box-16m3#booking">West Auckland</Link>
+            <Link to="/west-auckland-truck-rentals-hire?truck=2-tonne-box-16m3#booking">West Auckland</Link>
           </Button>
           <Button asChild className="bg-white text-primary hover:bg-white/90 font-semibold">
             <Link to="/wellington-truck-rentals?truck=2-tonne-box-16m3#booking">Wellington Truck Hire</Link>

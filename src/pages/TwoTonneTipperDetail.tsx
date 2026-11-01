@@ -158,8 +158,8 @@ const TwoTonneTipperDetail = () => {
         </p>
         <div className="flex flex-wrap gap-x-4 gap-y-2">
           <Link to="/truck-hire" className="text-primary hover:underline">Truck Hire NZ</Link>
-          <Link to="/auckland-truck-rentals" className="text-primary hover:underline">Auckland Truck Hire</Link>
-          <Link to="/west-auckland-truck-rentals" className="text-primary hover:underline">West Auckland</Link>
+          <Link to="/auckland-truck-rentals-hire" className="text-primary hover:underline">Auckland Truck Hire</Link>
+          <Link to="/west-auckland-truck-rentals-hire" className="text-primary hover:underline">West Auckland</Link>
           <Link to="/wellington-truck-rentals" className="text-primary hover:underline">Wellington Truck Hire</Link>
           <Link to="/christchurch-truck-rentals" className="text-primary hover:underline">Christchurch Truck Hire</Link>
           <Link to="/central-christchurch-truck-hire" className="text-primary hover:underline">Central Christchurch</Link>
@@ -173,7 +173,7 @@ const TwoTonneTipperDetail = () => {
           The 2 Tonne Tipper Truck is especially popular for construction and landscaping projects. Find local availability in these key locations.
         </p>
         <div className="flex flex-wrap gap-x-4 gap-y-2">
-          <Link to="/auckland-truck-rentals" className="text-primary hover:underline">Auckland Truck Hire</Link>
+          <Link to="/auckland-truck-rentals-hire" className="text-primary hover:underline">Auckland Truck Hire</Link>
           <Link to="/christchurch-truck-rentals" className="text-primary hover:underline">Christchurch Truck Hire</Link>
           <Link to="/hamilton-truck-rentals" className="text-primary hover:underline">Hamilton Truck Hire</Link>
         </div>
@@ -186,13 +186,13 @@ const TwoTonneTipperDetail = () => {
             <div>
               <h3 className="font-bold text-lg">Where can I hire a tipper truck in New Zealand?</h3>
               <p className="text-gray-700">
-                James Blond Rentals offers 2-tonne tipper trucks for construction and landscaping in <Link to="/auckland-truck-rentals" className="text-primary hover:underline">Auckland</Link>, <Link to="/christchurch-truck-rentals" className="text-primary hover:underline">Christchurch</Link>, and <Link to="/hamilton-truck-rentals" className="text-primary hover:underline">Hamilton</Link>. Book online or call your nearest branch.
+                James Blond Rentals offers 2-tonne tipper trucks for construction and landscaping in <Link to="/auckland-truck-rentals-hire" className="text-primary hover:underline">Auckland</Link>, <Link to="/christchurch-truck-rentals" className="text-primary hover:underline">Christchurch</Link>, and <Link to="/hamilton-truck-rentals" className="text-primary hover:underline">Hamilton</Link>. Book online or call your nearest branch.
               </p>
             </div>
             <div>
               <h3 className="font-bold text-lg">Is a tipper truck good for landscaping projects in Auckland?</h3>
               <p className="text-gray-700">
-                Yes, our 2-tonne tipper truck is ideal for landscaping in Auckland. The hydraulic tipping mechanism makes unloading soil, mulch, and gravel effortless. Visit our <Link to="/auckland-truck-rentals" className="text-primary hover:underline">Auckland truck hire page</Link> to check availability and rates.
+                Yes, our 2-tonne tipper truck is ideal for landscaping in Auckland. The hydraulic tipping mechanism makes unloading soil, mulch, and gravel effortless. Visit our <Link to="/auckland-truck-rentals-hire" className="text-primary hover:underline">Auckland truck hire page</Link> to check availability and rates.
               </p>
             </div>
           </div>
@@ -233,7 +233,7 @@ const TwoTonneTipperDetail = () => {
         </p>
         <div className="flex flex-wrap justify-center gap-3 mb-6">
           <Button asChild className="bg-white text-primary hover:bg-white/90 font-semibold">
-            <Link to="/auckland-truck-rentals?truck=2-tonne-tipper#booking">Auckland Truck Hire</Link>
+            <Link to="/auckland-truck-rentals-hire?truck=2-tonne-tipper#booking">Auckland Truck Hire</Link>
           </Button>
           <Button asChild className="bg-white text-primary hover:bg-white/90 font-semibold">
             <Link to="/christchurch-truck-rentals?truck=2-tonne-tipper#booking">Christchurch Truck Hire</Link>
