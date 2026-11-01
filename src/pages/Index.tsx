@@ -266,6 +266,7 @@ const Index = () => {
                   { label: 'Truck hire Auckland', to: '/auckland-truck-rentals-hire' },
                   { label: 'Van hire Auckland', to: '/van-hire-auckland' },
                   { label: 'Car hire Auckland', to: '/car-hire-auckland' },
+                  { label: 'Mt Wellington car & van hire', to: '/car-van-hire-east-auckland' },
                   { label: '12-seater minibus Auckland', to: '/12-seater-van-hire-auckland' },
                 ],
               },

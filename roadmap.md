@@ -62,6 +62,10 @@
 - [x] Hide unavailable vehicle prices and discount badges; use the 0800 contact number
 - [x] Verify ordering and the booking selection flow
 
+## Auckland search improvements
+- [x] Strengthen Auckland van, car and truck hire pages and relevant internal links, preserving local branch pages
+- [x] Verify Auckland booking entry points, page metadata and Mt Wellington cars/vans-only guidance — nine SEO tests passed; browser checked fleet-to-van, car-to-Mt Wellington and selected-truck booking links; build OK. No booking write or payment made; ranking changes remain unverified.
+
 ## In progress
 - Customer portal additional drivers
   - [x] Move driver management from the profile navigation into individual bookings

@@ -136,7 +136,7 @@ const AucklandMinibusHire = () => {
                 <Link to="/van-hire-auckland" className="underline hover:text-primary">van hire</Link>,{' '}
                 <Link to="/12-seater-van-hire-auckland" className="underline hover:text-primary">12-seater van hire</Link>{' '}
                 and{' '}
-                <Link to="/auckland-truck-rentals" className="underline hover:text-primary">truck hire</Link>.
+                <Link to="/auckland-truck-rentals-hire" className="underline hover:text-primary">truck hire</Link>.
               </p>
               <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
                 <Button asChild variant="cta" size="lg">

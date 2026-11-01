@@ -188,6 +188,7 @@ const FleetTrucks = () => {
         ))}
       </div>
 
+      <p className="my-8 text-center text-muted-foreground">Planning an Auckland move? Compare <Link to="/auckland-truck-rentals-hire" className="text-primary underline">Auckland truck hire</Link> or view our <Link to="/west-auckland-truck-rentals-hire" className="text-primary underline">West Auckland collection branch</Link>.</p>
       <RelatedLocations vehicleType="trucks" title="Truck hire by city" />
     </div>
   );

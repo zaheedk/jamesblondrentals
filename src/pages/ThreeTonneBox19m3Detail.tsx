@@ -162,7 +162,7 @@ const ThreeTonneBox19m3Detail = () => {
           The 3 Tonne Box Truck (19m³) is our largest capacity truck, popular for major commercial relocations and logistics. Find local availability in these key locations.
         </p>
         <div className="flex flex-wrap gap-x-4 gap-y-2">
-          <Link to="/auckland-truck-rentals" className="text-primary hover:underline">Auckland Truck Hire</Link>
+          <Link to="/auckland-truck-rentals-hire" className="text-primary hover:underline">Auckland Truck Hire</Link>
           <Link to="/wellington-truck-rentals" className="text-primary hover:underline">Wellington Truck Hire</Link>
           <Link to="/christchurch-truck-rentals" className="text-primary hover:underline">Christchurch Truck Hire</Link>
           <Link to="/hamilton-truck-rentals" className="text-primary hover:underline">Hamilton Truck Hire</Link>
@@ -176,13 +176,13 @@ const ThreeTonneBox19m3Detail = () => {
             <div>
               <h3 className="font-bold text-lg">Where can I hire a 3-tonne truck with tail lift in New Zealand?</h3>
               <p className="text-gray-700">
-                James Blond Rentals offers 3-tonne box trucks with tail lifts in major centres including <Link to="/auckland-truck-rentals" className="text-primary hover:underline">Auckland</Link>, <Link to="/wellington-truck-rentals" className="text-primary hover:underline">Wellington</Link>, <Link to="/christchurch-truck-rentals" className="text-primary hover:underline">Christchurch</Link>, and <Link to="/hamilton-truck-rentals" className="text-primary hover:underline">Hamilton</Link>. Book online or call your nearest branch.
+                James Blond Rentals offers 3-tonne box trucks with tail lifts in major centres including <Link to="/auckland-truck-rentals-hire" className="text-primary hover:underline">Auckland</Link>, <Link to="/wellington-truck-rentals" className="text-primary hover:underline">Wellington</Link>, <Link to="/christchurch-truck-rentals" className="text-primary hover:underline">Christchurch</Link>, and <Link to="/hamilton-truck-rentals" className="text-primary hover:underline">Hamilton</Link>. Book online or call your nearest branch.
               </p>
             </div>
             <div>
               <h3 className="font-bold text-lg">Do I need a Class-2 licence to hire a 3-tonne truck in Auckland?</h3>
               <p className="text-gray-700">
-                This 19m³ 3-tonne truck requires a Class 2 (HT) licence. All our other trucks up to 18m³ can be driven on a standard Class 1 car licence. Visit our <Link to="/auckland-truck-rentals" className="text-primary hover:underline">Auckland truck hire page</Link> for details.
+                This 19m³ 3-tonne truck requires a Class 2 (HT) licence. All our other trucks up to 18m³ can be driven on a standard Class 1 car licence. Visit our <Link to="/auckland-truck-rentals-hire" className="text-primary hover:underline">Auckland truck hire page</Link> for details.
               </p>
             </div>
           </div>
@@ -210,8 +210,8 @@ const ThreeTonneBox19m3Detail = () => {
         </p>
         <div className="flex flex-wrap gap-x-4 gap-y-2">
           <Link to="/truck-hire" className="text-primary hover:underline">Truck Hire NZ</Link>
-          <Link to="/auckland-truck-rentals" className="text-primary hover:underline">Auckland Truck Hire</Link>
-          <Link to="/west-auckland-truck-rentals" className="text-primary hover:underline">West Auckland</Link>
+          <Link to="/auckland-truck-rentals-hire" className="text-primary hover:underline">Auckland Truck Hire</Link>
+          <Link to="/west-auckland-truck-rentals-hire" className="text-primary hover:underline">West Auckland</Link>
           <Link to="/wellington-truck-rentals" className="text-primary hover:underline">Wellington Truck Hire</Link>
           <Link to="/christchurch-truck-rentals" className="text-primary hover:underline">Christchurch Truck Hire</Link>
           <Link to="/central-christchurch-truck-hire" className="text-primary hover:underline">Central Christchurch</Link>
@@ -239,7 +239,7 @@ const ThreeTonneBox19m3Detail = () => {
         </p>
         <div className="flex flex-wrap justify-center gap-3 mb-6">
           <Button asChild className="bg-white text-primary hover:bg-white/90 font-semibold">
-            <Link to="/auckland-truck-rentals?truck=3-tonne-box-19m3#booking">Auckland Truck Hire</Link>
+            <Link to="/auckland-truck-rentals-hire?truck=3-tonne-box-19m3#booking">Auckland Truck Hire</Link>
           </Button>
           <Button asChild className="bg-white text-primary hover:bg-white/90 font-semibold">
             <Link to="/wellington-truck-rentals?truck=3-tonne-box-19m3#booking">Wellington Truck Hire</Link>

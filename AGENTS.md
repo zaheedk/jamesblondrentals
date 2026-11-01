@@ -17,7 +17,8 @@
 - Truck-hire hubs and city pages reuse TruckHireLocations for collection addresses and city links; this keeps nearby-search content consistent without changing live RCM search or inventing additional branches.
 
 - Hamilton's hub reuses SearchForm and search-location-default for local branch defaults without changing other forms' saved locations or live quoting.
-- Wellington car/van heads and static SEO share metadata; aliases use query-preserving preview redirects and Vercel 301s to existing canonicals, retaining search equity without duplicate pages.
+- Wellington aliases preserve queries and use Vercel 301s to existing canonicals, avoiding duplicate pages.
+- Auckland and Wellington car/van heads share static SEO metadata; fleet/article links target existing city hubs without changing booking logic.
 
 - Vehicle search display uses shared availability and ordering helpers; the originating search page travels in the URL so Wellington van intent survives navigation without changing RCM pricing or availability.
 

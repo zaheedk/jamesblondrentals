@@ -251,6 +251,7 @@ const FleetCars = () => {
         </CollapsibleContent>
       </Collapsible>
     </section>
+    <p className="my-8 text-center text-muted-foreground">See <Link to="/car-hire-auckland" className="text-primary underline">Auckland car hire</Link> for local collection options and live prices.</p>
     <RelatedLocations vehicleType="cars" title="Car hire by city" />
   </div>
   );

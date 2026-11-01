@@ -91,7 +91,7 @@ const ContactMtWellington = () => {
       <h1 className="text-4xl font-bold mb-8 text-center">Mt Wellington Branch</h1>
       <p className="text-center mb-8 -mt-4"><Link className="text-primary underline" to="/car-van-hire-east-auckland">Car &amp; van hire East Auckland — check prices and availability</Link></p>
       <p className="text-center text-gray-600 mb-8 max-w-2xl mx-auto">
-        Our newest Auckland branch, serving Mt Wellington, Sylvia Park, Penrose and Ellerslie with cars, vans and trucks.
+        Our East Auckland branch serves Mt Wellington, Sylvia Park, Penrose and Ellerslie with cars and vans. For trucks, collect from our <Link to="/west-auckland-truck-rentals-hire" className="text-primary underline">West Auckland branch in Glen Eden</Link>.
       </p>
 
       <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-12">
