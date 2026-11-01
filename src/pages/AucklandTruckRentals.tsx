@@ -52,9 +52,10 @@ const AucklandTruckRentals = () => {
         <div className="grid md:grid-cols-2 gap-6 items-center">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold mb-4">Truck Hire Auckland — Moving Truck Rental Near You</h1>
-            <p className="text-lg text-gray-700 mb-6">
-              Same-day truck rental and moving truck hire across Auckland — CBD, Penrose, Auckland Airport, North Shore, South Auckland and West Auckland. 2-tonne and 3-tonne trucks from $35/hr. Our 2-tonne trucks can be driven on a car licence. All our trucks up to 18m³ — including the 16m³ and 18m³ 3-tonne models — can be driven on a standard Class 1 car licence. Only the 19–20m³ truck requires a Class 2 licence.
+            <p className="text-lg text-muted-foreground mb-6">
+              Moving truck hire for customers across Auckland — collect from 4004 Great North Road, Glen Eden in West Auckland. Compare 2-tonne and 3-tonne trucks for furniture pickups, house moves and deliveries; same-day hire is subject to availability. All trucks up to 18m³ — including the 16m³ and 18m³ 3-tonne models — drive on a Class 1 car licence. Only the 19–20m³ truck requires Class 2.
             </p>
+            <p className="text-sm text-muted-foreground mb-6">See <Link to="/west-auckland-truck-rentals-hire" className="text-primary underline">West Auckland truck hire</Link> for Glen Eden collection details. Mt Wellington offers <Link to="/car-van-hire-east-auckland" className="text-primary underline">cars and vans only</Link>.</p>
             <div className="flex items-center gap-2">
               <Button asChild variant="cta" size="lg">
                 <a href="#booking" className="inline-flex items-center gap-2">Book Now <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" /></a>
@@ -527,50 +528,6 @@ const AucklandTruckRentals = () => {
               </Link>
             </CardContent>
           </Card>
-        </div>
-      </section>
-
-      {/* Branch NAP */}
-      <section className="mb-12">
-        <h2 className="text-2xl font-bold mb-6">Where to pick up your Auckland truck</h2>
-        <div className="grid md:grid-cols-2 gap-6">
-          {[
-            {
-              name: 'Auckland — Glen Eden (West Auckland)',
-              lines: ['4004 Great North Road', 'Glen Eden', 'Auckland 0602'],
-              to: '/contact/auckland',
-            },
-            {
-              name: 'Auckland Airport — Māngere',
-              lines: ['203 Kirkbride Road', 'Māngere', 'Auckland 2022'],
-              to: '/contact/auckland-airport',
-            },
-          ].map((b) => (
-            <Card key={b.name}>
-              <CardContent className="pt-6 space-y-4">
-                <h3 className="text-xl font-semibold">{b.name}</h3>
-                <div className="flex items-start gap-3">
-                  <MapPin className="w-5 h-5 mt-1 text-primary" />
-                  <div>
-                    {b.lines.map((l) => (
-                      <p key={l}>{l}</p>
-                    ))}
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Phone className="w-5 h-5 text-primary" />
-                  <a href="tel:0800525663" className="hover:text-primary">0800 525 663</a>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Clock className="w-5 h-5 mt-1 text-primary" />
-                  <p>Open 7 days, 8:00am – 5:00pm</p>
-                </div>
-                <Button variant="outline" asChild>
-                  <Link to={b.to}>Branch details &amp; directions</Link>
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
         </div>
       </section>
 
