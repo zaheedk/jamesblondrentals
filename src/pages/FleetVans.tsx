@@ -86,7 +86,8 @@ const FleetVans = () => {
           From Standard vans to high roof jumbo vans, we have the perfect van for your needs. Some vans have 2 sliding doors to make the job easy.
         </p>
       </div>
-      
+      <p className="mb-8 text-center text-muted-foreground">Hiring locally? Compare <Link to="/van-hire-auckland" className="text-primary underline">Auckland van hire</Link> and collection options in Glen Eden, Auckland Airport and Mt Wellington.</p>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {vans.map((van) => (
           <Card key={van.id} className="flex flex-col h-full">

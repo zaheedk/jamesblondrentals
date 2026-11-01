@@ -1,5 +1,6 @@
 import { sitemapRoutes, type SitemapRoute } from '../sitemap-routes';
 import { wellingtonCarSEO, wellingtonVanSEO } from './wellington';
+import { aucklandCarSEO, aucklandVanSEO } from './auckland';
 
 export interface StaticPageMetadata {
   path: string;
@@ -48,6 +49,8 @@ const makeDefaultMetadata = (path: string): StaticPageMetadata => {
 };
 
 const overrides: Record<string, Partial<Omit<StaticPageMetadata, 'path'>>> = {
+  '/van-hire-auckland': { ...aucklandVanSEO },
+  '/car-hire-auckland': { ...aucklandCarSEO },
   '/car-van-hire-east-auckland': {
     title: 'Car & Van Hire East Auckland – Mt Wellington | James Blond Rentals',
     description: 'Car hire and van hire in East Auckland from our Mt Wellington branch. Handy for Panmure, Ellerslie, Howick and Botany. Live prices and availability online.',
@@ -120,7 +123,7 @@ const overrides: Record<string, Partial<Omit<StaticPageMetadata, 'path'>>> = {
     title: 'Truck Hire Auckland | Moving Truck Rental Near You | James Blond',
     description: 'Truck hire in Auckland for moving house, furniture and deliveries. Compare 12m³ to 19m³ trucks, tail lifts and local collection options. Check live availability.',
     heading: 'Truck Hire Auckland — Moving Truck Rental Near You',
-    body: 'Truck hire Auckland for house moves and deliveries. West Auckland collection is at 4004 Great North Road, Glen Eden, serving Henderson, New Lynn and nearby suburbs. Compare 2-tonne and 3-tonne moving trucks, tail lifts, rates and live availability. Contact the branch about other Auckland collection options and confirm the allocated vehicle’s licence requirement.',
+    body: 'Truck hire Auckland for house moves and deliveries. West Auckland collection is at 4004 Great North Road, Glen Eden, serving customers across Auckland. Compare 2-tonne and 3-tonne moving trucks, tail lifts, rates and live availability. All trucks up to 18m³ drive on a Class 1 car licence; only the 19–20m³ truck requires Class 2. Mt Wellington offers cars and vans only; collect moving trucks from West Auckland.',
   },
   '/west-auckland-truck-rentals-hire': {
     title: 'Truck Hire Auckland West — Moving Trucks from $125/day | James Blond',

@@ -40,7 +40,7 @@ export default function TruckHireLocations({ city }: { city?: string }) {
         <Link className="text-primary underline" to="/price-guide">Truck hire price guide</Link>
         <Link className="text-primary underline" to="/moving-cost-calculator">Moving size &amp; cost calculator</Link>
       </nav>
-      {!city && <p className="mt-6 text-sm text-muted-foreground">For collection at <Link className="text-primary underline" to="/contact/mt-wellington">Mt Wellington</Link> or <Link className="text-primary underline" to="/contact/new-plymouth">New Plymouth</Link>, contact the branch to confirm truck options for your dates.</p>}
+      {!city && <p className="mt-6 text-sm text-muted-foreground"><Link className="text-primary underline" to="/car-van-hire-east-auckland">Mt Wellington</Link> offers cars and vans only; for Auckland truck hire, collect from <Link className="text-primary underline" to="/west-auckland-truck-rentals-hire">West Auckland</Link>. For New Plymouth collection options, <Link className="text-primary underline" to="/contact/new-plymouth">contact the branch</Link>.</p>}
     </section>
   );
 }

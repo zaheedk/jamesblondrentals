@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { MapPin, Truck } from "lucide-react";
+import { aucklandHirePaths } from '@/seo/auckland';
 
 // Matrix of city -> vehicle type -> URL. Only include routes that actually exist.
 // Used to auto-generate cross-links between fleet hubs and city pages so
@@ -27,10 +28,10 @@ const VEHICLE_LABEL: Record<VehicleType, string> = {
 // City x vehicle type routing table. Keep in sync with App.tsx routes.
 const MATRIX: Record<CityKey, Partial<Record<VehicleType, { to: string; label?: string }>>> = {
   auckland: {
-    vans: { to: "/auckland-van-hire" },
-    trucks: { to: "/auckland-truck-rentals" },
+    vans: { to: aucklandHirePaths.vans },
+    trucks: { to: aucklandHirePaths.trucks },
     minibuses: { to: "/auckland-minibus-hire" },
-    cars: { to: "/auckland-car-hire" },
+    cars: { to: aucklandHirePaths.cars },
     trailers: { to: "/trailer-hire-auckland" },
   },
   wellington: {
@@ -60,7 +61,7 @@ const MATRIX: Record<CityKey, Partial<Record<VehicleType, { to: string; label?: 
 // pages surface intent-specific URLs to crawlers.
 const EXTRA_LINKS: Partial<Record<VehicleType, { to: string; label: string }[]>> = {
   vans: [
-    { to: "/auckland-van-hire-hub", label: "Auckland Van Hire Hub" },
+    { to: aucklandHirePaths.east, label: "Mt Wellington Car & Van Hire" },
     { to: "/cargo-van-hire", label: "Cargo Van Hire NZ" },
     { to: "/cargo-van-hire-auckland", label: "Cargo Van Hire Auckland" },
     { to: "/12-seater-van-hire-auckland", label: "12-Seater Van Hire Auckland" },
@@ -73,7 +74,7 @@ const EXTRA_LINKS: Partial<Record<VehicleType, { to: string; label: string }[]>>
     { to: "/furniture-truck-hire-auckland", label: "Furniture Truck Hire Auckland" },
     { to: "/moving-truck-hire-hamilton", label: "Moving Truck Hire Hamilton" },
     { to: "/furniture-truck-hire-hamilton", label: "Furniture Truck Hire Hamilton" },
-    { to: "/west-auckland-truck-rentals", label: "West Auckland Truck Rentals" },
+    { to: aucklandHirePaths.westTrucks, label: "West Auckland Truck Rentals" },
   ],
   minibuses: [
     { to: "/12-seater-van-hire-auckland", label: "12-Seater Van Auckland" },
@@ -85,7 +86,7 @@ const EXTRA_LINKS: Partial<Record<VehicleType, { to: string; label: string }[]>>
     { to: "/car-hire-christchurch-airport-from-australia", label: "Christchurch Airport (from Australia)" },
     { to: "/car-hire-christchurch-from-uk", label: "Christchurch Car Hire (from the UK)" },
     { to: "/car-hire-new-zealand-from-uk", label: "NZ Car Hire (from the UK)" },
-    { to: "/car-rental-auckland-airport", label: "Auckland Airport Car Rental" },
+    { to: "/car-rental-auckland-airport-new-zealand", label: "Auckland Airport Car Rental" },
   ],
   trailers: [],
   utes: [
