@@ -29,3 +29,26 @@ describe("Wellington vehicle search display", () => {
     expect([true, 1, 2, false, 0, 3].map(available => isVehicleAvailable({ available }))).toEqual([true, true, true, false, false, false]);
   });
 });
+
+describe("truck gearbox letters on vehicle cards", () => {
+  const card = (category: string) => ({
+    type: category,
+    make: category.split(" ")[0] || "",
+    model: category.split(" ").slice(1).join(" ") || "",
+  });
+
+  test("truck categories show automatic or manual", () => {
+    expect(vehicleCardTransmissionLabel(card("2 Ton Box (16m³-18m³)"))).toBe("A/M");
+    expect(vehicleCardTransmissionLabel(card("2 Ton Tipper"))).toBe("A/M");
+    expect(vehicleCardTransmissionLabel(card("3 Tonne Box 19m³ + Tail Lift"))).toBe("A/M");
+    expect(isTruckCategoryVehicle(card("2 Ton Box (9m³)"))).toBe(true);
+  });
+
+  test("cars, vans and minibuses keep the single automatic letter", () => {
+    expect(vehicleCardTransmissionLabel(card("Suzuki Swift"))).toBe("A");
+    expect(vehicleCardTransmissionLabel(card("Standard Hybrid"))).toBe("A");
+    expect(vehicleCardTransmissionLabel(card("High Roof Van"))).toBe("A");
+    expect(vehicleCardTransmissionLabel(card("Jumbo Van (12m³)"))).toBe("A");
+    expect(vehicleCardTransmissionLabel(card("12 Seat Minibus"))).toBe("A");
+  });
+});
