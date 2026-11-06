@@ -4,6 +4,32 @@ export function isVehicleAvailable(vehicle: Pick<Vehicle, "available">): boolean
   return vehicle.available === true || vehicle.available === 1 || vehicle.available === 2;
 }
 
+/**
+ * Truck categories in the booking system group several units, and those units
+ * are not all the same gearbox — e.g. the 2 tonne range includes manual tippers
+ * and 16m³ boxes alongside automatic boxes. So a truck result is shown as
+ * "A/M" (gearbox can be automatic or manual) rather than a single letter.
+ */
+const NON_TRUCK_WORDS = /\b(van|ute|minibus|bus|trailer|car transporter)\b/;
+const TRUCK_SIGNALS = /\btruck\b|tipper|tautliner|\d+\s*ton(?:ne)?\b|m³|m3\b|cbm|cubic/;
+
+export function isTruckCategoryVehicle(
+  vehicle: Pick<Vehicle, "type" | "make" | "model">
+): boolean {
+  const haystack =
+    `${vehicle.type || ""} ${vehicle.make || ""} ${vehicle.model || ""}`.toLowerCase();
+  if (!haystack.trim()) return false;
+  if (NON_TRUCK_WORDS.test(haystack)) return false;
+  return TRUCK_SIGNALS.test(haystack);
+}
+
+/** Gearbox letters shown on a vehicle card: "A/M" for trucks, "A" otherwise. */
+export function vehicleCardTransmissionLabel(
+  vehicle: Pick<Vehicle, "type" | "make" | "model">
+): "A/M" | "A" {
+  return isTruckCategoryVehicle(vehicle) ? "A/M" : "A";
+}
+
 export function orderVehicleSearchResults(
   vehicles: Vehicle[],
   wellington: boolean,
