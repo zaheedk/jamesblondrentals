@@ -1,5 +1,10 @@
 import { describe, expect, test } from "bun:test";
-import { isVehicleAvailable, orderVehicleSearchResults } from "../src/lib/vehicle-search-display";
+import {
+  isVehicleAvailable,
+  orderVehicleSearchResults,
+  isTruckCategoryVehicle,
+  vehicleCardTransmissionLabel,
+} from "../src/lib/vehicle-search-display";
 import type { Vehicle } from "../src/lib/types";
 
 const vehicle = (id: number, available: boolean | number, category: number): Vehicle => ({

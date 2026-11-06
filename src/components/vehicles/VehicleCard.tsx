@@ -100,6 +100,7 @@ const VehicleCard = ({
   });
   
   const isAvailable = isVehicleAvailable(vehicle);
+  const transmissionLabel = vehicleCardTransmissionLabel(vehicle);
 
   const getNumberOfHours = () => {
     if (!vehicle.numberofhours) return null;
@@ -202,13 +203,20 @@ const VehicleCard = ({
                 <Luggage className="w-4 h-4" />
                 <span>2</span>
               </div>
-              <div className="flex items-center gap-1">
+              <div
+                className="flex items-center gap-1"
+                title={
+                  transmissionLabel === "A/M"
+                    ? "Gearbox can be automatic (A) or manual (M)"
+                    : "Automatic transmission"
+                }
+              >
                 <img 
                   src="/lovable-uploads/0fd94953-7416-45c5-aede-329013f1b4f7.png" 
-                  alt="Automatic transmission icon" 
+                  alt={transmissionLabel === "A/M" ? "Automatic or manual transmission icon" : "Automatic transmission icon"} 
                   className="w-4 h-4 brightness-0"
                 />
-                <span>A</span>
+                <span>{transmissionLabel}</span>
               </div>
             </div>
             
