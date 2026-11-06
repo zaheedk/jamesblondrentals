@@ -7,7 +7,7 @@ import BookingForm from "./BookingForm";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Users, Luggage, Gauge, Info, Cog, AlertTriangle } from "lucide-react";
 import { isMidweekEligibleVehicle, datesQualifyForMidweek } from "@/lib/midweek-discount";
-import { isVehicleAvailable } from "@/lib/vehicle-search-display";
+import { isVehicleAvailable, vehicleCardTransmissionLabel } from "@/lib/vehicle-search-display";
 
 interface VehicleCardProps {
   vehicle: Vehicle;
