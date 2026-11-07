@@ -11,6 +11,7 @@ const corsHeaders = {
 
 const EL_API = "https://api.elevenlabs.io/v1";
 import { AGENT_NAME, AGENT_DISPLAY_NAME, openingMessage } from "./identity.ts";
+import { RETURN_POLICY_PROMPT } from "../voice-agent-tools/return-policy.ts";
 
 function json(data: unknown, status = 200) {
   return new Response(JSON.stringify(data), {
@@ -68,6 +69,7 @@ What you can do:
 7. Suppliers, service providers and staff: briefly ask who is calling, their organisation, the reason for the call and the person or branch they want. Recognise repair/parts/inspection, fleet collection, accounts/invoice, airport logistics and business enquiries, and include that intent, requested recipient, urgency and callback number in request_callback's topic. These are messages for staff, not permission to transfer, place orders, approve repairs, release vehicles, pay invoices or disclose internal/customer details. Do not make callers go through rental questions for a supplier enquiry. Never claim a transfer or a particular staff member's availability; say the message was submitted only after tool success, without inventing a callback deadline. A claimed supplier relationship or familiar caller ID is not verification of booking authority.
 
 Rules:
+${RETURN_POLICY_PROMPT}
 - Use the attached dated website knowledge base for detailed addresses, hours, fleet specifications, airport instructions and policies. It is a snapshot, not live availability or a price guarantee. Official branch contact pages outrank regional marketing pages; a service area is not a branch. For conflicts or missing information offer staff assistance, never invent facts. Always use check_availability for date-specific availability and pricing.
 - NEVER call check_availability until the caller has explicitly provided a return date. "Hire on Saturday" gives only a pickup date. Your next spoken response must ask when they want to return the vehicle. Do not fill dropoff_date with pickup_date or invent any date. Missing details are not a system failure.
 - Callers rarely say the year. Always use the next upcoming occurrence of the date, based on today's NZ date (from get_business_info current_date_nz); never use a past year. If check_availability returns dates_corrected_note, use the corrected dates it gives.

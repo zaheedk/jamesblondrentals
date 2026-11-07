@@ -90,6 +90,7 @@
 - [x] Resume day-before pickup texts after paid TNZ account confirmation
 
 ## Voice agent (3CX / phone assistant)
+- [ ] Update and verify Sarah's city/airport and commercial-vehicle return instructions in the live agent and business-information tool
 - [x] Inventory seven uploaded recording archives: 646 audio files, 641 unique, approximately 21.7 hours; expected 676 leaves 30 missing
 - [ ] Transcribe and analyse every unique supplied recording, with explicit coverage and privacy-safe customer/supplier separation
 - [ ] Apply supported conversation improvements and test them; supplier transfers require a verified routing list and working transfer capability

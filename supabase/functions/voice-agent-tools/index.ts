@@ -10,6 +10,7 @@ import { createPhoneQuote, checkPhoneBooking } from "./phone-booking.ts";
 import { checkBookingByNumber } from "./booking-lookup.ts";
 import { getQuoteOptions, reportBreakdown, requestBookingChange, resendBookingLinks } from "./front-desk.ts";
 import { sendEmail } from "./phone-booking.ts";
+import { RETURN_POLICY, RETURN_POLICY_PROMPT } from "./return-policy.ts";
 
 async function sendStaffSms(to: string, message: string): Promise<string> {
   const token = Deno.env.get("TNZ_AUTH_TOKEN");
@@ -141,7 +142,8 @@ const BUSINESS_INFO = {
   },
   payment: "Visa and Mastercard accepted. A bond or pre-authorisation may apply depending on the vehicle.",
   pre_checkin: "Customers can complete pre-check-in online before pickup to save time at the branch.",
-  one_way: "One-way hires between branches are available on many routes, especially commercial vehicles — ask for a quote.",
+  return_policy: { ...RETURN_POLICY, instructions: RETURN_POLICY_PROMPT },
+  one_way: "One-way hires between branches are available on many routes — ask for a quote. Commercial vehicles must return to a city location during opening hours, never an airport or after hours.",
 };
 
 async function toolCheckAvailability(p: Record<string, unknown>) {
