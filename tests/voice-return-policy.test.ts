@@ -1,5 +1,5 @@
 import { test, expect } from "bun:test";
-import { RETURN_POLICY } from "../supabase/functions/voice-agent-tools/return-policy.ts";
+import { RETURN_POLICY } from "../supabase/functions/_shared/voice-return-policy.ts";
 
 test("city branches do not offer after-hours drop-off", () => {
   expect(RETURN_POLICY.city_after_hours_dropoff).toBe(false);

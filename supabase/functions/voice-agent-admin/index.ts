@@ -11,7 +11,7 @@ const corsHeaders = {
 
 const EL_API = "https://api.elevenlabs.io/v1";
 import { AGENT_NAME, AGENT_DISPLAY_NAME, openingMessage } from "./identity.ts";
-import { RETURN_POLICY_PROMPT } from "../voice-agent-tools/return-policy.ts";
+import { RETURN_POLICY_PROMPT } from "../_shared/voice-return-policy.ts";
 
 function json(data: unknown, status = 200) {
   return new Response(JSON.stringify(data), {

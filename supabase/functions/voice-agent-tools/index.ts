@@ -10,7 +10,7 @@ import { createPhoneQuote, checkPhoneBooking } from "./phone-booking.ts";
 import { checkBookingByNumber } from "./booking-lookup.ts";
 import { getQuoteOptions, reportBreakdown, requestBookingChange, resendBookingLinks } from "./front-desk.ts";
 import { sendEmail } from "./phone-booking.ts";
-import { RETURN_POLICY, RETURN_POLICY_PROMPT } from "./return-policy.ts";
+import { RETURN_POLICY, RETURN_POLICY_PROMPT } from "../_shared/voice-return-policy.ts";
 
 async function sendStaffSms(to: string, message: string): Promise<string> {
   const token = Deno.env.get("TNZ_AUTH_TOKEN");
