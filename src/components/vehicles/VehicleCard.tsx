@@ -101,6 +101,7 @@ const VehicleCard = ({
   
   const isAvailable = isVehicleAvailable(vehicle);
   const transmissionLabel = vehicleCardTransmissionLabel(vehicle);
+  const needsClass2 = requiresClass2Licence(vehicle);
 
   const getNumberOfHours = () => {
     if (!vehicle.numberofhours) return null;
