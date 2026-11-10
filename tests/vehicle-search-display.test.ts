@@ -61,9 +61,10 @@ describe("Class 2 licence notice on vehicle cards", () => {
     model: category.split(" ").slice(1).join(" ") || "",
   });
 
-  test("only the 19-20m³ (3 tonne) truck requires Class 2", () => {
+  test("only the 19-20m³ truck requires Class 2, even when labelled 3 Ton", () => {
     expect(requiresClass2Licence(card("3 Ton Box (19m³-20m³) Tail Lift"))).toBe(true);
     expect(requiresClass2Licence(card("3 Tonne Box 19m³ + Tail Lift"))).toBe(true);
+    expect(requiresClass2Licence(card("3 Ton Box (16m³-18m³)Tail Lift"))).toBe(false);
     expect(requiresClass2Licence(card("2 Ton Box (16m³-18m³)"))).toBe(false);
     expect(requiresClass2Licence(card("2 Ton Tipper"))).toBe(false);
     expect(requiresClass2Licence(card("2 Ton Box (9m³)"))).toBe(false);
