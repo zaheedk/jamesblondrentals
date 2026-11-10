@@ -4,6 +4,7 @@ import {
   orderVehicleSearchResults,
   isTruckCategoryVehicle,
   vehicleCardTransmissionLabel,
+  requiresClass2Licence,
 } from "../src/lib/vehicle-search-display";
 import type { Vehicle } from "../src/lib/types";
 
@@ -50,5 +51,28 @@ describe("truck gearbox letters on vehicle cards", () => {
     expect(vehicleCardTransmissionLabel(card("High Roof Van"))).toBe("A");
     expect(vehicleCardTransmissionLabel(card("Jumbo Van (12m³)"))).toBe("A");
     expect(vehicleCardTransmissionLabel(card("12 Seat Minibus"))).toBe("A");
+  });
+});
+
+describe("Class 2 licence notice on vehicle cards", () => {
+  const card = (category: string) => ({
+    type: category,
+    make: category.split(" ")[0] || "",
+    model: category.split(" ").slice(1).join(" ") || "",
+  });
+
+  test("only the 19-20m³ truck requires Class 2, even when labelled 3 Ton", () => {
+    expect(requiresClass2Licence(card("3 Ton Box (19m³-20m³) Tail Lift"))).toBe(true);
+    expect(requiresClass2Licence(card("3 Tonne Box 19m³ + Tail Lift"))).toBe(true);
+    expect(requiresClass2Licence(card("3 Ton Box (16m³-18m³)Tail Lift"))).toBe(false);
+    expect(requiresClass2Licence(card("2 Ton Box (16m³-18m³)"))).toBe(false);
+    expect(requiresClass2Licence(card("2 Ton Tipper"))).toBe(false);
+    expect(requiresClass2Licence(card("2 Ton Box (9m³)"))).toBe(false);
+  });
+
+  test("cars, vans and minibuses never require Class 2", () => {
+    expect(requiresClass2Licence(card("Suzuki Swift"))).toBe(false);
+    expect(requiresClass2Licence(card("Jumbo Van (12m³)"))).toBe(false);
+    expect(requiresClass2Licence(card("12 Seat Minibus"))).toBe(false);
   });
 });

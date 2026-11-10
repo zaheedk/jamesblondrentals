@@ -23,6 +23,24 @@ export function isTruckCategoryVehicle(
   return TRUCK_SIGNALS.test(haystack);
 }
 
+/**
+ * Only the 19–20m³ truck (the 3 tonne box) needs a Class 2 licence; every
+ * truck up to 18m³ is drivable on a Class 1 car licence. Match on the size
+ * or the 3-tonne wording so category naming changes don't hide the notice.
+ */
+// Size decides the licence, not the "3 Ton" naming — a 16–18m³ box can be
+// labelled 3 Ton yet is still Class 1.
+const CLASS2_SIGNALS = /(?:19|20)\s*m[³3]/;
+
+export function requiresClass2Licence(
+  vehicle: Pick<Vehicle, "type" | "make" | "model">
+): boolean {
+  if (!isTruckCategoryVehicle(vehicle)) return false;
+  const haystack =
+    `${vehicle.type || ""} ${vehicle.make || ""} ${vehicle.model || ""}`.toLowerCase();
+  return CLASS2_SIGNALS.test(haystack);
+}
+
 /** Gearbox letters shown on a vehicle card: "A/M" for trucks, "A" otherwise. */
 export function vehicleCardTransmissionLabel(
   vehicle: Pick<Vehicle, "type" | "make" | "model">

@@ -7,7 +7,7 @@ import BookingForm from "./BookingForm";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Users, Luggage, Gauge, Info, Cog, AlertTriangle } from "lucide-react";
 import { isMidweekEligibleVehicle, datesQualifyForMidweek } from "@/lib/midweek-discount";
-import { isVehicleAvailable, vehicleCardTransmissionLabel } from "@/lib/vehicle-search-display";
+import { isVehicleAvailable, vehicleCardTransmissionLabel, requiresClass2Licence } from "@/lib/vehicle-search-display";
 
 interface VehicleCardProps {
   vehicle: Vehicle;
@@ -101,6 +101,7 @@ const VehicleCard = ({
   
   const isAvailable = isVehicleAvailable(vehicle);
   const transmissionLabel = vehicleCardTransmissionLabel(vehicle);
+  const needsClass2 = requiresClass2Licence(vehicle);
 
   const getNumberOfHours = () => {
     if (!vehicle.numberofhours) return null;
@@ -180,6 +181,12 @@ const VehicleCard = ({
           >
             <AlertTriangle className="w-3 h-3" />
             {limitedMessage}
+          </Badge>
+        )}
+        {needsClass2 && (
+          <Badge className="w-fit mb-2 bg-amber-100 text-amber-900 border-amber-300 gap-1">
+            <AlertTriangle className="w-3 h-3" />
+            Class 2 truck licence required
           </Badge>
         )}
         <div className="space-y-3">
