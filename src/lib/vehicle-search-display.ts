@@ -28,7 +28,9 @@ export function isTruckCategoryVehicle(
  * truck up to 18m³ is drivable on a Class 1 car licence. Match on the size
  * or the 3-tonne wording so category naming changes don't hide the notice.
  */
-const CLASS2_SIGNALS = /\b3\s*ton(?:ne)?\b|(?:19|20)\s*m[³3]/;
+// Size decides the licence, not the "3 Ton" naming — a 16–18m³ box can be
+// labelled 3 Ton yet is still Class 1.
+const CLASS2_SIGNALS = /(?:19|20)\s*m[³3]/;
 
 export function requiresClass2Licence(
   vehicle: Pick<Vehicle, "type" | "make" | "model">
