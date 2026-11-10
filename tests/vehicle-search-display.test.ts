@@ -4,6 +4,7 @@ import {
   orderVehicleSearchResults,
   isTruckCategoryVehicle,
   vehicleCardTransmissionLabel,
+  requiresClass2Licence,
 } from "../src/lib/vehicle-search-display";
 import type { Vehicle } from "../src/lib/types";
 
