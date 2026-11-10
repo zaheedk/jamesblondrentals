@@ -183,6 +183,12 @@ const VehicleCard = ({
             {limitedMessage}
           </Badge>
         )}
+        {needsClass2 && (
+          <Badge className="w-fit mb-2 bg-amber-100 text-amber-900 border-amber-300 gap-1">
+            <AlertTriangle className="w-3 h-3" />
+            Class 2 truck licence required
+          </Badge>
+        )}
         <div className="space-y-3">
           <div>
             <h3 className="font-bold text-lg capitalize">
