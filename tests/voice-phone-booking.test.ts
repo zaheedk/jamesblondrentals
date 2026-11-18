@@ -22,4 +22,6 @@ test("customer saying paid or a paid quote cannot confirm a booking", () => {
   assert.equal(verifiedBooking({ reservationstatus: "Cancelled", isquotation: false, isonrequest: false, payment: 260 }, 260), false);
   assert.equal(verifiedBooking({ reservationstatus: "Reservation", isquotation: false, isonrequest: true, payment: 260 }, 260), false);
   assert.equal(verifiedBooking({ reservationstatus: "Reservation", payment: 260 }, 260), false);
+  // Deposit-only payment on a confirmed reservation counts as booked (booking 17949: $50 of $510).
+  assert.equal(verifiedBooking({ reservationstatus: "Reservation", isquotation: false, isonrequest: false, payment: 50 }, 510), true);
 });

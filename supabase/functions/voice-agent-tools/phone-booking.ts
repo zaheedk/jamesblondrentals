@@ -133,6 +133,9 @@ export async function checkPhoneBooking(params: Record<string, unknown>, rcm: Rc
   if (response?.status !== "OK") return { error: "Unable to verify the booking. Never claim payment or booking success." };
   const { info, total } = rentalTotal(response);
   if (!verifiedBooking(info, total)) return { booking_confirmed: false, reservation_number: row.reservation_number, instruction: "Payment and confirmed booking have not both been verified. Ask the customer to finish the secure checkout and try again. If they have already paid, ask staff to reconcile it; never ask them to pay again." };
+  const paidNzd = number(info.payment);
+  const balanceNzd = Math.max(number(info.balancedue), 0);
+  const balanceLine = balanceNzd > 0.005 ? `Paid so far: NZD ${paidNzd.toFixed(2)}. Balance due at pickup: NZD ${balanceNzd.toFixed(2)} (includes any refundable security bond).` : `Paid: NZD ${paidNzd.toFixed(2)}.`;
   if (!row.confirmation_email_id) {
     const p = row.request_data;
     const emailId = await sendEmail(p.email, `James Blond Rentals booking confirmation ${row.reservation_number}`, [
@@ -140,10 +143,11 @@ export async function checkPhoneBooking(params: Record<string, unknown>, rcm: Rc
       `Vehicle: ${info.vehiclecategory || "Your selected vehicle"}`,
       `Pickup: ${info.pickupdate} ${info.pickuptime} — ${info.pickuplocationname || p.branch}`,
       `Return: ${info.dropoffdate} ${info.dropofftime} — ${info.dropofflocationname || p.dropoff_branch || p.branch}`,
+      balanceLine,
       "", "Complete your personal and licence details before pickup: https://www.jamesblond.co.nz/login", "Call 0800 525 663 for assistance.", "", "James Blond Rentals",
     ].join("\n"), `voice-confirmation/${row.id}`);
     const { error: saveError } = await db.from("voice_booking_requests").update({ state: "confirmed", confirmation_email_id: emailId }).eq("id", row.id);
     if (saveError) throw new Error("Booking is confirmed but confirmation email tracking needs staff review.");
   }
-  return { booking_confirmed: true, payment_verified: true, confirmation_email_sent: true, reservation_number: row.reservation_number };
+  return { booking_confirmed: true, payment_verified: true, confirmation_email_sent: true, reservation_number: row.reservation_number, amount_paid_nzd: paidNzd, balance_due_at_pickup_nzd: balanceNzd, instruction: balanceNzd > 0.005 ? "Confirm the booking. Tell the caller the deposit was received and the remaining balance (including the refundable bond) is due at pickup." : "Confirm the booking and that payment is complete." };
 }

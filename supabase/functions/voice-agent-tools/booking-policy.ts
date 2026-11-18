@@ -27,10 +27,11 @@ export const quoteSchema = z.object({
   confirmed_details: z.literal(true),
 });
 
+// A confirmed reservation with any verified payment (full or deposit) counts as booked.
 export function verifiedBooking(info: Record<string, unknown>, expectedAmount: number) {
   const status = String(info.reservationstatus ?? "").toLowerCase();
   const paid = Number(info.payment);
-  return Number.isFinite(paid) && paid + 0.005 >= expectedAmount && expectedAmount > 0
+  return Number.isFinite(paid) && paid > 0 && expectedAmount > 0
     && info.isquotation === false && info.isonrequest === false
     && ["reservation", "confirmed", "hired", "booking"].includes(status);
 }
