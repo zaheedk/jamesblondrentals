@@ -11,6 +11,7 @@ import { checkBookingByNumber } from "./booking-lookup.ts";
 import { getQuoteOptions, reportBreakdown, requestBookingChange, resendBookingLinks } from "./front-desk.ts";
 import { sendEmail } from "./phone-booking.ts";
 import { RETURN_POLICY, RETURN_POLICY_PROMPT } from "../_shared/voice-return-policy.ts";
+import { driverAgeOptions, resolveDriverAge } from "./driver-age.ts";
 
 async function sendStaffSms(to: string, message: string): Promise<string> {
   const token = Deno.env.get("TNZ_AUTH_TOKEN");
@@ -154,6 +155,7 @@ async function toolCheckAvailability(p: Record<string, unknown>) {
   const dropoffTime = String(p.dropoff_time || "10:00").trim();
   const vehicleType = String(p.vehicle_type || "").toLowerCase().trim();
   const driverAgeId = p.driver_age_id === undefined ? undefined : Number(p.driver_age_id);
+  const driverAge = p.driver_age === undefined ? undefined : Number(p.driver_age);
 
   if (!branch || !rawPickup || !rawDropoff) {
     return { error: "branch, pickup_date and dropoff_date are required" };
@@ -176,9 +178,12 @@ async function toolCheckAvailability(p: Record<string, unknown>) {
   }
 
   const ages = step1?.results?.driverages || [];
-  const defaultAge = ages.find((a: any) => a.isdefault) || ages.find((a: any) => Number(a.driverage) >= 25) || ages[0];
-  const chosenAge = driverAgeId === undefined ? defaultAge : ages.find((a: any) => Number(a.id ?? a.ageid) === driverAgeId);
-  if (!chosenAge) return { error: "Select a valid driver_age_id from driver_age_options." };
+  const chosenAge = resolveDriverAge(ages, driverAge, driverAgeId);
+  if (!chosenAge) return {
+    error: "Driver age could not be matched. Use a returned age band or ask for the driver's age in years; do not guess an id.",
+    driver_age_options: driverAgeOptions(ages),
+    recoverable: true,
+  };
   const ageid = chosenAge?.id ?? chosenAge?.ageid;
 
   // The booking system returns zero vehicles when pickup/return times fall
@@ -200,11 +205,11 @@ async function toolCheckAvailability(p: Record<string, unknown>) {
   const adjPickupTime = pickupHours ? clampTime(pickupTime, pickupHours.start, pickupHours.end) : pickupTime;
   const adjDropoffTime = dropoffHours ? clampTime(dropoffTime, dropoffHours.start, dropoffHours.end) : dropoffTime;
   const timeNotes: string[] = [];
-  if (adjPickupTime !== pickupTime) {
-    timeNotes.push(`Pickup time ${pickupTime} is outside ${loc.location} hours for that day (${pickupHours!.start}–${pickupHours!.end}), so ${adjPickupTime} was used. Confirm this with the caller.`);
+  if (adjPickupTime !== pickupTime && pickupHours) {
+    timeNotes.push(`Pickup time ${pickupTime} is outside ${loc.location} hours for that day (${pickupHours.start}–${pickupHours.end}), so ${adjPickupTime} was used. Confirm this with the caller.`);
   }
-  if (adjDropoffTime !== dropoffTime) {
-    timeNotes.push(`Return time ${dropoffTime} is outside ${loc.location} hours for that day (${dropoffHours!.start}–${dropoffHours!.end}), so ${adjDropoffTime} was used. Confirm this with the caller.`);
+  if (adjDropoffTime !== dropoffTime && dropoffHours) {
+    timeNotes.push(`Return time ${dropoffTime} is outside ${loc.location} hours for that day (${dropoffHours.start}–${dropoffHours.end}), so ${adjDropoffTime} was used. Confirm this with the caller.`);
   }
 
   const step2 = await rcmCall("step2", {
@@ -220,7 +225,7 @@ async function toolCheckAvailability(p: Record<string, unknown>) {
 
   if (step2?.status !== "OK") {
     console.error("check_availability step2 failed", JSON.stringify({ branch: loc.id, pickupDate, dropoffDate, pickupTime, dropoffTime, status: step2?.status, error: step2?.error }));
-    return { error: `Availability check failed (${step2?.error || "booking system error"}) for ${pickupDate} to ${dropoffDate}. Please offer a callback.` };
+    return { error: `Availability check failed (${step2?.error || "booking system error"}) for ${pickupDate} to ${dropoffDate}. No availability or price is verified. Correct missing/invalid input, or retry this read once if transient; do not loop.`, driver_age_options: driverAgeOptions(ages), recoverable: true };
   }
 
   const allCars: any[] = step2?.results?.availablecars || [];
@@ -251,7 +256,8 @@ async function toolCheckAvailability(p: Record<string, unknown>) {
   return {
     branch: loc.location,
     driver_age_id_used: Number(ageid),
-    driver_age_options: ages.map((a: any) => ({ id: Number(a.id ?? a.ageid), label: String(a.driverage ?? a.description ?? a.age ?? "") })),
+    driver_age_options: driverAgeOptions(ages),
+    driver_age_confirmed: driverAge !== undefined || driverAgeId !== undefined,
     pickup_date: pickupDate,
     dropoff_date: dropoffDate,
     pickup_time: adjPickupTime,

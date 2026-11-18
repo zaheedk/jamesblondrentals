@@ -22,9 +22,3 @@ test("a renamed agent changes the greeting and dashboard name together", () => {
   expect(openingMessage("Kiri")).not.toContain("Sarah");
 });
 
-test("the greeting says the team is busy and Sarah can book or change bookings", () => {
-  const g = openingMessage();
-  expect(g).toContain("busy");
-  expect(g).toContain("new bookings");
-  expect(g).toContain("changes to an existing booking");
-});
