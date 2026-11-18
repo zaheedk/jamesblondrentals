@@ -18,8 +18,10 @@ jobs:
         with:
           node-version: '20'
           
+      # package-lock.json is out of sync with package.json (platform packages
+      # are added via bun), so `npm ci` fails. `npm install` resolves instead.
       - name: Install Dependencies
-        run: npm ci --legacy-peer-deps
+        run: npm install --legacy-peer-deps --no-audit --no-fund
         
       - name: Build
         run: npm run build
