@@ -141,7 +141,7 @@ const BUSINESS_INFO = {
     minibus: "Minibus and 12-seater rates are quoted on request, except schools: $210 per day flat rate for 12-seaters.",
     long_hire: "Discounted rates apply for hires of 21 days or more.",
   },
-  payment: "Visa and Mastercard accepted. A bond or pre-authorisation may apply depending on the vehicle.",
+  payment: "Visa and Mastercard accepted. Book with a NZD $50 rental deposit or pay in full in advance. Any unpaid rental balance is collected at pickup. A booking deposit is not the refundable security bond. Confirm a booking after live verification of its deposit and non-quote reservation status, not only after full payment. Discuss security bonds only if asked about them or further charges.",
   pre_checkin: "Customers can complete pre-check-in online before pickup to save time at the branch.",
   return_policy: { ...RETURN_POLICY, instructions: RETURN_POLICY_PROMPT },
   one_way: "One-way hires between branches are available on many routes — ask for a quote. Commercial vehicles must return to a city location during opening hours, never an airport or after hours.",
@@ -272,7 +272,7 @@ async function toolCheckAvailability(p: Record<string, unknown>) {
     vehicles_found: cars.length,
     vehicles,
     ...(otherAvailable ? { other_available_vehicles: otherAvailable } : {}),
-    note: "Rates are in NZD including GST, before optional extras such as insurance upgrades. Final total is confirmed at booking. When quoting a vehicle, also mention its kilometres: the per-km charge for commercial vehicles, or that cars and minibuses include unlimited kilometres. Do NOT mention the bond unprompted — only if the caller asks about bonds, deposits or further charges; then say a refundable bond or card pre-authorisation applies, with the amount depending on the vehicle and insurance option, confirmed at booking. Trucks are listed by size, e.g. '2 Ton Box'. If vehicles_found is 0 but other_available_vehicles lists something close, offer it. If nothing suitable is listed, offer a callback.",
+    note: "Rates are in NZD including GST, before optional extras such as insurance upgrades. Final total is confirmed at booking. Mention the returned per-km charge for commercial vehicles, or unlimited kilometres for cars/minibuses. A $50 booking deposit secures a confirmed booking after live verification; unpaid rental balance is due at pickup. This is not a security bond. Discuss security bonds only if asked about them or further charges, never quote a bond amount. Trucks are listed by size, e.g. '2 Ton Box'. If vehicles_found is 0 but other_available_vehicles lists something close, offer it. Otherwise ask whether dates or another suitable branch are flexible before offering a callback. Never claim availability without a successful live check.",
   };
 }
 

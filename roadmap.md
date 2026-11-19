@@ -90,6 +90,7 @@
 - [x] Resume day-before pickup texts after paid TNZ account confirmation
 
 ## Voice agent (3CX / phone assistant)
+- [x] Review all 249 available sessions (224 phone calls; 68 callbacks), scan 200 public URLs (197 usable), refresh six indexed references, deploy $50 deposit/pickup-balance and independent-resolution instructions; 17 local and five live response tests passed; actual booking 17949 recheck confirmed $50 paid/$460 rental balance with existing email recorded; real phone audio/future callback reduction unverified
 - [x] Update Sarah's confident greeting, one-off optional human-request bridge, bounded error recovery and age-band handling; deployed and verified six knowledge attachments, 56-year-old truck availability, 21 local tests and three live text-response tests; real phone audio/timing remains unverified
 - [x] Update Sarah's city/airport and commercial-vehicle return instructions; live agent and business-info readback verified all four restrictions, six knowledge attachments retained, 14 tests passed; real phone audio not tested
 - [x] Inventory seven uploaded recording archives: 646 audio files, 641 unique, approximately 21.7 hours; expected 676 leaves 30 missing

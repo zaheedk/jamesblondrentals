@@ -2,6 +2,7 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 import { z } from "npm:zod@3.23.8";
 import { quoteSchema, verifiedBooking } from "./booking-policy.ts";
 import { normaliseHireDates, nzDate, resolveLocation } from "./availability.ts";
+import { pickupRentalBalance } from "../_shared/voice-payment-policy.ts";
 
 type RcmCall = (method: string, payload: Record<string, unknown>) => Promise<any>;
 const statusSchema = z.object({ request_id: z.string().min(8).max(120) });
@@ -114,6 +115,7 @@ export async function createPhoneQuote(params: Record<string, unknown>, rcm: Rcm
       `Pickup: ${info.pickupdate} ${info.pickuptime} — ${info.pickuplocationname || p.branch}`,
       `Return: ${info.dropoffdate} ${info.dropofftime} — ${info.dropofflocationname || p.dropoff_branch || p.branch}`,
       `Rental total: NZD ${total.toFixed(2)} including GST, before any additional mileage or optional upgrades.`,
+      "Book with a NZD $50 deposit or pay in full now. Any unpaid rental balance is collected at pickup. The booking deposit is a rental part-payment, not a security bond.",
       "", `Review your quote and pay securely: ${paymentUrl}`, "", "This quote does not reserve a vehicle and availability may change before booking.",
       "Never share card details over the phone. Call 0800 525 663 for assistance.", "", "James Blond Rentals",
     ].join("\n"), `voice-quote/${row.id}/${p.email.toLowerCase()}`);
@@ -135,6 +137,7 @@ export async function checkPhoneBooking(params: Record<string, unknown>, rcm: Rc
   if (!verifiedBooking(info, total)) return { booking_confirmed: false, reservation_number: row.reservation_number, instruction: "Payment and confirmed booking have not both been verified. Ask the customer to finish the secure checkout and try again. If they have already paid, ask staff to reconcile it; never ask them to pay again." };
   const paidNzd = number(info.payment);
   const balanceNzd = Math.max(number(info.balancedue), 0);
+  const rentalBalanceNzd = pickupRentalBalance(total, paidNzd);
   const balanceLine = balanceNzd > 0.005 ? `Paid so far: NZD ${paidNzd.toFixed(2)}. Balance due at pickup: NZD ${balanceNzd.toFixed(2)} (includes any refundable security bond).` : `Paid: NZD ${paidNzd.toFixed(2)}.`;
   if (!row.confirmation_email_id) {
     const p = row.request_data;
@@ -149,5 +152,5 @@ export async function checkPhoneBooking(params: Record<string, unknown>, rcm: Rc
     const { error: saveError } = await db.from("voice_booking_requests").update({ state: "confirmed", confirmation_email_id: emailId }).eq("id", row.id);
     if (saveError) throw new Error("Booking is confirmed but confirmation email tracking needs staff review.");
   }
-  return { booking_confirmed: true, payment_verified: true, confirmation_email_sent: true, reservation_number: row.reservation_number, amount_paid_nzd: paidNzd, balance_due_at_pickup_nzd: balanceNzd, instruction: balanceNzd > 0.005 ? "Confirm the booking. Tell the caller the deposit was received and the remaining balance (including the refundable bond) is due at pickup." : "Confirm the booking and that payment is complete." };
+  return { booking_confirmed: true, payment_verified: true, confirmation_email_sent: true, reservation_number: row.reservation_number, amount_paid_nzd: paidNzd, rental_balance_due_at_pickup_nzd: rentalBalanceNzd, balance_due_at_pickup_nzd: balanceNzd, instruction: rentalBalanceNzd > 0.005 ? "Confirm the booking and email acceptance. Tell the caller the verified deposit was received and the rental_balance_due_at_pickup_nzd is due at pickup. Do not mention a security bond unless asked about it or further charges; balance_due_at_pickup_nzd may include it." : "Confirm the booking and email acceptance. The rental is paid; do not say all charges are settled if balance_due_at_pickup_nzd is positive. Discuss security bonds only if asked." };
 }
