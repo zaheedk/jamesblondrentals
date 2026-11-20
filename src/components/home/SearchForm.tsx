@@ -19,6 +19,7 @@ import { OptionSelect } from "./form-components/OptionSelect";
 import { 
   disablePastDates, 
   getLocationTimeOptions, 
+  isSundayBlockedDate,
   combineDateTime,
   getDefaultPickupDate,
   getDefaultDropoffDate,
@@ -361,6 +362,23 @@ const SearchForm = ({
     }
   };
 
+  // Clear dates that become invalid when the branch changes to a Sunday-closed
+  // location (e.g. Wellington CBD takes no Sunday pickups or drop-offs)
+  useEffect(() => {
+    if (pickupDate && isSundayBlockedDate(pickupLocation, pickupDate)) {
+      setPickupDate(undefined);
+      setPickupTime("");
+    }
+  }, [pickupLocation, pickupDate]);
+
+  useEffect(() => {
+    const dropLoc = sameLocation ? pickupLocation : dropoffLocation;
+    if (dropoffDate && isSundayBlockedDate(dropLoc, dropoffDate)) {
+      setDropoffDate(undefined);
+      setDropoffTime("");
+    }
+  }, [pickupLocation, dropoffLocation, sameLocation, dropoffDate]);
+
   // Handle pickup date changes and update dropoff date accordingly
   const handlePickupDateChange = useCallback((date: Date | undefined) => {
     if (!date) return;
@@ -442,6 +460,11 @@ const SearchForm = ({
     
     if (!pickupTime || !dropoffTime) {
       toast.error("Please select both pickup and drop-off times");
+      return;
+    }
+
+    if (isSundayBlockedDate(pickupLocation, pickupDate) || isSundayBlockedDate(sameLocation ? pickupLocation : dropoffLocation, dropoffDate)) {
+      toast.error("Wellington CBD is closed on Sundays — please choose another day");
       return;
     }
 
@@ -598,6 +621,7 @@ const SearchForm = ({
                   onDateChange={setDropoffDate}
                   disableDate={(date) => {
                     if (!pickupDate) return true;
+                    if (isSundayBlockedDate(sameLocation ? pickupLocation : dropoffLocation, date)) return true;
                     const dateWithoutTime = new Date(date);
                     dateWithoutTime.setHours(0, 0, 0, 0);
                     const pickupWithoutTime = new Date(pickupDate);
@@ -624,6 +648,12 @@ const SearchForm = ({
                 </div>
               </div>
             </div>
+
+            {(isWellingtonCBD(pickupLocation) || (!sameLocation && isWellingtonCBD(dropoffLocation))) && (
+              <p className="text-sm text-muted-foreground bg-primary/5 border border-primary/10 rounded-2xl px-4 py-3">
+                Wellington CBD is closed on Sundays — please choose a Saturday to Monday date for pickup and return.
+              </p>
+            )}
 
             {/* Return Location */}
             <div className="space-y-2">

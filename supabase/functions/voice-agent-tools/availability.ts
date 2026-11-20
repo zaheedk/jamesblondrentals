@@ -106,6 +106,29 @@ export function perKmCharge(v: Vehicle): number | null {
   return null;
 }
 
+// Branches closed to Sunday pickups and returns (business rule).
+// Wellington CBD is booking-system location 11.
+const SUNDAY_CLOSED_BRANCH_IDS = new Set([11]);
+
+export function isSundayClosedBranch(loc: Location): boolean {
+  return SUNDAY_CLOSED_BRANCH_IDS.has(Number(loc.id));
+}
+
+/** True when a YYYY-MM-DD date falls on a Sunday. */
+export function isSundayIso(date: string): boolean {
+  return new Date(`${date}T12:00:00Z`).getUTCDay() === 0;
+}
+
+/** Error message when a hire touches a Sunday at a Sunday-closed branch, else null. */
+export function sundayClosureError(loc: Location, pickup: string, dropoff: string): string | null {
+  if (!isSundayClosedBranch(loc)) return null;
+  const pickupSunday = isSundayIso(pickup);
+  const dropoffSunday = isSundayIso(dropoff);
+  if (!pickupSunday && !dropoffSunday) return null;
+  const which = pickupSunday && dropoffSunday ? "pickup and return dates are" : pickupSunday ? "pickup date is" : "return date is";
+  return `${loc.location} is closed on Sundays and the ${which} a Sunday. Offer the Saturday before or the Monday after instead, or another branch (e.g. Wellington Airport) if it suits the caller.`;
+}
+
 export function nzDate(now = new Date()): string {
   const parts = new Intl.DateTimeFormat("en-NZ", {
     timeZone: "Pacific/Auckland", year: "numeric", month: "2-digit", day: "2-digit",

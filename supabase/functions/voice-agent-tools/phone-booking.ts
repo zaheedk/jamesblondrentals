@@ -1,7 +1,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { z } from "npm:zod@3.23.8";
 import { quoteSchema, verifiedBooking } from "./booking-policy.ts";
-import { normaliseHireDates, nzDate, resolveLocation } from "./availability.ts";
+import { normaliseHireDates, nzDate, resolveLocation, sundayClosureError } from "./availability.ts";
 import { pickupRentalBalance } from "../_shared/voice-payment-policy.ts";
 
 type RcmCall = (method: string, payload: Record<string, unknown>) => Promise<any>;
@@ -73,6 +73,8 @@ export async function createPhoneQuote(params: Record<string, unknown>, rcm: Rcm
     const pickup = resolveLocation(s1?.results?.locations || [], p.branch);
     const dropoff = resolveLocation(s1?.results?.locations || [], p.dropoff_branch || p.branch);
     if (!pickup || !dropoff) return { error: "Confirm a valid collection and return branch." };
+    const sundayError = sundayClosureError(pickup, p.pickup_date, p.pickup_date) || sundayClosureError(dropoff, p.dropoff_date, p.dropoff_date);
+    if (sundayError) return { error: sundayError };
     if (!(s1?.results?.driverages || []).some((a: any) => Number(a.id ?? a.ageid) === p.driver_age_id)) return { error: "Choose the age band returned by check_availability." };
     const hire = { pickuplocationid: pickup.id, dropofflocationid: dropoff.id, pickupdate: dateRcm(p.pickup_date), dropoffdate: dateRcm(p.dropoff_date), pickuptime: p.pickup_time, dropofftime: p.dropoff_time, ageid: p.driver_age_id, vehiclecategorytypeid: 0 };
     const availability = await rcm("step2", hire);

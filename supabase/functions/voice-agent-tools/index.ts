@@ -4,7 +4,7 @@
 // (configured on the agent by voice-agent-admin), or x-admin-key must
 // match ELEVENLABS_API_KEY (admin/testing only).
 import { corsHeaders } from "./cors.ts";
-import { matchingVehicles, normaliseHireDates, nzDate, perKmCharge, resolveLocation } from "./availability.ts";
+import { matchingVehicles, normaliseHireDates, nzDate, perKmCharge, resolveLocation, sundayClosureError } from "./availability.ts";
 import { callbackSchema } from "./booking-policy.ts";
 import { createPhoneQuote, checkPhoneBooking } from "./phone-booking.ts";
 import { checkBookingByNumber } from "./booking-lookup.ts";
@@ -124,7 +124,7 @@ const BUSINESS_INFO = {
     { name: "South Auckland", vehicles: "cars, vans, utes, trucks" },
     { name: "Mt Wellington (East Auckland)", vehicles: "cars and vans only — no trucks" },
     { name: "Hamilton", vehicles: "cars, vans, trucks" },
-    { name: "Wellington CBD", vehicles: "cars, vans, utes, trucks" },
+    { name: "Wellington CBD", vehicles: "cars, vans, utes, trucks", closed: "Sundays — no pickups or returns" },
     { name: "Wellington Airport", vehicles: "cars, vans" },
     { name: "Christchurch Central", vehicles: "cars, vans, utes, trucks" },
     { name: "Christchurch Airport", vehicles: "cars, vans, utes, trucks" },
@@ -176,6 +176,9 @@ async function toolCheckAvailability(p: Record<string, unknown>) {
   if (!loc) {
     return { error: `Could not find a branch matching "${branch}". Branches: ${locations.map((l: any) => l.location).join(", ")}` };
   }
+
+  const sundayError = sundayClosureError(loc, pickupDate, dropoffDate);
+  if (sundayError) return { error: sundayError, recoverable: true };
 
   const ages = step1?.results?.driverages || [];
   const chosenAge = resolveDriverAge(ages, driverAge, driverAgeId);

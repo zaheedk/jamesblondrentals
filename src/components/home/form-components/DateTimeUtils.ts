@@ -10,6 +10,13 @@ import {
 // New Zealand timezone
 const NZ_TIMEZONE = 'Pacific/Auckland';
 
+// Branches that take no pickups or drop-offs on Sundays (business rule).
+// Wellington CBD is RCM location 11.
+export const SUNDAY_CLOSED_LOCATION_IDS = new Set(["11"]);
+
+export const isSundayBlockedDate = (locationId: string | undefined, date: Date): boolean =>
+  !!locationId && SUNDAY_CLOSED_LOCATION_IDS.has(String(locationId)) && getDay(date) === 0;
+
 // Get current date/time in NZ timezone
 export const getNowInNZ = (): Date => {
   return toZonedTime(new Date(), NZ_TIMEZONE);
@@ -30,7 +37,12 @@ export const disablePastDates = (date: Date, locationId: string, locationDetails
   if (startOfDate < todayStartInNZ) {
     return true;
   }
-  
+
+  // Sunday-closed branches (e.g. Wellington CBD) take no pickups or drop-offs on Sundays
+  if (isSundayBlockedDate(locationId, date)) {
+    return true;
+  }
+
   
   if (locationId && locationDetails.length > 0) {
     const selectedLocationDetail = locationDetails.find(loc => String(loc.id) === locationId);
