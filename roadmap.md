@@ -1,10 +1,11 @@
 # Roadmap
 
 ## Wellington booking growth — November follow-up
-- [ ] Correct Wellington car booking defaults and airport booking entry point; remove unsupported price/collection promises
-- [ ] Strengthen existing Wellington car/airport metadata and local links, preserving Sunday and return restrictions
-- [ ] Diagnose and correct the Wellington van ad's Auckland copy/homepage destination without raising the existing budget
-- [ ] Verify Wellington searches end-to-end and check deployment; later ranking/booking improvements need post-change data
+- [x] Correct Wellington car/van booking defaults and add airport booking entry point; remove unsupported price/collection promises
+- [x] Strengthen existing Wellington car/airport metadata and local links, preserving Sunday and return restrictions
+- [x] Correct Wellington van ad's Auckland copy/homepage destination; Google readback confirms review in progress, budget unchanged at NZD 90/day
+- [x] Verify all three search-to-results journeys and mobile layouts; 19 tests/clean build, production titles verified. Cars unavailable in tested 24–26 Nov results; vans available. No booking/payment made; ranking effects require later data.
+- [ ] Resolve Wellington car inventory for requested dates — blocked: RCM staff allocation/availability review; no rate or inventory writes authorized or supported here
 
 ## Activation email eligibility
 - [x] Stop quote-only activation emails at all send paths and match activation status by email
