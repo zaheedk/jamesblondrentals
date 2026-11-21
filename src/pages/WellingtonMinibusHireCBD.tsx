@@ -366,7 +366,7 @@ const WellingtonMinibusHireCBD = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="font-medium">Sunday:</span>
-                  <span>9:00 AM - 4:00 PM</span>
+                  <span>Closed</span>
                 </div>
                 <div className="mt-4 text-sm text-gray-600">
                   <p>Extended hours available for CBD pickups and events</p>

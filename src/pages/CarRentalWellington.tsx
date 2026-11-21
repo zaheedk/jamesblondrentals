@@ -126,7 +126,7 @@ const CarRentalWellington = () => {
     openingHoursSpecification: [
       {
         '@type': 'OpeningHoursSpecification',
-        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
         opens: '08:00',
         closes: '17:00',
       },
@@ -397,10 +397,10 @@ const CarRentalWellington = () => {
                   </div>
                   <div className="flex justify-between">
                     <span className="font-medium">Sunday:</span>
-                    <span>8:00 AM - 5:00 PM</span>
+                    <span>Closed</span>
                   </div>
                   <div className="mt-4 text-sm text-muted-foreground">
-                    <p>After hours pick up and drop off available on request</p>
+                    <p>After hours pick up and drop off are available at our airport branches only</p>
                   </div>
                 </div>
               </CardContent>

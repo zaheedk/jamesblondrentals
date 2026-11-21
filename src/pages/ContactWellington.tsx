@@ -38,7 +38,7 @@ const ContactWellington = () => {
           latitude: "-41.2335",
           longitude: "174.9044",
         },
-        openingHours: "Mo-Su 08:00-17:00",
+        openingHours: "Mo-Sa 08:00-17:00",
         areaServed: {
           "@type": "City",
           name: "Wellington",
@@ -71,7 +71,7 @@ const ContactWellington = () => {
             name: "Can I pick up or drop off my rental outside opening hours?",
             acceptedAnswer: {
               "@type": "Answer",
-              text: "Yes — after-hours pick up and drop off are available on request. Contact our Wellington branch on 0800 525 663 to arrange this in advance.",
+              text: "After-hours pick up and drop off are available at our airport branches only. Our Wellington city branch is open Monday to Saturday, 8:00 AM to 5:00 PM, and closed on Sundays.",
             },
           },
           {
@@ -167,10 +167,10 @@ const ContactWellington = () => {
               </div>
               <div className="flex justify-between">
                 <span className="font-medium">Sunday:</span>
-                <span>8:00 AM - 5:00 PM</span>
+                <span>Closed</span>
               </div>
               <div className="mt-4 text-sm text-gray-600">
-                <p>After hours pick up and drop off available on request</p>
+                <p>After hours pick up and drop off are available at our airport branches only</p>
               </div>
             </div>
           </CardContent>

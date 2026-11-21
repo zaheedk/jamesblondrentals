@@ -431,7 +431,7 @@ const WellingtonMinibusRentals = () => {
                 </div>
                 <div className="flex justify-between">
                   <span>Sunday:</span>
-                  <span>9:00 AM - 4:00 PM</span>
+                  <span>Closed</span>
                 </div>
                 <p className="text-sm text-gray-600 mt-3">
                   24/7 support available for existing bookings
