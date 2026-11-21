@@ -26,6 +26,7 @@ export const sitemapRoutes: SitemapRoute[] = [
   { path: '/privacy', priority: 0.5, changefreq: 'monthly' },
   { path: '/price-guide', priority: 0.9, changefreq: 'weekly' },
   { path: '/blog', priority: 0.7, changefreq: 'weekly' },
+  { path: '/blog/wellington', priority: 0.7, changefreq: 'monthly' },
   { path: '/win', priority: 0.9, changefreq: 'monthly' },
 
   // Auth Pages (Login, Register, ForgotPassword, ResetPassword) are noindexed via PageSEO — excluded from sitemap

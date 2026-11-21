@@ -44,6 +44,11 @@ const WellingtonCargoVanRentals = () => {
       </section>
 
       {/* Wellington branch NAP */}
+      <section aria-labelledby="wellington-van-guides" className="mb-12 border-y border-border py-6">
+        <h2 id="wellington-van-guides" className="text-xl font-bold mb-3">Planning a Wellington move?</h2>
+        <p className="text-muted-foreground mb-4">Compare vans and trucks, plan loading access and follow our local moving-day checklist.</p>
+        <Button asChild variant="outline"><Link to="/blog/wellington">Wellington hire tips &amp; moving guides <ArrowRight className="ml-2 h-4 w-4" /></Link></Button>
+      </section>
       <section className="mb-12">
         <h2 className="text-2xl font-bold mb-6">Where to pick up your Wellington van</h2>
         <div className="grid md:grid-cols-2 gap-6">

@@ -66,6 +66,11 @@ const Blog = () => {
       </div>
 
       {/* Blog Posts Grid */}
+      <section aria-label="Wellington local guides" className="mb-10 border-y border-border py-6">
+        <h2 className="text-2xl font-bold mb-3">Moving in Wellington?</h2>
+        <p className="text-muted-foreground mb-4">Local van and truck hire tips, moving checklists and loading advice from our Te Aro branch.</p>
+        <Button asChild variant="outline"><Link to="/blog/wellington">Wellington hire tips &amp; moving guides <ArrowRight className="ml-2 h-4 w-4" /></Link></Button>
+      </section>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
         {articles.map((article) => (
           <Link key={article.id} to={`/blog/${article.slug}`} className="group block">

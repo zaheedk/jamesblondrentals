@@ -44,6 +44,7 @@ import MemberDashboard from "./pages/MemberDashboard";
 // Blog Pages
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
+import WellingtonBlog from "./pages/blog/WellingtonBlog";
 import ChristchurchAkaroaDayTrip from "./pages/blog/ChristchurchAkaroaDayTrip";
 import ChristchurchMtHuttSkiGuide from "./pages/blog/ChristchurchMtHuttSkiGuide";
 import ChristchurchQueenstownOneWay from "./pages/blog/ChristchurchQueenstownOneWay";
@@ -273,6 +274,7 @@ const App = () => {
                 
                 {/* Blog routes */}
                 <Route path="/blog" element={<Blog />} />
+                <Route path="/blog/wellington" element={<WellingtonBlog />} />
                 <Route path="/blog/akaroa-day-trip-from-christchurch-car-hire-guide" element={<ChristchurchAkaroaDayTrip />} />
                 <Route path="/blog/mt-hutt-ski-guide-awd-hire-christchurch" element={<ChristchurchMtHuttSkiGuide />} />
                 <Route path="/blog/one-way-car-hire-christchurch-to-queenstown" element={<ChristchurchQueenstownOneWay />} />

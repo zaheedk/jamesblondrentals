@@ -1,5 +1,11 @@
 # Roadmap
 
+## Wellington blog
+- [x] Add a local hire tips and moving guides page with verified branch information
+- [x] Link from Wellington van/truck pages and register search metadata/sitemap
+- [x] Verify desktop/mobile reading and navigation — both hire-page links and return booking links passed, photos loaded, no mobile overflow/runtime errors; 17 existing Wellington tests passed, build OK, direct-load static metadata verified
+- [ ] Add genuine customer stories — user confirmed stories should remain pending approval; no testimonials or customer details published
+
 ## Wellington booking growth — November follow-up
 - [x] Correct Wellington car/van booking defaults and add airport booking entry point; remove unsupported price/collection promises
 - [x] Strengthen existing Wellington car/airport metadata and local links, preserving Sunday and return restrictions

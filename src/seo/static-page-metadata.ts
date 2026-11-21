@@ -1,6 +1,7 @@
 import { sitemapRoutes, type SitemapRoute } from '../sitemap-routes';
 import { wellingtonCarSEO, wellingtonVanSEO, wellingtonAirportSEO } from './wellington';
 import { aucklandCarSEO, aucklandVanSEO } from './auckland';
+import { wellingtonBlogSEO } from './wellington-blog';
 
 export interface StaticPageMetadata {
   path: string;
@@ -49,6 +50,7 @@ const makeDefaultMetadata = (path: string): StaticPageMetadata => {
 };
 
 const overrides: Record<string, Partial<Omit<StaticPageMetadata, 'path'>>> = {
+  '/blog/wellington': { ...wellingtonBlogSEO },
   '/van-hire-auckland': { ...aucklandVanSEO },
   '/car-hire-auckland': { ...aucklandCarSEO },
   '/car-van-hire-east-auckland': {

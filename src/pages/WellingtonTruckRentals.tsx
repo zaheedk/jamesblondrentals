@@ -138,6 +138,11 @@ const WellingtonTruckRentals = () => {
       </section>
 
       {/* Why Choose Us */}
+      <section aria-labelledby="wellington-truck-guides" className="mb-12 border-y border-border py-6">
+        <h2 id="wellington-truck-guides" className="text-xl font-bold mb-3">Make your Wellington move easier</h2>
+        <p className="text-muted-foreground mb-4">Get practical advice on truck size, licence requirements, parking and a return before closing time.</p>
+        <Button asChild variant="outline"><Link to="/blog/wellington">Wellington hire tips &amp; moving guides <ArrowRight className="ml-2 h-4 w-4" /></Link></Button>
+      </section>
       <section className="mb-12">
         <h2 className="text-2xl font-bold mb-6 text-center">Why Choose Our Truck Hire in Wellington</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

@@ -41,6 +41,11 @@
     <changefreq>weekly</changefreq>
   </url>
   <url>
+    <loc>https://www.jamesblond.co.nz/blog/wellington</loc>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
     <loc>https://www.jamesblond.co.nz/win</loc>
     <priority>0.9</priority>
     <changefreq>monthly</changefreq>
