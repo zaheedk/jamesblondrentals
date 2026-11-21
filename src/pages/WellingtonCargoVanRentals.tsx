@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import WellingtonInternalLinks from '@/components/WellingtonInternalLinks';
 import WellingtonBreadcrumb from '@/components/WellingtonBreadcrumb';
 import PageSEO from '@/components/PageSEO';
-import { wellingtonVanSEO } from '@/seo/wellington';
+import { wellingtonVanSEO, wellingtonVanSearchDefaults } from '@/seo/wellington';
 import { LazyImage } from '@/components/LazyImage';
 
 const WellingtonCargoVanRentals = () => {
@@ -38,7 +38,7 @@ const WellingtonCargoVanRentals = () => {
           <p className="text-center mb-6">Check availability and reserve your van today</p>
           
           <div className="max-w-4xl mx-auto">
-            <SearchForm />
+            <SearchForm {...wellingtonVanSearchDefaults} />
           </div>
         </div>
       </section>
@@ -60,7 +60,8 @@ const WellingtonCargoVanRentals = () => {
                   <span className="font-medium">Email:</span>{' '}
                   <a href="mailto:wellington@jamesblond.co.nz" className="text-primary hover:underline">wellington@jamesblond.co.nz</a>
                 </p>
-                <p><span className="font-medium">Hours:</span> 8:00 AM – 5:00 PM, 7 days. After-hours pickup and drop-off on request.</p>
+                <p><span className="font-medium">Hours:</span> Monday–Saturday, 8:00 AM – 5:00 PM. Sunday: Closed.</p>
+                <p>Commercial vans return to a city branch during opening hours. No after-hours or airport returns.</p>
               </div>
               <p className="mt-4 text-sm text-gray-600">
                 A few minutes from the CBD and the waterfront, with fast access to SH1 and SH2 — and about 10 minutes from Wellington Airport.
@@ -111,9 +112,11 @@ const WellingtonCargoVanRentals = () => {
           </Card>
           <Card>
             <CardContent className="pt-6">
-              <h3 className="text-lg font-semibold mb-2">Cheap van rental</h3>
+              <h3 className="text-lg font-semibold mb-2">Van rental prices</h3>
               <p className="text-sm text-gray-600 mb-3">
-                Van rental in Wellington starts from $95 per day. Midweek pickups are our quietest days and carry the best rates, weekly hire lowers the daily price again, and there are no broker fees when you book direct.
+                Compare standard and jumbo van rates in the price guide, including kilometre charges. Search your
+                pickup and return dates for the current total. We accept a $50 booking deposit, with any unpaid
+                rental balance collected at pickup; the deposit is separate from the bond.
               </p>
               <Link to="/price-guide" className="text-primary hover:underline text-sm font-medium">See van hire rates</Link>
             </CardContent>

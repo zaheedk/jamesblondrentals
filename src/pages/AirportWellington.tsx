@@ -7,15 +7,17 @@ import { bookingHowTo, pickupHowTo } from '@/seo/howToJsonLd';
 import WellingtonInternalLinks from '@/components/WellingtonInternalLinks';
 import WellingtonBreadcrumb from '@/components/WellingtonBreadcrumb';
 import { Link } from 'react-router-dom';
+import SearchForm from '@/components/home/SearchForm';
+import { wellingtonAirportSEO, wellingtonAirportSearchDefaults } from '@/seo/wellington';
 
 const AirportWellington = () => (
   <>
   <div className="container mx-auto px-4 py-8 space-y-6">
     <WellingtonBreadcrumb currentLabel="Wellington Airport" />
     <PageSEO
-      title="Wellington Airport Car Rental — Vehicles for Lower Hutt, Upper Hutt, Porirua & Kapiti"
-      description="Vehicle rental at Wellington Airport (Miramar). Cars, vans, trucks and minibuses with easy pickup for travellers heading to Wellington CBD, Lower Hutt, Upper Hutt, Petone, Porirua, Tawa and the Kapiti Coast."
-      canonical="/airport/wellington"
+      title={wellingtonAirportSEO.title}
+      description={wellingtonAirportSEO.description}
+      canonical={wellingtonAirportSEO.path}
     />
     <JsonLd
       data={{
@@ -72,7 +74,7 @@ const AirportWellington = () => (
             name: "Can I return my rental car after hours at Wellington Airport?",
             acceptedAnswer: {
               "@type": "Answer",
-              text: "Yes — early or after-hours returns are available. Return the vehicle to 19 Shelly Bay Road, Miramar and follow the drop-off signage.",
+              text: "After-hours car returns are available at the airport location; follow the arrangements in your booking confirmation. Commercial vehicles must return to a city location during opening hours and cannot be returned after hours.",
             },
           },
           {
@@ -111,14 +113,17 @@ const AirportWellington = () => (
         </p>
       </div>
 
-      <h2 className="text-2xl font-bold mb-4">Wellington Airport Car Rental</h2>
+      <h1 className="text-3xl md:text-4xl font-bold mb-4">{wellingtonAirportSEO.heading}</h1>
       <div className="grid md:grid-cols-2 gap-6">
         <div>
           <p className="text-gray-600 mb-4">
-            Touching down in Wellington and need a ride you can count on? James Blond Rentals at Wellington Airport offers convenient, airport-close car and commercial vehicle hire. Our pickup location at 19 Shelly Bay Road, Miramar makes it quick and easy to get on the road right after landing.
+            Hire a car for your Wellington arrival with off-terminal collection at 19 Shelly Bay Road, Miramar.
+            Compare availability and prices for your dates before booking, whether you are heading to Wellington CBD,
+            the Hutt Valley, Porirua or the Kāpiti Coast.
           </p>
           <p className="text-gray-600 mb-4">
-            We provide a full fleet of well-maintained vehicles including cars, SUVs, vans, minibuses, and trailers – all backed by our excellent service and 24/7 shuttle support.
+            Search cars and passenger vehicle options for your trip. We accept a $50 booking deposit, with any unpaid
+            rental balance collected at pickup. The deposit is separate from the bond.
           </p>
           <p className="text-gray-600 mb-4">
             Landing with a big load? See our <Link to="/truck-hire-wellington" className="text-primary hover:underline font-medium">truck hire Wellington</Link> range — 2-tonne and 3-tonne moving trucks with tail lifts, ready to collect from our Te Aro branch.
@@ -147,6 +152,28 @@ const AirportWellington = () => (
           />
         </div>
       </div>
+    </section>
+
+    <section id="booking-form" className="py-6 border-t scroll-mt-24">
+      <h2 className="text-2xl font-bold mb-3">Check Wellington Airport car hire prices</h2>
+      <p className="text-muted-foreground mb-6">
+        Airport collection is in Miramar, not at an in-terminal desk or our Te Aro city branch.
+        For a one-way car hire, select your actual return branch to check the route and total price.
+      </p>
+      <div className="max-w-4xl mx-auto">
+        <SearchForm {...wellingtonAirportSearchDefaults} />
+      </div>
+    </section>
+
+    <section className="py-6 border-t">
+      <h2 className="text-2xl font-bold mb-3">Airport or Wellington CBD collection?</h2>
+      <p className="text-muted-foreground mb-3">
+        Wellington CBD collection is at 24 Abel Smith Street, Te Aro, Monday to Saturday, 8am–5pm.
+        The CBD branch is closed on Sundays and has no after-hours returns. For Sunday car collection or return,
+        search Wellington Airport and check the available times. Commercial vehicles return only to city branches
+        during opening hours, not to airport locations.
+      </p>
+      <Link to="/car-rental-wellington-new-zealand" className="text-primary hover:underline font-medium">Compare Wellington CBD car rental</Link>
     </section>
 
     <section className="py-6 border-t">

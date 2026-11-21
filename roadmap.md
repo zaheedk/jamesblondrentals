@@ -1,5 +1,11 @@
 # Roadmap
 
+## Wellington booking growth — November follow-up
+- [ ] Correct Wellington car booking defaults and airport booking entry point; remove unsupported price/collection promises
+- [ ] Strengthen existing Wellington car/airport metadata and local links, preserving Sunday and return restrictions
+- [ ] Diagnose and correct the Wellington van ad's Auckland copy/homepage destination without raising the existing budget
+- [ ] Verify Wellington searches end-to-end and check deployment; later ranking/booking improvements need post-change data
+
 ## Activation email eligibility
 - [x] Stop quote-only activation emails at all send paths and match activation status by email
 - [x] Test booked/unactivated, quote-only, and already-activated cases; both senders deployed, live no-booking skip verified, four eligibility tests passed; no customer email sent during testing

@@ -20,7 +20,7 @@ const WELLINGTON_LINKS = [
   { to: "/furniture-truck-hire-wellington", label: "Furniture Truck Hire Wellington" },
   { to: "/truck-hire-lower-hutt", label: "Truck Hire Lower Hutt" },
   { to: "/truck-hire-porirua", label: "Truck Hire Porirua" },
-  { to: "/airport/wellington", label: "Wellington Airport Pickup" },
+  { to: "/airport/wellington", label: "Wellington Airport Car Hire" },
   { to: "/contact/wellington", label: "Contact Wellington Branch" },
 ];
 
@@ -36,7 +36,7 @@ export default function WellingtonInternalLinks({ currentPath, heading = "Other 
       <div className="container mx-auto container-padding max-w-5xl">
         <h2 className="text-balance mb-2">{heading}</h2>
         <p className="text-muted-foreground mb-6">
-          Collect at our Te Aro branch for trips and moves around Wellington CBD, Lower Hutt, Upper Hutt, Petone, Porirua and the Kāpiti Coast.
+          Choose Te Aro city collection or Miramar airport car collection for Wellington trips. City pickups and returns are Monday to Saturday; commercial vehicles return to city branches during opening hours.
         </p>
         <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {links.map((l) => (

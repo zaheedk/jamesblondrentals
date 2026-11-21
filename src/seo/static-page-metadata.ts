@@ -1,5 +1,5 @@
 import { sitemapRoutes, type SitemapRoute } from '../sitemap-routes';
-import { wellingtonCarSEO, wellingtonVanSEO } from './wellington';
+import { wellingtonCarSEO, wellingtonVanSEO, wellingtonAirportSEO } from './wellington';
 import { aucklandCarSEO, aucklandVanSEO } from './auckland';
 
 export interface StaticPageMetadata {
@@ -146,6 +146,9 @@ const overrides: Record<string, Partial<Omit<StaticPageMetadata, 'path'>>> = {
   },
   '/car-rental-wellington-new-zealand': {
     ...wellingtonCarSEO,
+  },
+  '/airport/wellington': {
+    ...wellingtonAirportSEO,
   },
 
   '/auckland-airport-cargo-van-rentals-hire': {

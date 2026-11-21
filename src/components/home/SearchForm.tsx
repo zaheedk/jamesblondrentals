@@ -651,7 +651,10 @@ const SearchForm = ({
 
             {(isWellingtonCBD(pickupLocation) || (!sameLocation && isWellingtonCBD(dropoffLocation))) && (
               <p className="text-sm text-muted-foreground bg-primary/5 border border-primary/10 rounded-2xl px-4 py-3">
-                Wellington CBD is closed on Sundays — please choose a Saturday to Monday date for pickup and return.
+                Wellington CBD is closed on Sundays — choose Monday to Saturday for pickup and return.
+                For a Sunday car hire, see{' '}
+                <a href="/airport/wellington" className="text-primary underline">Wellington Airport car hire</a>.
+                Commercial vehicles must return to a city branch during opening hours.
               </p>
             )}
 

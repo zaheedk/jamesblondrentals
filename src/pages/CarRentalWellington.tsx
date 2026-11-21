@@ -9,31 +9,31 @@ import { Separator } from '@/components/ui/separator';
 import SearchForm from '@/components/home/SearchForm';
 import PageSEO from '@/components/PageSEO';
 import JsonLd from '@/components/JsonLd';
-import { wellingtonCarSEO } from '@/seo/wellington';
+import { wellingtonCarSEO, wellingtonCarSearchDefaults } from '@/seo/wellington';
 
 const SITE_URL = 'https://www.jamesblond.co.nz';
 
 const fleet = [
   {
     name: 'Economy & compact cars',
-    from: '$45',
+    from: 'Live quote',
     seats: '4–5 seats',
     blurb: 'Small hatchbacks built for Wellington parking, hill starts and cheap fuel bills. The default choice for city trips and short hires.',
-    to: '/vehicles',
+    to: '#booking-form',
   },
   {
     name: 'Medium & family cars',
-    from: '$55',
+    from: 'Live quote',
     seats: '5 seats',
     blurb: 'More boot space and a quieter ride for Wairarapa, Kāpiti and Palmerston North road trips, or a week of work driving.',
-    to: '/vehicles',
+    to: '#booking-form',
   },
   {
     name: 'SUVs & AWD',
-    from: '$79',
+    from: 'Live quote',
     seats: '5 seats',
     blurb: 'Higher ride height and all-wheel drive for winter travel over the Remutakas, ski trips and gravel-road holiday houses.',
-    to: '/vehicles',
+    to: '#booking-form',
   },
   {
     name: 'People movers & 7-seaters',
@@ -66,7 +66,7 @@ const faqs = [
   {
     question: 'How much is car hire in Wellington?',
     answer:
-      'Car rental in Wellington starts from $45 per day for an economy car, around $55 for a medium car and from $79 for an SUV. Multi-day and weekly hires bring the daily rate down further, and midweek pickups are usually the cheapest days of the week to collect.',
+      'Car hire prices depend on your dates, hire duration and vehicle category. Search your exact pickup and return dates for the current total, then review insurance and any extras before paying. We accept a $50 booking deposit; any unpaid rental balance is collected at pickup. The deposit is separate from the bond.',
   },
   {
     question: 'Where is your Wellington car rental branch?',
@@ -76,7 +76,7 @@ const faqs = [
   {
     question: 'Do you rent cars at Wellington Airport?',
     answer:
-      'We do not have an in-terminal desk at Wellington Airport, but our Te Aro branch is about 10 minutes away. Call the branch when your flight lands and we will have the car keys ready when you arrive.',
+      'Yes. Select Wellington Airport for off-terminal collection at 19 Shelly Bay Road, Miramar. After collecting your bags, call Windy Depot on 027 837 4372 for the complimentary shuttle. Airport collection is separate from our Wellington CBD branch at 24 Abel Smith Street, Te Aro.',
   },
   {
     question: 'Can I hire a 7-seater or people mover in Wellington?',
@@ -87,6 +87,10 @@ const faqs = [
     question: 'What do I need to hire a car in Wellington?',
     answer:
       'A full, current driver licence (New Zealand or overseas — an English translation or International Driving Permit is required if your licence is not in English), a credit or debit card in the hirer\'s name, and you must meet our minimum age requirements.',
+  },
+  {
+    question: 'Can I collect or return a car on Sunday in Wellington?',
+    answer: 'Wellington CBD is open Monday to Saturday, 8am to 5pm, and is closed on Sundays. For a Sunday car pickup or return, search with Wellington Airport as the relevant location and check the available times. City branches do not offer after-hours returns. Commercial vehicles must return to a city branch during opening hours.',
   },
   {
     question: 'Can I drop the car off in another city?',
@@ -162,8 +166,8 @@ const CarRentalWellington = () => {
             </p>
             <ul className="grid sm:grid-cols-2 gap-2 text-sm">
               {[
-                'Cars from $45/day, no hidden fees',
-                'Daily, weekly and midweek rates',
+                'Live prices for your exact dates',
+                '$50 booking deposit; rental balance at pickup',
                 'Free 8c/litre Mobil fuel discount',
                 'One-way hire to other NZ branches',
               ].map((item) => (
@@ -174,7 +178,7 @@ const CarRentalWellington = () => {
               ))}
             </ul>
           </div>
-          <div className="flex flex-col items-center">
+          <div id="booking-form" className="flex flex-col items-center scroll-mt-24">
             <div className="w-full max-w-4xl">
               <Card className="border-0 shadow-lg">
                 <CardContent className="p-0">
@@ -182,7 +186,7 @@ const CarRentalWellington = () => {
                     <h2 className="text-xl font-bold">Check Wellington car availability</h2>
                   </div>
                   <div className="p-4">
-                    <SearchForm />
+                    <SearchForm {...wellingtonCarSearchDefaults} />
                   </div>
                 </CardContent>
               </Card>
@@ -192,10 +196,10 @@ const CarRentalWellington = () => {
 
         {/* Fleet & rates */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold mb-2">Wellington car rental rates &amp; fleet</h2>
+          <h2 className="text-2xl font-bold mb-2">Wellington rental cars &amp; live prices</h2>
           <p className="text-muted-foreground mb-6 max-w-3xl">
-            Indicative daily rates for hires collected from our Wellington branch. Longer hires and midweek pickups are
-            cheaper per day — the booking form above shows live pricing for your exact dates.
+            Compare car sizes for your trip. The booking form shows which categories are available in Wellington
+            and the current price for your exact dates — vehicle examples do not guarantee availability.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {fleet.map((v) => (
@@ -216,9 +220,11 @@ const CarRentalWellington = () => {
                   </p>
                   <p className="text-sm text-muted-foreground flex-1">{v.blurb}</p>
                   <Button variant="link" className="justify-start px-0 mt-3" asChild>
-                    <Link to={v.to}>
-                      View options <ArrowRight className="h-4 w-4 ml-1" />
-                    </Link>
+                    {v.to.startsWith('#') ? (
+                      <a href={v.to}>Check dates <ArrowRight className="h-4 w-4 ml-1" /></a>
+                    ) : (
+                      <Link to={v.to}>View options <ArrowRight className="h-4 w-4 ml-1" /></Link>
+                    )}
                   </Button>
                 </CardContent>
               </Card>
@@ -237,15 +243,15 @@ const CarRentalWellington = () => {
 
         {/* Cheap car hire intent */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold mb-6">Cheap car hire in Wellington — how to get the lowest rate</h2>
+          <h2 className="text-2xl font-bold mb-6">Plan your Wellington car hire</h2>
           <div className="grid md:grid-cols-3 gap-6">
             <Card>
               <CardContent className="pt-6">
                 <Clock className="h-6 w-6 text-primary mb-3" />
-                <h3 className="font-semibold mb-2">Collect midweek</h3>
+                <h3 className="font-semibold mb-2">Compare your dates</h3>
                 <p className="text-sm text-muted-foreground">
-                  Monday to Wednesday pickups are the quietest days in Wellington, so that is where our best rates and
-                  early-week discounts land. Shifting a Friday pickup to a Thursday often saves real money.
+                  Search the full period you need, including pickup and return times. If your plans are flexible,
+                  compare another set of dates rather than assuming a weekday or longer hire will always be cheaper.
                 </p>
               </CardContent>
             </Card>
@@ -266,10 +272,10 @@ const CarRentalWellington = () => {
             <Card>
               <CardContent className="pt-6">
                 <ShieldCheck className="h-6 w-6 text-primary mb-3" />
-                <h3 className="font-semibold mb-2">Book direct, not via a broker</h3>
+                <h3 className="font-semibold mb-2">Book with a $50 deposit</h3>
                 <p className="text-sm text-muted-foreground">
-                  Booking on this site means no broker margin, no surprise counter fees and a Wellington phone number
-                  that a local answers. What you see at checkout is what you pay.
+                  A $50 booking deposit is accepted. Any unpaid rental balance is collected when you pick up the
+                  vehicle. The booking deposit is not the bond; review the payment and bond details at checkout.
                 </p>
               </CardContent>
             </Card>
@@ -302,12 +308,12 @@ const CarRentalWellington = () => {
               <CardContent className="pt-6">
                 <h3 className="text-xl font-semibold mb-3">Wellington Airport car hire</h3>
                 <p className="text-muted-foreground mb-4">
-                  Our Te Aro branch is roughly 10 minutes from the Wellington Airport (WLG) terminal by taxi or
-                  rideshare — no shuttle queue, no in-terminal premium. Give the branch a call when you land and the car
-                  will be waiting.
+                  Choose Wellington Airport for off-terminal collection at 19 Shelly Bay Road, Miramar, with
+                  complimentary shuttle transfers. Search airport dates separately from Te Aro collection and
+                  follow the pickup instructions in your booking confirmation.
                 </p>
                 <Button variant="outline" asChild>
-                  <Link to="/airport/wellington">Wellington Airport pickup details</Link>
+                  <Link to="/airport/wellington">Wellington Airport car hire</Link>
                 </Button>
               </CardContent>
             </Card>
@@ -315,8 +321,8 @@ const CarRentalWellington = () => {
               <CardContent className="pt-6">
                 <h3 className="text-xl font-semibold mb-3">One-way car hire from Wellington</h3>
                 <p className="text-muted-foreground mb-4">
-                  Driving the country one way? We run one-way hires between Wellington and Auckland, Hamilton and
-                  Christchurch, so you can fly in one end and drive out the other.
+                  Choose your actual pickup and return branches when searching. One-way options and fees depend on
+                  the route, dates and vehicle category; a local round-trip price is not a one-way quote.
                 </p>
                 <Button variant="outline" asChild>
                   <Link to="/one-way-car-hire/wellington-to-auckland">See one-way routes</Link>
@@ -483,7 +489,7 @@ const CarRentalWellington = () => {
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Button size="lg" asChild>
-                <Link to="/vehicles">View our vehicle range</Link>
+                <a href="#booking-form">Check Wellington car availability</a>
               </Button>
               <Button size="lg" variant="outline" asChild>
                 <a href="tel:0800525663">Call us: 0800 525 663</a>

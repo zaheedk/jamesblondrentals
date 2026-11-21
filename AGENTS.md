@@ -18,7 +18,7 @@
 
 - Hamilton's hub reuses SearchForm and search-location-default for local branch defaults without changing other forms' saved locations or live quoting.
 - Wellington aliases preserve queries and use Vercel 301s to existing canonicals, avoiding duplicate pages.
-- Auckland and Wellington car/van heads share static SEO metadata; fleet/article links target existing city hubs without changing booking logic.
+- Auckland and Wellington car/van/airport heads share static SEO metadata; Wellington pages pass local search defaults without writing cookies to preserve other forms' preferences.
 
 - Vehicle search display uses shared availability and ordering helpers; the originating search page travels in the URL so Wellington van intent survives navigation without changing RCM pricing or availability.
 
