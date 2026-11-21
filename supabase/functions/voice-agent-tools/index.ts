@@ -177,7 +177,13 @@ async function toolCheckAvailability(p: Record<string, unknown>) {
     return { error: `Could not find a branch matching "${branch}". Branches: ${locations.map((l: any) => l.location).join(", ")}` };
   }
 
-  const sundayError = sundayClosureError(loc, pickupDate, dropoffDate);
+  const dropoffBranch = String(p.dropoff_branch || "").trim();
+  const dropLoc = dropoffBranch ? resolveLocation(locations, dropoffBranch) : loc;
+  if (!dropLoc) {
+    return { error: `Could not find a return branch matching "${dropoffBranch}". Branches: ${locations.map((l: any) => l.location).join(", ")}`, recoverable: true };
+  }
+  const oneWay = Number(dropLoc.id) !== Number(loc.id);
+  const sundayError = sundayClosureError(loc, pickupDate, "") || sundayClosureError(dropLoc, "", dropoffDate);
   if (sundayError) return { error: sundayError, recoverable: true };
 
   const ages = step1?.results?.driverages || [];
@@ -195,7 +201,8 @@ async function toolCheckAvailability(p: Record<string, unknown>) {
   const officeTimes: any[] = step1?.results?.officetimes || [];
   const branchHours = (dateStr: string, kind: "pickup" | "dropoff") => {
     const dow = new Date(`${dateStr}T12:00:00Z`).getUTCDay() + 1; // booking system: 1 = Sunday
-    const rows = officeTimes.filter((o: any) => Number(o.locationid) === Number(loc.id));
+    const locId = kind === "pickup" ? loc.id : dropLoc.id;
+    const rows = officeTimes.filter((o: any) => Number(o.locationid) === Number(locId));
     const row = rows.find((o: any) => Number(o.dayofweek) === dow) || rows[0];
     if (!row) return null;
     const start = (kind === "pickup" ? row.startpickup : row.startdropoff) || row.openingtime || "09:00";
@@ -212,14 +219,14 @@ async function toolCheckAvailability(p: Record<string, unknown>) {
     timeNotes.push(`Pickup time ${pickupTime} is outside ${loc.location} hours for that day (${pickupHours.start}–${pickupHours.end}), so ${adjPickupTime} was used. Confirm this with the caller.`);
   }
   if (adjDropoffTime !== dropoffTime && dropoffHours) {
-    timeNotes.push(`Return time ${dropoffTime} is outside ${loc.location} hours for that day (${dropoffHours.start}–${dropoffHours.end}), so ${adjDropoffTime} was used. Confirm this with the caller.`);
+    timeNotes.push(`Return time ${dropoffTime} is outside ${dropLoc.location} hours for that day (${dropoffHours.start}–${dropoffHours.end}), so ${adjDropoffTime} was used. Confirm this with the caller.`);
   }
 
   const step2 = await rcmCall("step2", {
     pickuplocationid: loc.id,
     pickupdate: toRcmDate(pickupDate),
     pickuptime: adjPickupTime,
-    dropofflocationid: loc.id,
+    dropofflocationid: dropLoc.id,
     dropoffdate: toRcmDate(dropoffDate),
     dropofftime: adjDropoffTime,
     ...(ageid ? { ageid } : {}),
@@ -227,7 +234,7 @@ async function toolCheckAvailability(p: Record<string, unknown>) {
   });
 
   if (step2?.status !== "OK") {
-    console.error("check_availability step2 failed", JSON.stringify({ branch: loc.id, pickupDate, dropoffDate, pickupTime, dropoffTime, status: step2?.status, error: step2?.error }));
+    console.error("check_availability step2 failed", JSON.stringify({ branch: loc.id, dropoffBranch: dropLoc.id, pickupDate, dropoffDate, pickupTime, dropoffTime, status: step2?.status, error: step2?.error }));
     return { error: `Availability check failed (${step2?.error || "booking system error"}) for ${pickupDate} to ${dropoffDate}. No availability or price is verified. Correct missing/invalid input, or retry this read once if transient; do not loop.`, driver_age_options: driverAgeOptions(ages), recoverable: true };
   }
 
@@ -258,6 +265,9 @@ async function toolCheckAvailability(p: Record<string, unknown>) {
 
   return {
     branch: loc.location,
+    dropoff_branch: dropLoc.location,
+    one_way: oneWay,
+    ...(oneWay ? { one_way_note: `Results are for the actual one-way route ${loc.location} → ${dropLoc.location}. Pass dropoff_branch "${dropLoc.location}" to create_phone_quote. If the requested type is missing, it is not offered one-way on this route; offer listed alternatives or a same-branch return.` } : {}),
     driver_age_id_used: Number(ageid),
     driver_age_options: driverAgeOptions(ages),
     driver_age_confirmed: driverAge !== undefined || driverAgeId !== undefined,

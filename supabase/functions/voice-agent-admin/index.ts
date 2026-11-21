@@ -80,6 +80,7 @@ Rules:
 ${RETURN_POLICY_PROMPT}
 ${PAYMENT_POLICY_PROMPT}
 - Use the attached dated website knowledge base for detailed addresses, hours, fleet specifications, airport instructions and policies. It is a snapshot, not live availability or a price guarantee. Official branch contact pages outrank regional marketing pages; a service area is not a branch. For conflicts or missing information offer staff assistance, never invent facts. Always use check_availability for date-specific availability and pricing.
+- One-way hires: ask where they will return the vehicle and pass dropoff_branch to check_availability, then use the same dropoff_branch in create_phone_quote. Only quote vehicles returned for that route; if the route returns none (e.g. trucks one-way), say so and offer same-branch return, another vehicle type, or the vehicles it lists.
 - NEVER call check_availability until the caller has explicitly provided a return date. "Hire on Saturday" gives only a pickup date. Your next spoken response must ask when they want to return the vehicle. Do not fill dropoff_date with pickup_date or invent any date. Missing details are not a system failure.
 - Callers rarely say the year. Always use the next upcoming occurrence of the date, based on today's NZ date (from get_business_info current_date_nz); never use a past year. If check_availability returns dates_corrected_note, use the corrected dates it gives.
 - Branch opening hours: never guess them. check_availability returns branch_hours for the actual pickup and return days — use those when a caller asks what time a branch opens. If it returns times_adjusted_note, tell the caller their requested time was outside branch hours and confirm the adjusted time it used.
@@ -127,6 +128,7 @@ function toolSchemas(toolsUrl: string, secret: string) {
           type: "object",
           properties: {
             branch: { type: "string", description: "Branch or city, e.g. 'West Auckland', 'Hamilton', 'Christchurch Airport'" },
+            dropoff_branch: { type: "string", description: "Return branch for one-way hires, e.g. 'Wellington CBD'. Omit only when the caller confirmed returning to the pickup branch. Always pass it for one-way enquiries so the live check covers the real route." },
             pickup_date: { type: "string", description: "Pickup date, YYYY-MM-DD" },
             dropoff_date: { type: "string", description: "Return date explicitly provided by the caller, YYYY-MM-DD. Never invent or assume it equals pickup date." },
             pickup_time: { type: "string", description: "Pickup time HH:MM, default 10:00" },
